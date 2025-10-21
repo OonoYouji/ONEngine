@@ -5,23 +5,39 @@
 
 /// engine
 #include "Engine/Core/ImGui/Math/ImGuiMath.h"
-#include "Engine/Graphics/Pipelines/Collection/RenderingPipelineCollection.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentJsonConverter.h"
+//#include "Engine/Graphics/Pipelines/Collection/RenderingPipelineCollection.h"
+#include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 
 MeshRenderer::MeshRenderer() {
 	SetMeshPath("./Packages/Models/primitive/cube.obj");
 	SetTexturePath("./Packages/Textures/white.png");
-	gpuMaterial_.baseColor = Vector4::kWhite;
-	gpuMaterial_.postEffectFlags = PostEffectFlags_Lighting;
-	if (GetOwner()) {
-		gpuMaterial_.entityId = GetOwner()->GetId();
-	}
+	cpuMaterial_.baseColor = Vector4::kWhite;
+	cpuMaterial_.postEffectFlags = PostEffectFlags_Lighting;
+	cpuMaterial_.SetOwnerEntity(GetOwner());
 }
 
 MeshRenderer::~MeshRenderer() = default;
 
-void MeshRenderer::ConvertMaterialToGPU() {
+void MeshRenderer::SetupRenderData(GraphicsResourceCollection* _grc) {
+	/// OwnerEntityを cpuMaterial_に設定
+	cpuMaterial_.SetOwnerEntity(GetOwner());
+
+
+	/// 有効なGuidであれば
+	if (cpuMaterial_.baseTextureIdPair.first.CheckValid()) {
+		/// cpuMaterial_のtexture guidから gpuMaterial_のtexture idを設定
+		cpuMaterial_.baseTextureIdPair.second = _grc->GetTextureIndexFromGuid(cpuMaterial_.baseTextureIdPair.first);
+	}
+
+	/// 有効なGuidであれば
+	if (cpuMaterial_.normalTextureIdPair.first.CheckValid()) {
+		/// cpuMaterial_のtexture guidから gpuMaterial_のtexture idを設定
+		cpuMaterial_.normalTextureIdPair.second = _grc->GetTextureIndexFromGuid(cpuMaterial_.normalTextureIdPair.first);
+	}
+
+
 	gpuMaterial_ = cpuMaterial_.ToGPUMaterial();
 }
 
@@ -62,6 +78,10 @@ const Vector4& MeshRenderer::GetColor() const {
 
 const GPUMaterial& MeshRenderer::GetMaterial() const {
 	return gpuMaterial_;
+}
+
+const Material& MeshRenderer::GetCPUMaterial() const {
+	return cpuMaterial_;
 }
 
 uint32_t MeshRenderer::GetPostEffectFlags() const {
@@ -244,9 +264,10 @@ void from_json(const nlohmann::json& _j, MeshRenderer& _m) {
 	_m.SetTexturePath(_j.at("texturePath").get<std::string>());
 	_m.SetColor(_j.at("color").get<Vector4>());
 
-	if (_j.contains("postEffectFlags")) {
-		_m.SetPostEffectFlags(_j.at("postEffectFlags").get<uint32_t>());
-	}
+	_m.cpuMaterial_ = _j.value("material", Material{});
+	//if (_j.contains("postEffectFlags")) {
+	//	_m.SetPostEffectFlags(_j.at("postEffectFlags").get<uint32_t>());
+	//}
 }
 
 void to_json(nlohmann::json& _j, const MeshRenderer& _m) {
@@ -256,6 +277,6 @@ void to_json(nlohmann::json& _j, const MeshRenderer& _m) {
 		{ "meshPath", _m.GetMeshPath() },
 		{ "texturePath", _m.GetTexturePath() },
 		{ "color", _m.GetColor() },
-		{ "postEffectFlags", _m.GetPostEffectFlags() }
+		{ "material", _m.cpuMaterial_ }
 	};
 }

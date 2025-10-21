@@ -5,10 +5,22 @@
 #include <string>
 #include <functional>
 
+/// externals
+#include <nlohmann/json.hpp>
+
+
+struct Guid;
+void from_json(const nlohmann::json& _j, struct Guid& _guid);
+void to_json(nlohmann::json& _j, const struct Guid& _guid);
+
+
 /// ////////////////////////////////////////////////////
 /// GUID 構造体
 /// ////////////////////////////////////////////////////
 struct Guid final {
+	friend void from_json(const nlohmann::json& _j, struct Guid& _guid);
+	friend void to_json(nlohmann::json& _j, const struct Guid& _guid);
+
 
 	Guid();
 	Guid(uint64_t _high, uint64_t _low);
@@ -29,6 +41,10 @@ struct Guid final {
 
 	/// @brief Guidを文字列に変換する
 	std::string ToString() const;
+
+	/// @brief 有効なGuidかチェックする
+	/// @return true: 有効, false: 無効
+	bool CheckValid() const;
 
 
 

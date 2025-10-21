@@ -204,6 +204,10 @@ const std::vector<Texture>& GraphicsResourceCollection::GetTextures() const {
 	return textureContainer_->GetValues();
 }
 
+int32_t GraphicsResourceCollection::GetTextureIndexFromGuid(const Guid& _guid) const {
+	return textureContainer_->GetIndex(_guid);
+}
+
 const AudioClip* GraphicsResourceCollection::GetAudioClip(const std::string& _filepath) const {
 	return audioClipContainer_->Get(_filepath);
 }

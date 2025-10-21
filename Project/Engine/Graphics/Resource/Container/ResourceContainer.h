@@ -46,6 +46,7 @@ public:
 	T* GetFirst();
 	const std::string& GetKey(int32_t _index) const;
 	int32_t GetIndex(const std::string& _key) const;
+	int32_t GetIndex(const Guid& _guid) const;
 	const std::vector<T>& GetValues() const;
 	std::vector<T>& GetValues();
 	const std::unordered_map<std::string, int32_t>& GetIndexMap() const;
@@ -175,6 +176,15 @@ inline int32_t ResourceContainer<T>::GetIndex(const std::string& _key) const {
 	}
 
 	/// 存在しない場合は無効なインデックスを返す
+	return -1;
+}
+
+template<typename T>
+inline int32_t ResourceContainer<T>::GetIndex(const Guid& _guid) const {
+	if(guidToIndexMap_.contains(_guid)) {
+		return guidToIndexMap_.at(_guid);
+	}
+
 	return -1;
 }
 

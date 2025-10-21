@@ -146,15 +146,19 @@ void MeshRenderingPipeline::RenderingMesh(ID3D12GraphicsCommandList* _commandLis
 		/// transform, material を mapping
 		for (auto& renderer : renderers) {
 
-			/// materialのセット
-			renderer->SetMaterialEntityId();
+			/// TextureのIdをGuidからセット
+			renderer->SetupRenderData(resourceCollection_);
+
 			materialBuffer->SetMappedData(
 				transformIndex_,
 				renderer->GetMaterial()
 			);
 
 			/// texture id のセット
-			size_t textureIndex = resourceCollection_->GetTextureIndex(renderer->GetTexturePath());
+			int32_t textureIndex = renderer->GetCPUMaterial().baseTextureIdPair.second;
+			if (textureIndex < 0) {
+				textureIndex = resourceCollection_->GetTextureIndex("./Assets/Textures/white.png");
+			}
 			textureIdBuffer_->SetMappedData(
 				transformIndex_,
 				_pTexture[textureIndex].GetSRVDescriptorIndex()

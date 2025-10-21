@@ -41,8 +41,8 @@ public:
 	MeshRenderer();
 	~MeshRenderer();
 
-	/// @brief マテリアルをGPU用に変換します。
-	void ConvertMaterialToGPU();
+	/// @brief 描画のために必要なデータを設定する
+	void SetupRenderData(class GraphicsResourceCollection* _grc);
 
 private:
 	/// ===================================================
@@ -92,6 +92,7 @@ public:
 	const Vector4& GetColor() const;
 
 	const GPUMaterial& GetMaterial() const;
+	const Material&    GetCPUMaterial() const;
 
 	/// @brief ポストエフェクトのフラグを取得
 	/// @return ポストエフェクトのフラグ

@@ -7,6 +7,17 @@
 /// engine
 #include "Engine/Core/Utility/Utility.h"
 
+void from_json(const nlohmann::json& _j, Guid& _guid) {
+	_guid = Guid::FromString(_j.value("guid", ""));
+}
+
+void to_json(nlohmann::json& _j, const Guid& _guid) {
+	_j = nlohmann::json{
+		{ "guid", _guid.ToString() },
+	};
+}
+
+
 Guid::Guid() : high(0), low(0) {}
 Guid::Guid(uint64_t _high, uint64_t _low) : high(_high), low(_low) {}
 
@@ -16,6 +27,10 @@ std::string Guid::ToString() const {
 		<< std::setw(16) << high
 		<< std::setw(16) << low;
 	return oss.str();
+}
+
+bool Guid::CheckValid() const {
+	return (high != 0) || (low != 0);
 }
 
 std::string Guid::ToString(const Guid& _guid) {

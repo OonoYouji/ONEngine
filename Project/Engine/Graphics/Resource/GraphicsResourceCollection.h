@@ -102,6 +102,8 @@ public:
 	size_t GetTextureIndex(const std::string& _filepath) const;
 	const std::string& GetTexturePath(size_t _index) const;
 	const std::vector<Texture>& GetTextures() const;
+	/// GuidからテクスチャのIndexを取得
+	int32_t GetTextureIndexFromGuid(const Guid& _guid) const;
 
 	/// ゲッタ オーディオクリップ
 	const AudioClip* GetAudioClip(const std::string& _filepath) const;

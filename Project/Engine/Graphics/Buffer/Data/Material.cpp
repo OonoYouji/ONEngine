@@ -40,6 +40,19 @@ void from_json(const nlohmann::json& _j, GPUMaterial& _material) {
 	_material.normalTextureId = _j.value("normalTextureId", -1);
 }
 
+void to_json(nlohmann::json& _j, const Material& _material) {
+	_j = nlohmann::json{
+		{ "uvTransform", _material.uvTransform },
+		{ "baseColor", _material.baseColor },
+		{ "postEffectFlags", _material.postEffectFlags },
+		{ "baseTextureGuid", _material.baseTextureIdPair.first },
+		{ "normalTextureGuid", _material.normalTextureIdPair.first }
+	};
+}
+
+void from_json(const nlohmann::json& _j, Material& _material) {
+}
+
 Material::Material() = default;
 Material::~Material() = default;
 
@@ -49,7 +62,7 @@ GPUMaterial Material::ToGPUMaterial() {
 		.baseColor       = Vector4::kWhite,
 		.postEffectFlags = PostEffectFlags_None,
 		.entityId        = pOwnerEntity_ ? pOwnerEntity_->GetId() : 0,
-		.baseTextureId   = textureIdPair.second,
+		.baseTextureId   = baseTextureIdPair.second,
 		.normalTextureId = normalTextureIdPair.second,
 	};
 }

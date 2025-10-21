@@ -46,9 +46,16 @@ void to_json(nlohmann::json& _j, const GPUMaterial& _material);
 void from_json(const nlohmann::json& _j, GPUMaterial& _material);
 
 
+/// Material Json変換
+class Material;
+void to_json(nlohmann::json& _j, const Material& _material);
+void from_json(const nlohmann::json& _j, Material& _material);
+
 
 /// @brief CPU側のマテリアルクラス
 class Material {
+	friend void to_json(nlohmann::json& _j, const Material& _material);
+	friend void from_json(const nlohmann::json& _j, Material& _material);
 public:
 	/// ==================================================
 	/// public : methods
@@ -74,8 +81,7 @@ public:
 	UVTransform              uvTransform;
 	Vector4                  baseColor;
 	uint32_t 			     postEffectFlags;
-	int32_t 				 entityId;
-	std::pair<Guid, int32_t> textureIdPair;
+	std::pair<Guid, int32_t> baseTextureIdPair;
 	std::pair<Guid, int32_t> normalTextureIdPair;
 
 
