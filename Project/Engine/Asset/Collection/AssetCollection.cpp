@@ -13,7 +13,7 @@ AssetCollection::~AssetCollection() {}
 
 
 void AssetCollection::Initialize(DxManager* _dxManager) {
-	resourceLoader_ = std::make_unique<GraphicsResourceLoader>(_dxManager, this);
+	resourceLoader_ = std::make_unique<AssetLoader>(_dxManager, this);
 	resourceLoader_->Initialize();
 
 	modelContainer_ = std::make_unique<ResourceContainer<Model>>(static_cast<size_t>(MAX_MODEL_COUNT));

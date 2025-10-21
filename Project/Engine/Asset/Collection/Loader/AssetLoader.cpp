@@ -1,4 +1,4 @@
-#include "GraphicsResourceLoader.h"
+#include "AssetLoader.h"
 
 /// directX
 #include <d3dx12.h>
@@ -34,17 +34,17 @@
 #pragma comment(lib, "mfuuid.lib")
 
 
-GraphicsResourceLoader::GraphicsResourceLoader(DxManager* _dxManager, AssetCollection* _collection)
+AssetLoader::AssetLoader(DxManager* _dxManager, AssetCollection* _collection)
 	: pDxManager_(_dxManager), pGrc_(_collection) {}
 
-GraphicsResourceLoader::~GraphicsResourceLoader() {
+AssetLoader::~AssetLoader() {
 	HRESULT result = MFShutdown();
 	Assert(SUCCEEDED(result), "MFShutdown failed");
 }
 
 
 
-void GraphicsResourceLoader::Initialize() {
+void AssetLoader::Initialize() {
 	/// model 
 	/// assimpの読み込みフラグ
 	assimpLoadFlags_ = aiProcess_FlipWindingOrder | aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices;
@@ -54,7 +54,7 @@ void GraphicsResourceLoader::Initialize() {
 	Assert(SUCCEEDED(result), "MFStartup failed");
 }
 
-void GraphicsResourceLoader::LoadTexture([[maybe_unused]] const std::string& _filepath) {
+void AssetLoader::LoadTexture([[maybe_unused]] const std::string& _filepath) {
 
 	Texture texture;
 	DirectX::ScratchImage       scratchImage = LoadScratchImage(_filepath);
@@ -100,7 +100,7 @@ void GraphicsResourceLoader::LoadTexture([[maybe_unused]] const std::string& _fi
 	pGrc_->AddTexture(_filepath, std::move(texture));
 }
 
-void GraphicsResourceLoader::LoadModelObj(const std::string& _filepath) {
+void AssetLoader::LoadModelObj(const std::string& _filepath) {
 
 	/// ファイルの拡張子を取得
 	std::string fileExtension = _filepath.substr(_filepath.find_last_of('.'));
@@ -205,7 +205,7 @@ void GraphicsResourceLoader::LoadModelObj(const std::string& _filepath) {
 
 }
 
-Node GraphicsResourceLoader::ReadNode(aiNode* _node) {
+Node AssetLoader::ReadNode(aiNode* _node) {
 	Node result;
 
 	aiVector3D   position;
@@ -231,7 +231,7 @@ Node GraphicsResourceLoader::ReadNode(aiNode* _node) {
 	return result;
 }
 
-void GraphicsResourceLoader::LoadAnimation(Model* _model, const std::string& _filepath) {
+void AssetLoader::LoadAnimation(Model* _model, const std::string& _filepath) {
 
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(_filepath.c_str(), 0);
@@ -308,7 +308,7 @@ void GraphicsResourceLoader::LoadAnimation(Model* _model, const std::string& _fi
 	}
 }
 
-void GraphicsResourceLoader::LoadAudioClip(const std::string& _filepath) {
+void AssetLoader::LoadAudioClip(const std::string& _filepath) {
 
 	/// wstringに変換
 	std::wstring filePathW = ConvertString(_filepath);
@@ -389,7 +389,7 @@ void GraphicsResourceLoader::LoadAudioClip(const std::string& _filepath) {
 	Console::Log("[Load] [AudioClip] - path:\"" + _filepath + "\"");
 }
 
-void GraphicsResourceLoader::LoadFont(const std::string& _filepath) {
+void AssetLoader::LoadFont(const std::string& _filepath) {
 
 	/// ファイルを開く
 	std::ifstream ifs(_filepath, std::ios::binary | std::ios::ate);
@@ -417,7 +417,7 @@ void GraphicsResourceLoader::LoadFont(const std::string& _filepath) {
 
 }
 
-DirectX::ScratchImage GraphicsResourceLoader::LoadScratchImage(const std::string& _filePath) {
+DirectX::ScratchImage AssetLoader::LoadScratchImage(const std::string& _filePath) {
 
 	/// テクスチャファイルを読んでプログラムで扱えるようにする
 	DirectX::ScratchImage image{};
@@ -441,7 +441,7 @@ DirectX::ScratchImage GraphicsResourceLoader::LoadScratchImage(const std::string
 	return mipImages;
 }
 
-DxResource GraphicsResourceLoader::CreateTextureResource(DxDevice* _dxDevice, const DirectX::TexMetadata& _metadata) {
+DxResource AssetLoader::CreateTextureResource(DxDevice* _dxDevice, const DirectX::TexMetadata& _metadata) {
 
 	/// --------------------------------------
 	/// ↓ metadataを基にResourceの設定
@@ -483,7 +483,7 @@ DxResource GraphicsResourceLoader::CreateTextureResource(DxDevice* _dxDevice, co
 	return dxResource;
 }
 
-DxResource GraphicsResourceLoader::UploadTextureData(ID3D12Resource* _texture, const DirectX::ScratchImage& _mipScratchImage) {
+DxResource AssetLoader::UploadTextureData(ID3D12Resource* _texture, const DirectX::ScratchImage& _mipScratchImage) {
 	DxDevice* dxDevice = pDxManager_->GetDxDevice();
 	DxCommand* dxCommand = pDxManager_->GetDxCommand();
 

@@ -11,7 +11,7 @@
 /// texture
 /// ///////////////////////////////////////////////////
 class Texture final {
-	friend class GraphicsResourceLoader;
+	friend class AssetLoader;
 public:
 	/// ===================================================
 	/// public : sub class

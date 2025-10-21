@@ -20,14 +20,14 @@
 /// ///////////////////////////////////////////////////
 /// グラフィクスリソースのローダー
 /// ///////////////////////////////////////////////////
-class GraphicsResourceLoader final {
+class AssetLoader final {
 public:
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
 
-	GraphicsResourceLoader(class DxManager* _dxManager, class AssetCollection* _collection);
-	~GraphicsResourceLoader();
+	AssetLoader(class DxManager* _dxManager, class AssetCollection* _collection);
+	~AssetLoader();
 
 	void Initialize();
 

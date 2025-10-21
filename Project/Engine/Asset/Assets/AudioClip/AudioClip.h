@@ -37,7 +37,7 @@ namespace AudioStructs {
 /// 音のサウンドデータ
 /// ////////////////////////////////////////////////////////////////
 class AudioClip {
-	friend class GraphicsResourceLoader;
+	friend class AssetLoader;
 public:
 	/// ===================================================
 	/// public : methods

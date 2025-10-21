@@ -6,7 +6,7 @@
 
 /// engine
 #include "Engine/Asset/Collection/Container/ResourceContainer.h"
-#include "Engine/Asset/Collection/Loader/GraphicsResourceLoader.h"
+#include "Engine/Asset/Collection/Loader/AssetLoader.h"
 
 #include "Engine/Asset/Assets/Mesh/Model.h"
 #include "Engine/Asset/Assets/Texture/Texture.h"
@@ -80,7 +80,7 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	std::unique_ptr<GraphicsResourceLoader> resourceLoader_;
+	std::unique_ptr<AssetLoader> resourceLoader_;
 
 	/// リソースのコンテナ
 	std::unique_ptr<ResourceContainer<Model>>     modelContainer_;
