@@ -20,7 +20,7 @@ void RenderingFramework::Initialize(DxManager* _dxManager, WindowManager* _windo
 	pWindowManager_ = _windowManager;
 	pEntityComponentSystem_ = _pEntityComponentSystem;
 
-	resourceCollection_ = std::make_unique<GraphicsResourceCollection>();
+	resourceCollection_ = std::make_unique<AssetCollection>();
 	renderingPipelineCollection_ = std::make_unique<RenderingPipelineCollection>(shaderCompiler_.get(), pDxManager_, pEntityComponentSystem_, resourceCollection_.get());
 
 	renderingPipelineCollection_->Initialize();
@@ -153,7 +153,7 @@ void RenderingFramework::DxCommandExeAndReset() {
 	pDxManager_->GetDxCommand()->CommandReset();
 }
 
-GraphicsResourceCollection* RenderingFramework::GetResourceCollection() const {
+AssetCollection* RenderingFramework::GetResourceCollection() const {
 	return resourceCollection_.get();
 }
 

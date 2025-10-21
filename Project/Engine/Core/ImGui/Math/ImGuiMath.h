@@ -11,7 +11,7 @@
 #include "Engine/Graphics/Buffer/Data/Material.h"
 
 /// 前方宣言
-class GraphicsResourceCollection;
+class AssetCollection;
 
 /// ////////////////////////////////////////////////////////
 /// ImGui用のMath関数群
@@ -35,7 +35,7 @@ namespace ImMathf {
 	bool InputText(const char* _label, std::string* _text, ImGuiInputTextFlags _flags = 0);
 
 	/// マテリアルの編集
-	bool MaterialEdit(const char* _label, GPUMaterial* _material, GraphicsResourceCollection* _resourceCollection);
+	bool MaterialEdit(const char* _label, GPUMaterial* _material, AssetCollection* _resourceCollection);
 
 	/// UV変形の編集
 	bool UVTransformEdit(const char* _label, UVTransform* _uvTransform);

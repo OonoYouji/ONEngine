@@ -18,7 +18,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	ImGuiInspectorWindow(const std::string& _windowName, class EntityComponentSystem* _ecs, class GraphicsResourceCollection* _resourceCollection, class EditorManager* _editorManager);
+	ImGuiInspectorWindow(const std::string& _windowName, class EntityComponentSystem* _ecs, class AssetCollection* _resourceCollection, class EditorManager* _editorManager);
 	~ImGuiInspectorWindow() {}
 
 	/// @brief imgui windowの描画処理
@@ -45,7 +45,7 @@ private:
 	/// ----- other class ----- ///
 	class EntityComponentSystem* pEcs_;
 	class EditorManager* pEditorManager_;
-	class GraphicsResourceCollection* pGrc_;
+	class AssetCollection* pGrc_;
 
 	/// ----- edit target ----- ///
 	GameEntity* selectedEntity_ = nullptr; ///< 選択したエンティティのポインタ

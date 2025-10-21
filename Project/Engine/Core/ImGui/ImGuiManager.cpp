@@ -10,7 +10,7 @@
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Core/Window/WindowManager.h"
 #include "Engine/Core/Config/EngineConfig.h"
-#include "Engine/Asset/Collection/GraphicsResourceCollection.h"
+#include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/Core/Utility/Time/Time.h"
 #include "Engine/Core/Utility/Input/Input.h"
 
@@ -552,7 +552,7 @@ ImGuiManager::~ImGuiManager() {
 
 
 
-void ImGuiManager::Initialize(GraphicsResourceCollection* _grc) {
+void ImGuiManager::Initialize(AssetCollection* _grc) {
 
 	pGrc_ = _grc;
 

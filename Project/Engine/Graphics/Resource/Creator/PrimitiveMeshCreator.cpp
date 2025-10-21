@@ -6,7 +6,7 @@
 /// engine
 #include "Engine/Core/DirectX12/Device/DxDevice.h"
 
-PrimitiveMeshCreator::PrimitiveMeshCreator(GraphicsResourceCollection* _graphicsResourceCollection, DxDevice* _dxDevice)
+PrimitiveMeshCreator::PrimitiveMeshCreator(AssetCollection* _graphicsResourceCollection, DxDevice* _dxDevice)
 	: pGraphicsResourceCollection_(_graphicsResourceCollection), pDxDevice_(_dxDevice) {
 
 	CreatePlane();

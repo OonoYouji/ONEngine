@@ -12,11 +12,11 @@
 
 /// 前方宣言
 class MeshRenderer;
-class GraphicsResourceCollection;
+class AssetCollection;
 
 namespace COMP_DEBUG {
 	/// @brief MeshRendererのデバッグ表示
-	void MeshRendererDebug(MeshRenderer* _mr, GraphicsResourceCollection* _grc);
+	void MeshRendererDebug(MeshRenderer* _mr, AssetCollection* _grc);
 }
 
 void from_json(const nlohmann::json& _j, MeshRenderer& _mr);
@@ -29,7 +29,7 @@ void to_json(nlohmann::json& _j, const MeshRenderer& _mr);
 /// ===================================================
 class MeshRenderer : public IRenderComponent {
 	/// friend methods
-	friend void COMP_DEBUG::MeshRendererDebug(MeshRenderer* _mr, GraphicsResourceCollection* _grc);
+	friend void COMP_DEBUG::MeshRendererDebug(MeshRenderer* _mr, AssetCollection* _grc);
 	friend void from_json(const nlohmann::json& _j, MeshRenderer& _mr);
 	friend void to_json(nlohmann::json& _j, const MeshRenderer& _mr);
 
@@ -42,7 +42,7 @@ public:
 	~MeshRenderer();
 
 	/// @brief 描画のために必要なデータを設定する
-	void SetupRenderData(class GraphicsResourceCollection* _grc);
+	void SetupRenderData(class AssetCollection* _grc);
 
 private:
 	/// ===================================================

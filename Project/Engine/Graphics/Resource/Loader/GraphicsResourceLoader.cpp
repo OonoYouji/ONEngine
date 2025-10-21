@@ -25,7 +25,7 @@
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Core/Utility/Tools/Assert.h"
 #include "Engine/Core/Utility/Tools/Log.h"
-#include "../GraphicsResourceCollection.h"
+#include "Engine/Asset/Collection/AssetCollection.h"
 
 
 /// comment
@@ -34,7 +34,7 @@
 #pragma comment(lib, "mfuuid.lib")
 
 
-GraphicsResourceLoader::GraphicsResourceLoader(DxManager* _dxManager, GraphicsResourceCollection* _collection)
+GraphicsResourceLoader::GraphicsResourceLoader(DxManager* _dxManager, AssetCollection* _collection)
 	: pDxManager_(_dxManager), pGrc_(_collection) {}
 
 GraphicsResourceLoader::~GraphicsResourceLoader() {

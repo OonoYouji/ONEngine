@@ -20,7 +20,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	AudioPlaybackSystem(class GraphicsResourceCollection* _resourceCollection);
+	AudioPlaybackSystem(class AssetCollection* _resourceCollection);
 	~AudioPlaybackSystem();
 
 	void OutsideOfRuntimeUpdate(ECSGroup* _ecs) override;
@@ -48,7 +48,7 @@ private:
 	/// ===================================================
 	
 	/// other classes
-	class GraphicsResourceCollection* pGrc_ = nullptr;
+	class AssetCollection* pGrc_ = nullptr;
 
 	/// xAudio
 	ComPtr<IXAudio2> xAudio2_ = nullptr;

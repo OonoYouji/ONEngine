@@ -16,7 +16,7 @@
 /// ///////////////////////////////////////////////////
 ImGuiWindowCollection::ImGuiWindowCollection(
 	EntityComponentSystem* _pEntityComponentSystem,
-	GraphicsResourceCollection* _resourceCollection,
+	AssetCollection* _resourceCollection,
 	ImGuiManager* _imGuiManager,
 	EditorManager* _editorManager,
 	SceneManager* _sceneManager)

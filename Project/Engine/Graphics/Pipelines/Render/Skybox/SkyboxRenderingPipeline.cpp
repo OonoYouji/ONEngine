@@ -2,13 +2,13 @@
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
-#include "Engine/Asset/Collection/GraphicsResourceCollection.h"
+#include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Components/RendererComponents/Skybox/Skybox.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 
 
-SkyboxRenderingPipeline::SkyboxRenderingPipeline(GraphicsResourceCollection* _resourceCollection)
+SkyboxRenderingPipeline::SkyboxRenderingPipeline(AssetCollection* _resourceCollection)
 	: pGrc_(_resourceCollection) {}
 SkyboxRenderingPipeline::~SkyboxRenderingPipeline() {}
 

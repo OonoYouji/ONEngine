@@ -27,7 +27,7 @@ public:
 	~SceneManager();
 
 	/// @brief このクラスの初期化
-	void Initialize(class GraphicsResourceCollection* _graphicsResourceCollection);
+	void Initialize(class AssetCollection* _graphicsResourceCollection);
 
 	/// @brief シーンの更新
 	void Update();
@@ -61,7 +61,7 @@ private:
 	/// ===================================================
 
 	class EntityComponentSystem* pEcs_ = nullptr;
-	class GraphicsResourceCollection* pGraphicsResourceCollection_ = nullptr;
+	class AssetCollection* pGraphicsResourceCollection_ = nullptr;
 
 	std::string currentScene_;
 	std::string nextScene_;

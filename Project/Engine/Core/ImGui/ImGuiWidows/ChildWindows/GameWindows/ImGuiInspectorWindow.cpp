@@ -46,7 +46,7 @@ enum SelectedType {
 	kResource
 };
 
-ImGuiInspectorWindow::ImGuiInspectorWindow(const std::string& _windowName, EntityComponentSystem* _ecs, GraphicsResourceCollection* _resourceCollection, EditorManager* _editorManager)
+ImGuiInspectorWindow::ImGuiInspectorWindow(const std::string& _windowName, EntityComponentSystem* _ecs, AssetCollection* _resourceCollection, EditorManager* _editorManager)
 	: pEcs_(_ecs), pGrc_(_resourceCollection), pEditorManager_(_editorManager) {
 	windowName_ = _windowName;
 

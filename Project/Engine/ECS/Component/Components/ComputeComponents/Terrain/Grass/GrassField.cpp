@@ -9,7 +9,7 @@
 #include "Engine/Editor/Commands/ImGuiCommand/ImGuiCommand.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Terrain.h"
 #include "Engine/ECS/Entity/GameEntity/GameEntity.h"
-#include "Engine/Asset/Collection/GraphicsResourceCollection.h"
+#include "Engine/Asset/Collection/AssetCollection.h"
 
 /// ////////////////////////////////////////////////////////
 /// Json Serialization
@@ -37,7 +37,7 @@ void from_json(const nlohmann::json& _j, GrassField& _p) {
 /// ImGuiデバッグ関数
 /// ////////////////////////////////////////////////////////
 
-void COMP_DEBUG::GrassFieldDebug(GrassField* _grassField, GraphicsResourceCollection* _grc) {
+void COMP_DEBUG::GrassFieldDebug(GrassField* _grassField, AssetCollection* _grc) {
 
 	/// 草の最大本数
 	ImGui::Text("Max Blade Count : %d", _grassField->GetMaxGrassCount());

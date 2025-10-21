@@ -23,7 +23,7 @@ static const uint32_t MAX_AUDIOCLIP_COUNT = 128; ///< 最大オーディオク�
 /// ///////////////////////////////////////////////////
 /// グラフィクスリソースのコレクション
 /// ///////////////////////////////////////////////////
-class GraphicsResourceCollection final {
+class AssetCollection final {
 public:
 	/// ===================================================
 	/// public : sub class, enum
@@ -43,8 +43,8 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	GraphicsResourceCollection();
-	~GraphicsResourceCollection();
+	AssetCollection();
+	~AssetCollection();
 
 	/// @brief 初期化関数
 	/// @param _dxManager DxManagerのポインタ

@@ -20,7 +20,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	EffectRenderingPipeline(class GraphicsResourceCollection* _resourceCollection);
+	EffectRenderingPipeline(class AssetCollection* _resourceCollection);
 	~EffectRenderingPipeline();
 
 	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxManager) override;
@@ -36,7 +36,7 @@ private:
 	/// private : objects
 	/// ====================================================
 
-	class GraphicsResourceCollection* pGrc_ = nullptr;
+	class AssetCollection* pGrc_ = nullptr;
 
 	const size_t kMaxRenderingMeshCount_ = size_t(std::pow(2, 20));
 	std::unique_ptr<StructuredBuffer<Matrix4x4>> transformBuffer_;

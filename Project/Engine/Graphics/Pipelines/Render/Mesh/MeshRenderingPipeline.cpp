@@ -2,7 +2,7 @@
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
-#include "Engine/Asset/Collection/GraphicsResourceCollection.h"
+#include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Transform/Transform.h"
 #include "Engine/ECS/Component/Components/RendererComponents/Mesh/MeshRenderer.h"
@@ -10,7 +10,7 @@
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 
 
-MeshRenderingPipeline::MeshRenderingPipeline(GraphicsResourceCollection* _resourceCollection)
+MeshRenderingPipeline::MeshRenderingPipeline(AssetCollection* _resourceCollection)
 	: resourceCollection_(_resourceCollection) {}
 
 MeshRenderingPipeline::~MeshRenderingPipeline() {}

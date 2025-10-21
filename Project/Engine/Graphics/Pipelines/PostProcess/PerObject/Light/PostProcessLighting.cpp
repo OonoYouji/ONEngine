@@ -6,7 +6,7 @@
 /// engine
 #include "Engine/Core/Config/EngineConfig.h"
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
-#include "Engine/Asset/Collection/GraphicsResourceCollection.h"
+#include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Light/Light.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
@@ -61,7 +61,7 @@ void PostProcessLighting::Initialize(ShaderCompiler* _shaderCompiler, DxManager*
 
 }
 
-void PostProcessLighting::Execute(const std::string& _textureName, DxCommand* _dxCommand, GraphicsResourceCollection* _resourceCollection, EntityComponentSystem* _pEntityComponentSystem) {
+void PostProcessLighting::Execute(const std::string& _textureName, DxCommand* _dxCommand, AssetCollection* _resourceCollection, EntityComponentSystem* _pEntityComponentSystem) {
 
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 

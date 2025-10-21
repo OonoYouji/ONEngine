@@ -11,7 +11,7 @@
 #include "../ChildWindows/GameWindows/ImGuiInspectorWindow.h"
 #include "../ChildWindows/GameWindows/ImGuiProjectWindow.h"
 
-ImGuiEditorWindow::ImGuiEditorWindow(EntityComponentSystem* _ecs, GraphicsResourceCollection* _grc, EditorManager* _editorManager) {
+ImGuiEditorWindow::ImGuiEditorWindow(EntityComponentSystem* _ecs, AssetCollection* _grc, EditorManager* _editorManager) {
 	imGuiFlags_ |= ImGuiWindowFlags_NoMove;
 	imGuiFlags_ |= ImGuiWindowFlags_NoResize;
 	imGuiFlags_ |= ImGuiWindowFlags_NoTitleBar;

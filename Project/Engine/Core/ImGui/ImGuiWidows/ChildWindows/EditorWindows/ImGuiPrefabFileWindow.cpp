@@ -7,11 +7,11 @@
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/Core/ImGui/Math/ImGuiMath.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
-#include "Engine/Asset/Collection/GraphicsResourceCollection.h"
+#include "Engine/Asset/Collection/AssetCollection.h"
 #include "../GameWindows/ImGuiInspectorWindow.h"
 #include "Engine/Script/MonoScriptEngine.h"
 
-ImGuiPrefabFileWindow::ImGuiPrefabFileWindow(EntityComponentSystem* _ecs, GraphicsResourceCollection* _resourceCollection, ImGuiInspectorWindow* _inspector)
+ImGuiPrefabFileWindow::ImGuiPrefabFileWindow(EntityComponentSystem* _ecs, AssetCollection* _resourceCollection, ImGuiInspectorWindow* _inspector)
 	: pEcs_(_ecs), pGrc_(_resourceCollection), pInspector_(_inspector) {
 
 	files_ = Mathf::FindFiles("Assets/Prefabs", ".prefab");

@@ -31,7 +31,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	ImGuiProjectWindow(class GraphicsResourceCollection* _grc, class EditorManager* _editorManager);
+	ImGuiProjectWindow(class AssetCollection* _grc, class EditorManager* _editorManager);
 	~ImGuiProjectWindow() {}
 
 	/// @brief imgui windowの描画処理
@@ -78,7 +78,7 @@ private:
 	/// private : objects
 	/// ===================================================
 	
-	class GraphicsResourceCollection* pGrc_; ///< グラフィックスリソースコレクションへのポインタ
+	class AssetCollection* pGrc_; ///< グラフィックスリソースコレクションへのポインタ
 	class EditorManager* pEditorManager_; ///< エディターマネージャーへのポインタ
 
 	std::shared_ptr<Folder> assetsRootFolder_;

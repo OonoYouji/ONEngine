@@ -3,7 +3,7 @@
 /// engine
 #include "Engine/Core/Config/EngineConfig.h"
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
-#include "Engine/Asset/Collection/GraphicsResourceCollection.h"
+#include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 
 void PostProcessGrayscalePerObject::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
@@ -30,7 +30,7 @@ void PostProcessGrayscalePerObject::Initialize(ShaderCompiler* _shaderCompiler, 
 
 }
 
-void PostProcessGrayscalePerObject::Execute(const std::string& _textureName, DxCommand* _dxCommand, GraphicsResourceCollection* _resourceCollection, [[maybe_unused]] EntityComponentSystem* _entityComponentSystem) {
+void PostProcessGrayscalePerObject::Execute(const std::string& _textureName, DxCommand* _dxCommand, AssetCollection* _resourceCollection, [[maybe_unused]] EntityComponentSystem* _entityComponentSystem) {
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 
 	auto command = _dxCommand->GetCommandList();

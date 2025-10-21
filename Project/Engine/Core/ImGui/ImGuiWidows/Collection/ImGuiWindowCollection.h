@@ -17,7 +17,7 @@ public:
 
 	ImGuiWindowCollection(
 		class EntityComponentSystem* _ecs,
-		class GraphicsResourceCollection* _grc,
+		class AssetCollection* _grc,
 		class ImGuiManager* _imGuiManager,
 		class EditorManager* _editorManager,
 		class SceneManager* _sceneManager

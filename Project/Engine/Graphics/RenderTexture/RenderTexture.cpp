@@ -3,18 +3,18 @@
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Core/Config/EngineConfig.h"
-#include "Engine/Asset/Collection/GraphicsResourceCollection.h"
+#include "Engine/Asset/Collection/AssetCollection.h"
 
 RenderTexture::RenderTexture() = default;
 RenderTexture::~RenderTexture() = default;
 
-void RenderTexture::Initialize(DXGI_FORMAT _format, const Vector4& _clearColor, const std::string& _name, DxManager* _dxManager, GraphicsResourceCollection* _resourceCollection) {
+void RenderTexture::Initialize(DXGI_FORMAT _format, const Vector4& _clearColor, const std::string& _name, DxManager* _dxManager, AssetCollection* _resourceCollection) {
 	clearColor_ = _clearColor;
 	name_ = _name;
 
 	{	/// textureの作成
 		Texture rtvTexture;
-		_resourceCollection->AddTexture(_name, std::move(rtvTexture)); /// textureの管理を GraphicsResourceCollection に任せる
+		_resourceCollection->AddTexture(_name, std::move(rtvTexture)); /// textureの管理を AssetCollection に任せる
 		texture_ = _resourceCollection->GetTexture(_name);
 	}
 
@@ -115,7 +115,7 @@ const std::string& RenderTexture::GetName() const {
 UAVTexture::UAVTexture() = default;
 UAVTexture::~UAVTexture() = default;
 
-void UAVTexture::Initialize(const std::string& _textureName, DxManager* _dxManager, GraphicsResourceCollection* _resourceCollection) {
+void UAVTexture::Initialize(const std::string& _textureName, DxManager* _dxManager, AssetCollection* _resourceCollection) {
 	Texture uavTexture;
 	_resourceCollection->AddTexture(_textureName, std::move(uavTexture));
 	texture_ = _resourceCollection->GetTexture(_textureName);

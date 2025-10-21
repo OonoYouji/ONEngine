@@ -10,7 +10,7 @@
 #include "Engine/Core/Config/EngineConfig.h"
 #include "Engine/Core/DirectX12/Manager/DxManager.h" 
 #include "Engine/Core/Window/WindowManager.h"
-#include "Engine/Asset/Collection/GraphicsResourceCollection.h"
+#include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/Graphics/RenderTexture/SceneRenderTexture.h"
 #include "Engine/Graphics/Pipelines/Render/CopyImage/CopyImageRenderingPipeline.h"
 
@@ -60,7 +60,7 @@ private:
 
 	std::unique_ptr<ShaderCompiler>              shaderCompiler_;
 	std::unique_ptr<RenderingPipelineCollection> renderingPipelineCollection_;
-	std::unique_ptr<GraphicsResourceCollection>  resourceCollection_;
+	std::unique_ptr<AssetCollection>  resourceCollection_;
 	std::vector<std::unique_ptr<SceneRenderTexture>> renderTextures_;
 	DxManager*                                   pDxManager_        = nullptr;
 	WindowManager*                               pWindowManager_    = nullptr;
@@ -83,7 +83,7 @@ public:
 
 	/// @brief 描画に使用するリソースコレクションの取得
 	/// @return リソースのコレクションを返す
-	GraphicsResourceCollection* GetResourceCollection() const;
+	AssetCollection* GetResourceCollection() const;
 
 
 

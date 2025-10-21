@@ -5,9 +5,9 @@
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Terrain.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
-#include "Engine/Asset/Collection/GraphicsResourceCollection.h"
+#include "Engine/Asset/Collection/AssetCollection.h"
 
-TerrainProceduralRenderingPipeline::TerrainProceduralRenderingPipeline(GraphicsResourceCollection* _resourceCollection)
+TerrainProceduralRenderingPipeline::TerrainProceduralRenderingPipeline(AssetCollection* _resourceCollection)
 	: pGrc_(_resourceCollection) {}
 TerrainProceduralRenderingPipeline::~TerrainProceduralRenderingPipeline() {}
 

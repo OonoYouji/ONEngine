@@ -3,7 +3,7 @@
 /// engine
 #include "Engine/Core/Config/EngineConfig.h"
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
-#include "Engine/Asset/Collection/GraphicsResourceCollection.h"
+#include "Engine/Asset/Collection/AssetCollection.h"
 
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Terrain.h"
@@ -46,7 +46,7 @@ void TerrainVertexEditorCompute::Initialize(ShaderCompiler* _shaderCompiler, DxM
 	}
 }
 
-void TerrainVertexEditorCompute::Execute(class EntityComponentSystem* _ecs, DxCommand* _dxCommand, GraphicsResourceCollection* _resourceCollection) {
+void TerrainVertexEditorCompute::Execute(class EntityComponentSystem* _ecs, DxCommand* _dxCommand, AssetCollection* _resourceCollection) {
 
 	ComponentArray<Terrain>* terrainArray = _ecs->GetCurrentGroup()->GetComponentArray<Terrain>();
 	if (!terrainArray) {

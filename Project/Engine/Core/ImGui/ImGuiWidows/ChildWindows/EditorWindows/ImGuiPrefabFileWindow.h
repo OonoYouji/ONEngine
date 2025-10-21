@@ -13,7 +13,7 @@ public:
 	/// public : methods
 	/// =====================================================
 
-	ImGuiPrefabFileWindow(class EntityComponentSystem* _ecs, class GraphicsResourceCollection* _resourceCollection, class ImGuiInspectorWindow* _inspector);
+	ImGuiPrefabFileWindow(class EntityComponentSystem* _ecs, class AssetCollection* _resourceCollection, class ImGuiInspectorWindow* _inspector);
 	~ImGuiPrefabFileWindow() override = default;
 
 	void ShowImGui() override;
@@ -29,7 +29,7 @@ private:
 
 	class EntityComponentSystem* pEcs_;
 	class ImGuiInspectorWindow* pInspector_;
-	class GraphicsResourceCollection* pGrc_;
+	class AssetCollection* pGrc_;
 
 	std::string searchText_; ///< 検索テキスト
 	std::vector<File> files_;

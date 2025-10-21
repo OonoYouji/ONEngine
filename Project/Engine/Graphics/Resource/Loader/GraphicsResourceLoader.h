@@ -26,7 +26,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	GraphicsResourceLoader(class DxManager* _dxManager, class GraphicsResourceCollection* _collection);
+	GraphicsResourceLoader(class DxManager* _dxManager, class AssetCollection* _collection);
 	~GraphicsResourceLoader();
 
 	void Initialize();
@@ -77,7 +77,7 @@ private:
 	/// ===================================================
 
 	class DxManager*                  pDxManager_;
-	class GraphicsResourceCollection* pGrc_;
+	class AssetCollection* pGrc_;
 
 	unsigned int assimpLoadFlags_; /// assimpで.objを読み込むときに使用するフラグ
 

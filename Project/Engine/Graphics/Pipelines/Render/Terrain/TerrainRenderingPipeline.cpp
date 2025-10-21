@@ -2,12 +2,12 @@
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
-#include "Engine/Asset/Collection/GraphicsResourceCollection.h"
+#include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 
 
-TerrainRenderingPipeline::TerrainRenderingPipeline(GraphicsResourceCollection* _resourceCollection)
+TerrainRenderingPipeline::TerrainRenderingPipeline(AssetCollection* _resourceCollection)
 	: pGrc_(_resourceCollection) {}
 TerrainRenderingPipeline::~TerrainRenderingPipeline() {}
 

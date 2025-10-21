@@ -44,7 +44,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	SpriteRenderingPipeline(class GraphicsResourceCollection* _resourceCollection);
+	SpriteRenderingPipeline(class AssetCollection* _resourceCollection);
 	~SpriteRenderingPipeline();
 
 
@@ -63,7 +63,7 @@ private:
 
 	const size_t                                 kMaxRenderingSpriteCount_ = 1024; ///< 最大描画スプライト数
 
-	class GraphicsResourceCollection*            resourceCollection_       = nullptr;
+	class AssetCollection*            resourceCollection_       = nullptr;
 
 	std::unique_ptr<StructuredBuffer<GPUMaterial>>  materialsBuffer;
 	std::unique_ptr<StructuredBuffer<Matrix4x4>> transformsBuffer_;

@@ -12,7 +12,7 @@ public:
 	/// public : methods
 	/// ===================================================
 	
-	ImGuiSceneWindow(class EntityComponentSystem* _ecs, class GraphicsResourceCollection* _grc, class SceneManager* _sceneManager, class ImGuiInspectorWindow* _inspector);
+	ImGuiSceneWindow(class EntityComponentSystem* _ecs, class AssetCollection* _grc, class SceneManager* _sceneManager, class ImGuiInspectorWindow* _inspector);
 	~ImGuiSceneWindow() {}
 	
 	/// @brief imgui windowの描画処理
@@ -28,7 +28,7 @@ private:
 	/// ===================================================
 
 	class EntityComponentSystem* pEcs_;
-	class GraphicsResourceCollection* pGrc_ = nullptr;
+	class AssetCollection* pGrc_ = nullptr;
 	class SceneManager* pSceneManager_ = nullptr;
 	class ImGuiInspectorWindow* pInspector_ = nullptr;
 

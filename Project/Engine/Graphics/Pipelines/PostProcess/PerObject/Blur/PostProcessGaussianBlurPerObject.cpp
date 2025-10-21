@@ -3,7 +3,7 @@
 /// engine
 #include "Engine/Core/Config/EngineConfig.h"
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
-#include "Engine/Asset/Collection/GraphicsResourceCollection.h"
+#include "Engine/Asset/Collection/AssetCollection.h"
 
 void PostProcessGaussianBlurPerObject::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
 
@@ -29,7 +29,7 @@ void PostProcessGaussianBlurPerObject::Initialize(ShaderCompiler* _shaderCompile
 
 }
 
-void PostProcessGaussianBlurPerObject::Execute(const std::string& _textureName, DxCommand* _dxCommand, GraphicsResourceCollection* _resourceCollection, EntityComponentSystem* _entityComponentSystem) {
+void PostProcessGaussianBlurPerObject::Execute(const std::string& _textureName, DxCommand* _dxCommand, AssetCollection* _resourceCollection, EntityComponentSystem* _entityComponentSystem) {
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 
 	auto command = _dxCommand->GetCommandList();

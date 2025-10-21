@@ -6,7 +6,7 @@
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Terrain.h"
 
-#include "Engine/Asset/Collection/GraphicsResourceCollection.h"
+#include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/Graphics/Resource/ResourceData/Texture.h"
 
 TerrainVertexCreator::TerrainVertexCreator() {}
@@ -49,7 +49,7 @@ void TerrainVertexCreator::Initialize(ShaderCompiler* _shaderCompiler, DxManager
 
 }
 
-void TerrainVertexCreator::Execute(EntityComponentSystem* _ecs, DxCommand* _dxCommand, GraphicsResourceCollection* _resourceCollection) {
+void TerrainVertexCreator::Execute(EntityComponentSystem* _ecs, DxCommand* _dxCommand, AssetCollection* _resourceCollection) {
 	ComponentArray<Terrain>* terrainArray = _ecs->GetCurrentGroup()->GetComponentArray<Terrain>();
 	if (!terrainArray) {
 		Console::LogError("TerrainVertexEditorCompute::Execute: Terrain component array is null");

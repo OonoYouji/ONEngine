@@ -6,11 +6,11 @@
 /// engine
 #include "Engine/Core/ImGui/ImGuiManager.h"
 #include "Engine/Core/Utility/Utility.h"
-#include "Engine/Asset/Collection/GraphicsResourceCollection.h"
+#include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 
-ImGuiPrefabViewWindow::ImGuiPrefabViewWindow(EntityComponentSystem* _ecs, GraphicsResourceCollection* _resourceCollection)
+ImGuiPrefabViewWindow::ImGuiPrefabViewWindow(EntityComponentSystem* _ecs, AssetCollection* _resourceCollection)
 	: pEcs_(_ecs), pGrc_(_resourceCollection) {}
 
 void ImGuiPrefabViewWindow::ShowImGui() {

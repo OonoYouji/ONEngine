@@ -16,7 +16,7 @@ public:
 	/// public : methods
 	/// =====================================================
 
-	ImGuiPrefabInspectorWindow(class EntityComponentSystem* _ecs, class EditorManager* _editorManager, class GraphicsResourceCollection* _grc);
+	ImGuiPrefabInspectorWindow(class EntityComponentSystem* _ecs, class EditorManager* _editorManager, class AssetCollection* _grc);
 	~ImGuiPrefabInspectorWindow() override = default;
 
 	void ShowImGui() override;
@@ -47,7 +47,7 @@ private:
 	/// ----- other class pointer ----- ///
 	class EntityComponentSystem* pEcs_;
 	class EditorManager* pEditorManager_;
-	class GraphicsResourceCollection* pGrc_;
+	class AssetCollection* pGrc_;
 
 
 	std::uintptr_t selectedPointer_; ///< 選択したポインタ

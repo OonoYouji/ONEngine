@@ -8,7 +8,7 @@
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentJsonConverter.h"
 //#include "Engine/Graphics/Pipelines/Collection/RenderingPipelineCollection.h"
-#include "Engine/Asset/Collection/GraphicsResourceCollection.h"
+#include "Engine/Asset/Collection/AssetCollection.h"
 
 MeshRenderer::MeshRenderer() {
 	SetMeshPath("./Packages/Models/primitive/cube.obj");
@@ -20,7 +20,7 @@ MeshRenderer::MeshRenderer() {
 
 MeshRenderer::~MeshRenderer() = default;
 
-void MeshRenderer::SetupRenderData(GraphicsResourceCollection* _grc) {
+void MeshRenderer::SetupRenderData(AssetCollection* _grc) {
 	/// OwnerEntityを cpuMaterial_に設定
 	cpuMaterial_.SetOwnerEntity(GetOwner());
 
@@ -156,7 +156,7 @@ void InternalSetPostEffectFlags(uint64_t _nativeHandle, uint32_t _flags) {
 	}
 }
 
-void COMP_DEBUG::MeshRendererDebug(MeshRenderer* _mr, GraphicsResourceCollection* _grc) {
+void COMP_DEBUG::MeshRendererDebug(MeshRenderer* _mr, AssetCollection* _grc) {
 	if (!_mr) {
 		return;
 	}

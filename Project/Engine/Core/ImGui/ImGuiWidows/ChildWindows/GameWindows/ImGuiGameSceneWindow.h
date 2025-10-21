@@ -11,7 +11,7 @@ public:
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
-	ImGuiGameSceneWindow(class GraphicsResourceCollection* _grc) : pGrc_(_grc) {}
+	ImGuiGameSceneWindow(class AssetCollection* _grc) : pGrc_(_grc) {}
 	~ImGuiGameSceneWindow() {}
 	
 	/// @brief imgui windowの描画処理
@@ -22,7 +22,7 @@ private:
 	/// private : methods
 	/// ===================================================
 
-	class GraphicsResourceCollection* pGrc_ = nullptr;
+	class AssetCollection* pGrc_ = nullptr;
 
 };
 

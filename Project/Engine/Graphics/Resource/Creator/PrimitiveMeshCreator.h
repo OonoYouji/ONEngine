@@ -1,7 +1,7 @@
 #pragma once
 
 /// engine
-#include "Engine/Asset/Collection/GraphicsResourceCollection.h"
+#include "Engine/Asset/Collection/AssetCollection.h"
 
 /// ////////////////////////////////////////////
 /// primitive mesh creator
@@ -12,7 +12,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	PrimitiveMeshCreator(GraphicsResourceCollection* _graphicsResourceCollection, class DxDevice* _dxDevice);
+	PrimitiveMeshCreator(AssetCollection* _graphicsResourceCollection, class DxDevice* _dxDevice);
 	~PrimitiveMeshCreator();
 
 
@@ -21,7 +21,7 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	GraphicsResourceCollection* pGraphicsResourceCollection_ = nullptr;
+	AssetCollection* pGraphicsResourceCollection_ = nullptr;
 	class DxDevice* pDxDevice_ = nullptr;
 
 public:

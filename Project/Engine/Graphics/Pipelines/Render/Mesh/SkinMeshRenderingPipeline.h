@@ -30,7 +30,7 @@ public:
 	/// public : methods
 	/// ====================================================
 
-	SkinMeshRenderingPipeline(class GraphicsResourceCollection* _graphicsResourceCollection);
+	SkinMeshRenderingPipeline(class AssetCollection* _graphicsResourceCollection);
 	~SkinMeshRenderingPipeline() override = default;
 
 	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxManager) override;
@@ -42,7 +42,7 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	class GraphicsResourceCollection* pGraphicsResourceCollection_ = nullptr;
+	class AssetCollection* pGraphicsResourceCollection_ = nullptr;
 
 	std::unique_ptr<ConstantBuffer<Matrix4x4>> transformBuffer_;
 	std::unique_ptr<ConstantBuffer<GPUMaterial>> materialBuffer_;

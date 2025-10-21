@@ -10,7 +10,7 @@
 /// engine
 //#include "Scene/Factory/SceneFactory.h"
 #include "Engine/Core/Config/EngineConfig.h"
-#include "Engine/Asset/Collection/GraphicsResourceCollection.h"
+#include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 #include "Engine/Scene/ISceneFactory.h"
@@ -40,7 +40,7 @@ SceneManager::~SceneManager() {
 }
 
 
-void SceneManager::Initialize(GraphicsResourceCollection* _graphicsResourceCollection) {
+void SceneManager::Initialize(AssetCollection* _graphicsResourceCollection) {
 	gSceneManager = this;
 
 	pGraphicsResourceCollection_ = _graphicsResourceCollection;

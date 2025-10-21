@@ -3,7 +3,7 @@
 /// engine
 #include "Engine/Core/Config/EngineConfig.h"
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
-#include "Engine/Asset/Collection/GraphicsResourceCollection.h"
+#include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Components/RendererComponents/ScreenPostEffectTag/ScreenPostEffectTag.h"
 
@@ -28,7 +28,7 @@ void PostProcessGrayscale::Initialize(ShaderCompiler* _shaderCompiler, DxManager
 
 }
 
-void PostProcessGrayscale::Execute(const std::string& _textureName, DxCommand* _dxCommand, GraphicsResourceCollection* _resourceCollection, [[maybe_unused]] EntityComponentSystem* _entityComponentSystem) {
+void PostProcessGrayscale::Execute(const std::string& _textureName, DxCommand* _dxCommand, AssetCollection* _resourceCollection, [[maybe_unused]] EntityComponentSystem* _entityComponentSystem) {
 
 	/// 
 	ScreenPostEffectTag* tag = nullptr;

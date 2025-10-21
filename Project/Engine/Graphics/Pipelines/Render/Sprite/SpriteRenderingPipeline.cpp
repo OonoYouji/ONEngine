@@ -2,17 +2,17 @@
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
-#include "Engine/Asset/Collection/GraphicsResourceCollection.h"
+#include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Script/Script.h"
 #include "Engine/ECS/Component/Components/RendererComponents/Sprite/SpriteRenderer.h"
-#include "Engine/Asset/Collection/GraphicsResourceCollection.h"
+#include "Engine/Asset/Collection/AssetCollection.h"
 
 
 
 
-SpriteRenderingPipeline::SpriteRenderingPipeline(GraphicsResourceCollection* _resourceCollection)
+SpriteRenderingPipeline::SpriteRenderingPipeline(AssetCollection* _resourceCollection)
 	: resourceCollection_(_resourceCollection) {}
 SpriteRenderingPipeline::~SpriteRenderingPipeline() {}
 

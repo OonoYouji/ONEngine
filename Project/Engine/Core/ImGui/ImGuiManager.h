@@ -29,8 +29,8 @@ public:
 	~ImGuiManager();
 
 	/// @brief 初期化
-	/// @param _grc GraphicsResourceCollection 
-	void Initialize(class GraphicsResourceCollection* _grc);
+	/// @param _grc AssetCollection 
+	void Initialize(class AssetCollection* _grc);
 
 	/// @brief 更新
 	void Update();
@@ -66,7 +66,7 @@ private:
 	/// ----- other class ----- ///
 	class DxManager* dxManager_;
 	class WindowManager* pWindowManager_;
-	class GraphicsResourceCollection* pGrc_;
+	class AssetCollection* pGrc_;
 	class EntityComponentSystem* pEntityComponentSystem_;
 	class EditorManager* pEditorManager_;
 	class SceneManager* pSceneManager_;

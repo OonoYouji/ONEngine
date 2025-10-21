@@ -47,7 +47,7 @@ public:
 	void Execute(
 		const std::string& _textureName,
 		class DxCommand* _dxCommand, 
-		class GraphicsResourceCollection* _resourceCollection,
+		class AssetCollection* _resourceCollection,
 		class EntityComponentSystem* _pEntityComponentSystem
 	) override;
 

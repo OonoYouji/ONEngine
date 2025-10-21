@@ -40,7 +40,7 @@ enum SelectedType {
 	kResource
 };
 
-ImGuiPrefabInspectorWindow::ImGuiPrefabInspectorWindow(EntityComponentSystem* _ecs, EditorManager* _editorManager, GraphicsResourceCollection* _grc)
+ImGuiPrefabInspectorWindow::ImGuiPrefabInspectorWindow(EntityComponentSystem* _ecs, EditorManager* _editorManager, AssetCollection* _grc)
 	: pEcs_(_ecs), pEditorManager_(_editorManager), pGrc_(_grc) {
 
 

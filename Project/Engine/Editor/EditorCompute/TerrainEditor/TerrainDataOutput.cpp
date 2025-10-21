@@ -43,7 +43,7 @@ void TerrainDataOutput::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _
 
 }
 
-void TerrainDataOutput::Execute(EntityComponentSystem* _ecs, DxCommand* _dxCommand, GraphicsResourceCollection* _resourceCollection) {
+void TerrainDataOutput::Execute(EntityComponentSystem* _ecs, DxCommand* _dxCommand, AssetCollection* _resourceCollection) {
 	/// 出力をするときしか処理しない
 	if (!(Input::PressKey(DIK_LCONTROL) && Input::TriggerKey(DIK_O))) {
 		return;

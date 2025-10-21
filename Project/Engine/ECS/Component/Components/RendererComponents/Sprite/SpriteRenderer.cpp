@@ -7,14 +7,14 @@
 #include "Engine/Core/Utility/Tools/Log.h"
 #include "Engine/Core/ImGui/Math/ImGuiMath.h"
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentJsonConverter.h"
-#include "Engine/Asset/Collection/GraphicsResourceCollection.h"
+#include "Engine/Asset/Collection/AssetCollection.h"
 
 
 /// /////////////////////////////////////////////////////////////
 /// デバッグ用のSpriteRenderer
 /// /////////////////////////////////////////////////////////////
 
-void COMP_DEBUG::SpriteDebug(SpriteRenderer* _sr, GraphicsResourceCollection* _resourceCollection) {
+void COMP_DEBUG::SpriteDebug(SpriteRenderer* _sr, AssetCollection* _resourceCollection) {
 	if (!_sr) {
 		return;
 	}

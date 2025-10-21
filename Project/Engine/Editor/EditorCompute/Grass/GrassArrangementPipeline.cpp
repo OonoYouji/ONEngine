@@ -5,7 +5,7 @@
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Array/ComponentArray.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Grass/GrassField.h"
-#include "Engine/Asset/Collection/GraphicsResourceCollection.h"
+#include "Engine/Asset/Collection/AssetCollection.h"
 
 GrassArrangementPipeline::GrassArrangementPipeline() = default;
 GrassArrangementPipeline::~GrassArrangementPipeline() = default;
@@ -42,7 +42,7 @@ void GrassArrangementPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMan
 
 }
 
-void GrassArrangementPipeline::Execute(EntityComponentSystem* _ecs, DxCommand* _dxCommand, GraphicsResourceCollection* _grc) {
+void GrassArrangementPipeline::Execute(EntityComponentSystem* _ecs, DxCommand* _dxCommand, AssetCollection* _grc) {
 
 	/// ==================================================
 	/// 早期リターン条件のチェック

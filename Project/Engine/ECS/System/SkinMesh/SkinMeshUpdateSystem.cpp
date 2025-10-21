@@ -3,9 +3,9 @@
 /// engine
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Array/ComponentArray.h"
-#include "Engine/Asset/Collection/GraphicsResourceCollection.h"
+#include "Engine/Asset/Collection/AssetCollection.h"
 
-SkinMeshUpdateSystem::SkinMeshUpdateSystem(DxManager* _dxManager, GraphicsResourceCollection* _resourceCollection)
+SkinMeshUpdateSystem::SkinMeshUpdateSystem(DxManager* _dxManager, AssetCollection* _resourceCollection)
 	: pDxManager_(_dxManager), pGrc_(_resourceCollection) {}
 
 void SkinMeshUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {

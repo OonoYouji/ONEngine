@@ -10,7 +10,7 @@
 
 /// engine
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
-#include "Engine/Asset/Collection/GraphicsResourceCollection.h"
+#include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Light/Light.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Audio/AudioSource.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Effect/Effect.h"
@@ -72,7 +72,7 @@ bool ImMathf::InputText(const char* _label, std::string* _text, ImGuiInputTextFl
 	);
 }
 
-bool ImMathf::MaterialEdit(const char* _label, GPUMaterial* _material, GraphicsResourceCollection* _resourceCollection) {
+bool ImMathf::MaterialEdit(const char* _label, GPUMaterial* _material, AssetCollection* _resourceCollection) {
 	/// nullptr check
 	if (!_material) {
 		return false;

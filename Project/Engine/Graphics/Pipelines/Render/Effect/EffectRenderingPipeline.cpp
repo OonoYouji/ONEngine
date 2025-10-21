@@ -5,13 +5,13 @@
 
 /// engine
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
-#include "Engine/Asset/Collection/GraphicsResourceCollection.h"
+#include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Effect/Effect.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 
 
-EffectRenderingPipeline::EffectRenderingPipeline(GraphicsResourceCollection* _resourceCollection)
+EffectRenderingPipeline::EffectRenderingPipeline(AssetCollection* _resourceCollection)
 	: pGrc_(_resourceCollection) {}
 EffectRenderingPipeline::~EffectRenderingPipeline() {}
 

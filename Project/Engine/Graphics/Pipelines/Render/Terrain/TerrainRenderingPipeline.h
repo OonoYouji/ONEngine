@@ -36,7 +36,7 @@ public:
 	/// public : methods
 	/// ====================================
 
-	TerrainRenderingPipeline(class GraphicsResourceCollection* _resourceCollection);
+	TerrainRenderingPipeline(class AssetCollection* _resourceCollection);
 	~TerrainRenderingPipeline();
 
 	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxManager) override;
@@ -47,7 +47,7 @@ private:
 	/// private : objects
 	/// ====================================
 
-	class GraphicsResourceCollection* pGrc_;
+	class AssetCollection* pGrc_;
 	Terrain* pTerrain_;
 
 	ConstantBuffer<Matrix4x4> transformBuffer_;

@@ -20,7 +20,7 @@ public:
 	virtual ~IEditorCompute() = default;
 
 	virtual void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxManager) = 0;
-	virtual void Execute(class EntityComponentSystem* _ecs, class DxCommand* _dxCommand, class GraphicsResourceCollection* _resourceCollection) = 0;
+	virtual void Execute(class EntityComponentSystem* _ecs, class DxCommand* _dxCommand, class AssetCollection* _resourceCollection) = 0;
 
 
 protected:

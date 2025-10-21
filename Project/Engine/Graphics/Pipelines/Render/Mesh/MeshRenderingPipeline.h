@@ -39,7 +39,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	MeshRenderingPipeline(class GraphicsResourceCollection* _resourceCollection);
+	MeshRenderingPipeline(class AssetCollection* _resourceCollection);
 	~MeshRenderingPipeline();
 
 	/// @brief 初期化関数
@@ -68,7 +68,7 @@ private:
 
 	const size_t                                 kMaxRenderingMeshCount_ = 1024; ///< 最大描画メッシュ数
 
-	class GraphicsResourceCollection*            resourceCollection_;
+	class AssetCollection*            resourceCollection_;
 	std::unique_ptr<StructuredBuffer<Matrix4x4>> transformBuffer_;
 	std::unique_ptr<StructuredBuffer<GPUMaterial>>  materialBuffer;
 	std::unique_ptr<StructuredBuffer<uint32_t>>  textureIdBuffer_;

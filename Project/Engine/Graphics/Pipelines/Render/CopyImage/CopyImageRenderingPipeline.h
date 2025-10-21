@@ -12,7 +12,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	CopyImageRenderingPipeline(class GraphicsResourceCollection* _graphicsResourceCollection);
+	CopyImageRenderingPipeline(class AssetCollection* _graphicsResourceCollection);
 	~CopyImageRenderingPipeline() = default;
 
 	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxManager) override;
@@ -23,6 +23,6 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	class GraphicsResourceCollection* pGrc_ = nullptr;
+	class AssetCollection* pGrc_ = nullptr;
 };
 

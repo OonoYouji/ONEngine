@@ -19,7 +19,7 @@
 #include "../System/Transform/TransformUpdateSystem.h"
 #include "../System/GrassBufferCreateSystem/GrassBufferCreateSystem.h"
 
-void GameECSGroupAddSystemFunction(ECSGroup* _ecs, DxManager* _dxManager, GraphicsResourceCollection* _resourceCollection) {
+void GameECSGroupAddSystemFunction(ECSGroup* _ecs, DxManager* _dxManager, AssetCollection* _resourceCollection) {
 
 	/// 初期化に使うsystem
 	_ecs->AddSystem<TerrainColliderVertexGenerator>(_dxManager);
@@ -43,7 +43,7 @@ void GameECSGroupAddSystemFunction(ECSGroup* _ecs, DxManager* _dxManager, Graphi
 	_ecs->AddSystem<ColliderRenderQueueSystem>();
 }
 
-void DebugECSGroupAddSystemFunction(ECSGroup* _ecs, DxManager* _dxManager, GraphicsResourceCollection* _resourceCollection) {
+void DebugECSGroupAddSystemFunction(ECSGroup* _ecs, DxManager* _dxManager, AssetCollection* _resourceCollection) {
 
 	/// 初期化に使うsystem
 	_ecs->AddSystem<TerrainColliderVertexGenerator>(_dxManager);

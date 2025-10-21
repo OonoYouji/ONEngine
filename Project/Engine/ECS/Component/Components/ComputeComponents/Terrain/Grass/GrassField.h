@@ -28,7 +28,7 @@ struct GrassInstance {
 
 /// 下の関数で使うための前方宣言
 class GrassField;
-class GraphicsResourceCollection;
+class AssetCollection;
 
 /// ////////////////////////////////////////////////////////
 /// json変換
@@ -41,7 +41,7 @@ void from_json(const nlohmann::json& _j, GrassField& _p);
 /// Editor
 /// ////////////////////////////////////////////////////////
 namespace COMP_DEBUG {
-	void GrassFieldDebug(GrassField* _grassField, GraphicsResourceCollection* _grc);
+	void GrassFieldDebug(GrassField* _grassField, AssetCollection* _grc);
 }
 
 
@@ -55,7 +55,7 @@ class GrassField : public IComponent {
 	/// privateメンバ変数の参照のためにフレンド宣言
 	friend void to_json(nlohmann::json& _j, const GrassField& _p);
 	friend void from_json(const nlohmann::json& _j, GrassField& _p);
-	friend void COMP_DEBUG::GrassFieldDebug(GrassField* _grassField, GraphicsResourceCollection* _grc);
+	friend void COMP_DEBUG::GrassFieldDebug(GrassField* _grassField, AssetCollection* _grc);
 public:
 	/// ===================================================
 	/// public : methods

@@ -3,7 +3,7 @@
 /// engine
 #include "Engine/Core/Config/EngineConfig.h"
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
-#include "Engine/Asset/Collection/GraphicsResourceCollection.h"
+#include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Components/RendererComponents/ScreenPostEffectTag/ScreenPostEffectTag.h"
 
@@ -31,7 +31,7 @@ void PostProcessRadialBlur::Initialize(ShaderCompiler* _shaderCompiler, DxManage
 
 }
 
-void PostProcessRadialBlur::Execute(const std::string& _textureName, DxCommand* _dxCommand, GraphicsResourceCollection* _resourceCollection, EntityComponentSystem* _entityComponentSystem) {
+void PostProcessRadialBlur::Execute(const std::string& _textureName, DxCommand* _dxCommand, AssetCollection* _resourceCollection, EntityComponentSystem* _entityComponentSystem) {
 
 	ScreenPostEffectTag* tag = nullptr;
 	for (auto& entity : _entityComponentSystem->GetCurrentGroup()->GetEntities()) {

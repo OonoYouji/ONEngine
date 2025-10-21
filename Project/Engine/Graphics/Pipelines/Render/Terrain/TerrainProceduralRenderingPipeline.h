@@ -43,7 +43,7 @@ public:
 	/// public : methods
 	/// =====================================
 
-	TerrainProceduralRenderingPipeline(class GraphicsResourceCollection* _resourceCollection);
+	TerrainProceduralRenderingPipeline(class AssetCollection* _resourceCollection);
 	~TerrainProceduralRenderingPipeline();
 
 	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxManager) override;
@@ -55,7 +55,7 @@ private:
 	/// private : objects
 	/// =====================================
 
-	class GraphicsResourceCollection* pGrc_;
+	class AssetCollection* pGrc_;
 	class DxManager* pDxManager_;
 
 	std::unique_ptr<ComputePipeline> computePipeline_;

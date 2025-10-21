@@ -1,4 +1,4 @@
-#include "GraphicsResourceCollection.h"
+#include "AssetCollection.h"
 
 /// std
 #include <filesystem>
@@ -9,11 +9,11 @@
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/Core/Utility/Math/Mathf.h"
 
-GraphicsResourceCollection::GraphicsResourceCollection() {}
-GraphicsResourceCollection::~GraphicsResourceCollection() {}
+AssetCollection::AssetCollection() {}
+AssetCollection::~AssetCollection() {}
 
 
-void GraphicsResourceCollection::Initialize(DxManager* _dxManager) {
+void AssetCollection::Initialize(DxManager* _dxManager) {
 	resourceLoader_ = std::make_unique<GraphicsResourceLoader>(_dxManager, this);
 	resourceLoader_->Initialize();
 
@@ -31,7 +31,7 @@ void GraphicsResourceCollection::Initialize(DxManager* _dxManager) {
 	PrimitiveMeshCreator primitiveMeshCreator(this, _dxManager->GetDxDevice());
 }
 
-void GraphicsResourceCollection::LoadResources(const std::vector<std::string>& _filePaths) {
+void AssetCollection::LoadResources(const std::vector<std::string>& _filePaths) {
 
 	std::string extension;
 	for (auto& path : _filePaths) {
@@ -47,7 +47,7 @@ void GraphicsResourceCollection::LoadResources(const std::vector<std::string>& _
 
 }
 
-void GraphicsResourceCollection::UnloadResources(const std::vector<std::string>& _filePaths) {
+void AssetCollection::UnloadResources(const std::vector<std::string>& _filePaths) {
 
 	std::string extension;
 	for (auto& path : _filePaths) {
@@ -60,11 +60,11 @@ void GraphicsResourceCollection::UnloadResources(const std::vector<std::string>&
 		}
 
 		switch (type) {
-		case GraphicsResourceCollection::Type::none:
+		case AssetCollection::Type::none:
 			continue; ///< noneの場合は何もしない
-		case GraphicsResourceCollection::Type::texture:
+		case AssetCollection::Type::texture:
 			break;
-		case GraphicsResourceCollection::Type::model:
+		case AssetCollection::Type::model:
 			/// meshの解放
 			modelContainer_->Remove(path);
 			break;
@@ -74,7 +74,7 @@ void GraphicsResourceCollection::UnloadResources(const std::vector<std::string>&
 
 }
 
-void GraphicsResourceCollection::Load(const std::string& _filepath, Type _type) {
+void AssetCollection::Load(const std::string& _filepath, Type _type) {
 	///< noneの場合は読み込まない
 	if (_type == Type::none) {
 		return;
@@ -97,7 +97,7 @@ void GraphicsResourceCollection::Load(const std::string& _filepath, Type _type) 
 
 }
 
-void GraphicsResourceCollection::HotReload(const std::string& _filepath) {
+void AssetCollection::HotReload(const std::string& _filepath) {
 	/// ファイルの拡張子を取得
 	const std::string extension = Mathf::FileNameWithoutExtension(_filepath);
 	Type type = Type::none;
@@ -111,18 +111,18 @@ void GraphicsResourceCollection::HotReload(const std::string& _filepath) {
 
 
 	switch (type) {
-	case GraphicsResourceCollection::Type::texture:
+	case AssetCollection::Type::texture:
 		/// テクスチャの再読み込み
 		resourceLoader_->LoadTexture(_filepath);
 		break;
-	case GraphicsResourceCollection::Type::model:
+	case AssetCollection::Type::model:
 		/// モデルの再読み込み
 		resourceLoader_->LoadModelObj(_filepath);
 		break;
 	}
 }
 
-void GraphicsResourceCollection::HotReloadAll() {
+void AssetCollection::HotReloadAll() {
 	for (const auto& model : modelContainer_->GetIndexMap()) {
 		resourceLoader_->LoadModelObj(model.first);
 	}
@@ -132,20 +132,20 @@ void GraphicsResourceCollection::HotReloadAll() {
 	}
 }
 
-void GraphicsResourceCollection::AddModel(const std::string& _filepath, Model&& _model) {
+void AssetCollection::AddModel(const std::string& _filepath, Model&& _model) {
 	modelContainer_->Add(_filepath, _model);
 }
 
-void GraphicsResourceCollection::AddTexture(const std::string& _filepath, Texture&& _texture) {
+void AssetCollection::AddTexture(const std::string& _filepath, Texture&& _texture) {
 	_texture.SetName(_filepath);
 	textureContainer_->Add(_filepath, _texture);
 }
 
-void GraphicsResourceCollection::AddAudioClip(const std::string& _filepath, AudioClip&& _audioClip) {
+void AssetCollection::AddAudioClip(const std::string& _filepath, AudioClip&& _audioClip) {
 	audioClipContainer_->Add(_filepath, std::move(_audioClip));
 }
 
-std::vector<std::string> GraphicsResourceCollection::GetResourceFilePaths(const std::string& _directoryPath) const {
+std::vector<std::string> AssetCollection::GetResourceFilePaths(const std::string& _directoryPath) const {
 	std::vector<std::string> resourcePaths;
 
 	for (const auto& entry : std::filesystem::recursive_directory_iterator(_directoryPath)) {
@@ -165,7 +165,7 @@ std::vector<std::string> GraphicsResourceCollection::GetResourceFilePaths(const 
 	return resourcePaths;
 }
 
-void GraphicsResourceCollection::RegisterResourceType() {
+void AssetCollection::RegisterResourceType() {
 	/// リソースの種類を登録
 	resourceTypes_[".png"] = Type::texture;
 	resourceTypes_[".jpg"] = Type::texture;
@@ -176,42 +176,42 @@ void GraphicsResourceCollection::RegisterResourceType() {
 	resourceTypes_[".mp3"] = Type::audio;
 }
 
-const Model* GraphicsResourceCollection::GetModel(const std::string& _filepath) const {
+const Model* AssetCollection::GetModel(const std::string& _filepath) const {
 	return modelContainer_->Get(_filepath);
 }
 
-Model* GraphicsResourceCollection::GetModel(const std::string& _filepath) {
+Model* AssetCollection::GetModel(const std::string& _filepath) {
 	return modelContainer_->Get(_filepath);
 }
 
-const Texture* GraphicsResourceCollection::GetTexture(const std::string& _filepath) const {
+const Texture* AssetCollection::GetTexture(const std::string& _filepath) const {
 	return textureContainer_->Get(_filepath);
 }
 
-Texture* GraphicsResourceCollection::GetTexture(const std::string& _filepath) {
+Texture* AssetCollection::GetTexture(const std::string& _filepath) {
 	return textureContainer_->Get(_filepath);
 }
 
-size_t GraphicsResourceCollection::GetTextureIndex(const std::string& _filepath) const {
+size_t AssetCollection::GetTextureIndex(const std::string& _filepath) const {
 	return textureContainer_->GetIndex(_filepath);
 }
 
-const std::string& GraphicsResourceCollection::GetTexturePath(size_t _index) const {
+const std::string& AssetCollection::GetTexturePath(size_t _index) const {
 	return textureContainer_->GetKey(static_cast<int32_t>(_index));
 }
 
-const std::vector<Texture>& GraphicsResourceCollection::GetTextures() const {
+const std::vector<Texture>& AssetCollection::GetTextures() const {
 	return textureContainer_->GetValues();
 }
 
-int32_t GraphicsResourceCollection::GetTextureIndexFromGuid(const Guid& _guid) const {
+int32_t AssetCollection::GetTextureIndexFromGuid(const Guid& _guid) const {
 	return textureContainer_->GetIndex(_guid);
 }
 
-const AudioClip* GraphicsResourceCollection::GetAudioClip(const std::string& _filepath) const {
+const AudioClip* AssetCollection::GetAudioClip(const std::string& _filepath) const {
 	return audioClipContainer_->Get(_filepath);
 }
 
-AudioClip* GraphicsResourceCollection::GetAudioClip(const std::string& _filepath) {
+AudioClip* AssetCollection::GetAudioClip(const std::string& _filepath) {
 	return audioClipContainer_->Get(_filepath);
 }

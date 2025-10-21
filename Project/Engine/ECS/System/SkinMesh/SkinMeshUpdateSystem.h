@@ -10,7 +10,7 @@
 class SkinMeshUpdateSystem : public ECSISystem {
 public:
 
-	SkinMeshUpdateSystem(class DxManager* _dxManager, class GraphicsResourceCollection* _resourceCollection);
+	SkinMeshUpdateSystem(class DxManager* _dxManager, class AssetCollection* _resourceCollection);
 	~SkinMeshUpdateSystem() override = default;
 
 	void RuntimeUpdate(class ECSGroup* _ecs) override;
@@ -23,7 +23,7 @@ private:
 	/// private : objects
 	/// =========================================
 
-	class GraphicsResourceCollection* pGrc_; ///< グラフィックスリソースコレクション
+	class AssetCollection* pGrc_; ///< グラフィックスリソースコレクション
 	class DxManager* pDxManager_; ///< DirectXマネージャー
 
 };

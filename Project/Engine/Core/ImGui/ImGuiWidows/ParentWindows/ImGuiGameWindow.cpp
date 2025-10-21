@@ -14,7 +14,7 @@
 #include "../ChildWindows/GameWindows/ImGuiConsoleWindow.h"
 
 ImGuiGameWindow::ImGuiGameWindow(
-	EntityComponentSystem* _ecs, GraphicsResourceCollection* _grc,
+	EntityComponentSystem* _ecs, AssetCollection* _grc,
 	EditorManager* _editorManager, SceneManager* _sceneManager) {
 
 	/// windowの設定

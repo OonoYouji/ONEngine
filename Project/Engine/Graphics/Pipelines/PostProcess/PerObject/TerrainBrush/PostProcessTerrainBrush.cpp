@@ -3,7 +3,7 @@
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Core/Utility/Input/Input.h"
-#include "Engine/Asset/Collection/GraphicsResourceCollection.h"
+#include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Terrain.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 
@@ -49,7 +49,7 @@ void PostProcessTerrainBrush::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 
 void PostProcessTerrainBrush::Execute(
 	const std::string& _textureName, DxCommand* _dxCommand,
-	GraphicsResourceCollection* _resourceCollection, EntityComponentSystem* _entityComponentSystem) {
+	AssetCollection* _resourceCollection, EntityComponentSystem* _entityComponentSystem) {
 
 	/// brush data
 	const Vector2 mousePos = Input::GetImGuiImageMousePosNormalized("Scene");

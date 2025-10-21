@@ -30,7 +30,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	GrassRenderingPipeline(class GraphicsResourceCollection* _grc);
+	GrassRenderingPipeline(class AssetCollection* _grc);
 	~GrassRenderingPipeline();
 
 	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxManager) override;
@@ -43,6 +43,6 @@ private:
 	/// ===================================================
 
 	class DxManager* pDxManager_ = nullptr;
-	class GraphicsResourceCollection* pGrc_ = nullptr;
+	class AssetCollection* pGrc_ = nullptr;
 };
 

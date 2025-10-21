@@ -16,12 +16,12 @@ class RiverRenderingPipeline : public IRenderingPipeline {
 
 public:
 
-	RiverRenderingPipeline(class GraphicsResourceCollection* _grc);
+	RiverRenderingPipeline(class AssetCollection* _grc);
 	~RiverRenderingPipeline() override;
 
 	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxManager) override;
 	void Draw(class ECSGroup* _ecs, const std::vector<GameEntity*>& _entities, class CameraComponent* _camera, DxCommand* _dxCommand) override;
 
 private:
-	GraphicsResourceCollection* pGRC_ = nullptr;
+	AssetCollection* pGRC_ = nullptr;
 };

@@ -7,10 +7,10 @@
 #include "Engine/ECS/Component/Array/ComponentArray.h"
 #include "Engine/ECS/Component/Components/RendererComponents/SkinMesh/SkinMeshRenderer.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
-#include "Engine/Asset/Collection/GraphicsResourceCollection.h"
+#include "Engine/Asset/Collection/AssetCollection.h"
 
 
-SkinMeshRenderingPipeline::SkinMeshRenderingPipeline(GraphicsResourceCollection* _graphicsResourceCollection)
+SkinMeshRenderingPipeline::SkinMeshRenderingPipeline(AssetCollection* _graphicsResourceCollection)
 	: pGraphicsResourceCollection_(_graphicsResourceCollection) {}
 
 void SkinMeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {

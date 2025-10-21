@@ -2,11 +2,11 @@
 
 /// engine
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
-#include "Engine/Asset/Collection/GraphicsResourceCollection.h"
+#include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 
 
-CopyImageRenderingPipeline::CopyImageRenderingPipeline(GraphicsResourceCollection* _graphicsResourceCollection)
+CopyImageRenderingPipeline::CopyImageRenderingPipeline(AssetCollection* _graphicsResourceCollection)
 	: pGrc_(_graphicsResourceCollection) {}
 
 void CopyImageRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {

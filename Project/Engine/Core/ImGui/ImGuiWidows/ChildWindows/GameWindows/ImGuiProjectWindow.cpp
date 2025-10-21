@@ -10,9 +10,9 @@
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/Editor/EditorManager.h"
 #include "Engine/Editor/Commands/WorldEditorCommands/WorldEditorCommands.h"
-#include "Engine/Asset/Collection/GraphicsResourceCollection.h"
+#include "Engine/Asset/Collection/AssetCollection.h"
 
-ImGuiProjectWindow::ImGuiProjectWindow(GraphicsResourceCollection* _grc, EditorManager* _editorManager)
+ImGuiProjectWindow::ImGuiProjectWindow(AssetCollection* _grc, EditorManager* _editorManager)
 	: pGrc_(_grc), pEditorManager_(_editorManager) {
 
 	// reloadといいつつも普通に読み込み
