@@ -31,7 +31,7 @@ void AssetCollection::LoadResources(const std::vector<std::string>& _filePaths) 
 
 	std::string extension;
 	for (auto& path : _filePaths) {
-		Type type = Type::none;
+		AssetType type = AssetType::None;
 
 		/// 拡張子をチェックして、リソースの種類を決定
 		extension = Mathf::FileExtension(path);
@@ -47,7 +47,7 @@ void AssetCollection::UnloadResources(const std::vector<std::string>& _filePaths
 
 	std::string extension;
 	for (auto& path : _filePaths) {
-		Type type = Type::none;
+		AssetType type = AssetType::None;
 
 		/// 拡張子をチェックして、リソースの種類を決定
 		extension = Mathf::FileExtension(path);
@@ -56,11 +56,11 @@ void AssetCollection::UnloadResources(const std::vector<std::string>& _filePaths
 		}
 
 		switch (type) {
-		case AssetCollection::Type::none:
+		case AssetType::None:
 			continue; ///< noneの場合は何もしない
-		case AssetCollection::Type::texture:
+		case AssetType::Texture:
 			break;
-		case AssetCollection::Type::model:
+		case AssetType::Mesh:
 			/// meshの解放
 			modelContainer_->Remove(path);
 			break;
@@ -70,23 +70,23 @@ void AssetCollection::UnloadResources(const std::vector<std::string>& _filePaths
 
 }
 
-void AssetCollection::Load(const std::string& _filepath, Type _type) {
+void AssetCollection::Load(const std::string& _filepath, AssetType _type) {
 	///< noneの場合は読み込まない
-	if (_type == Type::none) {
+	if (_type == AssetType::None) {
 		return;
 	}
 
 	switch (_type) {
-	case Type::texture:
+	case AssetType::Texture:
 		/// 読み込み済みかチェックし、読み込んでいない場合のみ読み込む
 		if (GetTexture(_filepath) == nullptr) {
 			resourceLoader_->LoadTexture(_filepath);
 		}
 		break;
-	case Type::model:
+	case AssetType::Mesh:
 		resourceLoader_->LoadModelObj(_filepath);
 		break;
-	case Type::audio:
+	case AssetType::Audio:
 		resourceLoader_->LoadAudioClip(_filepath);
 		break;
 	}
@@ -96,7 +96,7 @@ void AssetCollection::Load(const std::string& _filepath, Type _type) {
 void AssetCollection::HotReload(const std::string& _filepath) {
 	/// ファイルの拡張子を取得
 	const std::string extension = Mathf::FileNameWithoutExtension(_filepath);
-	Type type = Type::none;
+	AssetType type = AssetType::None;
 	/// 拡張子をチェックして、リソースの種類を決定
 	if (resourceTypes_.contains(extension)) {
 		type = resourceTypes_[extension];
@@ -107,11 +107,11 @@ void AssetCollection::HotReload(const std::string& _filepath) {
 
 
 	switch (type) {
-	case AssetCollection::Type::texture:
+	case AssetType::Texture:
 		/// テクスチャの再読み込み
 		resourceLoader_->LoadTexture(_filepath);
 		break;
-	case AssetCollection::Type::model:
+	case AssetType::Mesh:
 		/// モデルの再読み込み
 		resourceLoader_->LoadModelObj(_filepath);
 		break;
@@ -163,13 +163,13 @@ std::vector<std::string> AssetCollection::GetResourceFilePaths(const std::string
 
 void AssetCollection::RegisterResourceType() {
 	/// リソースの種類を登録
-	resourceTypes_[".png"] = Type::texture;
-	resourceTypes_[".jpg"] = Type::texture;
-	resourceTypes_[".dds"] = Type::texture;
-	resourceTypes_[".obj"] = Type::model;
-	resourceTypes_[".gltf"] = Type::model;
-	resourceTypes_[".wav"] = Type::audio;
-	resourceTypes_[".mp3"] = Type::audio;
+	resourceTypes_[".png"] = AssetType::Texture;
+	resourceTypes_[".jpg"] = AssetType::Texture;
+	resourceTypes_[".dds"] = AssetType::Texture;
+	resourceTypes_[".obj"] = AssetType::Mesh;
+	resourceTypes_[".gltf"] = AssetType::Mesh;
+	resourceTypes_[".wav"] = AssetType::Audio;
+	resourceTypes_[".mp3"] = AssetType::Audio;
 }
 
 const Model* AssetCollection::GetModel(const std::string& _filepath) const {

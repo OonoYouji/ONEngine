@@ -5,6 +5,7 @@
 #include <unordered_map>
 
 /// engine
+#include "Engine/Asset/AssetType.h"
 #include "Engine/Asset/Collection/Container/ResourceContainer.h"
 #include "Engine/Asset/Collection/Loader/AssetLoader.h"
 
@@ -24,20 +25,6 @@ static const uint32_t MAX_AUDIOCLIP_COUNT = 128; ///< 最大オーディオク�
 class AssetCollection final {
 public:
 	/// ===================================================
-	/// public : sub class, enum
-	/// ===================================================
-
-	/// @brief resourceの種類
-	enum class Type {
-		none,
-		texture,
-		model,
-		audio,
-	};
-
-
-public:
-	/// ===================================================
 	/// public : methods
 	/// ===================================================
 
@@ -49,7 +36,7 @@ public:
 	void Initialize(class DxManager* _dxManager);
 
 	/// 読み込み
-	void Load(const std::string& _filepath, Type _type);
+	void Load(const std::string& _filepath, AssetType _type);
 	void LoadResources(const std::vector<std::string>& _filepaths);
 
 	/// アンロード
@@ -88,7 +75,7 @@ private:
 	std::unique_ptr<ResourceContainer<AudioClip>> audioClipContainer_;
 
 	/// リソースを読む条件
-	std::unordered_map<std::string, Type> resourceTypes_;
+	std::unordered_map<std::string, AssetType> resourceTypes_;
 
 public:
 	/// ===================================================
