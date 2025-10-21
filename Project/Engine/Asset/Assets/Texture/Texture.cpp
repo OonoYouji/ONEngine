@@ -19,7 +19,6 @@
 
 
 Texture::Texture() {}
-Texture::~Texture() {}
 
 void Texture::CreateEmptySRVHandle() {
 	srvHandle_.emplace(Handle());

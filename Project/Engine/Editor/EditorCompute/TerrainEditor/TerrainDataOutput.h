@@ -2,7 +2,7 @@
 
 /// engine
 #include "Engine/Graphics/Buffer/ConstantBuffer.h"
-#include "Engine/Graphics/Resource/ResourceData/Texture.h"
+#include "Engine/Asset/Assets/Texture/Texture.h"
 
 #include "../Interface/IEditorCompute.h"
 #include "TerrainInfo.h"

@@ -30,7 +30,7 @@ public:
 	/// ===================================================
 
 	Texture();
-	~Texture();
+	~Texture() override = default;
 
 
 	void CreateEmptySRVHandle();
