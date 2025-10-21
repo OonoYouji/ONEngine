@@ -4,6 +4,12 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
+#include <fstream>
+
+
+/// engine
+#include "Engine/Resource/Guid/Guid.h"
+#include "Engine/Resource/Meta/MetaFile.h"
 
 /// ///////////////////////////////////////////////////
 /// リソースのインターフェイスクラス
@@ -51,6 +57,10 @@ private:
 
 	std::unordered_map<std::string, int32_t> indexMap_;
 	std::unordered_map<int32_t, std::string> reverseIndexMap_;
+
+	std::unordered_map<Guid, int32_t> guidToIndexMap_; /// Guidからvalues_のIndexを取得するためのマップ
+	std::unordered_map<int32_t, Guid> indexToGuidMap_; /// values_のIndexからGuidを取得するためのマップ
+
 	std::vector<T> values_;
 
 };
@@ -82,6 +92,23 @@ inline T* ResourceContainer<T>::Add(const std::string& _key, T _t) {
 	indexMap_[_key] = index;
 	reverseIndexMap_[index] = _key;
 	values_[index] = _t;
+
+	
+	/// _keyのファイルがあるなら.metaファイルを読み込んでGuidを登録する
+	std::ifstream ifs(_key + ".meta");
+	if (ifs) {
+		Guid guid;
+		ifs >> guid.high >> guid.low;
+		guidToIndexMap_[guid] = index;
+		indexToGuidMap_[index] = guid;
+	} else {
+		/// .metaファイルがない場合は新しくMetaファイルを作成しGuidを登録、保存する
+		MetaFile metaFile = GenerateMetaFile(_key);
+		Guid& guid = metaFile.guid;
+		guidToIndexMap_[guid] = index;
+		indexToGuidMap_[index] = guid;
+	}
+
 	return &values_[index];
 }
 

@@ -3,6 +3,7 @@
 /// std
 #include <cstdint>
 #include <string>
+#include <functional>
 
 /// ////////////////////////////////////////////////////
 /// GUID 構造体
@@ -49,3 +50,17 @@ bool operator!=(const Guid& a, const Guid& b);
 
 /// @brief 新しいGuidを生成する
 Guid GenerateGuid();
+
+
+/// @brief unordered_mapでGuidをキーとして使うためのハッシュ関数の特殊化
+namespace std {
+	template<>
+	struct hash<Guid> {
+		std::size_t operator()(const Guid& g) const noexcept {
+			// 64bit × 2 → 1つのハッシュ値に圧縮
+			// ここではXOR＋ビットシフトを利用（軽量で十分衝突率が低い）
+			uint64_t h = g.high ^ (g.low + 0x9e3779b97f4a7c15ULL + (g.high << 6) + (g.high >> 2));
+			return static_cast<std::size_t>(h);
+		}
+	};
+}

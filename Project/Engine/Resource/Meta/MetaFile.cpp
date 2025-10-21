@@ -42,22 +42,6 @@ bool MetaFile::LoadFromFile(const std::string& _metaFilePath) {
 
 bool MetaFile::SaveToFile(const std::string& _metaFilePath) const {
 	/// --------------------------------------------------
-	/// ファイル名の決定 (FileName.meta) になるようにする
-	/// --------------------------------------------------
-
-	//std::string filename = _metaFilePath;
-	//std::string directory = "";
-
-	///// "/" または "\" の最後の位置を取得して、それ以前を削除
-	//size_t lastSlashPos = filename.find_last_of("/\\");
-	//if (lastSlashPos != std::string::npos) {
-	//	directory = filename.substr(0, lastSlashPos + 1);
-	//	filename = filename.substr(lastSlashPos + 1);
-	//	filename += ".meta";
-	//}
-
-
-	/// --------------------------------------------------
 	/// ファイルの生成
 	/// --------------------------------------------------
 
@@ -99,6 +83,10 @@ MetaFile GenerateMetaFile(const std::string& _refFile) {
 		/// デフォルト値にしとく
 		metaFile.assetType = AssetType::Texture; 
 	}
+
+
+	/// 一度ファイルに保存しておく
+	metaFile.SaveToFile(_refFile + ".meta");
 
 	return metaFile;
 }
