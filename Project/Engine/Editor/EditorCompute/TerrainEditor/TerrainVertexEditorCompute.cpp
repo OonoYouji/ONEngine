@@ -130,8 +130,8 @@ void TerrainVertexEditorCompute::Execute(class EntityComponentSystem* _ecs, DxCo
 	pTerrain->GetRwVertices().UAVBindForComputeCommandList(cmdList, UAV_VERTICES);
 
 	/// SRV
-	const Texture* positionTexture = _resourceCollection->GetTexture("debugWorldPosition");
-	const Texture* flagTexture = _resourceCollection->GetTexture("debugFlags");
+	const Texture* positionTexture = _resourceCollection->GetTexture("./Assets/Scene/RenderTexture/debugWorldPosition");
+	const Texture* flagTexture = _resourceCollection->GetTexture("./Assets/Scene/RenderTexture/debugFlags");
 
 	cmdList->SetComputeRootDescriptorTable(SRV_POSITION_TEXTURE, positionTexture->GetSRVGPUHandle());
 	cmdList->SetComputeRootDescriptorTable(SRV_FLAG_TEXTURE, flagTexture->GetSRVGPUHandle());

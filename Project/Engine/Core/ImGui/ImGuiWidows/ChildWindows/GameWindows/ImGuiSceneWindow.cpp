@@ -35,7 +35,7 @@ void ImGuiSceneWindow::ShowImGui() {
 	}
 
 	const auto& textures = pGrc_->GetTextures();
-	const Texture* texture = &textures[pGrc_->GetTextureIndex("debugScene")];
+	const Texture* texture = &textures[pGrc_->GetTextureIndex("./Assets/Scene/RenderTexture/debugScene")];
 
 	/// ----------------------------------------
 	/// ゲームの開始、停止、ポーズボタンの描画
