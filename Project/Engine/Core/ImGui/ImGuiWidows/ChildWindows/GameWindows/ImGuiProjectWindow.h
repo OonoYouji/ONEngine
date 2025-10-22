@@ -125,13 +125,11 @@ public:
 	/// @brief imgui windowの描画処理
 	void ShowImGui() override;
 
-	void Update();      // ディレクトリ変更を検知
-	void Draw();        // ImGui描画
-	const std::filesystem::path& GetSelectedPath() const { return currentPath_; }
-
 private:
 	void DrawDirectoryTree(const std::filesystem::path& dir);
 	void DrawFileView(const std::filesystem::path& dir);
+
+	void PopupContextMenu(const std::string& _currentFolderName);
 
 private:
 	class AssetCollection* pAssetCollection_;

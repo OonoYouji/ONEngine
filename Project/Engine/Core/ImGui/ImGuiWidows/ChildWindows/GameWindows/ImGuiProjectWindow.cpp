@@ -418,17 +418,39 @@ void ImGuiProjectExplorer::DrawFileView(const std::filesystem::path& dir) {
 	for (auto& entry : std::filesystem::directory_iterator(dir)) {
 		const auto& path = entry.path();
 		std::string name = path.filename().string();
+		std::string extension = path.extension().string();
+
+		if(extension == ".meta") {
+			continue; // .metaファイルは表示しない
+		}
+
 
 		ImGui::PushID(name.c_str());
 
 		ImGui::BeginGroup();
 
-		// 仮アイコン（本来はテクスチャIDなどを使う）
 		if (entry.is_directory()) {
+			/// ----- フォルダアイコンを表示 ----- ///
+
 			Texture* texture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/Folder.png");
 			ImGui::ImageButton("", (ImTextureID)(uintptr_t)texture->GetSRVGPUHandle().ptr, { iconSize, iconSize });
 		} else {
-			ImGui::Button("[FILE]", { iconSize, iconSize });
+			/// ----- ファイルアイコンを表示 ----- ///
+
+			/// extensionによってアイコンを変える
+			std::string iconPath = "./Packages/Textures/ImGui/File.png"; // デフォルトアイコン
+			if (extension == ".png" || extension == ".jpg" || extension == ".jpeg") {
+				iconPath = path.string();
+			} else if (extension == ".cs") {
+				iconPath = "./Packages/Textures/ImGui/CSharpFile.png";
+			} else if (extension == ".mat") {
+				iconPath = "./Packages/Textures/ImGui/MaterialFile.png";
+			} else if (extension == ".obj") {
+				iconPath = "./Packages/Textures/ImGui/ModelFile.png";
+			}
+
+			Texture* texture = pAssetCollection_->GetTexture(iconPath);
+			ImGui::ImageButton("", (ImTextureID)(uintptr_t)texture->GetSRVGPUHandle().ptr, { iconSize, iconSize });
 		}
 
 		if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
@@ -449,36 +471,3 @@ void ImGuiProjectExplorer::DrawFileView(const std::filesystem::path& dir) {
 
 	ImGui::Columns(1);
 }
-
-
-
-
-//
-//void ImGuiProjectExplorer::BuildTree(Entry& _entry) {
-//	_entry.children.clear();
-//
-//	for (auto& p : std::filesystem::directory_iterator(_entry.path)) {
-//		Entry child;
-//		child.path = p.path();
-//		child.isDirectory = p.is_directory();
-//
-//		if (child.isDirectory) {
-//			BuildTree(child);
-//		}
-//
-//		_entry.children.push_back(std::move(child));
-//	}
-//}
-//
-//void ImGuiProjectExplorer::DrawEntry(const Entry& _entry) {
-//	if (_entry.isDirectory) {
-//		if (ImGui::TreeNode(_entry.path.filename().string().c_str())) {
-//			for (auto& c : _entry.children) {
-//				DrawEntry(c);
-//			}
-//			ImGui::TreePop();
-//		}
-//	} else {
-//		ImGui::BulletText("%s", _entry.path.filename().string().c_str());
-//	}
-//}
