@@ -27,9 +27,6 @@ public:
 
 	void Draw(class ECSGroup* _ecs, const std::vector<GameEntity*>& _entities, class CameraComponent* _camera, DxCommand* _dxCommand) override;
 
-private:
-
-
 
 private:
 	/// ====================================================

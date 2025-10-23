@@ -19,9 +19,9 @@ enum RTVFormat {
 	RTVFormat_Flags         = DXGI_FORMAT_R32G32B32A32_FLOAT      ///< フラグ
 };
 
-/// ===================================================
+/// ///////////////////////////////////////////////////
 /// グラフィクス用	pipeline
-/// ===================================================
+/// ///////////////////////////////////////////////////
 class GraphicsPipeline {
 public:
 	/// ===================================================
@@ -158,8 +158,11 @@ private:
 	std::vector<DXGI_FORMAT>                rtvFormats_;
 };
 
+/// @brief DepthStencilDescのデフォルト値を返す
 D3D12_DEPTH_STENCIL_DESC DefaultDepthStencilDesc();
 
+
+/// @brief BlendMode別のBlendDescを返す名前空間
 namespace BlendMode {
 	D3D12_BLEND_DESC Normal();
 	D3D12_BLEND_DESC Add();

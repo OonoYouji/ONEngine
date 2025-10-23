@@ -32,6 +32,7 @@ private:
 	/// private : methods
 	/// ===================================================
 
+	/// シーンの入出力
 	void SaveScene(const std::string& _filename, class ECSGroup* _ecsGroup);
 	void LoadScene(const std::string& _filename, class ECSGroup* _ecsGroup);
 
@@ -39,6 +40,7 @@ private:
 	void SaveSceneToJson(nlohmann::json& _output, class ECSGroup* _ecsGroup);
 	void LoadSceneFromJson(const nlohmann::json& _input, class ECSGroup* _ecsGroup);
 
+	/// Jsonの入出力
 	void OutputJson(const nlohmann::json& _json, const std::string& _filename);
 
 private:

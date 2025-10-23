@@ -17,9 +17,9 @@
 #include "Engine/Core/Utility/Math/Vector4.h"
 
 
-/// ===================================================
+/// /////////////////////////////////////////////////
 /// mesh描画クラス
-/// ===================================================
+/// /////////////////////////////////////////////////
 class MeshRenderingPipeline final : public IRenderingPipeline {
 public:
 
@@ -68,7 +68,7 @@ private:
 
 	const size_t                                 kMaxRenderingMeshCount_ = 1024; ///< 最大描画メッシュ数
 
-	class AssetCollection*            resourceCollection_;
+	class AssetCollection*            pAssetCollection_;
 	std::unique_ptr<StructuredBuffer<Matrix4x4>> transformBuffer_;
 	std::unique_ptr<StructuredBuffer<GPUMaterial>>  materialBuffer;
 	std::unique_ptr<StructuredBuffer<uint32_t>>  textureIdBuffer_;

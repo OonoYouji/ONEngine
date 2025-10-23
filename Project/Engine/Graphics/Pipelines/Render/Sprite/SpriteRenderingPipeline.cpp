@@ -13,7 +13,7 @@
 
 
 SpriteRenderingPipeline::SpriteRenderingPipeline(AssetCollection* _assetCollection)
-	: resourceCollection_(_assetCollection) {}
+	: pAssetCollection_(_assetCollection) {}
 SpriteRenderingPipeline::~SpriteRenderingPipeline() {}
 
 
@@ -145,7 +145,7 @@ void SpriteRenderingPipeline::Draw(class ECSGroup* _ecsGroup, const std::vector<
 	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(cmdList, ROOT_PARAM_VIEW_PROJECTION);
 
 	/// 先頭の texture gpu handle をセットする
-	auto& textures = resourceCollection_->GetTextures();
+	auto& textures = pAssetCollection_->GetTextures();
 	const Texture* firstTexture = &textures.front();
 	cmdList->SetGraphicsRootDescriptorTable(ROOT_PARAM_TEXTURES, firstTexture->GetSRVGPUHandle());
 

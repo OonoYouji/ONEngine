@@ -14,12 +14,11 @@
 #include "Engine/Graphics/Buffer/StructuredBuffer.h"
 #include "Engine/Graphics/Buffer/Data/GPUMaterial.h"
 
-/// ===================================================d
+/// /////////////////////////////////////////////////
 /// sprite描画のパイプライン
-/// ===================================================d
+/// /////////////////////////////////////////////////
 class SpriteRenderingPipeline final : public IRenderingPipeline {
 public:
-
 	/// ===================================================
 	/// public : sub class
 	/// ===================================================
@@ -39,7 +38,6 @@ public:
 
 
 public:
-	
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
@@ -56,14 +54,13 @@ public:
 	void Draw(class ECSGroup* _ecs, const std::vector<GameEntity*>& _entities, CameraComponent* _camera, DxCommand* _dxCommand) override;
 
 private:
-
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
 
-	const size_t                                 kMaxRenderingSpriteCount_ = 1024; ///< 最大描画スプライト数
+	const size_t                      kMaxRenderingSpriteCount_ = 1024; ///< 最大描画スプライト数
 
-	class AssetCollection*            resourceCollection_       = nullptr;
+	class AssetCollection*            pAssetCollection_       = nullptr;
 
 	std::unique_ptr<StructuredBuffer<GPUMaterial>>  materialsBuffer;
 	std::unique_ptr<StructuredBuffer<Matrix4x4>> transformsBuffer_;

@@ -10,9 +10,9 @@
 #include "Engine/Graphics/Buffer/StructuredBuffer.h"
 #include "Engine/Graphics/Buffer/ConstantBuffer.h"
 
-/// ////////////////////////////////////
+/// /////////////////////////////////////////////////
 /// 地形に対してのプロシージャルレンダリングパイプライン
-/// ////////////////////////////////////
+/// /////////////////////////////////////////////////
 class TerrainProceduralRenderingPipeline : public IRenderingPipeline {
 
 	/// @brief compute shader用root param index

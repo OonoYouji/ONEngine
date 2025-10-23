@@ -11,7 +11,7 @@
 
 
 MeshRenderingPipeline::MeshRenderingPipeline(AssetCollection* _assetCollection)
-	: resourceCollection_(_assetCollection) {}
+	: pAssetCollection_(_assetCollection) {}
 
 MeshRenderingPipeline::~MeshRenderingPipeline() {}
 
@@ -93,7 +93,7 @@ void MeshRenderingPipeline::Draw(class ECSGroup*, const std::vector<GameEntity*>
 		if (meshRenderer && meshRenderer->enable) {
 
 			/// meshが読み込まれていなければ、デフォルトのメッシュを使用
-			if (!resourceCollection_->GetModel(meshRenderer->GetMeshPath())) {
+			if (!pAssetCollection_->GetModel(meshRenderer->GetMeshPath())) {
 				Console::Log("Mesh not found: " + meshRenderer->GetMeshPath());
 				rendererPerMesh["./Assets/Models/primitive/cube.obj"].push_back(meshRenderer);
 				continue; ///< meshが読み込まれていなければスキップ
@@ -123,7 +123,7 @@ void MeshRenderingPipeline::Draw(class ECSGroup*, const std::vector<GameEntity*>
 	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(commandList, 0);
 
 	/// buffer dataのセット、先頭の texture gpu handle をセットする
-	auto& textures = resourceCollection_->GetTextures();
+	auto& textures = pAssetCollection_->GetTextures();
 	commandList->SetGraphicsRootDescriptorTable(3, (*textures.begin()).GetSRVGPUHandle());
 
 	transformIndex_ = 0;
@@ -138,7 +138,7 @@ void MeshRenderingPipeline::RenderingMesh(ID3D12GraphicsCommandList* _commandLis
 	for (auto& [meshPath, renderers] : (*_meshRendererPerMesh)) {
 
 		/// modelの取得、なければ次へ
-		const Model*&& model = resourceCollection_->GetModel(meshPath);
+		const Model*&& model = pAssetCollection_->GetModel(meshPath);
 		if (!model) {
 			continue;
 		}
@@ -147,7 +147,7 @@ void MeshRenderingPipeline::RenderingMesh(ID3D12GraphicsCommandList* _commandLis
 		for (auto& renderer : renderers) {
 
 			/// TextureのIdをGuidからセット
-			renderer->SetupRenderData(resourceCollection_);
+			renderer->SetupRenderData(pAssetCollection_);
 
 			materialBuffer->SetMappedData(
 				transformIndex_,
@@ -157,7 +157,7 @@ void MeshRenderingPipeline::RenderingMesh(ID3D12GraphicsCommandList* _commandLis
 			/// texture id のセット
 			int32_t textureIndex = renderer->GetCPUMaterial().baseTextureIdPair.second;
 			if (textureIndex < 0) {
-				textureIndex = resourceCollection_->GetTextureIndex("./Assets/Textures/white.png");
+				textureIndex = pAssetCollection_->GetTextureIndex("./Assets/Textures/white.png");
 			}
 			textureIdBuffer_->SetMappedData(
 				transformIndex_,
@@ -217,7 +217,7 @@ void MeshRenderingPipeline::RenderingMesh(ID3D12GraphicsCommandList* _commandLis
 		);
 
 		/// texture id のセット
-		size_t textureIndex = resourceCollection_->GetTextureIndex(renderer->GetTexturePath());
+		size_t textureIndex = pAssetCollection_->GetTextureIndex(renderer->GetTexturePath());
 		textureIdBuffer_->SetMappedData(
 			transformIndex_,
 			_pTexture[textureIndex].GetSRVDescriptorIndex()

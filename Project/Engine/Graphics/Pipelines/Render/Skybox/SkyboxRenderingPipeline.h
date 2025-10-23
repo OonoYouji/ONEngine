@@ -8,9 +8,9 @@
 #include "Engine/Graphics/Buffer/ConstantBuffer.h"
 
 
-/// ///////////////////////////////////////////////////////////////////////////////////////////
+/// /////////////////////////////////////////////////
 /// 天球のレンダリングパイプライン
-/// ///////////////////////////////////////////////////////////////////////////////////////////
+/// /////////////////////////////////////////////////
 class SkyboxRenderingPipeline : public IRenderingPipeline {
 public:
 
@@ -19,6 +19,9 @@ public:
 	};
 
 public:
+	/// ===================================================
+	/// public : methods
+	/// ===================================================
 
 	SkyboxRenderingPipeline(class AssetCollection* _assetCollection);
 	~SkyboxRenderingPipeline();
@@ -27,6 +30,10 @@ public:
 	void Draw(class ECSGroup* _ecs, const std::vector<GameEntity*>& _entities, class CameraComponent* _camera, DxCommand* _dxCommand) override;
 
 private:
+	/// ===================================================
+	/// private : objects
+	/// ===================================================
+
 	class AssetCollection* pAssetCollection_;
 	ConstantBuffer<size_t> texIndex_;
 	ConstantBuffer<Matrix4x4> transformMatrix_;

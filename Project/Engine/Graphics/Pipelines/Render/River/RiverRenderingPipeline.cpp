@@ -8,7 +8,7 @@
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 #include "Engine/Asset/Collection/AssetCollection.h"
 
-RiverRenderingPipeline::RiverRenderingPipeline(AssetCollection* _grc) : pGRC_(_grc) {}
+RiverRenderingPipeline::RiverRenderingPipeline(AssetCollection* _grc) : pAssetCollection_(_grc) {}
 RiverRenderingPipeline::~RiverRenderingPipeline() = default;
 
 void RiverRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
@@ -91,11 +91,11 @@ void RiverRenderingPipeline::Draw(ECSGroup* _ecs, const std::vector<GameEntity*>
 	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(cmdList, CBV_VIEW_PROJECTION);
 
 	/// SRV_TEXTURE
-	auto frontTex = pGRC_->GetTextures().begin();
+	auto frontTex = pAssetCollection_->GetTextures().begin();
 	cmdList->SetGraphicsRootDescriptorTable(SRV_TEXTURE, (*frontTex).GetSRVGPUHandle());
 
 	/// CBV_MATERIAL
-	river->SetMaterialData(terrain->GetOwner()->GetId(), static_cast<int32_t>(pGRC_->GetTextureIndex("./Packages/Textures/Terrain/River.png")));
+	river->SetMaterialData(terrain->GetOwner()->GetId(), static_cast<int32_t>(pAssetCollection_->GetTextureIndex("./Packages/Textures/Terrain/River.png")));
 	river->GetMaterialBufRef().BindForGraphicsCommandList(cmdList, CBV_MATERIAL);
 
 	/// vbvとibvのリソースバリアーを変える

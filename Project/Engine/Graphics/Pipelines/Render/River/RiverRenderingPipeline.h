@@ -3,9 +3,9 @@
 /// engine
 #include "../../Interface/IRenderingPipeline.h"
 
-/// ////////////////////////////////////
+/// /////////////////////////////////////////////////
 /// 川の描画pipeline
-/// ////////////////////////////////////
+/// /////////////////////////////////////////////////
 class RiverRenderingPipeline : public IRenderingPipeline {
 
 	enum ROOT_PARAM {
@@ -15,6 +15,9 @@ class RiverRenderingPipeline : public IRenderingPipeline {
 	};
 
 public:
+	/// =================================================
+	/// public : methods
+	/// =================================================
 
 	RiverRenderingPipeline(class AssetCollection* _grc);
 	~RiverRenderingPipeline() override;
@@ -23,5 +26,9 @@ public:
 	void Draw(class ECSGroup* _ecs, const std::vector<GameEntity*>& _entities, class CameraComponent* _camera, DxCommand* _dxCommand) override;
 
 private:
-	AssetCollection* pGRC_ = nullptr;
+	/// =================================================
+	/// private : objects
+	/// =================================================
+
+	AssetCollection* pAssetCollection_ = nullptr;
 };

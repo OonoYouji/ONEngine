@@ -10,9 +10,9 @@
 #include "Engine/Graphics/Buffer/Data/GPUMaterial.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Terrain.h"
 
-/// ////////////////////////////////////
+/// /////////////////////////////////////////////////
 /// Terrainの描画pipeline
-/// ////////////////////////////////////
+/// /////////////////////////////////////////////////
 class TerrainRenderingPipeline : public IRenderingPipeline {
 public:
 	/// =====================================
