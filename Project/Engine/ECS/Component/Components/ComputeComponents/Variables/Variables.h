@@ -16,9 +16,9 @@
 #include "Engine/Core/Utility/Math/Vector2.h"
 #include "Engine/Core/Utility/Tools/Log.h"
 
-/// ////////////////////////////////////////////
+/// ///////////////////////////////////////////////////
 /// 変数component
-/// ////////////////////////////////////////////
+/// ///////////////////////////////////////////////////
 class Variables : public IComponent {
 public:
 	/// ================================================
@@ -86,21 +86,38 @@ public:
 	/// @param _path 保存するjsonファイルのパス
 	void SaveJson(const std::string& _path);
 
+
+	/// @brief スクリプト内の変数を登録する
 	void RegisterScriptVariables();
 
+	/// @brief スクリプト内の変数を再読み込みする
 	void ReloadScriptVariables();
 
+	/// @brief スクリプトに変数の値を設定する
+	/// @param _scriptName 対象のスクリプト名
 	void SetScriptVariables(const std::string& _scriptName);
 
+
+	/// @brief 変数のグループ(スクリプト単位)を追加する
+	/// @param _name グループ名
+	/// @return GroupのIndex
 	size_t AddGroup(const std::string& _name);
 
+	/// @brief 指定した名前に対応するグループを取得する
+	/// @param _name 取得するグループの名前。
+	/// @return 指定された名前に対応するGroup
 	const Group& GetGroup(const std::string& _name) const;
 
+	/// @brief 引数のGroupを持っているか
+	/// @param _name Group名
+	/// @return true: 持っている false: 持っていない
 	bool HasGroup(const std::string& _name) const;
 
 
+	/// @brief グループのキーのマップを取得する
 	const std::unordered_map<std::string, size_t>& GetGroupKeyMap() const;
 
+	/// @brief グループの配列をすべて得る
 	const std::vector<Group>& GetGroups() const;
 
 private:
@@ -118,6 +135,9 @@ private:
 /// ==================================================
 
 
+/// @brief ComponentのDebug
 namespace COMP_DEBUG {
+	/// @brief Variableをデバッグする
+	/// @param _variables 対象のポインタ
 	void VariablesDebug(Variables* _variables);
 }

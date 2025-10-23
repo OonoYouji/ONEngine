@@ -19,14 +19,15 @@ namespace COMP_DEBUG {
 	void MeshRendererDebug(MeshRenderer* _mr, AssetCollection* _grc);
 }
 
+/// Json変換
 void from_json(const nlohmann::json& _j, MeshRenderer& _mr);
 void to_json(nlohmann::json& _j, const MeshRenderer& _mr);
 
 
 
-/// ===================================================
+/// ///////////////////////////////////////////////////
 /// mesh描画クラス
-/// ===================================================
+/// ///////////////////////////////////////////////////
 class MeshRenderer : public IRenderComponent {
 	/// friend methods
 	friend void COMP_DEBUG::MeshRendererDebug(MeshRenderer* _mr, AssetCollection* _grc);
@@ -56,7 +57,6 @@ private:
 	CPUMaterial    cpuMaterial_;
 
 public:
-
 	/// ===================================================
 	/// public : accessor
 	/// ===================================================

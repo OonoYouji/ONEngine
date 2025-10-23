@@ -12,22 +12,26 @@ public:
 	/// public : sub class
 	/// =================================================
 
+	/// @brief エミッターの形状
 	enum class ShapeType {
 		Sphere,
 		Cube,
 		Cone,
 	};
 
+	/// @brief 形状1: 球
 	struct Sphere {
 		Vector3 center;
 		float radius;
 	};
 
+	/// @brief 形状2: 立方体
 	struct Cube {
 		Vector3 center;
 		Vector3 size;
 	};
 
+	/// @brief 形状3: 円錐
 	struct Cone {
 		Vector3 center;
 		float angle;  // 円錐の角度
@@ -45,10 +49,17 @@ public:
 	EffectEmitShape(const EffectEmitShape& _shape);
 	~EffectEmitShape() = default;
 
+	/// @brief エミッターの形状の代入演算子
+	/// @param _shape エミッターの形状
+	/// @return 形状の参照
 	EffectEmitShape& operator= (const EffectEmitShape& _shape);
 
+	/// @brief エミッターの座標
 	Vector3 GetEmitPosition();
 
+	/// @brief エミット後の方向ベクトルを取得する
+	/// @param _emitedPosition 出力後の座標
+	/// @return エミット後の方向ベクトル
 	Vector3 GetEmitDirection(const Vector3& _emitedPosition);
 
 private:
@@ -83,9 +94,9 @@ public:
 
 	ShapeType GetType() const;
 
-	Sphere GetSphere() const;
-	Cube GetCube() const;
-	Cone GetCone() const;
+	const Sphere& GetSphere() const;
+	const Cube& GetCube() const;
+	const Cone& GetCone() const;
 
 };
 

@@ -9,6 +9,10 @@
 
 using ColliderCallBackFunc = std::function<void(class ICollider*)>;
 
+
+/// ///////////////////////////////////////////////////
+/// Colliderのインターフェース
+/// ///////////////////////////////////////////////////
 class ICollider : public IComponent {
 	friend class CollisionManager;
 public:

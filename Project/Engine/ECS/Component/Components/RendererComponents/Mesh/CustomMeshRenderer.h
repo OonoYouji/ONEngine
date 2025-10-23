@@ -9,9 +9,9 @@
 #include "Engine/Asset/Assets/Mesh/Model.h"
 #include "Engine/Graphics/Buffer/Data/GPUMaterial.h"
 
-/// /////////////////////////////////////////////////
+/// ///////////////////////////////////////////////////
 /// CustomMeshRenderer
-/// ///////////////////////////////////////////////
+/// ///////////////////////////////////////////////////
 class CustomMeshRenderer final : public IRenderComponent {
 public:
 	/// ===================================================
@@ -25,6 +25,7 @@ public:
 	/// @param _pDxDevice DxDeviceへのポインタ
 	void MeshRecreate(class DxDevice* _pDxDevice);
 
+	/// @brief 頂点をGPUに転送する
 	void VertexMemcpy();
 
 private:

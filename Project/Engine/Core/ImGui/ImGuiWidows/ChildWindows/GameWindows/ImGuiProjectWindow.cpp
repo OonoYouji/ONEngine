@@ -319,31 +319,24 @@ void ImGuiProjectWindow::ShowContextMenu(const std::string& _contextMenuName, co
 
 
 
-ImGuiProjectExplorer::ImGuiProjectExplorer(AssetCollection* _assetCollection, EditorManager* _editorManager) 
+ImGuiProjectExplorer::ImGuiProjectExplorer(AssetCollection* _assetCollection, EditorManager* _editorManager)
 	: pAssetCollection_(_assetCollection) {
-	rootPath_ = "./Assets";
+	rootPath_ = "./";
 	currentPath_ = rootPath_;
 }
 
 void ImGuiProjectExplorer::ShowImGui() {
 	ImGui::Begin("ImGuiProjectExplorer");
 
-	{	/// ProjectWindowの左上に出すMenuの内容
-		if (ImGui::Button("Menu", ImVec2(120, 25))) {
-			ImGui::OpenPopup("MenuPopup");
-		}
-
-		if (ImGui::BeginPopup("MenuPopup")) {
-			ImGui::SetNextWindowSize(ImVec2(200, 150)); // ポップアップサイズ
-			ImGui::MenuItem("Item 1");
-			ImGui::MenuItem("Item 2");
-			ImGui::EndPopup();
-		}
+	/// ProjectWindowの左上に出すMenuの内容
+	if (ImGui::Button("Menu", ImVec2(120, 25))) {
+		ImGui::OpenPopup("FileContextMenu");
 	}
 
 	ImGui::SameLine();
 
-	ImGui::Text("search");
+	ImGui::Text(": Search");
+	
 
 	ImGui::Separator();
 
@@ -371,14 +364,14 @@ void ImGuiProjectExplorer::ShowImGui() {
 	ImGui::End();
 }
 
-void ImGuiProjectExplorer::DrawDirectoryTree(const std::filesystem::path& dir) {
-	for (auto& entry : std::filesystem::directory_iterator(dir)) {
+void ImGuiProjectExplorer::DrawDirectoryTree(const std::filesystem::path& _dir) {
+	for (auto& entry : std::filesystem::directory_iterator(_dir)) {
 		if (!entry.is_directory()) {
 			continue;
 		}
 
 		const std::string name = entry.path().filename().string();
-		bool open = dirOpenState_[entry.path().string()];
+		//bool open = dirOpenState_[entry.path().string()];
 
 		ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow;
 		if (entry.path() == currentPath_) {
@@ -397,14 +390,14 @@ void ImGuiProjectExplorer::DrawDirectoryTree(const std::filesystem::path& dir) {
 	}
 }
 
-void ImGuiProjectExplorer::DrawFileView(const std::filesystem::path& dir) {
-	if (!std::filesystem::exists(dir)) {
+void ImGuiProjectExplorer::DrawFileView(const std::filesystem::path& _dir) {
+	if (!std::filesystem::exists(_dir)) {
 		return;
 	}
 
 
-	/// 現在選択しているパスの表示
-	ImGui::Text("Current Path: %s", dir.string().c_str());
+	/// 現在選択しているパスを段階的に表示
+	ImGui::Text("Current Path: %s", _dir.string().c_str());
 
 
 	ImGui::Separator();
@@ -415,12 +408,12 @@ void ImGuiProjectExplorer::DrawFileView(const std::filesystem::path& dir) {
 	int columnCount = (std::max)(1, (int)(ImGui::GetContentRegionAvail().x / (iconSize + 16.0f)));
 	ImGui::Columns(columnCount, nullptr, false);
 
-	for (auto& entry : std::filesystem::directory_iterator(dir)) {
+	for (auto& entry : std::filesystem::directory_iterator(_dir)) {
 		const auto& path = entry.path();
 		std::string name = path.filename().string();
 		std::string extension = path.extension().string();
 
-		if(extension == ".meta") {
+		if (extension == ".meta") {
 			continue; // .metaファイルは表示しない
 		}
 
@@ -433,7 +426,7 @@ void ImGuiProjectExplorer::DrawFileView(const std::filesystem::path& dir) {
 			/// ----- フォルダアイコンを表示 ----- ///
 
 			Texture* texture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/Folder.png");
-			ImGui::ImageButton("", (ImTextureID)(uintptr_t)texture->GetSRVGPUHandle().ptr, { iconSize, iconSize });
+			ImGui::ImageButton("##Folder", (ImTextureID)(uintptr_t)texture->GetSRVGPUHandle().ptr, { iconSize, iconSize });
 		} else {
 			/// ----- ファイルアイコンを表示 ----- ///
 
@@ -441,6 +434,7 @@ void ImGuiProjectExplorer::DrawFileView(const std::filesystem::path& dir) {
 			std::string iconPath = "./Packages/Textures/ImGui/File.png"; // デフォルトアイコン
 			if (extension == ".png" || extension == ".jpg" || extension == ".jpeg") {
 				iconPath = path.string();
+				Mathf::ReplaceAll(&iconPath, "\\", "/"); // パスの区切り文字を変換
 			} else if (extension == ".cs") {
 				iconPath = "./Packages/Textures/ImGui/CSharpFile.png";
 			} else if (extension == ".mat") {
@@ -450,18 +444,66 @@ void ImGuiProjectExplorer::DrawFileView(const std::filesystem::path& dir) {
 			}
 
 			Texture* texture = pAssetCollection_->GetTexture(iconPath);
-			ImGui::ImageButton("", (ImTextureID)(uintptr_t)texture->GetSRVGPUHandle().ptr, { iconSize, iconSize });
+			ImGui::ImageButton("##File", (ImTextureID)(uintptr_t)texture->GetSRVGPUHandle().ptr, { iconSize, iconSize });
 		}
 
+		/// -------------------------------------------
+		/// 右クリックメニュー
+		/// -------------------------------------------
+		PopupContextMenu(path);
+
+
+		/// -------------------------------------------
+		/// ダブルクリックでフォルダを開く、ファイルを選択
+		/// -------------------------------------------
 		if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
 			if (entry.is_directory()) {
 				currentPath_ = path;
 			} else {
-				std::cout << "Selected file: " << path << std::endl;
+				Console::Log(std::format("Selected file: {}", path.string()));
 			}
 		}
 
-		ImGui::TextWrapped("%s", name.c_str());
+
+		/// -------------------------------------------
+		/// 名前の変更処理をしているなら表示、そうでなければ通常表示
+		/// -------------------------------------------
+		if (isRenaming_ && renamingPath_ == path) {
+			char buf[256];
+			strcpy_s(buf, renameBuffer_.c_str());
+
+			ImGui::PushItemWidth(iconSize + 20.0f);
+			bool enterPressed = ImGui::InputText("##RenameInput", buf, IM_ARRAYSIZE(buf),
+				ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_AutoSelectAll);
+
+			if (justStartedRename_) {
+				justStartedRename_ = false; // ← 1フレーム目はスキップ
+			} else {
+				if (!ImGui::IsItemActive() && !ImGui::IsItemFocused()) {
+					isRenaming_ = false; // ← 2フレーム目以降のみチェック
+				}
+			}
+
+			if (enterPressed) {
+				std::string newName = buf;
+				if (!newName.empty() && newName != name) {
+					try {
+						std::filesystem::rename(path, path.parent_path() / newName);
+					} catch (const std::filesystem::filesystem_error& e) {
+						Console::Log(std::format("Rename failed: {}", e.what()));
+					}
+				}
+				isRenaming_ = false;
+			}
+
+			ImGui::PopItemWidth();
+		} else {
+			/// ----- 通常の名前表示 ----- ///
+			ImGui::TextWrapped("%s", name.c_str());
+		}
+
+
+
 		ImGui::EndGroup();
 
 		ImGui::NextColumn();
@@ -470,4 +512,92 @@ void ImGuiProjectExplorer::DrawFileView(const std::filesystem::path& dir) {
 	}
 
 	ImGui::Columns(1);
+}
+
+void ImGuiProjectExplorer::PopupContextMenu(const std::filesystem::path& _dir) {
+
+	/// 右クリックメニュー
+	if (ImGui::BeginPopupContextItem("FileContextMenu")) {
+
+		/// ---------------------------------------------------
+		/// 新規ファイルの作成
+		/// ---------------------------------------------------
+		if (ImGui::BeginMenu("Create")) {
+
+			if (ImGui::MenuItem("Folder")) {
+				// 新規フォルダ名の決定（例: NewFolder, 重複チェック付き）
+				std::filesystem::path newFolderPath;
+				int counter = 1;
+				do {
+					newFolderPath = _dir / ("NewFolder" + std::to_string(counter));
+					counter++;
+				} while (std::filesystem::exists(newFolderPath));
+
+				// フォルダを作成
+				try {
+					if (std::filesystem::create_directory(newFolderPath)) {
+						// 作成成功
+						std::cout << "Folder created: " << newFolderPath << std::endl;
+					} else {
+						// 作成失敗
+						std::cerr << "Failed to create folder: " << newFolderPath << std::endl;
+					}
+				} catch (const std::filesystem::filesystem_error& e) {
+					std::cerr << "Error creating folder: " << e.what() << std::endl;
+				}
+			}
+
+
+			/// ---------------------------------------------------
+			/// アセット系
+			/// ---------------------------------------------------
+
+			if (ImGui::MenuItem("C# Script")) {
+				/// C#スクリプト作成の処理
+			}
+
+			if (ImGui::MenuItem("Material")) {
+				/// マテリアル作成の処理
+			}
+
+
+			ImGui::EndMenu();
+		}
+
+
+		/// ---------------------------------------------------
+		/// ファイルの操作
+		/// ---------------------------------------------------
+
+		if (ImGui::MenuItem("Show in Explorer")) {
+			std::string folder = std::filesystem::absolute(_dir).string();
+			ShellExecuteA(nullptr, "open", "explorer", folder.c_str(), nullptr, SW_SHOWNORMAL);
+		}
+
+		if (ImGui::MenuItem("Open")) {
+			std::string folder = std::filesystem::absolute(_dir).string();
+			ShellExecuteA(nullptr, "open", "explorer", folder.c_str(), nullptr, SW_SHOWNORMAL);
+		}
+
+		if (ImGui::MenuItem("Delete")) {
+			/// 一度警告を出す
+		}
+
+		if (ImGui::MenuItem("Rename")) {
+			SetRenameMode(_dir);
+		}
+
+
+
+		ImGui::EndPopup();
+	}
+
+}
+
+void ImGuiProjectExplorer::SetRenameMode(const std::filesystem::path& _path) {
+	isRenaming_ = true;
+	renamingPath_ = _path;
+	renameBuffer_ = _path.filename().string();
+	justStartedRename_ = true;
+	ImGui::SetKeyboardFocusHere(0);
 }

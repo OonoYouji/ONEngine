@@ -145,15 +145,15 @@ EffectEmitShape::ShapeType EffectEmitShape::GetType() const {
 	return shapeType_;
 }
 
-EffectEmitShape::Sphere EffectEmitShape::GetSphere() const {
+const EffectEmitShape::Sphere& EffectEmitShape::GetSphere() const {
 	return sphere_;
 }
 
-EffectEmitShape::Cube EffectEmitShape::GetCube() const {
+const EffectEmitShape::Cube& EffectEmitShape::GetCube() const {
 	return cube_;
 }
 
-EffectEmitShape::Cone EffectEmitShape::GetCone() const {
+const EffectEmitShape::Cone& EffectEmitShape::GetCone() const {
 	return cone_;
 }
 

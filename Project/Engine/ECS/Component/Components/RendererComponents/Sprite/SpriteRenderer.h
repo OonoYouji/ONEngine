@@ -21,9 +21,10 @@ namespace COMP_DEBUG {
 void to_json(nlohmann::json& _j, const SpriteRenderer& _sr);
 void from_json(const nlohmann::json& _j, SpriteRenderer& _sr);
 
-/// ===================================================
+
+/// ///////////////////////////////////////////////////
 /// sprite描画クラス
-/// ===================================================
+/// ///////////////////////////////////////////////////
 class SpriteRenderer final : public IComponent {
 	friend class SpriteUpdateSystem;
 

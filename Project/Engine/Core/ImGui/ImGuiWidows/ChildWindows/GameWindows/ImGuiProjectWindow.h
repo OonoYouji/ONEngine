@@ -129,7 +129,15 @@ private:
 	void DrawDirectoryTree(const std::filesystem::path& dir);
 	void DrawFileView(const std::filesystem::path& dir);
 
-	void PopupContextMenu(const std::string& _currentFolderName);
+	/// @brief 右クリックしたときに表示するポップアップメニュー
+	/// @param _dir 右クリックしたディレクトリのパス
+	void PopupContextMenu(const std::filesystem::path& _dir);
+
+	///// @brief ファイルの名前変更処理
+	//void RenameFileOrDirectory();
+
+	void SetRenameMode(const std::filesystem::path& _path);
+
 
 private:
 	class AssetCollection* pAssetCollection_;
@@ -138,4 +146,12 @@ private:
 	std::filesystem::path currentPath_;   // 今見ているフォルダ
 	std::unordered_map<std::string, bool> dirOpenState_; // ツリーの開閉状態
 	std::filesystem::file_time_type lastWriteTime_;
+
+	/// ----- 名前の変更に使う ----- ///
+	bool justStartedRename_;
+	bool isRenaming_ = false;
+	std::filesystem::path renamingPath_;
+	std::string renameBuffer_;
+
+
 };

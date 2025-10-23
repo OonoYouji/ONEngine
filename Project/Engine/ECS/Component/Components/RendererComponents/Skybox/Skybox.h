@@ -21,7 +21,12 @@ public:
 	Skybox();
 	~Skybox() override;
 
+
+	/// @brief DDSテクスチャのパスを設定する
+	/// @param _texturePath テクスチャのパス
 	void SetDDSTexturePath(const std::string& _texturePath);
+
+	/// @brief DDSテクスチャのパスを返す
 	const std::string& GetDDSTexturePath() const;
 
 private:
@@ -38,5 +43,6 @@ namespace COMP_DEBUG {
 	void SkyboxDebug(const Skybox* _skybox);
 }
 
+/// Json変換
 void from_json(const nlohmann::json& _j, Skybox& _s);
 void to_json(nlohmann::json& _j, const Skybox& _s);

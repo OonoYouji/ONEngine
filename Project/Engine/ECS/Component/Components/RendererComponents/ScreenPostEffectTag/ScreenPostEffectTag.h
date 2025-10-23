@@ -25,7 +25,14 @@ public:
 	ScreenPostEffectTag() = default;
 	~ScreenPostEffectTag() override = default;
 
+	/// @brief ポストエフェクトの有効/無効を設定する
+	/// @param _type 対象のポストエフェクトの種類
+	/// @param _enable true: 有効 false: 無効
 	void SetPostEffectEnable(PostEffectType _type, bool _enable);
+
+	/// @brief 指定した種類のポストエフェクトが有効かどうかを返す
+	/// @param _type 確認するポストエフェクトの種類
+	/// @return true: 有効 false: 無効
 	bool GetPostEffectEnable(PostEffectType _type) const;
 
 private:
@@ -40,5 +47,7 @@ namespace COMP_DEBUG {
 	void ScreenPostEffectTagDebug(ScreenPostEffectTag* _component);
 }
 
+
+/// Json変換
 void from_json(const nlohmann::json& _j, ScreenPostEffectTag& _c);
 void to_json(nlohmann::json& _j, const ScreenPostEffectTag& _c);
