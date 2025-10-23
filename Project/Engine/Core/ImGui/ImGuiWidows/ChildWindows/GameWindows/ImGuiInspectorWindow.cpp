@@ -57,7 +57,7 @@ ImGuiInspectorWindow::ImGuiInspectorWindow(const std::string& _windowName, Entit
 	RegisterComponent<Variables>([&](IComponent* _comp) { COMP_DEBUG::VariablesDebug(static_cast<Variables*>(_comp)); });
 	RegisterComponent<Effect>([&](IComponent* _comp) { COMP_DEBUG::EffectDebug(static_cast<Effect*>(_comp)); });
 	RegisterComponent<Script>([&](IComponent* _comp) { COMP_DEBUG::ScriptDebug(static_cast<Script*>(_comp)); });
-	RegisterComponent<Terrain>([&](IComponent* _comp) { COMP_DEBUG::TerrainDebug(static_cast<Terrain*>(_comp), pEcs_); });
+	RegisterComponent<Terrain>([&](IComponent* _comp) { COMP_DEBUG::TerrainDebug(static_cast<Terrain*>(_comp), pEcs_, pAssetCollection_); });
 	RegisterComponent<TerrainCollider>([&](IComponent* _comp) { COMP_DEBUG::TerrainColliderDebug(static_cast<TerrainCollider*>(_comp)); });
 	RegisterComponent<GrassField>([&](IComponent* _comp) { COMP_DEBUG::GrassFieldDebug(static_cast<GrassField*>(_comp), pAssetCollection_); });
 	RegisterComponent<CameraComponent>([&](IComponent* _comp) { COMP_DEBUG::CameraDebug(static_cast<CameraComponent*>(_comp)); });

@@ -466,6 +466,21 @@ void ImGuiProjectExplorer::DrawFileView(const std::filesystem::path& _dir) {
 
 
 		/// -------------------------------------------
+		/// ファイルを持ち始める
+		/// -------------------------------------------
+		if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
+			std::string src = path.string();
+			Mathf::ReplaceAll(&src, "\\", "/"); // パスの区切り文字を変換
+
+			const char* cstr = src.c_str();
+			ImGui::Text(cstr);
+			ImGui::SetDragDropPayload("AssetData", cstr, strlen(cstr) + 1);
+
+			ImGui::EndDragDropSource();
+		}
+
+
+		/// -------------------------------------------
 		/// 名前の変更処理をしているなら表示、そうでなければ通常表示
 		/// -------------------------------------------
 		if (isRenaming_ && renamingPath_ == path) {

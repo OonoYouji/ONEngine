@@ -17,10 +17,22 @@
 #include "River/River.h"
 
 
+/// COMP_DEBUGで使用するための前方宣言
 class Terrain;
 class EntityComponentSystem;
+class AssetCollection;
+
+
+static const uint32_t kMaxTerrainTextureNum = 4u;
+
+
+
 namespace COMP_DEBUG {
-	void TerrainDebug(Terrain* _terrain, EntityComponentSystem* _ecs);
+	void TerrainDebug(Terrain* _terrain, EntityComponentSystem* _ecs, AssetCollection* _assetCollection);
+	
+	/// テクスチャモードの編集
+	bool TerrainTextureEditModeDebug(std::array<std::string, kMaxTerrainTextureNum>* _texturePaths, int32_t _usedTextureIndex, AssetCollection* _assetCollection);
+
 } // namespace COMP_DEBUG
 
 
@@ -28,7 +40,7 @@ namespace COMP_DEBUG {
 /// 地形のコンポーネント
 /// ///////////////////////////////////////////////////
 class Terrain : public IComponent {
-	friend void COMP_DEBUG::TerrainDebug(Terrain* _terrain, EntityComponentSystem* _ecs);
+	friend void COMP_DEBUG::TerrainDebug(Terrain* _terrain, EntityComponentSystem* _ecs, AssetCollection* _assetCollection);
 	friend void from_json(const nlohmann::json& _j, Terrain& _t);
 	friend void to_json(nlohmann::json& _j, const Terrain& _t);
 public:
@@ -45,6 +57,14 @@ public:
 	};
 
 
+	enum class EditMode : int32_t {
+		None,    /// 操作なし
+		Vertex,	 /// 勾配の操作
+		Texture, /// テクスチャの操作
+		Count
+	};
+
+
 public:
 	/// =========================================
 	/// public : methods
@@ -52,6 +72,7 @@ public:
 
 	Terrain();
 	~Terrain() override;
+
 
 private:
 	/// =========================================
@@ -66,6 +87,8 @@ private:
 	/// ----- edit ----- ///
 	float brushRadius_;
 	float brushStrength_;
+	int32_t editMode_;
+	int32_t usedTextureIndex_;
 
 	/// ----- terrain ----- ///
 	Vector2 terrainSize_ = Vector2(1000.0f, 1000.0f); ///< 地形のサイズ
@@ -76,7 +99,7 @@ private:
 	River river_;
 
 	/// ----- splatting ----- ///
-	std::array<std::string, SPLAT_TEX_COUNT> splattingTexPaths_;
+	std::array<std::string, kMaxTerrainTextureNum> splattingTexPaths_;
 
 	/// ----- flags ----- ///
 	bool isRenderingProcedural_;
@@ -87,7 +110,7 @@ public:
 	/// public : accessor
 	/// ====================================================
 
-	const std::array<std::string, SPLAT_TEX_COUNT>& GetSplatTexPaths() const;
+	const std::array<std::string, kMaxTerrainTextureNum>& GetSplatTexPaths() const;
 
 	/// ----- buffer ----- ///
 	StructuredBuffer<TerrainVertex>& GetRwVertices();
