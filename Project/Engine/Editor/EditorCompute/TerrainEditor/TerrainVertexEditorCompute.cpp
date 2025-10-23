@@ -106,11 +106,18 @@ void TerrainVertexEditorCompute::Execute(class EntityComponentSystem* _ecs, DxCo
 	//}
 
 	inputInfo_.SetMappedData(
-		InputInfo{ mousePosition, pTerrain->GetBrushRadius(), pTerrain->GetBrushStrength(), byte, pTerrain->editMode_, editTextureIndex_}
+		InputInfo{
+			mousePosition,
+			pTerrain->editorInfo_.brushRadius,
+			pTerrain->editorInfo_.brushStrength,
+			byte,
+			pTerrain->editorInfo_.editMode,
+			pTerrain->editorInfo_.usedTextureIndex
+		}
 	);
 
 
-	
+
 	/// 押していないときは処理をしない
 	if (!Input::TriggerMouse(Mouse::Left)) {
 		return;

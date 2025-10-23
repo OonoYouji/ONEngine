@@ -51,7 +51,5 @@ private:
 	ConstantBuffer<TerrainInfo> terrainInfo_;
 	ConstantBuffer<InputInfo> inputInfo_;
 
-	int editTextureIndex_ = 0; /// 0~3
-
 };
 

@@ -77,7 +77,7 @@ void PostProcessTerrainBrush::Execute(
 	}
 
 	brushBuffer_.SetMappedData(
-		Brush{ mousePos, terrain->GetBrushRadius() }
+		Brush{ mousePos, terrain->GetEditorInfo().brushRadius }
 	);
 
 	/// texture index

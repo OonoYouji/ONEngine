@@ -31,9 +31,20 @@ namespace COMP_DEBUG {
 	void TerrainDebug(Terrain* _terrain, EntityComponentSystem* _ecs, AssetCollection* _assetCollection);
 	
 	/// テクスチャモードの編集
-	bool TerrainTextureEditModeDebug(std::array<std::string, kMaxTerrainTextureNum>* _texturePaths, int32_t _usedTextureIndex, AssetCollection* _assetCollection);
+	bool TerrainTextureEditModeDebug(std::array<std::string, kMaxTerrainTextureNum>* _texturePaths, int32_t* _usedTextureIndex, AssetCollection* _assetCollection);
 
 } // namespace COMP_DEBUG
+
+
+/// ///////////////////////////////////////////////////
+/// 地形のエディター情報
+/// ///////////////////////////////////////////////////
+struct TerrainEditorInfo {
+	float brushRadius;        ///< ブラシの半径
+	float brushStrength;      ///< ブラシの強さ
+	int32_t editMode;         ///< 編集モード
+	int32_t usedTextureIndex; ///< 使用しているテクスチャのインデックス
+};
 
 
 /// ///////////////////////////////////////////////////
@@ -87,10 +98,7 @@ private:
 	bool isCreated_;
 
 	/// ----- edit ----- ///
-	float brushRadius_;
-	float brushStrength_;
-	int32_t editMode_;
-	int32_t usedTextureIndex_;
+	TerrainEditorInfo editorInfo_;
 
 	/// ----- terrain ----- ///
 	Vector2 terrainSize_ = Vector2(1000.0f, 1000.0f); ///< 地形のサイズ
@@ -127,12 +135,7 @@ public:
 	const Vector2& GetSize() const;
 
 	/// ----- edit ----- ///
-	float GetBrushRadius() const;
-	void SetBrushRadius(float _radius);
-
-	float GetBrushStrength() const;
-	void SetBrushStrength(float _strength);
-
+	const TerrainEditorInfo& GetEditorInfo() const;
 
 	/// ----- river ----- ///
 	River* GetRiver();

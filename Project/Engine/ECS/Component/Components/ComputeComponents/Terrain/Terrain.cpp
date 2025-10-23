@@ -57,7 +57,7 @@ void COMP_DEBUG::TerrainDebug(Terrain* _terrain, EntityComponentSystem* _ecs, As
 
 		ImTextureID textureId = reinterpret_cast<ImTextureID>(buttonTextures[i]->GetSRVGPUHandle().ptr);
 		if (ImGui::ImageButton("##Button", textureId, ImVec2(32, 32))) {
-			_terrain->editMode_ = static_cast<int32_t>(i);
+			_terrain->editorInfo_.editMode = static_cast<int32_t>(i);
 		}
 
 		/// ボタンにカーソルを2秒以上合わせると説明を表示
@@ -76,12 +76,23 @@ void COMP_DEBUG::TerrainDebug(Terrain* _terrain, EntityComponentSystem* _ecs, As
 	/// ---------------------------------------------------
 
 	ImGui::Separator();
-	switch (_terrain->editMode_) {
+	switch (_terrain->editorInfo_.editMode) {
 	case static_cast<int32_t>(Terrain::EditMode::Vertex):
 
 		break;
 	case static_cast<int32_t>(Terrain::EditMode::Texture):
-		TerrainTextureEditModeDebug(&_terrain->splattingTexPaths_, _terrain->usedTextureIndex_, _assetCollection);
+
+		/// 編集するテクスチャのインデックスの変更
+		if (Input::TriggerKey(DIK_1)) { _terrain->editorInfo_.usedTextureIndex = 0; }
+		if (Input::TriggerKey(DIK_2)) { _terrain->editorInfo_.usedTextureIndex = 1; }
+		if (Input::TriggerKey(DIK_3)) { _terrain->editorInfo_.usedTextureIndex = 2; }
+		if (Input::TriggerKey(DIK_4)) { _terrain->editorInfo_.usedTextureIndex = 3; }
+
+		TerrainTextureEditModeDebug(
+			&_terrain->splattingTexPaths_,
+			&_terrain->editorInfo_.usedTextureIndex,
+			_assetCollection
+		);
 		break;
 	}
 	ImGui::Separator();
@@ -93,8 +104,8 @@ void COMP_DEBUG::TerrainDebug(Terrain* _terrain, EntityComponentSystem* _ecs, As
 	/// ---------------------------------------------------
 
 	/// brush の情報を変更
-	ImGui::SliderFloat("brush radius", &_terrain->brushRadius_, 0.1f, 100.0f);
-	ImGui::SliderFloat("brush strength", &_terrain->brushStrength_, 0.0f, 5.0f);
+	ImGui::SliderFloat("brush radius", &_terrain->editorInfo_.brushRadius, 0.1f, 100.0f);
+	ImGui::SliderFloat("brush strength", &_terrain->editorInfo_.brushStrength, 0.0f, 5.0f);
 
 
 
@@ -105,7 +116,7 @@ void COMP_DEBUG::TerrainDebug(Terrain* _terrain, EntityComponentSystem* _ecs, As
 	_terrain->river_.Edit(_ecs);
 }
 
-bool COMP_DEBUG::TerrainTextureEditModeDebug(std::array<std::string, 4>* _texturePaths, int32_t _usedTextureIndex, AssetCollection* _assetCollection) {
+bool COMP_DEBUG::TerrainTextureEditModeDebug(std::array<std::string, 4>* _texturePaths, int32_t* _usedTextureIndex, AssetCollection* _assetCollection) {
 	/// ----- テクスチャのパスを変更する処理 ----- ///
 
 	for (size_t i = 0; i < 4; i++) {
@@ -117,9 +128,15 @@ bool COMP_DEBUG::TerrainTextureEditModeDebug(std::array<std::string, 4>* _textur
 		Texture* texture = _assetCollection->GetTexture(text);
 		if (texture) {
 
+			/// このテクスチャを使用しているのかどうか
+			bool isUsing = (i == static_cast<size_t>(*_usedTextureIndex));
+
+
 			/// 地形に使用しているテクスチャを表示
 			ImTextureID id = reinterpret_cast<ImTextureID>(texture->GetSRVGPUHandle().ptr);
-			ImGui::Image(id, ImVec2(48, 48));
+			if (ImGui::ImageButton("##imageButton", id, ImVec2(48, 48))) {
+				*_usedTextureIndex = static_cast<int32_t>(i);
+			}
 
 			/// ドロップしてテクスチャを変える
 			if (ImGui::BeginDragDropTarget()) {
@@ -143,9 +160,13 @@ bool COMP_DEBUG::TerrainTextureEditModeDebug(std::array<std::string, 4>* _textur
 			}
 
 
+			ImGui::SameLine();
+
 
 			/// チェックボックスで現在操作しているのか可視化する
-
+			if (ImGui::Checkbox("##using", &isUsing)) {
+				*_usedTextureIndex = static_cast<int32_t>(i);
+			}
 
 
 		}
@@ -166,8 +187,8 @@ bool COMP_DEBUG::TerrainTextureEditModeDebug(std::array<std::string, 4>* _textur
 
 void from_json(const nlohmann::json& _j, Terrain& _t) {
 	_t.enable = _j.value("enable", 1);
-	_t.brushRadius_ = _j.value("brushRadius", 10.0f);
-	_t.brushStrength_ = _j.value("brushStrength", 1.0f);
+	_t.editorInfo_.brushRadius = _j.value("brushRadius", 10.0f);
+	_t.editorInfo_.brushStrength = _j.value("brushStrength", 1.0f);
 	_t.isRenderingProcedural_ = _j.value("isRenderingProcedural", false);
 }
 
@@ -175,8 +196,8 @@ void to_json(nlohmann::json& _j, const Terrain& _t) {
 	_j = nlohmann::json{
 		{ "type", "Terrain" },
 		{ "enable", _t.enable },
-		{ "brushRadius", _t.brushRadius_ },
-		{ "brushStrength", _t.brushStrength_ },
+		{ "brushRadius", _t.editorInfo_.brushRadius },
+		{ "brushStrength", _t.editorInfo_.brushStrength },
 		{ "isRenderingProcedural", _t.isRenderingProcedural_ }
 	};
 }
@@ -215,9 +236,10 @@ Terrain::Terrain() {
 
 
 	/// ----- editor parameters ----- ///
-	brushRadius_ = 10.0f;
-	brushStrength_ = 1.0f;
-	editMode_ = static_cast<int32_t>(EditMode::None);
+	editorInfo_.brushRadius = 10.0f;
+	editorInfo_.brushStrength = 1.0f;
+	editorInfo_.editMode = static_cast<int32_t>(EditMode::None);
+	editorInfo_.usedTextureIndex = 0;
 
 }
 Terrain::~Terrain() {}
@@ -254,20 +276,8 @@ const Vector2& Terrain::GetSize() const {
 	return terrainSize_;
 }
 
-float Terrain::GetBrushRadius() const {
-	return brushRadius_;
-}
-
-void Terrain::SetBrushRadius(float _radius) {
-	brushRadius_ = _radius;
-}
-
-float Terrain::GetBrushStrength() const {
-	return brushStrength_;
-}
-
-void Terrain::SetBrushStrength(float _strength) {
-	brushStrength_ = _strength;
+const TerrainEditorInfo& Terrain::GetEditorInfo() const {
+	return editorInfo_;
 }
 
 River* Terrain::GetRiver() {
