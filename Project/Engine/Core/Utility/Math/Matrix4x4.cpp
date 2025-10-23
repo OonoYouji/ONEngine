@@ -207,16 +207,16 @@ Matrix4x4 Matrix4x4::Inverse() const {
 
 Vector3 Matrix4x4::ExtractScale() const {
 	/// 3x3に変換
-	float m[3][3] = {
-		{ m[0][0], m[0][1], m[0][2] },
-		{ m[1][0], m[1][1], m[1][2] },
-		{ m[2][0], m[2][1], m[2][2] }
+	float m3x3[3][3] = {
+		{ m3x3[0][0], m3x3[0][1], m3x3[0][2] },
+		{ m3x3[1][0], m3x3[1][1], m3x3[1][2] },
+		{ m3x3[2][0], m3x3[2][1], m3x3[2][2] }
 	};
 
 	/// スケール成分を計算
 	float scale[3];
 	for (size_t i = 0; i < 3; i++) {
-		scale[i] = std::sqrt(m[i][0] * m[i][0] + m[i][1] * m[i][1] + m[i][2] * m[i][2]);
+		scale[i] = std::sqrt(m3x3[i][0] * m3x3[i][0] + m3x3[i][1] * m3x3[i][1] + m3x3[i][2] * m3x3[i][2]);
 	}
 
 	return Vector3(scale[0], scale[1], scale[2]);

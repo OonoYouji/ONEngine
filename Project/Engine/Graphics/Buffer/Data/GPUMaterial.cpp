@@ -50,7 +50,7 @@ void to_json(nlohmann::json& _j, const CPUMaterial& _material) {
 	};
 }
 
-void from_json(const nlohmann::json& _j, CPUMaterial& _material) {
+void from_json(const nlohmann::json& /*_j*/, CPUMaterial& /*_material*/) {
 }
 
 CPUMaterial::CPUMaterial() = default;

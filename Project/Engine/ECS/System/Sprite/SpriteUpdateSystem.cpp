@@ -21,6 +21,6 @@ void SpriteUpdateSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
 
 }
 
-void SpriteUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
+void SpriteUpdateSystem::RuntimeUpdate(ECSGroup* /*_ecs*/) {
 
 }

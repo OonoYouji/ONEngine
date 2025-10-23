@@ -37,7 +37,7 @@ void RiverMeshGeneratePipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMa
 
 }
 
-void RiverMeshGeneratePipeline::Execute(EntityComponentSystem* _ecs, DxCommand* _dxCommand, AssetCollection* _assetCollection) {
+void RiverMeshGeneratePipeline::Execute(EntityComponentSystem* _ecs, DxCommand* _dxCommand, AssetCollection* /*_assetCollection*/) {
 
 	/// --------------------------------------------------------------------
 	/// 早期リターンチェック

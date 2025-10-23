@@ -319,7 +319,7 @@ void ImGuiProjectWindow::ShowContextMenu(const std::string& _contextMenuName, co
 
 
 
-ImGuiProjectExplorer::ImGuiProjectExplorer(AssetCollection* _assetCollection, EditorManager* _editorManager)
+ImGuiProjectExplorer::ImGuiProjectExplorer(AssetCollection* _assetCollection, EditorManager* /*_editorManager*/)
 	: pAssetCollection_(_assetCollection) {
 	rootPath_ = "./";
 	currentPath_ = rootPath_;

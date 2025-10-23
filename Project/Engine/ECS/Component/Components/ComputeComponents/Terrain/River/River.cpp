@@ -64,7 +64,7 @@ std::vector<RiverControlPoint> SampleRiverSpline(const std::vector<RiverControlP
 River::River() : samplePerSegment_(10), isCreatedBuffers_(false) , isGenerateMeshRequest_(false) {};
 River::~River() = default;
 
-void River::Edit(EntityComponentSystem* _ecs) {
+void River::Edit(EntityComponentSystem* /*_ecs*/) {
 	/// ----- 川の編集 ----- ///
 
 	/// ---------------------------------------------------------------

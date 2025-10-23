@@ -25,7 +25,7 @@ AudioPlaybackSystem::AudioPlaybackSystem(AssetCollection* _assetCollection)
 AudioPlaybackSystem::~AudioPlaybackSystem() {}
 
 
-void AudioPlaybackSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {}
+void AudioPlaybackSystem::OutsideOfRuntimeUpdate(ECSGroup* /*_ecs*/) {}
 
 void AudioPlaybackSystem::RuntimeUpdate(ECSGroup* _ecs) {
 	///
@@ -108,7 +108,7 @@ void AudioPlaybackSystem::PlayAudio(AudioSource* _audioSource) {
 	_audioSource->sourceVoices_.push_back(sourceVoice);
 }
 
-void AudioPlaybackSystem::PlayOneShot(AudioClip* _audioClip, float _volume, float _pitch, const std::string& _path) {
+void AudioPlaybackSystem::PlayOneShot(AudioClip* _audioClip, float _volume, float _pitch, const std::string& /*_path*/) {
 	IXAudio2SourceVoice* sourceVoice = nullptr;
 	sourceVoice = _audioClip->CreateSourceVoice(xAudio2_.Get());
 

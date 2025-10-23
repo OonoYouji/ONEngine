@@ -62,7 +62,7 @@ void SkinMeshSkeletonRenderingPipeline::Initialize(ShaderCompiler* _shaderCompil
 
 }
 
-void SkinMeshSkeletonRenderingPipeline::Draw(class ECSGroup* _ecs, const std::vector<class GameEntity*>& _entities, CameraComponent* _camera, DxCommand* _dxCommand) {
+void SkinMeshSkeletonRenderingPipeline::Draw(class ECSGroup* /*_ecs*/, const std::vector<class GameEntity*>& _entities, CameraComponent* _camera, DxCommand* _dxCommand) {
 
 	/// SkinMeshRenderer の取得
 	std::vector<SkinMeshRenderer*> skinMeshRenderers;

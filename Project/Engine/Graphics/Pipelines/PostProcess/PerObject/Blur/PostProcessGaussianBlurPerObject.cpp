@@ -29,7 +29,7 @@ void PostProcessGaussianBlurPerObject::Initialize(ShaderCompiler* _shaderCompile
 
 }
 
-void PostProcessGaussianBlurPerObject::Execute(const std::string& _textureName, DxCommand* _dxCommand, AssetCollection* _assetCollection, EntityComponentSystem* _entityComponentSystem) {
+void PostProcessGaussianBlurPerObject::Execute(const std::string& _textureName, DxCommand* _dxCommand, AssetCollection* _assetCollection, EntityComponentSystem* /*_entityComponentSystem*/) {
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 
 	auto command = _dxCommand->GetCommandList();

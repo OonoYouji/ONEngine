@@ -34,7 +34,7 @@ void RiverTerrainAbjustPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxM
 	}
 }
 
-void RiverTerrainAbjustPipeline::Execute(EntityComponentSystem* _ecs, DxCommand* _dxCommand, AssetCollection* _assetCollection) {
+void RiverTerrainAbjustPipeline::Execute(EntityComponentSystem* _ecs, DxCommand* _dxCommand, AssetCollection* /*_assetCollection*/) {
 
 	/// ----------------------------------------------------
 	/// 早期return条件

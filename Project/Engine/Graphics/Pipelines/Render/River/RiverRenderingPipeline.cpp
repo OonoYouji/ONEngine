@@ -55,7 +55,7 @@ void RiverRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManag
 
 }
 
-void RiverRenderingPipeline::Draw(ECSGroup* _ecs, const std::vector<GameEntity*>& _entities, CameraComponent* _camera, DxCommand* _dxCommand) {
+void RiverRenderingPipeline::Draw(ECSGroup* _ecs, const std::vector<GameEntity*>& /*_entities*/, CameraComponent* _camera, DxCommand* _dxCommand) {
 
 	/// --------------------------------------------------------------------
 	/// 早期リターンチェック

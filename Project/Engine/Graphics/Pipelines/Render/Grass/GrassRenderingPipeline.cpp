@@ -100,7 +100,7 @@ void GrassRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManag
 }
 
 
-void GrassRenderingPipeline::PreDraw(ECSGroup* _ecs, CameraComponent* _camera, DxCommand* _dxCommand) {
+void GrassRenderingPipeline::PreDraw(ECSGroup* _ecs, CameraComponent* /*_camera*/, DxCommand* _dxCommand) {
 	/// ================================================
 	/// 早期リターンの条件チェック
 	/// ================================================
@@ -114,8 +114,6 @@ void GrassRenderingPipeline::PreDraw(ECSGroup* _ecs, CameraComponent* _camera, D
 		return;
 	}
 
-
-	auto cmdList = _dxCommand->GetCommandList();
 
 	for (auto& grass : grassArray->GetUsedComponents()) {
 		/// 草が無効化されている場合はスキップ
