@@ -91,22 +91,22 @@ void TerrainVertexEditorCompute::Execute(class EntityComponentSystem* _ecs, DxCo
 	byte |= (isRaiseTerrainButtonPressed << 0);
 	byte |= (isLowerTerrainButtonPressed << 1);
 
-	if (Input::PressKey(DIK_LCONTROL) && !Input::PressKey(DIK_LSHIFT)) {
+	//if (Input::PressKey(DIK_LCONTROL) && !Input::PressKey(DIK_LSHIFT)) {
 
-		/// 編集モードの変更
-		if (Input::TriggerKey(DIK_N)) { editMode_ = 0; }
-		if (Input::TriggerKey(DIK_V)) { editMode_ = 1; }
-		if (Input::TriggerKey(DIK_B)) { editMode_ = 2; }
+	//	/// 編集モードの変更
+	//	if (Input::TriggerKey(DIK_N)) { editMode_ = 0; }
+	//	if (Input::TriggerKey(DIK_V)) { editMode_ = 1; }
+	//	if (Input::TriggerKey(DIK_B)) { editMode_ = 2; }
 
-		/// 編集するテクスチャのインデックスの変更
-		if (Input::TriggerKey(DIK_1)) { editTextureIndex_ = 0; }
-		if (Input::TriggerKey(DIK_2)) { editTextureIndex_ = 1; }
-		if (Input::TriggerKey(DIK_3)) { editTextureIndex_ = 2; }
-		if (Input::TriggerKey(DIK_4)) { editTextureIndex_ = 3; }
-	}
+	//	/// 編集するテクスチャのインデックスの変更
+	//	if (Input::TriggerKey(DIK_1)) { editTextureIndex_ = 0; }
+	//	if (Input::TriggerKey(DIK_2)) { editTextureIndex_ = 1; }
+	//	if (Input::TriggerKey(DIK_3)) { editTextureIndex_ = 2; }
+	//	if (Input::TriggerKey(DIK_4)) { editTextureIndex_ = 3; }
+	//}
 
 	inputInfo_.SetMappedData(
-		InputInfo{ mousePosition, pTerrain->GetBrushRadius(), pTerrain->GetBrushStrength(), byte, editMode_, editTextureIndex_}
+		InputInfo{ mousePosition, pTerrain->GetBrushRadius(), pTerrain->GetBrushStrength(), byte, pTerrain->editMode_, editTextureIndex_}
 	);
 
 

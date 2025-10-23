@@ -40,6 +40,8 @@ namespace COMP_DEBUG {
 /// 地形のコンポーネント
 /// ///////////////////////////////////////////////////
 class Terrain : public IComponent {
+	friend class TerrainVertexEditorCompute;
+
 	friend void COMP_DEBUG::TerrainDebug(Terrain* _terrain, EntityComponentSystem* _ecs, AssetCollection* _assetCollection);
 	friend void from_json(const nlohmann::json& _j, Terrain& _t);
 	friend void to_json(nlohmann::json& _j, const Terrain& _t);

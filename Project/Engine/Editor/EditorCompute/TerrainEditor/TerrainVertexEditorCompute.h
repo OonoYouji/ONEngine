@@ -51,7 +51,6 @@ private:
 	ConstantBuffer<TerrainInfo> terrainInfo_;
 	ConstantBuffer<InputInfo> inputInfo_;
 
-	int editMode_ = 0; ///< 編集モード (0:頂点編集, 1:テクスチャ編集)
 	int editTextureIndex_ = 0; /// 0~3
 
 };
