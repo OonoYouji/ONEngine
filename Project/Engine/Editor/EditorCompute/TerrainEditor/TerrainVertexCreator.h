@@ -5,9 +5,9 @@
 #include "Engine/Graphics/Buffer/ConstantBuffer.h"
 #include "TerrainInfo.h"
 
-/// //////////////////////////////////////////
+/// /////////////////////////////////////////////////
 /// 地形の頂点を生成するためのコンピュートシェーダー
-/// //////////////////////////////////////////
+/// /////////////////////////////////////////////////
 class TerrainVertexCreator : public IEditorCompute {
 
 	enum {
@@ -27,7 +27,7 @@ public:
 	~TerrainVertexCreator() override;
 
 	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxManager) override;
-	void Execute(class EntityComponentSystem* _ecs, class DxCommand* _dxCommand, class AssetCollection* _resourceCollection) override;
+	void Execute(class EntityComponentSystem* _ecs, class DxCommand* _dxCommand, class AssetCollection* _assetCollection) override;
 
 private:
 	/// =========================================

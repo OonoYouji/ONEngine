@@ -20,13 +20,27 @@ public:
 	VertexBuffer() = default;
 	~VertexBuffer() = default;
 
-	void Create(size_t _indicesSize, class DxDevice* _dxDevice);
+	/// @brief Bufferの作成
+	/// @param _vertexSize 頂点の数
+	/// @param _dxDevice DxDeviceのポインタ
+	void Create(size_t _vertexSize, class DxDevice* _dxDevice);
 
+
+	/// @brief vertices_のメモリ確保
+	/// @param _value サイズ
 	void Reserve(size_t _value);
+
+	/// @brief vertices_のリサイズ
+	/// @param _value サイズ
 	void Resize(size_t _value);
 
+
+	/// @brief コマンドリストにバインドする
+	/// @param _commandList 
 	void BindForCommandList(ID3D12GraphicsCommandList* _commandList);
 
+
+	/// @brief GPUにマッピングする
 	void Map();
 
 private:

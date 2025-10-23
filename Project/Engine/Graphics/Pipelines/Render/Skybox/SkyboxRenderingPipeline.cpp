@@ -8,8 +8,8 @@
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 
 
-SkyboxRenderingPipeline::SkyboxRenderingPipeline(AssetCollection* _resourceCollection)
-	: pAssetCollection_(_resourceCollection) {}
+SkyboxRenderingPipeline::SkyboxRenderingPipeline(AssetCollection* _assetCollection)
+	: pAssetCollection_(_assetCollection) {}
 SkyboxRenderingPipeline::~SkyboxRenderingPipeline() {}
 
 void SkyboxRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {

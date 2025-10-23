@@ -43,7 +43,7 @@ public:
 	/// public : methods
 	/// =====================================
 
-	TerrainProceduralRenderingPipeline(class AssetCollection* _resourceCollection);
+	TerrainProceduralRenderingPipeline(class AssetCollection* _assetCollection);
 	~TerrainProceduralRenderingPipeline();
 
 	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxManager) override;

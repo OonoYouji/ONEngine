@@ -6,9 +6,9 @@
 #include "Engine/Graphics/Buffer/StructuredBuffer.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/TerrainVertex.h"
 
-/// //////////////////////////////////////////
+/// /////////////////////////////////////////////////
 /// 地形の頂点を編集するためのコンピュートシェーダー
-/// //////////////////////////////////////////
+/// /////////////////////////////////////////////////
 class TerrainVertexEditorCompute : public IEditorCompute {
 
 	struct TerrainInfo {
@@ -41,7 +41,7 @@ public:
 	~TerrainVertexEditorCompute() override;
 
 	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxManager) override;
-	void Execute(class EntityComponentSystem* _ecs, class DxCommand* _dxCommand, class AssetCollection* _resourceCollection) override;
+	void Execute(class EntityComponentSystem* _ecs, class DxCommand* _dxCommand, class AssetCollection* _assetCollection) override;
 
 private:
 	/// =========================================

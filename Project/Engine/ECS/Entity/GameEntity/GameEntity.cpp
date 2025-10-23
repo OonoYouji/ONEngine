@@ -20,7 +20,6 @@ void GameEntity::Awake() {
 
 	transform_ = AddComponent<Transform>();
 	variables_ = AddComponent<Variables>();
-	//variables_->LoadJson("./Assets/Jsons/" + name_ + ".json");
 }
 
 IComponent* GameEntity::AddComponent(const std::string& _name) {
@@ -115,18 +114,6 @@ void GameEntity::SetPosition(const Vector3& _v) {
 	UpdateTransform();
 }
 
-void GameEntity::SetPositionX(float _x) {
-	transform_->position.x = _x;
-}
-
-void GameEntity::SetPositionY(float _y) {
-	transform_->position.y = _y;
-}
-
-void GameEntity::SetPositionZ(float _z) {
-	transform_->position.z = _z;
-}
-
 void GameEntity::SetRotate(const Vector3& _v) {
 	transform_->rotate = Quaternion::FromEuler(_v);
 }
@@ -137,18 +124,6 @@ void GameEntity::SetRotate(const Quaternion& _q) {
 
 void GameEntity::SetScale(const Vector3& _v) {
 	transform_->scale = _v;
-}
-
-void GameEntity::SetScaleX(float _x) {
-	transform_->scale.x = _x;
-}
-
-void GameEntity::SetScaleY(float _y) {
-	transform_->scale.y = _y;
-}
-
-void GameEntity::SetScaleZ(float _z) {
-	transform_->scale.z = _z;
 }
 
 void GameEntity::SetParent(GameEntity* _parent) {

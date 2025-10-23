@@ -8,8 +8,8 @@
 
 using namespace AudioStructs;
 
-AudioPlaybackSystem::AudioPlaybackSystem(AssetCollection* _resourceCollection)
-	: pAssetCollection_(_resourceCollection) {
+AudioPlaybackSystem::AudioPlaybackSystem(AssetCollection* _assetCollection)
+	: pAssetCollection_(_assetCollection) {
 
 	HRESULT hr = S_FALSE;
 

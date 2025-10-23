@@ -14,7 +14,7 @@
 /// デバッグ用のSpriteRenderer
 /// /////////////////////////////////////////////////////////////
 
-void COMP_DEBUG::SpriteDebug(SpriteRenderer* _sr, AssetCollection* _resourceCollection) {
+void COMP_DEBUG::SpriteDebug(SpriteRenderer* _sr, AssetCollection* _assetCollection) {
 	if (!_sr) {
 		return;
 	}
@@ -22,7 +22,7 @@ void COMP_DEBUG::SpriteDebug(SpriteRenderer* _sr, AssetCollection* _resourceColl
 	float indentValue = 1.2f;
 	ImGui::Indent(indentValue);
 	/// colorの変更
-	if (ImMathf::MaterialEdit("material", &_sr->gpuMaterial_, _resourceCollection)) {}
+	if (ImMathf::MaterialEdit("material", &_sr->gpuMaterial_, _assetCollection)) {}
 	ImGui::Unindent(indentValue);
 }
 

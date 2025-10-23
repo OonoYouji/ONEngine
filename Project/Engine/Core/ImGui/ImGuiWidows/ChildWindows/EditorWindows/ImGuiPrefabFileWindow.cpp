@@ -11,8 +11,8 @@
 #include "../GameWindows/ImGuiInspectorWindow.h"
 #include "Engine/Script/MonoScriptEngine.h"
 
-ImGuiPrefabFileWindow::ImGuiPrefabFileWindow(EntityComponentSystem* _ecs, AssetCollection* _resourceCollection, ImGuiInspectorWindow* _inspector)
-	: pEcs_(_ecs), pAssetCollection_(_resourceCollection), pInspector_(_inspector) {
+ImGuiPrefabFileWindow::ImGuiPrefabFileWindow(EntityComponentSystem* _ecs, AssetCollection* _assetCollection, ImGuiInspectorWindow* _inspector)
+	: pEcs_(_ecs), pAssetCollection_(_assetCollection), pInspector_(_inspector) {
 
 	files_ = Mathf::FindFiles("Assets/Prefabs", ".prefab");
 }

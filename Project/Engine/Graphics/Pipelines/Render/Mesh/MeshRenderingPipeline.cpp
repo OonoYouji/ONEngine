@@ -10,8 +10,8 @@
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 
 
-MeshRenderingPipeline::MeshRenderingPipeline(AssetCollection* _resourceCollection)
-	: resourceCollection_(_resourceCollection) {}
+MeshRenderingPipeline::MeshRenderingPipeline(AssetCollection* _assetCollection)
+	: resourceCollection_(_assetCollection) {}
 
 MeshRenderingPipeline::~MeshRenderingPipeline() {}
 

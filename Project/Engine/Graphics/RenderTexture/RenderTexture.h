@@ -27,7 +27,7 @@ public:
 	RenderTexture();
 	~RenderTexture();
 
-	void Initialize(DXGI_FORMAT _format, const Vector4& _clearColor, const std::string& _name, class DxManager* _dxManager, class AssetCollection* _resourceCollection);
+	void Initialize(DXGI_FORMAT _format, const Vector4& _clearColor, const std::string& _name, class DxManager* _dxManager, class AssetCollection* _assetCollection);
 
 	/// @brief render targetとして設定
 	/// @param _dxCommand DxCommandのインスタンスへのポインタ
@@ -93,8 +93,8 @@ public:
 	/// @brief uav textureの初期化
 	/// @param _textureName textureの名前
 	/// @param _dxManager DxManagerへのポインタ
-	/// @param _resourceCollection AssetCollectionへのポインタ
-	void Initialize(const std::string& _textureName, class DxManager* _dxManager, class AssetCollection* _resourceCollection);
+	/// @param _assetCollection AssetCollectionへのポインタ
+	void Initialize(const std::string& _textureName, class DxManager* _dxManager, class AssetCollection* _assetCollection);
 
 
 private:

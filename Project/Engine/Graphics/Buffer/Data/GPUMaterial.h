@@ -10,7 +10,9 @@
 #include "Engine/Core/Utility/Math/Vector4.h"
 #include "Engine/Asset/Guid/Guid.h"
 
+/// /////////////////////////////////////////////////
 /// @brief ポストエフェクトの適用
+/// /////////////////////////////////////////////////
 enum PostEffectFlags_ {
 	PostEffectFlags_None = 0,      ///< なし
 	PostEffectFlags_Lighting = 1 << 0, ///< ライティング
@@ -18,7 +20,9 @@ enum PostEffectFlags_ {
 	PostEffectFlags_EnvironmentReflection = 1 << 2, ///< 天球に合わせて環境反射を行う
 };
 
+/// /////////////////////////////////////////////////
 /// @brief UV変形用データ構造体
+/// /////////////////////////////////////////////////
 struct UVTransform {
 	Vector2 position; /// オフセット
 	Vector2 scale = Vector2::kOne; /// スケール
@@ -26,7 +30,9 @@ struct UVTransform {
 	float   pad1[3];
 };
 
+/// /////////////////////////////////////////////////
 /// @brief GPUで利用するマテリアルデータ構造体
+/// /////////////////////////////////////////////////
 struct GPUMaterial {
 	UVTransform uvTransform;     /// UV変形
 	Vector4     baseColor;       /// 色
@@ -52,7 +58,9 @@ void to_json(nlohmann::json& _j, const CPUMaterial& _material);
 void from_json(const nlohmann::json& _j, CPUMaterial& _material);
 
 
+/// /////////////////////////////////////////////////
 /// @brief CPU側のマテリアルクラス
+/// /////////////////////////////////////////////////
 class CPUMaterial {
 	friend void to_json(nlohmann::json& _j, const CPUMaterial& _material);
 	friend void from_json(const nlohmann::json& _j, CPUMaterial& _material);

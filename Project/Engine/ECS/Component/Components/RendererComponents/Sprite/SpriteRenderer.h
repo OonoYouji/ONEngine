@@ -14,7 +14,7 @@
 class AssetCollection;
 class SpriteRenderer;
 namespace COMP_DEBUG {
-	void SpriteDebug(SpriteRenderer* _sr, AssetCollection* _resourceCollection);
+	void SpriteDebug(SpriteRenderer* _sr, AssetCollection* _assetCollection);
 }
 
 /// json serialize
@@ -28,7 +28,7 @@ void from_json(const nlohmann::json& _j, SpriteRenderer& _sr);
 class SpriteRenderer final : public IComponent {
 	friend class SpriteUpdateSystem;
 
-	friend void COMP_DEBUG::SpriteDebug(SpriteRenderer* _sr, AssetCollection* _resourceCollection);
+	friend void COMP_DEBUG::SpriteDebug(SpriteRenderer* _sr, AssetCollection* _assetCollection);
 	friend void to_json(nlohmann::json& _j, const SpriteRenderer& _sr);
 	friend void from_json(const nlohmann::json& _j, SpriteRenderer& _sr);
 public:

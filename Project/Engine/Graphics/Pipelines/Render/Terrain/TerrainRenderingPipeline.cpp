@@ -7,8 +7,8 @@
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 
 
-TerrainRenderingPipeline::TerrainRenderingPipeline(AssetCollection* _resourceCollection)
-	: pAssetCollection_(_resourceCollection) {}
+TerrainRenderingPipeline::TerrainRenderingPipeline(AssetCollection* _assetCollection)
+	: pAssetCollection_(_assetCollection) {}
 TerrainRenderingPipeline::~TerrainRenderingPipeline() {}
 
 

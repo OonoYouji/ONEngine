@@ -5,8 +5,8 @@
 #include "Engine/ECS/Component/Array/ComponentArray.h"
 #include "Engine/Asset/Collection/AssetCollection.h"
 
-SkinMeshUpdateSystem::SkinMeshUpdateSystem(DxManager* _dxManager, AssetCollection* _resourceCollection)
-	: pDxManager_(_dxManager), pAssetCollection_(_resourceCollection) {}
+SkinMeshUpdateSystem::SkinMeshUpdateSystem(DxManager* _dxManager, AssetCollection* _assetCollection)
+	: pDxManager_(_dxManager), pAssetCollection_(_assetCollection) {}
 
 void SkinMeshUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
 

@@ -10,8 +10,8 @@
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 
-ImGuiPrefabViewWindow::ImGuiPrefabViewWindow(EntityComponentSystem* _ecs, AssetCollection* _resourceCollection)
-	: pEcs_(_ecs), pAssetCollection_(_resourceCollection) {}
+ImGuiPrefabViewWindow::ImGuiPrefabViewWindow(EntityComponentSystem* _ecs, AssetCollection* _assetCollection)
+	: pEcs_(_ecs), pAssetCollection_(_assetCollection) {}
 
 void ImGuiPrefabViewWindow::ShowImGui() {
 	if (!ImGui::Begin("prefab view")) {

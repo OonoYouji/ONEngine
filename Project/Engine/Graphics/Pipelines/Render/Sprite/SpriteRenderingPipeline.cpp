@@ -12,8 +12,8 @@
 
 
 
-SpriteRenderingPipeline::SpriteRenderingPipeline(AssetCollection* _resourceCollection)
-	: resourceCollection_(_resourceCollection) {}
+SpriteRenderingPipeline::SpriteRenderingPipeline(AssetCollection* _assetCollection)
+	: resourceCollection_(_assetCollection) {}
 SpriteRenderingPipeline::~SpriteRenderingPipeline() {}
 
 

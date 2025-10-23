@@ -49,7 +49,7 @@ void PostProcessTerrainBrush::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 
 void PostProcessTerrainBrush::Execute(
 	const std::string& _textureName, DxCommand* _dxCommand,
-	AssetCollection* _resourceCollection, EntityComponentSystem* _entityComponentSystem) {
+	AssetCollection* _assetCollection, EntityComponentSystem* _entityComponentSystem) {
 
 	/// brush data
 	const Vector2 mousePos = Input::GetImGuiImageMousePosNormalized("Scene");
@@ -81,11 +81,11 @@ void PostProcessTerrainBrush::Execute(
 	);
 
 	/// texture index
-	auto& textures = _resourceCollection->GetTextures();
-	textureIndices_[0] = _resourceCollection->GetTextureIndex(_textureName + "Scene");
-	textureIndices_[1] = _resourceCollection->GetTextureIndex(_textureName + "WorldPosition");
-	textureIndices_[2] = _resourceCollection->GetTextureIndex(_textureName + "Flags");
-	textureIndices_[3] = _resourceCollection->GetTextureIndex("postProcessResult");
+	auto& textures = _assetCollection->GetTextures();
+	textureIndices_[0] = _assetCollection->GetTextureIndex(_textureName + "Scene");
+	textureIndices_[1] = _assetCollection->GetTextureIndex(_textureName + "WorldPosition");
+	textureIndices_[2] = _assetCollection->GetTextureIndex(_textureName + "Flags");
+	textureIndices_[3] = _assetCollection->GetTextureIndex("postProcessResult");
 
 	auto cmdList = _dxCommand->GetCommandList();
 

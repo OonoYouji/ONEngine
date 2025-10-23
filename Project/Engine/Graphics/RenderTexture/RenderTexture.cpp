@@ -8,14 +8,14 @@
 RenderTexture::RenderTexture() = default;
 RenderTexture::~RenderTexture() = default;
 
-void RenderTexture::Initialize(DXGI_FORMAT _format, const Vector4& _clearColor, const std::string& _name, DxManager* _dxManager, AssetCollection* _resourceCollection) {
+void RenderTexture::Initialize(DXGI_FORMAT _format, const Vector4& _clearColor, const std::string& _name, DxManager* _dxManager, AssetCollection* _assetCollection) {
 	clearColor_ = _clearColor;
 	name_ = _name;
 
 	{	/// textureの作成
 		Texture rtvTexture;
-		_resourceCollection->AddTexture(_name, std::move(rtvTexture)); /// textureの管理を AssetCollection に任せる
-		texture_ = _resourceCollection->GetTexture(_name);
+		_assetCollection->AddTexture(_name, std::move(rtvTexture)); /// textureの管理を AssetCollection に任せる
+		texture_ = _assetCollection->GetTexture(_name);
 	}
 
 	/// 必要なオブジェクトの取得
@@ -115,10 +115,10 @@ const std::string& RenderTexture::GetName() const {
 UAVTexture::UAVTexture() = default;
 UAVTexture::~UAVTexture() = default;
 
-void UAVTexture::Initialize(const std::string& _textureName, DxManager* _dxManager, AssetCollection* _resourceCollection) {
+void UAVTexture::Initialize(const std::string& _textureName, DxManager* _dxManager, AssetCollection* _assetCollection) {
 	Texture uavTexture;
-	_resourceCollection->AddTexture(_textureName, std::move(uavTexture));
-	texture_ = _resourceCollection->GetTexture(_textureName);
+	_assetCollection->AddTexture(_textureName, std::move(uavTexture));
+	texture_ = _assetCollection->GetTexture(_textureName);
 
 	/// 必要なオブジェクトの取得
 	DxDevice* dxDevice = _dxManager->GetDxDevice();

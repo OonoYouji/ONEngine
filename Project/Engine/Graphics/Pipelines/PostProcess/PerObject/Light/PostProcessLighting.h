@@ -14,7 +14,6 @@
 /// ///////////////////////////////////////////////////
 class PostProcessLighting : public PerObjectPostProcess {
 private:
-
 	/// ===================================================
 	/// private : sub class
 	/// ===================================================
@@ -47,7 +46,7 @@ public:
 	void Execute(
 		const std::string& _textureName,
 		class DxCommand* _dxCommand, 
-		class AssetCollection* _resourceCollection,
+		class AssetCollection* _assetCollection,
 		class EntityComponentSystem* _pEntityComponentSystem
 	) override;
 

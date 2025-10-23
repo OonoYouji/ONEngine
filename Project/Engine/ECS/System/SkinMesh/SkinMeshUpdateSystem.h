@@ -10,12 +10,15 @@
 class SkinMeshUpdateSystem : public ECSISystem {
 public:
 
-	SkinMeshUpdateSystem(class DxManager* _dxManager, class AssetCollection* _resourceCollection);
+	SkinMeshUpdateSystem(class DxManager* _dxManager, class AssetCollection* _assetCollection);
 	~SkinMeshUpdateSystem() override = default;
 
 	void RuntimeUpdate(class ECSGroup* _ecs) override;
 
+	/// @brief スケルトンの更新
 	void UpdateSkeleton(class SkinMeshRenderer* _smr);
+
+	/// @brief スキンクラスターの更新
 	void UpdateSkinCluster(class SkinMeshRenderer* _smr);
 
 private:

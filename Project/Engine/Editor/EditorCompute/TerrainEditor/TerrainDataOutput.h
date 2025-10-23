@@ -8,9 +8,9 @@
 #include "TerrainInfo.h"
 
 
-/// //////////////////////////////////////////
+/// /////////////////////////////////////////////////
 /// 地形のデータを出力する
-/// //////////////////////////////////////////
+/// /////////////////////////////////////////////////
 class TerrainDataOutput : public IEditorCompute {
 
 	enum {
@@ -29,7 +29,7 @@ public:
 	~TerrainDataOutput() override;
 
 	void Initialize(class ShaderCompiler* _shaderCompiler, class DxManager* _dxManager) override;
-	void Execute(class EntityComponentSystem* _ecs, class DxCommand* _dxCommand, class AssetCollection* _resourceCollection) override;
+	void Execute(class EntityComponentSystem* _ecs, class DxCommand* _dxCommand, class AssetCollection* _assetCollection) override;
 
 private:
 	/// ==========================================

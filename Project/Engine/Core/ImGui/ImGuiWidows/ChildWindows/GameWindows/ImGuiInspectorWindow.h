@@ -18,7 +18,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	ImGuiInspectorWindow(const std::string& _windowName, class EntityComponentSystem* _ecs, class AssetCollection* _resourceCollection, class EditorManager* _editorManager);
+	ImGuiInspectorWindow(const std::string& _windowName, class EntityComponentSystem* _ecs, class AssetCollection* _assetCollection, class EditorManager* _editorManager);
 	~ImGuiInspectorWindow() {}
 
 	/// @brief imgui windowの描画処理

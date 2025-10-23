@@ -11,8 +11,8 @@
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 
 
-EffectRenderingPipeline::EffectRenderingPipeline(AssetCollection* _resourceCollection)
-	: pAssetCollection_(_resourceCollection) {}
+EffectRenderingPipeline::EffectRenderingPipeline(AssetCollection* _assetCollection)
+	: pAssetCollection_(_assetCollection) {}
 EffectRenderingPipeline::~EffectRenderingPipeline() {}
 
 void EffectRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {

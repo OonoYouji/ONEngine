@@ -7,8 +7,8 @@
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 #include "Engine/Asset/Collection/AssetCollection.h"
 
-TerrainProceduralRenderingPipeline::TerrainProceduralRenderingPipeline(AssetCollection* _resourceCollection)
-	: pAssetCollection_(_resourceCollection) {}
+TerrainProceduralRenderingPipeline::TerrainProceduralRenderingPipeline(AssetCollection* _assetCollection)
+	: pAssetCollection_(_assetCollection) {}
 TerrainProceduralRenderingPipeline::~TerrainProceduralRenderingPipeline() {}
 
 void TerrainProceduralRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {

@@ -19,13 +19,26 @@ public:
 	IndexBuffer();
 	~IndexBuffer();
 
+	/// @brief Bufferを作成する
+	/// @param _indicesSize Indexの数
+	/// @param _dxDevice DxDeviceへのポインタ
 	void Create(size_t _indicesSize, class DxDevice* _dxDevice);
 
+	/// @brief Indices用のメモリを確保する
+	/// @param _value サイズ
 	void Reserve(size_t _value);
+
+	/// @brief Indices用のサイズを変更する
+	/// @param _value サイズ
 	void Resize(size_t _value);
 
+
+	/// @brief コマンドリストにバインドする
+	/// @param _commandList バインド対象のコマンドリスト
 	void BindForCommandList(ID3D12GraphicsCommandList* _commandList);
 
+
+	/// @brief GPU用にマッピングする
 	void Map();
 
 private:

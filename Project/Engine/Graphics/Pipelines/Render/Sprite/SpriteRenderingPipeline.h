@@ -44,7 +44,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	SpriteRenderingPipeline(class AssetCollection* _resourceCollection);
+	SpriteRenderingPipeline(class AssetCollection* _assetCollection);
 	~SpriteRenderingPipeline();
 
 

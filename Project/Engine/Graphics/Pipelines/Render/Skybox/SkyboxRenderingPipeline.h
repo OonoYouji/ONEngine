@@ -20,7 +20,7 @@ public:
 
 public:
 
-	SkyboxRenderingPipeline(class AssetCollection* _resourceCollection);
+	SkyboxRenderingPipeline(class AssetCollection* _assetCollection);
 	~SkyboxRenderingPipeline();
 
 	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxManager) override;

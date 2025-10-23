@@ -24,9 +24,9 @@ struct Handle {
 };
 
 
-/// ===================================================
+/// ///////////////////////////////////////////////////
 /// ストラクチャードバッファ用クラス
-/// ===================================================
+/// ///////////////////////////////////////////////////
 template <typename T>
 class StructuredBuffer final {
 public:
@@ -47,16 +47,20 @@ public:
 	void ResetCounter(DxCommand* _dxCommand);
 	uint32_t ReadCounter(DxCommand* _dxCommand);
 
-
+	/// SRV用のバインド
 	void SRVBindForGraphicsCommandList(ID3D12GraphicsCommandList* _cmdList, UINT _rootParameterIndex);
 	void SRVBindForComputeCommandList(ID3D12GraphicsCommandList* _cmdList, UINT _rootParameterIndex);
 
+	/// UAV用のバインド
 	void UAVBindForGraphicsCommandList(ID3D12GraphicsCommandList* _cmdList, UINT _rootParameterIndex);
 	void UAVBindForComputeCommandList(ID3D12GraphicsCommandList* _cmdList, UINT _rootParameterIndex);
 
+	/// Append用のバインド
 	void AppendBindForGraphicsCommandList(ID3D12GraphicsCommandList* _cmdList, UINT _rootParameterIndex);
 	void AppendBindForComputeCommandList(ID3D12GraphicsCommandList* _cmdList, UINT _rootParameterIndex);
 
+
+	/// データの設定、取得
 	void SetMappedData(size_t _index, const T& _setValue);
 	const T& GetMappedData(size_t _index) const;
 

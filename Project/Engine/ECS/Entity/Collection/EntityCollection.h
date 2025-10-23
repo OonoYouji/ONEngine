@@ -87,6 +87,9 @@ private:
 	std::unordered_map<std::string, std::unique_ptr<EntityPrefab>> prefabs_;
 
 public:
+	/// =========================================
+	/// public : accessor
+	/// =========================================
 
 	void SetMainCamera(CameraComponent* _CameraComponent);
 	void SetMainCamera2D(CameraComponent* _CameraComponent);

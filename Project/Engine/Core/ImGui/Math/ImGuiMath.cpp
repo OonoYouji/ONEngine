@@ -72,7 +72,7 @@ bool ImMathf::InputText(const char* _label, std::string* _text, ImGuiInputTextFl
 	);
 }
 
-bool ImMathf::MaterialEdit(const char* _label, GPUMaterial* _material, AssetCollection* _resourceCollection) {
+bool ImMathf::MaterialEdit(const char* _label, GPUMaterial* _material, AssetCollection* _assetCollection) {
 	/// nullptr check
 	if (!_material) {
 		return false;
@@ -107,7 +107,7 @@ bool ImMathf::MaterialEdit(const char* _label, GPUMaterial* _material, AssetColl
 		if (ImGui::CollapsingHeader("Texture")) {
 
 			/// textureの変更
-			const std::string& texturePath = _resourceCollection->GetTexturePath(_material->baseTextureId);
+			const std::string& texturePath = _assetCollection->GetTexturePath(_material->baseTextureId);
 			ImMathf::InputText("Base Texture", const_cast<std::string*>(&texturePath), ImGuiInputTextFlags_ReadOnly);
 			if (ImGui::BeginDragDropTarget()) {
 				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("AssetData")) {
@@ -115,7 +115,7 @@ bool ImMathf::MaterialEdit(const char* _label, GPUMaterial* _material, AssetColl
 						const char* droppedPath = static_cast<const char*>(payload->Data);
 						std::string path = std::string(droppedPath);
 						if (path.find(".png") != std::string::npos || path.find(".jpg") != std::string::npos) {
-							size_t droppedTextureIndex = _resourceCollection->GetTextureIndex(path);
+							size_t droppedTextureIndex = _assetCollection->GetTextureIndex(path);
 							_material->baseTextureId = static_cast<int32_t>(droppedTextureIndex);
 							isEdit = true;
 						}
@@ -126,7 +126,7 @@ bool ImMathf::MaterialEdit(const char* _label, GPUMaterial* _material, AssetColl
 
 			/// texture idが有効値じゃなければ無視
 			if (_material->baseTextureId >= 0) {
-				const Texture* baseTexture = _resourceCollection->GetTexture(_resourceCollection->GetTexturePath(_material->baseTextureId));
+				const Texture* baseTexture = _assetCollection->GetTexture(_assetCollection->GetTexturePath(_material->baseTextureId));
 				if (baseTexture) {
 					ImTextureID textureId = reinterpret_cast<ImTextureID>(baseTexture->GetSRVGPUHandle().ptr);
 					ImGui::Image(textureId, ImVec2(100, 100), ImVec2(0, 0), ImVec2(1, 1), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
@@ -138,7 +138,7 @@ bool ImMathf::MaterialEdit(const char* _label, GPUMaterial* _material, AssetColl
 
 
 			/// 法線テクスチャの変更
-			const std::string& normalTexturePath = _resourceCollection->GetTexturePath(_material->normalTextureId);
+			const std::string& normalTexturePath = _assetCollection->GetTexturePath(_material->normalTextureId);
 			ImMathf::InputText("Normal Texture", const_cast<std::string*>(&normalTexturePath), ImGuiInputTextFlags_ReadOnly);
 			if (ImGui::BeginDragDropTarget()) {
 				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("AssetData")) {
@@ -146,7 +146,7 @@ bool ImMathf::MaterialEdit(const char* _label, GPUMaterial* _material, AssetColl
 						const char* droppedPath = static_cast<const char*>(payload->Data);
 						std::string path = std::string(droppedPath);
 						if (path.find(".png") != std::string::npos || path.find(".jpg") != std::string::npos) {
-							size_t droppedTextureIndex = _resourceCollection->GetTextureIndex(path);
+							size_t droppedTextureIndex = _assetCollection->GetTextureIndex(path);
 							_material->normalTextureId = static_cast<int32_t>(droppedTextureIndex);
 							isEdit = true;
 						}
@@ -158,7 +158,7 @@ bool ImMathf::MaterialEdit(const char* _label, GPUMaterial* _material, AssetColl
 
 			/// normal texture idが有効値じゃなければ無視
 			if (_material->normalTextureId >= 0) {
-				const Texture* normalTexture = _resourceCollection->GetTexture(_resourceCollection->GetTexturePath(_material->normalTextureId));
+				const Texture* normalTexture = _assetCollection->GetTexture(_assetCollection->GetTexturePath(_material->normalTextureId));
 				if (normalTexture) {
 					ImTextureID textureId = reinterpret_cast<ImTextureID>(normalTexture->GetSRVGPUHandle().ptr);
 					ImGui::Image(textureId, ImVec2(100, 100), ImVec2(0, 0), ImVec2(1, 1), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));

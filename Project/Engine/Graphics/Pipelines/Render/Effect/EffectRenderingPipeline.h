@@ -20,7 +20,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	EffectRenderingPipeline(class AssetCollection* _resourceCollection);
+	EffectRenderingPipeline(class AssetCollection* _assetCollection);
 	~EffectRenderingPipeline();
 
 	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxManager) override;

@@ -15,9 +15,9 @@
 #include "Engine/Graphics/Pipelines/Render/CopyImage/CopyImageRenderingPipeline.h"
 
 
-/// ===================================================
+/// ///////////////////////////////////////////////////
 /// 描画のフレームワーククラス
-/// ===================================================
+/// ///////////////////////////////////////////////////
 class RenderingFramework final {
 
 	enum RENDER_TEXTURE_TYPE {
@@ -28,7 +28,6 @@ class RenderingFramework final {
 	};
 
 public:
-
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
@@ -48,12 +47,14 @@ public:
 	void DrawDebug();
 	void DrawPrefab();
 
+
+	/// @brief SRVHeapをコマンドリストにバインドする
 	void HeapBindToCommandList();
 
+	/// @brief DxCommandを実行してリセットする
 	void DxCommandExeAndReset();
 
 private:
-
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
@@ -76,7 +77,6 @@ private:
 
 
 public:
-
 	/// ===================================================
 	/// public : accessor
 	/// ===================================================

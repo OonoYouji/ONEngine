@@ -20,7 +20,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	AudioPlaybackSystem(class AssetCollection* _resourceCollection);
+	AudioPlaybackSystem(class AssetCollection* _assetCollection);
 	~AudioPlaybackSystem();
 
 	void OutsideOfRuntimeUpdate(ECSGroup* _ecs) override;

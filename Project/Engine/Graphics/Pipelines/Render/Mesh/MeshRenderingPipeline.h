@@ -39,7 +39,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	MeshRenderingPipeline(class AssetCollection* _resourceCollection);
+	MeshRenderingPipeline(class AssetCollection* _assetCollection);
 	~MeshRenderingPipeline();
 
 	/// @brief 初期化関数
