@@ -7,12 +7,12 @@
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/Core/ImGui/Math/ImGuiMath.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
-#include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
+#include "Engine/Asset/Collection/AssetCollection.h"
 #include "../GameWindows/ImGuiInspectorWindow.h"
 #include "Engine/Script/MonoScriptEngine.h"
 
-ImGuiPrefabFileWindow::ImGuiPrefabFileWindow(EntityComponentSystem* _ecs, GraphicsResourceCollection* _resourceCollection, ImGuiInspectorWindow* _inspector)
-	: pECS_(_ecs), pGrc_(_resourceCollection), pInspector_(_inspector) {
+ImGuiPrefabFileWindow::ImGuiPrefabFileWindow(EntityComponentSystem* _ecs, AssetCollection* _assetCollection, ImGuiInspectorWindow* _inspector)
+	: pEcs_(_ecs), pAssetCollection_(_assetCollection), pInspector_(_inspector) {
 
 	files_ = Mathf::FindFiles("Assets/Prefabs", ".prefab");
 }
@@ -24,8 +24,8 @@ void ImGuiPrefabFileWindow::ShowImGui() {
 		return;
 	}
 
-	const auto& textures = pGrc_->GetTextures();
-	const Texture& button = textures[pGrc_->GetTextureIndex("./Packages/Textures/ImGui/reload.png")];
+	const auto& textures = pAssetCollection_->GetTextures();
+	const Texture& button = textures[pAssetCollection_->GetTextureIndex("./Packages/Textures/ImGui/reload.png")];
 
 	ReloadPrefabFiles(&button);
 
@@ -47,7 +47,7 @@ void ImGuiPrefabFileWindow::ShowImGui() {
 		if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
 			Console::Log("Double clicked prefab file: " + file.second);
 
-			ECSGroup* debugGroup = pECS_->GetECSGroup("Debug");
+			ECSGroup* debugGroup = pEcs_->GetECSGroup("Debug");
 			GameEntity* entity = debugGroup->GenerateEntityFromPrefab(file.second, false);
 			pInspector_->SetSelectedEntity(entity);
 		}
@@ -71,48 +71,10 @@ void ImGuiPrefabFileWindow::ReloadPrefabFiles(const Texture* _tex) {
 
 		for (auto& file : files_) {
 			/// ファイル名の置換
-			//pECS_->ReloadPrefab(file.second);
+			pEcs_->ReloadPrefab(file.second);
 		}
 
 	}
 
 }
 
-void ImGuiPrefabFileWindow::AddPrefabButton() {
-
-	if (ImGui::Button("+")) {
-		ImGui::OpenPopup("add prefab popup");
-	}
-
-
-	if (ImGui::BeginPopup("add prefab popup")) {
-
-		/// 新規Prefabの名前入力
-		if (ImMathf::InputText("new prefab name", &newPrefabName_, ImGuiInputTextFlags_EnterReturnsTrue)) {
-
-			if (!newPrefabName_.empty()) {
-				/// 拡張子を追加
-				if (newPrefabName_.find(".prefab") == std::string::npos) {
-					newPrefabName_ += ".prefab";
-				}
-
-				/// 先にPrefabをリロード
-				//pECS_->ReloadPrefab(newPrefabName_);
-
-				/// Prefabを生成
-				//GameEntity* entity = pECS_->GeneratePrefabEntity(newPrefabName_);
-				//if (entity) {
-				//	Console::Log("Prefab created: " + newPrefabName_);
-				//	pInspector_->SetSelectedEntity(reinterpret_cast<std::uintptr_t>(entity));
-				//} else {
-				//	Console::LogError("Failed to create prefab: " + newPrefabName_);
-				//}
-				newPrefabName_.clear(); // 入力フィールドをクリア
-			}
-		}
-
-		ImGui::EndPopup();
-
-	}
-
-}

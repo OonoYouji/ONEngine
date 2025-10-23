@@ -10,9 +10,9 @@
 #include "Engine/Graphics/Buffer/StructuredBuffer.h"
 #include "Engine/Graphics/Buffer/ConstantBuffer.h"
 
-/// ////////////////////////////////////
+/// /////////////////////////////////////////////////
 /// 地形に対してのプロシージャルレンダリングパイプライン
-/// ////////////////////////////////////
+/// /////////////////////////////////////////////////
 class TerrainProceduralRenderingPipeline : public IRenderingPipeline {
 
 	/// @brief compute shader用root param index
@@ -43,7 +43,7 @@ public:
 	/// public : methods
 	/// =====================================
 
-	TerrainProceduralRenderingPipeline(class GraphicsResourceCollection* _resourceCollection);
+	TerrainProceduralRenderingPipeline(class AssetCollection* _assetCollection);
 	~TerrainProceduralRenderingPipeline();
 
 	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxManager) override;
@@ -55,7 +55,7 @@ private:
 	/// private : objects
 	/// =====================================
 
-	class GraphicsResourceCollection* pGrc_;
+	class AssetCollection* pAssetCollection_;
 	class DxManager* pDxManager_;
 
 	std::unique_ptr<ComputePipeline> computePipeline_;

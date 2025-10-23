@@ -6,12 +6,12 @@
 
 /// engine
 #include "../../Interface/IComponent.h"
-#include "Engine/Graphics/Resource/ResourceData/Model.h"
-#include "Engine/Graphics/Buffer/Data/Material.h"
+#include "Engine/Asset/Assets/Mesh/Model.h"
+#include "Engine/Graphics/Buffer/Data/GPUMaterial.h"
 
-/// /////////////////////////////////////////////////
+/// ///////////////////////////////////////////////////
 /// CustomMeshRenderer
-/// ///////////////////////////////////////////////
+/// ///////////////////////////////////////////////////
 class CustomMeshRenderer final : public IRenderComponent {
 public:
 	/// ===================================================
@@ -25,6 +25,7 @@ public:
 	/// @param _pDxDevice DxDeviceへのポインタ
 	void MeshRecreate(class DxDevice* _pDxDevice);
 
+	/// @brief 頂点をGPUに転送する
 	void VertexMemcpy();
 
 private:
@@ -37,7 +38,7 @@ private:
 	bool isVisible_ = true; ///< 描画するかどうか
 	bool isBufferRecreate_ = false; ///< バッファを再作成するかどうか
 
-	Material material_;
+	GPUMaterial gpuMaterial_;
 
 public:
 	/// ====================================================
@@ -90,7 +91,7 @@ public:
 	/// @return bufferを再作成するフラグ
 	bool GetIsBufferRecreate() const;
 
-	const Material& GetMaterial();
+	const GPUMaterial& GetMaterial();
 
 };
 

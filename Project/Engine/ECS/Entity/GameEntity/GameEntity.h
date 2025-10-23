@@ -36,21 +36,29 @@ public:
 	template <class Comp>
 	Comp* GetComponent() const requires std::is_base_of_v<IComponent, Comp>;
 
+	/// @brief Componentの名前から取得する
+	/// @param _compName Componentの名前
 	IComponent* GetComponent(const std::string& _compName) const;
 
+	/// @brief Componentの削除
+	/// @tparam Comp 削除するComponentの型
 	template <typename Comp>
 	void RemoveComponent() requires std::is_base_of_v<IComponent, Comp>;
 
+	/// @brief Componentの名前から削除する
+	/// @param _compName Componentの名前
 	void RemoveComponent(const std::string& _compName);
 
+	/// @brief すべてのComponentの削除
 	void RemoveComponentAll();
 
+	/// @brief ワールド座標行列の更新
 	void UpdateTransform();
 
+	/// @brief 自身の削除処理
 	void Destroy();
 
 protected:
-
 	/// ===================================================
 	/// protected : objects
 	/// ===================================================
@@ -63,7 +71,6 @@ protected:
 	int32_t id_ = 0; ///< entityのID
 
 private:
-
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
@@ -75,23 +82,17 @@ private:
 	std::string prefabName_;
 
 public:
-
 	/// ===================================================
 	/// public : accessor
 	/// ===================================================
 
 	void SetPosition(const Vector3& _v);
-	void SetPositionX(float _x);
-	void SetPositionY(float _y);
-	void SetPositionZ(float _z);
 
 	void SetRotate(const Vector3& _v);
 	void SetRotate(const Quaternion& _q);
 
 	void SetScale(const Vector3& _v);
-	void SetScaleX(float _x);
-	void SetScaleY(float _y);
-	void SetScaleZ(float _z);
+
 
 	void SetParent(GameEntity* _parent);
 	void RemoveParent();

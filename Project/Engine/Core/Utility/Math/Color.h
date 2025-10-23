@@ -39,14 +39,14 @@ public:
 	~Color() = default;
 
 
-	void SetHSVtoRGB(float _h, float _s, float _v) {
-		Vector4 color = HSVtoRGB(_h, _s, _v);
-		r = color.x;
-		g = color.y;
-		b = color.z;
-		a = color.w;
-	}
+	/// @brief HSVからRGBに変換してセットする
+	/// @param _h 色相
+	/// @param _s 彩度
+	/// @param _v 明度
+	void SetHSVtoRGB(float _h, float _s, float _v);
 
+	/// @brief カラーコードからRGBAに変換してセットする
+	/// @param _colorCode カラーコード 
 	void SetColorCode(uint32_t _colorCode);
 
 public:
@@ -72,18 +72,6 @@ public:
 
 };
 
-
-inline Color::Color(uint32_t _colorCode) {
-	SetColorCode(_colorCode);
-}
-
-inline void Color::SetColorCode(uint32_t _colorCode) {
-	r = static_cast<float>((_colorCode >> 24) & 0xFF) / 255.0f;
-	g = static_cast<float>((_colorCode >> 16) & 0xFF) / 255.0f;
-	b = static_cast<float>((_colorCode >> 8)  & 0xFF) / 255.0f;
-	a = static_cast<float>((_colorCode >> 0)  & 0xFF) / 255.0f;
-}
-
 inline Color& Color::operator=(const Vector4& _color) {
 	r = _color.x;
 	g = _color.y;
@@ -99,45 +87,3 @@ inline Color& Color::operator=(const Color& _color) {
 	a = _color.a;
 	return *this;
 }
-
-
-//
-//class HSVColor final {
-//public:
-//	/// ===================================================  
-//	/// public : methods  
-//	/// ===================================================  
-//	HSVColor() = default;
-//	HSVColor(float _h, float _s, float _v) : h(_h), s(_s), v(_v) {}
-//	~HSVColor() = default;
-//
-//
-//
-//
-//public:
-//	/// ===================================================  
-//	/// public : objects  
-//	/// ===================================================  
-//
-//	float h = 0.0f; ///< 色相
-//	float s = 0.0f; ///< 彩度
-//	float v = 0.0f; ///< 明度
-//
-//};
-//
-
-
-//namespace ColorMethods {
-//	/// @brief 色相を取得する
-//	/// @param _color 色
-//	/// @return 色相
-//	inline float GetHue(const Color& _color) {
-//		return std::atan2(_color.g - _color.b, _color.r - _color.g);
-//	}
-//	/// @brief 彩度を取得する
-//	/// @param _color 色
-//	/// @return 彩度
-//	inline float GetSaturation(const Color& _color) {
-//		return std::sqrt(_color.r * _color.r + _color.g * _color.g + _color.b * _color.b);
-//	}
-//}

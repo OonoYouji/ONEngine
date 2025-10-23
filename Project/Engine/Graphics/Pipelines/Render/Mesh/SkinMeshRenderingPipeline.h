@@ -8,8 +8,8 @@
 #include "Engine/Graphics/Buffer/ConstantBuffer.h"
 #include "Engine/Graphics/Buffer/StructuredBuffer.h"
 
-#include "Engine/Graphics/Resource/ResourceData/Skinning.h"
-#include "Engine/Graphics/Buffer/Data/Material.h"
+#include "Engine/Asset/Assets/Mesh/Skinning.h"
+#include "Engine/Graphics/Buffer/Data/GPUMaterial.h"
 
 /// //////////////////////////////////////////////////////
 /// スキンアニメーションの描画パイプライン
@@ -30,7 +30,7 @@ public:
 	/// public : methods
 	/// ====================================================
 
-	SkinMeshRenderingPipeline(class GraphicsResourceCollection* _graphicsResourceCollection);
+	SkinMeshRenderingPipeline(class AssetCollection* _graphicsResourceCollection);
 	~SkinMeshRenderingPipeline() override = default;
 
 	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxManager) override;
@@ -42,10 +42,10 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	class GraphicsResourceCollection* pGraphicsResourceCollection_ = nullptr;
+	class AssetCollection* pGraphicsResourceCollection_ = nullptr;
 
 	std::unique_ptr<ConstantBuffer<Matrix4x4>> transformBuffer_;
-	std::unique_ptr<ConstantBuffer<Material>> materialBuffer_;
+	std::unique_ptr<ConstantBuffer<GPUMaterial>> materialBuffer_;
 	std::unique_ptr<ConstantBuffer<uint32_t>> textureIdBuffer_;
 
 };

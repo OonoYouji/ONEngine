@@ -7,7 +7,7 @@
 
 
 /// ///////////////////////////////////////////////////
-/// ImGuiWindowCollection
+/// 他のImGuiWindowを持ち、表示するためのクラス
 /// ///////////////////////////////////////////////////
 class ImGuiWindowCollection {
 public:
@@ -16,8 +16,8 @@ public:
 	/// ===================================================
 
 	ImGuiWindowCollection(
-		class EntityComponentSystem* _pEntityComponentSystem,
-		class GraphicsResourceCollection* _resourceCollection,
+		class EntityComponentSystem* _ecs,
+		class AssetCollection* _grc,
 		class ImGuiManager* _imGuiManager,
 		class EditorManager* _editorManager,
 		class SceneManager* _sceneManager
@@ -36,6 +36,7 @@ private:
 	/// private : methods
 	/// ===================================================
 
+	/// @brief MainMenuの更新
 	void MainMenuUpdate();
 
 
@@ -44,18 +45,19 @@ private:
 	/// private : objects
 	/// ===================================================
 
+	/// ----- other class ----- ///
 	class ImGuiManager* pImGuiManager_;
 
+	/// ----- collection window ----- ///
 	std::vector<std::unique_ptr<class IImGuiParentWindow>> parentWindows_;
 	std::vector<std::string> parentWindowNames_;
 	int selectedMenuIndex_ = 0;
-
 
 };
 
 
 /// ///////////////////////////////////////////////////
-/// ImGuiの親windowクラス
+/// ImGuiの親Windowクラス
 /// ///////////////////////////////////////////////////
 class IImGuiParentWindow {
 	friend class ImGuiWindowCollection;

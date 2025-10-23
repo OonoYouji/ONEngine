@@ -20,11 +20,11 @@ void RenderingFramework::Initialize(DxManager* _dxManager, WindowManager* _windo
 	pWindowManager_ = _windowManager;
 	pEntityComponentSystem_ = _pEntityComponentSystem;
 
-	resourceCollection_ = std::make_unique<GraphicsResourceCollection>();
-	renderingPipelineCollection_ = std::make_unique<RenderingPipelineCollection>(shaderCompiler_.get(), pDxManager_, pEntityComponentSystem_, resourceCollection_.get());
+	pAssetCollection_ = std::make_unique<AssetCollection>();
+	renderingPipelineCollection_ = std::make_unique<RenderingPipelineCollection>(shaderCompiler_.get(), pDxManager_, pEntityComponentSystem_, pAssetCollection_.get());
 
 	renderingPipelineCollection_->Initialize();
-	resourceCollection_->Initialize(pDxManager_);
+	pAssetCollection_->Initialize(pDxManager_);
 
 
 	const size_t kRenderTexCount = 3;
@@ -36,19 +36,19 @@ void RenderingFramework::Initialize(DxManager* _dxManager, WindowManager* _windo
 	for (size_t i = 0; i < kRenderTexCount; i++) {
 		renderTextures_[i] = std::make_unique<SceneRenderTexture>();
 		renderTextures_[i]->Initialize(
-			renderTexNames[i], Vector4(0.1f, 0.25f, 0.5f, 1.0f),
-			pDxManager_, resourceCollection_.get()
+			"./Assets/Scene/RenderTexture/" + renderTexNames[i], Vector4(0.1f, 0.25f, 0.5f, 1.0f),
+			pDxManager_, pAssetCollection_.get()
 		);
 	}
 
 
 	std::unique_ptr<UAVTexture> uavTexture = std::make_unique<UAVTexture>();
-	uavTexture->Initialize("postProcessResult", pDxManager_, resourceCollection_.get());
+	uavTexture->Initialize("postProcessResult", pDxManager_, pAssetCollection_.get());
 
 
 #ifdef DEBUG_MODE
 #else
-	copyImagePipeline_ = std::make_unique<CopyImageRenderingPipeline>(resourceCollection_.get());
+	copyImagePipeline_ = std::make_unique<CopyImageRenderingPipeline>(pAssetCollection_.get());
 	copyImagePipeline_->Initialize(shaderCompiler_.get(), pDxManager_);
 	releaseBuildSubWindow_ = pWindowManager_->GenerateWindow(L"test", Vector2(1280.0f, 720.0f), WindowManager::WindowType::Sub);
 	pWindowManager_->HideGameWindow(releaseBuildSubWindow_);
@@ -153,8 +153,8 @@ void RenderingFramework::DxCommandExeAndReset() {
 	pDxManager_->GetDxCommand()->CommandReset();
 }
 
-GraphicsResourceCollection* RenderingFramework::GetResourceCollection() const {
-	return resourceCollection_.get();
+AssetCollection* RenderingFramework::GetResourceCollection() const {
+	return pAssetCollection_.get();
 }
 
 #ifdef DEBUG_MODE

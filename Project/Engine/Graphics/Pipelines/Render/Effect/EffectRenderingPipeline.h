@@ -20,15 +20,12 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	EffectRenderingPipeline(class GraphicsResourceCollection* _resourceCollection);
+	EffectRenderingPipeline(class AssetCollection* _assetCollection);
 	~EffectRenderingPipeline();
 
 	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxManager) override;
 
 	void Draw(class ECSGroup* _ecs, const std::vector<GameEntity*>& _entities, class CameraComponent* _camera, DxCommand* _dxCommand) override;
-
-private:
-
 
 
 private:
@@ -36,7 +33,7 @@ private:
 	/// private : objects
 	/// ====================================================
 
-	class GraphicsResourceCollection* pGrc_ = nullptr;
+	class AssetCollection* pAssetCollection_ = nullptr;
 
 	const size_t kMaxRenderingMeshCount_ = size_t(std::pow(2, 20));
 	std::unique_ptr<StructuredBuffer<Matrix4x4>> transformBuffer_;

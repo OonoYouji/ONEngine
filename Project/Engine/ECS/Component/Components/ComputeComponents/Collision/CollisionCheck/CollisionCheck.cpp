@@ -2,7 +2,7 @@
 #include "CollisionCheck.h"
 
 
-bool CollisionCheck::LineVsSphere(const Vector3& _lineStart, const Vector3& _lineEnd, const Vector3& _sphereCenter, float _sphereRadius) {
+bool CollisionCheck::LineVsSphere(const Vector3& _lineStart, const Vector3& _lineEnd, const Vector3& /*_sphereCenter*/, float /*_sphereRadius*/) {
 
 	Vector3 lineDiff = _lineEnd - _lineStart;
 
@@ -171,6 +171,7 @@ bool CollisionCheck::SphereVsCapsule(const Vector3& _sphereCenter, float _sphere
 }
 
 Vector3 CollisionMath::ClosestPointOnAABB(const Vector3& _point, const Vector3& _aabbMin, const Vector3& _aabbMax) {
+	/// 各軸ごとにクランプして最も近い点を求める
 	return {
 		std::max(_aabbMin.x, std::min(_point.x, _aabbMax.x)),
 		std::max(_aabbMin.y, std::min(_point.y, _aabbMax.y)),
@@ -182,24 +183,29 @@ void CollisionMath::ClosestPointsSegmentAABB(const Vector3& _lineStart, const Ve
 	Vector3 segmentDirection = _lineEnd - _lineStart;
 	float segmentLength = Vector3::Length(segmentDirection);
 
+	/// 線分の長さが0の場合、始点を返す
 	if (segmentLength == 0.0f) {
 		_outSegmentPoint = _lineStart;
 		_outAABBPoint = ClosestPointOnAABB(_lineStart, _aabbMin, _aabbMax);
 		return;
 	}
 
+	/// Segmentの方向を正規化
 	Vector3 dir = segmentDirection * (1.0f / segmentLength);
 
 	float t = 0.0f;
 	Vector3 closest = _lineStart;
 
-
+	/// 各軸ごとにAABBの範囲外にある場合、tを更新
 	for (int i = 0; i < 3; ++i) {
+
+		/// 各軸の成分を取得
 		float segStart = (&_lineStart.x)[i];
 		float segEnd = (&_lineEnd.x)[i];
 		float aabbMin = (&_aabbMin.x)[i];
 		float aabbMax = (&_aabbMax.x)[i];
 
+		/// 線分の成分の差を計算
 		float segDelta = segEnd - segStart;
 
 		if (segStart < aabbMin && segDelta > 0.0f) {
@@ -210,8 +216,13 @@ void CollisionMath::ClosestPointsSegmentAABB(const Vector3& _lineStart, const Ve
 	}
 
 
+	/// 0.0 - 1.0の範囲にクランプ
 	t = std::clamp(t, 0.0f, 1.0f);
+
+	/// 線分上の最近接点を計算
 	_outSegmentPoint = _lineStart + segmentDirection * t;
+
+	/// AABB上の最近接点を計算
 	_outAABBPoint = ClosestPointOnAABB(_outSegmentPoint, _aabbMin, _aabbMax);
 
 }

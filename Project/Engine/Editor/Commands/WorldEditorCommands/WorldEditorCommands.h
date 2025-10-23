@@ -71,7 +71,6 @@ private:
 	std::string sourceClassPath_;
 	std::string sourceClassName_;
 	std::string outputFilePath_;
-
 };
 
 
@@ -115,8 +114,6 @@ private:
 
 	class ECSGroup* pECSGroup_;
 	class GameEntity* pEntity_;
-
-
 };
 
 

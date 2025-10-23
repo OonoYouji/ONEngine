@@ -9,12 +9,11 @@
 #include "Engine/Core/Utility/Math/Vector2.h"
 #include "Engine/Core/Utility/Math/Vector4.h"
 
-/// ===================================================
+/// /////////////////////////////////////////////////
 /// ID3D12Resourceのラッパークラス
-/// ===================================================
+/// /////////////////////////////////////////////////
 class DxResource final {
 public:
-
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
@@ -74,17 +73,14 @@ public:
 	void CreateBarrier(D3D12_RESOURCE_STATES _after, class DxCommand* _dxCommand);
 
 private:
-
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
 
 	ComPtr<ID3D12Resource> resource_ = nullptr;
-
-	D3D12_RESOURCE_STATES currentState_;
+	D3D12_RESOURCE_STATES  currentState_;
 
 public:
-
 	/// ===================================================
 	/// public : accessor
 	/// ===================================================
@@ -97,8 +93,6 @@ public:
 	D3D12_RESOURCE_STATES GetCurrentState() const;
 
 };
-
-
 
 
 /// ===================================================

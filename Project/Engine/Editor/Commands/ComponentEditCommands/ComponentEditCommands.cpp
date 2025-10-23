@@ -15,23 +15,6 @@
 #include "ComponentJsonConverter.h"
 
 
-/// ===============================================
-/// Editor Command
-/// ===============================================
-
-EDITOR_STATE ComponentEditCommands::Execute() {
-	// ここにコマンドの実行ロジックを実装
-	// 例: コンポーネントの追加、削除、編集など
-	return EDITOR_STATE_FINISH;
-}
-
-EDITOR_STATE ComponentEditCommands::Undo() {
-	// ここにコマンドの取り消しロジックを実装
-	// 例: コンポーネントの追加を取り消す、削除を取り消すなど
-	return EDITOR_STATE_FINISH;
-}
-
-
 /// ////////////////////////////////////////////////
 /// エンティティのデータ出力コマンド
 /// ////////////////////////////////////////////////

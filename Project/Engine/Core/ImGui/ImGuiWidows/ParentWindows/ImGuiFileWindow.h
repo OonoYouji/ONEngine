@@ -3,6 +3,9 @@
 /// engine
 #include "../Collection/ImGuiWindowCollection.h"
 
+/// ///////////////////////////////////////////////////
+/// File操作用のImGuiWindow
+/// ///////////////////////////////////////////////////
 class ImGuiFileWindow : public IImGuiParentWindow {
 public:
 	/// ===================================================
@@ -19,6 +22,5 @@ private:
 	/// ===================================================
 
 	int imGuiFlags_ = 0;
-
 };
 

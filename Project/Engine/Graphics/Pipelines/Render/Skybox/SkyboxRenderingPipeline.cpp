@@ -2,14 +2,14 @@
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
-#include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
+#include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Components/RendererComponents/Skybox/Skybox.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 
 
-SkyboxRenderingPipeline::SkyboxRenderingPipeline(GraphicsResourceCollection* _resourceCollection)
-	: pGrc_(_resourceCollection) {}
+SkyboxRenderingPipeline::SkyboxRenderingPipeline(AssetCollection* _assetCollection)
+	: pAssetCollection_(_assetCollection) {}
 SkyboxRenderingPipeline::~SkyboxRenderingPipeline() {}
 
 void SkyboxRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
@@ -137,8 +137,8 @@ void SkyboxRenderingPipeline::Draw(class ECSGroup* _ecs, const std::vector<GameE
 
 	//pSkybox->GetOwner()->UpdateTransform();
 
-	auto& textures = pGrc_->GetTextures();
-	size_t texIndex = pGrc_->GetTextureIndex(pSkybox->GetDDSTexturePath());
+	auto& textures = pAssetCollection_->GetTextures();
+	size_t texIndex = pAssetCollection_->GetTextureIndex(pSkybox->GetDDSTexturePath());
 
 	texIndex_.SetMappedData(texIndex);
 	transformMatrix_.SetMappedData(pSkybox->GetOwner()->GetTransform()->GetMatWorld());

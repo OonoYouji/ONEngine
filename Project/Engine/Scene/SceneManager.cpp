@@ -10,7 +10,7 @@
 /// engine
 //#include "Scene/Factory/SceneFactory.h"
 #include "Engine/Core/Config/EngineConfig.h"
-#include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
+#include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 #include "Engine/Scene/ISceneFactory.h"
@@ -23,7 +23,7 @@ namespace {
 }
 
 SceneManager::SceneManager(EntityComponentSystem* entityComponentSystem_)
-	: pECS_(entityComponentSystem_) {
+	: pEcs_(entityComponentSystem_) {
 }
 SceneManager::~SceneManager() {
 	/// 最後に開いていたシーンを保存
@@ -40,7 +40,7 @@ SceneManager::~SceneManager() {
 }
 
 
-void SceneManager::Initialize(GraphicsResourceCollection* _graphicsResourceCollection) {
+void SceneManager::Initialize(AssetCollection* _graphicsResourceCollection) {
 	gSceneManager = this;
 
 	pGraphicsResourceCollection_ = _graphicsResourceCollection;
@@ -48,7 +48,7 @@ void SceneManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 	sceneFactory_ = std::make_unique<SceneFactory>();
 	sceneFactory_->Initialize();
 
-	sceneIO_ = std::make_unique<SceneIO>(pECS_);
+	sceneIO_ = std::make_unique<SceneIO>(pEcs_);
 
 #ifdef DEBUG_MODE
 	SetNextScene(LastOpenSceneName());
@@ -58,7 +58,7 @@ void SceneManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 
 	MoveNextToCurrentScene(false);
 
-	pECS_->MainCameraSetting();
+	pEcs_->MainCameraSetting();
 }
 
 void SceneManager::Update() {
@@ -87,7 +87,7 @@ void SceneManager::SaveCurrentScene() {
 		return;
 	}
 
-	sceneIO_->Output(currentScene_, pECS_->GetCurrentGroup());
+	sceneIO_->Output(currentScene_, pEcs_->GetCurrentGroup());
 }
 
 void SceneManager::SaveCurrentSceneTemporary() {
@@ -96,7 +96,7 @@ void SceneManager::SaveCurrentSceneTemporary() {
 		return;
 	}
 
-	sceneIO_->OutputTemporary(currentScene_, pECS_->GetCurrentGroup());
+	sceneIO_->OutputTemporary(currentScene_, pEcs_->GetCurrentGroup());
 }
 
 void SceneManager::LoadScene(const std::string& _sceneName) {
@@ -147,17 +147,17 @@ std::string SceneManager::LastOpenSceneName() {
 }
 
 void SceneManager::MoveNextToCurrentScene(bool _isTemporary) {
-	ECSGroup* prevSceneGroup = pECS_->GetCurrentGroup();
+	ECSGroup* prevSceneGroup = pEcs_->GetCurrentGroup();
 	if (prevSceneGroup) {
 		prevSceneGroup->RemoveEntityAll();
 	}
 
 	currentScene_ = std::move(nextScene_);
 
-	ECSGroup* nextSceneGroup = pECS_->AddECSGroup(GetCurrentSceneName());
+	ECSGroup* nextSceneGroup = pEcs_->AddECSGroup(GetCurrentSceneName());
 	const std::string& sceneName = nextSceneGroup->GetGroupName();
 
-	pECS_->SetCurrentGroupName(sceneName);
+	pEcs_->SetCurrentGroupName(sceneName);
 
 	/// sceneに必要な情報を渡して初期化
 	if (_isTemporary) {

@@ -12,11 +12,12 @@ public:
 	/// public : methods
 	/// =====================================================
 
-	ImGuiPrefabViewWindow(class EntityComponentSystem* _ecs, class GraphicsResourceCollection* _resourceCollection);
+	ImGuiPrefabViewWindow(class EntityComponentSystem* _ecs, class AssetCollection* _assetCollection);
 	~ImGuiPrefabViewWindow() {}
 
 	void ShowImGui() override;
 
+	/// @brief 選択されているPrefabの表示
 	void RenderView();
 
 private:
@@ -24,8 +25,8 @@ private:
 	/// private : objects
 	/// =====================================================
 
-	class EntityComponentSystem* pECS_;
-	class GraphicsResourceCollection* pGrc_;
+	class EntityComponentSystem* pEcs_;
+	class AssetCollection* pAssetCollection_;
 
 
 };

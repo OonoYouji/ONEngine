@@ -39,7 +39,7 @@ EntityComponentSystem::EntityComponentSystem(DxManager* _pDxManager)
 
 EntityComponentSystem::~EntityComponentSystem() {}
 
-void EntityComponentSystem::Initialize(GraphicsResourceCollection* _graphicsResourceCollection) {
+void EntityComponentSystem::Initialize(AssetCollection* _graphicsResourceCollection) {
 
 	/// ポインタの確保
 	pGraphicsResourceCollection_ = _graphicsResourceCollection;

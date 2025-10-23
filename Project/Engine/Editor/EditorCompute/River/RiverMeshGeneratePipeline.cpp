@@ -37,7 +37,7 @@ void RiverMeshGeneratePipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMa
 
 }
 
-void RiverMeshGeneratePipeline::Execute(EntityComponentSystem* _ecs, DxCommand* _dxCommand, GraphicsResourceCollection* _resourceCollection) {
+void RiverMeshGeneratePipeline::Execute(EntityComponentSystem* _ecs, DxCommand* _dxCommand, AssetCollection* /*_assetCollection*/) {
 
 	/// --------------------------------------------------------------------
 	/// 早期リターンチェック
@@ -50,7 +50,7 @@ void RiverMeshGeneratePipeline::Execute(EntityComponentSystem* _ecs, DxCommand* 
 	}
 
 	ComponentArray<Terrain>* terrainArray = ecsGroup->GetComponentArray<Terrain>();
-	if (!terrainArray) {
+	if (!terrainArray || terrainArray->GetUsedComponents().empty()) {
 		Console::LogError("RiverMeshGeneratePipeline::Execute: Terrain component array is null");
 		return;
 	}

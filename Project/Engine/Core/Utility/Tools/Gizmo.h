@@ -43,12 +43,14 @@ private:
 	/// @param _maxDrawInstanceCount 描画するインスタンスの最大数を返す
 	static void Initialize(const size_t _maxDrawInstanceCount);
 
+	/// ----- 各形状の配列を返す ----- ///
 	static const std::vector<SphereData>& GetSphereData();
 	static const std::vector<SphereData>& GetWireSphereData();
 	static const std::vector<CubeData>& GetCubeData();
 	static const std::vector<CubeData>& GetWireCubeData();
 	static const std::vector<LineData>& GetLineData();
 
+	/// @brief データのリセット
 	static void Reset();
 
 public:

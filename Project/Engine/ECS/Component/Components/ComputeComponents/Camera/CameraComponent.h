@@ -8,6 +8,7 @@
 #include "Engine/Graphics/Buffer/ConstantBuffer.h"
 #include "Engine/Graphics/Buffer/Data/ViewProjection.h"
 
+/// @brief カメラの種類
 enum class CameraType {
 	Type3D, ///< 3Dカメラ
 	Type2D, ///< 2Dカメラ
@@ -26,7 +27,7 @@ public:
 	CameraComponent();
 	~CameraComponent() override;
 
-
+	/// @brief ViewProjection行列の更新
 	void UpdateViewProjection();
 
 private:
@@ -34,6 +35,8 @@ private:
 	/// private : methods
 	/// ===================================================
 
+	/// @brief ViewProjectionのBufferを作成
+	/// @param _dxDevice Buffer作成に使うDxDevice
 	void MakeViewProjection(class DxDevice* _dxDevice);
 
 
@@ -84,6 +87,8 @@ public:
 };
 
 
+
+/// @brief カメラ関連の数学関数群
 namespace CameraMath {
 
 	/// @brief perspective matrix の作成
@@ -107,9 +112,11 @@ namespace CameraMath {
 }
 
 
+/// Json変換
 void from_json(const nlohmann::json& _j, CameraComponent& _c);
 void to_json(nlohmann::json& _j, const CameraComponent& _c);
 
+/// @brief Componentのデバッグ関数
 namespace COMP_DEBUG {
 	void CameraDebug(CameraComponent* _camera);
 }

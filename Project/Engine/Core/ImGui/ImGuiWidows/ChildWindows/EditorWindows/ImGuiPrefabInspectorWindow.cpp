@@ -40,8 +40,8 @@ enum SelectedType {
 	kResource
 };
 
-ImGuiPrefabInspectorWindow::ImGuiPrefabInspectorWindow(EntityComponentSystem* _ecs, EditorManager* _editorManager)
-	: pECS_(_ecs), pEditorManager_(_editorManager) {
+ImGuiPrefabInspectorWindow::ImGuiPrefabInspectorWindow(EntityComponentSystem* _ecs, EditorManager* _editorManager, AssetCollection* _grc)
+	: pEcs_(_ecs), pEditorManager_(_editorManager), pAssetCollection_(_grc) {
 
 
 	/// compute
@@ -51,11 +51,11 @@ ImGuiPrefabInspectorWindow::ImGuiPrefabInspectorWindow(EntityComponentSystem* _e
 	RegisterComponent<Variables>([&](IComponent* _component) { COMP_DEBUG::VariablesDebug(static_cast<Variables*>(_component)); });
 	RegisterComponent<Effect>([&](IComponent* _component) { COMP_DEBUG::EffectDebug(static_cast<Effect*>(_component)); });
 	RegisterComponent<Script>([&](IComponent* _component) { COMP_DEBUG::ScriptDebug(static_cast<Script*>(_component)); });
-	RegisterComponent<Terrain>([&](IComponent* _component) { COMP_DEBUG::TerrainDebug(static_cast<Terrain*>(_component), pECS_); });
+	RegisterComponent<Terrain>([&](IComponent* _component) { COMP_DEBUG::TerrainDebug(static_cast<Terrain*>(_component), pEcs_); });
 	RegisterComponent<CameraComponent>([&](IComponent* _component) { COMP_DEBUG::CameraDebug(static_cast<CameraComponent*>(_component)); });
 
 	/// renderer
-	RegisterComponent<MeshRenderer>([&](IComponent* _component) { COMP_DEBUG::MeshRendererDebug(static_cast<MeshRenderer*>(_component)); });
+	RegisterComponent<MeshRenderer>([&](IComponent* _component) { COMP_DEBUG::MeshRendererDebug(static_cast<MeshRenderer*>(_component), pAssetCollection_); });
 	RegisterComponent<CustomMeshRenderer>([&](IComponent* _component) { CustomMeshRendererDebug(static_cast<CustomMeshRenderer*>(_component)); });
 	RegisterComponent<SpriteRenderer>([&]([[maybe_unused]] IComponent* _component) {});
 	RegisterComponent<Line2DRenderer>([&]([[maybe_unused]] IComponent* _component) {});

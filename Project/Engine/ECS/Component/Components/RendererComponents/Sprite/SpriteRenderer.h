@@ -8,26 +8,27 @@
 
 /// engine
 #include "../../Interface/IComponent.h"
-#include "Engine/Graphics/Buffer/Data/Material.h"
+#include "Engine/Graphics/Buffer/Data/GPUMaterial.h"
 
 
-class GraphicsResourceCollection;
+class AssetCollection;
 class SpriteRenderer;
 namespace COMP_DEBUG {
-	void SpriteDebug(SpriteRenderer* _sr, GraphicsResourceCollection* _resourceCollection);
+	void SpriteDebug(SpriteRenderer* _sr, AssetCollection* _assetCollection);
 }
 
 /// json serialize
 void to_json(nlohmann::json& _j, const SpriteRenderer& _sr);
 void from_json(const nlohmann::json& _j, SpriteRenderer& _sr);
 
-/// ===================================================
+
+/// ///////////////////////////////////////////////////
 /// sprite描画クラス
-/// ===================================================
+/// ///////////////////////////////////////////////////
 class SpriteRenderer final : public IComponent {
 	friend class SpriteUpdateSystem;
 
-	friend void COMP_DEBUG::SpriteDebug(SpriteRenderer* _sr, GraphicsResourceCollection* _resourceCollection);
+	friend void COMP_DEBUG::SpriteDebug(SpriteRenderer* _sr, AssetCollection* _assetCollection);
 	friend void to_json(nlohmann::json& _j, const SpriteRenderer& _sr);
 	friend void from_json(const nlohmann::json& _j, SpriteRenderer& _sr);
 public:
@@ -43,7 +44,7 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	Material material_;
+	GPUMaterial gpuMaterial_;
 
 public:
 	/// ===================================================
@@ -56,8 +57,8 @@ public:
 	/// ----- getter ----- ///
 	const Vector4& GetColor() const;
 
-	const Material& GetMaterial() const;
-	Material& GetMaterial();
+	const GPUMaterial& GetMaterial() const;
+	GPUMaterial& GetMaterial();
 
 };
 

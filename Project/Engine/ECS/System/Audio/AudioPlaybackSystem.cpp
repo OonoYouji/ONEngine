@@ -3,13 +3,13 @@
 /// engine
 #include "Engine/ECS/EntityComponentSystem/ECSGroup.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Audio/AudioSource.h"
-#include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
-#include "Engine/Graphics/Resource/ResourceData/AudioClip.h"
+#include "Engine/Asset/Collection/AssetCollection.h"
+#include "Engine/Asset/Assets/AudioClip/AudioClip.h"
 
 using namespace AudioStructs;
 
-AudioPlaybackSystem::AudioPlaybackSystem(GraphicsResourceCollection* _resourceCollection)
-	: pGrc_(_resourceCollection) {
+AudioPlaybackSystem::AudioPlaybackSystem(AssetCollection* _assetCollection)
+	: pAssetCollection_(_assetCollection) {
 
 	HRESULT hr = S_FALSE;
 
@@ -25,7 +25,7 @@ AudioPlaybackSystem::AudioPlaybackSystem(GraphicsResourceCollection* _resourceCo
 AudioPlaybackSystem::~AudioPlaybackSystem() {}
 
 
-void AudioPlaybackSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {}
+void AudioPlaybackSystem::OutsideOfRuntimeUpdate(ECSGroup* /*_ecs*/) {}
 
 void AudioPlaybackSystem::RuntimeUpdate(ECSGroup* _ecs) {
 	///
@@ -62,7 +62,7 @@ void AudioPlaybackSystem::RuntimeUpdate(ECSGroup* _ecs) {
 		/// OneShotAudioの再生リクエストチェック
 		for(auto& req : as->oneShotAudioRequests_) {
 			/// ワンショット再生
-			AudioClip* clip = pGrc_->GetAudioClip(req.path);
+			AudioClip* clip = pAssetCollection_->GetAudioClip(req.path);
 			PlayOneShot(clip, req.volume, req.pitch, req.path);
 		}
 
@@ -74,7 +74,7 @@ void AudioPlaybackSystem::RuntimeUpdate(ECSGroup* _ecs) {
 }
 
 void AudioPlaybackSystem::SetAudioClip(AudioSource* _audioSource) {
-	AudioClip* clip = pGrc_->GetAudioClip(_audioSource->path_);
+	AudioClip* clip = pAssetCollection_->GetAudioClip(_audioSource->path_);
 	if (clip) {
 		_audioSource->pAudioClip_ = clip;
 	}
@@ -108,7 +108,7 @@ void AudioPlaybackSystem::PlayAudio(AudioSource* _audioSource) {
 	_audioSource->sourceVoices_.push_back(sourceVoice);
 }
 
-void AudioPlaybackSystem::PlayOneShot(AudioClip* _audioClip, float _volume, float _pitch, const std::string& _path) {
+void AudioPlaybackSystem::PlayOneShot(AudioClip* _audioClip, float _volume, float _pitch, const std::string& /*_path*/) {
 	IXAudio2SourceVoice* sourceVoice = nullptr;
 	sourceVoice = _audioClip->CreateSourceVoice(xAudio2_.Get());
 

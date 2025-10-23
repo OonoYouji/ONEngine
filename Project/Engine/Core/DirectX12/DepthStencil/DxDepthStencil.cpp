@@ -13,7 +13,7 @@ DxDepthStencil::~DxDepthStencil() {}
 
 void DxDepthStencil::Initialize(DxDevice* _dxDevice, DxDSVHeap* _dxDsvHeap) {
 	
-	{
+	{	/// depth stencil resource
 		D3D12_RESOURCE_DESC desc{};
 		desc.Width                                = static_cast<UINT64>(EngineConfig::kWindowSize.x);
 		desc.Height                               = static_cast<UINT64>(EngineConfig::kWindowSize.y);
@@ -44,18 +44,17 @@ void DxDepthStencil::Initialize(DxDevice* _dxDevice, DxDSVHeap* _dxDsvHeap) {
 	}
 
 
-	{
+	{	/// dsv descriptor
 		D3D12_DEPTH_STENCIL_VIEW_DESC desc{};
-		desc.Format                                         = DXGI_FORMAT_D32_FLOAT;
-		desc.ViewDimension                                  = D3D12_DSV_DIMENSION_TEXTURE2D;
+		desc.Format              = DXGI_FORMAT_D32_FLOAT;
+		desc.ViewDimension       = D3D12_DSV_DIMENSION_TEXTURE2D;
 
-		uint32_t descriptorIndex                            = _dxDsvHeap->Allocate();
+		uint32_t descriptorIndex = _dxDsvHeap->Allocate();
 
 		_dxDevice->GetDevice()->CreateDepthStencilView(
 			depthStencilResource_.Get(), &desc, 
 			_dxDsvHeap->GetCPUDescriptorHandel(descriptorIndex)
 		);
-		
 	}
 
 	Console::Log("dx depth stencil create success!!");

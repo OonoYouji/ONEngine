@@ -83,7 +83,7 @@ Matrix4x4 Quaternion::MakeRotateAxisAngle(const Vector3& _axis, float _theta) {
 	return Matrix4x4::MakeRotate(MakeFromAxis(_axis, _theta));
 }
 
-Quaternion Quaternion::LockAt(const Vector3& _position, const Vector3& _target, const Vector3& _up) {
+Quaternion Quaternion::LookAt(const Vector3& _position, const Vector3& _target, const Vector3& _up) {
 	XMFLOAT3 xmPosition, xmTarget, xmUp;
 	xmPosition = { _position.x, _position.y, _position.z };
 	xmTarget = { _target.x, _target.y, _target.z };
@@ -111,7 +111,7 @@ Quaternion Quaternion::LockAt(const Vector3& _position, const Vector3& _target, 
 	return { result.x, result.y, result.z, result.w };
 }
 
-Quaternion Quaternion::LockAt(const Vector3& _position, const Vector3& _target) {
+Quaternion Quaternion::LookAt(const Vector3& _position, const Vector3& _target) {
 	XMFLOAT3 xmPosition, xmTarget;
 	xmPosition = { _position.x, _position.y, _position.z };
 	xmTarget = { _target.x, _target.y, _target.z };

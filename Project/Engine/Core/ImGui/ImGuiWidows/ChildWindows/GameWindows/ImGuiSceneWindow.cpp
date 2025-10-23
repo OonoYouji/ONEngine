@@ -14,14 +14,14 @@
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Entity/GameEntity/GameEntity.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
-#include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
+#include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/Scene/SceneManager.h"
 #include "Engine/Script/MonoScriptEngine.h"
 
 #include "ImGuiInspectorWindow.h"
 
-ImGuiSceneWindow::ImGuiSceneWindow(EntityComponentSystem* _ecs, GraphicsResourceCollection* _graphicsResourceCollection, SceneManager* _sceneManager, ImGuiInspectorWindow* _inspector)
-	: pECS_(_ecs), resourceCollection_(_graphicsResourceCollection), pSceneManager_(_sceneManager), pInspector_(_inspector) {
+ImGuiSceneWindow::ImGuiSceneWindow(EntityComponentSystem* _ecs, AssetCollection* _grc, SceneManager* _sceneManager, ImGuiInspectorWindow* _inspector)
+	: pEcs_(_ecs), pAssetCollection_(_grc), pSceneManager_(_sceneManager), pInspector_(_inspector) {
 
 	manipulateOperation_ = ImGuizmo::OPERATION::TRANSLATE; // 初期操作モードは移動
 	manipulateMode_ = ImGuizmo::MODE::WORLD; // 初期モードはワールド座標
@@ -34,16 +34,16 @@ void ImGuiSceneWindow::ShowImGui() {
 		return;
 	}
 
-	const auto& textures = resourceCollection_->GetTextures();
-	const Texture* texture = &textures[resourceCollection_->GetTextureIndex("debugScene")];
+	const auto& textures = pAssetCollection_->GetTextures();
+	const Texture* texture = &textures[pAssetCollection_->GetTextureIndex("./Assets/Scene/RenderTexture/debugScene")];
 
 	/// ----------------------------------------
 	/// ゲームの開始、停止、ポーズボタンの描画
 	/// ----------------------------------------
 
 	std::array<const Texture*, 2> buttons = {
-		&textures[resourceCollection_->GetTextureIndex("./Packages/Textures/ImGui/play.png")],
-		&textures[resourceCollection_->GetTextureIndex("./Packages/Textures/ImGui/pause.png")]
+		&textures[pAssetCollection_->GetTextureIndex("./Packages/Textures/ImGui/play.png")],
+		&textures[pAssetCollection_->GetTextureIndex("./Packages/Textures/ImGui/pause.png")]
 	};
 
 	ImVec2 buttonSize = ImVec2(12.0f, 12.0f);
@@ -145,7 +145,7 @@ void ImGuiSceneWindow::ShowImGui() {
 			Matrix4x4 entityMatrix = transform->matWorld;
 
 			/// カメラの取得
-			CameraComponent* camera = pECS_->GetECSGroup("Debug")->GetMainCamera();
+			CameraComponent* camera = pEcs_->GetECSGroup("Debug")->GetMainCamera();
 			if (camera) {
 				ImGuizmo::Manipulate(
 					&camera->GetViewMatrix().m[0][0],

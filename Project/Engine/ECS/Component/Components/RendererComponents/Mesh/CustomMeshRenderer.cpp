@@ -1,11 +1,11 @@
 #include "CustomMeshRenderer.h"
 
 /// engine
-#include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
+#include "Engine/Asset/Collection/AssetCollection.h"
 
 CustomMeshRenderer::CustomMeshRenderer() {
-	material_.baseColor = Vector4::kWhite;
-	material_.postEffectFlags = PostEffectFlags_Lighting;
+	gpuMaterial_.baseColor = Vector4::kWhite;
+	gpuMaterial_.postEffectFlags = PostEffectFlags_Lighting;
 }
 
 CustomMeshRenderer::~CustomMeshRenderer() {}
@@ -33,7 +33,7 @@ void CustomMeshRenderer::SetTexturePath(const std::string& _path) {
 }
 
 void CustomMeshRenderer::SetColor(const Vector4& _color) {
-	material_.baseColor = _color;
+	gpuMaterial_.baseColor = _color;
 }
 
 void CustomMeshRenderer::SetIsVisible(bool _isVisible) {
@@ -49,7 +49,7 @@ const std::string& CustomMeshRenderer::GetTexturePath() const {
 }
 
 const Vector4& CustomMeshRenderer::GetColor() const {
-	return material_.baseColor;
+	return gpuMaterial_.baseColor;
 }
 
 const Mesh* CustomMeshRenderer::GetMesh() const {
@@ -64,6 +64,6 @@ bool CustomMeshRenderer::GetIsBufferRecreate() const {
 	return isBufferRecreate_;
 }
 
-const Material& CustomMeshRenderer::GetMaterial() {
-	return material_;
+const GPUMaterial& CustomMeshRenderer::GetMaterial() {
+	return gpuMaterial_;
 }

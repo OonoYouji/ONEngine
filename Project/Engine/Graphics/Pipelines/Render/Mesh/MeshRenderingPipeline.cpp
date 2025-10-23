@@ -2,7 +2,7 @@
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
-#include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
+#include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Transform/Transform.h"
 #include "Engine/ECS/Component/Components/RendererComponents/Mesh/MeshRenderer.h"
@@ -10,8 +10,8 @@
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 
 
-MeshRenderingPipeline::MeshRenderingPipeline(GraphicsResourceCollection* _resourceCollection)
-	: resourceCollection_(_resourceCollection) {}
+MeshRenderingPipeline::MeshRenderingPipeline(AssetCollection* _assetCollection)
+	: pAssetCollection_(_assetCollection) {}
 
 MeshRenderingPipeline::~MeshRenderingPipeline() {}
 
@@ -72,7 +72,7 @@ void MeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManage
 		transformBuffer_ = std::make_unique<StructuredBuffer<Matrix4x4>>();
 		transformBuffer_->Create(static_cast<uint32_t>(kMaxRenderingMeshCount_), _dxManager->GetDxDevice(), _dxManager->GetDxSRVHeap());
 
-		materialBuffer = std::make_unique<StructuredBuffer<Material>>();
+		materialBuffer = std::make_unique<StructuredBuffer<GPUMaterial>>();
 		materialBuffer->Create(static_cast<uint32_t>(kMaxRenderingMeshCount_), _dxManager->GetDxDevice(), _dxManager->GetDxSRVHeap());
 
 		textureIdBuffer_ = std::make_unique<StructuredBuffer<uint32_t>>();
@@ -93,7 +93,7 @@ void MeshRenderingPipeline::Draw(class ECSGroup*, const std::vector<GameEntity*>
 		if (meshRenderer && meshRenderer->enable) {
 
 			/// meshが読み込まれていなければ、デフォルトのメッシュを使用
-			if (!resourceCollection_->GetModel(meshRenderer->GetMeshPath())) {
+			if (!pAssetCollection_->GetModel(meshRenderer->GetMeshPath())) {
 				Console::Log("Mesh not found: " + meshRenderer->GetMeshPath());
 				rendererPerMesh["./Assets/Models/primitive/cube.obj"].push_back(meshRenderer);
 				continue; ///< meshが読み込まれていなければスキップ
@@ -123,7 +123,7 @@ void MeshRenderingPipeline::Draw(class ECSGroup*, const std::vector<GameEntity*>
 	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(commandList, 0);
 
 	/// buffer dataのセット、先頭の texture gpu handle をセットする
-	auto& textures = resourceCollection_->GetTextures();
+	auto& textures = pAssetCollection_->GetTextures();
 	commandList->SetGraphicsRootDescriptorTable(3, (*textures.begin()).GetSRVGPUHandle());
 
 	transformIndex_ = 0;
@@ -138,7 +138,7 @@ void MeshRenderingPipeline::RenderingMesh(ID3D12GraphicsCommandList* _commandLis
 	for (auto& [meshPath, renderers] : (*_meshRendererPerMesh)) {
 
 		/// modelの取得、なければ次へ
-		const Model*&& model = resourceCollection_->GetModel(meshPath);
+		const Model*&& model = pAssetCollection_->GetModel(meshPath);
 		if (!model) {
 			continue;
 		}
@@ -146,15 +146,19 @@ void MeshRenderingPipeline::RenderingMesh(ID3D12GraphicsCommandList* _commandLis
 		/// transform, material を mapping
 		for (auto& renderer : renderers) {
 
-			/// materialのセット
-			renderer->SetMaterialEntityId();
+			/// TextureのIdをGuidからセット
+			renderer->SetupRenderData(pAssetCollection_);
+
 			materialBuffer->SetMappedData(
 				transformIndex_,
 				renderer->GetMaterial()
 			);
 
 			/// texture id のセット
-			size_t textureIndex = resourceCollection_->GetTextureIndex(renderer->GetTexturePath());
+			int32_t textureIndex = renderer->GetCPUMaterial().baseTextureIdPair.second;
+			if (textureIndex < 0) {
+				textureIndex = pAssetCollection_->GetTextureIndex("./Assets/Textures/white.png");
+			}
 			textureIdBuffer_->SetMappedData(
 				transformIndex_,
 				_pTexture[textureIndex].GetSRVDescriptorIndex()
@@ -213,7 +217,7 @@ void MeshRenderingPipeline::RenderingMesh(ID3D12GraphicsCommandList* _commandLis
 		);
 
 		/// texture id のセット
-		size_t textureIndex = resourceCollection_->GetTextureIndex(renderer->GetTexturePath());
+		size_t textureIndex = pAssetCollection_->GetTextureIndex(renderer->GetTexturePath());
 		textureIdBuffer_->SetMappedData(
 			transformIndex_,
 			_pTexture[textureIndex].GetSRVDescriptorIndex()

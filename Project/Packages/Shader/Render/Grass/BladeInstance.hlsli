@@ -1,4 +1,5 @@
 #include "Grass.hlsli"
+#include "../../ConstantBufferData/ViewProjection.hlsli"
 
 struct StartIndex {
 	uint value;
@@ -7,8 +8,4 @@ struct StartIndex {
 
 StructuredBuffer<BladeInstance> bladeInstances : register(t0);
 StructuredBuffer<StartIndex> startIndices : register(t1);
-
-cbuffer constants : register(b1) {
-	uint startIndex;
-	uint currentInstanceCount;
-};
+ConstantBuffer<ViewProjection> viewProjection : register(b0);

@@ -28,7 +28,7 @@ public:
 	virtual void Execute(
 		const std::string& _textureName,
 		class DxCommand* _dxCommand, 
-		class GraphicsResourceCollection* _resourceCollection,
+		class AssetCollection* _assetCollection,
 		class EntityComponentSystem* _pEntityComponentSystem
 	) = 0;
 

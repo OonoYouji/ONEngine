@@ -64,7 +64,7 @@ std::vector<RiverControlPoint> SampleRiverSpline(const std::vector<RiverControlP
 River::River() : samplePerSegment_(10), isCreatedBuffers_(false) , isGenerateMeshRequest_(false) {};
 River::~River() = default;
 
-void River::Edit(EntityComponentSystem* _ecs) {
+void River::Edit(EntityComponentSystem* /*_ecs*/) {
 	/// ----- 川の編集 ----- ///
 
 	/// ---------------------------------------------------------------
@@ -97,34 +97,34 @@ void River::Edit(EntityComponentSystem* _ecs) {
 	for (auto& point : controlPoints_) {
 		Gizmo::DrawWireSphere(point.position, point.width, Color::kRed);
 
-		/// 操作対象の行列
-		Matrix4x4 targetMatrix = Matrix4x4::MakeTranslate(point.position);
-		/// カメラの取得
-		CameraComponent* camera = _ecs->GetECSGroup("Debug")->GetMainCamera();
-		if (camera) {
-			ImGuizmo::Manipulate(
-				&camera->GetViewMatrix().m[0][0],
-				&camera->GetProjectionMatrix().m[0][0],
-				ImGuizmo::OPERATION::TRANSLATE,
-				ImGuizmo::MODE::WORLD,
-				&targetMatrix.m[0][0]
-			);
+		///// 操作対象の行列
+		//Matrix4x4 targetMatrix = Matrix4x4::MakeTranslate(point.position);
+		///// カメラの取得
+		//CameraComponent* camera = _ecs->GetECSGroup("Debug")->GetMainCamera();
+		//if (camera) {
+		//	ImGuizmo::Manipulate(
+		//		&camera->GetViewMatrix().m[0][0],
+		//		&camera->GetProjectionMatrix().m[0][0],
+		//		ImGuizmo::OPERATION::TRANSLATE,
+		//		ImGuizmo::MODE::WORLD,
+		//		&targetMatrix.m[0][0]
+		//	);
 
-			if (!ImGuizmo::IsOver()) {
-				continue;
-			}
+		//	if (!ImGuizmo::IsOver()) {
+		//		continue;
+		//	}
 
-			/// 操作したならbreak
-			if (ImGuizmo::IsUsing()) {
-				/// 行列をSRTに分解、エンティティに適応
-				float translation[3], rotation[3], scale[3];
-				ImGuizmo::DecomposeMatrixToComponents(&targetMatrix.m[0][0], translation, rotation, scale);
+		//	/// 操作したならbreak
+		//	if (ImGuizmo::IsUsing()) {
+		//		/// 行列をSRTに分解、エンティティに適応
+		//		float translation[3], rotation[3], scale[3];
+		//		ImGuizmo::DecomposeMatrixToComponents(&targetMatrix.m[0][0], translation, rotation, scale);
 
-				Vector3 translationV = Vector3(translation[0], translation[1], translation[2]);
-				point.position = translationV;
-				break;
-			}
-		}
+		//		Vector3 translationV = Vector3(translation[0], translation[1], translation[2]);
+		//		point.position = translationV;
+		//		break;
+		//	}
+		//}
 	}
 
 
@@ -311,7 +311,7 @@ ConstantBuffer<River::Param>& River::GetParamBufRef() {
 	return paramBuf_;
 }
 
-ConstantBuffer<Material>& River::GetMaterialBufRef() {
+ConstantBuffer<GPUMaterial>& River::GetMaterialBufRef() {
 	return materialBuffer_;
 }
 

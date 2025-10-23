@@ -11,8 +11,8 @@
 #pragma comment(lib, "dxguid.lib")
 
 
-DxDevice::DxDevice() {}
-DxDevice::~DxDevice() {}
+DxDevice::DxDevice() = default;
+DxDevice::~DxDevice() = default;
 
 void DxDevice::Initialize() {
 

@@ -21,6 +21,7 @@ enum AudioState {
 	AudioState_Paused,
 };
 
+/// @brief 一度キリの再生に使う構造体
 struct OneShotAudio {
 	std::string path;
 	float volume;

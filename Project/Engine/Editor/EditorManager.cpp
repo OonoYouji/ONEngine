@@ -34,7 +34,7 @@ public:
 
 
 EditorManager::EditorManager(EntityComponentSystem* _ecs)
-	: pECS_(_ecs) {}
+	: pEcs_(_ecs) {}
 EditorManager::~EditorManager() = default;
 
 void EditorManager::Initialize(DxManager* _dxm, ShaderCompiler* _sc) {
@@ -53,11 +53,11 @@ void EditorManager::Initialize(DxManager* _dxm, ShaderCompiler* _sc) {
 	AddEditorCompute(_dxm, _sc, std::make_unique<GrassArrangementPipeline>());
 }
 
-void EditorManager::Update(GraphicsResourceCollection* _grc) {
+void EditorManager::Update(AssetCollection* _grc) {
 
 	/// エディタのコマンドを実行する
 	for (auto& compute : editorComputes_) {
-		compute->Execute(pECS_, pDxManager_->GetDxCommand(), _grc);
+		compute->Execute(pEcs_, pDxManager_->GetDxCommand(), _grc);
 	}
 
 	if (runningCommand_) {

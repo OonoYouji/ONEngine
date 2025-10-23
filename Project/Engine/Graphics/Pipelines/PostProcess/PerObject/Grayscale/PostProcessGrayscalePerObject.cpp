@@ -3,7 +3,7 @@
 /// engine
 #include "Engine/Core/Config/EngineConfig.h"
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
-#include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
+#include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 
 void PostProcessGrayscalePerObject::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
@@ -30,14 +30,14 @@ void PostProcessGrayscalePerObject::Initialize(ShaderCompiler* _shaderCompiler, 
 
 }
 
-void PostProcessGrayscalePerObject::Execute(const std::string& _textureName, DxCommand* _dxCommand, GraphicsResourceCollection* _resourceCollection, [[maybe_unused]] EntityComponentSystem* _entityComponentSystem) {
+void PostProcessGrayscalePerObject::Execute(const std::string& _textureName, DxCommand* _dxCommand, AssetCollection* _assetCollection, [[maybe_unused]] EntityComponentSystem* _entityComponentSystem) {
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 
 	auto command = _dxCommand->GetCommandList();
-	auto& textures = _resourceCollection->GetTextures();
-	textureIndices_[0] = _resourceCollection->GetTextureIndex(_textureName + "Scene");
-	textureIndices_[1] = _resourceCollection->GetTextureIndex(_textureName + "Flags");
-	textureIndices_[2] = _resourceCollection->GetTextureIndex("postProcessResult");
+	auto& textures = _assetCollection->GetTextures();
+	textureIndices_[0] = _assetCollection->GetTextureIndex(_textureName + "Scene");
+	textureIndices_[1] = _assetCollection->GetTextureIndex(_textureName + "Flags");
+	textureIndices_[2] = _assetCollection->GetTextureIndex("postProcessResult");
 
 	command->SetComputeRootDescriptorTable(0, textures[textureIndices_[0]].GetSRVGPUHandle());
 	command->SetComputeRootDescriptorTable(1, textures[textureIndices_[1]].GetSRVGPUHandle());

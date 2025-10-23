@@ -10,7 +10,7 @@
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Core/Window/WindowManager.h"
 #include "Engine/Core/Config/EngineConfig.h"
-#include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
+#include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/Core/Utility/Time/Time.h"
 #include "Engine/Core/Utility/Input/Input.h"
 
@@ -539,7 +539,7 @@ namespace {
 
 
 ImGuiManager::ImGuiManager(DxManager* _dxManager, WindowManager* _windowManager, EntityComponentSystem* _pEntityComponentSystem, EditorManager* _editorManager, SceneManager* _sceneManager)
-	: dxManager_(_dxManager), windowManager_(_windowManager), pEntityComponentSystem_(_pEntityComponentSystem),
+	: dxManager_(_dxManager), pWindowManager_(_windowManager), pEntityComponentSystem_(_pEntityComponentSystem),
 	pEditorManager_(_editorManager), pSceneManager_(_sceneManager) {}
 
 ImGuiManager::~ImGuiManager() {
@@ -552,9 +552,9 @@ ImGuiManager::~ImGuiManager() {
 
 
 
-void ImGuiManager::Initialize(GraphicsResourceCollection* _graphicsResourceCollection) {
+void ImGuiManager::Initialize(AssetCollection* _grc) {
 
-	resourceCollection_ = _graphicsResourceCollection;
+	pAssetCollection_ = _grc;
 
 	DxSRVHeap* dxSRVHeap = dxManager_->GetDxSRVHeap();
 	uint32_t   srvDescriptorIndex = dxSRVHeap->AllocateBuffer();
@@ -570,12 +570,10 @@ void ImGuiManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 	ImGuiIO& imGuiIO = ImGui::GetIO();
 	imGuiIO.ConfigFlags = ImGuiConfigFlags_DockingEnable;
 	imGuiIO.Fonts->AddFontFromFileTTF("./Assets/Fonts/MPLUSRounded1c-Black.ttf", 16.0f, nullptr, gGlyphRangesJapanese);
-	//imGuiIO.KeyRepeatDelay = 4.145f;
-	//imGuiIO.KeyRepeatRate = 12.0f;
 	imGuiIO.KeyRepeatDelay = 0.25f;
 	imGuiIO.KeyRepeatRate = 0.05f;
 
-	ImGui_ImplWin32_Init(windowManager_->GetMainWindow()->GetHwnd());
+	ImGui_ImplWin32_Init(pWindowManager_->GetMainWindow()->GetHwnd());
 	ImGui_ImplDX12_Init(
 		dxManager_->GetDxDevice()->GetDevice(),
 		2, ///< swap chain buffer count
@@ -592,22 +590,21 @@ void ImGuiManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 	imGuiIO.DisplaySize = ImVec2(EngineConfig::kWindowSize.x, EngineConfig::kWindowSize.y);
 
 	/// debug windowの生成
-	debugGameWindow_ = windowManager_->GenerateWindow(L"game", EngineConfig::kWindowSize, WindowManager::WindowType::Sub);
-	windowManager_->HideGameWindow(debugGameWindow_);
+	pDebugGameWindow_ = pWindowManager_->GenerateWindow(L"game", EngineConfig::kWindowSize, WindowManager::WindowType::Sub);
+	pWindowManager_->HideGameWindow(pDebugGameWindow_);
 
-	LONG style = GetWindowLong(debugGameWindow_->GetHwnd(), GWL_STYLE);
+	LONG style = GetWindowLong(pDebugGameWindow_->GetHwnd(), GWL_STYLE);
 	style &= ~WS_SYSMENU; // システムメニュー（閉じるボタン含む）を無効化
-	SetWindowLong(debugGameWindow_->GetHwnd(), GWL_STYLE, style);
+	SetWindowLong(pDebugGameWindow_->GetHwnd(), GWL_STYLE, style);
 
 	imGuiWindowCollection_ = std::make_unique<ImGuiWindowCollection>(
-		pEntityComponentSystem_, resourceCollection_, this, pEditorManager_, pSceneManager_
+		pEntityComponentSystem_, pAssetCollection_, this, pEditorManager_, pSceneManager_
 	);
 }
 
 void ImGuiManager::Update() {
-
 	UpdateMousePosition(
-		windowManager_->GetMainWindow()->GetHwnd(),
+		pWindowManager_->GetMainWindow()->GetHwnd(),
 		EngineConfig::kWindowSize
 	);
 
@@ -694,11 +691,11 @@ void ImGuiManager::InputImGuiStyle(const std::string& _fileName) const {
 }
 
 void ImGuiManager::SetImGuiWindow(Window* _window) {
-	imGuiWindow_ = _window;
+	pImGuiWindow_ = _window;
 }
 
 Window* ImGuiManager::GetDebugGameWindow() const {
-	return debugGameWindow_;
+	return pDebugGameWindow_;
 }
 
 const ImGuiSceneImageInfo* ImGuiManager::GetSceneImageInfo(const std::string& _name) const {

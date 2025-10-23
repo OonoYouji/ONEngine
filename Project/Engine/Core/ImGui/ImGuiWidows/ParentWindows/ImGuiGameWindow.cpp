@@ -14,7 +14,7 @@
 #include "../ChildWindows/GameWindows/ImGuiConsoleWindow.h"
 
 ImGuiGameWindow::ImGuiGameWindow(
-	EntityComponentSystem* _ecs, GraphicsResourceCollection* _resourceCollection,
+	EntityComponentSystem* _ecs, AssetCollection* _grc,
 	EditorManager* _editorManager, SceneManager* _sceneManager) {
 
 	/// windowの設定
@@ -24,12 +24,13 @@ ImGuiGameWindow::ImGuiGameWindow(
 	imGuiFlags_ |= ImGuiWindowFlags_NoBringToFrontOnFocus;
 
 	/// 子windowの追加
-	ImGuiInspectorWindow* inspector = static_cast<ImGuiInspectorWindow*>(AddChild(std::make_unique<ImGuiInspectorWindow>("Inspector##Game", _ecs, _resourceCollection, _editorManager)));
-	AddChild(std::make_unique<ImGuiGameSceneWindow>(_resourceCollection));
+	ImGuiInspectorWindow* inspector = static_cast<ImGuiInspectorWindow*>(AddChild(std::make_unique<ImGuiInspectorWindow>("Inspector##Game", _ecs, _grc, _editorManager)));
+	AddChild(std::make_unique<ImGuiGameSceneWindow>(_grc));
 	AddChild(std::make_unique<ImGuiNormalHierarchyWindow>("Hierarchy", _ecs, _editorManager, _sceneManager, inspector));
 	AddChild(std::make_unique<ImGuiHierarchyWindow>("DebugHierarchy", _ecs->GetECSGroup("Debug"), _editorManager, _sceneManager, inspector));
-	AddChild(std::make_unique<ImGuiSceneWindow>(_ecs, _resourceCollection, _sceneManager, inspector));
-	AddChild(std::make_unique<ImGuiProjectWindow>(_resourceCollection, _editorManager));
+	AddChild(std::make_unique<ImGuiSceneWindow>(_ecs, _grc, _sceneManager, inspector));
+	AddChild(std::make_unique<ImGuiProjectWindow>(_grc, _editorManager));
+	AddChild(std::make_unique<ImGuiProjectExplorer>(_grc, _editorManager));
 	AddChild(std::make_unique<ImGuiConsoleWindow>());
 }
 

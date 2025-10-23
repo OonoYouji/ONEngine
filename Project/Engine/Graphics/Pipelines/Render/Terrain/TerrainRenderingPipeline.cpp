@@ -2,13 +2,13 @@
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
-#include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
+#include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 
 
-TerrainRenderingPipeline::TerrainRenderingPipeline(GraphicsResourceCollection* _resourceCollection)
-	: pGrc_(_resourceCollection) {}
+TerrainRenderingPipeline::TerrainRenderingPipeline(AssetCollection* _assetCollection)
+	: pAssetCollection_(_assetCollection) {}
 TerrainRenderingPipeline::~TerrainRenderingPipeline() {}
 
 
@@ -124,7 +124,7 @@ void TerrainRenderingPipeline::Draw(class ECSGroup* _ecs, const std::vector<Game
 	transformBuffer_.SetMappedData(matWorld);
 	materialBuffer_.SetMappedData( 
 		0, 
-		Material{
+		GPUMaterial{
 			.uvTransform = UVTransform{ Vector2(0, 0), Vector2(100, 100), 0.0f },
 			.baseColor = Vector4(1, 2, 3, 4),
 			.postEffectFlags = 1,
@@ -144,10 +144,10 @@ void TerrainRenderingPipeline::Draw(class ECSGroup* _ecs, const std::vector<Game
 	materialBuffer_.SRVBindForGraphicsCommandList(cmdList, ROOT_PARAM_MATERIAL);
 
 	/// texs
-	const auto& textures = pGrc_->GetTextures();
+	const auto& textures = pAssetCollection_->GetTextures();
 	for (uint32_t i = 0; i < pTerrain_->GetSplatTexPaths().size(); i++) {
 		const std::string& path = pTerrain_->GetSplatTexPaths()[i];
-		size_t index = pGrc_->GetTextureIndex(path);
+		size_t index = pAssetCollection_->GetTextureIndex(path);
 		cmdList->SetGraphicsRootDescriptorTable(
 			static_cast<UINT>(ROOT_PARAM_TEX_GRASS + i),
 			textures[index].GetSRVGPUHandle()

@@ -10,21 +10,22 @@
 #include "Engine/Graphics/Shader/ShaderCompiler.h"
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 
-/// ===================================================
+/// ///////////////////////////////////////////////////
 /// renderer collection
-/// ===================================================
+/// ///////////////////////////////////////////////////
 class RenderingPipelineCollection final {
 public:
-	
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
 
-	RenderingPipelineCollection(ShaderCompiler* _shaderCompiler, class DxManager* _dxManager, class EntityComponentSystem* _pEntityComponentSystem, class GraphicsResourceCollection* _graphicsResourceCollection);
+	RenderingPipelineCollection(ShaderCompiler* _shaderCompiler, class DxManager* _dxManager, class EntityComponentSystem* _pEntityComponentSystem, class AssetCollection* _graphicsResourceCollection);
 	~RenderingPipelineCollection();
 
 	/// @brief 初期化関数
 	void Initialize();
+
+
 
 	/// @brief rendering pipelineの生成
 	/// @tparam T 生成する rendering pipelineの型
@@ -37,6 +38,8 @@ public:
 	template <class T, typename... Args>
 	void GeneratePostProcessPipeline(Args&&... _args) requires std::is_base_of_v<IPostProcessPipeline, T>;
 
+
+
 	/// @brief すべてのEntityを描画する
 	void PreDrawEntities(class CameraComponent* _3dCamera, class CameraComponent* _2dCamera);
 	void DrawEntities(class CameraComponent* _3dCamera, class CameraComponent* _2dCamera);
@@ -47,7 +50,6 @@ public:
 	void ExecutePostProcess(const std::string& _sceneTextureName);
 
 private:
-
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
@@ -55,7 +57,7 @@ private:
 	ShaderCompiler*                   shaderCompiler_             = nullptr;
 	DxManager*                        dxManager_                  = nullptr;
 	class EntityComponentSystem*      pEntityComponentSystem_     = nullptr;
-	class GraphicsResourceCollection* graphicsResourceCollection_ = nullptr;
+	class AssetCollection* graphicsResourceCollection_ = nullptr;
 
 	std::unique_ptr<IRenderingPipeline> prefabRenderingPipeline_;
 

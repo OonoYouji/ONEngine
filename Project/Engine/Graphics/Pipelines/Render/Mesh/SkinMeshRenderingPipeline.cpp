@@ -7,10 +7,10 @@
 #include "Engine/ECS/Component/Array/ComponentArray.h"
 #include "Engine/ECS/Component/Components/RendererComponents/SkinMesh/SkinMeshRenderer.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
-#include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
+#include "Engine/Asset/Collection/AssetCollection.h"
 
 
-SkinMeshRenderingPipeline::SkinMeshRenderingPipeline(GraphicsResourceCollection* _graphicsResourceCollection)
+SkinMeshRenderingPipeline::SkinMeshRenderingPipeline(AssetCollection* _graphicsResourceCollection)
 	: pGraphicsResourceCollection_(_graphicsResourceCollection) {}
 
 void SkinMeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
@@ -79,7 +79,7 @@ void SkinMeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMa
 		/// Buffer
 
 		transformBuffer_ = std::make_unique<ConstantBuffer<Matrix4x4>>();
-		materialBuffer_ = std::make_unique<ConstantBuffer<Material>>();
+		materialBuffer_ = std::make_unique<ConstantBuffer<GPUMaterial>>();
 		textureIdBuffer_ = std::make_unique<ConstantBuffer<uint32_t>>();
 
 		transformBuffer_->Create(_dxManager->GetDxDevice());
@@ -138,7 +138,7 @@ void SkinMeshRenderingPipeline::Draw(class ECSGroup*, const std::vector<GameEnti
 
 		/// Material Bind
 		materialBuffer_->SetMappedData(
-			Material{
+			GPUMaterial{
 				.baseColor = comp->GetColor(),
 				.postEffectFlags = 1,
 				.entityId = comp->GetOwner()->GetId()

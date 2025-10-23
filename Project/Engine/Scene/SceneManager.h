@@ -14,9 +14,9 @@
 #include "Loader/SceneIO.h"
 
 
-/// ===================================================
+/// ///////////////////////////////////////////////////
 /// シーンの管理を行うクラス
-/// ===================================================
+/// ///////////////////////////////////////////////////
 class SceneManager final {
 public:
 	/// ===================================================
@@ -27,7 +27,7 @@ public:
 	~SceneManager();
 
 	/// @brief このクラスの初期化
-	void Initialize(class GraphicsResourceCollection* _graphicsResourceCollection);
+	void Initialize(class AssetCollection* _graphicsResourceCollection);
 
 	/// @brief シーンの更新
 	void Update();
@@ -60,8 +60,8 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	class EntityComponentSystem* pECS_ = nullptr;
-	class GraphicsResourceCollection* pGraphicsResourceCollection_ = nullptr;
+	class EntityComponentSystem* pEcs_ = nullptr;
+	class AssetCollection* pGraphicsResourceCollection_ = nullptr;
 
 	std::string currentScene_;
 	std::string nextScene_;

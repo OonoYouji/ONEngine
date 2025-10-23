@@ -7,12 +7,33 @@
 /// engine
 #include "../../Interface/IComponent.h"
 #include "Engine/Graphics/Pipelines/Render/Mesh/MeshRenderingPipeline.h"
-#include "Engine/Graphics/Buffer/Data/Material.h"
+#include "Engine/Graphics/Buffer/Data/GPUMaterial.h"
 
-/// ===================================================
+
+/// 前方宣言
+class MeshRenderer;
+class AssetCollection;
+
+namespace COMP_DEBUG {
+	/// @brief MeshRendererのデバッグ表示
+	void MeshRendererDebug(MeshRenderer* _mr, AssetCollection* _grc);
+}
+
+/// Json変換
+void from_json(const nlohmann::json& _j, MeshRenderer& _mr);
+void to_json(nlohmann::json& _j, const MeshRenderer& _mr);
+
+
+
+/// ///////////////////////////////////////////////////
 /// mesh描画クラス
-/// ===================================================
+/// ///////////////////////////////////////////////////
 class MeshRenderer : public IRenderComponent {
+	/// friend methods
+	friend void COMP_DEBUG::MeshRendererDebug(MeshRenderer* _mr, AssetCollection* _grc);
+	friend void from_json(const nlohmann::json& _j, MeshRenderer& _mr);
+	friend void to_json(nlohmann::json& _j, const MeshRenderer& _mr);
+
 public:
 	/// ===================================================
 	/// public : methods
@@ -21,6 +42,8 @@ public:
 	MeshRenderer();
 	~MeshRenderer();
 
+	/// @brief 描画のために必要なデータを設定する
+	void SetupRenderData(class AssetCollection* _grc);
 
 private:
 	/// ===================================================
@@ -30,10 +53,10 @@ private:
 	std::string meshPath_;
 	std::string texturePath_;
 
-	Material material_;
+	GPUMaterial gpuMaterial_;
+	CPUMaterial    cpuMaterial_;
 
 public:
-
 	/// ===================================================
 	/// public : accessor
 	/// ===================================================
@@ -68,7 +91,8 @@ public:
 	/// @return RGBA 0.0f ~ 1.0f
 	const Vector4& GetColor() const;
 
-	const Material& GetMaterial() const;
+	const GPUMaterial& GetMaterial() const;
+	const CPUMaterial&    GetCPUMaterial() const;
 
 	/// @brief ポストエフェクトのフラグを取得
 	/// @return ポストエフェクトのフラグ
@@ -77,13 +101,6 @@ public:
 };
 
 
-namespace COMP_DEBUG {
-	/// @brief MeshRendererのデバッグ表示
-	void MeshRendererDebug(MeshRenderer* _mr);
-}
-
-void from_json(const nlohmann::json& _j, MeshRenderer& _mr);
-void to_json(nlohmann::json& _j, const MeshRenderer& _mr);
 
 /// ===================================================
 /// csで使用するための関数群

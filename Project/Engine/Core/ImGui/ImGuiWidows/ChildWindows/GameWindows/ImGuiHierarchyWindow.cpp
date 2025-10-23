@@ -157,7 +157,6 @@ void ImGuiHierarchyWindow::DrawMenuBar() {
 
 			DrawMenuEntity();
 			DrawMenuScene();
-			//DrawMenuScript();
 
 			ImGui::EndMenu();
 		}
@@ -210,19 +209,9 @@ void ImGuiHierarchyWindow::DrawMenuScene() {
 	}
 }
 
-void ImGuiHierarchyWindow::DrawMenuScript() {
-	if (ImGui::BeginMenu("scripts")) {
-
-		if (ImGui::MenuItem("hot reload")) {
-			pEditorManager_->ExecuteCommand<ReloadAllScriptsCommand>(pECSGroup_, pSceneManager_);
-		}
-
-		ImGui::EndMenu();
-	}
-}
-
 void ImGuiHierarchyWindow::DrawHierarchy() {
 
+	/// ECSGroupないにあるEntityの表示
 	if (ImGui::CollapsingHeader(pECSGroup_->GetGroupName().c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
 
 		/// entityの選択  
@@ -374,7 +363,7 @@ void ImGuiHierarchyWindow::DrawSceneSaveDialog() {
 
 ImGuiNormalHierarchyWindow::ImGuiNormalHierarchyWindow(const std::string& _imGuiWindowName, EntityComponentSystem* _ecs, EditorManager* _editorManager, SceneManager* _sceneManager, ImGuiInspectorWindow* _imguiInspectorWindow)
 	: ImGuiHierarchyWindow(_imGuiWindowName, nullptr, _editorManager, _sceneManager, _imguiInspectorWindow) {
-	pECS_ = _ecs;
+	pEcs_ = _ecs;
 }
 
 void ImGuiNormalHierarchyWindow::ShowImGui() {
@@ -393,7 +382,7 @@ void ImGuiNormalHierarchyWindow::ShowImGui() {
 		}
 	}
 
-	pECSGroup_ = pECS_->GetCurrentGroup();
+	pECSGroup_ = pEcs_->GetCurrentGroup();
 
 	/// Prefabのドラッグ＆ドロップ
 	PrefabDragAndDrop();

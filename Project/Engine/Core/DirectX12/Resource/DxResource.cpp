@@ -6,8 +6,8 @@
 #include "Engine/Core/Utility/Tools/Assert.h"
 
 
-DxResource::DxResource() {}
-DxResource::~DxResource() {}
+DxResource::DxResource() = default;
+DxResource::~DxResource() = default;
 
 void DxResource::CreateResource(DxDevice* _dxDevice, size_t _sizeInByte) {
 	HRESULT result = S_FALSE;

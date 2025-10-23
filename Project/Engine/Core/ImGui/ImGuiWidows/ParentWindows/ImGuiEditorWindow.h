@@ -12,7 +12,7 @@ public:
 	/// public : methods   
 	/// ===================================================
 
-	ImGuiEditorWindow(class EntityComponentSystem* _ecs, class GraphicsResourceCollection* _resourceCollection, class EditorManager* _editorManager);
+	ImGuiEditorWindow(class EntityComponentSystem* _ecs, class AssetCollection* _assetCollection, class EditorManager* _editorManager);
 	~ImGuiEditorWindow() {}
 
 	void ShowImGui() override;
@@ -23,6 +23,5 @@ private:
 	/// ===================================================
 
 	int imGuiFlags_ = 0;
-
 };
 

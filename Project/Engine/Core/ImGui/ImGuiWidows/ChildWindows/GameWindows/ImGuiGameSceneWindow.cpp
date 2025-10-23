@@ -4,7 +4,7 @@
 #include <imgui.h>
 
 /// engine
-#include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
+#include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/Core/ImGui/ImGuiManager.h"
 
 
@@ -18,8 +18,8 @@ void ImGuiGameSceneWindow::ShowImGui() {
 	/// Sceneを描画する
 	/// ---------------------------------------
 
-	const auto& textures = resourceCollection_->GetTextures();
-	auto& texture = textures[resourceCollection_->GetTextureIndex("sceneScene")];
+	const auto& textures = pAssetCollection_->GetTextures();
+	auto& texture = textures[pAssetCollection_->GetTextureIndex("./Assets/Scene/RenderTexture/sceneScene")];
 
 	ImVec2 windowSize = ImGui::GetContentRegionAvail();
 	float aspectRatio = 16.0f / 9.0f;

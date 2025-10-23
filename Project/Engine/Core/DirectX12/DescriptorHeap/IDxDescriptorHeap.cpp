@@ -20,16 +20,20 @@ ComPtr<ID3D12DescriptorHeap> CreateHeap(ID3D12Device* _device, D3D12_DESCRIPTOR_
 
 
 
+IDxDescriptorHeap::IDxDescriptorHeap(DxDevice* _dxDevice, uint32_t _maxHeapSize)
+	: pDxDevice_(_dxDevice), kMaxHeapSize_(_maxHeapSize) {}
+
+
 void IDxDescriptorHeap::Free(uint32_t _index) {
 	auto itr = std::find(spaceIndex_.begin(), spaceIndex_.end(), _index);
-	if(itr == spaceIndex_.end()) {
+	if (itr == spaceIndex_.end()) {
 		spaceIndex_.push_back(_index);
 	}
 }
 
 uint32_t IDxDescriptorHeap::Allocate() {
 	/// 削除された index があれば再利用する
-	if(!spaceIndex_.empty()) {
+	if (!spaceIndex_.empty()) {
 		uint32_t index = spaceIndex_.front();
 		spaceIndex_.pop_front();
 		return index;
@@ -58,5 +62,18 @@ D3D12_GPU_DESCRIPTOR_HANDLE IDxDescriptorHeap::GetGPUDescriptorHandel(uint32_t _
 	gpuHandle.ptr += (descriptorSize_ * _index);
 	return gpuHandle;
 }
+
+ID3D12DescriptorHeap* IDxDescriptorHeap::GetHeap() const {
+	return descriptorHeap_.Get();
+}
+
+uint32_t IDxDescriptorHeap::GetMaxHeapSize() const {
+	return kMaxHeapSize_;
+}
+
+uint32_t IDxDescriptorHeap::GetUsedIndexCount() const {
+	return useIndex_ - static_cast<uint32_t>(spaceIndex_.size());
+}
+
 
 

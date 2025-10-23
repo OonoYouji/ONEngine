@@ -45,8 +45,8 @@ CollisionSystem::CollisionSystem() {
 
 	collisionCheckMap_[boxCompName + "Vs" + sphereCompName] = [](const CollisionPair& _pair) -> bool {
 		return CheckMethod::CollisionCheckSphereVsBox(
-			_pair.first->GetComponent<SphereCollider>(),
-			_pair.second->GetComponent<BoxCollider>()
+			_pair.second->GetComponent<SphereCollider>(),
+			_pair.first->GetComponent<BoxCollider>()
 		);
 		};
 
@@ -61,6 +61,7 @@ CollisionSystem::CollisionSystem() {
 
 void CollisionSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
 
+	/// SphereColliderのGizmo描画
 	ComponentArray<SphereCollider>* sphereColliderArray = _ecs->GetComponentArray<SphereCollider>();
 	if (sphereColliderArray) {
 		for (auto& sphereCollider : sphereColliderArray->GetUsedComponents()) {
@@ -72,6 +73,7 @@ void CollisionSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
 		}
 	}
 
+	/// BoxColliderのGizmo描画
 	ComponentArray<BoxCollider>* boxColliderArray = _ecs->GetComponentArray<BoxCollider>();
 	if (boxColliderArray) {
 		for (auto& boxCollider : boxColliderArray->GetUsedComponents()) {
@@ -91,7 +93,7 @@ void CollisionSystem::RuntimeUpdate(ECSGroup* _ecs) {
 	stayPairs_.clear();
 	exitPairs_.clear();
 
-
+	/// 全てのコライダーを取得
 	ComponentArray<SphereCollider>* sphereColliderArray = _ecs->GetComponentArray<SphereCollider>();
 	ComponentArray<BoxCollider>* boxColliderArray = _ecs->GetComponentArray<BoxCollider>();
 
@@ -117,8 +119,9 @@ void CollisionSystem::RuntimeUpdate(ECSGroup* _ecs) {
 	}
 
 
+	/// 衝突計算をしたフレームを記録するマップ
 	using EntityIdPair = std::pair<int, int>;
-	std::unordered_map<EntityIdPair, int> collisionFrameMap; ///< 衝突計算をしたフレームを記録するマップ
+	std::unordered_map<EntityIdPair, int> collisionFrameMap;
 
 	/// 衝突判定
 	std::string collisionType = "";
@@ -209,6 +212,7 @@ void CollisionSystem::RuntimeUpdate(ECSGroup* _ecs) {
 	}
 
 
+	/// 各コールバック関数の実行
 	const std::string& ecsGroupName = _ecs->GetGroupName();
 	CallEnterFunc(ecsGroupName);
 	CallStayFunc(ecsGroupName);

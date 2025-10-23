@@ -11,6 +11,10 @@
 #include "../Math/Vector3.h"  
 #include "../Math/Vector4.h"  
 
+
+/// ///////////////////////////////////////////////////
+/// Randomな値を生成するクラス
+/// ///////////////////////////////////////////////////
 class Random final {
 	Random() = default;
 	~Random() = default;
@@ -29,6 +33,17 @@ public:
 	/// @return 最小値～最大値からランダムな値  
 	static int Int() {
 		return Int((std::numeric_limits<int>::min)(), (std::numeric_limits<int>::max)());
+	}
+
+	/// @brief uint64_t型のランダムな値を得る
+	static uint64_t UInt64(uint64_t _min, uint64_t _max) {
+		std::uniform_int_distribution<uint64_t> distribution(_min, _max);
+		return distribution(generator_);
+	}
+
+	/// @brief uint64_t型の最小値、最大値からランダムな値を得る
+	static uint64_t UInt64() {
+		return UInt64((std::numeric_limits<uint64_t>::min)(), (std::numeric_limits<uint64_t>::max)());
 	}
 
 	/// @brief float型のランダムな値を得る  
@@ -50,6 +65,10 @@ public:
 		return Float((std::numeric_limits<float>::min)(), (std::numeric_limits<float>::max)());
 	}
 
+	/// @brief Vector2型のランダムな値を得る
+	/// @param _min 最小値
+	/// @param _max 最大値
+	/// @return ランダムなVector2値
 	static Vector2 Vector2(const Vector2& _min, const Vector2& _max) {
 		return {
 			Float(_min.x, _max.x),
@@ -57,6 +76,10 @@ public:
 		};
 	}
 
+	/// @brief Vector3型のランダムな値を得る
+	/// @param _min 最小値
+	/// @param _max 最大値
+	/// @return ランダムなVector3値
 	static Vector3 Vector3(const Vector3& _min, const Vector3& _max) {
 		return {
 			Float(_min.x, _max.x),
@@ -65,6 +88,10 @@ public:
 		};
 	}
 
+	/// @brief Vector4型のランダムな値を得る
+	/// @param _min 最小値
+	/// @param _max 最大値
+	/// @return ランダムなVector4値
 	static Vector4 Vector4(const Vector4& _min, const Vector4& _max) {
 		return {
 			Float(_min.x, _max.x),
@@ -75,6 +102,9 @@ public:
 	}
 
 private:
+	/// ==================================================
+	/// private : static objects
+	/// ==================================================
 
 	static std::mt19937 generator_;
 

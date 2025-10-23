@@ -6,12 +6,12 @@
 /// engine
 #include "Engine/Core/ImGui/ImGuiManager.h"
 #include "Engine/Core/Utility/Utility.h"
-#include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
+#include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 
-ImGuiPrefabViewWindow::ImGuiPrefabViewWindow(EntityComponentSystem* _ecs, GraphicsResourceCollection* _resourceCollection)
-	: pECS_(_ecs), pGrc_(_resourceCollection) {}
+ImGuiPrefabViewWindow::ImGuiPrefabViewWindow(EntityComponentSystem* _ecs, AssetCollection* _assetCollection)
+	: pEcs_(_ecs), pAssetCollection_(_assetCollection) {}
 
 void ImGuiPrefabViewWindow::ShowImGui() {
 	if (!ImGui::Begin("prefab view")) {
@@ -21,7 +21,7 @@ void ImGuiPrefabViewWindow::ShowImGui() {
 
 
 	/// カメラの更新
-	CameraComponent* debugCamera = pECS_->GetECSGroup("Debug")->GetMainCamera();
+	CameraComponent* debugCamera = pEcs_->GetECSGroup("Debug")->GetMainCamera();
 	if (debugCamera) {
 		//debugCamera->Update();
 	}
@@ -62,7 +62,7 @@ void ImGuiPrefabViewWindow::ShowImGui() {
 void ImGuiPrefabViewWindow::RenderView() {
 
 	/// 描画する画像の取得
-	const Texture* texture = pGrc_->GetTexture("prefabScene");
+	const Texture* texture = pAssetCollection_->GetTexture("prefabScene");
 
 	// 最初に空き領域を取得
 	ImVec2 availRegion = ImGui::GetContentRegionAvail();

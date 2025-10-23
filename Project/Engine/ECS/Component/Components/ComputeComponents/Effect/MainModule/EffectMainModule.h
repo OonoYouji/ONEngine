@@ -22,6 +22,8 @@ public:
 		TwoConstant,
 	};
 
+
+	/// @brief 定数データ
 	template<typename T>
 	struct ConstantData {
 		ConstantData() = default;
@@ -30,6 +32,7 @@ public:
 		T constant;
 	};
 
+	/// @brief 2つの定数データ
 	template<typename T>
 	struct TwoConstantData {
 		TwoConstantData() = default;
@@ -39,6 +42,7 @@ public:
 		std::pair<T, T> constant;
 	};
 
+	/// @brief 値の型
 	template<typename T>
 	using Value = std::variant<ConstantData<T>, TwoConstantData<T>>;
 

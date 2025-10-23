@@ -14,8 +14,9 @@ SamplerState textureSampler : register(s0);
 PSOutput main(VSOutput input) {
 	PSOutput output;
 
-	float4 textureColor = textures[textureIds[input.instanceId].id].Sample(textureSampler, input.uv);
 	Material material = materials[input.instanceId];
+	float2 uv = mul(float3(input.uv, 1), MatUVTransformToMatrix(material.uvTransform)).xy;
+	float4 textureColor = textures[textureIds[input.instanceId].id].Sample(textureSampler, uv);
 	
 	output.color = textureColor * material.baseColor;
 	output.worldPosition = input.worldPosition;

@@ -2,15 +2,15 @@
 
 /// engine
 #include "Engine/Graphics/Buffer/ConstantBuffer.h"
-#include "Engine/Graphics/Resource/ResourceData/Texture.h"
+#include "Engine/Asset/Assets/Texture/Texture.h"
 
 #include "../Interface/IEditorCompute.h"
 #include "TerrainInfo.h"
 
 
-/// //////////////////////////////////////////
+/// /////////////////////////////////////////////////
 /// 地形のデータを出力する
-/// //////////////////////////////////////////
+/// /////////////////////////////////////////////////
 class TerrainDataOutput : public IEditorCompute {
 
 	enum {
@@ -29,7 +29,7 @@ public:
 	~TerrainDataOutput() override;
 
 	void Initialize(class ShaderCompiler* _shaderCompiler, class DxManager* _dxManager) override;
-	void Execute(class EntityComponentSystem* _ecs, class DxCommand* _dxCommand, class GraphicsResourceCollection* _resourceCollection) override;
+	void Execute(class EntityComponentSystem* _ecs, class DxCommand* _dxCommand, class AssetCollection* _assetCollection) override;
 
 private:
 	/// ==========================================

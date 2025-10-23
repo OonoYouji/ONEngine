@@ -12,7 +12,6 @@
 /// ///////////////////////////////////////////////////
 class WindowManager final {
 public:
-
 	/// ===================================================
 	/// public : enum
 	/// ===================================================
@@ -24,7 +23,6 @@ public:
 
 
 public:
-
 	/// ===================================================
 	/// public : static method
 	/// ===================================================
@@ -47,7 +45,6 @@ public:
 
 
 public:
-
 	/// ===================================================
 	/// public : method
 	/// ===================================================
@@ -55,8 +52,14 @@ public:
 	WindowManager(class DxManager* _dxManager);
 	~WindowManager();
 
+
+	/// @brief 初期化
 	void Initialize();
+
+	/// @brief 更新
 	void Update();
+
+	/// @brief 終了処理
 	void Finalize();
 
 	/// @brief main windowの描画前処理
@@ -90,7 +93,6 @@ public:
 	void ShowGameWindow(Window* _windowPtr) { ShowWindow(_windowPtr->GetHwnd(), SW_SHOW); }
 
 private:
-
 	/// ===================================================
 	/// private : methods
 	/// ===================================================
@@ -108,37 +110,31 @@ private:
 
 
 private:
-
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
 
+	///  ----- other class ----- ///
+	class DxManager*                     pDxManager_ = nullptr;
+
 	std::vector<std::unique_ptr<Window>> windows_;
 	Window*                              pMainWindow_ = nullptr;
-
-	class DxManager*                     dxManager_ = nullptr;
 
 	bool                                 isProcessEnd_;
 
 
 public:
-
 	/// ===================================================
 	/// public : accessor
 	/// ===================================================
 
-	/// <summary>
-	/// main windowを取得
-	/// </summary>
-	/// <returns></returns>
-	Window* GetMainWindow() const { return pMainWindow_; }
+	/// @brief MainWindowの取得
+	Window* GetMainWindow() const;
 
-	/// @brief 現在のアクティブなwindowを取得
-	/// @return アクティブなwindowのポインタ
+	/// @brief 現在のアクティブなWindowを取得
 	Window* GetActiveWindow() const;
 
 private:
-
 	/// ===================================================
 	/// private : copy delete
 	/// ===================================================

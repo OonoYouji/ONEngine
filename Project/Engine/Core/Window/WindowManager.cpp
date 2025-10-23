@@ -54,9 +54,9 @@ LRESULT WindowManager::SubWindowProc(HWND _hwnd, UINT _msg, WPARAM _wparam, LPAR
 
 
 WindowManager::WindowManager(DxManager* _dxManager)
-	: dxManager_(_dxManager) {}
+	: pDxManager_(_dxManager) {}
 
-WindowManager::~WindowManager() {}
+WindowManager::~WindowManager() = default;
 
 
 void WindowManager::Initialize() {
@@ -142,7 +142,7 @@ Window* WindowManager::GenerateWindow(const std::wstring& _windowName, const Vec
 
 	/// game windowを作成して表示する
 	CreateGameWindow(_windowName.c_str(), _windowSize, _windowStyle, newWindow.get(), _windowType);
-	newWindow->Initialize(_windowName, _windowSize, dxManager_);
+	newWindow->Initialize(_windowName, _windowSize, pDxManager_);
 
 	/// returnする用のpointer	
 	Window* resultPtr = newWindow.get();
@@ -226,6 +226,10 @@ void WindowManager::UpdateMainWindow() {
 
 	isProcessEnd_ = false;
 	pMainWindow_->processMessage_ = false;
+}
+
+Window* WindowManager::GetMainWindow() const {
+	return pMainWindow_;
 }
 
 Window* WindowManager::GetActiveWindow() const {

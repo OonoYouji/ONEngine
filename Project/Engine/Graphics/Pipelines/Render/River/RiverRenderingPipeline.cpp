@@ -6,9 +6,9 @@
 #include "Engine/ECS/Component/Array/ComponentArray.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Terrain.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
-#include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
+#include "Engine/Asset/Collection/AssetCollection.h"
 
-RiverRenderingPipeline::RiverRenderingPipeline(GraphicsResourceCollection* _grc) : pGRC_(_grc) {}
+RiverRenderingPipeline::RiverRenderingPipeline(AssetCollection* _grc) : pAssetCollection_(_grc) {}
 RiverRenderingPipeline::~RiverRenderingPipeline() = default;
 
 void RiverRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
@@ -39,7 +39,7 @@ void RiverRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManag
 
 		pipeline_->AddStaticSampler(D3D12_SHADER_VISIBILITY_PIXEL, 0);
 
-		pipeline_->SetBlendDesc(BlendMode::Normal());
+		pipeline_->SetBlendDesc(BlendMode::None());
 		pipeline_->SetCullMode(D3D12_CULL_MODE_BACK);
 		pipeline_->SetFillMode(D3D12_FILL_MODE_SOLID);
 		pipeline_->SetTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
@@ -55,14 +55,14 @@ void RiverRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManag
 
 }
 
-void RiverRenderingPipeline::Draw(ECSGroup* _ecs, const std::vector<GameEntity*>& _entities, CameraComponent* _camera, DxCommand* _dxCommand) {
+void RiverRenderingPipeline::Draw(ECSGroup* _ecs, const std::vector<GameEntity*>& /*_entities*/, CameraComponent* _camera, DxCommand* _dxCommand) {
 
 	/// --------------------------------------------------------------------
 	/// 早期リターンチェック
 	/// --------------------------------------------------------------------
 
 	ComponentArray<Terrain>* terrainArray = _ecs->GetComponentArray<Terrain>();
-	if(!terrainArray) {
+	if(!terrainArray || terrainArray->GetUsedComponents().empty()) {
 		Console::LogError("RiverRenderingPipeline::Draw: Terrain component array is null");
 		return;
 	}
@@ -91,11 +91,11 @@ void RiverRenderingPipeline::Draw(ECSGroup* _ecs, const std::vector<GameEntity*>
 	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(cmdList, CBV_VIEW_PROJECTION);
 
 	/// SRV_TEXTURE
-	auto frontTex = pGRC_->GetTextures().begin();
+	auto frontTex = pAssetCollection_->GetTextures().begin();
 	cmdList->SetGraphicsRootDescriptorTable(SRV_TEXTURE, (*frontTex).GetSRVGPUHandle());
 
 	/// CBV_MATERIAL
-	river->SetMaterialData(terrain->GetOwner()->GetId(), static_cast<int32_t>(pGRC_->GetTextureIndex("./Packages/Textures/Terrain/River.png")));
+	river->SetMaterialData(terrain->GetOwner()->GetId(), static_cast<int32_t>(pAssetCollection_->GetTextureIndex("./Packages/Textures/Terrain/River.png")));
 	river->GetMaterialBufRef().BindForGraphicsCommandList(cmdList, CBV_MATERIAL);
 
 	/// vbvとibvのリソースバリアーを変える

@@ -8,12 +8,12 @@
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Core/Utility/Input/Input.h"
 
+
+/// pragma comment
 #pragma comment(lib, "winmm.lib")
 
 
-
-
-Window::Window() {}
+Window::Window() = default;
 
 Window::~Window() {
 	/// windowクラスの登録解除
@@ -51,13 +51,11 @@ void Window::PostDraw() {
 }
 
 void Window::Update() {
-
 	if (Input::PressKey(DIK_RALT) || Input::PressKey(DIK_LALT)) {
 		if (Input::TriggerKey(DIK_RETURN)) {
 			ToggleFullScreen();
 		}
 	}
-
 }
 
 void Window::Present() {
@@ -100,31 +98,6 @@ void Window::ToggleFullScreen() {
 		SetForegroundWindow(hwnd_);
 		SetFocus(hwnd_);
 
-		//// 元の状態を覚えておく
-		//GetWindowRect(hwnd_, &wrc_);
-
-		//// 仮想フルスクリーン化
-		//SetWindowLong(
-		//	hwnd_, GWL_STYLE,
-		//	windowStyle_ & ~(WS_CAPTION | WS_MAXIMIZEBOX | WS_MINIMIZEBOX | WS_SYSMENU | WS_THICKFRAME)
-		//);
-
-		//HMONITOR monitor = MonitorFromWindow(hwnd_, MONITOR_DEFAULTTONEAREST);
-		//MONITORINFO info;
-		//info.cbSize = sizeof(info);
-		//GetMonitorInfo(monitor, &info);
-		//fullscreenRect_.right = info.rcMonitor.right - info.rcMonitor.left;
-		//fullscreenRect_.bottom = info.rcMonitor.bottom - info.rcMonitor.top;
-
-		//SetWindowPos(
-		//	hwnd_, HWND_TOPMOST, 
-		//	fullscreenRect_.left, fullscreenRect_.top,
-		//	fullscreenRect_.right, fullscreenRect_.bottom, 
-		//	SWP_FRAMECHANGED | SWP_NOACTIVATE
-		//);
-		//
-		//ShowWindow(hwnd_, SW_MAXIMIZE);
-
 	} else {
 		// 通常ウィンドウに戻す
 		SetWindowLong(hwnd_, GWL_STYLE, windowStyle_);
@@ -142,3 +115,18 @@ void Window::ToggleFullScreen() {
 	isFullScreen_ = !isFullScreen_;
 }
 
+HWND Window::GetHwnd() const {
+	return hwnd_;
+}
+
+const WNDCLASS& Window::GetWNDCLASS() const {
+	return windowClass_;
+}
+
+UINT Window::GetProcessMessage() const {
+	return processMessage_;
+}
+
+const Vector2& Window::GetWindowSize() const {
+	return windowSize_;
+}

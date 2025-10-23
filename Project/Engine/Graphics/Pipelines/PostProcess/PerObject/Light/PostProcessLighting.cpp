@@ -6,7 +6,7 @@
 /// engine
 #include "Engine/Core/Config/EngineConfig.h"
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
-#include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
+#include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Light/Light.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
@@ -61,12 +61,12 @@ void PostProcessLighting::Initialize(ShaderCompiler* _shaderCompiler, DxManager*
 
 }
 
-void PostProcessLighting::Execute(const std::string& _textureName, DxCommand* _dxCommand, GraphicsResourceCollection* _resourceCollection, EntityComponentSystem* _pEntityComponentSystem) {
+void PostProcessLighting::Execute(const std::string& _textureName, DxCommand* _dxCommand, AssetCollection* _assetCollection, EntityComponentSystem* _pEntityComponentSystem) {
 
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 
 	auto command = _dxCommand->GetCommandList();
-	auto& textures = _resourceCollection->GetTextures();
+	auto& textures = _assetCollection->GetTextures();
 
 	{	/// set constant buffers
 
@@ -119,15 +119,15 @@ void PostProcessLighting::Execute(const std::string& _textureName, DxCommand* _d
 
 	{	/// set textures
 
-		//auto& textures = _resourceCollection->GetTextures();
+		//auto& textures = _assetCollection->GetTextures();
 
-		textureIndices_[1] = _resourceCollection->GetTextureIndex(_textureName + "WorldPosition");
-		textureIndices_[2] = _resourceCollection->GetTextureIndex(_textureName + "Normal");
-		textureIndices_[3] = _resourceCollection->GetTextureIndex(_textureName + "Flags");
+		textureIndices_[1] = _assetCollection->GetTextureIndex(_textureName + "WorldPosition");
+		textureIndices_[2] = _assetCollection->GetTextureIndex(_textureName + "Normal");
+		textureIndices_[3] = _assetCollection->GetTextureIndex(_textureName + "Flags");
 
-		textureIndices_[0] = _resourceCollection->GetTextureIndex(_textureName + "Scene");
-		textureIndices_[4] = _resourceCollection->GetTextureIndex("./Packages/Textures/kloofendal_48d_partly_cloudy_puresky_2k.dds");
-		textureIndices_[5] = _resourceCollection->GetTextureIndex("postProcessResult");
+		textureIndices_[0] = _assetCollection->GetTextureIndex(_textureName + "Scene");
+		textureIndices_[4] = _assetCollection->GetTextureIndex("./Packages/Textures/kloofendal_48d_partly_cloudy_puresky_2k.dds");
+		textureIndices_[5] = _assetCollection->GetTextureIndex("postProcessResult");
 
 		for (uint32_t index = 0; index < 5; ++index) {
 			command->SetComputeRootDescriptorTable(index + 2, textures[textureIndices_[index]].GetSRVGPUHandle());

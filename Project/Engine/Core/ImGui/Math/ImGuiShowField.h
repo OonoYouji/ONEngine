@@ -10,9 +10,17 @@
 #include <imgui.h>
 
 
-/// @brief CSのフィールドをImGuiで表示するための名前空間
+/// ///////////////////////////////////////////////////////
+/// C#のフィールドをImGuiで表示するための名前空間
+/// ///////////////////////////////////////////////////////
 namespace CSGui {
 
+
+	/// @brief ImGuiでC#の[SerializeField]のフィールドを表示する
+	/// @param _type 変数の型
+	/// @param _obj 表示するオブジェクト
+	/// @param _field 表示するフィールド
+	/// @param _name ImGuiで表示する変数名
 	void ShowFiled(int _type, MonoObject* _obj, MonoClassField* _field, const char* _name);
 
 

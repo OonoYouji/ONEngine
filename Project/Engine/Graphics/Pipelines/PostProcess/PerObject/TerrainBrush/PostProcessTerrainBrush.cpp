@@ -3,7 +3,7 @@
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Core/Utility/Input/Input.h"
-#include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
+#include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Terrain.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 
@@ -49,7 +49,7 @@ void PostProcessTerrainBrush::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 
 void PostProcessTerrainBrush::Execute(
 	const std::string& _textureName, DxCommand* _dxCommand,
-	GraphicsResourceCollection* _resourceCollection, EntityComponentSystem* _entityComponentSystem) {
+	AssetCollection* _assetCollection, EntityComponentSystem* _entityComponentSystem) {
 
 	/// brush data
 	const Vector2 mousePos = Input::GetImGuiImageMousePosNormalized("Scene");
@@ -72,16 +72,20 @@ void PostProcessTerrainBrush::Execute(
 		}
 	}
 
+	if (!terrain) {
+		return;
+	}
+
 	brushBuffer_.SetMappedData(
 		Brush{ mousePos, terrain->GetBrushRadius() }
 	);
 
 	/// texture index
-	auto& textures = _resourceCollection->GetTextures();
-	textureIndices_[0] = _resourceCollection->GetTextureIndex(_textureName + "Scene");
-	textureIndices_[1] = _resourceCollection->GetTextureIndex(_textureName + "WorldPosition");
-	textureIndices_[2] = _resourceCollection->GetTextureIndex(_textureName + "Flags");
-	textureIndices_[3] = _resourceCollection->GetTextureIndex("postProcessResult");
+	auto& textures = _assetCollection->GetTextures();
+	textureIndices_[0] = _assetCollection->GetTextureIndex(_textureName + "Scene");
+	textureIndices_[1] = _assetCollection->GetTextureIndex(_textureName + "WorldPosition");
+	textureIndices_[2] = _assetCollection->GetTextureIndex(_textureName + "Flags");
+	textureIndices_[3] = _assetCollection->GetTextureIndex("postProcessResult");
 
 	auto cmdList = _dxCommand->GetCommandList();
 

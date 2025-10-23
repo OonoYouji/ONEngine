@@ -8,9 +8,9 @@
 #include "Engine/Graphics/Buffer/ConstantBuffer.h"
 
 
-/// ///////////////////////////////////////////////////////////////////////////////////////////
+/// /////////////////////////////////////////////////
 /// 天球のレンダリングパイプライン
-/// ///////////////////////////////////////////////////////////////////////////////////////////
+/// /////////////////////////////////////////////////
 class SkyboxRenderingPipeline : public IRenderingPipeline {
 public:
 
@@ -19,15 +19,22 @@ public:
 	};
 
 public:
+	/// ===================================================
+	/// public : methods
+	/// ===================================================
 
-	SkyboxRenderingPipeline(class GraphicsResourceCollection* _resourceCollection);
+	SkyboxRenderingPipeline(class AssetCollection* _assetCollection);
 	~SkyboxRenderingPipeline();
 
 	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxManager) override;
 	void Draw(class ECSGroup* _ecs, const std::vector<GameEntity*>& _entities, class CameraComponent* _camera, DxCommand* _dxCommand) override;
 
 private:
-	class GraphicsResourceCollection* pGrc_;
+	/// ===================================================
+	/// private : objects
+	/// ===================================================
+
+	class AssetCollection* pAssetCollection_;
 	ConstantBuffer<size_t> texIndex_;
 	ConstantBuffer<Matrix4x4> transformMatrix_;
 	

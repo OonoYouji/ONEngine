@@ -12,7 +12,7 @@
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentJsonConverter.h"
 
-SceneIO::SceneIO(EntityComponentSystem* _ecs) : pECS_(_ecs) {
+SceneIO::SceneIO(EntityComponentSystem* _ecs) : pEcs_(_ecs) {
 	fileName_ = "";
 	fileDirectory_ = "./Assets/Scene/";
 }
@@ -30,12 +30,12 @@ void SceneIO::Input(const std::string& _sceneName, ECSGroup* _ecsGroup) {
 	LoadScene(fileName_, _ecsGroup);
 }
 
-void SceneIO::OutputTemporary(const std::string& _sceneName, ECSGroup* _ecsGroup) {
+void SceneIO::OutputTemporary(const std::string& /*_sceneName*/, ECSGroup* _ecsGroup) {
 	tempSceneJson_.clear();
 	SaveSceneToJson(tempSceneJson_, _ecsGroup);
 }
 
-void SceneIO::InputTemporary(const std::string& _sceneName, ECSGroup* _ecsGroup) {
+void SceneIO::InputTemporary(const std::string& /*_sceneName*/, ECSGroup* _ecsGroup) {
 	LoadSceneFromJson(tempSceneJson_, _ecsGroup);
 }
 

@@ -10,14 +10,14 @@
 #include "Engine/Core/Config/EngineConfig.h"
 #include "Engine/Core/DirectX12/Manager/DxManager.h" 
 #include "Engine/Core/Window/WindowManager.h"
-#include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
+#include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/Graphics/RenderTexture/SceneRenderTexture.h"
 #include "Engine/Graphics/Pipelines/Render/CopyImage/CopyImageRenderingPipeline.h"
 
 
-/// ===================================================
+/// ///////////////////////////////////////////////////
 /// 描画のフレームワーククラス
-/// ===================================================
+/// ///////////////////////////////////////////////////
 class RenderingFramework final {
 
 	enum RENDER_TEXTURE_TYPE {
@@ -28,7 +28,6 @@ class RenderingFramework final {
 	};
 
 public:
-
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
@@ -48,19 +47,21 @@ public:
 	void DrawDebug();
 	void DrawPrefab();
 
+
+	/// @brief SRVHeapをコマンドリストにバインドする
 	void HeapBindToCommandList();
 
+	/// @brief DxCommandを実行してリセットする
 	void DxCommandExeAndReset();
 
 private:
-
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
 
 	std::unique_ptr<ShaderCompiler>              shaderCompiler_;
 	std::unique_ptr<RenderingPipelineCollection> renderingPipelineCollection_;
-	std::unique_ptr<GraphicsResourceCollection>  resourceCollection_;
+	std::unique_ptr<AssetCollection>  pAssetCollection_;
 	std::vector<std::unique_ptr<SceneRenderTexture>> renderTextures_;
 	DxManager*                                   pDxManager_        = nullptr;
 	WindowManager*                               pWindowManager_    = nullptr;
@@ -76,14 +77,13 @@ private:
 
 
 public:
-
 	/// ===================================================
 	/// public : accessor
 	/// ===================================================
 
 	/// @brief 描画に使用するリソースコレクションの取得
 	/// @return リソースのコレクションを返す
-	GraphicsResourceCollection* GetResourceCollection() const;
+	AssetCollection* GetResourceCollection() const;
 
 
 

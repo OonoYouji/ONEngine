@@ -3,6 +3,9 @@
 /// engine
 #include "Engine/Core/Utility/Tools/Log.h"
 
+DxSRVHeap::DxSRVHeap(DxDevice* _dxDevice, uint32_t _maxHeapSize, uint32_t _textureHeapSize) : IDxDescriptorHeap(_dxDevice, _maxHeapSize), textureHeapSize_(_textureHeapSize) {}
+DxSRVHeap::~DxSRVHeap() = default;
+
 void DxSRVHeap::Initialize() {
 	ID3D12Device* pDevice = pDxDevice_->GetDevice();
 
@@ -12,7 +15,6 @@ void DxSRVHeap::Initialize() {
 
 	textureUseIndex_ = 0;
 	bufferUseIndex_ = textureHeapSize_; ///< indexの開始地点はtextureの分だけずらす
-
 
 	Console::Log("dx descriptor heap cbv,srv,uav create success!!");
 }

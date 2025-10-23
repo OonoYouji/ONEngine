@@ -6,8 +6,8 @@
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Terrain.h"
 
-#include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
-#include "Engine/Graphics/Resource/ResourceData/Texture.h"
+#include "Engine/Asset/Collection/AssetCollection.h"
+#include "Engine/Asset/Assets/Texture/Texture.h"
 
 TerrainVertexCreator::TerrainVertexCreator() {}
 TerrainVertexCreator::~TerrainVertexCreator() {}
@@ -49,7 +49,7 @@ void TerrainVertexCreator::Initialize(ShaderCompiler* _shaderCompiler, DxManager
 
 }
 
-void TerrainVertexCreator::Execute(EntityComponentSystem* _ecs, DxCommand* _dxCommand, GraphicsResourceCollection* _resourceCollection) {
+void TerrainVertexCreator::Execute(EntityComponentSystem* _ecs, DxCommand* _dxCommand, AssetCollection* _assetCollection) {
 	ComponentArray<Terrain>* terrainArray = _ecs->GetCurrentGroup()->GetComponentArray<Terrain>();
 	if (!terrainArray) {
 		Console::LogError("TerrainVertexEditorCompute::Execute: Terrain component array is null");
@@ -101,8 +101,8 @@ void TerrainVertexCreator::Execute(EntityComponentSystem* _ecs, DxCommand* _dxCo
 		pTerrain->GetRwVertices().UAVBindForComputeCommandList(cmdList, UAV_VERTICES);
 		pTerrain->GetRwIndices().UAVBindForComputeCommandList(cmdList, UAV_INDICES);
 
-		const Texture* vertexTexture = _resourceCollection->GetTexture("./Packages/Textures/Terrain/TerrainVertex.png");
-		const Texture* blendTexture = _resourceCollection->GetTexture("./Packages/Textures/Terrain/TerrainSplatBlend.png");
+		const Texture* vertexTexture = _assetCollection->GetTexture("./Packages/Textures/Terrain/TerrainVertex.png");
+		const Texture* blendTexture = _assetCollection->GetTexture("./Packages/Textures/Terrain/TerrainSplatBlend.png");
 
 		if (vertexTexture) { cmdList->SetComputeRootDescriptorTable(SRV_VERTEX_TEXTURE, vertexTexture->GetSRVGPUHandle()); }
 		if (blendTexture) { cmdList->SetComputeRootDescriptorTable(SRV_SPLAT_BLEND_TEXTURE, blendTexture->GetSRVGPUHandle()); }

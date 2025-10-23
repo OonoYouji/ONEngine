@@ -19,7 +19,7 @@
 #include "../System/Transform/TransformUpdateSystem.h"
 #include "../System/GrassBufferCreateSystem/GrassBufferCreateSystem.h"
 
-void GameECSGroupAddSystemFunction(ECSGroup* _ecs, DxManager* _dxManager, GraphicsResourceCollection* _resourceCollection) {
+void GameECSGroupAddSystemFunction(ECSGroup* _ecs, DxManager* _dxManager, AssetCollection* _assetCollection) {
 
 	/// 初期化に使うsystem
 	_ecs->AddSystem<TerrainColliderVertexGenerator>(_dxManager);
@@ -27,9 +27,9 @@ void GameECSGroupAddSystemFunction(ECSGroup* _ecs, DxManager* _dxManager, Graphi
 
 	/// 更新に使うsystem
 	_ecs->AddSystem<CameraUpdateSystem>(_dxManager->GetDxDevice());
-	_ecs->AddSystem<SkinMeshUpdateSystem>(_dxManager, _resourceCollection);
+	_ecs->AddSystem<SkinMeshUpdateSystem>(_dxManager, _assetCollection);
 	_ecs->AddSystem<ScriptUpdateSystem>(_ecs);
-	_ecs->AddSystem<AudioPlaybackSystem>(_resourceCollection);
+	_ecs->AddSystem<AudioPlaybackSystem>(_assetCollection);
 	_ecs->AddSystem<EffectUpdateSystem>();
 	_ecs->AddSystem<SpriteUpdateSystem>();
 	_ecs->AddSystem<TransformUpdateSystem>();
@@ -43,7 +43,7 @@ void GameECSGroupAddSystemFunction(ECSGroup* _ecs, DxManager* _dxManager, Graphi
 	_ecs->AddSystem<ColliderRenderQueueSystem>();
 }
 
-void DebugECSGroupAddSystemFunction(ECSGroup* _ecs, DxManager* _dxManager, GraphicsResourceCollection* _resourceCollection) {
+void DebugECSGroupAddSystemFunction(ECSGroup* _ecs, DxManager* _dxManager, AssetCollection* _assetCollection) {
 
 	/// 初期化に使うsystem
 	_ecs->AddSystem<TerrainColliderVertexGenerator>(_dxManager);
@@ -51,9 +51,9 @@ void DebugECSGroupAddSystemFunction(ECSGroup* _ecs, DxManager* _dxManager, Graph
 
 	/// 更新に使うsystem
 	_ecs->AddSystem<CameraUpdateSystem>(_dxManager->GetDxDevice());
-	_ecs->AddSystem<SkinMeshUpdateSystem>(_dxManager, _resourceCollection);
+	_ecs->AddSystem<SkinMeshUpdateSystem>(_dxManager, _assetCollection);
 	_ecs->AddSystem<DebugScriptUpdateSystem>(_ecs);
-	_ecs->AddSystem<AudioPlaybackSystem>(_resourceCollection);
+	_ecs->AddSystem<AudioPlaybackSystem>(_assetCollection);
 	_ecs->AddSystem<EffectUpdateSystem>();
 	_ecs->AddSystem<SpriteUpdateSystem>();
 	_ecs->AddSystem<TransformUpdateSystem>();

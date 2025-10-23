@@ -59,16 +59,4 @@ void ImGuiMainWindow::MainMenu() {
 	ImGui::EndMainMenuBar();
 }
 
-void ImGuiMainWindow::EffectMenu() {
 
-	if (ImGui::BeginMenuBar()) {
-		if (ImGui::BeginMenu("editor")) {
-
-			/// オブジェクトの追加とか色々
-
-			ImGui::EndMenu();
-		}
-		ImGui::EndMenuBar();
-	}
-
-}

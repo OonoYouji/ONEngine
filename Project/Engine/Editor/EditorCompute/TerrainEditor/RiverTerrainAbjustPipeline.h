@@ -2,9 +2,9 @@
 
 #include "../Interface/IEditorCompute.h"
 
-/// //////////////////////////////////////////
+/// /////////////////////////////////////////////////
 /// 川に沿って地形を変形させるCSPipelineを起動させるクラス
-/// //////////////////////////////////////////
+/// /////////////////////////////////////////////////
 class RiverTerrainAbjustPipeline : public IEditorCompute {
 
 	enum ROOT_PARAM {
@@ -23,7 +23,7 @@ public:
 	~RiverTerrainAbjustPipeline();
 
 	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxManager) override;
-	void Execute(class EntityComponentSystem* _ecs, class DxCommand* _dxCommand, class GraphicsResourceCollection* _resourceCollection) override;
+	void Execute(class EntityComponentSystem* _ecs, class DxCommand* _dxCommand, class AssetCollection* _assetCollection) override;
 
 private:
 	/// =========================================

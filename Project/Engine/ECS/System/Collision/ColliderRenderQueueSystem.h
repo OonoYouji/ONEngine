@@ -20,7 +20,10 @@ public:
 
 	void RuntimeUpdate(class ECSGroup* _ecs) override;
 
+	/// @brief SphereのデータからGizmoを更新する
 	void UpdateSphereCollider(ComponentArray<SphereCollider>* _sphereColliderArray);
+
+	/// @brief BoxのデータからGizmoを更新する
 	void UpdateBoxCollider(ComponentArray<BoxCollider>* _boxColliderArray);
 
 };

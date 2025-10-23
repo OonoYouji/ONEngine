@@ -11,7 +11,7 @@ SceneRenderTexture::SceneRenderTexture() {
 
 void SceneRenderTexture::Initialize(
 	const std::string& _name, const Vector4& _clearColor,
-	DxManager* _dxManager, GraphicsResourceCollection* _graphicsResourceCollection) {
+	DxManager* _dxManager, AssetCollection* _assetCollection) {
 
 	/// パラメータの設定
 	name_ = _name;
@@ -26,10 +26,10 @@ void SceneRenderTexture::Initialize(
 			renderTexture = std::make_unique<RenderTexture>();
 		}
 
-		renderTextures_[0]->Initialize(static_cast<DXGI_FORMAT>(RTVFormat_Color),         clearColor_, name_ + "Scene",         _dxManager, _graphicsResourceCollection);
-		renderTextures_[1]->Initialize(static_cast<DXGI_FORMAT>(RTVFormat_WorldPosition), clearColor_, name_ + "WorldPosition", _dxManager, _graphicsResourceCollection);
-		renderTextures_[2]->Initialize(static_cast<DXGI_FORMAT>(RTVFormat_Normal),        clearColor_, name_ + "Normal",        _dxManager, _graphicsResourceCollection);
-		renderTextures_[3]->Initialize(static_cast<DXGI_FORMAT>(RTVFormat_Flags),         {},          name_ + "Flags",         _dxManager, _graphicsResourceCollection);
+		renderTextures_[0]->Initialize(static_cast<DXGI_FORMAT>(RTVFormat_Color),         clearColor_, name_ + "Scene",         _dxManager, _assetCollection);
+		renderTextures_[1]->Initialize(static_cast<DXGI_FORMAT>(RTVFormat_WorldPosition), clearColor_, name_ + "WorldPosition", _dxManager, _assetCollection);
+		renderTextures_[2]->Initialize(static_cast<DXGI_FORMAT>(RTVFormat_Normal),        clearColor_, name_ + "Normal",        _dxManager, _assetCollection);
+		renderTextures_[3]->Initialize(static_cast<DXGI_FORMAT>(RTVFormat_Flags),         {},          name_ + "Flags",         _dxManager, _assetCollection);
 	}
 
 }

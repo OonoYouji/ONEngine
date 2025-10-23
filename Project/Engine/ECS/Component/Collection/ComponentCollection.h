@@ -43,14 +43,25 @@ public:
 	template<typename Comp>
 	Comp* GetComponent(size_t _index) requires std::is_base_of_v<IComponent, Comp>;
 
+	/// @brief Componentの削除
+	/// @tparam Comp 削除するComponentの型
+	/// @param _index Arrayのインデックス
 	template<typename Comp>
 	void RemoveComponent(size_t _index) requires std::is_base_of_v<IComponent, Comp>;
 
+	/// @brief Componentの削除
+	/// @param _hash CompのHash
+	/// @param _id ArrayのIndex
 	void RemoveComponent(size_t _hash, size_t _id);
 
+	/// @brief _entityのComponentをすべて削除する
+	/// @param _entity 削除対象のEntity
 	void RemoveComponentAll(class GameEntity* _entity);
 
 
+	/// @brief Componentの配列を取得する
+	/// @tparam Comp Componentの型
+	/// @return ComponentArray
 	template <typename Comp>
 	ComponentArray<Comp>* GetComponentArray() requires std::is_base_of_v<IComponent, Comp>;
 

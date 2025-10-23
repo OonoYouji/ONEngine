@@ -43,13 +43,27 @@ public:
 	ComponentArray();
 	~ComponentArray() override = default;
 
+
+	/// @brief Comp型のComponentの追加
 	Comp* AddComponent();
 
+	/// @brief Interface型のComponentを返す
 	IComponent* AddComponentUntyped() override;
+
+	/// @brief _index番目のComponentを削除する
+	/// @param _index ComponentArrayのインデックス
 	void RemoveComponent(size_t _index) override;
+
+	/// @brief ポインタからComponentArrayのインデックスを取得する
+	/// @param _component ComponentArrayの要素
+	/// @return _componentのIndex
 	size_t GetComponentIndex(IComponent* _component) override;
+
+	/// @brief 新しいComponentのIDを取得する
+	/// @return 新規Id
 	size_t NewComponentId() override;
 
+	/// @brief 使用中のComponentArrayを取得する
 	std::vector<Comp*>& GetUsedComponents();
 
 private:

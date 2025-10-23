@@ -5,21 +5,41 @@
 
 /// engine
 #include "Engine/Core/ImGui/Math/ImGuiMath.h"
-#include "Engine/Graphics/Pipelines/Collection/RenderingPipelineCollection.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentJsonConverter.h"
+//#include "Engine/Graphics/Pipelines/Collection/RenderingPipelineCollection.h"
+#include "Engine/Asset/Collection/AssetCollection.h"
 
 MeshRenderer::MeshRenderer() {
 	SetMeshPath("./Packages/Models/primitive/cube.obj");
 	SetTexturePath("./Packages/Textures/white.png");
-	material_.baseColor = Vector4::kWhite;
-	material_.postEffectFlags = PostEffectFlags_Lighting;
-	if (GetOwner()) {
-		material_.entityId = GetOwner()->GetId();
-	}
+	cpuMaterial_.baseColor = Vector4::kWhite;
+	cpuMaterial_.postEffectFlags = PostEffectFlags_Lighting;
+	cpuMaterial_.SetOwnerEntity(GetOwner());
 }
 
-MeshRenderer::~MeshRenderer() {}
+MeshRenderer::~MeshRenderer() = default;
+
+void MeshRenderer::SetupRenderData(AssetCollection* _grc) {
+	/// OwnerEntityを cpuMaterial_に設定
+	cpuMaterial_.SetOwnerEntity(GetOwner());
+
+
+	/// 有効なGuidであれば
+	if (cpuMaterial_.baseTextureIdPair.first.CheckValid()) {
+		/// cpuMaterial_のtexture guidから gpuMaterial_のtexture idを設定
+		cpuMaterial_.baseTextureIdPair.second = _grc->GetTextureIndexFromGuid(cpuMaterial_.baseTextureIdPair.first);
+	}
+
+	/// 有効なGuidであれば
+	if (cpuMaterial_.normalTextureIdPair.first.CheckValid()) {
+		/// cpuMaterial_のtexture guidから gpuMaterial_のtexture idを設定
+		cpuMaterial_.normalTextureIdPair.second = _grc->GetTextureIndexFromGuid(cpuMaterial_.normalTextureIdPair.first);
+	}
+
+
+	gpuMaterial_ = cpuMaterial_.ToGPUMaterial();
+}
 
 void MeshRenderer::SetMeshPath(const std::string& _path) {
 	meshPath_ = _path;
@@ -30,17 +50,17 @@ void MeshRenderer::SetTexturePath(const std::string& _path) {
 }
 
 void MeshRenderer::SetColor(const Vector4& _color) {
-	material_.baseColor = _color;
+	gpuMaterial_.baseColor = _color;
 }
 
 void MeshRenderer::SetPostEffectFlags(uint32_t _flags) {
-	material_.postEffectFlags = _flags;
+	gpuMaterial_.postEffectFlags = _flags;
 }
 
 void MeshRenderer::SetMaterialEntityId() {
 	GameEntity* owner = GetOwner();
 	if (owner) {
-		material_.entityId = owner->GetId();
+		gpuMaterial_.entityId = owner->GetId();
 	}
 }
 
@@ -53,15 +73,19 @@ const std::string& MeshRenderer::GetTexturePath() const {
 }
 
 const Vector4& MeshRenderer::GetColor() const {
-	return material_.baseColor;
+	return gpuMaterial_.baseColor;
 }
 
-const Material& MeshRenderer::GetMaterial() const {
-	return material_;
+const GPUMaterial& MeshRenderer::GetMaterial() const {
+	return gpuMaterial_;
+}
+
+const CPUMaterial& MeshRenderer::GetCPUMaterial() const {
+	return cpuMaterial_;
 }
 
 uint32_t MeshRenderer::GetPostEffectFlags() const {
-	return material_.postEffectFlags;
+	return gpuMaterial_.postEffectFlags;
 }
 
 
@@ -132,7 +156,7 @@ void InternalSetPostEffectFlags(uint64_t _nativeHandle, uint32_t _flags) {
 	}
 }
 
-void COMP_DEBUG::MeshRendererDebug(MeshRenderer* _mr) {
+void COMP_DEBUG::MeshRendererDebug(MeshRenderer* _mr, AssetCollection* _grc) {
 	if (!_mr) {
 		return;
 	}
@@ -225,6 +249,8 @@ void COMP_DEBUG::MeshRendererDebug(MeshRenderer* _mr) {
 		}
 	}
 
+	/// Material Debug
+	ImMathf::MaterialEdit("Material##MeshRenderer", &_mr->gpuMaterial_, _grc);
 
 }
 
@@ -238,9 +264,10 @@ void from_json(const nlohmann::json& _j, MeshRenderer& _m) {
 	_m.SetTexturePath(_j.at("texturePath").get<std::string>());
 	_m.SetColor(_j.at("color").get<Vector4>());
 
-	if (_j.contains("postEffectFlags")) {
-		_m.SetPostEffectFlags(_j.at("postEffectFlags").get<uint32_t>());
-	}
+	_m.cpuMaterial_ = _j.value("material", CPUMaterial{});
+	//if (_j.contains("postEffectFlags")) {
+	//	_m.SetPostEffectFlags(_j.at("postEffectFlags").get<uint32_t>());
+	//}
 }
 
 void to_json(nlohmann::json& _j, const MeshRenderer& _m) {
@@ -250,6 +277,6 @@ void to_json(nlohmann::json& _j, const MeshRenderer& _m) {
 		{ "meshPath", _m.GetMeshPath() },
 		{ "texturePath", _m.GetTexturePath() },
 		{ "color", _m.GetColor() },
-		{ "postEffectFlags", _m.GetPostEffectFlags() }
+		{ "material", _m.cpuMaterial_ }
 	};
 }
