@@ -21,13 +21,6 @@ void COMP_DEBUG::TerrainDebug(Terrain* _terrain, EntityComponentSystem* _ecs, As
 		return;
 	}
 
-	//float inputFloat = 0.0f;
-	//if (Input::PressKey(DIK_LSHIFT)) {
-	//	inputFloat = Input::GetMouseWheel() * 0.025f;
-	//}
-
-	//_terrain->brushRadius_ += inputFloat;
-
 	/// ---------------------------------------------------
 	/// 地形の編集モードを切り替え
 	/// ---------------------------------------------------
@@ -71,16 +64,17 @@ void COMP_DEBUG::TerrainDebug(Terrain* _terrain, EntityComponentSystem* _ecs, As
 	}
 
 
-	/// ---------------------------------------------------
-	/// Modeごとの編集内容を表示
-	/// ---------------------------------------------------
-
 	/// 編集モードの変更
 	if (Input::PressKey(DIK_LCONTROL) && !Input::PressKey(DIK_LSHIFT)) {
 		if (Input::TriggerKey(DIK_N)) { _terrain->editorInfo_.editMode = 0; }
 		if (Input::TriggerKey(DIK_V)) { _terrain->editorInfo_.editMode = 1; }
 		if (Input::TriggerKey(DIK_B)) { _terrain->editorInfo_.editMode = 2; }
 	}
+
+
+	/// ---------------------------------------------------
+	/// Modeごとの編集内容を表示
+	/// ---------------------------------------------------
 
 	ImGui::Separator();
 	switch (_terrain->editorInfo_.editMode) {
