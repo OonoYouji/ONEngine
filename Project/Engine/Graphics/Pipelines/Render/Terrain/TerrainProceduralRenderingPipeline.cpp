@@ -118,7 +118,7 @@ void TerrainProceduralRenderingPipeline::PreDraw(ECSGroup*, CameraComponent*, Dx
 	instanceDataAppendBuffer_.ResetCounter(_dxCommand); // カウンターをリセット
 }
 
-void TerrainProceduralRenderingPipeline::Draw(ECSGroup* _ecs, const std::vector<GameEntity*>&, CameraComponent* _camera, DxCommand* _dxCommand) {
+void TerrainProceduralRenderingPipeline::Draw(ECSGroup* _ecs, CameraComponent* _camera, DxCommand* _dxCommand) {
 
 	/// 配列の取得 & 存在チェック
 	ComponentArray<Terrain>* terrainArray = _ecs->GetComponentArray<Terrain>();

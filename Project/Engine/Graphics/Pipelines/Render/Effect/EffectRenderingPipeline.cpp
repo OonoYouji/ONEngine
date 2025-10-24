@@ -12,7 +12,8 @@
 
 
 EffectRenderingPipeline::EffectRenderingPipeline(AssetCollection* _assetCollection)
-	: pAssetCollection_(_assetCollection) {}
+	: pAssetCollection_(_assetCollection) {
+}
 EffectRenderingPipeline::~EffectRenderingPipeline() {}
 
 void EffectRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {
@@ -88,10 +89,10 @@ void EffectRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 }
 
 
-void EffectRenderingPipeline::Draw(class ECSGroup* _ecs, const std::vector<GameEntity*>& _entities, CameraComponent* _camera, DxCommand* _dxCommand) {
+void EffectRenderingPipeline::Draw(class ECSGroup* _ecs, CameraComponent* _camera, DxCommand* _dxCommand) {
 
 	ComponentArray<Effect>* effectArray = _ecs->GetComponentArray<Effect>();
-	if(!effectArray || effectArray->GetUsedComponents().empty()) {
+	if (!effectArray || effectArray->GetUsedComponents().empty()) {
 		Console::LogError("EffectRenderingPipeline::Draw: Effect component array is null");
 		return;
 	}
@@ -106,7 +107,7 @@ void EffectRenderingPipeline::Draw(class ECSGroup* _ecs, const std::vector<GameE
 	using MeshEffectMap = std::unordered_map<std::string, std::list<Effect*>>;
 	std::unordered_map<size_t, MeshEffectMap> meshEffectsByBlendMode;
 
-	for(const auto& effect : effectArray->GetUsedComponents()) {
+	for (const auto& effect : effectArray->GetUsedComponents()) {
 		/// ----- EffectをBlendModeごとに仕分け、さらにMeshごとにListを作る ----- ///
 		if (!effect || effect->enable) {
 			continue;

@@ -119,7 +119,7 @@ void SpriteRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 
 }
 
-void SpriteRenderingPipeline::Draw(class ECSGroup* _ecsGroup, const std::vector<GameEntity*>& /*_entities*/, CameraComponent* _camera, DxCommand* _dxCommand) {
+void SpriteRenderingPipeline::Draw(class ECSGroup* _ecsGroup, CameraComponent* _camera, DxCommand* _dxCommand) {
 
 	ComponentArray<SpriteRenderer>* spriteRendererArray = _ecsGroup->GetComponentArray<SpriteRenderer>();
 	if (!spriteRendererArray || spriteRendererArray->GetUsedComponents().empty()) {

@@ -8,7 +8,7 @@
 /// ///////////////////////////////////////////////////
 /// SkinMeshの骨を描画するレンダリングパイプライン
 /// ///////////////////////////////////////////////////
-class SkinMeshSkeletonRenderingPipeline : public IRenderingPipeline{
+class SkinMeshSkeletonRenderingPipeline : public IRenderingPipeline {
 public:
 	/// ===================================================
 	/// public : methods
@@ -18,7 +18,7 @@ public:
 	~SkinMeshSkeletonRenderingPipeline() override = default;
 
 	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxm) override;
-	void Draw(class ECSGroup* _ecs, const std::vector<class GameEntity*>& _entities, class CameraComponent* _camera, DxCommand* _dxCommand) override;
+	void Draw(class ECSGroup* _ecs, class CameraComponent* _camera, DxCommand* _dxCommand) override;
 
 
 private:

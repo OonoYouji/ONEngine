@@ -84,7 +84,7 @@ void GrassRenderingPipeline::PreDraw(ECSGroup* _ecs, CameraComponent* /*_camera*
 }
 
 
-void GrassRenderingPipeline::Draw(ECSGroup* _ecs, const std::vector<class GameEntity*>& /*_entities*/, CameraComponent* _camera, DxCommand* _dxCommand) {
+void GrassRenderingPipeline::Draw(ECSGroup* _ecs, CameraComponent* _camera, DxCommand* _dxCommand) {
 
 	/// ================================================
 	/// 早期リターンの条件チェック

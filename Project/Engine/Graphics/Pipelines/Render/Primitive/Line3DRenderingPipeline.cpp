@@ -74,7 +74,7 @@ void Line3DRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 
 }
 
-void Line3DRenderingPipeline::Draw(class ECSGroup* _ecs, const std::vector<GameEntity*>& _entities, CameraComponent* _camera, DxCommand* _dxCommand) {
+void Line3DRenderingPipeline::Draw(class ECSGroup* _ecs, CameraComponent* _camera, DxCommand* _dxCommand) {
 
 	ComponentArray<Line3DRenderer>* line3DRendererArray = _ecs->GetComponentArray<Line3DRenderer>();
 	if (!line3DRendererArray || line3DRendererArray->GetUsedComponents().empty()) {

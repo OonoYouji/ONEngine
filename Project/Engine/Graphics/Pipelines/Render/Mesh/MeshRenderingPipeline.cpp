@@ -78,7 +78,7 @@ void MeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManage
 
 }
 
-void MeshRenderingPipeline::Draw(class ECSGroup* _ecs, const std::vector<GameEntity*>& _entities, CameraComponent* _camera, DxCommand* _dxCommand) {
+void MeshRenderingPipeline::Draw(class ECSGroup* _ecs, CameraComponent* _camera, DxCommand* _dxCommand) {
 
 	/// MeshRendererの取得＆存在チェック
 	ComponentArray<MeshRenderer>* meshRendererArray = _ecs->GetComponentArray<MeshRenderer>();

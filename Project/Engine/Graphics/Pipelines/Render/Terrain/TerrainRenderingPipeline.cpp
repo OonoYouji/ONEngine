@@ -9,7 +9,8 @@
 
 
 TerrainRenderingPipeline::TerrainRenderingPipeline(AssetCollection* _assetCollection)
-	: pAssetCollection_(_assetCollection) {}
+	: pAssetCollection_(_assetCollection) {
+}
 TerrainRenderingPipeline::~TerrainRenderingPipeline() {}
 
 
@@ -83,7 +84,7 @@ void TerrainRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMan
 	pTerrain_ = nullptr;
 }
 
-void TerrainRenderingPipeline::Draw(class ECSGroup* _ecs, const std::vector<GameEntity*>&, CameraComponent* _camera, DxCommand* _dxCommand) {
+void TerrainRenderingPipeline::Draw(class ECSGroup* _ecs, CameraComponent* _camera, DxCommand* _dxCommand) {
 
 
 	/// 地形を取得
@@ -123,8 +124,8 @@ void TerrainRenderingPipeline::Draw(class ECSGroup* _ecs, const std::vector<Game
 	GameEntity* entity = pTerrain_->GetOwner();
 	/// bufferの値を更新
 	transformBuffer_.SetMappedData(matWorld);
-	materialBuffer_.SetMappedData( 
-		0, 
+	materialBuffer_.SetMappedData(
+		0,
 		GPUMaterial{
 			.uvTransform = UVTransform{ Vector2(0, 0), Vector2(100, 100), 0.0f },
 			.baseColor = Vector4(1, 2, 3, 4),
@@ -133,7 +134,7 @@ void TerrainRenderingPipeline::Draw(class ECSGroup* _ecs, const std::vector<Game
 			.baseTextureId = 0,
 			.normalTextureId = 0,
 		}
-	);
+		);
 
 
 	/// 描画する

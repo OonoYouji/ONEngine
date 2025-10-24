@@ -115,7 +115,7 @@ void SkyboxRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 	}
 }
 
-void SkyboxRenderingPipeline::Draw(class ECSGroup* _ecs, const std::vector<GameEntity*>&, CameraComponent* _camera, DxCommand* _dxCommand) {
+void SkyboxRenderingPipeline::Draw(class ECSGroup* _ecs, CameraComponent* _camera, DxCommand* _dxCommand) {
 
 	/// Skybox配列を取得、配列がからなら処理を抜ける
 	ComponentArray<Skybox>* skyboxArray = _ecs->GetComponentArray<Skybox>();

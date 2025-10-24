@@ -55,14 +55,14 @@ void RiverRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManag
 
 }
 
-void RiverRenderingPipeline::Draw(ECSGroup* _ecs, const std::vector<GameEntity*>& /*_entities*/, CameraComponent* _camera, DxCommand* _dxCommand) {
+void RiverRenderingPipeline::Draw(ECSGroup* _ecs, CameraComponent* _camera, DxCommand* _dxCommand) {
 
 	/// --------------------------------------------------------------------
 	/// 早期リターンチェック
 	/// --------------------------------------------------------------------
 
 	ComponentArray<Terrain>* terrainArray = _ecs->GetComponentArray<Terrain>();
-	if(!terrainArray || terrainArray->GetUsedComponents().empty()) {
+	if (!terrainArray || terrainArray->GetUsedComponents().empty()) {
 		Console::LogError("RiverRenderingPipeline::Draw: Terrain component array is null");
 		return;
 	}

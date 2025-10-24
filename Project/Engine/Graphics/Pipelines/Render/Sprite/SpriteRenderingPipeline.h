@@ -51,7 +51,7 @@ public:
 	/// @param _dxm DxManagerへのポインタ
 	void Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) override;
 
-	void Draw(class ECSGroup* _ecs, const std::vector<GameEntity*>& _entities, CameraComponent* _camera, DxCommand* _dxCommand) override;
+	void Draw(class ECSGroup* _ecs, CameraComponent* _camera, DxCommand* _dxCommand) override;
 
 private:
 	/// ===================================================
@@ -60,14 +60,14 @@ private:
 
 	/// ----- other class ----- ///
 
-	class AssetCollection*            pAssetCollection_       = nullptr;
+	class AssetCollection* pAssetCollection_ = nullptr;
 
 
 	const size_t                      kMaxRenderingSpriteCount_ = 1024; ///< 最大描画スプライト数
 
 	StructuredBuffer<GPUMaterial>     materialsBuffer;
 	StructuredBuffer<Matrix4x4>       transformsBuffer_;
-	
+
 	std::vector<VertexData>           vertices_;
 	DxResource                        vertexBuffer_;
 	D3D12_VERTEX_BUFFER_VIEW          vbv_;
@@ -75,6 +75,6 @@ private:
 	std::vector<uint32_t>             indices_;
 	DxResource                        indexBuffer_;
 	D3D12_INDEX_BUFFER_VIEW           ibv_;
-	
+
 };
 

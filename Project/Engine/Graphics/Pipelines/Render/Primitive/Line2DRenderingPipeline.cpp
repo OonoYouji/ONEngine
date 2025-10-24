@@ -75,7 +75,7 @@ void Line2DRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 
 }
 
-void Line2DRenderingPipeline::Draw(class ECSGroup* _ecs, const std::vector<GameEntity*>& _entities, CameraComponent* _camera, DxCommand* _dxCommand) {
+void Line2DRenderingPipeline::Draw(class ECSGroup* _ecs, CameraComponent* _camera, DxCommand* _dxCommand) {
 
 	ComponentArray<Line2DRenderer>* line2DRendererArray = _ecs->GetComponentArray<Line2DRenderer>();
 	if (!line2DRendererArray || line2DRendererArray->GetUsedComponents().empty()) {

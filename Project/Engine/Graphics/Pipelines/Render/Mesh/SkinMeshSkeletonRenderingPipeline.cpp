@@ -64,7 +64,7 @@ void SkinMeshSkeletonRenderingPipeline::Initialize(ShaderCompiler* _shaderCompil
 
 }
 
-void SkinMeshSkeletonRenderingPipeline::Draw(class ECSGroup* _ecs, const std::vector<class GameEntity*>& _entities, CameraComponent* _camera, DxCommand* _dxCommand) {
+void SkinMeshSkeletonRenderingPipeline::Draw(class ECSGroup* _ecs, CameraComponent* _camera, DxCommand* _dxCommand) {
 
 	ComponentArray<SkinMeshRenderer>* skinMeshRendererArray = _ecs->GetComponentArray<SkinMeshRenderer>();
 	if (!skinMeshRendererArray || skinMeshRendererArray->GetUsedComponents().empty()) {
