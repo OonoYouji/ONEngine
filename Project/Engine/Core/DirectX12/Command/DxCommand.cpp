@@ -8,9 +8,13 @@
 #include "Engine/Core/Utility/Tools/Log.h"
 
 
-DxCommand::DxCommand() 
-	: commandQueue_(nullptr), commandAllocator_(nullptr), commandList_(nullptr),
-	fence_(nullptr), fenceValue_(0) {};
+DxCommand::DxCommand()
+	: commandQueue_(nullptr),
+	commandAllocator_(nullptr),
+	commandList_(nullptr),
+	fence_(nullptr),
+	fenceValue_(0) {
+};
 
 DxCommand::~DxCommand() = default;
 
@@ -26,7 +30,6 @@ void DxCommand::Initialize(DxDevice* _dxDevice) {
 	D3D12_COMMAND_QUEUE_DESC desc{};
 	result = device->CreateCommandQueue(&desc, IID_PPV_ARGS(&commandQueue_));
 	Assert(SUCCEEDED(result), "Failed to create command queue.");
-
 
 
 	/// ---------------------------------------------------
@@ -52,7 +55,6 @@ void DxCommand::Initialize(DxDevice* _dxDevice) {
 	/// ---------------------------------------------------
 	/// fence
 	/// ---------------------------------------------------
-
 	fenceValue_ = 0;
 	result = device->CreateFence(fenceValue_, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence_));
 	Assert(SUCCEEDED(result), "Failed to create fence.");

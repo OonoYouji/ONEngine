@@ -12,6 +12,7 @@ DxDepthStencil::~DxDepthStencil() {}
 
 
 void DxDepthStencil::Initialize(DxDevice* _dxDevice, DxDSVHeap* _dxDsvHeap) {
+	/// ----- depth stencil 作成 ----- ///
 	
 	{	/// depth stencil resource
 		D3D12_RESOURCE_DESC desc{};

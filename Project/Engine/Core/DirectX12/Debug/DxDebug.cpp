@@ -2,10 +2,12 @@
 
 #include "../Device/DxDevice.h"
 
-DxDebug::DxDebug() {}
-DxDebug::~DxDebug() {}
+DxDebug::DxDebug() = default;
+DxDebug::~DxDebug() = default;
 
 void DxDebug::Initialize([[maybe_unused]] DxDevice* _dxDevice) {
+	/// ----- Debugモードとして起動させる ----- ///
+
 #ifdef DEBUG_MODE
 	ComPtr<ID3D12InfoQueue> infoQueue;
 	if (SUCCEEDED(_dxDevice->GetDevice()->QueryInterface(IID_PPV_ARGS(&infoQueue)))) {
@@ -31,6 +33,7 @@ void DxDebug::Initialize([[maybe_unused]] DxDevice* _dxDevice) {
 
 
 void DxDebug::SetDebugLayer() {
+	/// ----- Debugモードとして起動させる ----- ///
 #ifdef DEBUG_MODE
 	if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController_)))) {
 		debugController_->EnableDebugLayer();

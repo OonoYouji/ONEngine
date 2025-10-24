@@ -25,6 +25,7 @@ IDxDescriptorHeap::IDxDescriptorHeap(DxDevice* _dxDevice, uint32_t _maxHeapSize)
 
 
 void IDxDescriptorHeap::Free(uint32_t _index) {
+	/// ----- すでに解放されているIndexでなければ解放 ----- ///
 	auto itr = std::find(spaceIndex_.begin(), spaceIndex_.end(), _index);
 	if (itr == spaceIndex_.end()) {
 		spaceIndex_.push_back(_index);
@@ -32,6 +33,8 @@ void IDxDescriptorHeap::Free(uint32_t _index) {
 }
 
 uint32_t IDxDescriptorHeap::Allocate() {
+	/// ----- 空きIndexがあればそれを返す ----- ///
+
 	/// 削除された index があれば再利用する
 	if (!spaceIndex_.empty()) {
 		uint32_t index = spaceIndex_.front();
@@ -48,7 +51,8 @@ uint32_t IDxDescriptorHeap::Allocate() {
 
 void IDxDescriptorHeap::BindToCommandList(ID3D12GraphicsCommandList* _commandList) {
 	ID3D12DescriptorHeap* heaps[] = { descriptorHeap_.Get() };
-	_commandList->SetDescriptorHeaps(1, heaps);
+	const UINT numHeaps = 1;
+	_commandList->SetDescriptorHeaps(numHeaps, heaps);
 }
 
 D3D12_CPU_DESCRIPTOR_HANDLE IDxDescriptorHeap::GetCPUDescriptorHandel(uint32_t _index) const {

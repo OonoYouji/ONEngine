@@ -21,7 +21,9 @@ GameFramework::~GameFramework() {
 
 void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 
+	/// --------------------------------------------------
 	/// 各クラスのインスタンスを生成する
+	/// --------------------------------------------------
 	dxManager_             = std::make_unique<DxManager>();
 	windowManager_         = std::make_unique<WindowManager>(dxManager_.get());
 	entityComponentSystem_ = std::make_unique<EntityComponentSystem>(dxManager_.get());
@@ -74,7 +76,6 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 	editorManager_->Initialize(dxManager_.get(), renderingFramework_->GetShaderCompiler());
 	SetEntityComponentSystemPtr(entityComponentSystem_->GetECSGroup("GameScene"), entityComponentSystem_->GetECSGroup("Debug"));
 
-	//DebugConfig::isDebugging = true;
 }
 
 void GameFramework::Run() {

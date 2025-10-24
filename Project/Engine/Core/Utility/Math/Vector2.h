@@ -9,20 +9,16 @@
 /// //////////////////////////////////////////////////
 /// 2次元ベクトル
 /// //////////////////////////////////////////////////
-class Vector2 final {
-public:
-
+struct Vector2 final {
 	Vector2();
 	Vector2(float _x, float _y);
 	Vector2(const Vector2&) = default;
 	Vector2(Vector2&&) = default;
 
-public:
 
 	float x, y;
 
 
-public:
 
 	/// @brief ベクトルの長さを返す
 	/// @return ベクトルの長さ
@@ -32,7 +28,6 @@ public:
 	/// @return 正規化ベクトル
 	Vector2 Normalize() const;
 
-public:
 	/// ===================================================
 	/// public : static objects
 	/// ===================================================
@@ -45,7 +40,6 @@ public:
 	static const Vector2 kZero;		//- ( 0,  0 )
 
 
-public:
 	/// ===================================================
 	/// public : static methos
 	/// ===================================================
@@ -64,7 +58,6 @@ public:
 	static Vector2 Lerp(const Vector2& _v1, const Vector2& _v2, float _t);
 
 
-public:
 	/// ===================================================
 	/// public : operator overload
 	/// ===================================================
