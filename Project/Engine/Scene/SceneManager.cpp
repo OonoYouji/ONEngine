@@ -86,12 +86,7 @@ void SceneManager::SaveCurrentScene() {
 }
 
 void SceneManager::SaveCurrentSceneTemporary() {
-	if (currentScene_.empty()) {
-		Console::LogError("No current scene to save temporarily.");
-		return;
-	}
-
-	sceneIO_->OutputTemporary(currentScene_, pEcs_->GetCurrentGroup());
+	sceneIO_->OutputTemporary(pEcs_->GetCurrentGroup());
 }
 
 void SceneManager::LoadScene(const std::string& _sceneName) {
@@ -156,7 +151,7 @@ void SceneManager::MoveNextToCurrentScene(bool _isTemporary) {
 
 	/// sceneに必要な情報を渡して初期化
 	if (_isTemporary) {
-		sceneIO_->InputTemporary(currentScene_, nextSceneGroup);
+		sceneIO_->InputTemporary(nextSceneGroup);
 		return;
 	}
 

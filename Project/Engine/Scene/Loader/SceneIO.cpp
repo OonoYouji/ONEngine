@@ -30,12 +30,12 @@ void SceneIO::Input(const std::string& _sceneName, ECSGroup* _ecsGroup) {
 	LoadScene(fileName_, _ecsGroup);
 }
 
-void SceneIO::OutputTemporary(const std::string& /*_sceneName*/, ECSGroup* _ecsGroup) {
+void SceneIO::OutputTemporary(ECSGroup* _ecsGroup) {
 	tempSceneJson_.clear();
 	SaveSceneToJson(tempSceneJson_, _ecsGroup);
 }
 
-void SceneIO::InputTemporary(const std::string& /*_sceneName*/, ECSGroup* _ecsGroup) {
+void SceneIO::InputTemporary(ECSGroup* _ecsGroup) {
 	LoadSceneFromJson(tempSceneJson_, _ecsGroup);
 }
 

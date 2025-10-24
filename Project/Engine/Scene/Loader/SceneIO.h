@@ -23,8 +23,8 @@ public:
 	void Input(const std::string& _sceneName, class ECSGroup* _ecsGroup);
 
 	/// 仮のシーンの入出力
-	void OutputTemporary(const std::string& _sceneName, class ECSGroup* _ecsGroup);
-	void InputTemporary(const std::string& _sceneName, class ECSGroup* _ecsGroup);
+	void OutputTemporary(class ECSGroup* _ecsGroup);
+	void InputTemporary(class ECSGroup* _ecsGroup);
 
 private:
 	/// ===================================================

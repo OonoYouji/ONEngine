@@ -58,13 +58,14 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	class EntityComponentSystem* pEcs_ = nullptr;
-	class AssetCollection* pAssetCollection_ = nullptr;
+	/// ----- other class ----- ///
+	class EntityComponentSystem* pEcs_;
+	class AssetCollection* pAssetCollection_;
 
 	std::string currentScene_;
 	std::string nextScene_;
 
-	std::unique_ptr<SceneIO> sceneIO_ = nullptr;
+	std::unique_ptr<SceneIO> sceneIO_;
 
 
 public:
