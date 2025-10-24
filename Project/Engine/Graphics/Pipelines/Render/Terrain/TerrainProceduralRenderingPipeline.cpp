@@ -11,9 +11,9 @@ TerrainProceduralRenderingPipeline::TerrainProceduralRenderingPipeline(AssetColl
 	: pAssetCollection_(_assetCollection) {}
 TerrainProceduralRenderingPipeline::~TerrainProceduralRenderingPipeline() {}
 
-void TerrainProceduralRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
+void TerrainProceduralRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {
 
-	pDxManager_ = _dxManager;
+	pDxManager_ = _dxm;
 
 	{	/// compute pipeline
 
@@ -35,7 +35,7 @@ void TerrainProceduralRenderingPipeline::Initialize(ShaderCompiler* _shaderCompi
 
 		computePipeline_->AddStaticSampler(D3D12_SHADER_VISIBILITY_ALL, 0);
 
-		computePipeline_->CreatePipeline(_dxManager->GetDxDevice());
+		computePipeline_->CreatePipeline(_dxm->GetDxDevice());
 	}
 
 
@@ -72,19 +72,15 @@ void TerrainProceduralRenderingPipeline::Initialize(ShaderCompiler* _shaderCompi
 		pipeline_->SetFillMode(D3D12_FILL_MODE_SOLID);
 		pipeline_->SetCullMode(D3D12_CULL_MODE_NONE);
 
-		D3D12_DEPTH_STENCIL_DESC depthStencilDesc = {};
-		depthStencilDesc.DepthEnable = TRUE;
-		depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
-		depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
-		pipeline_->SetDepthStencilDesc(depthStencilDesc);
+		pipeline_->SetDepthStencilDesc(DefaultDepthStencilDesc());
 
-		pipeline_->CreatePipeline(_dxManager->GetDxDevice());
+		pipeline_->CreatePipeline(_dxm->GetDxDevice());
 	}
 
 
 	{	/// buffer create
-		instanceDataAppendBuffer_.CreateAppendBuffer(static_cast<uint32_t>(std::pow(2, 24)), _dxManager->GetDxDevice(), _dxManager->GetDxCommand(), _dxManager->GetDxSRVHeap());
-		textureIdBuffer_.Create(_dxManager->GetDxDevice());
+		instanceDataAppendBuffer_.CreateAppendBuffer(static_cast<uint32_t>(std::pow(2, 24)), _dxm->GetDxDevice(), _dxm->GetDxCommand(), _dxm->GetDxSRVHeap());
+		textureIdBuffer_.Create(_dxm->GetDxDevice());
 		instanceCount_ = 0;
 	}
 }
@@ -95,11 +91,13 @@ void TerrainProceduralRenderingPipeline::PreDraw(ECSGroup*, CameraComponent*, Dx
 	computePipeline_->SetPipelineStateForCommandList(_dxCommand);
 	instanceDataAppendBuffer_.AppendBindForComputeCommandList(cmdList, CP_INSNTANCE_DATA); // UAV_INSTANCE_DATA
 
+	/// 使用するテクスチャを取得、バインドする
 	const Texture* vertexTexture = pAssetCollection_->GetTexture("./Packages/Textures/Terrain/TerrainVertex.png");
 	const Texture* splatBlendTexture = pAssetCollection_->GetTexture("./Packages/Textures/Terrain/TerrainSplatBlend.png");
 	cmdList->SetComputeRootDescriptorTable(CP_SRV_VERTEX_TEXTURE, vertexTexture->GetSRVGPUHandle());
 	cmdList->SetComputeRootDescriptorTable(CP_SRV_SPLAT_BLEND_TEXTURE, splatBlendTexture->GetSRVGPUHandle());
 
+	/// numthreadsに合わせてDispatchする
 	const uint32_t threadGroupSize = 32;
 	cmdList->Dispatch(
 		(2000 + threadGroupSize - 1) / threadGroupSize,
@@ -120,36 +118,37 @@ void TerrainProceduralRenderingPipeline::PreDraw(ECSGroup*, CameraComponent*, Dx
 	instanceDataAppendBuffer_.ResetCounter(_dxCommand); // カウンターをリセット
 }
 
-void TerrainProceduralRenderingPipeline::Draw(ECSGroup* _ecs, const std::vector<GameEntity*>&, CameraComponent* _camera, DxCommand* _dxCommand) {
+void TerrainProceduralRenderingPipeline::Draw(ECSGroup* _ecs, CameraComponent* _camera, DxCommand* _dxCommand) {
 
+	/// 配列の取得 & 存在チェック
 	ComponentArray<Terrain>* terrainArray = _ecs->GetComponentArray<Terrain>();
-	if (!terrainArray) {
+	if (!terrainArray || terrainArray->GetUsedComponents().empty()) {
 		return;
 	}
 
 	/// 一旦先頭にあるTerrainのみ描画する
-	Terrain* pTerrain_ = nullptr;
-	for (auto& terrain : terrainArray->GetUsedComponents()) {
-		if (terrain->GetOwner()) {
-			pTerrain_ = terrain;
+	Terrain* terrain = nullptr;
+	for (auto& terrainComp : terrainArray->GetUsedComponents()) {
+		if (terrainComp->GetOwner()) {
+			terrain = terrainComp;
 			break; // 先頭のTerrainのみを使用
 		}
 	}
 
-	/// 見つかんなかったら return
-	if (!pTerrain_ || !pTerrain_->GetIsCreated() || !pTerrain_->enable) {
+	/// 見つからない場合、地形が生成されていない場合、無効な場合は return
+	if (!terrain || !terrain->GetIsCreated() || !terrain->enable) {
 		return;
 	}
 
 
-	/// Procedural Rendering でなければ return
-	if (!pTerrain_->GetIsRenderingProcedural()) {
+	/// プロシージャル植生をレンダリングするかチェック
+	if (!terrain->GetIsRenderingProcedural()) {
 		return;
 	}
 
 
 
-	/* ----- pipeline の設定 & 起動 ----- */
+	/// ---- - pipeline の設定 & 起動 ----- ///
 
 	auto cmdList = _dxCommand->GetCommandList();
 
@@ -161,7 +160,7 @@ void TerrainProceduralRenderingPipeline::Draw(ECSGroup* _ecs, const std::vector<
 	const Model* model = pAssetCollection_->GetModel("./Packages/Models/BackgroundObjects/Tree3.obj");
 
 	/// textures
-	auto& textures = pAssetCollection_->GetTextures();
+	const auto& textures = pAssetCollection_->GetTextures();
 
 
 	/// -----------------------------------------------
@@ -175,7 +174,7 @@ void TerrainProceduralRenderingPipeline::Draw(ECSGroup* _ecs, const std::vector<
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 
-	/* ----- bufferの設定 ----- */
+	/// ----- bufferの設定 ----- ///
 
 	/// vertex: camera
 	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(cmdList, GP_CBV_VIEW_PROJECTION);

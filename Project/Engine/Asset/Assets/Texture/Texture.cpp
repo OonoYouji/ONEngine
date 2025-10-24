@@ -135,6 +135,97 @@ void Texture::SetName(const std::string& _name) {
 	}
 }
 
+
+void Texture::SetSRVHandle(const Handle& _handle) {
+	srvHandle_ = _handle;
+}
+
+void Texture::SetUAVHandle(const Handle& _handle) {
+	uavHandle_ = _handle;
+}
+
+void Texture::SetSRVHandle(uint32_t _descriptorIndex, D3D12_CPU_DESCRIPTOR_HANDLE _cpuHandle, D3D12_GPU_DESCRIPTOR_HANDLE _gpuHandle) {
+	srvHandle_ = Handle{ _descriptorIndex, _cpuHandle, _gpuHandle };
+}
+
+void Texture::SetUAVHandle(uint32_t _descriptorIndex, D3D12_CPU_DESCRIPTOR_HANDLE _cpuHandle, D3D12_GPU_DESCRIPTOR_HANDLE _gpuHandle) {
+	uavHandle_ = Handle{ _descriptorIndex, _cpuHandle, _gpuHandle };
+}
+
+void Texture::SetSRVDescriptorIndex(uint32_t _index) {
+	srvHandle_->descriptorIndex = _index;
+}
+
+void Texture::SetSRVCPUHandle(D3D12_CPU_DESCRIPTOR_HANDLE _cpuHandle) {
+	srvHandle_->cpuHandle = _cpuHandle;
+}
+
+void Texture::SetSRVGPUHandle(D3D12_GPU_DESCRIPTOR_HANDLE _gpuHandle) {
+	srvHandle_->gpuHandle = _gpuHandle;
+}
+
+void Texture::SetUAVDescriptorIndex(uint32_t _index) {
+	uavHandle_->descriptorIndex = _index;
+}
+
+void Texture::SetUAVCPUHandle(D3D12_CPU_DESCRIPTOR_HANDLE _cpuHandle) {
+	uavHandle_->cpuHandle = _cpuHandle;
+}
+
+void Texture::SetUAVGPUHandle(D3D12_GPU_DESCRIPTOR_HANDLE _gpuHandle) {
+	uavHandle_->gpuHandle = _gpuHandle;
+}
+
+const Texture::Handle& Texture::GetSRVHandle() const {
+	Assert(srvHandle_.has_value());
+	return srvHandle_.value();
+}
+
+const Texture::Handle& Texture::GetUAVHandle() const {
+	Assert(uavHandle_.has_value());
+	return uavHandle_.value();
+}
+
+uint32_t Texture::GetSRVDescriptorIndex() const {
+	Assert(srvHandle_.has_value());
+	return srvHandle_->descriptorIndex;
+}
+
+D3D12_CPU_DESCRIPTOR_HANDLE Texture::GetSRVCPUHandle() const {
+	Assert(srvHandle_.has_value());
+	return srvHandle_->cpuHandle;
+}
+
+D3D12_GPU_DESCRIPTOR_HANDLE Texture::GetSRVGPUHandle() const {
+	Assert(srvHandle_.has_value());
+	return srvHandle_->gpuHandle;
+}
+
+uint32_t Texture::GetUAVDescriptorIndex() const {
+	Assert(uavHandle_.has_value());
+	return uavHandle_->descriptorIndex;
+}
+
+D3D12_CPU_DESCRIPTOR_HANDLE Texture::GetUAVCPUHandle() const {
+	Assert(uavHandle_.has_value());
+	return uavHandle_->cpuHandle;
+}
+
+D3D12_GPU_DESCRIPTOR_HANDLE Texture::GetUAVGPUHandle() const {
+	Assert(uavHandle_.has_value());
+	return uavHandle_->gpuHandle;
+}
+
+const DxResource& Texture::GetDxResource() const {
+	return dxResource_;
+}
+
+DxResource& Texture::GetDxResource() {
+	return dxResource_;
+}
+
+
+
 void SaveTextureToPNG(const std::wstring& _filename, size_t _width, size_t _height, bool _overwrite) {
 
 	/// _filenameの先のディレクトリが存在しない場合は作成

@@ -36,8 +36,19 @@ public:
 	void CreateEmptySRVHandle();
 	void CreateEmptyUAVHandle();
 
+
+	/// @brief UAVTextureとして作成する
+	/// @param _width テクスチャの幅
+	/// @param _height テクスチャの高さ
+	/// @param _dxDevice DxDeviceへのポインタ
+	/// @param _dxSRVHeap DxSRVHeapへのポインタ
+	/// @param _dxgiFormat DXGI_FORMAT
 	void CreateUAVTexture(UINT _width, UINT _height, class DxDevice* _dxDevice, class DxSRVHeap* _dxSRVHeap, DXGI_FORMAT _dxgiFormat = DXGI_FORMAT_R32G32B32A32_FLOAT);
 
+	/// @brief テクスチャをファイルに出力する
+	/// @param _filename ファイル名(パス、拡張子込み)
+	/// @param _dxDevice DxDeviceへのポインタ
+	/// @param _dxCommand DxCommandへのポインタ
 	void OutputTexture(const std::wstring& _filename, class DxDevice* _dxDevice, class DxCommand* _dxCommand);
 
 private:
@@ -47,72 +58,62 @@ private:
 
 	std::string name_;
 
-	DxResource                  dxResource_;
+	DxResource dxResource_;
 	DxResource readbackTexture_;
 
-	std::optional<Handle>       srvHandle_;
-	std::optional<Handle>       uavHandle_;
+	std::optional<Handle> srvHandle_;
+	std::optional<Handle> uavHandle_;
 
 public:
 	/// ===================================================
 	/// public : accessor
 	/// ===================================================
 
+	/// ----- setters ----- ///
+
 	void SetName(const std::string& _name);
 
-	/// @brief SRV handleを設定
-	/// @param _handle cpu, gpu handle
-	void SetSRVHandle(const Handle& _handle) { srvHandle_ = _handle; }
+	/// Handle(cpu, gpu, heap index) を設定
+	void SetSRVHandle(const Handle& _handle);
+	void SetUAVHandle(const Handle& _handle);
 
-	/// @brief UAV handleを設定
-	/// @param _handle cpu, gpu handle
-	void SetUAVHandle(const Handle& _handle) { uavHandle_ = _handle; }
+	/// Handle(cpu, gpu, heap index) を設定
+	void SetSRVHandle(uint32_t _descriptorIndex, D3D12_CPU_DESCRIPTOR_HANDLE _cpuHandle, D3D12_GPU_DESCRIPTOR_HANDLE _gpuHandle);
+	void SetUAVHandle(uint32_t _descriptorIndex, D3D12_CPU_DESCRIPTOR_HANDLE _cpuHandle, D3D12_GPU_DESCRIPTOR_HANDLE _gpuHandle);
 
-	/// @brief SRV handleを設定
-	/// @param _descriptorIndex descriptor index
-	/// @param _cpuHandle cpu handle
-	/// @param _gpuHandle gpu handle
-	void SetSRVHandle(uint32_t _descriptorIndex, D3D12_CPU_DESCRIPTOR_HANDLE _cpuHandle, D3D12_GPU_DESCRIPTOR_HANDLE _gpuHandle) {
-		srvHandle_ = Handle{ _descriptorIndex, _cpuHandle, _gpuHandle };
-	}
+	/// descriptor index, cpu handle, gpu handle を個別に設定
+	void SetSRVDescriptorIndex(uint32_t _index);
+	void SetSRVCPUHandle(D3D12_CPU_DESCRIPTOR_HANDLE _cpuHandle);
+	void SetSRVGPUHandle(D3D12_GPU_DESCRIPTOR_HANDLE _gpuHandle);
 
-	/// @brief UAV handleを設定
-	/// @param _descriptorIndex descriptor index
-	/// @param _cpuHandle cpu handle
-	/// @param _gpuHandle gpu handle
-	void SetUAVHandle(uint32_t _descriptorIndex, D3D12_CPU_DESCRIPTOR_HANDLE _cpuHandle, D3D12_GPU_DESCRIPTOR_HANDLE _gpuHandle) {
-		uavHandle_ = Handle{ _descriptorIndex, _cpuHandle, _gpuHandle };
-	}
-
-	void SetSRVDescriptorIndex(uint32_t _index) { srvHandle_->descriptorIndex = _index; }
-	void SetSRVCPUHandle(D3D12_CPU_DESCRIPTOR_HANDLE _cpuHandle) { srvHandle_->cpuHandle = _cpuHandle; }
-	void SetSRVGPUHandle(D3D12_GPU_DESCRIPTOR_HANDLE _gpuHandle) { srvHandle_->gpuHandle = _gpuHandle; }
-
-	void SetUAVDescriptorIndex(uint32_t _index) { uavHandle_->descriptorIndex = _index; }
-	void SetUAVCPUHandle(D3D12_CPU_DESCRIPTOR_HANDLE _cpuHandle) { uavHandle_->cpuHandle = _cpuHandle; }
-	void SetUAVGPUHandle(D3D12_GPU_DESCRIPTOR_HANDLE _gpuHandle) { uavHandle_->gpuHandle = _gpuHandle; }
+	/// descriptor index, cpu handle, gpu handle を個別に設定
+	void SetUAVDescriptorIndex(uint32_t _index);
+	void SetUAVCPUHandle(D3D12_CPU_DESCRIPTOR_HANDLE _cpuHandle);
+	void SetUAVGPUHandle(D3D12_GPU_DESCRIPTOR_HANDLE _gpuHandle);
 
 
+	/// ----- getters ----- ///
 
-	const Handle& GetSRVHandle() const { return *srvHandle_; }
-	const Handle& GetUAVHandle() const { return *uavHandle_; }
+	const Handle& GetSRVHandle() const;
+	const Handle& GetUAVHandle() const;
 
-	uint32_t GetSRVDescriptorIndex() const { return srvHandle_->descriptorIndex; }
-	D3D12_CPU_DESCRIPTOR_HANDLE GetSRVCPUHandle() const { return srvHandle_->cpuHandle; }
-	D3D12_GPU_DESCRIPTOR_HANDLE GetSRVGPUHandle() const { return srvHandle_->gpuHandle; }
+	uint32_t GetSRVDescriptorIndex() const;
+	D3D12_CPU_DESCRIPTOR_HANDLE GetSRVCPUHandle() const;
+	D3D12_GPU_DESCRIPTOR_HANDLE GetSRVGPUHandle() const;
 
-	uint32_t GetUAVDescriptorIndex() const { return uavHandle_->descriptorIndex; }
-	D3D12_CPU_DESCRIPTOR_HANDLE GetUAVCPUHandle() const { return uavHandle_->cpuHandle; }
-	D3D12_GPU_DESCRIPTOR_HANDLE GetUAVGPUHandle() const { return uavHandle_->gpuHandle; }
+	uint32_t GetUAVDescriptorIndex() const;
+	D3D12_CPU_DESCRIPTOR_HANDLE GetUAVCPUHandle() const;
+	D3D12_GPU_DESCRIPTOR_HANDLE GetUAVGPUHandle() const;
 
-	/// @brief resourceを取得
-	/// @return DxResource
-	const DxResource& GetDxResource() const { return dxResource_; }
+	const DxResource& GetDxResource() const;
+	DxResource& GetDxResource();
 
-	/// @brief resourceを取得
-	/// @return DxResource
-	DxResource& GetDxResource() { return dxResource_; }
 };
 
 
+/// @brief TextureをPNG形式で保存する
+/// @param _filename ファイル名
+/// @param _width テクスチャの幅
+/// @param _height テクスチャの高さ
+/// @param _overwrite 上書き保存するかどうか
 void SaveTextureToPNG(const std::wstring& _filename, size_t _width, size_t _height, bool _overwrite);

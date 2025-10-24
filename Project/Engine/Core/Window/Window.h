@@ -29,8 +29,8 @@ public:
 	/// @brief 初期化
 	/// @param _windowName Windowの名前
 	/// @param _windowSize Windowのサイズ
-	/// @param _dxManager DxManagerのポインタ
-	void Initialize(const std::wstring& _windowName, const Vector2& _windowSize, class DxManager* _dxManager);
+	/// @param _dxm DxManagerのポインタ
+	void Initialize(const std::wstring& _windowName, const Vector2& _windowSize, class DxManager* _dxm);
 
 	/// @brief 描画前に行う処理
 	void PreDraw();

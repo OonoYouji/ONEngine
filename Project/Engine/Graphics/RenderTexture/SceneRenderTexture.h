@@ -30,7 +30,7 @@ public:
 
 	void Initialize(
 		const std::string& _name, const Vector4& _clearColor,
-		class DxManager* _dxManager, class AssetCollection* _assetCollection
+		class DxManager* _dxm, class AssetCollection* _assetCollection
 	);
 
 

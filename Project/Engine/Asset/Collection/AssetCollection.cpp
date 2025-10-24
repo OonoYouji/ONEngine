@@ -12,10 +12,11 @@ AssetCollection::AssetCollection() {}
 AssetCollection::~AssetCollection() {}
 
 
-void AssetCollection::Initialize(DxManager* _dxManager) {
-	resourceLoader_ = std::make_unique<AssetLoader>(_dxManager, this);
+void AssetCollection::Initialize(DxManager* _dxm) {
+	resourceLoader_ = std::make_unique<AssetLoader>(_dxm, this);
 	resourceLoader_->Initialize();
 
+	/// リソースコンテナの初期化
 	modelContainer_     = std::make_unique<AssetContainer<Model>>(static_cast<size_t>(MAX_MODEL_COUNT));
 	textureContainer_   = std::make_unique<AssetContainer<Texture>>(static_cast<size_t>(MAX_TEXTURE_COUNT));
 	audioClipContainer_ = std::make_unique<AssetContainer<AudioClip>>(static_cast<size_t>(MAX_AUDIOCLIP_COUNT));
@@ -29,6 +30,7 @@ void AssetCollection::Initialize(DxManager* _dxManager) {
 }
 
 void AssetCollection::LoadResources(const std::vector<std::string>& _filePaths) {
+	/// ----- 引数のファイルパス群をループしてリソースを読み込む ----- ///
 
 	std::string extension;
 	for (auto& path : _filePaths) {
@@ -45,6 +47,7 @@ void AssetCollection::LoadResources(const std::vector<std::string>& _filePaths) 
 }
 
 void AssetCollection::UnloadResources(const std::vector<std::string>& _filePaths) {
+	/// ----- 引数のファイルパス群をループしてリソースを解放する ----- ///
 
 	std::string extension;
 	for (auto& path : _filePaths) {
@@ -72,6 +75,8 @@ void AssetCollection::UnloadResources(const std::vector<std::string>& _filePaths
 }
 
 void AssetCollection::Load(const std::string& _filepath, AssetType _type) {
+	/// ----- 指定されたファイルパスのリソースを読み込む ----- ///
+
 	///< noneの場合は読み込まない
 	if (_type == AssetType::None) {
 		return;
@@ -98,6 +103,8 @@ void AssetCollection::Load(const std::string& _filepath, AssetType _type) {
 }
 
 void AssetCollection::HotReload(const std::string& _filepath) {
+	/// ----- 指定されたファイルパスのリソースをホットリロードする ----- ///
+
 	/// ファイルの拡張子を取得
 	const std::string extension = Mathf::FileNameWithoutExtension(_filepath);
 	AssetType type = AssetType::None;
@@ -123,6 +130,8 @@ void AssetCollection::HotReload(const std::string& _filepath) {
 }
 
 void AssetCollection::HotReloadAll() {
+	/// ----- すべてのリソースをホットリロードする ----- ///
+
 	for (const auto& model : modelContainer_->GetIndexMap()) {
 		resourceLoader_->LoadModelObj(model.first);
 	}
@@ -146,6 +155,8 @@ void AssetCollection::AddAudioClip(const std::string& _filepath, AudioClip&& _au
 }
 
 std::vector<std::string> AssetCollection::GetResourceFilePaths(const std::string& _directoryPath) const {
+	/// ----- 指定されたディレクトリパス内のリソースファイルパスをすべて取得する ----- ///
+
 	std::vector<std::string> resourcePaths;
 
 	for (const auto& entry : std::filesystem::recursive_directory_iterator(_directoryPath)) {

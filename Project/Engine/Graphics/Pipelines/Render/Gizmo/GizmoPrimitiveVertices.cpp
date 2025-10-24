@@ -3,9 +3,12 @@
 using namespace GizmoPrimitive;
 
 std::vector<VertexData> GetSphereVertices(const Vector3& _center, float _radius, const Vector4& _color, size_t _segment) {
+	/// ----- 球を構成する頂点を計算 ----- ///
+
 	const float deltaAngle = 2.0f * std::numbers::pi_v<float> / _segment;
 	std::vector<VertexData> outVertices;
 
+	/// ----- 指定した2つの軸から円を描くラムダ式 ----- ///
 	auto addCircle = [&](const Vector3& _axis1, const Vector3& _axis2) {
 		for (int i = 0; i < _segment; ++i) {
 			float angle0 = i * deltaAngle;
@@ -38,6 +41,8 @@ std::vector<VertexData> GetSphereVertices(const Vector3& _center, float _radius,
 }
 
 std::vector<VertexData> GetCubeVertices(const Vector3& _center, const Vector3& _size, const Vector4& _color) {
+	/// ----- 立方体を構成する頂点を計算 ----- ///
+
 	Vector3 halfSize = _size * 0.5f;
 	std::vector<VertexData> outVertices;
 
@@ -54,14 +59,14 @@ std::vector<VertexData> GetCubeVertices(const Vector3& _center, const Vector3& _
 	};
 
 	// 線を引く頂点のペアリスト
-	int indices[] = {
+	int32_t indices[] = {
 		0, 1, 1, 2, 2, 3, 3, 0, // 底面
 		4, 5, 5, 6, 6, 7, 7, 4, // 上面
 		0, 4, 1, 5, 2, 6, 3, 7  // 側面
 	};
 
 	VertexData v0, v1;
-	for (int i = 0; i < sizeof(indices) / sizeof(int); i += 2) {
+	for (size_t i = 0; i < sizeof(indices) / sizeof(int); i += 2) {
 		v0.position = Vector4(vertices[indices[i + 0]], 1.0f);
 		v0.color = _color;
 
@@ -76,6 +81,8 @@ std::vector<VertexData> GetCubeVertices(const Vector3& _center, const Vector3& _
 }
 
 std::vector<GizmoPrimitive::VertexData> GetRectVertices(const Matrix4x4& _matWorld, const Vector4& _color, const Vector2& _rectSize) {
+	/// ----- 2D矩形を構成する頂点を計算(_matWorld次第で回転、拡縮する) ----- ///
+
 	std::vector<GizmoPrimitive::VertexData> outVertices;
 
 	/// 2Dの矩形の4頂点を計算

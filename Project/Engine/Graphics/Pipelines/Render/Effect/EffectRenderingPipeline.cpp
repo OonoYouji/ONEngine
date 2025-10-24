@@ -12,10 +12,11 @@
 
 
 EffectRenderingPipeline::EffectRenderingPipeline(AssetCollection* _assetCollection)
-	: pAssetCollection_(_assetCollection) {}
+	: pAssetCollection_(_assetCollection) {
+}
 EffectRenderingPipeline::~EffectRenderingPipeline() {}
 
-void EffectRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
+void EffectRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {
 
 	{
 		/// shader compile
@@ -32,6 +33,8 @@ void EffectRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 			BlendMode::Screen,
 		};
 
+
+		/// BlendModeごとにパイプラインを生成
 		for (size_t i = 0; i < blendModeFuncs.size(); i++) {
 			auto& pipeline = pipelines_[i];
 
@@ -51,7 +54,7 @@ void EffectRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 
 			pipeline->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);  ///< material
 			pipeline->AddDescriptorRange(1, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);  ///< textureId
-			pipeline->AddDescriptorRange(2, 32, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); ///< texture
+			pipeline->AddDescriptorRange(2, MAX_TEXTURE_COUNT, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); ///< texture
 			pipeline->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);  ///< transform
 			pipeline->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 0);       ///< material  : 1
 			pipeline->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 1);       ///< textureId : 2
@@ -70,7 +73,7 @@ void EffectRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 			depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
 			pipeline->SetDepthStencilDesc(depthStencilDesc);
 
-			pipeline->CreatePipeline(_dxManager->GetDxDevice());
+			pipeline->CreatePipeline(_dxm->GetDxDevice());
 
 		}
 	}
@@ -78,54 +81,55 @@ void EffectRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 
 	{	/// buffer create
 
-		transformBuffer_ = std::make_unique<StructuredBuffer<Matrix4x4>>();
-		transformBuffer_->Create(static_cast<uint32_t>(kMaxRenderingMeshCount_), _dxManager->GetDxDevice(), _dxManager->GetDxSRVHeap());
-
-		materialBuffer = std::make_unique<StructuredBuffer<Vector4>>();
-		materialBuffer->Create(static_cast<uint32_t>(kMaxRenderingMeshCount_), _dxManager->GetDxDevice(), _dxManager->GetDxSRVHeap());
-
-		textureIdBuffer_ = std::make_unique<StructuredBuffer<uint32_t>>();
-		textureIdBuffer_->Create(static_cast<uint32_t>(kMaxRenderingMeshCount_), _dxManager->GetDxDevice(), _dxManager->GetDxSRVHeap());
+		transformBuffer_.Create(static_cast<uint32_t>(kMaxRenderingMeshCount_), _dxm->GetDxDevice(), _dxm->GetDxSRVHeap());
+		materialBuffer_.Create(static_cast<uint32_t>(kMaxRenderingMeshCount_), _dxm->GetDxDevice(), _dxm->GetDxSRVHeap());
+		textureIdBuffer_.Create(static_cast<uint32_t>(kMaxRenderingMeshCount_), _dxm->GetDxDevice(), _dxm->GetDxSRVHeap());
 
 	}
 }
 
 
-void EffectRenderingPipeline::Draw(class ECSGroup*, const std::vector<GameEntity*>& _entities, CameraComponent* _camera, DxCommand* _dxCommand) {
+void EffectRenderingPipeline::Draw(class ECSGroup* _ecs, CameraComponent* _camera, DxCommand* _dxCommand) {
 
-	std::unordered_map<size_t, std::unordered_map<std::string, std::list<Effect*>>> blendMeshEffectMap;
-
-	/// mesh と transform の対応付け
-	for (auto& entity : _entities) {
-		Effect*&& effect = entity->GetComponent<Effect>();
-		if (effect) {
-			blendMeshEffectMap[static_cast<size_t>(effect->GetBlendMode())][effect->GetMeshPath()].push_back(effect);
-		}
-	}
-
-	///< 描画対象がなければ 早期リターン
-	if (blendMeshEffectMap.empty()) {
+	ComponentArray<Effect>* effectArray = _ecs->GetComponentArray<Effect>();
+	if (!effectArray || effectArray->GetUsedComponents().empty()) {
+		Console::LogError("EffectRenderingPipeline::Draw: Effect component array is null");
 		return;
 	}
 
 
-	ID3D12GraphicsCommandList* commandList = _dxCommand->GetCommandList();
-
-	/// settings
-	//pipeline_->SetPipelineStateForCommandList(_dxCommand);
+	auto cmdList = _dxCommand->GetCommandList();
 
 	transformIndex_ = 0;
 	instanceIndex_ = 0;
 
-	for (auto& [blendMode, meshPerComp] : blendMeshEffectMap) {
+
+	using MeshEffectMap = std::unordered_map<std::string, std::list<Effect*>>;
+	std::unordered_map<size_t, MeshEffectMap> meshEffectsByBlendMode;
+
+	for (const auto& effect : effectArray->GetUsedComponents()) {
+		/// ----- EffectをBlendModeごとに仕分け、さらにMeshごとにListを作る ----- ///
+		if (!effect || effect->enable) {
+			continue;
+		}
+
+		size_t blendMode = static_cast<size_t>(effect->GetBlendMode());
+		meshEffectsByBlendMode[blendMode][effect->GetMeshPath()].push_back(effect);
+	}
+
+
+	for (auto& [blendMode, meshPerComp] : meshEffectsByBlendMode) {
+
+		/// 対応するBlendModeのパイプラインをセット
 		pipelines_[blendMode]->SetPipelineStateForCommandList(_dxCommand);
 
-		commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(commandList, 0);
+		/// 形状、ビュー射影行列のセット
+		cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(cmdList, CBV_VIEW_PROJECTION);
 
-		/// buffer dataのセット、先頭の texture gpu handle をセットする
+		/// テクスチャの先頭を設定
 		auto& textures = pAssetCollection_->GetTextures();
-		commandList->SetGraphicsRootDescriptorTable(3, (*textures.begin()).GetSRVGPUHandle());
+		cmdList->SetGraphicsRootDescriptorTable(SRV_TEXTURES, (*textures.begin()).GetSRVGPUHandle());
 
 
 		for (auto& [meshPath, effects] : meshPerComp) {
@@ -142,23 +146,25 @@ void EffectRenderingPipeline::Draw(class ECSGroup*, const std::vector<GameEntity
 					continue;
 				}
 
+
+				/// element ごとにデータセット
 				for (auto& element : effect->GetElements()) {
 
 					/// materialのセット
-					materialBuffer->SetMappedData(
+					materialBuffer_.SetMappedData(
 						transformIndex_,
 						element.color
 					);
 
 					/// texture id のセット
 					size_t textureIndex = pAssetCollection_->GetTextureIndex(effect->GetTexturePath());
-					textureIdBuffer_->SetMappedData(
+					textureIdBuffer_.SetMappedData(
 						transformIndex_,
 						textures[textureIndex].GetSRVDescriptorIndex()
 					);
 
 					/// transform のセット
-					transformBuffer_->SetMappedData(
+					transformBuffer_.SetMappedData(
 						transformIndex_,
 						element.transform.GetMatWorld()
 					);
@@ -167,21 +173,21 @@ void EffectRenderingPipeline::Draw(class ECSGroup*, const std::vector<GameEntity
 				}
 
 				/// 上でセットしたデータをバインド
-				materialBuffer->SRVBindForGraphicsCommandList(commandList, 1);
-				textureIdBuffer_->SRVBindForGraphicsCommandList(commandList, 2);
-				transformBuffer_->SRVBindForGraphicsCommandList(commandList, 4);
+				materialBuffer_.SRVBindForGraphicsCommandList(cmdList, SRV_MATERIALS);
+				textureIdBuffer_.SRVBindForGraphicsCommandList(cmdList, SRV_TEXTURE_IDS);
+				transformBuffer_.SRVBindForGraphicsCommandList(cmdList, SRV_TRANSFORMS);
 
 				/// 現在のinstance idをセット
-				commandList->SetGraphicsRoot32BitConstant(5, instanceIndex_, 0);
+				cmdList->SetGraphicsRoot32BitConstant(C32BIT_CONSTANT, instanceIndex_, 0);
 
 				/// mesh の描画
 				for (auto& mesh : model->GetMeshes()) {
 					/// vbv, ibvのセット
-					commandList->IASetVertexBuffers(0, 1, &mesh->GetVBV());
-					commandList->IASetIndexBuffer(&mesh->GetIBV());
+					cmdList->IASetVertexBuffers(0, 1, &mesh->GetVBV());
+					cmdList->IASetIndexBuffer(&mesh->GetIBV());
 
 					/// 描画
-					commandList->DrawIndexedInstanced(
+					cmdList->DrawIndexedInstanced(
 						static_cast<UINT>(mesh->GetIndices().size()),
 						static_cast<UINT>(effect->GetElements().size()),
 						0, 0, 0

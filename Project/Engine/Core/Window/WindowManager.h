@@ -49,7 +49,7 @@ public:
 	/// public : method
 	/// ===================================================
 
-	WindowManager(class DxManager* _dxManager);
+	WindowManager(class DxManager* _dxm);
 	~WindowManager();
 
 

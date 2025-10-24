@@ -19,15 +19,15 @@
 #include "../System/Transform/TransformUpdateSystem.h"
 #include "../System/GrassBufferCreateSystem/GrassBufferCreateSystem.h"
 
-void GameECSGroupAddSystemFunction(ECSGroup* _ecs, DxManager* _dxManager, AssetCollection* _assetCollection) {
+void GameECSGroupAddSystemFunction(ECSGroup* _ecs, DxManager* _dxm, AssetCollection* _assetCollection) {
 
 	/// 初期化に使うsystem
-	_ecs->AddSystem<TerrainColliderVertexGenerator>(_dxManager);
-	_ecs->AddSystem<GrassBufferCreateSystem>(_dxManager);
+	_ecs->AddSystem<TerrainColliderVertexGenerator>(_dxm);
+	_ecs->AddSystem<GrassBufferCreateSystem>(_dxm);
 
 	/// 更新に使うsystem
-	_ecs->AddSystem<CameraUpdateSystem>(_dxManager->GetDxDevice());
-	_ecs->AddSystem<SkinMeshUpdateSystem>(_dxManager, _assetCollection);
+	_ecs->AddSystem<CameraUpdateSystem>(_dxm->GetDxDevice());
+	_ecs->AddSystem<SkinMeshUpdateSystem>(_dxm, _assetCollection);
 	_ecs->AddSystem<ScriptUpdateSystem>(_ecs);
 	_ecs->AddSystem<AudioPlaybackSystem>(_assetCollection);
 	_ecs->AddSystem<EffectUpdateSystem>();
@@ -39,19 +39,19 @@ void GameECSGroupAddSystemFunction(ECSGroup* _ecs, DxManager* _dxManager, AssetC
 	_ecs->AddSystem<CollisionSystem>();
 
 	/// 描画に使うsystem
-	_ecs->AddSystem<MeshBufferRecreate>(_dxManager->GetDxDevice());
+	_ecs->AddSystem<MeshBufferRecreate>(_dxm->GetDxDevice());
 	_ecs->AddSystem<ColliderRenderQueueSystem>();
 }
 
-void DebugECSGroupAddSystemFunction(ECSGroup* _ecs, DxManager* _dxManager, AssetCollection* _assetCollection) {
+void DebugECSGroupAddSystemFunction(ECSGroup* _ecs, DxManager* _dxm, AssetCollection* _assetCollection) {
 
 	/// 初期化に使うsystem
-	_ecs->AddSystem<TerrainColliderVertexGenerator>(_dxManager);
-	_ecs->AddSystem<GrassBufferCreateSystem>(_dxManager);
+	_ecs->AddSystem<TerrainColliderVertexGenerator>(_dxm);
+	_ecs->AddSystem<GrassBufferCreateSystem>(_dxm);
 
 	/// 更新に使うsystem
-	_ecs->AddSystem<CameraUpdateSystem>(_dxManager->GetDxDevice());
-	_ecs->AddSystem<SkinMeshUpdateSystem>(_dxManager, _assetCollection);
+	_ecs->AddSystem<CameraUpdateSystem>(_dxm->GetDxDevice());
+	_ecs->AddSystem<SkinMeshUpdateSystem>(_dxm, _assetCollection);
 	_ecs->AddSystem<DebugScriptUpdateSystem>(_ecs);
 	_ecs->AddSystem<AudioPlaybackSystem>(_assetCollection);
 	_ecs->AddSystem<EffectUpdateSystem>();
@@ -63,6 +63,6 @@ void DebugECSGroupAddSystemFunction(ECSGroup* _ecs, DxManager* _dxManager, Asset
 	_ecs->AddSystem<CollisionSystem>();
 
 	/// 描画に使うsystem
-	_ecs->AddSystem<MeshBufferRecreate>(_dxManager->GetDxDevice());
+	_ecs->AddSystem<MeshBufferRecreate>(_dxm->GetDxDevice());
 	_ecs->AddSystem<ColliderRenderQueueSystem>();
 }

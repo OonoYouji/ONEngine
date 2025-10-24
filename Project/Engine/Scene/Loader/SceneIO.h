@@ -3,9 +3,8 @@
 /// std
 #include <string>
 
-/// engine
-#include "../IScene.h"
-
+/// external
+#include <nlohmann/json.hpp>
 
 /// ///////////////////////////////////////////////////
 /// SceneのIOを行うクラス
@@ -16,7 +15,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	SceneIO(EntityComponentSystem* _ecs);
+	SceneIO(class EntityComponentSystem* _ecs);
 	~SceneIO();
 
 	/// 入出力
@@ -24,8 +23,8 @@ public:
 	void Input(const std::string& _sceneName, class ECSGroup* _ecsGroup);
 
 	/// 仮のシーンの入出力
-	void OutputTemporary(const std::string& _sceneName, class ECSGroup* _ecsGroup);
-	void InputTemporary(const std::string& _sceneName, class ECSGroup* _ecsGroup);
+	void OutputTemporary(class ECSGroup* _ecsGroup);
+	void InputTemporary(class ECSGroup* _ecsGroup);
 
 private:
 	/// ===================================================
@@ -48,8 +47,8 @@ private:
 	/// private : objects
 	/// ==================================================
 
-	EntityComponentSystem* pEcs_; 
-	IScene* scene_;
+	/// ----- other class ----- ///
+	class EntityComponentSystem* pEcs_; 
 
 	std::string fileName_; // ioに使うファイル名
 	std::string fileDirectory_;

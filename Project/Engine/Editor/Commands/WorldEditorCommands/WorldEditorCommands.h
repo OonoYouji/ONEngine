@@ -15,10 +15,6 @@
 /// ///////////////////////////////////////////////////
 class CreateGameObjectCommand : public IEditorCommand {
 public:
-	/// =========================================
-	/// public : methods
-	/// =========================================
-
 	CreateGameObjectCommand(class ECSGroup* _ecs);
 	~CreateGameObjectCommand();
 
@@ -26,7 +22,6 @@ public:
 	EDITOR_STATE Undo() override;
 
 private:
-
 	class ECSGroup* pECSGroup_ = nullptr;
 	class GameEntity* generatedEntity_ = nullptr;
 };
@@ -97,10 +92,6 @@ private:
 /// ///////////////////////////////////////////////////
 class DeleteEntityCommand : public IEditorCommand {
 public:
-	/// =========================================
-	/// public : methods
-	/// =========================================
-
 	DeleteEntityCommand(class ECSGroup* _ecs, class GameEntity* _entity);
 	~DeleteEntityCommand() = default;
 
@@ -108,10 +99,6 @@ public:
 	EDITOR_STATE Undo() override;
 
 private:
-	/// =========================================
-	/// private : objects
-	/// =========================================
-
 	class ECSGroup* pECSGroup_;
 	class GameEntity* pEntity_;
 };
@@ -137,11 +124,13 @@ private:
 /// エンティティをペーストするコマンド
 /// ///////////////////////////////////////////////////
 class PasteEntityCommand : public IEditorCommand {
-	public:
+public:
 	PasteEntityCommand(class ECSGroup* _ecs);
 	~PasteEntityCommand() = default;
+
 	EDITOR_STATE Execute() override;
 	EDITOR_STATE Undo() override;
+
 private:
 	class ECSGroup* pECSGroup_;
 	class GameEntity* pastedEntity_ = nullptr;

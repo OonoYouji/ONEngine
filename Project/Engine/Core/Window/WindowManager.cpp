@@ -53,8 +53,8 @@ LRESULT WindowManager::SubWindowProc(HWND _hwnd, UINT _msg, WPARAM _wparam, LPAR
 
 
 
-WindowManager::WindowManager(DxManager* _dxManager)
-	: pDxManager_(_dxManager) {}
+WindowManager::WindowManager(DxManager* _dxm)
+	: pDxManager_(_dxm) {}
 
 WindowManager::~WindowManager() = default;
 

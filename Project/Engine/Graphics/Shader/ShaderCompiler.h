@@ -27,19 +27,14 @@ public:
 	ShaderCompiler();
 	~ShaderCompiler();
 
-	/// <summary>
-	/// このクラスの初期化関数
-	/// </summary>
 	void Initialize();	
 
-	/// <summary>
-	/// shaderのコンパイル
-	/// </summary>
-	/// <param name="_filePath"></param>
-	/// <param name="_profile"></param>
-	/// <returns></returns>
-	ComPtr<IDxcBlob> CompileShader(const std::wstring& _filePath, const wchar_t* _profile);
-	ComPtr<IDxcBlob> CompileShader(const std::wstring& _filePath, const wchar_t* _profile, const std::wstring& _main);
+	/// @brief HLSLシェーダーのコンパイル
+	/// @param _filePath HLSLファイルのパス
+	/// @param _profile HLSLプロファイル
+	/// @param _entryPoint エントリーポイント関数名 
+	/// @return コンパイル後のシェーダーブロブ
+	ComPtr<IDxcBlob> CompileShader(const std::wstring& _filePath, const wchar_t* _profile, const std::wstring& _entryPoint);
 
 
 private:

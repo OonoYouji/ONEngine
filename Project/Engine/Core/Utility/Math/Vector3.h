@@ -12,20 +12,16 @@
 /// //////////////////////////////////////////////////
 /// 3次元ベクトル
 /// //////////////////////////////////////////////////
-class Vector3 final {
-public:
-
+struct Vector3 final {
 	Vector3();
 	Vector3(float _x, float _y, float _z);
 	Vector3(const Vector2& _v, float _z);
 	Vector3(const Vector3&) = default;
 	Vector3(Vector3&&) = default;
 
-public:
 
 	float x, y, z;
 
-public:
 	/// ===================================================
 	/// public : static objects
 	/// ===================================================
@@ -40,7 +36,6 @@ public:
 	static const Vector3 kOne;		// ( 1,  1,  1 )
 	static const Vector3 kZero;		// ( 0,  0,  0 )
 
-public:
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
@@ -82,7 +77,6 @@ public:
 	/// @brief 指定した方向に一番近い頂点を返す
 	static Vector3 MinDotVector(const Vector3& _direction, const std::vector<Vector3>& _vertices);
 
-public:
 
 	/// ===================================================
 	/// public : operator overload

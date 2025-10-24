@@ -9,8 +9,6 @@
 #include <mono/jit/jit.h>
 
 /// engine
-#include "IScene.h"
-#include "ISceneFactory.h"
 #include "Loader/SceneIO.h"
 
 
@@ -27,7 +25,7 @@ public:
 	~SceneManager();
 
 	/// @brief このクラスの初期化
-	void Initialize(class AssetCollection* _graphicsResourceCollection);
+	void Initialize(class AssetCollection* _assetCollection);
 
 	/// @brief シーンの更新
 	void Update();
@@ -36,15 +34,30 @@ public:
 	/// @param _sceneName 次のシーンの名前
 	void SetNextScene(const std::string& _sceneName);
 
+	/// @brief シーンの保存
+	/// @param _name シーン名
+	/// @param _ecsGroup 保存対象のECSGroup
 	void SaveScene(const std::string& _name, class ECSGroup* _ecsGroup);
+
+	/// @brief 現在のシーンを保存する
 	void SaveCurrentScene();
+	/// @brief 現在のシーンを一時的に保存する
 	void SaveCurrentSceneTemporary();
 
+
+	/// @brief シーンを読み込む
+	/// @param _sceneName シーンの名前
 	void LoadScene(const std::string& _sceneName);
+
+	/// @brief 現在のシーンをリロードする
+	/// @param _isTemporary 一時的なシーンかどうか
 	void ReloadScene(bool _isTemporary);
 
+
+	/// @brief シーンIOの取得
 	SceneIO* GetSceneIO();
 
+	/// @brief 最後に開いたシーン名を取得する
 	std::string LastOpenSceneName();
 
 private:
@@ -52,6 +65,8 @@ private:
 	/// private : methods
 	/// ===================================================
 
+	/// @brief シーンを現在のシーンに移動する
+	/// @param _isTemporary 一時的なシーンかどうか
 	void MoveNextToCurrentScene(bool _isTemporary);
 
 
@@ -60,14 +75,14 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	class EntityComponentSystem* pEcs_ = nullptr;
-	class AssetCollection* pGraphicsResourceCollection_ = nullptr;
+	/// ----- other class ----- ///
+	class EntityComponentSystem* pEcs_;
+	class AssetCollection* pAssetCollection_;
 
 	std::string currentScene_;
 	std::string nextScene_;
 
-	std::unique_ptr<ISceneFactory> sceneFactory_ = nullptr;
-	std::unique_ptr<SceneIO> sceneIO_ = nullptr;
+	std::unique_ptr<SceneIO> sceneIO_;
 
 
 public:
@@ -75,10 +90,7 @@ public:
 	/// public : accessor
 	/// ===================================================
 
-	/// @brief シーンファクトリーのクラスを登録
-	/// @param _sceneFactory シーンファクトリーのインスタンス
-	void SetSceneFactory(std::unique_ptr<ISceneFactory>& _sceneFactory);
-
+	/// @brief 現在のシーン名を取得する
 	const std::string& GetCurrentSceneName() const;
 };
 
@@ -87,5 +99,4 @@ public:
 namespace MONO_INTERNAL_METHOD {
 
 	void InternalLoadScene(MonoString* _sceneName);
-
 }

@@ -12,8 +12,8 @@
 /// ecs
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 
-EntityCollection::EntityCollection(ECSGroup* _ecsGroup, DxManager* _dxManager)
-	: pECSGroup_(_ecsGroup), pDxManager_(_dxManager) {
+EntityCollection::EntityCollection(ECSGroup* _ecsGroup, DxManager* _dxm)
+	: pECSGroup_(_ecsGroup), pDxManager_(_dxm) {
 	mainCamera_ = nullptr;
 	mainCamera2D_ = nullptr;
 	pDxDevice_ = pDxManager_->GetDxDevice();

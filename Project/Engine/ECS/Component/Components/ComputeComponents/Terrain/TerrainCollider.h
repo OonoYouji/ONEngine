@@ -26,7 +26,7 @@ public:
 	void AttachTerrain();
 
 	/// @brief 地形の頂点情報をコピーする
-	void CopyVertices(class DxManager* _dxManager);
+	void CopyVertices(class DxManager* _dxm);
 
 	/// @brief 地形の高さを取得する
 	/// @param _position 取得したい場所

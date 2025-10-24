@@ -11,11 +11,12 @@
 
 
 MeshRenderingPipeline::MeshRenderingPipeline(AssetCollection* _assetCollection)
-	: pAssetCollection_(_assetCollection) {}
+	: pAssetCollection_(_assetCollection) {
+}
 
 MeshRenderingPipeline::~MeshRenderingPipeline() {}
 
-void MeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
+void MeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {
 
 	{	/// pipeline create
 
@@ -62,79 +63,66 @@ void MeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManage
 		pipeline_->SetDepthStencilDesc(depthStencilDesc);
 
 
-		pipeline_->CreatePipeline(_dxManager->GetDxDevice());
+		pipeline_->CreatePipeline(_dxm->GetDxDevice());
 
 	}
 
 
 	{	/// buffer create
 
-		transformBuffer_ = std::make_unique<StructuredBuffer<Matrix4x4>>();
-		transformBuffer_->Create(static_cast<uint32_t>(kMaxRenderingMeshCount_), _dxManager->GetDxDevice(), _dxManager->GetDxSRVHeap());
-
-		materialBuffer = std::make_unique<StructuredBuffer<GPUMaterial>>();
-		materialBuffer->Create(static_cast<uint32_t>(kMaxRenderingMeshCount_), _dxManager->GetDxDevice(), _dxManager->GetDxSRVHeap());
-
-		textureIdBuffer_ = std::make_unique<StructuredBuffer<uint32_t>>();
-		textureIdBuffer_->Create(static_cast<uint32_t>(kMaxRenderingMeshCount_), _dxManager->GetDxDevice(), _dxManager->GetDxSRVHeap());
+		transformBuffer_.Create(static_cast<uint32_t>(kMaxRenderingMeshCount_), _dxm->GetDxDevice(), _dxm->GetDxSRVHeap());
+		materialBuffer_.Create(static_cast<uint32_t>(kMaxRenderingMeshCount_), _dxm->GetDxDevice(), _dxm->GetDxSRVHeap());
+		textureIdBuffer_.Create(static_cast<uint32_t>(kMaxRenderingMeshCount_), _dxm->GetDxDevice(), _dxm->GetDxSRVHeap());
 
 	}
 
 }
 
-void MeshRenderingPipeline::Draw(class ECSGroup*, const std::vector<GameEntity*>& _entities, CameraComponent* _camera, DxCommand* _dxCommand) {
+void MeshRenderingPipeline::Draw(class ECSGroup* _ecs, CameraComponent* _camera, DxCommand* _dxCommand) {
 
-	/// mesh と transform の対応付け
-	std::unordered_map<std::string, std::list<MeshRenderer*>> rendererPerMesh;
-	std::list<CustomMeshRenderer*> customRenderers;
-	for (auto& entity : _entities) {
-		MeshRenderer*&& meshRenderer = entity->GetComponent<MeshRenderer>();
-
-		if (meshRenderer && meshRenderer->enable) {
-
-			/// meshが読み込まれていなければ、デフォルトのメッシュを使用
-			if (!pAssetCollection_->GetModel(meshRenderer->GetMeshPath())) {
-				Console::Log("Mesh not found: " + meshRenderer->GetMeshPath());
-				rendererPerMesh["./Assets/Models/primitive/cube.obj"].push_back(meshRenderer);
-				continue; ///< meshが読み込まれていなければスキップ
-			}
-
-			rendererPerMesh[meshRenderer->GetMeshPath()].push_back(meshRenderer);
-		}
-
-		CustomMeshRenderer*&& customMeshRenderer = entity->GetComponent<CustomMeshRenderer>();
-		if (customMeshRenderer && customMeshRenderer->enable) {
-			customRenderers.push_back(customMeshRenderer);
-		}
-	}
-
-	///< 描画対象がなければ 早期リターン
-	if (rendererPerMesh.empty() && customRenderers.empty()) {
+	/// MeshRendererの取得＆存在チェック
+	ComponentArray<MeshRenderer>* meshRendererArray = _ecs->GetComponentArray<MeshRenderer>();
+	if (!meshRendererArray || meshRendererArray->GetUsedComponents().empty()) {
 		return;
 	}
 
+	/// mesh path ごとに mesh renderer を分類
+	std::unordered_map<std::string, std::list<MeshRenderer*>> pathMeshMap;
+	for (const auto& meshRenderer : meshRendererArray->GetUsedComponents()) {
+		if (!meshRenderer || !meshRenderer->enable) {
+			continue;
+		}
 
-	ID3D12GraphicsCommandList* commandList = _dxCommand->GetCommandList();
+		/// meshが読み込まれていなければ、デフォルトのメッシュを使用
+		if (!pAssetCollection_->GetModel(meshRenderer->GetMeshPath())) {
+			Console::Log("Mesh not found: " + meshRenderer->GetMeshPath());
+			pathMeshMap["./Assets/Models/primitive/cube.obj"].push_back(meshRenderer);
+			continue;
+		}
 
-	/// settings
+		pathMeshMap[meshRenderer->GetMeshPath()].push_back(meshRenderer);
+	}
+
+
+	auto cmdList = _dxCommand->GetCommandList();
+
+	/// ----- CommandListに必要な設定を行う ----- ///
+
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
+	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(commandList, 0);
-
-	/// buffer dataのセット、先頭の texture gpu handle をセットする
+	/// Bufferのバインド
+	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(cmdList, 0);
 	auto& textures = pAssetCollection_->GetTextures();
-	commandList->SetGraphicsRootDescriptorTable(3, (*textures.begin()).GetSRVGPUHandle());
+	cmdList->SetGraphicsRootDescriptorTable(3, (*textures.begin()).GetSRVGPUHandle());
 
 	transformIndex_ = 0;
 	instanceIndex_ = 0;
-	/// alphaを考慮してカスタムメッシュを先に描画
-	RenderingMesh(commandList, &customRenderers, textures); 
-	RenderingMesh(commandList, &rendererPerMesh, textures);
+
+	RenderingMesh(cmdList, &pathMeshMap, textures);
 }
 
-void MeshRenderingPipeline::RenderingMesh(ID3D12GraphicsCommandList* _commandList, std::unordered_map<std::string, std::list<MeshRenderer*>>* _meshRendererPerMesh, const std::vector<Texture>& _pTexture) {
-
+void MeshRenderingPipeline::RenderingMesh(ID3D12GraphicsCommandList* _cmdList, std::unordered_map<std::string, std::list<MeshRenderer*>>* _meshRendererPerMesh, const std::vector<Texture>& _textures) {
 	for (auto& [meshPath, renderers] : (*_meshRendererPerMesh)) {
 
 		/// modelの取得、なければ次へ
@@ -149,7 +137,7 @@ void MeshRenderingPipeline::RenderingMesh(ID3D12GraphicsCommandList* _commandLis
 			/// TextureのIdをGuidからセット
 			renderer->SetupRenderData(pAssetCollection_);
 
-			materialBuffer->SetMappedData(
+			materialBuffer_.SetMappedData(
 				transformIndex_,
 				renderer->GetMaterial()
 			);
@@ -159,13 +147,13 @@ void MeshRenderingPipeline::RenderingMesh(ID3D12GraphicsCommandList* _commandLis
 			if (textureIndex < 0) {
 				textureIndex = pAssetCollection_->GetTextureIndex("./Assets/Textures/white.png");
 			}
-			textureIdBuffer_->SetMappedData(
+			textureIdBuffer_.SetMappedData(
 				transformIndex_,
-				_pTexture[textureIndex].GetSRVDescriptorIndex()
+				_textures[textureIndex].GetSRVDescriptorIndex()
 			);
 
 			/// transform のセット
-			transformBuffer_->SetMappedData(
+			transformBuffer_.SetMappedData(
 				transformIndex_,
 				renderer->GetOwner()->GetTransform()->GetMatWorld()
 			);
@@ -175,21 +163,21 @@ void MeshRenderingPipeline::RenderingMesh(ID3D12GraphicsCommandList* _commandLis
 		}
 
 		/// 上でセットしたデータをバインド
-		materialBuffer->SRVBindForGraphicsCommandList(_commandList, 1);
-		textureIdBuffer_->SRVBindForGraphicsCommandList(_commandList, 2);
-		transformBuffer_->SRVBindForGraphicsCommandList(_commandList, 4);
+		materialBuffer_.SRVBindForGraphicsCommandList(_cmdList, 1);
+		textureIdBuffer_.SRVBindForGraphicsCommandList(_cmdList, 2);
+		transformBuffer_.SRVBindForGraphicsCommandList(_cmdList, 4);
 
 		/// 現在のinstance idをセット
-		_commandList->SetGraphicsRoot32BitConstant(5, instanceIndex_, 0);
+		_cmdList->SetGraphicsRoot32BitConstant(5, instanceIndex_, 0);
 
 		/// mesh の描画
 		for (auto& mesh : model->GetMeshes()) {
 			/// vbv, ibvのセット
-			_commandList->IASetVertexBuffers(0, 1, &mesh->GetVBV());
-			_commandList->IASetIndexBuffer(&mesh->GetIBV());
+			_cmdList->IASetVertexBuffers(0, 1, &mesh->GetVBV());
+			_cmdList->IASetIndexBuffer(&mesh->GetIBV());
 
 			/// 描画
-			_commandList->DrawIndexedInstanced(
+			_cmdList->DrawIndexedInstanced(
 				static_cast<UINT>(mesh->GetIndices().size()),
 				static_cast<UINT>(renderers.size()),
 				0, 0, 0
@@ -199,58 +187,3 @@ void MeshRenderingPipeline::RenderingMesh(ID3D12GraphicsCommandList* _commandLis
 		instanceIndex_ += static_cast<UINT>(renderers.size());
 	}
 }
-
-
-void MeshRenderingPipeline::RenderingMesh(ID3D12GraphicsCommandList* _commandList, std::list<CustomMeshRenderer*>* _pCustomRenderers, const std::vector<Texture>& _pTexture) {
-	for (auto& renderer : (*_pCustomRenderers)) {
-
-		/// modelの取得、なければ次へ
-		const Mesh* mesh = renderer->GetMesh();
-		if (!mesh) {
-			continue;
-		}
-
-		/// materialのセット
-		materialBuffer->SetMappedData(
-			transformIndex_,
-			renderer->GetMaterial()
-		);
-
-		/// texture id のセット
-		size_t textureIndex = pAssetCollection_->GetTextureIndex(renderer->GetTexturePath());
-		textureIdBuffer_->SetMappedData(
-			transformIndex_,
-			_pTexture[textureIndex].GetSRVDescriptorIndex()
-		);
-
-		/// transform のセット
-		transformBuffer_->SetMappedData(
-			transformIndex_,
-			renderer->GetOwner()->GetTransform()->GetMatWorld()
-		);
-
-
-		++transformIndex_;
-
-		/// 上でセットしたデータをバインド
-		materialBuffer->SRVBindForGraphicsCommandList(_commandList, 1);
-		textureIdBuffer_->SRVBindForGraphicsCommandList(_commandList, 2);
-		transformBuffer_->SRVBindForGraphicsCommandList(_commandList, 4);
-
-		/// 現在のinstance idをセット
-		_commandList->SetGraphicsRoot32BitConstant(5, instanceIndex_, 0);
-
-		/// vbv, ibvのセット
-		_commandList->IASetVertexBuffers(0, 1, &mesh->GetVBV());
-		_commandList->IASetIndexBuffer(&mesh->GetIBV());
-
-		/// 描画
-		_commandList->DrawIndexedInstanced(
-			static_cast<UINT>(mesh->GetIndices().size()),
-			1, 0, 0, 0
-		);
-
-		++instanceIndex_;
-	}
-}
-

@@ -10,7 +10,7 @@
 GrassArrangementPipeline::GrassArrangementPipeline() = default;
 GrassArrangementPipeline::~GrassArrangementPipeline() = default;
 
-void GrassArrangementPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
+void GrassArrangementPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {
 
 	{	/// shader
 		Shader shader;
@@ -32,11 +32,11 @@ void GrassArrangementPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMan
 
 		pipeline_->AddStaticSampler(D3D12_SHADER_VISIBILITY_ALL, 0); // s0
 
-		pipeline_->CreatePipeline(_dxManager->GetDxDevice());
+		pipeline_->CreatePipeline(_dxm->GetDxDevice());
 	}
 
 	{	/// buffer
-		usedTexIdBuffer_.Create(_dxManager->GetDxDevice());
+		usedTexIdBuffer_.Create(_dxm->GetDxDevice());
 
 	}
 

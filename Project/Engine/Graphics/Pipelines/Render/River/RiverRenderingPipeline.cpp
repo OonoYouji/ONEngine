@@ -11,7 +11,7 @@
 RiverRenderingPipeline::RiverRenderingPipeline(AssetCollection* _grc) : pAssetCollection_(_grc) {}
 RiverRenderingPipeline::~RiverRenderingPipeline() = default;
 
-void RiverRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
+void RiverRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {
 
 	{	/// shader
 
@@ -50,19 +50,19 @@ void RiverRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManag
 		depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
 		pipeline_->SetDepthStencilDesc(depthStencilDesc);
 
-		pipeline_->CreatePipeline(_dxManager->GetDxDevice());
+		pipeline_->CreatePipeline(_dxm->GetDxDevice());
 	}
 
 }
 
-void RiverRenderingPipeline::Draw(ECSGroup* _ecs, const std::vector<GameEntity*>& /*_entities*/, CameraComponent* _camera, DxCommand* _dxCommand) {
+void RiverRenderingPipeline::Draw(ECSGroup* _ecs, CameraComponent* _camera, DxCommand* _dxCommand) {
 
 	/// --------------------------------------------------------------------
 	/// 早期リターンチェック
 	/// --------------------------------------------------------------------
 
 	ComponentArray<Terrain>* terrainArray = _ecs->GetComponentArray<Terrain>();
-	if(!terrainArray || terrainArray->GetUsedComponents().empty()) {
+	if (!terrainArray || terrainArray->GetUsedComponents().empty()) {
 		Console::LogError("RiverRenderingPipeline::Draw: Terrain component array is null");
 		return;
 	}
@@ -96,55 +96,26 @@ void RiverRenderingPipeline::Draw(ECSGroup* _ecs, const std::vector<GameEntity*>
 
 	/// CBV_MATERIAL
 	river->SetMaterialData(terrain->GetOwner()->GetId(), static_cast<int32_t>(pAssetCollection_->GetTextureIndex("./Packages/Textures/Terrain/River.png")));
-	river->GetMaterialBufRef().BindForGraphicsCommandList(cmdList, CBV_MATERIAL);
+	river->GetMaterialBuffer().BindForGraphicsCommandList(cmdList, CBV_MATERIAL);
 
-	/// vbvとibvのリソースバリアーを変える
-	DxResource& vertexBuffer = river->GetRwVerticesRef().GetResource();
-	vertexBuffer.CreateBarrier(
-		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
-		D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER,
-		_dxCommand
-	);
 
-	/// vbv setting
-	D3D12_VERTEX_BUFFER_VIEW vbv = {};
-	vbv.BufferLocation = vertexBuffer.Get()->GetGPUVirtualAddress();
-	vbv.StrideInBytes = sizeof(RiverVertex);
-	vbv.SizeInBytes = sizeof(RiverVertex) * river->GetTotalVertices();
+	/// VBVとIBVのリソースバリアーを変える
+	river->CreateRenderingBarriers(_dxCommand);
+
+	/// VBVとIBVの設定
+	D3D12_VERTEX_BUFFER_VIEW vbv = river->CreateVBV();
+	D3D12_INDEX_BUFFER_VIEW ibv = river->CreateIBV();
 	cmdList->IASetVertexBuffers(0, 1, &vbv);
-
-
-	DxResource& indexBuffer = river->GetRwIndicesRef().GetResource();
-	indexBuffer.CreateBarrier(
-		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
-		D3D12_RESOURCE_STATE_INDEX_BUFFER,
-		_dxCommand
-	);
-
-	/// ibv setting
-	D3D12_INDEX_BUFFER_VIEW ibv = {};
-	ibv.BufferLocation = indexBuffer.Get()->GetGPUVirtualAddress();
-	ibv.SizeInBytes = static_cast<UINT>(sizeof(uint32_t)) * river->GetTotalIndices();
-	ibv.Format = DXGI_FORMAT_R32_UINT;
 	cmdList->IASetIndexBuffer(&ibv);
 
-
+	/// 描画
 	cmdList->DrawIndexedInstanced(
 		river->GetTotalIndices(),
 		1, 0, 0, 0
 	);
 
 	/// 元の状態に戻す
-	vertexBuffer.CreateBarrier(
-		D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER,
-		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
-		_dxCommand
-	);
+	river->RestoreResourceBarriers(_dxCommand);
 
-	indexBuffer.CreateBarrier(
-		D3D12_RESOURCE_STATE_INDEX_BUFFER,
-		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
-		_dxCommand
-	);
 }
 

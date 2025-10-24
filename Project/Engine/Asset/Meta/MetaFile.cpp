@@ -10,19 +10,7 @@
 
 namespace {
 
-	std::unordered_map<std::string, AssetType> gExtensionToAssetType = {
-		{ ".png", AssetType::Texture },
-		{ ".jpg", AssetType::Texture },
-		{ ".jpeg", AssetType::Texture },
-		//{ ".bmp", AssetType::Texture },
-		//{ ".tga", AssetType::Texture },
-		//{ ".fbx", AssetType::Mesh },
-		{ ".obj", AssetType::Mesh },
-		{ ".wav", AssetType::Audio },
-		{ ".mp3", AssetType::Audio },
-		//{ ".ogg", AssetType::Audio },
-	};
-
+	/// @brief 現在の.metaファイルのバージョン
 	static const uint32_t kCurrentMetaFileVersion = 1;
 
 } // namespace
@@ -106,14 +94,7 @@ MetaFile GenerateMetaFile(const std::string& _refFile) {
 
 	/// 拡張子からアセットタイプを決定
 	std::string extension = Mathf::FileExtension(_refFile);
-	auto itr = gExtensionToAssetType.find(extension);
-	if (itr != gExtensionToAssetType.end()) {
-		metaFile.assetType = itr->second;
-	} else {
-		/// デフォルト値にしとく
-		metaFile.assetType = AssetType::Texture;
-	}
-
+	metaFile.assetType = GetAssetTypeFromExtension(extension);
 
 	/// 一度ファイルに保存しておく
 	metaFile.SaveToFile(_refFile + ".meta");

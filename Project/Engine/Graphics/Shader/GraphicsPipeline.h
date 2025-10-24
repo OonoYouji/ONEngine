@@ -12,12 +12,23 @@
 #include "Engine/Core/DirectX12/ComPtr/ComPtr.h"
 #include "Shader.h"
 
-enum RTVFormat {
-	RTVFormat_Color         = DXGI_FORMAT_R8G8B8A8_UNORM,     ///< 色
-	RTVFormat_WorldPosition = DXGI_FORMAT_R16G16B16A16_FLOAT, ///< ワールド座標
-	RTVFormat_Normal        = DXGI_FORMAT_R16G16B16A16_FLOAT, ///< 法線
-	RTVFormat_Flags         = DXGI_FORMAT_R32G32B32A32_FLOAT      ///< フラグ
+/// @brief RenderTargetViewのフォーマット
+enum class RTVFormat {
+	Color         = DXGI_FORMAT_R8G8B8A8_UNORM,     ///< 色
+	WorldPosition = DXGI_FORMAT_R16G16B16A16_FLOAT, ///< ワールド座標
+	Normal        = DXGI_FORMAT_R16G16B16A16_FLOAT, ///< 法線
+	Flags         = DXGI_FORMAT_R32G32B32A32_FLOAT  ///< フラグ
 };
+
+/// @brief MRT用RenderTargetViewのインデックス
+enum class RTVIndex {
+	Color         = 0, ///< 色
+	WorldPosition = 1, ///< ワールド座標
+	Normal        = 2, ///< 法線
+	Flags         = 3, ///< フラグ
+	Count /// 要素数
+};
+
 
 /// ///////////////////////////////////////////////////
 /// グラフィクス用	pipeline

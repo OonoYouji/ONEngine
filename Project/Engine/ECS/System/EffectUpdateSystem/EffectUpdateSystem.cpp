@@ -12,9 +12,10 @@
 
 void EffectUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
 
+	/// エフェクトのコンポーネント配列を取得＆使用中のコンポーネントがなければ何もしない
 	ComponentArray<Effect>* effectArray = _ecs->GetComponentArray<Effect>();
 	if (!effectArray || effectArray->GetUsedComponents().empty()) {
-		return; // エフェクトのコンポーネント配列が存在しない場合は何もしない
+		return;
 	}
 
 	mainCamera_ = _ecs->GetMainCamera();
@@ -24,11 +25,12 @@ void EffectUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
 	}
 
 	if (GameEntity* entity = mainCamera_->GetOwner()) {
-		matBillboard_ = Matrix4x4::MakeRotate(entity->GetRotate());
+		matBillboard_ = entity->GetTransform()->matWorld;
+		/// 平行移動成分を0にして回転と拡縮行列のみにする
+		matBillboard_.m[3][0] = 0.0f;
+		matBillboard_.m[3][1] = 0.0f;
+		matBillboard_.m[3][2] = 0.0f;
 	}
-	//matBillboard_.m[3][0] = 0.0f;
-	//matBillboard_.m[3][1] = 0.0f;
-	//matBillboard_.m[3][2] = 0.0f;
 
 
 	/// エフェクトの更新処理
@@ -50,11 +52,11 @@ void EffectUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
 		if (effect->isCreateParticle_) {
 
 			switch (effect->emitType_) {
+			case Effect::EmitType::Distance:
+			{
 				/// ----------------------------------------
 				/// 距離で指定する場合の処理
 				/// ----------------------------------------
-			case Effect::EmitType::Distance:
-			{
 
 				Effect::DistanceEmitData& data = effect->distanceEmitData_;
 				data.currentPosition = data.nextPosition;
@@ -90,11 +92,12 @@ void EffectUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
 
 			}
 			break;
-			/// ----------------------------------------
-			/// 時間で指定する場合の処理
-			/// ----------------------------------------
 			case Effect::EmitType::Time:
 			{
+				/// ----------------------------------------
+				/// 時間で指定する場合の処理
+				/// ----------------------------------------
+
 				Effect::TimeEmitData& data = effect->timeEmitData_;
 				data.emitInterval -= Time::DeltaTime();
 				if (data.emitInterval <= 0.0f) {

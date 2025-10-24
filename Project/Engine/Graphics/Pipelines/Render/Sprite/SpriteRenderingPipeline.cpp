@@ -13,11 +13,12 @@
 
 
 SpriteRenderingPipeline::SpriteRenderingPipeline(AssetCollection* _assetCollection)
-	: pAssetCollection_(_assetCollection) {}
+	: pAssetCollection_(_assetCollection) {
+}
 SpriteRenderingPipeline::~SpriteRenderingPipeline() {}
 
 
-void SpriteRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
+void SpriteRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {
 
 	{	/// pipeline 
 
@@ -60,14 +61,15 @@ void SpriteRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 		blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 		pipeline_->SetBlendDesc(blendDesc);
 
-		pipeline_->CreatePipeline(_dxManager->GetDxDevice());
+		pipeline_->CreatePipeline(_dxm->GetDxDevice());
 
 	}
 
 
 	{	/// buffer
 
-			/// vertex data
+		/// ----- Spriteに使用する頂点とインデックスの情報を作る ----- ///
+		/// vertex data
 		vertices_ = {
 			{ Vector4(-0.5f, 0.5f, 0.0f, 1.0f), Vector2(0.0f, 0.0f) },
 			{ Vector4(0.5f, 0.5f, 0.0f, 1.0f), Vector2(1.0f, 0.0f) },
@@ -83,14 +85,14 @@ void SpriteRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 		const size_t kVertexDataSize = sizeof(VertexData);
 
 		/// vertex buffer
-		vertexBuffer_.CreateResource(_dxManager->GetDxDevice(), kVertexDataSize * vertices_.size());
+		vertexBuffer_.CreateResource(_dxm->GetDxDevice(), kVertexDataSize * vertices_.size());
 
 		vbv_.BufferLocation = vertexBuffer_.Get()->GetGPUVirtualAddress();
 		vbv_.SizeInBytes = static_cast<UINT>(kVertexDataSize * vertices_.size());
 		vbv_.StrideInBytes = static_cast<UINT>(kVertexDataSize);
 
 		/// index buffer
-		indexBuffer_.CreateResource(_dxManager->GetDxDevice(), sizeof(uint32_t) * indices_.size());
+		indexBuffer_.CreateResource(_dxm->GetDxDevice(), sizeof(uint32_t) * indices_.size());
 
 		ibv_.BufferLocation = indexBuffer_.Get()->GetGPUVirtualAddress();
 		ibv_.SizeInBytes = static_cast<UINT>(sizeof(uint32_t) * indices_.size());
@@ -110,19 +112,14 @@ void SpriteRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 
 
 	{	/// structured buffer
-
-		transformsBuffer_ = std::make_unique<StructuredBuffer<Matrix4x4>>();
-		transformsBuffer_->Create(static_cast<uint32_t>(kMaxRenderingSpriteCount_), _dxManager->GetDxDevice(), _dxManager->GetDxSRVHeap());
-
-		materialsBuffer = std::make_unique<StructuredBuffer<GPUMaterial>>();
-		materialsBuffer->Create(static_cast<uint32_t>(kMaxRenderingSpriteCount_), _dxManager->GetDxDevice(), _dxManager->GetDxSRVHeap());
-
+		transformsBuffer_.Create(static_cast<uint32_t>(kMaxRenderingSpriteCount_), _dxm->GetDxDevice(), _dxm->GetDxSRVHeap());
+		materialsBuffer.Create(static_cast<uint32_t>(kMaxRenderingSpriteCount_), _dxm->GetDxDevice(), _dxm->GetDxSRVHeap());
 	}
 
 
 }
 
-void SpriteRenderingPipeline::Draw(class ECSGroup* _ecsGroup, const std::vector<GameEntity*>& /*_entities*/, CameraComponent* _camera, DxCommand* _dxCommand) {
+void SpriteRenderingPipeline::Draw(class ECSGroup* _ecsGroup, CameraComponent* _camera, DxCommand* _dxCommand) {
 
 	ComponentArray<SpriteRenderer>* spriteRendererArray = _ecsGroup->GetComponentArray<SpriteRenderer>();
 	if (!spriteRendererArray || spriteRendererArray->GetUsedComponents().empty()) {
@@ -157,21 +154,17 @@ void SpriteRenderingPipeline::Draw(class ECSGroup* _ecsGroup, const std::vector<
 			continue;
 		}
 
-		materialsBuffer->SetMappedData(
-			transformIndex, renderer->GetMaterial()
-		);
+		if (GameEntity* owner = renderer->GetOwner()) {
+			/// Material, Transformのセット
+			materialsBuffer.SetMappedData(transformIndex, renderer->GetMaterial());
+			transformsBuffer_.SetMappedData(transformIndex, owner->GetTransform()->GetMatWorld());
 
-		transformsBuffer_->SetMappedData(
-			transformIndex,
-			renderer->GetOwner()->GetTransform()->GetMatWorld()
-		);
-
-		++transformIndex;
+			++transformIndex;
+		}
 	}
 
-	materialsBuffer->SRVBindForGraphicsCommandList(cmdList, ROOT_PARAM_MATERIAL);
-	transformsBuffer_->SRVBindForGraphicsCommandList(cmdList, ROOT_PARAM_TRANSFORM);
-
+	materialsBuffer.SRVBindForGraphicsCommandList(cmdList, ROOT_PARAM_MATERIAL);
+	transformsBuffer_.SRVBindForGraphicsCommandList(cmdList, ROOT_PARAM_TRANSFORM);
 
 	/// 描画
 	cmdList->DrawIndexedInstanced(
@@ -179,5 +172,4 @@ void SpriteRenderingPipeline::Draw(class ECSGroup* _ecsGroup, const std::vector<
 		static_cast<UINT>(transformIndex),
 		0, 0, 0
 	);
-
 }

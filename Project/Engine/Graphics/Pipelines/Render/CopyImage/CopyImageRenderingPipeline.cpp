@@ -6,10 +6,11 @@
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 
 
-CopyImageRenderingPipeline::CopyImageRenderingPipeline(AssetCollection* _graphicsResourceCollection)
-	: pAssetCollection_(_graphicsResourceCollection) {}
+CopyImageRenderingPipeline::CopyImageRenderingPipeline(AssetCollection* _assetCollection)
+	: pAssetCollection_(_assetCollection) {
+}
 
-void CopyImageRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
+void CopyImageRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {
 
 	{
 		Shader shader;
@@ -39,14 +40,14 @@ void CopyImageRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxM
 		pipeline_->SetRTVNum(1);
 		pipeline_->SetRTVFormat(DXGI_FORMAT_R8G8B8A8_UNORM, 0);
 
-		pipeline_->CreatePipeline(_dxManager->GetDxDevice());
+		pipeline_->CreatePipeline(_dxm->GetDxDevice());
 
 	}
 
 }
 
 
-void CopyImageRenderingPipeline::Draw(class ECSGroup*, const std::vector<GameEntity*>&, CameraComponent*, DxCommand* _dxCommand) {
+void CopyImageRenderingPipeline::Draw(class ECSGroup* /*_ecs*/, CameraComponent*, DxCommand* _dxCommand) {
 
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 	ID3D12GraphicsCommandList* commandList = _dxCommand->GetCommandList();
@@ -55,7 +56,7 @@ void CopyImageRenderingPipeline::Draw(class ECSGroup*, const std::vector<GameEnt
 	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	auto& textures = pAssetCollection_->GetTextures();
-	size_t index = pAssetCollection_->GetTextureIndex("sceneScene");
+	size_t index = pAssetCollection_->GetTextureIndex("./Assets/Scene/RenderTexture/sceneScene");
 
 	commandList->SetGraphicsRootDescriptorTable(0, textures[index].GetSRVGPUHandle());
 

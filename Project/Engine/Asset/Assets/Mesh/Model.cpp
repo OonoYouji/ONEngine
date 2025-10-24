@@ -1,18 +1,20 @@
 #include "Model.h"
 
-Model::Model() {}
-Model::~Model() {}
+Model::Model() = default;
+Model::~Model() = default;
 
 void Model::AddMesh(std::shared_ptr<Mesh>&& _mesh) {
 	meshes_.push_back(std::move(_mesh));
 }
 
 Mesh* Model::CreateMesh() {
+	/// ----- 新規Meshを追加し、返す ----- ///
 	meshes_.emplace_back(std::make_shared<Mesh>());
 	return meshes_.back().get();
 }
 
 void Model::SetMeshes(std::vector<std::shared_ptr<Mesh>>&& _meshes) {
+	/// ----- 新しいMeshと今のMeshを入れ替える ----- ///
 	if (_meshes.size() > meshes_.size()) {
 		meshes_.resize(_meshes.size());
 	}

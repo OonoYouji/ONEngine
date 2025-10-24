@@ -13,8 +13,6 @@
 #include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
-#include "Engine/Scene/ISceneFactory.h"
- #include "Game/Scene/Factory/SceneFactory.h"
 
 
 namespace {
@@ -40,20 +38,17 @@ SceneManager::~SceneManager() {
 }
 
 
-void SceneManager::Initialize(AssetCollection* _graphicsResourceCollection) {
+void SceneManager::Initialize(AssetCollection* _assetCollection) {
 	gSceneManager = this;
 
-	pGraphicsResourceCollection_ = _graphicsResourceCollection;
-
-	sceneFactory_ = std::make_unique<SceneFactory>();
-	sceneFactory_->Initialize();
+	pAssetCollection_ = _assetCollection;
 
 	sceneIO_ = std::make_unique<SceneIO>(pEcs_);
 
 #ifdef DEBUG_MODE
 	SetNextScene(LastOpenSceneName());
 #else
-	SetNextScene(sceneFactory_->GetStartupSceneName());
+	SetNextScene("TitleScene");
 #endif
 
 	MoveNextToCurrentScene(false);
@@ -62,7 +57,7 @@ void SceneManager::Initialize(AssetCollection* _graphicsResourceCollection) {
 }
 
 void SceneManager::Update() {
-	/// 次のシーンが設定されていたら、シーンを切り替える
+	/// 次のシーンが設定されていたらシーンを切り替える
 	if (nextScene_.size()) {
 		MoveNextToCurrentScene(false);
 	}
@@ -91,12 +86,7 @@ void SceneManager::SaveCurrentScene() {
 }
 
 void SceneManager::SaveCurrentSceneTemporary() {
-	if (currentScene_.empty()) {
-		Console::LogError("No current scene to save temporarily.");
-		return;
-	}
-
-	sceneIO_->OutputTemporary(currentScene_, pEcs_->GetCurrentGroup());
+	sceneIO_->OutputTemporary(pEcs_->GetCurrentGroup());
 }
 
 void SceneManager::LoadScene(const std::string& _sceneName) {
@@ -161,7 +151,7 @@ void SceneManager::MoveNextToCurrentScene(bool _isTemporary) {
 
 	/// sceneに必要な情報を渡して初期化
 	if (_isTemporary) {
-		sceneIO_->InputTemporary(currentScene_, nextSceneGroup);
+		sceneIO_->InputTemporary(nextSceneGroup);
 		return;
 	}
 
@@ -170,10 +160,6 @@ void SceneManager::MoveNextToCurrentScene(bool _isTemporary) {
 	Time::ResetTime();
 }
 
-
-void SceneManager::SetSceneFactory(std::unique_ptr<ISceneFactory>& _sceneFactory) {
-	sceneFactory_ = std::move(_sceneFactory);
-}
 
 const std::string& SceneManager::GetCurrentSceneName() const {
 	return currentScene_;

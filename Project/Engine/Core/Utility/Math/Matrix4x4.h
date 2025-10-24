@@ -12,8 +12,7 @@ using namespace DirectX;
 /// //////////////////////////////////////////////////
 /// 4x4行列クラス
 /// //////////////////////////////////////////////////
-class Matrix4x4 final {
-public:
+struct Matrix4x4 final {
 	/// ===================================================
 	/// public : constructer
 	/// ===================================================
@@ -58,7 +57,7 @@ public:
 	/// @param _v 回転率
 	/// @return 回転行列
 	static Matrix4x4 MakeRotate(const Vector3& _v);
-	static Matrix4x4 MakeRotate(const class Quaternion& _q);
+	static Matrix4x4 MakeRotate(const struct Quaternion& _q);
 
 	/// @brief 平行移動行列の作成
 	/// @param _v 平行移動成分

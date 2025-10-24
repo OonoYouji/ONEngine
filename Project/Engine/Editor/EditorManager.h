@@ -38,7 +38,7 @@ public:
 	EditorManager(class EntityComponentSystem* _ecs);
 	~EditorManager();
 
-	void Initialize(class DxManager* _dxManager, class ShaderCompiler* _shaderCompiler);
+	void Initialize(class DxManager* _dxm, class ShaderCompiler* _shaderCompiler);
 
 	void Update(class AssetCollection* _grc);
 
@@ -59,7 +59,7 @@ public:
 
 	/// ----- editor compute ----- ///
 
-	void AddEditorCompute(class DxManager* _dxManager, class ShaderCompiler* _shaderCompiler, std::unique_ptr<IEditorCompute> _compute);
+	void AddEditorCompute(class DxManager* _dxm, class ShaderCompiler* _shaderCompiler, std::unique_ptr<IEditorCompute> _compute);
 
 
 private:

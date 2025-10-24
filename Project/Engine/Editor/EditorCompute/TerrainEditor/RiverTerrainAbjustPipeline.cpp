@@ -1,16 +1,16 @@
 #include "RiverTerrainAbjustPipeline.h"
 
-
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Array/ComponentArray.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Terrain.h"
 
+
 RiverTerrainAbjustPipeline::RiverTerrainAbjustPipeline() = default;
 RiverTerrainAbjustPipeline::~RiverTerrainAbjustPipeline() = default;
 
-void RiverTerrainAbjustPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
+void RiverTerrainAbjustPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {
 
 	{	/// shader
 		Shader shader;
@@ -30,29 +30,28 @@ void RiverTerrainAbjustPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxM
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 1);
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 2);
 
-		pipeline_->CreatePipeline(_dxManager->GetDxDevice());
+		pipeline_->CreatePipeline(_dxm->GetDxDevice());
 	}
 }
 
 void RiverTerrainAbjustPipeline::Execute(EntityComponentSystem* _ecs, DxCommand* _dxCommand, AssetCollection* /*_assetCollection*/) {
 
 	/// ----------------------------------------------------
-	/// 早期return条件
+	/// 早期 return条件
 	/// ----------------------------------------------------
 	ComponentArray<Terrain>* terrainArray = _ecs->GetCurrentGroup()->GetComponentArray<Terrain>();
 	if (!terrainArray) {
 		return;
 	}
 
-	if(terrainArray->GetUsedComponents().empty()) {
+	if (terrainArray->GetUsedComponents().empty()) {
 		return;
 	}
 
 	Terrain* terrain = terrainArray->GetUsedComponents().front();
-	if(!terrain) {
+	if (!terrain) {
 		return;
 	}
-
 
 	/// 川の情報を取得
 	River* river = terrain->GetRiver();
@@ -69,19 +68,15 @@ void RiverTerrainAbjustPipeline::Execute(EntityComponentSystem* _ecs, DxCommand*
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 
 
-	river->GetParamBufRef().BindForComputeCommandList(cmdList, CBV_PARAMS);
+	river->GetParamBuffer().BindForComputeCommandList(cmdList, CBV_PARAMS);
 	terrain->GetRwVertices().UAVBindForComputeCommandList(cmdList, UAV_TERRAIN_VERTICES);
-	river->GetRwVerticesRef().UAVBindForComputeCommandList(cmdList, SRV_RIVER_VERTICES);
-	river->GetRwIndicesRef().UAVBindForComputeCommandList(cmdList, SRV_RIVER_INDICES);
+	river->GetRwVertices().UAVBindForComputeCommandList(cmdList, SRV_RIVER_VERTICES);
+	river->GetRwIndices().UAVBindForComputeCommandList(cmdList, SRV_RIVER_INDICES);
 
 	UINT maxVertex = static_cast<UINT>(terrain->GetMaxVertexNum());
 	UINT groupSize = 32;
 	UINT dispatchCount = (maxVertex + groupSize - 1) / groupSize;
-	cmdList->Dispatch(
-		dispatchCount,
-		1,
-		1
-	);
+	cmdList->Dispatch(dispatchCount, 1, 1);
 
 }
 

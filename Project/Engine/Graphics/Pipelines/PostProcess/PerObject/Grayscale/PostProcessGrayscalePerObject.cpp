@@ -6,7 +6,7 @@
 #include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 
-void PostProcessGrayscalePerObject::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
+void PostProcessGrayscalePerObject::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {
 
 	{
 		Shader shader;
@@ -23,7 +23,7 @@ void PostProcessGrayscalePerObject::Initialize(ShaderCompiler* _shaderCompiler, 
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 1);
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 2);
 		pipeline_->AddStaticSampler(D3D12_SHADER_VISIBILITY_ALL, 0);
-		pipeline_->CreatePipeline(_dxManager->GetDxDevice());
+		pipeline_->CreatePipeline(_dxm->GetDxDevice());
 
 
 	}

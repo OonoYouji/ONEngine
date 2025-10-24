@@ -8,10 +8,10 @@
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Terrain.h"
 
-TerrainVertexEditorCompute::TerrainVertexEditorCompute() {}
-TerrainVertexEditorCompute::~TerrainVertexEditorCompute() {}
+TerrainVertexEditorCompute::TerrainVertexEditorCompute() = default;
+TerrainVertexEditorCompute::~TerrainVertexEditorCompute() = default;
 
-void TerrainVertexEditorCompute::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
+void TerrainVertexEditorCompute::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {
 
 	{	/// Shader
 
@@ -35,13 +35,13 @@ void TerrainVertexEditorCompute::Initialize(ShaderCompiler* _shaderCompiler, DxM
 
 		pipeline_->AddStaticSampler(D3D12_SHADER_VISIBILITY_ALL, 0);
 
-		pipeline_->CreatePipeline(_dxManager->GetDxDevice());
+		pipeline_->CreatePipeline(_dxm->GetDxDevice());
 	}
 
 	{	/// Buffer
 
-		terrainInfo_.Create(_dxManager->GetDxDevice());
-		inputInfo_.Create(_dxManager->GetDxDevice());
+		terrainInfo_.Create(_dxm->GetDxDevice());
+		inputInfo_.Create(_dxm->GetDxDevice());
 
 	}
 }
@@ -91,26 +91,33 @@ void TerrainVertexEditorCompute::Execute(class EntityComponentSystem* _ecs, DxCo
 	byte |= (isRaiseTerrainButtonPressed << 0);
 	byte |= (isLowerTerrainButtonPressed << 1);
 
-	if (Input::PressKey(DIK_LCONTROL) && !Input::PressKey(DIK_LSHIFT)) {
+	//if (Input::PressKey(DIK_LCONTROL) && !Input::PressKey(DIK_LSHIFT)) {
 
-		/// 編集モードの変更
-		if (Input::TriggerKey(DIK_N)) { editMode_ = 0; }
-		if (Input::TriggerKey(DIK_V)) { editMode_ = 1; }
-		if (Input::TriggerKey(DIK_B)) { editMode_ = 2; }
+	//	/// 編集モードの変更
+	//	if (Input::TriggerKey(DIK_N)) { editMode_ = 0; }
+	//	if (Input::TriggerKey(DIK_V)) { editMode_ = 1; }
+	//	if (Input::TriggerKey(DIK_B)) { editMode_ = 2; }
 
-		/// 編集するテクスチャのインデックスの変更
-		if (Input::TriggerKey(DIK_1)) { editTextureIndex_ = 0; }
-		if (Input::TriggerKey(DIK_2)) { editTextureIndex_ = 1; }
-		if (Input::TriggerKey(DIK_3)) { editTextureIndex_ = 2; }
-		if (Input::TriggerKey(DIK_4)) { editTextureIndex_ = 3; }
-	}
+	//	/// 編集するテクスチャのインデックスの変更
+	//	if (Input::TriggerKey(DIK_1)) { editTextureIndex_ = 0; }
+	//	if (Input::TriggerKey(DIK_2)) { editTextureIndex_ = 1; }
+	//	if (Input::TriggerKey(DIK_3)) { editTextureIndex_ = 2; }
+	//	if (Input::TriggerKey(DIK_4)) { editTextureIndex_ = 3; }
+	//}
 
 	inputInfo_.SetMappedData(
-		InputInfo{ mousePosition, pTerrain->GetBrushRadius(), pTerrain->GetBrushStrength(), byte, editMode_, editTextureIndex_}
+		InputInfo{
+			mousePosition,
+			pTerrain->editorInfo_.brushRadius,
+			pTerrain->editorInfo_.brushStrength,
+			byte,
+			pTerrain->editorInfo_.editMode,
+			pTerrain->editorInfo_.usedTextureIndex
+		}
 	);
 
 
-	
+
 	/// 押していないときは処理をしない
 	if (!Input::TriggerMouse(Mouse::Left)) {
 		return;

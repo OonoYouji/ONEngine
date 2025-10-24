@@ -21,7 +21,9 @@ GameFramework::~GameFramework() {
 
 void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 
+	/// --------------------------------------------------
 	/// 各クラスのインスタンスを生成する
+	/// --------------------------------------------------
 	dxManager_             = std::make_unique<DxManager>();
 	windowManager_         = std::make_unique<WindowManager>(dxManager_.get());
 	entityComponentSystem_ = std::make_unique<EntityComponentSystem>(dxManager_.get());
@@ -49,24 +51,23 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 	windowManager_->GenerateWindow(_startSetting.windowName, _startSetting.windowSize, WindowManager::WindowType::Main);
 #endif // DEBUG_MODE
 
-	MonoScriptEngine* monoScriptEngine = MonoScriptEngine::GetInstance();
-	monoScriptEngine->Initialize();
+	MonoScriptEngine::GetInstance().Initialize();
 
 	/// input systemの初期化
 	Input::Initialize(windowManager_.get(), imGuiManager_.get());
 	renderingFramework_->Initialize(dxManager_.get(), windowManager_.get(), entityComponentSystem_.get());
-	entityComponentSystem_->Initialize(renderingFramework_->GetResourceCollection());
+	entityComponentSystem_->Initialize(renderingFramework_->GetAssetCollection());
 
 
 	/// timeの初期化
 	Time::Initialize();
 
 	/// scene managerの初期化
-	sceneManager_->Initialize(renderingFramework_->GetResourceCollection());
+	sceneManager_->Initialize(renderingFramework_->GetAssetCollection());
 	LoadDebugJson();
 
 #ifdef DEBUG_MODE
-	imGuiManager_->Initialize(renderingFramework_->GetResourceCollection());
+	imGuiManager_->Initialize(renderingFramework_->GetAssetCollection());
 	imGuiManager_->SetImGuiWindow(windowManager_->GetMainWindow());
 	renderingFramework_->SetImGuiManager(imGuiManager_.get());
 #endif // DEBUG_MODE
@@ -74,7 +75,6 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 	editorManager_->Initialize(dxManager_.get(), renderingFramework_->GetShaderCompiler());
 	SetEntityComponentSystemPtr(entityComponentSystem_->GetECSGroup("GameScene"), entityComponentSystem_->GetECSGroup("Debug"));
 
-	//DebugConfig::isDebugging = true;
 }
 
 void GameFramework::Run() {
@@ -89,7 +89,7 @@ void GameFramework::Run() {
 		renderingFramework_->HeapBindToCommandList();
 		windowManager_->Update();
 #ifdef DEBUG_MODE
-		editorManager_->Update(renderingFramework_->GetResourceCollection());
+		editorManager_->Update(renderingFramework_->GetAssetCollection());
 		imGuiManager_->Update();
 		entityComponentSystem_->DebuggingUpdate();
 		entityComponentSystem_->OutsideOfUpdate();
@@ -100,7 +100,7 @@ void GameFramework::Run() {
 			entityComponentSystem_->Update();
 		}
 #else
-		editorManager_->Update(renderingFramework_->GetResourceCollection());
+		editorManager_->Update(renderingFramework_->GetAssetCollection());
 		entityComponentSystem_->DebuggingUpdate();
 		entityComponentSystem_->OutsideOfUpdate();
 		sceneManager_->Update();

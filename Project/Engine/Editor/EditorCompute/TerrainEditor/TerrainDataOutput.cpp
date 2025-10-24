@@ -10,9 +10,9 @@
 TerrainDataOutput::TerrainDataOutput() {}
 TerrainDataOutput::~TerrainDataOutput() {}
 
-void TerrainDataOutput::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
+void TerrainDataOutput::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {
 
-	pDxManager_ = _dxManager;
+	pDxManager_ = _dxm;
 
 	{	/// shader
 		Shader shader;
@@ -30,14 +30,14 @@ void TerrainDataOutput::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 1);	/// UAV_OUTPUT_TEXTURE
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 2);	/// UAV_OUTPUT_SPLAT_BLEND_TEXTURE
 
-		pipeline_->CreatePipeline(_dxManager->GetDxDevice());
+		pipeline_->CreatePipeline(_dxm->GetDxDevice());
 
 	}
 
 	{	/// buffer
-		terrainSize_.Create(_dxManager->GetDxDevice());
-		outputVertexTexture_.CreateUAVTexture(1000, 1000, _dxManager->GetDxDevice(), _dxManager->GetDxSRVHeap(), DXGI_FORMAT_R16G16B16A16_UNORM);
-		outputSplatBlendTexture_.CreateUAVTexture(1000, 1000, _dxManager->GetDxDevice(), _dxManager->GetDxSRVHeap());
+		terrainSize_.Create(_dxm->GetDxDevice());
+		outputVertexTexture_.CreateUAVTexture(1000, 1000, _dxm->GetDxDevice(), _dxm->GetDxSRVHeap(), DXGI_FORMAT_R16G16B16A16_UNORM);
+		outputSplatBlendTexture_.CreateUAVTexture(1000, 1000, _dxm->GetDxDevice(), _dxm->GetDxSRVHeap());
 	}
 
 

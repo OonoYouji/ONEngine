@@ -13,8 +13,8 @@
 #include "Engine/Script/MonoScriptEngine.h"
 
 ScriptUpdateSystem::ScriptUpdateSystem(ECSGroup* _ecs) {
-	MonoScriptEngine* monoEngine = MonoScriptEngine::GetInstance();
-	MakeScriptMethod(monoEngine->Image(), _ecs->GetGroupName());
+	MonoScriptEngine& monoEngine = MonoScriptEngine::GetInstance();
+	MakeScriptMethod(monoEngine.Image(), _ecs->GetGroupName());
 }
 
 ScriptUpdateSystem::~ScriptUpdateSystem() {
@@ -22,12 +22,11 @@ ScriptUpdateSystem::~ScriptUpdateSystem() {
 }
 
 void ScriptUpdateSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
-	MonoScriptEngine* monoEngine = MonoScriptEngine::GetInstance();
-	if (!monoEngine) {
-		return;
-	}
+	/// ----- HotReloadをしたときにC#側がリセットされるのでスクリプトを追加し直す----- ///
 
-	if (monoEngine->GetIsHotReloadRequest()) {
+	MonoScriptEngine& monoEngine = MonoScriptEngine::GetInstance();
+
+	if (monoEngine.GetIsHotReloadRequest()) {
 		/// C#側のECSGroupを取得、更新関数を呼ぶ
 		ComponentArray<Script>* scriptArray = _ecs->GetComponentArray<Script>();
 		if (!scriptArray || scriptArray->GetUsedComponents().empty()) {
@@ -42,7 +41,7 @@ void ScriptUpdateSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
 		}
 
 		ReleaseGCHandle();
-		MakeScriptMethod(monoEngine->Image(), _ecs->GetGroupName());
+		MakeScriptMethod(monoEngine.Image(), _ecs->GetGroupName());
 	}
 }
 
@@ -96,7 +95,7 @@ void ScriptUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
 }
 
 void ScriptUpdateSystem::AddEntityAndComponent(ECSGroup* _ecsGroup) {
-	MonoScriptEngine* monoEngine = MonoScriptEngine::GetInstance();
+	MonoScriptEngine& monoEngine = MonoScriptEngine::GetInstance();
 
 	for (auto& entity : _ecsGroup->GetEntities()) {
 
@@ -145,7 +144,7 @@ void ScriptUpdateSystem::AddEntityAndComponent(ECSGroup* _ecsGroup) {
 				data.isAdded = true;
 
 				/// スクリプト名からMonoObjectを生成する
-				MonoClass* behaviorClass = mono_class_from_name(monoEngine->Image(), "", data.scriptName.c_str());
+				MonoClass* behaviorClass = mono_class_from_name(monoEngine.Image(), "", data.scriptName.c_str());
 				if (!behaviorClass) {
 					Console::LogError("Failed to find MonoBehavior class");
 					continue;

@@ -12,7 +12,7 @@ public:
 	/// public : methods
 	/// ========================================
 
-	TerrainColliderVertexGenerator(class DxManager* _dxManager);
+	TerrainColliderVertexGenerator(class DxManager* _dxm);
 	~TerrainColliderVertexGenerator() override = default;
 
 	void OutsideOfRuntimeUpdate(class ECSGroup* _ecs) override;

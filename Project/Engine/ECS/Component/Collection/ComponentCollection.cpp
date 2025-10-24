@@ -5,6 +5,7 @@
 #include "Engine/ECS/Component/Components/ComputeComponents/Script/Script.h"
 
 ComponentCollection::ComponentCollection() {
+	/// この二つだけ例外で最初に登録しておく
 	RegisterComponentFactory<Script>();
 	RegisterComponentFactory<Transform>();
 }

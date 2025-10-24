@@ -15,7 +15,6 @@
 /// ===================================================
 class Model final : public IAsset {
 public:
-
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
@@ -30,7 +29,6 @@ public:
 	Mesh* CreateMesh();
 
 private:
-
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
@@ -47,34 +45,24 @@ private:
 
 
 public:
-
 	/// ===================================================
 	/// public : accessor
 	/// ===================================================
 
-	/// @brief mesh配列のセッタ
-	/// @param _meshes shared_ptrのmesh配列
+	/// ----- setters ----- ///
+
 	void SetMeshes(std::vector<std::shared_ptr<Mesh>>&& _meshes);
-
-	/// @brief パスのセッタ
-	/// @param _path ファイルパス
 	void SetPath(const std::string& _path);
-
 	void SetRootNode(const Node& _node);
-
 	void SetAnimationDuration(float _duration);
 
 
-	/// @brief meshの配列のゲッタ
-	/// @return meshの配列
+	/// ----- getters ----- ///
+
 	const std::vector<std::shared_ptr<Mesh>>& GetMeshes() const;
 	std::vector<std::shared_ptr<Mesh>>& GetMeshes();
 
-	/// @brief 読み込みに使用したファイルパスのゲッタ
-	/// @return pathの文字列
 	const std::string& GetPath() const;
-
-
 	const Node& GetRootNode() const;
 
 	const std::unordered_map<std::string, JointWeightData>& GetJointWeightData() const;

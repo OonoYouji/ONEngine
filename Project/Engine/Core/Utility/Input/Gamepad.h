@@ -15,6 +15,7 @@ class Gamepad final {
 	friend class Input;
 public:
 
+	/// @brief GamepadButton定数
 	enum Button {
 		DPadUp = XINPUT_GAMEPAD_DPAD_UP,
 		DPadDown = XINPUT_GAMEPAD_DPAD_DOWN,
@@ -32,6 +33,7 @@ public:
 		Y = XINPUT_GAMEPAD_Y
 	};
 
+	/// @brief Gamepadスティックの定数
 	enum Axis {
 		Left, Right
 	};

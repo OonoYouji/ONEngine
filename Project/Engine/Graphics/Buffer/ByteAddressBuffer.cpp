@@ -4,9 +4,16 @@
 #include "Engine/Core/Utility/Utility.h"
 
 ByteAddressBuffer::ByteAddressBuffer() {}
-ByteAddressBuffer::~ByteAddressBuffer() {}
+ByteAddressBuffer::~ByteAddressBuffer() {
+	/// Heapの解放
+	if (pDxSRVHeap_) {
+		pDxSRVHeap_->Free(srvDescriptorIndex_);
+	}
+}
 
 void ByteAddressBuffer::Create(uint32_t _size, DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap) {
+	/// ----- Bufferを作成する ----- ///
+
 	/// bufferのサイズを計算
 	size_t bitSize = sizeof(uint32_t);
 	bufferSize_ = _size;

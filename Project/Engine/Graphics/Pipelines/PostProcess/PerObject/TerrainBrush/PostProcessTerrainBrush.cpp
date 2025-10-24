@@ -11,7 +11,7 @@ PostProcessTerrainBrush::PostProcessTerrainBrush() = default;
 PostProcessTerrainBrush::~PostProcessTerrainBrush() = default;
 
 
-void PostProcessTerrainBrush::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
+void PostProcessTerrainBrush::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {
 
 	{	/// shader compile
 
@@ -38,11 +38,11 @@ void PostProcessTerrainBrush::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 
 		pipeline_->AddStaticSampler(D3D12_SHADER_VISIBILITY_ALL, 0);
 
-		pipeline_->CreatePipeline(_dxManager->GetDxDevice());
+		pipeline_->CreatePipeline(_dxm->GetDxDevice());
 	}
 
 	{	/// buffer
-		brushBuffer_.Create(_dxManager->GetDxDevice());
+		brushBuffer_.Create(_dxm->GetDxDevice());
 	}
 
 }
@@ -77,7 +77,7 @@ void PostProcessTerrainBrush::Execute(
 	}
 
 	brushBuffer_.SetMappedData(
-		Brush{ mousePos, terrain->GetBrushRadius() }
+		Brush{ mousePos, terrain->GetEditorInfo().brushRadius }
 	);
 
 	/// texture index

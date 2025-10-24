@@ -22,9 +22,9 @@ Window::~Window() {
 }
 
 
-void Window::Initialize(const std::wstring& _windowName, const Vector2& _windowSize, DxManager* _dxManager) {
+void Window::Initialize(const std::wstring& _windowName, const Vector2& _windowSize, DxManager* _dxm) {
 
-	pDxManager_ = _dxManager;
+	pDxManager_ = _dxm;
 
 	windowName_ = _windowName;  /// 名前
 	windowSize_ = _windowSize;  /// サイズ
@@ -32,7 +32,7 @@ void Window::Initialize(const std::wstring& _windowName, const Vector2& _windowS
 	processMessage_ = false;
 
 	dxSwapChain_.reset(new DxSwapChain());
-	dxSwapChain_->Initialize(_dxManager, this);
+	dxSwapChain_->Initialize(_dxm, this);
 
 	isFullScreen_ = false;
 }

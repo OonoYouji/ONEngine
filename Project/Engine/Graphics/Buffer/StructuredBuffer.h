@@ -44,28 +44,36 @@ public:
 
 	/* ----- append structure buffer methods ----- */
 
+	/// @brief AppendBufferのカウンタをリセットする
+	/// @param _dxCommand DxCommandへのポインタ
 	void ResetCounter(DxCommand* _dxCommand);
+
+	/// @brief AppendBufferのカウンタを読み取る
+	/// @param _dxCommand DxCommandへのポインタ
+	/// @return Counterの値
 	uint32_t ReadCounter(DxCommand* _dxCommand);
 
+
 	/// SRV用のバインド
-	void SRVBindForGraphicsCommandList(ID3D12GraphicsCommandList* _cmdList, UINT _rootParameterIndex);
-	void SRVBindForComputeCommandList(ID3D12GraphicsCommandList* _cmdList, UINT _rootParameterIndex);
+	void SRVBindForGraphicsCommandList(ID3D12GraphicsCommandList* _cmdList, UINT _rootParameterIndex) const;
+	void SRVBindForComputeCommandList(ID3D12GraphicsCommandList* _cmdList, UINT _rootParameterIndex) const;
 
 	/// UAV用のバインド
-	void UAVBindForGraphicsCommandList(ID3D12GraphicsCommandList* _cmdList, UINT _rootParameterIndex);
-	void UAVBindForComputeCommandList(ID3D12GraphicsCommandList* _cmdList, UINT _rootParameterIndex);
+	void UAVBindForGraphicsCommandList(ID3D12GraphicsCommandList* _cmdList, UINT _rootParameterIndex) const;
+	void UAVBindForComputeCommandList(ID3D12GraphicsCommandList* _cmdList, UINT _rootParameterIndex) const;
 
 	/// Append用のバインド
-	void AppendBindForGraphicsCommandList(ID3D12GraphicsCommandList* _cmdList, UINT _rootParameterIndex);
-	void AppendBindForComputeCommandList(ID3D12GraphicsCommandList* _cmdList, UINT _rootParameterIndex);
+	void AppendBindForGraphicsCommandList(ID3D12GraphicsCommandList* _cmdList, UINT _rootParameterIndex) const;
+	void AppendBindForComputeCommandList(ID3D12GraphicsCommandList* _cmdList, UINT _rootParameterIndex) const;
 
 
 	/// データの設定、取得
 	void SetMappedData(size_t _index, const T& _setValue);
 	const T& GetMappedData(size_t _index) const;
 
-	DxResource& GetResource();
 
+	/// 各種Resourceの取得
+	DxResource& GetResource();
 	DxResource& GetCounterResource();
 	DxResource& GetCounterResetResource();
 	DxResource& GetReadbackResource();
@@ -397,32 +405,32 @@ inline uint32_t StructuredBuffer<T>::ReadCounter(DxCommand* _dxCommand) {
 }
 
 template<typename T>
-inline void StructuredBuffer<T>::SRVBindForGraphicsCommandList(ID3D12GraphicsCommandList* _cmdList, UINT _rootParameterIndex) {
+inline void StructuredBuffer<T>::SRVBindForGraphicsCommandList(ID3D12GraphicsCommandList* _cmdList, UINT _rootParameterIndex) const {
 	_cmdList->SetGraphicsRootDescriptorTable(_rootParameterIndex, srvHandle_->gpuHandle);
 }
 
 template<typename T>
-inline void StructuredBuffer<T>::SRVBindForComputeCommandList(ID3D12GraphicsCommandList* _cmdList, UINT _rootParameterIndex) {
+inline void StructuredBuffer<T>::SRVBindForComputeCommandList(ID3D12GraphicsCommandList* _cmdList, UINT _rootParameterIndex) const {
 	_cmdList->SetComputeRootDescriptorTable(_rootParameterIndex, srvHandle_->gpuHandle);
 }
 
 template<typename T>
-inline void StructuredBuffer<T>::UAVBindForGraphicsCommandList(ID3D12GraphicsCommandList* _cmdList, UINT _rootParameterIndex) {
+inline void StructuredBuffer<T>::UAVBindForGraphicsCommandList(ID3D12GraphicsCommandList* _cmdList, UINT _rootParameterIndex) const {
 	_cmdList->SetGraphicsRootDescriptorTable(_rootParameterIndex, uavHandle_->gpuHandle);
 }
 
 template<typename T>
-inline void StructuredBuffer<T>::UAVBindForComputeCommandList(ID3D12GraphicsCommandList* _cmdList, UINT _rootParameterIndex) {
+inline void StructuredBuffer<T>::UAVBindForComputeCommandList(ID3D12GraphicsCommandList* _cmdList, UINT _rootParameterIndex) const {
 	_cmdList->SetComputeRootDescriptorTable(_rootParameterIndex, uavHandle_->gpuHandle);
 }
 
 template<typename T>
-inline void StructuredBuffer<T>::AppendBindForGraphicsCommandList(ID3D12GraphicsCommandList* _cmdList, UINT _rootParameterIndex) {
+inline void StructuredBuffer<T>::AppendBindForGraphicsCommandList(ID3D12GraphicsCommandList* _cmdList, UINT _rootParameterIndex) const {
 	_cmdList->SetGraphicsRootDescriptorTable(_rootParameterIndex, appendHandle_->gpuHandle);
 }
 
 template<typename T>
-inline void StructuredBuffer<T>::AppendBindForComputeCommandList(ID3D12GraphicsCommandList* _cmdList, UINT _rootParameterIndex) {
+inline void StructuredBuffer<T>::AppendBindForComputeCommandList(ID3D12GraphicsCommandList* _cmdList, UINT _rootParameterIndex) const {
 	_cmdList->SetComputeRootDescriptorTable(_rootParameterIndex, appendHandle_->gpuHandle);
 }
 

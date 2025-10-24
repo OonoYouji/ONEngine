@@ -45,20 +45,19 @@ public:
 	/// @brief 初期化関数
 	/// @param _shaderCompiler 
 	/// @param _dxDevice 
-	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxManager) override;
+	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxm) override;
 
 	/// @brief 描画処理
 	/// @param _dxCommand DxCommandへのポインタ
 	/// @param _entityCollection EntityCollectionへのポインタ
-	void Draw(class ECSGroup* _ecs, const std::vector<GameEntity*>& _entities, class CameraComponent* _camera, DxCommand* _dxCommand) override;
+	void Draw(class ECSGroup* _ecs, class CameraComponent* _camera, DxCommand* _dxCommand) override;
 
 private:
 	/// ===================================================
 	/// private : methods
 	/// ===================================================
-	
-	void RenderingMesh(ID3D12GraphicsCommandList* _commandList, std::unordered_map<std::string, std::list<class MeshRenderer*>>* _pMeshRendererPerMesh, const std::vector<Texture>& _pTexture);
-	void RenderingMesh(ID3D12GraphicsCommandList* _commandList, std::list<class CustomMeshRenderer*>* _pCustomRenderers, const std::vector<Texture>& _pTexture);
+
+	void RenderingMesh(ID3D12GraphicsCommandList* _cmdList, std::unordered_map<std::string, std::list<class MeshRenderer*>>* _pMeshRendererPerMesh, const std::vector<Texture>& _pTexture);
 
 private:
 
@@ -66,13 +65,16 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	const size_t                                 kMaxRenderingMeshCount_ = 1024; ///< 最大描画メッシュ数
+	/// ----- other class ----- ///
+	class AssetCollection* pAssetCollection_;
 
-	class AssetCollection*            pAssetCollection_;
-	std::unique_ptr<StructuredBuffer<Matrix4x4>> transformBuffer_;
-	std::unique_ptr<StructuredBuffer<GPUMaterial>>  materialBuffer;
-	std::unique_ptr<StructuredBuffer<uint32_t>>  textureIdBuffer_;
-	
+
+	const size_t kMaxRenderingMeshCount_ = 1024; ///< 最大描画メッシュ数
+
+	StructuredBuffer<Matrix4x4> transformBuffer_;
+	StructuredBuffer<GPUMaterial> materialBuffer_;
+	StructuredBuffer<uint32_t> textureIdBuffer_;
+
 	size_t transformIndex_;
 	uint32_t instanceIndex_;
 

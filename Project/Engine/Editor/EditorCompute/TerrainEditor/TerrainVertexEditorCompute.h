@@ -40,7 +40,7 @@ public:
 	TerrainVertexEditorCompute();
 	~TerrainVertexEditorCompute() override;
 
-	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxManager) override;
+	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxm) override;
 	void Execute(class EntityComponentSystem* _ecs, class DxCommand* _dxCommand, class AssetCollection* _assetCollection) override;
 
 private:
@@ -50,9 +50,6 @@ private:
 
 	ConstantBuffer<TerrainInfo> terrainInfo_;
 	ConstantBuffer<InputInfo> inputInfo_;
-
-	int editMode_ = 0; ///< 編集モード (0:頂点編集, 1:テクスチャ編集)
-	int editTextureIndex_ = 0; /// 0~3
 
 };
 

@@ -28,9 +28,9 @@ public:
 	~DxSwapChain();
 	
 	/// @brief 初期化
-	/// @param _dxManager DxManagerのインスタンス
+	/// @param _dxm DxManagerのインスタンス
 	/// @param _window    このSwapChainを使用するWindowのインスタンス
-	void Initialize(class DxManager* _dxManager, class Window* _window);
+	void Initialize(class DxManager* _dxm, class Window* _window);
 
 	/// @brief CommandListにViewportとScissorRectをセットする
 	/// @param _commandList CommandListのポインター

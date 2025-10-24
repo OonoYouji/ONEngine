@@ -12,7 +12,7 @@ using namespace GizmoPrimitive;
 
 GizmoRenderingPipeline::GizmoRenderingPipeline() {}
 
-void GizmoRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
+void GizmoRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {
 	Gizmo::Initialize(static_cast<size_t>(std::pow(2, 20))); /// gizmoの初期化
 
 	{	/// wire frame pipeline
@@ -44,7 +44,7 @@ void GizmoRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManag
 		pipeline->SetDepthStencilDesc(depthStencilDesc);
 
 		/// create pipeline
-		pipeline->CreatePipeline(_dxManager->GetDxDevice());
+		pipeline->CreatePipeline(_dxm->GetDxDevice());
 	}
 
 
@@ -54,7 +54,7 @@ void GizmoRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManag
 		vertices_.reserve(maxVertexNum_);
 
 		/// vertex bufferの作成
-		vertexBuffer_.CreateResource(_dxManager->GetDxDevice(), sizeof(VertexData) * maxVertexNum_);
+		vertexBuffer_.CreateResource(_dxm->GetDxDevice(), sizeof(VertexData) * maxVertexNum_);
 		vertexBuffer_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mappingData_));
 
 		vbv_.BufferLocation = vertexBuffer_.Get()->GetGPUVirtualAddress();
@@ -64,7 +64,7 @@ void GizmoRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManag
 	}
 }
 
-void GizmoRenderingPipeline::Draw(class ECSGroup*, const std::vector<GameEntity*>&, CameraComponent* _camera, DxCommand* _dxCommand) {
+void GizmoRenderingPipeline::Draw(class ECSGroup*, CameraComponent* _camera, DxCommand* _dxCommand) {
 
 	/// ---------------------------------------------------
 	/// wire描画を行う

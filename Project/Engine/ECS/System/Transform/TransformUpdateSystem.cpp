@@ -5,8 +5,10 @@
 #include "Engine/ECS/Component/Components/ComputeComponents/Transform/Transform.h"
 
 void TransformUpdateSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
+	/// ----- Transformの行列を更新する ----- ///
+
 	ComponentArray<Transform>* transformArray = _ecs->GetComponentArray<Transform>();
-	if (!transformArray) {
+	if (!transformArray || transformArray->GetUsedComponents().empty()) {
 		Console::LogError("TransformUpdateSystem::OutsideOfRuntimeUpdate: Transform component array is null");
 		return;
 	}

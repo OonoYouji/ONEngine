@@ -15,7 +15,6 @@
 /// ///////////////////////////////////////////////////
 class IRenderingPipeline {
 public:
-
 	/// ===================================================
 	/// public : virtual methods
 	/// ===================================================
@@ -24,23 +23,25 @@ public:
 
 	/// @brief このクラスの初期化関数
 	/// @param _shaderCompiler シェーダーのコンパイラーへのポインタ
-	virtual void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxManager) = 0;
+	virtual void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxm) = 0;
 
-	virtual void PreDraw(class ECSGroup* _ecs, class CameraComponent* _camera, DxCommand* _dxCommand);
+	/// @brief 描画前の処理を行う
+	/// @param _ecs ECSGroupへのポインタ
+	/// @param _camera 描画に用いるカメラへのポインタ
+	/// @param _dxCommand DxCommandへのポインタ
+	virtual void PreDraw(class ECSGroup* /*_ecs*/, class CameraComponent* /*_camera*/, DxCommand* /*_dxCommand*/) {}
 
 	/// @brief 描画処理を行う
 	/// @param _dxCommand DxCommandへのポインタ
 	/// @param _entityCollection EntityCollectionへのポインタ
-	virtual void Draw(class ECSGroup* _ecs, const std::vector<class GameEntity*>& _entities, class CameraComponent* _camera, DxCommand* _dxCommand) = 0;
+	virtual void Draw(class ECSGroup* _ecs, class CameraComponent* _camera, DxCommand* _dxCommand) = 0;
 
 protected:
-
 	/// ===================================================
 	/// protected : objects
 	/// ===================================================
 
 	std::unique_ptr<GraphicsPipeline> pipeline_;
-
 };
 
 

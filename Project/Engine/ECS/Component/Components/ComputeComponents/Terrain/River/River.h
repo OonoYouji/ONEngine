@@ -81,12 +81,39 @@ public:
 	void SaveToJson(const std::string& _name);
 	void LoadFromJson(const std::string& _name);
 
+
+	/// @brief Spline曲線をGizmoで描画する
 	void DrawSplineCurve();
 
+	/// @brief Bufferを生成する
+	/// @param _dxDevice DxDeviceへのポインタ
+	/// @param _dxSRVHeap DxSRVHeapへのポインタ
+	/// @param _dxCommand DxCommandへのポインタ
 	void CreateBuffers(class DxDevice* _dxDevice, class DxSRVHeap* _dxSRVHeap, class DxCommand* _dxCommand);
+
+	/// @brief Bufferデータをセットする
 	void SetBufferData();
 
+
+	/// @brief MaterialDataをセットする
+	/// @param _entityId OwnerEntityのID
+	/// @param _texIndex 川に使用するテクスチャのIndex
 	void SetMaterialData(int32_t _entityId, int32_t _texIndex);
+
+
+	/// @brief VBVとIBVのバリアを生成する(描画用に)
+	/// @param _dxCommand DxCommandへのポインタ
+	void CreateRenderingBarriers(class DxCommand* _dxCommand);
+
+	/// @brief VBVとIBVのバリアを復元する(計算用に)
+	/// @param _dxCommand DxCommandへのポインタ
+	void RestoreResourceBarriers(class DxCommand* _dxCommand);
+
+
+	/// @brief 描画用にVBVを生成する
+	D3D12_VERTEX_BUFFER_VIEW CreateVBV();
+	/// @brief 描画用にIBVを生成する
+	D3D12_INDEX_BUFFER_VIEW CreateIBV();
 
 private:
 	/// ===================================================
@@ -121,11 +148,11 @@ public:
 	bool GetIsGenerateMeshRequest() const;
 	void SetIsGenerateMeshRequest(bool _request);
 
-	ConstantBuffer<Param>& GetParamBufRef();
-	ConstantBuffer<GPUMaterial>& GetMaterialBufRef();
-	StructuredBuffer<RiverVertex>& GetRwVerticesRef();
-	StructuredBuffer<uint32_t>& GetRwIndicesRef();
-	StructuredBuffer<RiverControlPoint>& GetControlPointBufRef();
+	const ConstantBuffer<Param>& GetParamBuffer() const;
+	const ConstantBuffer<GPUMaterial>& GetMaterialBuffer() const;
+	const StructuredBuffer<RiverVertex>& GetRwVertices() const;
+	const StructuredBuffer<uint32_t>& GetRwIndices() const;
+	const StructuredBuffer<RiverControlPoint>& GetControlPointBuffer() const;
 	bool GetIsCreatedBuffers() const;
 	UINT GetTotalIndices() const;
 	UINT GetTotalVertices() const;

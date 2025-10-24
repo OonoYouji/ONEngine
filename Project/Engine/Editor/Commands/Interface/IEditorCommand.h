@@ -22,7 +22,7 @@ public:
 	/// public : methods
 	/// ==========================================
 
-	IEditorCommand();
+	IEditorCommand() = default;
 	virtual ~IEditorCommand() = default;
 
 	/// @brief コマンドの実行

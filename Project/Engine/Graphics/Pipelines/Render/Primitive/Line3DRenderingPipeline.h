@@ -35,12 +35,12 @@ public:
 	/// @brief 初期化処理
 	/// @param _shaderCompiler shaderのコンパイラー
 	/// @param _dxDevice DxDeviceへのポインタ
-	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxManager) override;
+	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxm) override;
 
 	/// @brief 描画処理
 	/// @param _dxCommand DxCommandへのポインタ
 	/// @param _entityCollection EntityCollectionへのポインタ
-	void Draw(class ECSGroup* _ecs, const std::vector<GameEntity*>& _entities, class CameraComponent* _camera, DxCommand* _dxCommand) override;
+	void Draw(class ECSGroup* _ecs, class CameraComponent* _camera, DxCommand* _dxCommand) override;
 
 
 private:
@@ -52,9 +52,9 @@ private:
 
 	DxResource                  vertexBuffer_;
 	D3D12_VERTEX_BUFFER_VIEW    vbv_;
-	VertexData*                 mappingData_ = nullptr;
+	VertexData* mappingData_;
 	std::vector<VertexData>     vertices_;
 
-	std::list<RenderingData*>   renderingDataList_;	
+	std::list<RenderingData*>   renderingDataList_;
 };
 

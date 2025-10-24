@@ -10,7 +10,7 @@
 PostProcessRadialBlur::PostProcessRadialBlur() {}
 PostProcessRadialBlur::~PostProcessRadialBlur() {}
 
-void PostProcessRadialBlur::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
+void PostProcessRadialBlur::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {
 
 	{
 		Shader shader;
@@ -25,7 +25,7 @@ void PostProcessRadialBlur::Initialize(ShaderCompiler* _shaderCompiler, DxManage
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 0);
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 1);
 		pipeline_->AddStaticSampler(D3D12_SHADER_VISIBILITY_ALL, 0);
-		pipeline_->CreatePipeline(_dxManager->GetDxDevice());
+		pipeline_->CreatePipeline(_dxm->GetDxDevice());
 
 	}
 
@@ -33,12 +33,20 @@ void PostProcessRadialBlur::Initialize(ShaderCompiler* _shaderCompiler, DxManage
 
 void PostProcessRadialBlur::Execute(const std::string& _textureName, DxCommand* _dxCommand, AssetCollection* _assetCollection, EntityComponentSystem* _entityComponentSystem) {
 
+	/// 配列の取得とタグの確認
+	ComponentArray<ScreenPostEffectTag>* screenPostEffectTagArray = _entityComponentSystem->GetCurrentGroup()->GetComponentArray<ScreenPostEffectTag>();
+	if (!screenPostEffectTagArray || screenPostEffectTagArray->GetUsedComponents().empty()) {
+		return;
+	}
+
 	ScreenPostEffectTag* tag = nullptr;
-	for (auto& entity : _entityComponentSystem->GetCurrentGroup()->GetEntities()) {
-		tag = entity->GetComponent<ScreenPostEffectTag>();
-		if (tag) {
-			break;
+	for (auto& comp : screenPostEffectTagArray->GetUsedComponents()) {
+		if (!comp || !comp->enable) {
+			continue;
 		}
+
+		tag = comp;
+		break;
 	}
 
 	if (!tag || !tag->GetPostEffectEnable(PostEffectType_RadialBlur)) {

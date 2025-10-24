@@ -36,13 +36,15 @@ public:
 	~RenderingFramework();
 
 	/// @brief 初期化
-	void Initialize(DxManager* _dxManager, WindowManager* _windowManager, class EntityComponentSystem* _pEntityComponentSystem);
+	void Initialize(DxManager* _dxm, WindowManager* _windowManager, class EntityComponentSystem* _pEntityComponentSystem);
 
 	/// @brief 作成された順番に描画を行う
 	void Draw();
 
+	/// @brief 描画前処理
 	void PreDraw();
 
+	/// @brief 各シーンの描画
 	void DrawScene();
 	void DrawDebug();
 	void DrawPrefab();
@@ -61,15 +63,15 @@ private:
 
 	std::unique_ptr<ShaderCompiler>              shaderCompiler_;
 	std::unique_ptr<RenderingPipelineCollection> renderingPipelineCollection_;
-	std::unique_ptr<AssetCollection>  pAssetCollection_;
+	std::unique_ptr<AssetCollection>             assetCollection_;
 	std::vector<std::unique_ptr<SceneRenderTexture>> renderTextures_;
-	DxManager*                                   pDxManager_        = nullptr;
-	WindowManager*                               pWindowManager_    = nullptr;
-	class EntityComponentSystem*                 pEntityComponentSystem_ = nullptr;
+	DxManager* pDxManager_;
+	WindowManager* pWindowManager_;
+	class EntityComponentSystem* pEntityComponentSystem_;
 
 
 #ifdef DEBUG_MODE
-	class ImGuiManager*                          pImGuiManager_ = nullptr;
+	class ImGuiManager* pImGuiManager_ = nullptr;
 #else
 	std::unique_ptr<CopyImageRenderingPipeline> copyImagePipeline_;
 	Window* releaseBuildSubWindow_;
@@ -83,7 +85,7 @@ public:
 
 	/// @brief 描画に使用するリソースコレクションの取得
 	/// @return リソースのコレクションを返す
-	AssetCollection* GetResourceCollection() const;
+	AssetCollection* GetAssetCollection() const;
 
 
 
@@ -93,6 +95,7 @@ public:
 	void SetImGuiManager(class ImGuiManager* _imGuiManager);
 #endif // DEBUG_MODE
 
+	/// @brief ShaderCompilerの取得
 	ShaderCompiler* GetShaderCompiler() const;
 };
 

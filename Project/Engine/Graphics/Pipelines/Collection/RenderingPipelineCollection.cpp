@@ -2,6 +2,7 @@
 
 /// engine
 #include "Engine/Core/Config/EngineConfig.h"
+#include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
@@ -30,8 +31,9 @@
 #include "../PostProcess/Screen/RadialBlur/PostProcessRadialBlur.h"
 #include "../PostProcess/PerObject/TerrainBrush/PostProcessTerrainBrush.h"
 
-RenderingPipelineCollection::RenderingPipelineCollection(ShaderCompiler* _shaderCompiler, DxManager* _dxManager, EntityComponentSystem* _pEntityComponentSystem, AssetCollection* _graphicsResourceCollection)
-	: shaderCompiler_(_shaderCompiler), dxManager_(_dxManager), pEntityComponentSystem_(_pEntityComponentSystem), graphicsResourceCollection_(_graphicsResourceCollection) {}
+RenderingPipelineCollection::RenderingPipelineCollection(ShaderCompiler* _shaderCompiler, DxManager* _dxm, EntityComponentSystem* _pEntityComponentSystem, AssetCollection* _assetCollection)
+	: pShaderCompiler_(_shaderCompiler), pDxManager_(_dxm), pEntityComponentSystem_(_pEntityComponentSystem), pAssetCollection_(_assetCollection) {
+}
 
 RenderingPipelineCollection::~RenderingPipelineCollection() {}
 
@@ -39,28 +41,28 @@ void RenderingPipelineCollection::Initialize() {
 
 	/// 2D
 	Generate2DRenderingPipeline<Line2DRenderingPipeline>();
-	Generate2DRenderingPipeline<SpriteRenderingPipeline>(graphicsResourceCollection_);
+	Generate2DRenderingPipeline<SpriteRenderingPipeline>(pAssetCollection_);
 
 	/// 3D 
 	Generate3DRenderingPipeline<Line3DRenderingPipeline>();
-	Generate3DRenderingPipeline<SkyboxRenderingPipeline>(graphicsResourceCollection_);
-	Generate3DRenderingPipeline<TerrainRenderingPipeline>(graphicsResourceCollection_);
-	Generate3DRenderingPipeline<TerrainProceduralRenderingPipeline>(graphicsResourceCollection_);
-	Generate3DRenderingPipeline<RiverRenderingPipeline>(graphicsResourceCollection_);
-	Generate3DRenderingPipeline<MeshRenderingPipeline>(graphicsResourceCollection_);
-	Generate3DRenderingPipeline<SkinMeshRenderingPipeline>(graphicsResourceCollection_);
+	Generate3DRenderingPipeline<SkyboxRenderingPipeline>(pAssetCollection_);
+	Generate3DRenderingPipeline<TerrainRenderingPipeline>(pAssetCollection_);
+	Generate3DRenderingPipeline<TerrainProceduralRenderingPipeline>(pAssetCollection_);
+	Generate3DRenderingPipeline<RiverRenderingPipeline>(pAssetCollection_);
+	Generate3DRenderingPipeline<MeshRenderingPipeline>(pAssetCollection_);
+	Generate3DRenderingPipeline<SkinMeshRenderingPipeline>(pAssetCollection_);
 #ifdef DEBUG_MODE
 	Generate3DRenderingPipeline<SkinMeshSkeletonRenderingPipeline>();
 #endif // DEBUG_MODE
-	Generate3DRenderingPipeline<EffectRenderingPipeline>(graphicsResourceCollection_);
+	Generate3DRenderingPipeline<EffectRenderingPipeline>(pAssetCollection_);
 	Generate3DRenderingPipeline<GizmoRenderingPipeline>();
-	Generate3DRenderingPipeline<GrassRenderingPipeline>(graphicsResourceCollection_);
+	Generate3DRenderingPipeline<GrassRenderingPipeline>(pAssetCollection_);
 
 	/// post process - per object
 	GeneratePostProcessPipeline<PostProcessLighting>();
 	GeneratePostProcessPipeline<PostProcessGrayscalePerObject>();
 	GeneratePostProcessPipeline<PostProcessTerrainBrush>();
-	//GeneratePostProcessPipeline<PostProcessGaussianBlurPerObject>();
+	GeneratePostProcessPipeline<PostProcessGaussianBlurPerObject>();
 
 	/// post process - screen
 	GeneratePostProcessPipeline<PostProcessGrayscale>();
@@ -72,7 +74,7 @@ void RenderingPipelineCollection::PreDrawEntities(CameraComponent* _3dCamera, Ca
 
 	if (_3dCamera && _3dCamera->IsMakeViewProjection()) {
 		for (auto& renderer : renderer3ds_) {
-			renderer->PreDraw(ecsGroup, _3dCamera, dxManager_->GetDxCommand());
+			renderer->PreDraw(ecsGroup, _3dCamera, pDxManager_->GetDxCommand());
 		}
 	} else {
 		Console::LogError("RenderingPipelineCollection::DrawEntities: 3D Camera is null");
@@ -80,7 +82,7 @@ void RenderingPipelineCollection::PreDrawEntities(CameraComponent* _3dCamera, Ca
 
 	if (_2dCamera && _2dCamera->IsMakeViewProjection()) {
 		for (auto& renderer : renderer2ds_) {
-			renderer->PreDraw(ecsGroup, _2dCamera, dxManager_->GetDxCommand());
+			renderer->PreDraw(ecsGroup, _2dCamera, pDxManager_->GetDxCommand());
 		}
 	} else {
 		Console::LogError("RenderingPipelineCollection::DrawEntities: 2D Camera is null");
@@ -90,27 +92,17 @@ void RenderingPipelineCollection::PreDrawEntities(CameraComponent* _3dCamera, Ca
 void RenderingPipelineCollection::DrawEntities(CameraComponent* _3dCamera, CameraComponent* _2dCamera) {
 	ECSGroup* ecsGroup = pEntityComponentSystem_->GetCurrentGroup();
 
-	std::vector<GameEntity*> entities;
-	entities.reserve(ecsGroup->GetEntities().size());
-	for (auto& entity : ecsGroup->GetEntities()) {
-		if (entity.get() && entity->GetActive()) {
-			entities.push_back(entity.get());
-		}
-	}
-
-
 	if (_3dCamera && _3dCamera->IsMakeViewProjection()) {
 		for (auto& renderer : renderer3ds_) {
-			renderer->Draw(ecsGroup, entities, _3dCamera, dxManager_->GetDxCommand());
+			renderer->Draw(ecsGroup, _3dCamera, pDxManager_->GetDxCommand());
 		}
-
 	} else {
 		Console::LogError("RenderingPipelineCollection::DrawEntities: 3D Camera is null");
 	}
 
 	if (_2dCamera && _2dCamera->IsMakeViewProjection()) {
 		for (auto& renderer : renderer2ds_) {
-			renderer->Draw(ecsGroup, entities, _2dCamera, dxManager_->GetDxCommand());
+			renderer->Draw(ecsGroup, _2dCamera, pDxManager_->GetDxCommand());
 		}
 	} else {
 		Console::LogError("RenderingPipelineCollection::DrawEntities: 2D Camera is null");
@@ -118,23 +110,11 @@ void RenderingPipelineCollection::DrawEntities(CameraComponent* _3dCamera, Camer
 }
 
 void RenderingPipelineCollection::DrawSelectedPrefab(CameraComponent* _3dCamera, CameraComponent* _2dCamera) {
-
-	std::vector<GameEntity*> entities;
-	//GameEntity* prefabEntity = pEntityComponentSystem_->GetECSGroup()->GetPrefabEntity();
-	//if (prefabEntity) {
-	//	entities.push_back(prefabEntity);
-	//}
-
-	if (entities.empty()) {
-		return;
-	}
-
 	ECSGroup* ecsGroup = pEntityComponentSystem_->GetCurrentGroup();
-
 
 	if (_3dCamera) {
 		for (auto& renderer : renderer3ds_) {
-			renderer->Draw(ecsGroup, entities, _3dCamera, dxManager_->GetDxCommand());
+			renderer->Draw(ecsGroup, _3dCamera, pDxManager_->GetDxCommand());
 		}
 	} else {
 		Console::LogError("RenderingPipelineCollection::DrawEntities: 3D Camera is null");
@@ -142,7 +122,7 @@ void RenderingPipelineCollection::DrawSelectedPrefab(CameraComponent* _3dCamera,
 
 	if (_2dCamera) {
 		for (auto& renderer : renderer2ds_) {
-			renderer->Draw(ecsGroup, entities, _2dCamera, dxManager_->GetDxCommand());
+			renderer->Draw(ecsGroup, _2dCamera, pDxManager_->GetDxCommand());
 		}
 	} else {
 		Console::LogError("RenderingPipelineCollection::DrawEntities: 2D Camera is null");
@@ -152,6 +132,6 @@ void RenderingPipelineCollection::DrawSelectedPrefab(CameraComponent* _3dCamera,
 
 void RenderingPipelineCollection::ExecutePostProcess(const std::string& _sceneTextureName) {
 	for (auto& postProcess : postProcesses_) {
-		postProcess->Execute(_sceneTextureName, dxManager_->GetDxCommand(), graphicsResourceCollection_, pEntityComponentSystem_);
+		postProcess->Execute(_sceneTextureName, pDxManager_->GetDxCommand(), pAssetCollection_, pEntityComponentSystem_);
 	}
 }

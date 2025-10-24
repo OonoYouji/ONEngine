@@ -28,7 +28,7 @@ AudioPlaybackSystem::~AudioPlaybackSystem() {}
 void AudioPlaybackSystem::OutsideOfRuntimeUpdate(ECSGroup* /*_ecs*/) {}
 
 void AudioPlaybackSystem::RuntimeUpdate(ECSGroup* _ecs) {
-	///
+	/// AudioSourceコンポーネントの配列を取得、有効かチェック
 	ComponentArray<AudioSource>* asArray = _ecs->GetComponentArray<AudioSource>();
 	if (!asArray || asArray->GetUsedComponents().empty()) {
 		return;
@@ -94,9 +94,6 @@ void AudioPlaybackSystem::PlayAudio(AudioSource* _audioSource) {
 	buffer.pAudioData = soundData.buffer.data();
 	buffer.AudioBytes = static_cast<UINT32>(soundData.buffer.size());
 	buffer.Flags = XAUDIO2_END_OF_STREAM;
-	//if (isLoop) {
-	//	buffer.LoopCount = XAUDIO2_LOOP_INFINITE;
-	//}
 
 	/// 波形データの再生
 	sourceVoice->SubmitSourceBuffer(&buffer);

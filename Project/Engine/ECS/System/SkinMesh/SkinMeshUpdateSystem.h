@@ -10,7 +10,7 @@
 class SkinMeshUpdateSystem : public ECSISystem {
 public:
 
-	SkinMeshUpdateSystem(class DxManager* _dxManager, class AssetCollection* _assetCollection);
+	SkinMeshUpdateSystem(class DxManager* _dxm, class AssetCollection* _assetCollection);
 	~SkinMeshUpdateSystem() override = default;
 
 	void RuntimeUpdate(class ECSGroup* _ecs) override;

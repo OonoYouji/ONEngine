@@ -9,8 +9,7 @@
 /// //////////////////////////////////////////////////
 /// 4次元ベクトル
 /// //////////////////////////////////////////////////
-class Vector4 final {
-public:
+struct Vector4 final {
 
 	Vector4();
 	Vector4(float _x, float _y, float _z, float _w);
@@ -18,13 +17,11 @@ public:
 	Vector4(const Vector4&) = default;
 	Vector4(Vector4&&)      = default;
 
-public:
 
 	float x, y, z, w;
 
 
 
-public:
 	/// ===================================================
 	/// public : static objects
 	/// ===================================================
@@ -70,7 +67,6 @@ public:
 	static Vector3 Convert(const Vector4& _v);
 
 
-public:
 	/// ===================================================
 	/// public : operator overload
 	/// ===================================================

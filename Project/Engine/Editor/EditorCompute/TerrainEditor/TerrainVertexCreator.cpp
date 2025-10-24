@@ -12,8 +12,8 @@
 TerrainVertexCreator::TerrainVertexCreator() {}
 TerrainVertexCreator::~TerrainVertexCreator() {}
 
-void TerrainVertexCreator::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
-	pDxManager_ = _dxManager;
+void TerrainVertexCreator::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {
+	pDxManager_ = _dxm;
 
 
 	{	/// shader
@@ -38,12 +38,12 @@ void TerrainVertexCreator::Initialize(ShaderCompiler* _shaderCompiler, DxManager
 
 		pipeline_->AddStaticSampler(D3D12_SHADER_VISIBILITY_ALL, 0);
 
-		pipeline_->CreatePipeline(_dxManager->GetDxDevice());
+		pipeline_->CreatePipeline(_dxm->GetDxDevice());
 
 	}
 
 	{	/// buffer
-		terrainSize_.Create(_dxManager->GetDxDevice());
+		terrainSize_.Create(_dxm->GetDxDevice());
 	}
 
 
@@ -77,15 +77,8 @@ void TerrainVertexCreator::Execute(EntityComponentSystem* _ecs, DxCommand* _dxCo
 		pTerrain->SetIsCreated(true);
 		Console::LogInfo("TerrainVertexEditorCompute::Execute: Creating terrain vertices and indices");
 
-		pTerrain->GetRwVertices().CreateUAV(
-			pTerrain->GetMaxVertexNum(),
-			pDxManager_->GetDxDevice(), _dxCommand, pDxManager_->GetDxSRVHeap()
-		);
-
-		pTerrain->GetRwIndices().CreateUAV(
-			pTerrain->GetMaxIndexNum(),
-			pDxManager_->GetDxDevice(), _dxCommand, pDxManager_->GetDxSRVHeap()
-		);
+		/// VBVとIBVの生成
+		pTerrain->CreateVerticesAndIndicesBuffers(pDxManager_->GetDxDevice(), _dxCommand, pDxManager_->GetDxSRVHeap());
 
 
 		const uint32_t width = static_cast<uint32_t>(pTerrain->GetSize().x);

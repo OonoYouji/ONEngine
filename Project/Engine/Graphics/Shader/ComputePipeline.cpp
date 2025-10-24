@@ -7,8 +7,8 @@
 #include "Engine/Core/Utility/Tools/Assert.h"
 #include "Engine/Core/Utility/Tools/Log.h"
 
-ComputePipeline::ComputePipeline() {}
-ComputePipeline::~ComputePipeline() {}
+ComputePipeline::ComputePipeline() = default;
+ComputePipeline::~ComputePipeline() = default;
 
 void ComputePipeline::CreatePipeline(DxDevice* _dxDevice) {
 	CreateRootSignature(_dxDevice);
@@ -22,6 +22,8 @@ void ComputePipeline::SetShader(Shader* _shader) {
 }
 
 void ComputePipeline::AddCBV(D3D12_SHADER_VISIBILITY _shaderVisibility, uint32_t _shaderRegister) {
+	/// ----- CBVの追加 ----- ///
+
 	D3D12_ROOT_PARAMETER parameter{};
 	parameter.ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
 	parameter.ShaderVisibility = _shaderVisibility;
@@ -31,6 +33,8 @@ void ComputePipeline::AddCBV(D3D12_SHADER_VISIBILITY _shaderVisibility, uint32_t
 }
 
 void ComputePipeline::Add32BitConstant(D3D12_SHADER_VISIBILITY _shaderVisibility, uint32_t _shaderRegister, uint32_t _num32bitValue) {
+	/// ----- 32bit constantの追加 ----- ///
+
 	D3D12_ROOT_PARAMETER parameter{};
 	parameter.ParameterType = D3D12_ROOT_PARAMETER_TYPE_32BIT_CONSTANTS;
 	parameter.ShaderVisibility = _shaderVisibility;
@@ -41,6 +45,8 @@ void ComputePipeline::Add32BitConstant(D3D12_SHADER_VISIBILITY _shaderVisibility
 }
 
 void ComputePipeline::AddDescriptorRange(uint32_t _baseShaderRegister, uint32_t _numDescriptor, D3D12_DESCRIPTOR_RANGE_TYPE  _rangeType) {
+	/// ----- descriptor rangeの追加 ----- ///
+
 	D3D12_DESCRIPTOR_RANGE range{};
 	range.BaseShaderRegister = _baseShaderRegister;
 	range.NumDescriptors = _numDescriptor;
@@ -51,6 +57,9 @@ void ComputePipeline::AddDescriptorRange(uint32_t _baseShaderRegister, uint32_t 
 }
 
 void ComputePipeline::AddDescriptorTable(D3D12_SHADER_VISIBILITY _shaderVisibility, uint32_t _descriptorIndex) {
+	/// ----- descriptor tableの追加 ----- ///
+
+	/// 範囲外チェック
 	Assert(descriptorRanges_.size() > _descriptorIndex, "out of range...");
 
 	D3D12_ROOT_PARAMETER parameter{};
@@ -63,6 +72,8 @@ void ComputePipeline::AddDescriptorTable(D3D12_SHADER_VISIBILITY _shaderVisibili
 }
 
 void ComputePipeline::AddStaticSampler(D3D12_SHADER_VISIBILITY _shaderVisibility, uint32_t _shaderRegister) {
+	/// ----- static samplerの追加 ----- ///
+
 	D3D12_STATIC_SAMPLER_DESC sampler{};
 	sampler.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR; /// バイリニアフィルタ
 	sampler.AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP; /// 0~1の範囲外をリピート
@@ -96,6 +107,8 @@ void ComputePipeline::SetPipelineStateForCommandList(DxCommand* _dxCommand) {
 
 
 void ComputePipeline::CreateRootSignature(DxDevice* _dxDevice) {
+	/// ----- root signatureの生成 ----- ///
+
 	HRESULT hr = S_FALSE;
 	ComPtr<ID3DBlob> signatureBlob;
 	ComPtr<ID3DBlob> errorBlob;
@@ -129,6 +142,8 @@ void ComputePipeline::CreateRootSignature(DxDevice* _dxDevice) {
 }
 
 void ComputePipeline::CreatePipelineStateObject(DxDevice* _dxDevice) {
+	/// ----- pipeline state objectの生成 ----- ///
+
 	/// pipeline state desc
 	D3D12_COMPUTE_PIPELINE_STATE_DESC desc{};
 	desc.pRootSignature = rootSignature_.Get();

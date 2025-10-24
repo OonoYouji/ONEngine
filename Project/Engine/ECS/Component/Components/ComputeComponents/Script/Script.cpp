@@ -12,8 +12,8 @@ using namespace CSGui;
 
 
 bool Script::ScriptData::GetEnable(GameEntity* _entity) {
-	MonoScriptEngine* monoEngine = MonoScriptEngine::GetInstance();
-	MonoObject* obj = monoEngine->GetMonoBehaviorFromCS(
+	MonoScriptEngine& monoEngine = MonoScriptEngine::GetInstance();
+	MonoObject* obj = monoEngine.GetMonoBehaviorFromCS(
 		_entity->GetECSGroup()->GetGroupName(), _entity->GetId(), scriptName
 	);
 
@@ -29,8 +29,8 @@ bool Script::ScriptData::GetEnable(GameEntity* _entity) {
 }
 
 void Script::ScriptData::SetEnable(GameEntity* _entity, bool _enable) {
-	MonoScriptEngine* monoEngine = MonoScriptEngine::GetInstance();
-	MonoObject* obj = monoEngine->GetMonoBehaviorFromCS(
+	MonoScriptEngine& monoEngine = MonoScriptEngine::GetInstance();
+	MonoObject* obj = monoEngine.GetMonoBehaviorFromCS(
 		_entity->GetECSGroup()->GetGroupName(), _entity->GetId(), scriptName
 	);
 
@@ -202,8 +202,8 @@ void COMP_DEBUG::ScriptDebug(Script* _script) {
 			/// ------------------------------------------------------------------
 
 			GameEntity* entity = _script->GetOwner();
-			MonoScriptEngine* monoEngine = MonoScriptEngine::GetInstance();
-			MonoObject* safeObj = monoEngine->GetMonoBehaviorFromCS(entity->GetECSGroup()->GetGroupName(), entity->GetId(), script.scriptName);
+			MonoScriptEngine& monoEngine = MonoScriptEngine::GetInstance();
+			MonoObject* safeObj = monoEngine.GetMonoBehaviorFromCS(entity->GetECSGroup()->GetGroupName(), entity->GetId(), script.scriptName);
 
 
 			if (safeObj) {

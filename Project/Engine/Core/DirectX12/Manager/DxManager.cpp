@@ -2,6 +2,7 @@
 
 /// engine
 #include "Engine/Asset/Collection/AssetCollection.h"
+#include "Engine/Core/DirectX12/DescriptorHeap/DescriptorHeapSize.h"
 
 DxManager::DxManager() = default;
 DxManager::~DxManager() = default;
@@ -9,12 +10,12 @@ DxManager::~DxManager() = default;
 void DxManager::Initialize() {
 
 	/// deug layerをセット
-	dxDebug_.reset(new DxDebug());
+	dxDebug_ = std::make_unique<DxDebug>();
 	dxDebug_->SetDebugLayer();
 
 
 	/// deviceの初期化
-	dxDevice_.reset(new DxDevice());
+	dxDevice_ = std::make_unique<DxDevice>();
 	dxDevice_->Initialize();
 
 
@@ -23,16 +24,16 @@ void DxManager::Initialize() {
 
 
 	/// commandの初期化
-	dxCommand_.reset(new DxCommand());
+	dxCommand_ = std::make_unique<DxCommand>();
 	dxCommand_->Initialize(dxDevice_.get());
 
-	
+
 	/// descriptor heapの初期化
-	dxDescriptorHeaps_[DescriptorHeapType_RTV].reset(new DxRTVHeap(dxDevice_.get(), 16));
-	dxDescriptorHeaps_[DescriptorHeapType_DSV].reset(new DxDSVHeap(dxDevice_.get(), 1));
-	dxDescriptorHeaps_[DescriptorHeapType_CBV_SRV_UAV].reset(new DxSRVHeap(dxDevice_.get(), MAX_TEXTURE_COUNT + 128, MAX_TEXTURE_COUNT));
-	
-	for(auto& heap : dxDescriptorHeaps_) {
+	dxDescriptorHeaps_[DescriptorHeapType_RTV] = std::make_unique<DxRTVHeap>(dxDevice_.get(), DescriptorHeapLimits::RTV);
+	dxDescriptorHeaps_[DescriptorHeapType_DSV] = std::make_unique<DxDSVHeap>(dxDevice_.get(), DescriptorHeapLimits::DSV);
+	dxDescriptorHeaps_[DescriptorHeapType_CBV_SRV_UAV] = std::make_unique<DxSRVHeap>(dxDevice_.get(), DescriptorHeapLimits::CBV_SRV_UAV, MAX_TEXTURE_COUNT);
+
+	for (auto& heap : dxDescriptorHeaps_) {
 		heap->Initialize();
 	}
 

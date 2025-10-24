@@ -10,15 +10,14 @@ CameraUpdateSystem::CameraUpdateSystem(DxDevice* _dxDevice) : pDxDevice_(_dxDevi
 }
 
 void CameraUpdateSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
-	/// カメラのcomponentを集める
 
+	/// カメラのComponentを集める
 	ComponentArray<CameraComponent>* cameraArray = _ecs->GetComponentArray<CameraComponent>();
-	if (!cameraArray) {
+	if (!cameraArray || cameraArray->GetUsedComponents().empty()) {
 		return; /// カメラのコンポーネント配列が存在しない場合は何もしない
 	}
 
-	auto& cameraComponents = cameraArray->GetUsedComponents();
-	for (auto& cameraComponent : cameraComponents) {
+	for (auto& cameraComponent : cameraArray->GetUsedComponents()) {
 		if (!cameraComponent) {
 			continue; /// nullptrチェック
 		}

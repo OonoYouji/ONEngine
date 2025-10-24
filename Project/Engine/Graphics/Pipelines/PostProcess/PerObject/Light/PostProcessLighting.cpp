@@ -15,7 +15,7 @@ PostProcessLighting::PostProcessLighting() {}
 PostProcessLighting::~PostProcessLighting() {}
 
 
-void PostProcessLighting::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
+void PostProcessLighting::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {
 	pipeline_ = std::make_unique<ComputePipeline>();
 
 	{	/// shader
@@ -45,17 +45,17 @@ void PostProcessLighting::Initialize(ShaderCompiler* _shaderCompiler, DxManager*
 
 		pipeline_->AddStaticSampler(D3D12_SHADER_VISIBILITY_ALL, 0);
 
-		pipeline_->CreatePipeline(_dxManager->GetDxDevice());
+		pipeline_->CreatePipeline(_dxm->GetDxDevice());
 	}
 
 
 	{
 		/// constant buffer
 		directionalLightBufferData_ = std::make_unique<ConstantBuffer<DirectionalLightBufferData>>();
-		directionalLightBufferData_->Create(_dxManager->GetDxDevice());
+		directionalLightBufferData_->Create(_dxm->GetDxDevice());
 
 		cameraBufferData_ = std::make_unique<ConstantBuffer<CameraBufferData>>();
-		cameraBufferData_->Create(_dxManager->GetDxDevice());
+		cameraBufferData_->Create(_dxm->GetDxDevice());
 
 	}
 
@@ -118,8 +118,6 @@ void PostProcessLighting::Execute(const std::string& _textureName, DxCommand* _d
 
 
 	{	/// set textures
-
-		//auto& textures = _assetCollection->GetTextures();
 
 		textureIndices_[1] = _assetCollection->GetTextureIndex(_textureName + "WorldPosition");
 		textureIndices_[2] = _assetCollection->GetTextureIndex(_textureName + "Normal");

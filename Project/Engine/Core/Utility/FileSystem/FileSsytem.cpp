@@ -15,6 +15,8 @@ namespace fs = std::filesystem;
 
 
 bool FileSystemf::FindFile(const std::string& _directory, const std::string& _filename) {
+	/// ----- 指定したディレクトリ内にファイルが存在するか確認 ----- ///
+
 	fs::path dirPath(_directory);
 
 	try {
@@ -44,6 +46,7 @@ bool FileSystemf::FindFile(const std::string& _path) {
 }
 
 std::string FileSystemf::LoadFile(const std::string& _directory, const std::string& _filename) {
+	/// ----- ファイルを読み込む ----- ///
 
 	if (!FindFile(_directory, _filename)) {
 		return "";
@@ -58,6 +61,7 @@ std::string FileSystemf::LoadFile(const std::string& _directory, const std::stri
 }
 
 std::string FileSystemf::LoadFile(const std::string& _path) {
+	/// ----- ファイルを読み込む ----- ///
 
 	// ファイルストリームで読み込み
 	std::ifstream file(_path);

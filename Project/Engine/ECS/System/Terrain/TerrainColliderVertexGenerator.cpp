@@ -6,13 +6,13 @@
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/TerrainCollider.h"
 
 
-TerrainColliderVertexGenerator::TerrainColliderVertexGenerator(class DxManager* _dxManager)
-	: pDxManager_(_dxManager) {}
+TerrainColliderVertexGenerator::TerrainColliderVertexGenerator(class DxManager* _dxm)
+	: pDxManager_(_dxm) {}
 
 void TerrainColliderVertexGenerator::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
 
 	ComponentArray<TerrainCollider>* colliderArray = _ecs->GetComponentArray<TerrainCollider>();
-	if (!colliderArray) {
+	if (!colliderArray || colliderArray->GetUsedComponents().empty()) {
 		return;
 	}
 
@@ -21,6 +21,7 @@ void TerrainColliderVertexGenerator::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
 			continue;
 		}
 
+		/// 頂点情報の生成が要求されている場合、地形から頂点情報をコピーしコライダーとして扱う
 		if (comp->isVertexGenerationRequested_) {
 			comp->AttachTerrain();
 			if (Terrain* terrain = comp->GetTerrain()) {

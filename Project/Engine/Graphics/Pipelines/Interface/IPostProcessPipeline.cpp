@@ -5,6 +5,8 @@
 #include <d3dx12.h>
 
 void CopyResource(ID3D12Resource* _src, ID3D12Resource* _dst, ID3D12GraphicsCommandList6* _cmdList) {
+	/// ----- _srcの内容を_dstにコピーする ----- ///
+
 
 	/// resource barrier
 	CD3DX12_RESOURCE_BARRIER uavTexBarrier = CD3DX12_RESOURCE_BARRIER::Transition(
