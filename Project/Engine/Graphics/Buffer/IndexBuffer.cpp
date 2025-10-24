@@ -4,6 +4,8 @@ IndexBuffer::IndexBuffer() {}
 IndexBuffer::~IndexBuffer() {}
 
 void IndexBuffer::Create(size_t _indicesSize, DxDevice* _dxDevice) {
+	/// ----- IndexBufferの作成 ----- ///
+
 	Resize(_indicesSize);
 	resource_.CreateResource(_dxDevice, sizeof(uint32_t) * indices_.size());
 
@@ -25,6 +27,7 @@ void IndexBuffer::BindForCommandList(ID3D12GraphicsCommandList* _commandList) {
 }
 
 void IndexBuffer::Map() {
+	/// ----- インデックスデータをGPU用にマッピング ----- ///
 	uint32_t* map = nullptr;
 	resource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&map));
 	std::memcpy(map, indices_.data(), sizeof(uint32_t) * indices_.size());

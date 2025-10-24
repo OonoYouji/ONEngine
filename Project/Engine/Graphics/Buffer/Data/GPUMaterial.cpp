@@ -5,6 +5,11 @@
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentJsonConverter.h"
 #include "Engine/Asset/Collection/AssetCollection.h"
 
+
+/// ------------------------------------------------
+/// UVTransform Json変換
+/// ------------------------------------------------
+
 void to_json(nlohmann::json& _j, const UVTransform& _uvTransform) {
 	_j = nlohmann::json{
 		{ "position", _uvTransform.position },
@@ -19,6 +24,10 @@ void from_json(const nlohmann::json& _j, UVTransform& _uvTransform) {
 	_uvTransform.rotate = _j.value("rotate", 0.0f);
 }
 
+
+/// ------------------------------------------------
+/// GPUMaterial Json変換
+/// ------------------------------------------------
 
 void to_json(nlohmann::json& _j, const GPUMaterial& _material) {
 	_j = nlohmann::json{
@@ -40,6 +49,11 @@ void from_json(const nlohmann::json& _j, GPUMaterial& _material) {
 	_material.normalTextureId = _j.value("normalTextureId", -1);
 }
 
+
+/// ------------------------------------------------
+/// CPUMaterial Json変換
+/// ------------------------------------------------
+
 void to_json(nlohmann::json& _j, const CPUMaterial& _material) {
 	_j = nlohmann::json{
 		{ "uvTransform", _material.uvTransform },
@@ -52,6 +66,11 @@ void to_json(nlohmann::json& _j, const CPUMaterial& _material) {
 
 void from_json(const nlohmann::json& /*_j*/, CPUMaterial& /*_material*/) {
 }
+
+
+/// /////////////////////////////////////////////////
+/// CPUMaterial 関数定義
+/// /////////////////////////////////////////////////
 
 CPUMaterial::CPUMaterial() = default;
 CPUMaterial::~CPUMaterial() = default;

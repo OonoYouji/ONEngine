@@ -78,7 +78,6 @@ inline void VertexBuffer<T>::Create(size_t _vertexSize, DxDevice* _dxDevice) {
 	vbv_.BufferLocation = resource_.Get()->GetGPUVirtualAddress();
 	vbv_.SizeInBytes = static_cast<UINT>(tSize * vertices_.size());
 	vbv_.StrideInBytes = static_cast<UINT>(tSize);
-
 }
 
 template<typename T>

@@ -8,8 +8,8 @@
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Terrain.h"
 
-TerrainVertexEditorCompute::TerrainVertexEditorCompute() {}
-TerrainVertexEditorCompute::~TerrainVertexEditorCompute() {}
+TerrainVertexEditorCompute::TerrainVertexEditorCompute() = default;
+TerrainVertexEditorCompute::~TerrainVertexEditorCompute() = default;
 
 void TerrainVertexEditorCompute::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {
 

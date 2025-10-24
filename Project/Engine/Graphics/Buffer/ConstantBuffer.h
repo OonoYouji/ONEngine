@@ -63,7 +63,6 @@ public:
 
 template<typename T>
 inline void ConstantBuffer<T>::Create(DxDevice* _dxDevice) {
-
 	constantBuffer_.CreateResource(_dxDevice, sizeof(T));
 
 	mappingData_ = nullptr;

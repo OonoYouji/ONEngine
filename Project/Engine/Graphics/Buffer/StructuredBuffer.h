@@ -44,8 +44,15 @@ public:
 
 	/* ----- append structure buffer methods ----- */
 
+	/// @brief AppendBufferのカウンタをリセットする
+	/// @param _dxCommand DxCommandへのポインタ
 	void ResetCounter(DxCommand* _dxCommand);
+
+	/// @brief AppendBufferのカウンタを読み取る
+	/// @param _dxCommand DxCommandへのポインタ
+	/// @return Counterの値
 	uint32_t ReadCounter(DxCommand* _dxCommand);
+
 
 	/// SRV用のバインド
 	void SRVBindForGraphicsCommandList(ID3D12GraphicsCommandList* _cmdList, UINT _rootParameterIndex) const;
@@ -64,8 +71,9 @@ public:
 	void SetMappedData(size_t _index, const T& _setValue);
 	const T& GetMappedData(size_t _index) const;
 
-	DxResource& GetResource();
 
+	/// 各種Resourceの取得
+	DxResource& GetResource();
 	DxResource& GetCounterResource();
 	DxResource& GetCounterResetResource();
 	DxResource& GetReadbackResource();

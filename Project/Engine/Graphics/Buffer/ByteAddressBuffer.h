@@ -22,7 +22,22 @@ public:
 	ByteAddressBuffer();
 	~ByteAddressBuffer();
 
+	/// @brief Bufferを作成する
+	/// @param _size Bufferのサイズ
+	/// @param _dxDevice DxDeviceのポインタ
+	/// @param _dxSRVHeap DxSRVHeapのポインタ
 	void Create(uint32_t _size, DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap);
+
+
+	/// @brief 指定したインデックスに対応するマップされたデータの値を設定する
+	/// @param _index 設定対象のデータのインデックス
+	/// @param _value 設定する値（32ビット符号なし整数）
+	void SetMappedData(size_t _index, uint32_t _value);
+
+	/// @brief コマンドリストにバインドする
+	/// @param _rootParameterIndex パラメータインデックス
+	/// @param _commandList CommandListのポインタ
+	void BindToCommandList(UINT _rootParameterIndex, ID3D12GraphicsCommandList* _commandList);
 
 private:
 	/// ===================================================
@@ -37,16 +52,10 @@ private:
 	uint32_t*                   mappedData_;
 	std::span<uint32_t>         mappedDataArray_;
 
-	//size_t                      structureSize_;
 	size_t                      totalSize_;
 	size_t                      bufferSize_;
 
 	DxSRVHeap* pDxSRVHeap_;
 
-public:
-
-	void SetMappedData(size_t _index, uint32_t _value);
-
-	void BindToCommandList(UINT _rootParameterIndex, ID3D12GraphicsCommandList* _commandList);
 
 };

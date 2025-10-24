@@ -15,26 +15,8 @@
 #include "EditorCompute/River/RiverMeshGeneratePipeline.h"
 #include "EditorCompute/Grass/GrassArrangementPipeline.h"
 
-class LogCommand : public IEditorCommand {
-public:
-	LogCommand() {}
-	~LogCommand() {}
 
-	EDITOR_STATE Execute() override {
-		Console::Log("LogCommand");
-		return EDITOR_STATE_FINISH;
-	}
-
-	EDITOR_STATE Undo() override {
-		Console::Log("Undo LogCommand");
-		return EDITOR_STATE_FINISH;
-	}
-};
-
-
-
-EditorManager::EditorManager(EntityComponentSystem* _ecs)
-	: pEcs_(_ecs) {}
+EditorManager::EditorManager(EntityComponentSystem* _ecs) : pEcs_(_ecs) {}
 EditorManager::~EditorManager() = default;
 
 void EditorManager::Initialize(DxManager* _dxm, ShaderCompiler* _sc) {
