@@ -86,6 +86,22 @@ public:
 	Terrain();
 	~Terrain() override;
 
+	/// @brief VerticesとIndicesのUAVBufferを作成する
+	void CreateVerticesAndIndicesBuffers(class DxDevice* _dxDevice, class DxCommand* _dxCommand, class DxSRVHeap* _dxSrvHeap);
+
+
+	/// @brief VBVとIBVのバリアを生成する(描画用に)
+	/// @param _dxCommand DxCommandへのポインタ
+	void CreateRenderingBarriers(class DxCommand* _dxCommand);
+
+	/// @brief VBVとIBVのバリアを復元する(計算用に)
+	/// @param _dxCommand DxCommandへのポインタ
+	void RestoreResourceBarriers(class DxCommand* _dxCommand);
+
+	/// @brief 描画用にVBVを生成する
+	D3D12_VERTEX_BUFFER_VIEW CreateVBV();
+	/// @brief 描画用にIBVを生成する
+	D3D12_INDEX_BUFFER_VIEW CreateIBV();
 
 private:
 	/// =========================================
@@ -123,8 +139,9 @@ public:
 	const std::array<std::string, kMaxTerrainTextureNum>& GetSplatTexPaths() const;
 
 	/// ----- buffer ----- ///
-	StructuredBuffer<TerrainVertex>& GetRwVertices();
-	StructuredBuffer<uint32_t>& GetRwIndices();
+	const StructuredBuffer<TerrainVertex>& GetRwVertices() const;
+	const StructuredBuffer<uint32_t>& GetRwIndices() const;
+	DxResource& GetVerticesResource();
 
 	void SetIsCreated(bool _isCreated);
 	bool GetIsCreated() const;

@@ -62,12 +62,15 @@ void RiverMeshGeneratePipeline::Execute(EntityComponentSystem* _ecs, DxCommand* 
 	}
 
 
+	/// --------------------------------------------------------------------
+	/// 川のメッシュ生成
+	/// --------------------------------------------------------------------
+
 	/// 川の取得
 	River* river = terrain->GetRiver();
 	if (!river->GetIsGenerateMeshRequest()) {
 		return;
 	}
-	//river->SetIsGenerateMeshRequest(false);
 
 	/// バッファは生成時に毎回作る
 	river->CreateBuffers(pDxManager_->GetDxDevice(), pDxManager_->GetDxSRVHeap(), _dxCommand);
@@ -78,12 +81,12 @@ void RiverMeshGeneratePipeline::Execute(EntityComponentSystem* _ecs, DxCommand* 
 
 	/// bufferの設定
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
-	river->GetParamBufRef().BindForComputeCommandList(cmdList, CBV_PARAMS);
-	river->GetControlPointBufRef().SRVBindForComputeCommandList(cmdList, SRV_CONTROL_POINTS);
-	river->GetRwVerticesRef().UAVBindForComputeCommandList(cmdList, UAV_VERTICES);
-	river->GetRwIndicesRef().UAVBindForComputeCommandList(cmdList, UAV_INDICES);
+	river->GetParamBuffer().BindForComputeCommandList(cmdList, CBV_PARAMS);
+	river->GetControlPointBuffer().SRVBindForComputeCommandList(cmdList, SRV_CONTROL_POINTS);
+	river->GetRwVertices().UAVBindForComputeCommandList(cmdList, UAV_VERTICES);
+	river->GetRwIndices().UAVBindForComputeCommandList(cmdList, UAV_INDICES);
 
-	/// 
+	/// 起動
 	UINT totalVertices = river->GetSamplePerSegment() * (river->GetNumControlPoint() - 3) * 2;
 	UINT threadsPerGroup = 16;
 	UINT dispatchX = (totalVertices + threadsPerGroup - 1) / threadsPerGroup;

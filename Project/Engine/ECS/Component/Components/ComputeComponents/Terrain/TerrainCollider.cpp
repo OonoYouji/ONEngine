@@ -51,7 +51,7 @@ void TerrainCollider::CopyVertices(DxManager* _dxm) {
 	DxCommand* dxCommand = _dxm->GetDxCommand();
 	auto cmdList = dxCommand->GetCommandList();
 
-	DxResource& dxResource = pTerrain_->GetRwVertices().GetResource();
+	DxResource& dxResource = pTerrain_->GetVerticesResource();
 
 	dxResource.CreateBarrier(D3D12_RESOURCE_STATE_COPY_SOURCE, dxCommand);
 	cmdList->CopyResource(dxReadbackBuffer.Get(), dxResource.Get());

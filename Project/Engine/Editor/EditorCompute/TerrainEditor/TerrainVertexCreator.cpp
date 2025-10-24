@@ -77,15 +77,8 @@ void TerrainVertexCreator::Execute(EntityComponentSystem* _ecs, DxCommand* _dxCo
 		pTerrain->SetIsCreated(true);
 		Console::LogInfo("TerrainVertexEditorCompute::Execute: Creating terrain vertices and indices");
 
-		pTerrain->GetRwVertices().CreateUAV(
-			pTerrain->GetMaxVertexNum(),
-			pDxManager_->GetDxDevice(), _dxCommand, pDxManager_->GetDxSRVHeap()
-		);
-
-		pTerrain->GetRwIndices().CreateUAV(
-			pTerrain->GetMaxIndexNum(),
-			pDxManager_->GetDxDevice(), _dxCommand, pDxManager_->GetDxSRVHeap()
-		);
+		/// VBVとIBVの生成
+		pTerrain->CreateVerticesAndIndicesBuffers(pDxManager_->GetDxDevice(), _dxCommand, pDxManager_->GetDxSRVHeap());
 
 
 		const uint32_t width = static_cast<uint32_t>(pTerrain->GetSize().x);

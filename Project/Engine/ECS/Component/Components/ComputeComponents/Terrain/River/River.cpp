@@ -61,7 +61,7 @@ std::vector<RiverControlPoint> SampleRiverSpline(const std::vector<RiverControlP
 
 
 
-River::River() : samplePerSegment_(10), isCreatedBuffers_(false) , isGenerateMeshRequest_(false) {};
+River::River() : samplePerSegment_(10), isCreatedBuffers_(false), isGenerateMeshRequest_(false) {};
 River::~River() = default;
 
 void River::Edit(EntityComponentSystem* /*_ecs*/) {
@@ -291,6 +291,50 @@ void River::SetMaterialData(int32_t _entityId, int32_t _texIndex) {
 	);
 }
 
+void River::CreateRenderingBarriers(DxCommand* _dxCommand) {
+	rwVertices_.GetResource().CreateBarrier(
+		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+		D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER,
+		_dxCommand
+	);
+
+	rwIndices_.GetResource().CreateBarrier(
+		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+		D3D12_RESOURCE_STATE_INDEX_BUFFER,
+		_dxCommand
+	);
+}
+
+void River::RestoreResourceBarriers(DxCommand* _dxCommand) {
+	rwVertices_.GetResource().CreateBarrier(
+		D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER,
+		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+		_dxCommand
+	);
+
+	rwIndices_.GetResource().CreateBarrier(
+		D3D12_RESOURCE_STATE_INDEX_BUFFER,
+		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+		_dxCommand
+	);
+}
+
+D3D12_VERTEX_BUFFER_VIEW River::CreateVBV() {
+	D3D12_VERTEX_BUFFER_VIEW vbv = {};
+	vbv.BufferLocation = rwVertices_.GetResource().Get()->GetGPUVirtualAddress();
+	vbv.StrideInBytes = sizeof(RiverVertex);
+	vbv.SizeInBytes = sizeof(RiverVertex) * GetTotalVertices();
+	return vbv;
+}
+
+D3D12_INDEX_BUFFER_VIEW River::CreateIBV() {
+	D3D12_INDEX_BUFFER_VIEW ibv = {};
+	ibv.BufferLocation = rwIndices_.GetResource().Get()->GetGPUVirtualAddress();
+	ibv.Format = DXGI_FORMAT_R32_UINT;
+	ibv.SizeInBytes = static_cast<UINT>(sizeof(uint32_t)) * GetTotalIndices();
+	return ibv;
+}
+
 int River::GetSamplePerSegment() const {
 	return samplePerSegment_;
 }
@@ -307,23 +351,23 @@ void River::SetIsGenerateMeshRequest(bool _request) {
 	isGenerateMeshRequest_ = _request;
 }
 
-ConstantBuffer<River::Param>& River::GetParamBufRef() {
+const ConstantBuffer<River::Param>& River::GetParamBuffer() const {
 	return paramBuf_;
 }
 
-ConstantBuffer<GPUMaterial>& River::GetMaterialBufRef() {
+const ConstantBuffer<GPUMaterial>& River::GetMaterialBuffer() const {
 	return materialBuffer_;
 }
 
-StructuredBuffer<RiverVertex>& River::GetRwVerticesRef() {
+const StructuredBuffer<RiverVertex>& River::GetRwVertices() const {
 	return rwVertices_;
 }
 
-StructuredBuffer<uint32_t>& River::GetRwIndicesRef() {
+const StructuredBuffer<uint32_t>& River::GetRwIndices() const {
 	return rwIndices_;
 }
 
-StructuredBuffer<RiverControlPoint>& River::GetControlPointBufRef() {
+const StructuredBuffer<RiverControlPoint>& River::GetControlPointBuffer() const {
 	return controlPointBuf_;
 }
 

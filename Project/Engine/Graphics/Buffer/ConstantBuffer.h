@@ -25,12 +25,12 @@ public:
 	/// @brief graphics pipeline にバインド
 	/// @param _commandList ID3D12GraphicsCommandList
 	/// @param _rootParameterIndex root parameter index
-	void BindForGraphicsCommandList(ID3D12GraphicsCommandList* _commandList, UINT _rootParameterIndex);
+	void BindForGraphicsCommandList(ID3D12GraphicsCommandList* _commandList, UINT _rootParameterIndex) const;
 
 	/// @brief compute pipeline にバインド
 	/// @param _commandList ID3D12GraphicsCommandList
 	/// @param _rootParameterIndex root parameter index
-	void BindForComputeCommandList(ID3D12GraphicsCommandList* _commandList, UINT _rootParameterIndex);
+	void BindForComputeCommandList(ID3D12GraphicsCommandList* _commandList, UINT _rootParameterIndex) const;
 
 private:
 	/// ===================================================
@@ -38,7 +38,7 @@ private:
 	/// ===================================================
 
 	DxResource constantBuffer_;
-	T*         mappingData_;
+	T* mappingData_;
 
 
 public:
@@ -72,12 +72,12 @@ inline void ConstantBuffer<T>::Create(DxDevice* _dxDevice) {
 }
 
 template<typename T>
-inline void ConstantBuffer<T>::BindForGraphicsCommandList(ID3D12GraphicsCommandList* _commandList, UINT _rootParameterIndex) {
+inline void ConstantBuffer<T>::BindForGraphicsCommandList(ID3D12GraphicsCommandList* _commandList, UINT _rootParameterIndex) const {
 	_commandList->SetGraphicsRootConstantBufferView(_rootParameterIndex, constantBuffer_.Get()->GetGPUVirtualAddress());
 }
 
 template<typename T>
-inline void ConstantBuffer<T>::BindForComputeCommandList(ID3D12GraphicsCommandList* _commandList, UINT _rootParameterIndex) {
+inline void ConstantBuffer<T>::BindForComputeCommandList(ID3D12GraphicsCommandList* _commandList, UINT _rootParameterIndex) const {
 	_commandList->SetComputeRootConstantBufferView(_rootParameterIndex, constantBuffer_.Get()->GetGPUVirtualAddress());
 }
 

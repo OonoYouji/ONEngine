@@ -48,12 +48,16 @@ EDITOR_STATE EntityDataOutputCommand::Undo() {
 	return EDITOR_STATE::EDITOR_STATE_FINISH;
 }
 
+
+/// ///////////////////////////////////////////////
+/// エンティティのデータ入力コマンド
+/// ///////////////////////////////////////////////
+
 EntityDataInputCommand::EntityDataInputCommand(GameEntity* _entity) : pEntity_(_entity) {
 	inputFilePath_ = "Assets/Jsons/" + pEntity_->GetName() + "Components.json";
 }
 
 EDITOR_STATE EntityDataInputCommand::Execute() {
-
 	/// fileを開く
 	std::ifstream ifs(inputFilePath_);
 	if (!ifs) {
@@ -61,12 +65,9 @@ EDITOR_STATE EntityDataInputCommand::Execute() {
 		return EDITOR_STATE::EDITOR_STATE_FAILED;
 	}
 
-
 	/// jsonを読み込む
 	nlohmann::json jsonData;
 	ifs >> jsonData;
-
-	//pEntity_.
 
 	/// コンポーネントを追加
 	for (const auto& componentJson : jsonData) {
@@ -92,6 +93,11 @@ void EntityDataInputCommand::SetEntity(GameEntity* _entity) {
 	inputFilePath_ = "Assets/Jsons/" + pEntity_->GetName() + "Components.json";
 }
 
+
+/// ///////////////////////////////////////////////
+/// Componentの追加
+/// ///////////////////////////////////////////////
+
 AddComponentCommand::AddComponentCommand(GameEntity* _entity, const std::string& _componentName) {
 	pEntity_ = _entity;
 	componentName_ = _componentName;
@@ -116,6 +122,11 @@ EDITOR_STATE AddComponentCommand::Undo() {
 
 	return EDITOR_STATE::EDITOR_STATE_FINISH;
 }
+
+
+/// ///////////////////////////////////////////////
+/// Componentの削除
+/// ///////////////////////////////////////////////
 
 RemoveComponentCommand::RemoveComponentCommand(GameEntity* _entity, const std::string& _componentName, std::unordered_map<size_t, IComponent*>::iterator* _resultItr)
 	: pEntity_(_entity), componentName_(_componentName), pIterator_(_resultItr) {}

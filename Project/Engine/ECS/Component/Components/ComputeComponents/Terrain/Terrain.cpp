@@ -43,7 +43,7 @@ void COMP_DEBUG::TerrainDebug(Terrain* _terrain, EntityComponentSystem* _ecs, As
 
 	/// 要素ごとにボタンを表示
 	for (size_t i = 0; i < kMaxButtonNum; i++) {
-		ImGui::PushID(i);
+		ImGui::PushID(static_cast<int>(i));
 
 		/// 最初以外が一行になるようにする
 		if (i != 0) { ImGui::SameLine(); }
@@ -243,18 +243,75 @@ Terrain::Terrain() {
 	editorInfo_.usedTextureIndex = 0;
 
 }
+
 Terrain::~Terrain() {}
+
+
+
+void Terrain::CreateVerticesAndIndicesBuffers(DxDevice* _dxDevice, DxCommand* _dxCommand, DxSRVHeap* _dxSrvHeap) {
+	/// ----- UAV buffer の作成 ----- ///
+	rwVertices_.CreateUAV(GetMaxVertexNum(), _dxDevice, _dxCommand, _dxSrvHeap);
+	rwIndices_.CreateUAV(GetMaxIndexNum(), _dxDevice, _dxCommand, _dxSrvHeap);
+}
+
+void Terrain::CreateRenderingBarriers(DxCommand* _dxCommand) {
+	rwVertices_.GetResource().CreateBarrier(
+		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+		D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER,
+		_dxCommand
+	);
+
+	rwIndices_.GetResource().CreateBarrier(
+		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+		D3D12_RESOURCE_STATE_INDEX_BUFFER,
+		_dxCommand
+	);
+}
+
+void Terrain::RestoreResourceBarriers(DxCommand* _dxCommand) {
+	rwVertices_.GetResource().CreateBarrier(
+		D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER,
+		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+		_dxCommand
+	);
+
+	rwIndices_.GetResource().CreateBarrier(
+		D3D12_RESOURCE_STATE_INDEX_BUFFER,
+		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+		_dxCommand
+	);
+}
+
+D3D12_VERTEX_BUFFER_VIEW Terrain::CreateVBV() {
+	D3D12_VERTEX_BUFFER_VIEW vbv = {};
+	vbv.BufferLocation = rwVertices_.GetResource().Get()->GetGPUVirtualAddress();
+	vbv.StrideInBytes = sizeof(TerrainVertex);
+	vbv.SizeInBytes = sizeof(TerrainVertex) * GetMaxVertexNum();
+	return vbv;
+}
+
+D3D12_INDEX_BUFFER_VIEW Terrain::CreateIBV() {
+	D3D12_INDEX_BUFFER_VIEW ibv = {};
+	ibv.BufferLocation = rwIndices_.GetResource().Get()->GetGPUVirtualAddress();
+	ibv.SizeInBytes = static_cast<UINT>(sizeof(uint32_t) * GetMaxIndexNum());
+	ibv.Format = DXGI_FORMAT_R32_UINT;
+	return ibv;
+}
 
 const std::array<std::string, kMaxTerrainTextureNum>& Terrain::GetSplatTexPaths() const {
 	return splattingTexPaths_;
 }
 
-StructuredBuffer<TerrainVertex>& Terrain::GetRwVertices() {
+const StructuredBuffer<TerrainVertex>& Terrain::GetRwVertices() const {
 	return rwVertices_;
 }
 
-StructuredBuffer<uint32_t>& Terrain::GetRwIndices() {
+const StructuredBuffer<uint32_t>& Terrain::GetRwIndices() const {
 	return rwIndices_;
+}
+
+DxResource& Terrain::GetVerticesResource() {
+	return rwVertices_.GetResource();
 }
 
 void Terrain::SetIsCreated(bool _isCreated) {
