@@ -173,7 +173,7 @@ EDITOR_STATE ReloadAllScriptsCommand::Execute() {
 
 	/// シーンを読み直す
 	pSceneManager_->SetNextScene(pSceneManager_->GetCurrentSceneName());
-	MonoScriptEngine::GetInstance()->HotReload();
+	MonoScriptEngine::GetInstance().HotReload();
 
 	return EDITOR_STATE_FINISH;
 }

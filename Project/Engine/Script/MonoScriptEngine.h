@@ -27,6 +27,11 @@ private:
 	MonoScriptEngine();
 	~MonoScriptEngine();
 
+	/// 代入演算子の禁止
+	MonoScriptEngine(const MonoScriptEngine&) = delete;
+	MonoScriptEngine& operator=(const MonoScriptEngine&) = delete;
+	MonoScriptEngine(MonoScriptEngine&&) = delete;
+	MonoScriptEngine& operator=(MonoScriptEngine&&) = delete;
 
 public:
 	/// ===================================================
@@ -34,7 +39,7 @@ public:
 	/// ===================================================
 
 	/// インスタンスの取得
-	static MonoScriptEngine* GetInstance();
+	static MonoScriptEngine& GetInstance();
 
 	/// Monoの初期化
 	void Initialize();
@@ -55,9 +60,15 @@ public:
 	MonoObject* GetEntityFromCS(const std::string& _ecsGroupName, int32_t _entityId);
 	MonoObject* GetMonoBehaviorFromCS(const std::string& _ecsGroupName, int32_t _entityId, const std::string& _behaviorName);
 
+	/// @brief C#側のメソッドを取得する
+	/// @param _className クラス名
+	/// @param _methodName 関数名
+	/// @param _argsCount 引数の数
+	/// @return 関数へのポインタ
 	MonoMethod* GetMethodFromCS(const std::string& _className, const std::string& _methodName, int _argsCount);
 
-	/// 
+	/// @brief Reload用のDomainを作成する
+	/// @return 作成したDomainへのポインタ
 	MonoDomain* CreateReloadDomain();
 
 private:

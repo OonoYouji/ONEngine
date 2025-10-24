@@ -57,7 +57,7 @@ void SceneManager::Initialize(AssetCollection* _assetCollection) {
 }
 
 void SceneManager::Update() {
-	/// 次のシーンが設定されていたら、シーンを切り替える
+	/// 次のシーンが設定されていたらシーンを切り替える
 	if (nextScene_.size()) {
 		MoveNextToCurrentScene(false);
 	}

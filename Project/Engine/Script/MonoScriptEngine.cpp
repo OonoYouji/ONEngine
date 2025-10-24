@@ -12,7 +12,7 @@
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/Core/Utility/FileSystem/FileSsytem.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
-#include "InternalCalls/AddComponentInternalCalls.h"
+#include "InternalCalls/AddInternalMethods.h"
 
 
 namespace {
@@ -45,9 +45,9 @@ MonoScriptEngine::~MonoScriptEngine() {
 	}
 }
 
-MonoScriptEngine* MonoScriptEngine::GetInstance() {
+MonoScriptEngine& MonoScriptEngine::GetInstance() {
 	static MonoScriptEngine instance;
-	return &instance;
+	return instance;
 }
 
 void MonoScriptEngine::Initialize() {

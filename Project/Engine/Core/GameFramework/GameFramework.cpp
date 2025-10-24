@@ -51,8 +51,7 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 	windowManager_->GenerateWindow(_startSetting.windowName, _startSetting.windowSize, WindowManager::WindowType::Main);
 #endif // DEBUG_MODE
 
-	MonoScriptEngine* monoScriptEngine = MonoScriptEngine::GetInstance();
-	monoScriptEngine->Initialize();
+	MonoScriptEngine::GetInstance().Initialize();
 
 	/// input systemの初期化
 	Input::Initialize(windowManager_.get(), imGuiManager_.get());

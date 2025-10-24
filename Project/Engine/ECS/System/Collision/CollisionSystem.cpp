@@ -221,7 +221,7 @@ void CollisionSystem::RuntimeUpdate(ECSGroup* _ecs) {
 }
 
 void CollisionSystem::CallEnterFunc(const std::string& _ecsGroupName) {
-	MonoScriptEngine* monoEngine = MonoScriptEngine::GetInstance();
+	MonoScriptEngine& monoEngine = MonoScriptEngine::GetInstance();
 
 	for (auto& pair : enterPairs_) {
 		GameEntity* entityA = pair.first;
@@ -249,9 +249,9 @@ void CollisionSystem::CallEnterFunc(const std::string& _ecsGroupName) {
 				void* params[1];
 				params[0] = entities[(i + 1) % 2]; /// 衝突しているもう一方のオブジェクトを渡す
 
-				MonoObject* monoBehavior = monoEngine->GetMonoBehaviorFromCS(_ecsGroupName, scripts[i]->GetOwner()->GetId(), script.scriptName);
+				MonoObject* monoBehavior = monoEngine.GetMonoBehaviorFromCS(_ecsGroupName, scripts[i]->GetOwner()->GetId(), script.scriptName);
 				if (!script.collisionEventMethods[0]) {
-					script.collisionEventMethods[0] = monoEngine->GetMethodFromCS(script.scriptName, "OnCollisionEnter", 1);
+					script.collisionEventMethods[0] = monoEngine.GetMethodFromCS(script.scriptName, "OnCollisionEnter", 1);
 				}
 
 				mono_runtime_invoke(script.collisionEventMethods[0], monoBehavior, params, &exc);
@@ -278,7 +278,7 @@ void CollisionSystem::CallEnterFunc(const std::string& _ecsGroupName) {
 }
 
 void CollisionSystem::CallStayFunc(const std::string& _ecsGroupName) {
-	MonoScriptEngine* monoEngine = MonoScriptEngine::GetInstance();
+	MonoScriptEngine& monoEngine = MonoScriptEngine::GetInstance();
 
 	for (auto& pair : stayPairs_) {
 		GameEntity* entityA = pair.first;
@@ -306,9 +306,9 @@ void CollisionSystem::CallStayFunc(const std::string& _ecsGroupName) {
 				void* params[1];
 				params[0] = entities[(i + 1) % 2]; /// 衝突しているもう一方のオブジェクトを渡す
 
-				MonoObject* monoBehavior = monoEngine->GetMonoBehaviorFromCS(_ecsGroupName, scripts[i]->GetOwner()->GetId(), script.scriptName);
+				MonoObject* monoBehavior = monoEngine.GetMonoBehaviorFromCS(_ecsGroupName, scripts[i]->GetOwner()->GetId(), script.scriptName);
 				if (!script.collisionEventMethods[1]) {
-					script.collisionEventMethods[1] = monoEngine->GetMethodFromCS(script.scriptName, "OnCollisionStay", 1);
+					script.collisionEventMethods[1] = monoEngine.GetMethodFromCS(script.scriptName, "OnCollisionStay", 1);
 				}
 
 				mono_runtime_invoke(script.collisionEventMethods[1], monoBehavior, params, &exc);
@@ -334,7 +334,7 @@ void CollisionSystem::CallStayFunc(const std::string& _ecsGroupName) {
 }
 
 void CollisionSystem::CallExitFunc(const std::string& _ecsGroupName) {
-	MonoScriptEngine* monoEngine = MonoScriptEngine::GetInstance();
+	MonoScriptEngine& monoEngine = MonoScriptEngine::GetInstance();
 
 	for (auto& pair : exitPairs_) {
 		GameEntity* entityA = pair.first;
@@ -363,9 +363,9 @@ void CollisionSystem::CallExitFunc(const std::string& _ecsGroupName) {
 				params[0] = entities[(i + 1) % 2]; /// 衝突しているもう一方のオブジェクトを渡す
 
 
-				MonoObject* monoBehavior = monoEngine->GetMonoBehaviorFromCS(_ecsGroupName, scripts[i]->GetOwner()->GetId(), script.scriptName);
+				MonoObject* monoBehavior = monoEngine.GetMonoBehaviorFromCS(_ecsGroupName, scripts[i]->GetOwner()->GetId(), script.scriptName);
 				if (!script.collisionEventMethods[2]) {
-					script.collisionEventMethods[2] = monoEngine->GetMethodFromCS(script.scriptName, "OnCollisionExit", 1);
+					script.collisionEventMethods[2] = monoEngine.GetMethodFromCS(script.scriptName, "OnCollisionExit", 1);
 				}
 
 				mono_runtime_invoke(script.collisionEventMethods[2], monoBehavior, params, &exc);
