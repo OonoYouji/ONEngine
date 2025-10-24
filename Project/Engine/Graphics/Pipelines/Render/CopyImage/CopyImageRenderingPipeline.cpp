@@ -56,7 +56,7 @@ void CopyImageRenderingPipeline::Draw(class ECSGroup* /*_ecs*/, CameraComponent*
 	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	auto& textures = pAssetCollection_->GetTextures();
-	size_t index = pAssetCollection_->GetTextureIndex("./Packages/Scene/sceneScene");
+	size_t index = pAssetCollection_->GetTextureIndex("./Assets/Scene/RenderTexture/sceneScene");
 
 	commandList->SetGraphicsRootDescriptorTable(0, textures[index].GetSRVGPUHandle());
 

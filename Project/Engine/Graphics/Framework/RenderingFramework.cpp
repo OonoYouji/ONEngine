@@ -93,14 +93,13 @@ void RenderingFramework::Draw() {
 
 #else
 	/// ----- release build の描画 ----- ///
-
 	releaseBuildSubWindow_->PreDraw();
 	DrawScene();
 	releaseBuildSubWindow_->PostDraw();
 
 	pWindowManager_->MainWindowPreDraw();
 	ECSGroup* currentGroup = pEntityComponentSystem_->GetCurrentGroup();
-	copyImagePipeline_->Draw(currentGroup, {}, currentGroup->GetMainCamera2D(), pDxManager_->GetDxCommand());
+	copyImagePipeline_->Draw(currentGroup, currentGroup->GetMainCamera2D(), pDxManager_->GetDxCommand());
 	pWindowManager_->MainWindowPostDraw();
 #endif // DEBUG_MODE
 
