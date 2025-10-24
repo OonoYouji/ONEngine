@@ -4,6 +4,7 @@
 #include "Engine/Core/Config/EngineConfig.h"
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Asset/Collection/AssetCollection.h"
+#include "Engine/ECS/Component/Array/ComponentArray.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Components/RendererComponents/ScreenPostEffectTag/ScreenPostEffectTag.h"
 
@@ -30,15 +31,22 @@ void PostProcessGrayscale::Initialize(ShaderCompiler* _shaderCompiler, DxManager
 
 void PostProcessGrayscale::Execute(const std::string& _textureName, DxCommand* _dxCommand, AssetCollection* _assetCollection, [[maybe_unused]] EntityComponentSystem* _entityComponentSystem) {
 
-	/// 
-	ScreenPostEffectTag* tag = nullptr;
-	for (auto& entity : _entityComponentSystem->GetCurrentGroup()->GetEntities()) {
-		tag = entity->GetComponent<ScreenPostEffectTag>();
-		if (tag) {
-			break;
-		}
+	/// 配列の取得とタグの確認
+	ComponentArray<ScreenPostEffectTag>* screenPostEffectTagArray = _entityComponentSystem->GetCurrentGroup()->GetComponentArray<ScreenPostEffectTag>();
+	if (!screenPostEffectTagArray || screenPostEffectTagArray->GetUsedComponents().empty()) {
+		return;
 	}
-	
+
+	ScreenPostEffectTag* tag = nullptr;
+	for (auto& comp : screenPostEffectTagArray->GetUsedComponents()) {
+		if(!comp || !comp->enable) {
+			continue;
+		}
+
+		tag = comp;
+		break;
+	}
+
 	if (!tag || !tag->GetPostEffectEnable(PostEffectType_Grayscale)) {
 		return; // グレースケールエフェクトが無効な場合は何もしない
 	}

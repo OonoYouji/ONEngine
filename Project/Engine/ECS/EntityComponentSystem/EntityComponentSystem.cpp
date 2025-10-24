@@ -39,17 +39,17 @@ EntityComponentSystem::EntityComponentSystem(DxManager* _pDxManager)
 
 EntityComponentSystem::~EntityComponentSystem() {}
 
-void EntityComponentSystem::Initialize(AssetCollection* _graphicsResourceCollection) {
+void EntityComponentSystem::Initialize(AssetCollection* _assetCollection) {
 
 	/// ポインタの確保
-	pGraphicsResourceCollection_ = _graphicsResourceCollection;
+	pAssetCollection_ = _assetCollection;
 	pDxDevice_ = pDxManager_->GetDxDevice();
 
 	{	/// デバッグ用のECSGroupを作成、 追加するシステムが違うのでAddGroupは使わない
 		currentGroupName_ = "Debug";
 		std::unique_ptr<ECSGroup> debugGroup = std::make_unique<ECSGroup>(pDxManager_);
 		debugGroup->Initialize(currentGroupName_);
-		DebugECSGroupAddSystemFunction(debugGroup.get(), pDxManager_, pGraphicsResourceCollection_);
+		DebugECSGroupAddSystemFunction(debugGroup.get(), pDxManager_, pAssetCollection_);
 		ecsGroups_[currentGroupName_] = std::move(debugGroup);
 		debugGroup_ = ecsGroups_[currentGroupName_].get();
 	}
@@ -82,7 +82,7 @@ ECSGroup* EntityComponentSystem::AddECSGroup(const std::string& _name) {
 	/// 新しいECSグループを作成
 	std::unique_ptr<ECSGroup> newGroup = std::make_unique<ECSGroup>(pDxManager_);
 	newGroup->Initialize(_name);
-	GameECSGroupAddSystemFunction(newGroup.get(), pDxManager_, pGraphicsResourceCollection_);
+	GameECSGroupAddSystemFunction(newGroup.get(), pDxManager_, pAssetCollection_);
 	ecsGroups_[_name] = std::move(newGroup);
 	return ecsGroups_[_name].get();
 }

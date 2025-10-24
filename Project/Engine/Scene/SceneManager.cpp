@@ -13,8 +13,6 @@
 #include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
-#include "Engine/Scene/ISceneFactory.h"
- #include "Game/Scene/Factory/SceneFactory.h"
 
 
 namespace {
@@ -40,13 +38,10 @@ SceneManager::~SceneManager() {
 }
 
 
-void SceneManager::Initialize(AssetCollection* _graphicsResourceCollection) {
+void SceneManager::Initialize(AssetCollection* _assetCollection) {
 	gSceneManager = this;
 
-	pGraphicsResourceCollection_ = _graphicsResourceCollection;
-
-	sceneFactory_ = std::make_unique<SceneFactory>();
-	sceneFactory_->Initialize();
+	pAssetCollection_ = _assetCollection;
 
 	sceneIO_ = std::make_unique<SceneIO>(pEcs_);
 
@@ -170,10 +165,6 @@ void SceneManager::MoveNextToCurrentScene(bool _isTemporary) {
 	Time::ResetTime();
 }
 
-
-void SceneManager::SetSceneFactory(std::unique_ptr<ISceneFactory>& _sceneFactory) {
-	sceneFactory_ = std::move(_sceneFactory);
-}
 
 const std::string& SceneManager::GetCurrentSceneName() const {
 	return currentScene_;

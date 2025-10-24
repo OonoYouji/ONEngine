@@ -15,6 +15,19 @@
 /// エフェクトの描画パイプライン
 /// //////////////////////////////////////////////////
 class EffectRenderingPipeline : public IRenderingPipeline {
+
+
+	/// @brief EffectShaderで使用しているRootParameter
+	enum ROOT_PARAM {
+		CBV_VIEW_PROJECTION,
+		SRV_MATERIALS,
+		SRV_TEXTURE_IDS,
+		SRV_TEXTURES,
+		SRV_TRANSFORMS,
+		C32BIT_CONSTANT,
+	};
+
+
 public:
 	/// ===================================================
 	/// public : methods
@@ -36,9 +49,9 @@ private:
 	class AssetCollection* pAssetCollection_ = nullptr;
 
 	const size_t kMaxRenderingMeshCount_ = size_t(std::pow(2, 20));
-	std::unique_ptr<StructuredBuffer<Matrix4x4>> transformBuffer_;
-	std::unique_ptr<StructuredBuffer<Vector4>>   materialBuffer;
-	std::unique_ptr<StructuredBuffer<uint32_t>>  textureIdBuffer_;
+	StructuredBuffer<Matrix4x4> transformBuffer_;
+	StructuredBuffer<Vector4>   materialBuffer_;
+	StructuredBuffer<uint32_t>  textureIdBuffer_;
 
 	size_t transformIndex_;
 	uint32_t instanceIndex_;

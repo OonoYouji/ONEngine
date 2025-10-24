@@ -12,11 +12,13 @@
 
 
 GraphicsPipeline::GraphicsPipeline() {
-	SetRTVNum(4); /// 色、ワールド座標、法線、フラグ
-	SetRTVFormat(static_cast<DXGI_FORMAT>(RTVFormat_Color), 0);
-	SetRTVFormat(static_cast<DXGI_FORMAT>(RTVFormat_WorldPosition), 1);
-	SetRTVFormat(static_cast<DXGI_FORMAT>(RTVFormat_Normal), 2);
-	SetRTVFormat(static_cast<DXGI_FORMAT>(RTVFormat_Flags), 3);
+
+	/// デフォルトのRTVを設定
+	SetRTVNum(static_cast<uint32_t>(RTVIndex::Count)); /// 色、ワールド座標、法線、フラグ
+	SetRTVFormat(static_cast<DXGI_FORMAT>(RTVFormat::Color), static_cast<int>(RTVIndex::Color));
+	SetRTVFormat(static_cast<DXGI_FORMAT>(RTVFormat::WorldPosition), static_cast<int>(RTVIndex::WorldPosition));
+	SetRTVFormat(static_cast<DXGI_FORMAT>(RTVFormat::Normal), static_cast<int>(RTVIndex::Normal));
+	SetRTVFormat(static_cast<DXGI_FORMAT>(RTVFormat::Flags), static_cast<int>(RTVIndex::Flags));
 
 
 	/// メンバ変数の初期化
@@ -55,6 +57,8 @@ void GraphicsPipeline::SetShader(Shader* _shader) {
 }
 
 void GraphicsPipeline::AddInputElement(const std::string& _semanticName, uint32_t _semanticIndex, DXGI_FORMAT _format, UINT _inputSlot) {
+	/// ----- Input Elementを追加 ----- ///
+
 	D3D12_INPUT_ELEMENT_DESC element = {};
 	element.SemanticName = _semanticName.c_str();
 	element.SemanticIndex = _semanticIndex;
@@ -67,6 +71,8 @@ void GraphicsPipeline::AddInputElement(const std::string& _semanticName, uint32_
 }
 
 void GraphicsPipeline::AddCBV(D3D12_SHADER_VISIBILITY _shaderVisibility, uint32_t _shaderRegister) {
+	/// ----- Constant Buffer Viewを追加 ----- ///
+
 	D3D12_ROOT_PARAMETER parameter{};
 	parameter.ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
 	parameter.ShaderVisibility = _shaderVisibility;
@@ -76,6 +82,8 @@ void GraphicsPipeline::AddCBV(D3D12_SHADER_VISIBILITY _shaderVisibility, uint32_
 }
 
 void GraphicsPipeline::Add32BitConstant(D3D12_SHADER_VISIBILITY _shaderVisibility, uint32_t _shaderRegister, uint32_t _num32bitValue) {
+	/// ----- 32bit定数を追加 ----- ///
+
 	D3D12_ROOT_PARAMETER parameter{};
 	parameter.ParameterType = D3D12_ROOT_PARAMETER_TYPE_32BIT_CONSTANTS;
 	parameter.ShaderVisibility = _shaderVisibility;
@@ -86,6 +94,8 @@ void GraphicsPipeline::Add32BitConstant(D3D12_SHADER_VISIBILITY _shaderVisibilit
 }
 
 void GraphicsPipeline::AddDescriptorRange(uint32_t _baseShaderRegister, uint32_t _numDescriptor, D3D12_DESCRIPTOR_RANGE_TYPE  _rangeType) {
+	/// ----- Descriptor Rangeを追加 ----- ///
+
 	D3D12_DESCRIPTOR_RANGE range{};
 	range.BaseShaderRegister = _baseShaderRegister;
 	range.NumDescriptors = _numDescriptor;
@@ -96,6 +106,8 @@ void GraphicsPipeline::AddDescriptorRange(uint32_t _baseShaderRegister, uint32_t
 }
 
 void GraphicsPipeline::AddDescriptorTable(D3D12_SHADER_VISIBILITY _shaderVisibility, uint32_t _descriptorIndex) {
+	/// ----- Descriptor Tableを追加 ----- ///
+
 	Assert(descriptorRanges_.size() >= _descriptorIndex, "out of range...");
 
 	D3D12_ROOT_PARAMETER parameter{};
@@ -108,6 +120,8 @@ void GraphicsPipeline::AddDescriptorTable(D3D12_SHADER_VISIBILITY _shaderVisibil
 }
 
 void GraphicsPipeline::AddStaticSampler(D3D12_SHADER_VISIBILITY _shaderVisibility, uint32_t _shaderRegister) {
+	/// ----- Static Samplerを追加 ----- ///
+
 	D3D12_STATIC_SAMPLER_DESC sampler{};
 	sampler.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR; /// バイリニアフィルタ
 	sampler.AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP; /// 0~1の範囲外をリピート
@@ -172,6 +186,8 @@ void GraphicsPipeline::SetPipelineStateForCommandList(DxCommand* _dxCommand) {
 
 
 void GraphicsPipeline::CreateRootSignature(DxDevice* _dxDevice) {
+	/// ----- root signatureの生成 ----- ///
+
 	HRESULT hr = S_FALSE;
 	ComPtr<ID3DBlob> signatureBlob;
 	ComPtr<ID3DBlob> errorBlob;
@@ -204,6 +220,7 @@ void GraphicsPipeline::CreateRootSignature(DxDevice* _dxDevice) {
 }
 
 void GraphicsPipeline::CreatePipelineStateObject(DxDevice* _dxDevice) {
+	/// ----- pipeline state objectの生成 ----- ///
 
 	/// input layoutの設定
 	for (uint32_t i = 0; i < inputElements_.size(); ++i) {
@@ -264,13 +281,13 @@ void GraphicsPipeline::CreatePipelineStateObject(DxDevice* _dxDevice) {
 }
 
 void GraphicsPipeline::CreateMeshPipelineStateObject(DxDevice* _dxDevice) {
+	/// ----- pipeline state objectの生成(MeshShader用) ----- ///
 
 	D3DX12_MESH_SHADER_PIPELINE_STATE_DESC meshDesc = {};
 	meshDesc.pRootSignature = rootSignature_.Get();
 
 
 	if (pShader_->GetAS()) {
-
 		meshDesc.AS = {
 			pShader_->GetAS()->GetBufferPointer(),
 			pShader_->GetAS()->GetBufferSize()

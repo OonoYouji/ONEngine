@@ -13,7 +13,8 @@
 
 
 SpriteRenderingPipeline::SpriteRenderingPipeline(AssetCollection* _assetCollection)
-	: pAssetCollection_(_assetCollection) {}
+	: pAssetCollection_(_assetCollection) {
+}
 SpriteRenderingPipeline::~SpriteRenderingPipeline() {}
 
 
@@ -67,7 +68,8 @@ void SpriteRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 
 	{	/// buffer
 
-			/// vertex data
+		/// ----- Spriteに使用する頂点とインデックスの情報を作る ----- ///
+		/// vertex data
 		vertices_ = {
 			{ Vector4(-0.5f, 0.5f, 0.0f, 1.0f), Vector2(0.0f, 0.0f) },
 			{ Vector4(0.5f, 0.5f, 0.0f, 1.0f), Vector2(1.0f, 0.0f) },
@@ -110,13 +112,8 @@ void SpriteRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 
 
 	{	/// structured buffer
-
-		transformsBuffer_ = std::make_unique<StructuredBuffer<Matrix4x4>>();
-		transformsBuffer_->Create(static_cast<uint32_t>(kMaxRenderingSpriteCount_), _dxm->GetDxDevice(), _dxm->GetDxSRVHeap());
-
-		materialsBuffer = std::make_unique<StructuredBuffer<GPUMaterial>>();
-		materialsBuffer->Create(static_cast<uint32_t>(kMaxRenderingSpriteCount_), _dxm->GetDxDevice(), _dxm->GetDxSRVHeap());
-
+		transformsBuffer_.Create(static_cast<uint32_t>(kMaxRenderingSpriteCount_), _dxm->GetDxDevice(), _dxm->GetDxSRVHeap());
+		materialsBuffer.Create(static_cast<uint32_t>(kMaxRenderingSpriteCount_), _dxm->GetDxDevice(), _dxm->GetDxSRVHeap());
 	}
 
 
@@ -157,21 +154,17 @@ void SpriteRenderingPipeline::Draw(class ECSGroup* _ecsGroup, const std::vector<
 			continue;
 		}
 
-		materialsBuffer->SetMappedData(
-			transformIndex, renderer->GetMaterial()
-		);
+		if (GameEntity* owner = renderer->GetOwner()) {
+			/// Material, Transformのセット
+			materialsBuffer.SetMappedData(transformIndex, renderer->GetMaterial());
+			transformsBuffer_.SetMappedData(transformIndex, owner->GetTransform()->GetMatWorld());
 
-		transformsBuffer_->SetMappedData(
-			transformIndex,
-			renderer->GetOwner()->GetTransform()->GetMatWorld()
-		);
-
-		++transformIndex;
+			++transformIndex;
+		}
 	}
 
-	materialsBuffer->SRVBindForGraphicsCommandList(cmdList, ROOT_PARAM_MATERIAL);
-	transformsBuffer_->SRVBindForGraphicsCommandList(cmdList, ROOT_PARAM_TRANSFORM);
-
+	materialsBuffer.SRVBindForGraphicsCommandList(cmdList, ROOT_PARAM_MATERIAL);
+	transformsBuffer_.SRVBindForGraphicsCommandList(cmdList, ROOT_PARAM_TRANSFORM);
 
 	/// 描画
 	cmdList->DrawIndexedInstanced(
@@ -179,5 +172,4 @@ void SpriteRenderingPipeline::Draw(class ECSGroup* _ecsGroup, const std::vector<
 		static_cast<UINT>(transformIndex),
 		0, 0, 0
 	);
-
 }

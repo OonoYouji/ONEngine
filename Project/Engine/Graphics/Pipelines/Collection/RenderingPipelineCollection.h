@@ -7,8 +7,6 @@
 /// engine
 #include "../Interface/IRenderingPipeline.h"
 #include "../Interface/IPostProcessPipeline.h"
-#include "Engine/Graphics/Shader/ShaderCompiler.h"
-#include "Engine/Core/DirectX12/Manager/DxManager.h"
 
 /// ///////////////////////////////////////////////////
 /// renderer collection
@@ -19,7 +17,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	RenderingPipelineCollection(ShaderCompiler* _shaderCompiler, class DxManager* _dxm, class EntityComponentSystem* _pEntityComponentSystem, class AssetCollection* _graphicsResourceCollection);
+	RenderingPipelineCollection(ShaderCompiler* _shaderCompiler, class DxManager* _dxm, class EntityComponentSystem* _pEntityComponentSystem, class AssetCollection* _assetCollection);
 	~RenderingPipelineCollection();
 
 	/// @brief 初期化関数
@@ -54,10 +52,10 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	ShaderCompiler*                   shaderCompiler_             = nullptr;
-	DxManager*                        dxManager_                  = nullptr;
-	class EntityComponentSystem*      pEntityComponentSystem_     = nullptr;
-	class AssetCollection* graphicsResourceCollection_ = nullptr;
+	class DxManager*             pDxManager_;
+	class EntityComponentSystem* pEntityComponentSystem_;
+	class AssetCollection*       pAssetCollection_;
+	class ShaderCompiler*        pShaderCompiler_;
 
 	std::unique_ptr<IRenderingPipeline> prefabRenderingPipeline_;
 
@@ -75,20 +73,20 @@ private:
 template<class T, typename... Args>
 inline void RenderingPipelineCollection::Generate3DRenderingPipeline(Args&&... _args) requires std::is_base_of_v<IRenderingPipeline, T> {
 	std::unique_ptr<T> renderer = std::make_unique<T>(std::forward<Args>(_args)...);
-	renderer->Initialize(shaderCompiler_, dxManager_);
+	renderer->Initialize(pShaderCompiler_, pDxManager_);
 	renderer3ds_.push_back(std::move(renderer));
 }
 
 template<class T, typename... Args>
 inline void RenderingPipelineCollection::Generate2DRenderingPipeline(Args&&... _args) requires std::is_base_of_v<IRenderingPipeline, T> {
 	std::unique_ptr<T> renderer = std::make_unique<T>(std::forward<Args>(_args)...);
-	renderer->Initialize(shaderCompiler_, dxManager_);
+	renderer->Initialize(pShaderCompiler_, pDxManager_);
 	renderer2ds_.push_back(std::move(renderer));
 }
 
 template<class T, typename... Args>
 inline void RenderingPipelineCollection::GeneratePostProcessPipeline(Args&&... _args) requires std::is_base_of_v<IPostProcessPipeline, T> {
 	std::unique_ptr<T> postProcess = std::make_unique<T>();
-	postProcess->Initialize(shaderCompiler_, dxManager_);
+	postProcess->Initialize(pShaderCompiler_, pDxManager_);
 	postProcesses_.push_back(std::move(postProcess));
 }

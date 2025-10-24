@@ -5,6 +5,7 @@
 #include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Terrain.h"
 
 
 TerrainRenderingPipeline::TerrainRenderingPipeline(AssetCollection* _assetCollection)

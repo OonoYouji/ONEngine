@@ -9,8 +9,6 @@
 #include <mono/jit/jit.h>
 
 /// engine
-#include "IScene.h"
-#include "ISceneFactory.h"
 #include "Loader/SceneIO.h"
 
 
@@ -27,7 +25,7 @@ public:
 	~SceneManager();
 
 	/// @brief このクラスの初期化
-	void Initialize(class AssetCollection* _graphicsResourceCollection);
+	void Initialize(class AssetCollection* _assetCollection);
 
 	/// @brief シーンの更新
 	void Update();
@@ -61,12 +59,11 @@ private:
 	/// ===================================================
 
 	class EntityComponentSystem* pEcs_ = nullptr;
-	class AssetCollection* pGraphicsResourceCollection_ = nullptr;
+	class AssetCollection* pAssetCollection_ = nullptr;
 
 	std::string currentScene_;
 	std::string nextScene_;
 
-	std::unique_ptr<ISceneFactory> sceneFactory_ = nullptr;
 	std::unique_ptr<SceneIO> sceneIO_ = nullptr;
 
 
@@ -74,10 +71,6 @@ public:
 	/// ===================================================
 	/// public : accessor
 	/// ===================================================
-
-	/// @brief シーンファクトリーのクラスを登録
-	/// @param _sceneFactory シーンファクトリーのインスタンス
-	void SetSceneFactory(std::unique_ptr<ISceneFactory>& _sceneFactory);
 
 	const std::string& GetCurrentSceneName() const;
 };
@@ -87,5 +80,4 @@ public:
 namespace MONO_INTERNAL_METHOD {
 
 	void InternalLoadScene(MonoString* _sceneName);
-
 }

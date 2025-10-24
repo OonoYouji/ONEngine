@@ -30,7 +30,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	GrassRenderingPipeline(class AssetCollection* _grc);
+	GrassRenderingPipeline(class AssetCollection* _assetCollection);
 	~GrassRenderingPipeline();
 
 	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxm) override;

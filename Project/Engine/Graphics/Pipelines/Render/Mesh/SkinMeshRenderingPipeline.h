@@ -30,23 +30,23 @@ public:
 	/// public : methods
 	/// ====================================================
 
-	SkinMeshRenderingPipeline(class AssetCollection* _graphicsResourceCollection);
+	SkinMeshRenderingPipeline(class AssetCollection* _assetCollection);
 	~SkinMeshRenderingPipeline() override = default;
 
 	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxm) override;
 
 	void Draw(class ECSGroup* _ecs, const std::vector<GameEntity*>& _entities, class CameraComponent* _camera, DxCommand* _dxCommand) override;
-	
+
 private:
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
 
-	class AssetCollection* pGraphicsResourceCollection_ = nullptr;
+	class AssetCollection* pAssetCollection_ = nullptr;
 
-	std::unique_ptr<ConstantBuffer<Matrix4x4>> transformBuffer_;
-	std::unique_ptr<ConstantBuffer<GPUMaterial>> materialBuffer_;
-	std::unique_ptr<ConstantBuffer<uint32_t>> textureIdBuffer_;
+	ConstantBuffer<Matrix4x4> transformBuffer_;
+	ConstantBuffer<GPUMaterial> materialBuffer_;
+	ConstantBuffer<uint32_t> textureIdBuffer_;
 
 };
 

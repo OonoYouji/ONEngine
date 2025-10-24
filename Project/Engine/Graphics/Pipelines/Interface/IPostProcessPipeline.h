@@ -49,4 +49,8 @@ using PerObjectPostProcess = IPostProcessPipeline;
 using ScreenPostProcess = IPostProcessPipeline;
 
 
+/// @brief リソースの内容をコピーする
+/// @param _src 大本のリソース
+/// @param _dst コピー元のリソース
+/// @param _cmdList CommandListのポインタ
 void CopyResource(ID3D12Resource* _src, ID3D12Resource* _dst, ID3D12GraphicsCommandList6* _cmdList);

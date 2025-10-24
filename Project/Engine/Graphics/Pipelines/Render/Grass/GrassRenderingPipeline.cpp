@@ -9,50 +9,8 @@
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Grass/GrassField.h"
 #include "Engine/Asset/Collection/AssetCollection.h"
 
-Vector3 EvaluateCubicBezier(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Vector3& p3, float t) {
-	float u = 1.0f - t;
-	float b0 = u * u * u;
-	float b1 = 3 * u * u * t;
-	float b2 = 3 * u * t * t;
-	float b3 = t * t * t;
-	return (b0 * p0) + (b1 * p1) + (b2 * p2) + (b3 * p3);
-}
 
-Vector3 EvaluateCubicBezierTangent(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Vector3& p3, float t) {
-	float u = 1.0f - t;
-	Vector3 d = 3.0f * u * u * (p1 - p0)
-		+ 6.0f * u * t * (p2 - p1)
-		+ 3.0f * t * t * (p3 - p2);
-	// 正規化は呼び出し側で行うかここで行う（ここでは行う）
-	// Vector3 に normalize がある想定
-	return d.Normalize();
-}
-
-void GenerateBladesAlongBezier(
-	StructuredBuffer<GrassInstance>& _blades,
-	const Vector3& p0, const Vector3& p1, const Vector3& p2, const Vector3& p3,
-	size_t bladeCount, float jitter = 0.0f) {
-
-	std::mt19937 rng(123456); // 固定シード（必要に応じて変更）
-	std::uniform_real_distribution<float> dist(0.0f, 1.0f);
-
-	for (size_t i = 0; i < bladeCount; ++i) {
-		// パラメータ t の均等分布＋少しノイズ
-		float base = (static_cast<float>(i) + 0.5f) / static_cast<float>(bladeCount);
-		float t = base + (jitter > 0.0f ? (dist(rng) - 0.5f) * jitter : 0.0f);
-		t = std::clamp(t, 0.0f, 1.0f);
-
-		GrassInstance b{};
-		b.position = EvaluateCubicBezier(p0, p1, p2, p3, t);
-		b.tangent = EvaluateCubicBezierTangent(p0, p1, p2, p3, t).Normalize();
-		b.scale = 0.8f + 0.4f * dist(rng);
-		b.random01 = dist(rng);
-		_blades.SetMappedData(i, b);
-	}
-}
-
-
-GrassRenderingPipeline::GrassRenderingPipeline(AssetCollection* _grc) : pAssetCollection_(_grc) {};
+GrassRenderingPipeline::GrassRenderingPipeline(AssetCollection* _assetCollection) : pAssetCollection_(_assetCollection) {};
 GrassRenderingPipeline::~GrassRenderingPipeline() = default;
 
 void GrassRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {
@@ -182,13 +140,8 @@ void GrassRenderingPipeline::Draw(ECSGroup* _ecs, const std::vector<class GameEn
 		grass->GetTimeBuffer().UAVBindForGraphicsCommandList(cmdList, ROOT_PARAM_TIME);
 		grass->GetMaterialBufferRef().BindForGraphicsCommandList(cmdList, CBV_MATERIAL);
 
-		//const UINT maxInstancesPerBuffer = static_cast<UINT>(std::pow(2, 16) - 1); // 65535
-		// バッファを分割する単位（chunkSize）は maxInstancesPerBuffer に合わせる
-		//const UINT chunkSize = maxInstancesPerBuffer;
 
-		//// バッファの個数（chunkSize 単位）
-		//UINT bufferCount = (instanceCount + maxInstancesPerBuffer - 1) / maxInstancesPerBuffer;
-
+		/// 現在forが1回しか周っていないが、草の数が膨大になった場合ループする回数を計算するようにする
 		//for (UINT i = 0; i < bufferCount; ++i) {
 		for (UINT i = 0; i < 1; ++i) {
 			// 1 DispatchMesh でカバーするグループ数（ceil）

@@ -14,6 +14,13 @@
 class SkyboxRenderingPipeline : public IRenderingPipeline {
 public:
 
+	enum ROOT_PARAM {
+		CBV_VIEW_PROJECTION,
+		CBV_TRANSFORM,
+		CBV_TEX_INDEX,
+		SRV_TEXTURE,
+	};
+
 	struct VSInput {
 		Vector4 position;
 	};
@@ -34,18 +41,20 @@ private:
 	/// private : objects
 	/// ===================================================
 
+	/// ----- other class ----- ///
 	class AssetCollection* pAssetCollection_;
-	ConstantBuffer<size_t> texIndex_;
-	ConstantBuffer<Matrix4x4> transformMatrix_;
-	
-	
-	std::vector<VSInput>         vertices_;
-	DxResource                   vertexBuffer_;
-	D3D12_VERTEX_BUFFER_VIEW     vbv_;
 
-	std::vector<uint32_t>        indices_;
-	DxResource                   indexBuffer_;
-	D3D12_INDEX_BUFFER_VIEW      ibv_;
+
+	ConstantBuffer<size_t>    texIndex_;
+	ConstantBuffer<Matrix4x4> transformMatrix_;
+
+	std::vector<VSInput>      vertices_;
+	DxResource                vertexBuffer_;
+	D3D12_VERTEX_BUFFER_VIEW  vbv_;
+
+	std::vector<uint32_t>     indices_;
+	DxResource                indexBuffer_;
+	D3D12_INDEX_BUFFER_VIEW   ibv_;
 
 };
 

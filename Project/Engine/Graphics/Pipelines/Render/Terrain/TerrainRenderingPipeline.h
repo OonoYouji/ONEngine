@@ -5,10 +5,10 @@
 
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/Graphics/Buffer/ConstantBuffer.h"
+#include "Engine/Graphics/Buffer/StructuredBuffer.h"
 #include "Engine/Graphics/Buffer/VertexBuffer.h"
 #include "Engine/Graphics/Buffer/IndexBuffer.h"
 #include "Engine/Graphics/Buffer/Data/GPUMaterial.h"
-#include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Terrain.h"
 
 /// /////////////////////////////////////////////////
 /// Terrainの描画pipeline
@@ -47,8 +47,9 @@ private:
 	/// private : objects
 	/// ====================================
 
+	/// ----- other class ----- ///
 	class AssetCollection* pAssetCollection_;
-	Terrain* pTerrain_;
+	class Terrain* pTerrain_;
 
 	ConstantBuffer<Matrix4x4> transformBuffer_;
 	StructuredBuffer<GPUMaterial> materialBuffer_;

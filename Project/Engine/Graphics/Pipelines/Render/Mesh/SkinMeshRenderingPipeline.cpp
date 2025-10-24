@@ -10,8 +10,9 @@
 #include "Engine/Asset/Collection/AssetCollection.h"
 
 
-SkinMeshRenderingPipeline::SkinMeshRenderingPipeline(AssetCollection* _graphicsResourceCollection)
-	: pGraphicsResourceCollection_(_graphicsResourceCollection) {}
+SkinMeshRenderingPipeline::SkinMeshRenderingPipeline(AssetCollection* _assetCollection)
+	: pAssetCollection_(_assetCollection) {
+}
 
 void SkinMeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {
 
@@ -26,7 +27,7 @@ void SkinMeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMa
 
 		pipeline_->SetShader(&shader);
 
-		/*
+		/*	SkinMeshの頂点構造体
 			struct VSInput {
 				float4 position : SV_POSITION;
 				float3 normal : NORMAL;
@@ -77,96 +78,83 @@ void SkinMeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMa
 
 	{
 		/// Buffer
-
-		transformBuffer_ = std::make_unique<ConstantBuffer<Matrix4x4>>();
-		materialBuffer_ = std::make_unique<ConstantBuffer<GPUMaterial>>();
-		textureIdBuffer_ = std::make_unique<ConstantBuffer<uint32_t>>();
-
-		transformBuffer_->Create(_dxm->GetDxDevice());
-		materialBuffer_->Create(_dxm->GetDxDevice());
-		textureIdBuffer_->Create(_dxm->GetDxDevice());
-
+		transformBuffer_.Create(_dxm->GetDxDevice());
+		materialBuffer_.Create(_dxm->GetDxDevice());
+		textureIdBuffer_.Create(_dxm->GetDxDevice());
 	}
 
 
 }
 
-void SkinMeshRenderingPipeline::Draw(class ECSGroup*, const std::vector<GameEntity*>& _entities, CameraComponent* _camera, DxCommand* _dxCommand) {
+void SkinMeshRenderingPipeline::Draw(class ECSGroup* _ecs, const std::vector<GameEntity*>& _entities, CameraComponent* _camera, DxCommand* _dxCommand) {
 
-	std::vector<SkinMeshRenderer*> skinMeshRenderers;
-	for (auto& entity : _entities) {
-		SkinMeshRenderer* skinMesh = entity->GetComponent<SkinMeshRenderer>();
-		if (skinMesh && skinMesh->enable) {
-			skinMeshRenderers.push_back(skinMesh);
-		}
-	}
-
-	if (skinMeshRenderers.empty()) {
-		return; ///< 描画するスキンメッシュがない場合は何もしない
+	ComponentArray<SkinMeshRenderer>* skinMeshArray = _ecs->GetComponentArray<SkinMeshRenderer>();
+	if (!skinMeshArray || skinMeshArray->GetUsedComponents().empty()) {
+		return;
 	}
 
 
-	ID3D12GraphicsCommandList* commandList = _dxCommand->GetCommandList();
+	ID3D12GraphicsCommandList* cmdList = _dxCommand->GetCommandList();
 
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
-	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	/// ViewProjection Bind
-	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(commandList, ViewProjectionCBV);
+	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(cmdList, ViewProjectionCBV);
 	/// Textures Bind
-	auto& textures = pGraphicsResourceCollection_->GetTextures();
-	commandList->SetGraphicsRootDescriptorTable(TextureSRV, (*textures.begin()).GetSRVGPUHandle()); ///< Texture
+	auto& textures = pAssetCollection_->GetTextures();
+	cmdList->SetGraphicsRootDescriptorTable(TextureSRV, (*textures.begin()).GetSRVGPUHandle()); ///< Texture
 
 
 	/// インスタンスごとの設定
-	for (auto& comp : skinMeshRenderers) {
-		if (!comp || !comp->enable) {
+	for (auto& smRenderer : skinMeshArray->GetUsedComponents()) {
+		if (!smRenderer || !smRenderer->enable) {
 			continue; ///< 無効なコンポーネントはスキップ
 		}
 
-		if (!comp->skinCluster_) {
+		if (!smRenderer->skinCluster_) {
 			continue; ///< スキンクラスターが存在しない場合はスキップ
 		}
 
-		GameEntity* entity = comp->GetOwner();
-		if (!entity) {
+		GameEntity* entity = smRenderer->GetOwner();
+		if (!entity || entity->GetActive()) {
 			continue; /// エンティティが無効な場合はスキップ
 		}
 
 		/// Transform Bind
-		transformBuffer_->SetMappedData(entity->GetTransform()->GetMatWorld());
+		transformBuffer_.SetMappedData(entity->GetTransform()->GetMatWorld());
 
 		/// Material Bind
-		materialBuffer_->SetMappedData(
+		materialBuffer_.SetMappedData(
 			GPUMaterial{
-				.baseColor = comp->GetColor(),
+				.baseColor = smRenderer->GetColor(),
 				.postEffectFlags = 1,
-				.entityId = comp->GetOwner()->GetId()
+				.entityId = smRenderer->GetOwner()->GetId()
 			}
 		);
 
 		/// TextureId Bind
-		size_t textureIndex = pGraphicsResourceCollection_->GetTextureIndex(comp->GetTexturePath());
-		textureIdBuffer_->SetMappedData(textures[textureIndex].GetSRVDescriptorIndex());
+		size_t textureIndex = pAssetCollection_->GetTextureIndex(smRenderer->GetTexturePath());
+		textureIdBuffer_.SetMappedData(textures[textureIndex].GetSRVDescriptorIndex());
 
-		transformBuffer_->BindForGraphicsCommandList(commandList, TransformCBV);
-		materialBuffer_->BindForGraphicsCommandList(commandList, MaterialCBV);
-		commandList->SetGraphicsRootDescriptorTable(WellForGPUSRV, comp->skinCluster_->paletteSRVHandle.second);
-		textureIdBuffer_->BindForGraphicsCommandList(commandList, TextureIdCBV);
+		transformBuffer_.BindForGraphicsCommandList(cmdList, TransformCBV);
+		materialBuffer_.BindForGraphicsCommandList(cmdList, MaterialCBV);
+		cmdList->SetGraphicsRootDescriptorTable(WellForGPUSRV, smRenderer->skinCluster_->paletteSRVHandle.second);
+		textureIdBuffer_.BindForGraphicsCommandList(cmdList, TextureIdCBV);
 
 
 		/// mesh の描画
-		Model* model = pGraphicsResourceCollection_->GetModel(comp->GetMeshPath());
+		Model* model = pAssetCollection_->GetModel(smRenderer->GetMeshPath());
 		for (auto& mesh : model->GetMeshes()) {
 			/// vbv, ibvのセット
 			D3D12_VERTEX_BUFFER_VIEW vbvs[2] = {
-				mesh->GetVBV(), comp->skinCluster_->vbv
+				mesh->GetVBV(), smRenderer->skinCluster_->vbv
 			};
-			commandList->IASetVertexBuffers(0, 2, vbvs);
-			commandList->IASetIndexBuffer(&mesh->GetIBV());
+			cmdList->IASetVertexBuffers(0, 2, vbvs);
+			cmdList->IASetIndexBuffer(&mesh->GetIBV());
 
 			/// 描画
-			commandList->DrawIndexedInstanced(
+			cmdList->DrawIndexedInstanced(
 				static_cast<UINT>(mesh->GetIndices().size()),
 				1, 0, 0, 0
 			);

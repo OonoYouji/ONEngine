@@ -33,12 +33,20 @@ void PostProcessRadialBlur::Initialize(ShaderCompiler* _shaderCompiler, DxManage
 
 void PostProcessRadialBlur::Execute(const std::string& _textureName, DxCommand* _dxCommand, AssetCollection* _assetCollection, EntityComponentSystem* _entityComponentSystem) {
 
+	/// 配列の取得とタグの確認
+	ComponentArray<ScreenPostEffectTag>* screenPostEffectTagArray = _entityComponentSystem->GetCurrentGroup()->GetComponentArray<ScreenPostEffectTag>();
+	if (!screenPostEffectTagArray || screenPostEffectTagArray->GetUsedComponents().empty()) {
+		return;
+	}
+
 	ScreenPostEffectTag* tag = nullptr;
-	for (auto& entity : _entityComponentSystem->GetCurrentGroup()->GetEntities()) {
-		tag = entity->GetComponent<ScreenPostEffectTag>();
-		if (tag) {
-			break;
+	for (auto& comp : screenPostEffectTagArray->GetUsedComponents()) {
+		if (!comp || !comp->enable) {
+			continue;
 		}
+
+		tag = comp;
+		break;
 	}
 
 	if (!tag || !tag->GetPostEffectEnable(PostEffectType_RadialBlur)) {

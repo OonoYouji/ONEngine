@@ -74,20 +74,25 @@ void Line3DRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 
 }
 
-void Line3DRenderingPipeline::Draw(class ECSGroup*, const std::vector<GameEntity*>& _entities, CameraComponent* _camera, DxCommand* _dxCommand) {
+void Line3DRenderingPipeline::Draw(class ECSGroup* _ecs, const std::vector<GameEntity*>& _entities, CameraComponent* _camera, DxCommand* _dxCommand) {
+
+	ComponentArray<Line3DRenderer>* line3DRendererArray = _ecs->GetComponentArray<Line3DRenderer>();
+	if (!line3DRendererArray || line3DRendererArray->GetUsedComponents().empty()) {
+		return;
+	}
 
 	/// rendering dataの収集
-	for (auto& entity : _entities) {
-		Line3DRenderer* renderer = entity->GetComponent<Line3DRenderer>();
-
+	for (auto& renderer : line3DRendererArray->GetUsedComponents()) {
 		if (renderer) {
 			vertices_.insert(vertices_.end(), renderer->GetVertices().begin(), renderer->GetVertices().end());
 		}
 	}
 
-	if (vertices_.empty()) { return; } ///< 描画するデータがない場合は、描画処理を行わない
+	/// 描画するデータがない場合は、描画処理を行わない
+	if (vertices_.empty()) { return; }
 
-	if (vertices_.size() > kMaxVertexNum_) { ///< 描画数が最大数を超える場合は超過分を削除
+	/// 描画数が最大数を超える場合は超過分を削除
+	if (vertices_.size() > kMaxVertexNum_) {
 		vertices_.resize(kMaxVertexNum_);
 	}
 
@@ -95,20 +100,16 @@ void Line3DRenderingPipeline::Draw(class ECSGroup*, const std::vector<GameEntity
 	std::memcpy(mappingData_, vertices_.data(), sizeof(VertexData) * vertices_.size());
 
 	/// ここから描画処理
-	ID3D12GraphicsCommandList* commandList = _dxCommand->GetCommandList();
+	auto cmdList = _dxCommand->GetCommandList();
 
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
-	commandList->IASetVertexBuffers(0, 1, &vbv_);
-	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
-	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(commandList, 0);
+	cmdList->IASetVertexBuffers(0, 1, &vbv_);
+	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
+	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(cmdList, 0);
 
-
-	/// draw call
-	commandList->DrawInstanced(static_cast<UINT>(vertices_.size()), 1, 0, 0);
-
-
+	/// 描画
+	cmdList->DrawInstanced(static_cast<UINT>(vertices_.size()), 1, 0, 0);
 
 	/// 描画データのクリア
 	vertices_.clear();
-
 }

@@ -119,8 +119,6 @@ void PostProcessLighting::Execute(const std::string& _textureName, DxCommand* _d
 
 	{	/// set textures
 
-		//auto& textures = _assetCollection->GetTextures();
-
 		textureIndices_[1] = _assetCollection->GetTextureIndex(_textureName + "WorldPosition");
 		textureIndices_[2] = _assetCollection->GetTextureIndex(_textureName + "Normal");
 		textureIndices_[3] = _assetCollection->GetTextureIndex(_textureName + "Flags");

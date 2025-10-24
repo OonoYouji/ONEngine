@@ -6,8 +6,8 @@
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 
 
-CopyImageRenderingPipeline::CopyImageRenderingPipeline(AssetCollection* _graphicsResourceCollection)
-	: pAssetCollection_(_graphicsResourceCollection) {}
+CopyImageRenderingPipeline::CopyImageRenderingPipeline(AssetCollection* _assetCollection)
+	: pAssetCollection_(_assetCollection) {}
 
 void CopyImageRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {
 

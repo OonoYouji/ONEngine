@@ -26,7 +26,11 @@ public:
 	/// @param _shaderCompiler シェーダーのコンパイラーへのポインタ
 	virtual void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxm) = 0;
 
-	virtual void PreDraw(class ECSGroup* _ecs, class CameraComponent* _camera, DxCommand* _dxCommand);
+	/// @brief 描画前の処理を行う
+	/// @param _ecs ECSGroupへのポインタ
+	/// @param _camera 描画に用いるカメラへのポインタ
+	/// @param _dxCommand DxCommandへのポインタ
+	virtual void PreDraw(class ECSGroup* /*_ecs*/, class CameraComponent* /*_camera*/, DxCommand* /*_dxCommand*/) {}
 
 	/// @brief 描画処理を行う
 	/// @param _dxCommand DxCommandへのポインタ

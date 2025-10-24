@@ -9,13 +9,13 @@
 
 
 SkyboxRenderingPipeline::SkyboxRenderingPipeline(AssetCollection* _assetCollection)
-	: pAssetCollection_(_assetCollection) {}
+	: pAssetCollection_(_assetCollection) {
+}
 SkyboxRenderingPipeline::~SkyboxRenderingPipeline() {}
 
 void SkyboxRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {
 
 	{	/// shader
-
 		Shader shader;
 		shader.Initialize(_shaderCompiler);
 		shader.CompileShader(L"Packages/Shader/Render/Skybox/Skybox.vs.hlsl", L"vs_6_0", Shader::Type::vs);
@@ -51,7 +51,6 @@ void SkyboxRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 		pipeline_->SetDepthStencilDesc(depthStencilDesc);
 
 		pipeline_->CreatePipeline(_dxm->GetDxDevice());
-
 	}
 
 	{	/// buffer
@@ -59,6 +58,7 @@ void SkyboxRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 		texIndex_.Create(_dxm->GetDxDevice());
 		transformMatrix_.Create(_dxm->GetDxDevice());
 
+		/// SkyBox用に頂点データを作成
 		for (int x = -1; x <= 1; x += 2) {
 			for (int y = -1; y <= 1; y += 2) {
 				for (int z = -1; z <= 1; z += 2) {
@@ -73,12 +73,12 @@ void SkyboxRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 		}
 
 		// インデックス（CW）
-		indices_.insert(indices_.end(), { 0, 2, 3, 0, 3, 1 }); // -X
-		indices_.insert(indices_.end(), { 4, 5, 7, 4, 7, 6 }); // +X
-		indices_.insert(indices_.end(), { 0, 1, 5, 0, 5, 4 }); // -Y
-		indices_.insert(indices_.end(), { 2, 6, 7, 2, 7, 3 }); // +Y
-		indices_.insert(indices_.end(), { 0, 4, 6, 0, 6, 2 }); // -Z
-		indices_.insert(indices_.end(), { 1, 3, 7, 1, 7, 5 }); // +Z
+		indices_.insert(indices_.end(), { 0, 2, 3, 0, 3, 1 }); // -X面
+		indices_.insert(indices_.end(), { 4, 5, 7, 4, 7, 6 }); // +X面
+		indices_.insert(indices_.end(), { 0, 1, 5, 0, 5, 4 }); // -Y面
+		indices_.insert(indices_.end(), { 2, 6, 7, 2, 7, 3 }); // +Y面
+		indices_.insert(indices_.end(), { 0, 4, 6, 0, 6, 2 }); // -Z面
+		indices_.insert(indices_.end(), { 1, 3, 7, 1, 7, 5 }); // +Z面
 
 
 
@@ -117,49 +117,47 @@ void SkyboxRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 
 void SkyboxRenderingPipeline::Draw(class ECSGroup* _ecs, const std::vector<GameEntity*>&, CameraComponent* _camera, DxCommand* _dxCommand) {
 
-	Skybox* pSkybox = nullptr;
+	/// Skybox配列を取得、配列がからなら処理を抜ける
 	ComponentArray<Skybox>* skyboxArray = _ecs->GetComponentArray<Skybox>();
-	if (!skyboxArray) {
+	if (!skyboxArray || skyboxArray->GetUsedComponents().empty()) {
 		return;
 	}
 
-	for (auto& skybox : skyboxArray->GetUsedComponents()) {
-		if (skybox && skybox->GetOwner()) {
-			pSkybox = skybox;
+	Skybox* skybox = nullptr;
+	for (auto& skyboxComp : skyboxArray->GetUsedComponents()) {
+		if (skyboxComp && skyboxComp->enable) {
+			skybox = skyboxComp;
 			break;
 		}
 	}
 
-
-	if (!pSkybox) {
+	if (!skybox) {
 		return;
 	}
 
-	//pSkybox->GetOwner()->UpdateTransform();
 
+	/// Skyboxに使用するテクスチャを取得、Bufferにセット
 	auto& textures = pAssetCollection_->GetTextures();
-	size_t texIndex = pAssetCollection_->GetTextureIndex(pSkybox->GetDDSTexturePath());
+	size_t texIndex = pAssetCollection_->GetTextureIndex(skybox->GetDDSTexturePath());
 
 	texIndex_.SetMappedData(texIndex);
-	transformMatrix_.SetMappedData(pSkybox->GetOwner()->GetTransform()->GetMatWorld());
+	transformMatrix_.SetMappedData(skybox->GetOwner()->GetTransform()->GetMatWorld());
 
 
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
-	auto commandList = _dxCommand->GetCommandList();
+	auto cmdList = _dxCommand->GetCommandList();
 
-	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	commandList->IASetVertexBuffers(0, 1, &vbv_);
-	commandList->IASetIndexBuffer(&ibv_);
+	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	cmdList->IASetVertexBuffers(0, 1, &vbv_);
+	cmdList->IASetIndexBuffer(&ibv_);
 
-	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(commandList, 0);
-	transformMatrix_.BindForGraphicsCommandList(commandList, 1);
-	texIndex_.BindForGraphicsCommandList(commandList, 2);
-	commandList->SetGraphicsRootDescriptorTable(3, (*textures.begin()).GetSRVGPUHandle());
+	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(cmdList, CBV_VIEW_PROJECTION);
+	transformMatrix_.BindForGraphicsCommandList(cmdList, CBV_TRANSFORM);
+	texIndex_.BindForGraphicsCommandList(cmdList, CBV_TEX_INDEX);
+	cmdList->SetGraphicsRootDescriptorTable(SRV_TEXTURE, (*textures.begin()).GetSRVGPUHandle());
 
-	commandList->DrawIndexedInstanced(
+	cmdList->DrawIndexedInstanced(
 		static_cast<UINT>(indices_.size()),
 		1, 0, 0, 0
 	);
-
-
 }

@@ -2,6 +2,8 @@
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
+#include "Engine/ECS/Component/Array/ComponentArray.h"
+#include "Engine/ECS/EntityComponentSystem/ECSGroup.h"
 #include "Engine/ECS/Entity/GameEntity/GameEntity.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 #include "Engine/ECS/Component/Components/RendererComponents/SkinMesh/SkinMeshRenderer.h"
@@ -46,7 +48,7 @@ void SkinMeshSkeletonRenderingPipeline::Initialize(ShaderCompiler* _shaderCompil
 
 
 
-	{	
+	{
 		/// verticesを最大数分メモリを確保
 		maxVertexNum_ = static_cast<size_t>(std::pow(2, 16));
 		vertices_.reserve(maxVertexNum_);
@@ -62,30 +64,20 @@ void SkinMeshSkeletonRenderingPipeline::Initialize(ShaderCompiler* _shaderCompil
 
 }
 
-void SkinMeshSkeletonRenderingPipeline::Draw(class ECSGroup* /*_ecs*/, const std::vector<class GameEntity*>& _entities, CameraComponent* _camera, DxCommand* _dxCommand) {
+void SkinMeshSkeletonRenderingPipeline::Draw(class ECSGroup* _ecs, const std::vector<class GameEntity*>& _entities, CameraComponent* _camera, DxCommand* _dxCommand) {
 
-	/// SkinMeshRenderer の取得
-	std::vector<SkinMeshRenderer*> skinMeshRenderers;
-	for (auto& entity : _entities) {
-		SkinMeshRenderer* skinMeshRenderer = entity->GetComponent<SkinMeshRenderer>();
-		if (skinMeshRenderer && skinMeshRenderer->enable) {
-			skinMeshRenderers.push_back(skinMeshRenderer);
-		}
-	}
-
-
-	/// 描画対象がなければ 早期リターン
-	if (skinMeshRenderers.empty()) {
+	ComponentArray<SkinMeshRenderer>* skinMeshRendererArray = _ecs->GetComponentArray<SkinMeshRenderer>();
+	if (!skinMeshRendererArray || skinMeshRendererArray->GetUsedComponents().empty()) {
 		return;
 	}
 
 
 	/// 頂点データを集める
-	for (auto& smr : skinMeshRenderers) {
+	for (auto& smRenderer : skinMeshRendererArray->GetUsedComponents()) {
 
-		float scale = smr->GetOwner()->GetScale().Len();
+		float scale = smRenderer->GetOwner()->GetScale().Len();
 
-		for (const Joint& joint : smr->GetSkeleton().joints) {
+		for (const Joint& joint : smRenderer->GetSkeleton().joints) {
 			if (!joint.parent.has_value()) {
 				continue; // ルートジョイントはスキップ
 			}
@@ -95,7 +87,7 @@ void SkinMeshSkeletonRenderingPipeline::Draw(class ECSGroup* /*_ecs*/, const std
 			/// ----------------------------------------
 
 			/// 色と座標を取得
-			Matrix4x4&& thisWorldMatrix = joint.matSkeletonSpace * smr->GetOwner()->GetTransform()->matWorld;
+			Matrix4x4&& thisWorldMatrix = joint.matSkeletonSpace * smRenderer->GetOwner()->GetTransform()->matWorld;
 			Vector3 thisPosition = Matrix4x4::Transform(Vector3::kZero, thisWorldMatrix);
 			Vector4 thisColor = Color::kRed;
 
@@ -112,8 +104,8 @@ void SkinMeshSkeletonRenderingPipeline::Draw(class ECSGroup* /*_ecs*/, const std
 			/// 自身と親Jointを結ぶ線を描画
 			/// ----------------------------------------
 
-			const Joint& parentJoint = smr->GetSkeleton().joints[joint.parent.value()];
-			Matrix4x4&& parentWorldMatrix = parentJoint.matSkeletonSpace * smr->GetOwner()->GetTransform()->matWorld;
+			const Joint& parentJoint = smRenderer->GetSkeleton().joints[joint.parent.value()];
+			Matrix4x4&& parentWorldMatrix = parentJoint.matSkeletonSpace * smRenderer->GetOwner()->GetTransform()->matWorld;
 			Vector3 parentPosition = Matrix4x4::Transform(Vector3::kZero, parentWorldMatrix);
 
 			/// 線の頂点データを作成

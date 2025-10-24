@@ -39,15 +39,14 @@ public:
 
 	void Initialize(class ShaderCompiler* _compiler);
 
-	
+
 	/// <summary>
 	/// shaderのコンパイル
 	/// </summary>
 	/// <param name="_filePath"></param>
 	/// <param name="_profile"></param>
 	/// <returns></returns>
-	bool CompileShader(const std::wstring& _filePath, const wchar_t* _profile, Type _type);
-	bool CompileShader(const std::wstring& _filePath, const wchar_t* _profile, Type _type, const std::wstring& _entryPoint);
+	bool CompileShader(const std::wstring& _filePath, const wchar_t* _profile, Type _type, const std::wstring& _entryPoint = L"main");
 
 
 public:
@@ -56,11 +55,11 @@ public:
 	/// public : objects
 	/// ===================================================
 
-	ComPtr<IDxcBlob> vs_ = nullptr;
-	ComPtr<IDxcBlob> ps_ = nullptr;
-	ComPtr<IDxcBlob> cs_ = nullptr;
-	ComPtr<IDxcBlob> ms_ = nullptr;
-	ComPtr<IDxcBlob> as_ = nullptr;
+	ComPtr<IDxcBlob> vs_;
+	ComPtr<IDxcBlob> ps_;
+	ComPtr<IDxcBlob> cs_;
+	ComPtr<IDxcBlob> ms_;
+	ComPtr<IDxcBlob> as_;
 
 	class ShaderCompiler* pShaderCompiler_ = nullptr;
 
