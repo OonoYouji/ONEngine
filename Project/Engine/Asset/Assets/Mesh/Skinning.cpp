@@ -6,12 +6,16 @@
 #include "Model.h"
 
 Vector3 ANIME_MATH::CalculateValue(const std::vector<KeyFrameVector3>& _keyFrames, float _time) {
+	/// ----- Vector3のキーフレーム配列を計算 ----- ///
+
 	Assert(!_keyFrames.empty(), "keyframe empty...");
 
+	/// 最初のキーフレーム以前の場合は最初の値を返す
 	if (_keyFrames.size() == 1 || _time <= _keyFrames[0].time) {
 		return _keyFrames[0].value;
 	}
 
+	/// キーフレーム間の補間計算
 	for (size_t index = 0; index < _keyFrames.size() - 1; ++index) {
 		size_t nextIndex = index + 1;
 
@@ -25,12 +29,17 @@ Vector3 ANIME_MATH::CalculateValue(const std::vector<KeyFrameVector3>& _keyFrame
 }
 
 Quaternion ANIME_MATH::CalculateValue(const std::vector<KeyFrameQuaternion>& _keyFrames, float _time) {
+	/// ----- Quaternionのキーフレーム配列を計算 ----- ///
+
 	Assert(!_keyFrames.empty(), "keyframe empty...");
 
+
+	/// 最初のキーフレーム以前の場合は最初の値を返す
 	if (_keyFrames.size() == 1 || _time <= _keyFrames[0].time) {
 		return _keyFrames[0].value;
 	}
 
+	/// キーフレーム間の補間計算
 	for (size_t index = 0; index < _keyFrames.size() - 1; ++index) {
 		size_t nextIndex = index + 1;
 
@@ -44,6 +53,8 @@ Quaternion ANIME_MATH::CalculateValue(const std::vector<KeyFrameQuaternion>& _ke
 }
 
 int32_t ANIME_MATH::CreateJoint(const Node& _node, const std::optional<int32_t>& _parent, std::vector<Joint>& _joints) {
+	/// ----- ノードからジョイントを作成 ----- ///
+
 	Joint joint;
 
 	joint.name = _node.name;
@@ -51,18 +62,21 @@ int32_t ANIME_MATH::CreateJoint(const Node& _node, const std::optional<int32_t>&
 	joint.matSkeletonSpace = Matrix4x4::kIdentity;
 	joint.index = static_cast<int32_t>(_joints.size());
 	joint.parent = _parent;
-	_joints.push_back(joint);
 
-	/// push_backした後に子のJointを処理してしまっているので一旦コメントアウト、処理に影響がないのか確認する
-	//for (const Node& child : _node.children) {
-	//	int32_t childIndex = CreateJoint(child, joint.index, _joints);
-	//	joint.children.push_back(childIndex);
-	//}
+	/// 子ノードのジョイントを再帰的に作成
+	for (const Node& child : _node.children) {
+		int32_t childIndex = CreateJoint(child, joint.index, _joints);
+		joint.children.push_back(childIndex);
+	}
+
+	_joints.push_back(joint);
 
 	return joint.index;
 }
 
 Skeleton ANIME_MATH::CreateSkeleton(const Node& _rootNode) {
+	/// ----- ノードからスケルトンを作成 ----- ///
+
 	Skeleton result;
 	result.root = CreateJoint(_rootNode, {}, result.joints);
 
@@ -74,6 +88,8 @@ Skeleton ANIME_MATH::CreateSkeleton(const Node& _rootNode) {
 }
 
 SkinCluster ANIME_MATH::CreateSkinCluster(const Skeleton& _skeleton, Model* _model, DxManager* _dxManager) {
+	/// ----- スキンクラスターを作成 ----- ///
+
 	SkinCluster result{};
 
 	DxDevice* dxDevice = _dxManager->GetDxDevice();
@@ -118,11 +134,12 @@ SkinCluster ANIME_MATH::CreateSkinCluster(const Skeleton& _skeleton, Model* _mod
 	result.vbv.SizeInBytes = static_cast<UINT>(sizeof(VertexInfluence) * frontMesh->GetVertices().size());
 	result.vbv.StrideInBytes = sizeof(VertexInfluence);
 
+	/// すべて単位行列で初期化
 	result.matBindPoseInverseArray.resize(_skeleton.joints.size());
 	std::generate(
 		result.matBindPoseInverseArray.begin(), result.matBindPoseInverseArray.end(),
 		[]() {return Matrix4x4::kIdentity; }
-	); /// すべて単位行列で初期化
+	);
 
 
 	for (const auto& jointWeight : _model->GetJointWeightData()) {

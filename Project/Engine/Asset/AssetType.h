@@ -20,3 +20,9 @@ enum class AssetType {
 /// @param _type 確認したいType
 /// @return true: 同一のType   false: Typeの不一致 
 bool CheckAssetType(const std::string& _extension, AssetType _type);
+
+
+/// @brief 拡張子からAssetTypeを取得する
+/// @param _extension 拡張子
+/// @return AssetType
+AssetType GetAssetTypeFromExtension(const std::string& _extension);

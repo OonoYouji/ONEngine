@@ -54,6 +54,7 @@ void AssetLoader::Initialize() {
 }
 
 void AssetLoader::LoadTexture([[maybe_unused]] const std::string& _filepath) {
+	/// ----- テクスチャの読み込み ----- ///
 
 	Texture texture;
 	DirectX::ScratchImage       scratchImage = LoadScratchImage(_filepath);
@@ -70,17 +71,16 @@ void AssetLoader::LoadTexture([[maybe_unused]] const std::string& _filepath) {
 	srvDesc.Format = metadata.format;
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 	if (metadata.IsCubemap()) {
+		/// キューブマップの場合
 		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURECUBE;
 		srvDesc.TextureCube.MostDetailedMip = 0;
 		srvDesc.TextureCube.MipLevels = UINT_MAX;
 		srvDesc.TextureCube.ResourceMinLODClamp = 0.0f;
-
 	} else {
+		/// 2Dテクスチャの場合
 		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 		srvDesc.Texture2D.MipLevels = static_cast<UINT>(metadata.mipLevels);
-
 	}
-
 
 
 	/// srv handleの取得
@@ -100,6 +100,7 @@ void AssetLoader::LoadTexture([[maybe_unused]] const std::string& _filepath) {
 }
 
 void AssetLoader::LoadModelObj(const std::string& _filepath) {
+	/// ----- モデルの読み込み ----- ///
 
 	/// ファイルの拡張子を取得
 	std::string fileExtension = _filepath.substr(_filepath.find_last_of('.'));
@@ -205,6 +206,8 @@ void AssetLoader::LoadModelObj(const std::string& _filepath) {
 }
 
 Node AssetLoader::ReadNode(aiNode* _node) {
+	/// ----- nodeの読み込み ----- ///
+
 	Node result;
 
 	aiVector3D   position;
@@ -231,6 +234,7 @@ Node AssetLoader::ReadNode(aiNode* _node) {
 }
 
 void AssetLoader::LoadAnimation(Model* _model, const std::string& _filepath) {
+	/// ----- アニメーションの読み込み ----- ///
 
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(_filepath.c_str(), 0);

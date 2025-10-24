@@ -27,3 +27,11 @@ bool CheckAssetType(const std::string& _extension, AssetType _type) {
 
 	return false;
 }
+
+
+AssetType GetAssetTypeFromExtension(const std::string& _extension) {
+	if (gAssetTypeCheckMap.contains(_extension)) {
+		return gAssetTypeCheckMap[_extension];
+	}
+	return AssetType::None;
+}

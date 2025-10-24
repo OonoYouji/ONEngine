@@ -12,7 +12,7 @@
 
 
 void ShowGuiMaterial(const std::string& _label, Material* _material) {
-	if(!_material) {
+	if (!_material) {
 		return;
 	}
 
@@ -40,19 +40,21 @@ void GenerateMaterialFile(const std::string& _filepath, Material* _material) {
 	/// _filepathにマテリアル情報を書き込む
 
 	/// _filepathがないなら生成する
-	if(std::filesystem::exists(_filepath) == false) {
+	if (std::filesystem::exists(_filepath) == false) {
 		std::ofstream ofs(_filepath);
 		ofs.close();
 	}
 
 	std::ofstream ofs(_filepath);
-	if(!ofs) {
+	if (!ofs) {
 		return;
 	}
 
 
+	/// 引数のマテリアル情報を使用する
+	/// nullptrならデフォルト値で生成する
 	Material material;
-	if(_material) {
+	if (_material) {
 		material = *_material;
 	} else {
 		material = GenerateMaterial();
