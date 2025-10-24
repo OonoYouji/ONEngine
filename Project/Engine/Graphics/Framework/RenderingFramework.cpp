@@ -10,13 +10,13 @@
 RenderingFramework::RenderingFramework() {}
 RenderingFramework::~RenderingFramework() {}
 
-void RenderingFramework::Initialize(DxManager* _dxManager, WindowManager* _windowManager, EntityComponentSystem* _pEntityComponentSystem) {
+void RenderingFramework::Initialize(DxManager* _dxm, WindowManager* _windowManager, EntityComponentSystem* _pEntityComponentSystem) {
 
 	/// shader compilerの初期化
 	shaderCompiler_ = std::make_unique<ShaderCompiler>();
 	shaderCompiler_->Initialize();
 
-	pDxManager_ = _dxManager;
+	pDxManager_ = _dxm;
 	pWindowManager_ = _windowManager;
 	pEntityComponentSystem_ = _pEntityComponentSystem;
 

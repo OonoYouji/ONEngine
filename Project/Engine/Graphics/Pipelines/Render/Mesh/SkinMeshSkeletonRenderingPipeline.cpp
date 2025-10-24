@@ -11,7 +11,7 @@ using namespace GizmoPrimitive;
 
 SkinMeshSkeletonRenderingPipeline::SkinMeshSkeletonRenderingPipeline() {}
 
-void SkinMeshSkeletonRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
+void SkinMeshSkeletonRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {
 
 	{
 		Shader shader;
@@ -40,7 +40,7 @@ void SkinMeshSkeletonRenderingPipeline::Initialize(ShaderCompiler* _shaderCompil
 		depthStencilDesc.StencilEnable = FALSE;
 		pipeline_->SetDepthStencilDesc(depthStencilDesc);
 
-		pipeline_->CreatePipeline(_dxManager->GetDxDevice());
+		pipeline_->CreatePipeline(_dxm->GetDxDevice());
 
 	}
 
@@ -52,7 +52,7 @@ void SkinMeshSkeletonRenderingPipeline::Initialize(ShaderCompiler* _shaderCompil
 		vertices_.reserve(maxVertexNum_);
 
 		/// vertex bufferの作成
-		vertexBuffer_.CreateResource(_dxManager->GetDxDevice(), sizeof(VertexData) * maxVertexNum_);
+		vertexBuffer_.CreateResource(_dxm->GetDxDevice(), sizeof(VertexData) * maxVertexNum_);
 		vertexBuffer_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mappingData_));
 
 		vbv_.BufferLocation = vertexBuffer_.Get()->GetGPUVirtualAddress();

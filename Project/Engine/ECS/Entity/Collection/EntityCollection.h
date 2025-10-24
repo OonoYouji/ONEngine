@@ -32,7 +32,7 @@ public:
 	/// public : methods
 	/// =========================================
 
-	EntityCollection(class ECSGroup* _ecsGroup, class DxManager* _dxManager);
+	EntityCollection(class ECSGroup* _ecsGroup, class DxManager* _dxm);
 	~EntityCollection();
 
 	/// 生成

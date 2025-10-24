@@ -13,7 +13,7 @@ TerrainRenderingPipeline::~TerrainRenderingPipeline() {}
 
 
 
-void TerrainRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
+void TerrainRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {
 
 	{	/// shader
 
@@ -70,13 +70,13 @@ void TerrainRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMan
 		pipeline_->SetDepthStencilDesc(depthStencilDesc);
 
 		/// pipeline create
-		pipeline_->CreatePipeline(_dxManager->GetDxDevice());
+		pipeline_->CreatePipeline(_dxm->GetDxDevice());
 	}
 
 
 	{	/// buffer
-		transformBuffer_.Create(_dxManager->GetDxDevice());
-		materialBuffer_.Create(1, _dxManager->GetDxDevice(), _dxManager->GetDxSRVHeap());
+		transformBuffer_.Create(_dxm->GetDxDevice());
+		materialBuffer_.Create(1, _dxm->GetDxDevice(), _dxm->GetDxSRVHeap());
 	}
 
 	pTerrain_ = nullptr;

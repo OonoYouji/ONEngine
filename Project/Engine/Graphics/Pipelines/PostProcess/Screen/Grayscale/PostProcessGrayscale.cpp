@@ -7,7 +7,7 @@
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Components/RendererComponents/ScreenPostEffectTag/ScreenPostEffectTag.h"
 
-void PostProcessGrayscale::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
+void PostProcessGrayscale::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {
 
 	{
 		Shader shader;
@@ -22,7 +22,7 @@ void PostProcessGrayscale::Initialize(ShaderCompiler* _shaderCompiler, DxManager
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 0);
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 1);
 		pipeline_->AddStaticSampler(D3D12_SHADER_VISIBILITY_ALL, 0);
-		pipeline_->CreatePipeline(_dxManager->GetDxDevice());
+		pipeline_->CreatePipeline(_dxm->GetDxDevice());
 
 	}
 

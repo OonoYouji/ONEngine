@@ -36,7 +36,7 @@ public:
 	~RenderingFramework();
 
 	/// @brief 初期化
-	void Initialize(DxManager* _dxManager, WindowManager* _windowManager, class EntityComponentSystem* _pEntityComponentSystem);
+	void Initialize(DxManager* _dxm, WindowManager* _windowManager, class EntityComponentSystem* _pEntityComponentSystem);
 
 	/// @brief 作成された順番に描画を行う
 	void Draw();

@@ -18,7 +18,7 @@ public:
 	PostProcessRadialBlur();
 	~PostProcessRadialBlur() override;
 
-	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxManager) override;
+	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxm) override;
 
 	void Execute(
 		const std::string& _textureName,

@@ -87,19 +87,19 @@ Skeleton ANIME_MATH::CreateSkeleton(const Node& _rootNode) {
 	return result;
 }
 
-SkinCluster ANIME_MATH::CreateSkinCluster(const Skeleton& _skeleton, Model* _model, DxManager* _dxManager) {
+SkinCluster ANIME_MATH::CreateSkinCluster(const Skeleton& _skeleton, Model* _model, DxManager* _dxm) {
 	/// ----- スキンクラスターを作成 ----- ///
 
 	SkinCluster result{};
 
-	DxDevice* dxDevice = _dxManager->GetDxDevice();
+	DxDevice* dxDevice = _dxm->GetDxDevice();
 	/// matrix paletteの作成
 	result.paletteResource.CreateResource(dxDevice, sizeof(WellForGPU) * _skeleton.joints.size());
 	WellForGPU* mappedPalette = nullptr;
 	result.paletteResource.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mappedPalette));
 	result.mappedPalette = { mappedPalette, _skeleton.joints.size() };
 
-	DxSRVHeap* pSRVHeap = _dxManager->GetDxSRVHeap();
+	DxSRVHeap* pSRVHeap = _dxm->GetDxSRVHeap();
 
 	/// cpu,gpu handle get
 	result.srvDescriptorIndex = pSRVHeap->AllocateBuffer();
@@ -115,7 +115,7 @@ SkinCluster ANIME_MATH::CreateSkinCluster(const Skeleton& _skeleton, Model* _mod
 	paletteSRVDesc.Buffer.NumElements = static_cast<UINT>(_skeleton.joints.size());
 	paletteSRVDesc.Buffer.StructureByteStride = sizeof(WellForGPU);
 
-	ID3D12Device* pDevice = _dxManager->GetDxDevice()->GetDevice();
+	ID3D12Device* pDevice = _dxm->GetDxDevice()->GetDevice();
 	pDevice->CreateShaderResourceView(result.paletteResource.Get(), &paletteSRVDesc, result.paletteSRVHandle.first);
 
 

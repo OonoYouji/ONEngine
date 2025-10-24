@@ -11,7 +11,7 @@
 RiverRenderingPipeline::RiverRenderingPipeline(AssetCollection* _grc) : pAssetCollection_(_grc) {}
 RiverRenderingPipeline::~RiverRenderingPipeline() = default;
 
-void RiverRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
+void RiverRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {
 
 	{	/// shader
 
@@ -50,7 +50,7 @@ void RiverRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManag
 		depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
 		pipeline_->SetDepthStencilDesc(depthStencilDesc);
 
-		pipeline_->CreatePipeline(_dxManager->GetDxDevice());
+		pipeline_->CreatePipeline(_dxm->GetDxDevice());
 	}
 
 }

@@ -11,8 +11,9 @@ void TerrainCollision::OutsideOfRuntimeUpdate(ECSGroup*) {}
 
 void TerrainCollision::RuntimeUpdate(ECSGroup* _ecs) {
 
+	/// TerrainColliderの配列を取得＆使用中のコンポーネントがなければ終了
 	ComponentArray<TerrainCollider>* terrainColliderArray = _ecs->GetComponentArray<TerrainCollider>();
-	if (!terrainColliderArray) {
+	if (!terrainColliderArray || terrainColliderArray->GetUsedComponents().empty()) {
 		return;
 	}
 

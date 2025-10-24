@@ -34,8 +34,8 @@ public:
 	~AssetCollection();
 
 	/// @brief 初期化関数
-	/// @param _dxManager DxManagerのポインタ
-	void Initialize(class DxManager* _dxManager);
+	/// @param _dxm DxManagerのポインタ
+	void Initialize(class DxManager* _dxm);
 
 	/// 読み込み
 	void Load(const std::string& _filepath, AssetType _type);

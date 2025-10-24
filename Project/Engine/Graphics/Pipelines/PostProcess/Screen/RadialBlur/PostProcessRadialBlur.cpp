@@ -10,7 +10,7 @@
 PostProcessRadialBlur::PostProcessRadialBlur() {}
 PostProcessRadialBlur::~PostProcessRadialBlur() {}
 
-void PostProcessRadialBlur::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
+void PostProcessRadialBlur::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {
 
 	{
 		Shader shader;
@@ -25,7 +25,7 @@ void PostProcessRadialBlur::Initialize(ShaderCompiler* _shaderCompiler, DxManage
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 0);
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 1);
 		pipeline_->AddStaticSampler(D3D12_SHADER_VISIBILITY_ALL, 0);
-		pipeline_->CreatePipeline(_dxManager->GetDxDevice());
+		pipeline_->CreatePipeline(_dxm->GetDxDevice());
 
 	}
 

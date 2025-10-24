@@ -11,7 +11,7 @@
 TerrainVertexEditorCompute::TerrainVertexEditorCompute() {}
 TerrainVertexEditorCompute::~TerrainVertexEditorCompute() {}
 
-void TerrainVertexEditorCompute::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
+void TerrainVertexEditorCompute::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {
 
 	{	/// Shader
 
@@ -35,13 +35,13 @@ void TerrainVertexEditorCompute::Initialize(ShaderCompiler* _shaderCompiler, DxM
 
 		pipeline_->AddStaticSampler(D3D12_SHADER_VISIBILITY_ALL, 0);
 
-		pipeline_->CreatePipeline(_dxManager->GetDxDevice());
+		pipeline_->CreatePipeline(_dxm->GetDxDevice());
 	}
 
 	{	/// Buffer
 
-		terrainInfo_.Create(_dxManager->GetDxDevice());
-		inputInfo_.Create(_dxManager->GetDxDevice());
+		terrainInfo_.Create(_dxm->GetDxDevice());
+		inputInfo_.Create(_dxm->GetDxDevice());
 
 	}
 }

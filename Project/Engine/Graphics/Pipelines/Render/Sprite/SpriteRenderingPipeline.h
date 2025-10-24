@@ -48,8 +48,8 @@ public:
 
 	/// @brief 初期化処理
 	/// @param _shaderCompiler ShaderCompilerへのポインタ
-	/// @param _dxManager DxManagerへのポインタ
-	void Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) override;
+	/// @param _dxm DxManagerへのポインタ
+	void Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) override;
 
 	void Draw(class ECSGroup* _ecs, const std::vector<GameEntity*>& _entities, CameraComponent* _camera, DxCommand* _dxCommand) override;
 

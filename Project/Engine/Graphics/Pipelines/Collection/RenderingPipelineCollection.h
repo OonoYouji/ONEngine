@@ -19,7 +19,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	RenderingPipelineCollection(ShaderCompiler* _shaderCompiler, class DxManager* _dxManager, class EntityComponentSystem* _pEntityComponentSystem, class AssetCollection* _graphicsResourceCollection);
+	RenderingPipelineCollection(ShaderCompiler* _shaderCompiler, class DxManager* _dxm, class EntityComponentSystem* _pEntityComponentSystem, class AssetCollection* _graphicsResourceCollection);
 	~RenderingPipelineCollection();
 
 	/// @brief 初期化関数

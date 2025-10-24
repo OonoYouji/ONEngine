@@ -111,6 +111,6 @@ namespace ANIME_MATH {
 
 	int32_t CreateJoint(const Node& _node, const std::optional<int32_t>& _parent, std::vector<Joint>& _joints);
 	Skeleton CreateSkeleton(const Node& _rootNode);
-	SkinCluster CreateSkinCluster(const Skeleton& _skeleton, Model* _model, DxManager* _dxManager);
+	SkinCluster CreateSkinCluster(const Skeleton& _skeleton, Model* _model, DxManager* _dxm);
 }
 

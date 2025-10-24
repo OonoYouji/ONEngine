@@ -22,6 +22,9 @@ ScriptUpdateSystem::~ScriptUpdateSystem() {
 }
 
 void ScriptUpdateSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
+	/// ----- HotReloadをしたときにC#側がリセットされるのでスクリプトを追加し直す----- ///
+
+
 	MonoScriptEngine* monoEngine = MonoScriptEngine::GetInstance();
 	if (!monoEngine) {
 		return;

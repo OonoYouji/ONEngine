@@ -9,9 +9,9 @@
 RiverMeshGeneratePipeline::RiverMeshGeneratePipeline() = default;
 RiverMeshGeneratePipeline::~RiverMeshGeneratePipeline() = default;
 
-void RiverMeshGeneratePipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
+void RiverMeshGeneratePipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {
 
-	pDxManager_ = _dxManager;
+	pDxManager_ = _dxm;
 
 	{	/// shader
 		Shader shader;
@@ -32,7 +32,7 @@ void RiverMeshGeneratePipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMa
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 1); /// UAV_VERTICES
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 2); /// UAV_INDICES
 
-		pipeline_->CreatePipeline(_dxManager->GetDxDevice());
+		pipeline_->CreatePipeline(_dxm->GetDxDevice());
 	}
 
 }

@@ -26,7 +26,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	AssetLoader(class DxManager* _dxManager, class AssetCollection* _collection);
+	AssetLoader(class DxManager* _dxm, class AssetCollection* _collection);
 	~AssetLoader();
 
 	void Initialize();

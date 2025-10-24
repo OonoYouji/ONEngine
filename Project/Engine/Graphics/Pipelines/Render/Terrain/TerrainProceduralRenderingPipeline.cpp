@@ -11,9 +11,9 @@ TerrainProceduralRenderingPipeline::TerrainProceduralRenderingPipeline(AssetColl
 	: pAssetCollection_(_assetCollection) {}
 TerrainProceduralRenderingPipeline::~TerrainProceduralRenderingPipeline() {}
 
-void TerrainProceduralRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
+void TerrainProceduralRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {
 
-	pDxManager_ = _dxManager;
+	pDxManager_ = _dxm;
 
 	{	/// compute pipeline
 
@@ -35,7 +35,7 @@ void TerrainProceduralRenderingPipeline::Initialize(ShaderCompiler* _shaderCompi
 
 		computePipeline_->AddStaticSampler(D3D12_SHADER_VISIBILITY_ALL, 0);
 
-		computePipeline_->CreatePipeline(_dxManager->GetDxDevice());
+		computePipeline_->CreatePipeline(_dxm->GetDxDevice());
 	}
 
 
@@ -78,13 +78,13 @@ void TerrainProceduralRenderingPipeline::Initialize(ShaderCompiler* _shaderCompi
 		depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
 		pipeline_->SetDepthStencilDesc(depthStencilDesc);
 
-		pipeline_->CreatePipeline(_dxManager->GetDxDevice());
+		pipeline_->CreatePipeline(_dxm->GetDxDevice());
 	}
 
 
 	{	/// buffer create
-		instanceDataAppendBuffer_.CreateAppendBuffer(static_cast<uint32_t>(std::pow(2, 24)), _dxManager->GetDxDevice(), _dxManager->GetDxCommand(), _dxManager->GetDxSRVHeap());
-		textureIdBuffer_.Create(_dxManager->GetDxDevice());
+		instanceDataAppendBuffer_.CreateAppendBuffer(static_cast<uint32_t>(std::pow(2, 24)), _dxm->GetDxDevice(), _dxm->GetDxCommand(), _dxm->GetDxSRVHeap());
+		textureIdBuffer_.Create(_dxm->GetDxDevice());
 		instanceCount_ = 0;
 	}
 }

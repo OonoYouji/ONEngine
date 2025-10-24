@@ -177,7 +177,13 @@ const Vector3& GameEntity::GetLocalScale() const {
 }
 
 Vector3 GameEntity::GetPosition() {
-	return Matrix4x4::Transform(Vector3::kZero, transform_->GetMatWorld());
+	Vector3 position = {
+		transform_->matWorld.m[3][0],
+		transform_->matWorld.m[3][1],
+		transform_->matWorld.m[3][2]
+	};
+	
+	return position;
 }
 
 Vector3 GameEntity::GetRotate() {

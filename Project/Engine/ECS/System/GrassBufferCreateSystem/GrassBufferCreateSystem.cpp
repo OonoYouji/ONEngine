@@ -10,11 +10,11 @@ GrassBufferCreateSystem::GrassBufferCreateSystem(DxManager* _dxm) : pDxManager_(
 GrassBufferCreateSystem::~GrassBufferCreateSystem() = default;
 
 void GrassBufferCreateSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
-	/// ランタイム外で生成する
+	/// ----- ランタイム外で生成する(デバッグ時にRuntimeを起動していなくてもよいように) ----- ///
 
-	/// =================================================
+	/// -------------------------------------------------
 	/// 早期リターン条件のチェック
-	/// =================================================
+	/// -------------------------------------------------
 
 	ComponentArray<GrassField>* grassArray = _ecs->GetComponentArray<GrassField>();
 	if (!grassArray) {
@@ -26,13 +26,12 @@ void GrassBufferCreateSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
 	}
 
 
-	/// =================================================
+	/// -------------------------------------------------
 	/// 実際に処理する
-	/// =================================================
+	/// -------------------------------------------------
 
 	/// 縦x横 で密度を決める (2000個 x 2000個 = 400万本)
 	uint32_t maxBladeCount = 1500 * 1500;
-	//uint32_t maxBladeCount = static_cast<uint32_t>(std::pow(2, 32) - 1);
 	for (auto& grass : grassArray->GetUsedComponents()) {
 		grass->Initialize(
 			maxBladeCount,

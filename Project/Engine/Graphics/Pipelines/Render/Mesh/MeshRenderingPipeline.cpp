@@ -15,7 +15,7 @@ MeshRenderingPipeline::MeshRenderingPipeline(AssetCollection* _assetCollection)
 
 MeshRenderingPipeline::~MeshRenderingPipeline() {}
 
-void MeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
+void MeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {
 
 	{	/// pipeline create
 
@@ -62,7 +62,7 @@ void MeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManage
 		pipeline_->SetDepthStencilDesc(depthStencilDesc);
 
 
-		pipeline_->CreatePipeline(_dxManager->GetDxDevice());
+		pipeline_->CreatePipeline(_dxm->GetDxDevice());
 
 	}
 
@@ -70,13 +70,13 @@ void MeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManage
 	{	/// buffer create
 
 		transformBuffer_ = std::make_unique<StructuredBuffer<Matrix4x4>>();
-		transformBuffer_->Create(static_cast<uint32_t>(kMaxRenderingMeshCount_), _dxManager->GetDxDevice(), _dxManager->GetDxSRVHeap());
+		transformBuffer_->Create(static_cast<uint32_t>(kMaxRenderingMeshCount_), _dxm->GetDxDevice(), _dxm->GetDxSRVHeap());
 
 		materialBuffer = std::make_unique<StructuredBuffer<GPUMaterial>>();
-		materialBuffer->Create(static_cast<uint32_t>(kMaxRenderingMeshCount_), _dxManager->GetDxDevice(), _dxManager->GetDxSRVHeap());
+		materialBuffer->Create(static_cast<uint32_t>(kMaxRenderingMeshCount_), _dxm->GetDxDevice(), _dxm->GetDxSRVHeap());
 
 		textureIdBuffer_ = std::make_unique<StructuredBuffer<uint32_t>>();
-		textureIdBuffer_->Create(static_cast<uint32_t>(kMaxRenderingMeshCount_), _dxManager->GetDxDevice(), _dxManager->GetDxSRVHeap());
+		textureIdBuffer_->Create(static_cast<uint32_t>(kMaxRenderingMeshCount_), _dxm->GetDxDevice(), _dxm->GetDxSRVHeap());
 
 	}
 

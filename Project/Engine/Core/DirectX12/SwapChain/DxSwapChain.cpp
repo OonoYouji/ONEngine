@@ -22,10 +22,10 @@ DxSwapChain::~DxSwapChain() {
 }
 
 
-void DxSwapChain::Initialize(DxManager* _dxManager, Window* _window) {
+void DxSwapChain::Initialize(DxManager* _dxm, Window* _window) {
 
 	/// 引数を保存
-	pDxManager_ = _dxManager;
+	pDxManager_ = _dxm;
 	pWindow_    = _window;
 
 	const Vector2& size = EngineConfig::kWindowSize;

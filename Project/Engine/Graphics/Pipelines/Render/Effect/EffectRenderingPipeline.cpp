@@ -15,7 +15,7 @@ EffectRenderingPipeline::EffectRenderingPipeline(AssetCollection* _assetCollecti
 	: pAssetCollection_(_assetCollection) {}
 EffectRenderingPipeline::~EffectRenderingPipeline() {}
 
-void EffectRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
+void EffectRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {
 
 	{
 		/// shader compile
@@ -70,7 +70,7 @@ void EffectRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 			depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
 			pipeline->SetDepthStencilDesc(depthStencilDesc);
 
-			pipeline->CreatePipeline(_dxManager->GetDxDevice());
+			pipeline->CreatePipeline(_dxm->GetDxDevice());
 
 		}
 	}
@@ -79,13 +79,13 @@ void EffectRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 	{	/// buffer create
 
 		transformBuffer_ = std::make_unique<StructuredBuffer<Matrix4x4>>();
-		transformBuffer_->Create(static_cast<uint32_t>(kMaxRenderingMeshCount_), _dxManager->GetDxDevice(), _dxManager->GetDxSRVHeap());
+		transformBuffer_->Create(static_cast<uint32_t>(kMaxRenderingMeshCount_), _dxm->GetDxDevice(), _dxm->GetDxSRVHeap());
 
 		materialBuffer = std::make_unique<StructuredBuffer<Vector4>>();
-		materialBuffer->Create(static_cast<uint32_t>(kMaxRenderingMeshCount_), _dxManager->GetDxDevice(), _dxManager->GetDxSRVHeap());
+		materialBuffer->Create(static_cast<uint32_t>(kMaxRenderingMeshCount_), _dxm->GetDxDevice(), _dxm->GetDxSRVHeap());
 
 		textureIdBuffer_ = std::make_unique<StructuredBuffer<uint32_t>>();
-		textureIdBuffer_->Create(static_cast<uint32_t>(kMaxRenderingMeshCount_), _dxManager->GetDxDevice(), _dxManager->GetDxSRVHeap());
+		textureIdBuffer_->Create(static_cast<uint32_t>(kMaxRenderingMeshCount_), _dxm->GetDxDevice(), _dxm->GetDxSRVHeap());
 
 	}
 }

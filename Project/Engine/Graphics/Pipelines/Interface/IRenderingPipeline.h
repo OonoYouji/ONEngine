@@ -24,7 +24,7 @@ public:
 
 	/// @brief このクラスの初期化関数
 	/// @param _shaderCompiler シェーダーのコンパイラーへのポインタ
-	virtual void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxManager) = 0;
+	virtual void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxm) = 0;
 
 	virtual void PreDraw(class ECSGroup* _ecs, class CameraComponent* _camera, DxCommand* _dxCommand);
 

@@ -5,7 +5,7 @@
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Asset/Collection/AssetCollection.h"
 
-void PostProcessGaussianBlurPerObject::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
+void PostProcessGaussianBlurPerObject::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {
 
 	{
 		Shader shader;
@@ -21,7 +21,7 @@ void PostProcessGaussianBlurPerObject::Initialize(ShaderCompiler* _shaderCompile
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 1);
 		pipeline_->AddStaticSampler(D3D12_SHADER_VISIBILITY_ALL, 0);
 
-		pipeline_->CreatePipeline(_dxManager->GetDxDevice());
+		pipeline_->CreatePipeline(_dxm->GetDxDevice());
 
 	}
 

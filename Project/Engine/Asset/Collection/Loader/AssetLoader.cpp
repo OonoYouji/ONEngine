@@ -33,8 +33,8 @@
 #pragma comment(lib, "mfuuid.lib")
 
 
-AssetLoader::AssetLoader(DxManager* _dxManager, AssetCollection* _collection)
-	: pDxManager_(_dxManager), pAssetCollection_(_collection) {}
+AssetLoader::AssetLoader(DxManager* _dxm, AssetCollection* _collection)
+	: pDxManager_(_dxm), pAssetCollection_(_collection) {}
 
 AssetLoader::~AssetLoader() {
 	HRESULT result = MFShutdown();

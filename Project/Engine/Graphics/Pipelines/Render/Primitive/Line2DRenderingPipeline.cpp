@@ -12,7 +12,7 @@
 Line2DRenderingPipeline::Line2DRenderingPipeline() {}
 Line2DRenderingPipeline::~Line2DRenderingPipeline() {}
 
-void Line2DRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
+void Line2DRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {
 
 	{	/// pipelineの作成
 
@@ -58,7 +58,7 @@ void Line2DRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 		pipeline_->SetRTVFormats({ DXGI_FORMAT_R8G8B8A8_UNORM });
 
 		/// create pipeline
-		pipeline_->CreatePipeline(_dxManager->GetDxDevice());
+		pipeline_->CreatePipeline(_dxm->GetDxDevice());
 	}
 
 
@@ -66,7 +66,7 @@ void Line2DRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 	vertices_.reserve(kMaxVertexNum_);
 
 	/// vertex bufferの作成
-	vertexBuffer_.CreateResource(_dxManager->GetDxDevice(), sizeof(VertexData) * kMaxVertexNum_);
+	vertexBuffer_.CreateResource(_dxm->GetDxDevice(), sizeof(VertexData) * kMaxVertexNum_);
 	vertexBuffer_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mappingData_));
 
 	vbv_.BufferLocation = vertexBuffer_.Get()->GetGPUVirtualAddress();

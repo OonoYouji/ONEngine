@@ -12,8 +12,8 @@
 TerrainVertexCreator::TerrainVertexCreator() {}
 TerrainVertexCreator::~TerrainVertexCreator() {}
 
-void TerrainVertexCreator::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
-	pDxManager_ = _dxManager;
+void TerrainVertexCreator::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {
+	pDxManager_ = _dxm;
 
 
 	{	/// shader
@@ -38,12 +38,12 @@ void TerrainVertexCreator::Initialize(ShaderCompiler* _shaderCompiler, DxManager
 
 		pipeline_->AddStaticSampler(D3D12_SHADER_VISIBILITY_ALL, 0);
 
-		pipeline_->CreatePipeline(_dxManager->GetDxDevice());
+		pipeline_->CreatePipeline(_dxm->GetDxDevice());
 
 	}
 
 	{	/// buffer
-		terrainSize_.Create(_dxManager->GetDxDevice());
+		terrainSize_.Create(_dxm->GetDxDevice());
 	}
 
 

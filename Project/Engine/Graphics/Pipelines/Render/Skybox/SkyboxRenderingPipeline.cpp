@@ -12,7 +12,7 @@ SkyboxRenderingPipeline::SkyboxRenderingPipeline(AssetCollection* _assetCollecti
 	: pAssetCollection_(_assetCollection) {}
 SkyboxRenderingPipeline::~SkyboxRenderingPipeline() {}
 
-void SkyboxRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
+void SkyboxRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {
 
 	{	/// shader
 
@@ -50,14 +50,14 @@ void SkyboxRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 		depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
 		pipeline_->SetDepthStencilDesc(depthStencilDesc);
 
-		pipeline_->CreatePipeline(_dxManager->GetDxDevice());
+		pipeline_->CreatePipeline(_dxm->GetDxDevice());
 
 	}
 
 	{	/// buffer
 
-		texIndex_.Create(_dxManager->GetDxDevice());
-		transformMatrix_.Create(_dxManager->GetDxDevice());
+		texIndex_.Create(_dxm->GetDxDevice());
+		transformMatrix_.Create(_dxm->GetDxDevice());
 
 		for (int x = -1; x <= 1; x += 2) {
 			for (int y = -1; y <= 1; y += 2) {
@@ -86,7 +86,7 @@ void SkyboxRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 		const size_t kVertexDataSize = sizeof(VSInput);
 
 		/// vertex buffer
-		vertexBuffer_.CreateResource(_dxManager->GetDxDevice(), kVertexDataSize * vertices_.size());
+		vertexBuffer_.CreateResource(_dxm->GetDxDevice(), kVertexDataSize * vertices_.size());
 
 		vbv_.BufferLocation = vertexBuffer_.Get()->GetGPUVirtualAddress();
 		vbv_.SizeInBytes = static_cast<UINT>(kVertexDataSize * vertices_.size());
@@ -99,7 +99,7 @@ void SkyboxRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 		vertexBuffer_.Get()->Unmap(0, nullptr);
 
 		/// index buffer
-		indexBuffer_.CreateResource(_dxManager->GetDxDevice(), sizeof(uint32_t) * indices_.size());
+		indexBuffer_.CreateResource(_dxm->GetDxDevice(), sizeof(uint32_t) * indices_.size());
 
 		ibv_.BufferLocation = indexBuffer_.Get()->GetGPUVirtualAddress();
 		ibv_.SizeInBytes = static_cast<UINT>(sizeof(uint32_t) * indices_.size());

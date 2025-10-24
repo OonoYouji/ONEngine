@@ -17,7 +17,7 @@ SpriteRenderingPipeline::SpriteRenderingPipeline(AssetCollection* _assetCollecti
 SpriteRenderingPipeline::~SpriteRenderingPipeline() {}
 
 
-void SpriteRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
+void SpriteRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {
 
 	{	/// pipeline 
 
@@ -60,7 +60,7 @@ void SpriteRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 		blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 		pipeline_->SetBlendDesc(blendDesc);
 
-		pipeline_->CreatePipeline(_dxManager->GetDxDevice());
+		pipeline_->CreatePipeline(_dxm->GetDxDevice());
 
 	}
 
@@ -83,14 +83,14 @@ void SpriteRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 		const size_t kVertexDataSize = sizeof(VertexData);
 
 		/// vertex buffer
-		vertexBuffer_.CreateResource(_dxManager->GetDxDevice(), kVertexDataSize * vertices_.size());
+		vertexBuffer_.CreateResource(_dxm->GetDxDevice(), kVertexDataSize * vertices_.size());
 
 		vbv_.BufferLocation = vertexBuffer_.Get()->GetGPUVirtualAddress();
 		vbv_.SizeInBytes = static_cast<UINT>(kVertexDataSize * vertices_.size());
 		vbv_.StrideInBytes = static_cast<UINT>(kVertexDataSize);
 
 		/// index buffer
-		indexBuffer_.CreateResource(_dxManager->GetDxDevice(), sizeof(uint32_t) * indices_.size());
+		indexBuffer_.CreateResource(_dxm->GetDxDevice(), sizeof(uint32_t) * indices_.size());
 
 		ibv_.BufferLocation = indexBuffer_.Get()->GetGPUVirtualAddress();
 		ibv_.SizeInBytes = static_cast<UINT>(sizeof(uint32_t) * indices_.size());
@@ -112,10 +112,10 @@ void SpriteRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 	{	/// structured buffer
 
 		transformsBuffer_ = std::make_unique<StructuredBuffer<Matrix4x4>>();
-		transformsBuffer_->Create(static_cast<uint32_t>(kMaxRenderingSpriteCount_), _dxManager->GetDxDevice(), _dxManager->GetDxSRVHeap());
+		transformsBuffer_->Create(static_cast<uint32_t>(kMaxRenderingSpriteCount_), _dxm->GetDxDevice(), _dxm->GetDxSRVHeap());
 
 		materialsBuffer = std::make_unique<StructuredBuffer<GPUMaterial>>();
-		materialsBuffer->Create(static_cast<uint32_t>(kMaxRenderingSpriteCount_), _dxManager->GetDxDevice(), _dxManager->GetDxSRVHeap());
+		materialsBuffer->Create(static_cast<uint32_t>(kMaxRenderingSpriteCount_), _dxm->GetDxDevice(), _dxm->GetDxSRVHeap());
 
 	}
 

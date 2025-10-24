@@ -13,7 +13,7 @@
 SkinMeshRenderingPipeline::SkinMeshRenderingPipeline(AssetCollection* _graphicsResourceCollection)
 	: pGraphicsResourceCollection_(_graphicsResourceCollection) {}
 
-void SkinMeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
+void SkinMeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {
 
 	{
 		Shader shader;
@@ -70,7 +70,7 @@ void SkinMeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMa
 
 		pipeline_->SetBlendDesc(BlendMode::Normal());
 
-		pipeline_->CreatePipeline(_dxManager->GetDxDevice());
+		pipeline_->CreatePipeline(_dxm->GetDxDevice());
 	}
 
 
@@ -82,9 +82,9 @@ void SkinMeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMa
 		materialBuffer_ = std::make_unique<ConstantBuffer<GPUMaterial>>();
 		textureIdBuffer_ = std::make_unique<ConstantBuffer<uint32_t>>();
 
-		transformBuffer_->Create(_dxManager->GetDxDevice());
-		materialBuffer_->Create(_dxManager->GetDxDevice());
-		textureIdBuffer_->Create(_dxManager->GetDxDevice());
+		transformBuffer_->Create(_dxm->GetDxDevice());
+		materialBuffer_->Create(_dxm->GetDxDevice());
+		textureIdBuffer_->Create(_dxm->GetDxDevice());
 
 	}
 

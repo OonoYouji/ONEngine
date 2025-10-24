@@ -55,8 +55,8 @@ void GenerateBladesAlongBezier(
 GrassRenderingPipeline::GrassRenderingPipeline(AssetCollection* _grc) : pAssetCollection_(_grc) {};
 GrassRenderingPipeline::~GrassRenderingPipeline() = default;
 
-void GrassRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
-	pDxManager_ = _dxManager;
+void GrassRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {
+	pDxManager_ = _dxm;
 
 	{	/// Shader
 		Shader shader;
@@ -93,7 +93,7 @@ void GrassRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManag
 		pipeline_->SetCullMode(D3D12_CULL_MODE_NONE);
 		pipeline_->SetDepthStencilDesc(DefaultDepthStencilDesc());
 
-		pipeline_->CreatePipeline(_dxManager->GetDxDevice());
+		pipeline_->CreatePipeline(_dxm->GetDxDevice());
 
 	}
 

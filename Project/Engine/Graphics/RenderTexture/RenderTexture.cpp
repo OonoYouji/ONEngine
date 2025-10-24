@@ -8,7 +8,7 @@
 RenderTexture::RenderTexture() = default;
 RenderTexture::~RenderTexture() = default;
 
-void RenderTexture::Initialize(DXGI_FORMAT _format, const Vector4& _clearColor, const std::string& _name, DxManager* _dxManager, AssetCollection* _assetCollection) {
+void RenderTexture::Initialize(DXGI_FORMAT _format, const Vector4& _clearColor, const std::string& _name, DxManager* _dxm, AssetCollection* _assetCollection) {
 	clearColor_ = _clearColor;
 	name_ = _name;
 
@@ -19,9 +19,9 @@ void RenderTexture::Initialize(DXGI_FORMAT _format, const Vector4& _clearColor, 
 	}
 
 	/// 必要なオブジェクトの取得
-	DxDevice* dxDevice = _dxManager->GetDxDevice();
-	DxSRVHeap* dxSRVHeap = _dxManager->GetDxSRVHeap();
-	DxRTVHeap* dxRTVHeap = _dxManager->GetDxRTVHeap();
+	DxDevice* dxDevice = _dxm->GetDxDevice();
+	DxSRVHeap* dxSRVHeap = _dxm->GetDxSRVHeap();
+	DxRTVHeap* dxRTVHeap = _dxm->GetDxRTVHeap();
 	DxResource& renderTextureResource = texture_->GetDxResource();
 
 	/// render texture resourceの作成
@@ -56,7 +56,7 @@ void RenderTexture::Initialize(DXGI_FORMAT _format, const Vector4& _clearColor, 
 	renderTextureResource.CreateBarrier(
 		D3D12_RESOURCE_STATE_RENDER_TARGET,
 		D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE,
-		_dxManager->GetDxCommand()
+		_dxm->GetDxCommand()
 	);
 }
 
@@ -115,14 +115,14 @@ const std::string& RenderTexture::GetName() const {
 UAVTexture::UAVTexture() = default;
 UAVTexture::~UAVTexture() = default;
 
-void UAVTexture::Initialize(const std::string& _textureName, DxManager* _dxManager, AssetCollection* _assetCollection) {
+void UAVTexture::Initialize(const std::string& _textureName, DxManager* _dxm, AssetCollection* _assetCollection) {
 	Texture uavTexture;
 	_assetCollection->AddTexture(_textureName, std::move(uavTexture));
 	texture_ = _assetCollection->GetTexture(_textureName);
 
 	/// 必要なオブジェクトの取得
-	DxDevice* dxDevice = _dxManager->GetDxDevice();
-	DxSRVHeap* dxSRVHeap = _dxManager->GetDxSRVHeap();
+	DxDevice* dxDevice = _dxm->GetDxDevice();
+	DxSRVHeap* dxSRVHeap = _dxm->GetDxSRVHeap();
 	DxResource& uavTextureResource = texture_->GetDxResource();
 
 	/// UAV texture resourceの作成

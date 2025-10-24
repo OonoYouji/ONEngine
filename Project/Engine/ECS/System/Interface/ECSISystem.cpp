@@ -1,3 +1,0 @@
-#include "ECSISystem.h"
-
-void ECSISystem::OutsideOfRuntimeUpdate(ECSGroup*) {}

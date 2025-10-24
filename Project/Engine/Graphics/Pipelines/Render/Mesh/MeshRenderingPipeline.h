@@ -45,7 +45,7 @@ public:
 	/// @brief 初期化関数
 	/// @param _shaderCompiler 
 	/// @param _dxDevice 
-	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxManager) override;
+	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxm) override;
 
 	/// @brief 描画処理
 	/// @param _dxCommand DxCommandへのポインタ

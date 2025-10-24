@@ -30,8 +30,8 @@
 #include "../PostProcess/Screen/RadialBlur/PostProcessRadialBlur.h"
 #include "../PostProcess/PerObject/TerrainBrush/PostProcessTerrainBrush.h"
 
-RenderingPipelineCollection::RenderingPipelineCollection(ShaderCompiler* _shaderCompiler, DxManager* _dxManager, EntityComponentSystem* _pEntityComponentSystem, AssetCollection* _graphicsResourceCollection)
-	: shaderCompiler_(_shaderCompiler), dxManager_(_dxManager), pEntityComponentSystem_(_pEntityComponentSystem), graphicsResourceCollection_(_graphicsResourceCollection) {}
+RenderingPipelineCollection::RenderingPipelineCollection(ShaderCompiler* _shaderCompiler, DxManager* _dxm, EntityComponentSystem* _pEntityComponentSystem, AssetCollection* _graphicsResourceCollection)
+	: shaderCompiler_(_shaderCompiler), dxManager_(_dxm), pEntityComponentSystem_(_pEntityComponentSystem), graphicsResourceCollection_(_graphicsResourceCollection) {}
 
 RenderingPipelineCollection::~RenderingPipelineCollection() {}
 

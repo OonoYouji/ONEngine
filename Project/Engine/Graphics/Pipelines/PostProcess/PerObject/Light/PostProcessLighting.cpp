@@ -15,7 +15,7 @@ PostProcessLighting::PostProcessLighting() {}
 PostProcessLighting::~PostProcessLighting() {}
 
 
-void PostProcessLighting::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
+void PostProcessLighting::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {
 	pipeline_ = std::make_unique<ComputePipeline>();
 
 	{	/// shader
@@ -45,17 +45,17 @@ void PostProcessLighting::Initialize(ShaderCompiler* _shaderCompiler, DxManager*
 
 		pipeline_->AddStaticSampler(D3D12_SHADER_VISIBILITY_ALL, 0);
 
-		pipeline_->CreatePipeline(_dxManager->GetDxDevice());
+		pipeline_->CreatePipeline(_dxm->GetDxDevice());
 	}
 
 
 	{
 		/// constant buffer
 		directionalLightBufferData_ = std::make_unique<ConstantBuffer<DirectionalLightBufferData>>();
-		directionalLightBufferData_->Create(_dxManager->GetDxDevice());
+		directionalLightBufferData_->Create(_dxm->GetDxDevice());
 
 		cameraBufferData_ = std::make_unique<ConstantBuffer<CameraBufferData>>();
-		cameraBufferData_->Create(_dxManager->GetDxDevice());
+		cameraBufferData_->Create(_dxm->GetDxDevice());
 
 	}
 

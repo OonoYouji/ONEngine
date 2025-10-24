@@ -12,6 +12,8 @@ void ColliderRenderQueueSystem::RuntimeUpdate(ECSGroup* _ecs) {
 
 
 void ColliderRenderQueueSystem::UpdateSphereCollider(ComponentArray<SphereCollider>* _sphereColliderArray) {
+
+	/// SphereColliderが存在するか確認(空ならreturn)
 	if (!_sphereColliderArray || _sphereColliderArray->GetUsedComponents().empty()) {
 		return;
 	}
@@ -30,12 +32,14 @@ void ColliderRenderQueueSystem::UpdateSphereCollider(ComponentArray<SphereCollid
 		Vector3 position = owner->GetPosition();
 		float radius = sphereCollider->GetRadius();
 		// Gizmoを使って球体を描画する
-		Gizmo::DrawWireSphere(position, radius, Vector4(1.0f, 0.0f, 0.0f, 1.0f)); // 赤色で描画
+		Gizmo::DrawWireSphere(position, radius, Vector4(1.0f, 0.0f, 0.0f, 1.0f));
 	}
 
 }
 
 void ColliderRenderQueueSystem::UpdateBoxCollider(ComponentArray<BoxCollider>* _boxColliderArray) {
+
+	/// BoxColliderが存在するか確認(空ならreturn)
 	if (!_boxColliderArray || _boxColliderArray->GetUsedComponents().empty()) {
 		return;
 	}
@@ -49,10 +53,11 @@ void ColliderRenderQueueSystem::UpdateBoxCollider(ComponentArray<BoxCollider>* _
 		if (!owner) {
 			continue; // オーナーが無効な場合はスキップ
 		}
-		Vector3 position = owner->GetPosition();
-		Vector3 size = boxCollider->GetSize();
+
+		const Vector3 position = owner->GetPosition();
+		const Vector3& size = boxCollider->GetSize();
 		// Gizmoを使って立方体を描画する
-		Gizmo::DrawWireCube(position, size, Vector4(0.0f, 1.0f, 0.0f, 1.0f)); // 緑色で描画
+		Gizmo::DrawWireCube(position, size, Vector4(0.0f, 1.0f, 0.0f, 1.0f));
 	}
 
 }

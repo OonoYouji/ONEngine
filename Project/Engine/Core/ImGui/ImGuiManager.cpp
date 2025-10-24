@@ -538,8 +538,8 @@ namespace {
 #pragma endregion
 
 
-ImGuiManager::ImGuiManager(DxManager* _dxManager, WindowManager* _windowManager, EntityComponentSystem* _pEntityComponentSystem, EditorManager* _editorManager, SceneManager* _sceneManager)
-	: dxManager_(_dxManager), pWindowManager_(_windowManager), pEntityComponentSystem_(_pEntityComponentSystem),
+ImGuiManager::ImGuiManager(DxManager* _dxm, WindowManager* _windowManager, EntityComponentSystem* _pEntityComponentSystem, EditorManager* _editorManager, SceneManager* _sceneManager)
+	: dxManager_(_dxm), pWindowManager_(_windowManager), pEntityComponentSystem_(_pEntityComponentSystem),
 	pEditorManager_(_editorManager), pSceneManager_(_sceneManager) {}
 
 ImGuiManager::~ImGuiManager() {

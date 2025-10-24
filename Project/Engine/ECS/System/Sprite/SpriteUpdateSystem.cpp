@@ -6,14 +6,15 @@
 
 
 void SpriteUpdateSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
+
+	/// スプライトの配列、存在チェック
 	ComponentArray<SpriteRenderer>* spriteRendererArray = _ecs->GetComponentArray<SpriteRenderer>();
 	if (!spriteRendererArray || spriteRendererArray->GetUsedComponents().empty()) {
 		return;
 	}
 
-	/// texture idの更新を行う
+	/// EntityIDの更新を行う(EntityIDは描画時にRTVに書き込まれる)
 	for(auto& spriteRenderer : spriteRendererArray->GetUsedComponents()) {
-		/// texture idからtextureを得る
 		GPUMaterial& material = spriteRenderer->GetMaterial();
 		material.entityId = spriteRenderer->GetOwner()->GetId();
 	}

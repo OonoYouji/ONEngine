@@ -5,14 +5,16 @@
 #include "Engine/ECS/Component/Array/ComponentArray.h"
 #include "Engine/Asset/Collection/AssetCollection.h"
 
-SkinMeshUpdateSystem::SkinMeshUpdateSystem(DxManager* _dxManager, AssetCollection* _assetCollection)
-	: pDxManager_(_dxManager), pAssetCollection_(_assetCollection) {}
+SkinMeshUpdateSystem::SkinMeshUpdateSystem(DxManager* _dxm, AssetCollection* _assetCollection)
+	: pDxManager_(_dxm), pAssetCollection_(_assetCollection) {
+}
 
 void SkinMeshUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
 
+	/// Compの配列を取得＆使用中のCompがなければ終了
 	ComponentArray<SkinMeshRenderer>* skinMeshArray = _ecs->GetComponentArray<SkinMeshRenderer>();
 	if (!skinMeshArray || skinMeshArray->GetUsedComponents().empty()) {
-		return; ///< スキンメッシュのコンポーネントが存在しない場合は何もしない
+		return;
 	}
 
 	for (auto& skinMesh : skinMeshArray->GetUsedComponents()) {
@@ -55,6 +57,7 @@ void SkinMeshUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
 			continue;
 		}
 
+		/// アニメーションが再生されていないならスキップ
 		if (!skinMesh->isPlaying_) {
 			continue;
 		}

@@ -110,8 +110,8 @@ void EditorManager::Redo() {
 
 }
 
-void EditorManager::AddEditorCompute(DxManager* _dxManager, ShaderCompiler* _shaderCompiler, std::unique_ptr<IEditorCompute> _compute) {
-	_compute->Initialize(_shaderCompiler, _dxManager);
+void EditorManager::AddEditorCompute(DxManager* _dxm, ShaderCompiler* _shaderCompiler, std::unique_ptr<IEditorCompute> _compute) {
+	_compute->Initialize(_shaderCompiler, _dxm);
 
 	editorComputes_.push_back(std::move(_compute));
 }

@@ -23,7 +23,7 @@ public:
 	/// public : methods
 	/// ====================================================
 
-	ECSGroup(class DxManager* _dxManager);
+	ECSGroup(class DxManager* _dxm);
 	~ECSGroup();
 
 	void Initialize(const std::string& _groupName);

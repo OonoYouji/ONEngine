@@ -10,7 +10,7 @@
 Line3DRenderingPipeline::Line3DRenderingPipeline() {}
 Line3DRenderingPipeline::~Line3DRenderingPipeline() {}
 
-void Line3DRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
+void Line3DRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {
 	{	/// pipelineの作成
 
 		/// shaderをコンパイル
@@ -56,7 +56,7 @@ void Line3DRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 		pipeline_->SetDepthStencilDesc(depthStencilDesc);
 
 		/// create pipeline
-		pipeline_->CreatePipeline(_dxManager->GetDxDevice());
+		pipeline_->CreatePipeline(_dxm->GetDxDevice());
 	}
 
 
@@ -64,7 +64,7 @@ void Line3DRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 	vertices_.reserve(kMaxVertexNum_);
 
 	/// vertex bufferの作成
-	vertexBuffer_.CreateResource(_dxManager->GetDxDevice(), sizeof(VertexData) * kMaxVertexNum_);
+	vertexBuffer_.CreateResource(_dxm->GetDxDevice(), sizeof(VertexData) * kMaxVertexNum_);
 	vertexBuffer_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mappingData_));
 
 	vbv_.BufferLocation = vertexBuffer_.Get()->GetGPUVirtualAddress();

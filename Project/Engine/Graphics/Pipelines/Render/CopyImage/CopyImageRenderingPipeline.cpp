@@ -9,7 +9,7 @@
 CopyImageRenderingPipeline::CopyImageRenderingPipeline(AssetCollection* _graphicsResourceCollection)
 	: pAssetCollection_(_graphicsResourceCollection) {}
 
-void CopyImageRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
+void CopyImageRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {
 
 	{
 		Shader shader;
@@ -39,7 +39,7 @@ void CopyImageRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxM
 		pipeline_->SetRTVNum(1);
 		pipeline_->SetRTVFormat(DXGI_FORMAT_R8G8B8A8_UNORM, 0);
 
-		pipeline_->CreatePipeline(_dxManager->GetDxDevice());
+		pipeline_->CreatePipeline(_dxm->GetDxDevice());
 
 	}
 

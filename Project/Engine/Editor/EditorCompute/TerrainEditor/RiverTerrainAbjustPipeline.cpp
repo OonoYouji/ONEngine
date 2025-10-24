@@ -10,7 +10,7 @@
 RiverTerrainAbjustPipeline::RiverTerrainAbjustPipeline() = default;
 RiverTerrainAbjustPipeline::~RiverTerrainAbjustPipeline() = default;
 
-void RiverTerrainAbjustPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
+void RiverTerrainAbjustPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {
 
 	{	/// shader
 		Shader shader;
@@ -30,7 +30,7 @@ void RiverTerrainAbjustPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxM
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 1);
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 2);
 
-		pipeline_->CreatePipeline(_dxManager->GetDxDevice());
+		pipeline_->CreatePipeline(_dxm->GetDxDevice());
 	}
 }
 

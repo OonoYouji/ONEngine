@@ -12,8 +12,8 @@ AssetCollection::AssetCollection() {}
 AssetCollection::~AssetCollection() {}
 
 
-void AssetCollection::Initialize(DxManager* _dxManager) {
-	resourceLoader_ = std::make_unique<AssetLoader>(_dxManager, this);
+void AssetCollection::Initialize(DxManager* _dxm) {
+	resourceLoader_ = std::make_unique<AssetLoader>(_dxm, this);
 	resourceLoader_->Initialize();
 
 	/// リソースコンテナの初期化

@@ -21,8 +21,8 @@ public:
 
 	/// @brief pipelineの初期化を行う
 	/// @param _shaderCompiler ShaderCompilerへのポインタ
-	/// @param _dxManager DxManagerへのポインタ
-	virtual void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxManager) = 0;
+	/// @param _dxm DxManagerへのポインタ
+	virtual void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxm) = 0;
 
 	/// @brief post processの実行
 	virtual void Execute(

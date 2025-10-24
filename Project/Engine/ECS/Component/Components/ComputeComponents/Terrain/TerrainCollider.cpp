@@ -19,7 +19,7 @@ void TerrainCollider::AttachTerrain() {
 	}
 }
 
-void TerrainCollider::CopyVertices(DxManager* _dxManager) {
+void TerrainCollider::CopyVertices(DxManager* _dxm) {
 	/// terrainから RWVertices をコピーする
 	if (!pTerrain_) {
 		return;
@@ -43,12 +43,12 @@ void TerrainCollider::CopyVertices(DxManager* _dxManager) {
 		bufferDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
 
 		dxReadbackBuffer.CreateCommittedResource(
-			_dxManager->GetDxDevice(), &heapProperties, D3D12_HEAP_FLAG_NONE,
+			_dxm->GetDxDevice(), &heapProperties, D3D12_HEAP_FLAG_NONE,
 			&bufferDesc, D3D12_RESOURCE_STATE_COPY_DEST, nullptr
 		);
 	}
 
-	DxCommand* dxCommand = _dxManager->GetDxCommand();
+	DxCommand* dxCommand = _dxm->GetDxCommand();
 	auto cmdList = dxCommand->GetCommandList();
 
 	DxResource& dxResource = pTerrain_->GetRwVertices().GetResource();
@@ -59,7 +59,7 @@ void TerrainCollider::CopyVertices(DxManager* _dxManager) {
 
 	dxCommand->CommandExecute();
 	dxCommand->CommandReset();
-	_dxManager->HeapBindToCommandList();
+	_dxm->HeapBindToCommandList();
 
 	/// RWVertices をCPUにコピー
 	TerrainVertex* gpuData = nullptr;
