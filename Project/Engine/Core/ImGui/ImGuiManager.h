@@ -29,8 +29,8 @@ public:
 	~ImGuiManager();
 
 	/// @brief 初期化
-	/// @param _grc AssetCollection 
-	void Initialize(class AssetCollection* _grc);
+	/// @param _assetCollection AssetCollection 
+	void Initialize(class AssetCollection* _assetCollection);
 
 	/// @brief 更新
 	void Update();

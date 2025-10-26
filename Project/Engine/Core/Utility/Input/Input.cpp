@@ -37,11 +37,11 @@ bool Input::PressMouse(int _button) {
 }
 
 bool Input::TriggerMouse(int _button) {
-	return gInputSystem_->mouse_->state_.rgbButtons[_button] && !gInputSystem_->keyboard_->preKeys_[_button];
+	return gInputSystem_->mouse_->state_.rgbButtons[_button] && !gInputSystem_->mouse_->preState_.rgbButtons[_button];
 }
 
 bool Input::ReleaseMouse(int _button) {
-	return !gInputSystem_->mouse_->state_.rgbButtons[_button] && gInputSystem_->keyboard_->preKeys_[_button];
+	return !gInputSystem_->mouse_->state_.rgbButtons[_button] && gInputSystem_->mouse_->preState_.rgbButtons[_button];
 }
 
 bool Input::PressGamepad(int _button) {

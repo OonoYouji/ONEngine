@@ -57,7 +57,7 @@ void TerrainCollider::CopyVertices(DxManager* _dxm) {
 	cmdList->CopyResource(dxReadbackBuffer.Get(), dxResource.Get());
 	dxResource.CreateBarrier(D3D12_RESOURCE_STATE_UNORDERED_ACCESS, dxCommand);
 
-	dxCommand->CommandExecute();
+	dxCommand->CommandExecuteAndWait();
 	dxCommand->CommandReset();
 	_dxm->HeapBindToCommandList();
 

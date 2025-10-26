@@ -20,8 +20,8 @@
 
 #include "ImGuiInspectorWindow.h"
 
-ImGuiSceneWindow::ImGuiSceneWindow(EntityComponentSystem* _ecs, AssetCollection* _grc, SceneManager* _sceneManager, ImGuiInspectorWindow* _inspector)
-	: pEcs_(_ecs), pAssetCollection_(_grc), pSceneManager_(_sceneManager), pInspector_(_inspector) {
+ImGuiSceneWindow::ImGuiSceneWindow(EntityComponentSystem* _ecs, AssetCollection* _assetCollection, SceneManager* _sceneManager, ImGuiInspectorWindow* _inspector)
+	: pEcs_(_ecs), pAssetCollection_(_assetCollection), pSceneManager_(_sceneManager), pInspector_(_inspector) {
 
 	manipulateOperation_ = ImGuizmo::OPERATION::TRANSLATE; // 初期操作モードは移動
 	manipulateMode_ = ImGuizmo::MODE::WORLD; // 初期モードはワールド座標

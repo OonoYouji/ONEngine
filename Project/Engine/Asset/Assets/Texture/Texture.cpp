@@ -100,7 +100,7 @@ void Texture::OutputTexture(const std::wstring& _filename, DxDevice* _dxDevice, 
 	dxResource_.CreateBarrier(D3D12_RESOURCE_STATE_UNORDERED_ACCESS, _dxCommand);
 
 	/// コマンドの実行&リセット
-	_dxCommand->CommandExecute();
+	_dxCommand->CommandExecuteAndWait();
 	_dxCommand->CommandReset();
 
 
@@ -222,6 +222,10 @@ const DxResource& Texture::GetDxResource() const {
 
 DxResource& Texture::GetDxResource() {
 	return dxResource_;
+}
+
+const Vector2& Texture::GetTextureSize() const {
+	return textureSize_;
 }
 
 

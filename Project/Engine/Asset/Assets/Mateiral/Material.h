@@ -24,6 +24,10 @@ Material GenerateMaterial();
 void GenerateMaterialFile(const std::string& _filepath, Material* _material);
 
 
+/// Json変換
+void from_json(const nlohmann::json& _j, Material& _material);
+void to_json(nlohmann::json& _j, const Material& _material);
+
 
 /// ////////////////////////////////////////////////////////
 /// マテリアル
@@ -31,6 +35,8 @@ void GenerateMaterialFile(const std::string& _filepath, Material* _material);
 class Material final : public IAsset {
 	/// friend functions
 	friend void ShowGuiMaterial(const std::string& _label, Material* _material);
+	friend void from_json(const nlohmann::json& _j, Material& _material);
+	friend void to_json(nlohmann::json& _j, const Material& _material);
 
 public:
 	/// ==================================================
@@ -41,6 +47,23 @@ public:
 	~Material();
 
 	
+	/// @brief BaseTextureのGuidを持っているかチェック
+	/// @return true: 持っている, false: 持っていない
+	bool HasBaseTexture() const;
+
+	/// @brief BaseTextureのGuidを取得
+	/// @return BaseTextureのGuid
+	const Guid& GetBaseTextureGuid() const;
+
+
+	/// @brief 法線テクスチャのGuidを持っているかチェック
+	/// @return true: 持っている, false: 持っていない
+	bool HasNormalTexture() const;
+
+	/// @brief 法線テクスチャのGuidを取得
+	/// @return 法線テクスチャのGuid
+	const Guid& GetNormalTextureGuid() const;
+
 
 private:
 	/// ==================================================

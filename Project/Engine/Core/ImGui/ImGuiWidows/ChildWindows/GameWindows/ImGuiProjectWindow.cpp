@@ -9,13 +9,14 @@
 #include <imgui.h>
 
 /// engine
+#include "Engine/Asset/Collection/AssetCollection.h"
+#include "Engine/Core/ImGui/Math/AssetPayload.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/Editor/EditorManager.h"
 #include "Engine/Editor/Commands/WorldEditorCommands/WorldEditorCommands.h"
-#include "Engine/Asset/Collection/AssetCollection.h"
 
-ImGuiProjectWindow::ImGuiProjectWindow(AssetCollection* _grc, EditorManager* _editorManager)
-	: pAssetCollection_(_grc), pEditorManager_(_editorManager) {
+ImGuiProjectWindow::ImGuiProjectWindow(AssetCollection* _assetCollection, EditorManager* _editorManager)
+	: pAssetCollection_(_assetCollection), pEditorManager_(_editorManager) {
 
 	// reloadといいつつも普通に読み込み
 	ReloadProject();
@@ -326,7 +327,10 @@ ImGuiProjectExplorer::ImGuiProjectExplorer(AssetCollection* _assetCollection, Ed
 }
 
 void ImGuiProjectExplorer::ShowImGui() {
-	ImGui::Begin("ImGuiProjectExplorer");
+	if (!ImGui::Begin("ImGuiProjectExplorer")) {
+		ImGui::End();
+		return;
+	}
 
 	/// ProjectWindowの左上に出すMenuの内容
 	if (ImGui::Button("Menu", ImVec2(120, 25))) {
@@ -469,12 +473,16 @@ void ImGuiProjectExplorer::DrawFileView(const std::filesystem::path& _dir) {
 		/// ファイルを持ち始める
 		/// -------------------------------------------
 		if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
-			std::string src = path.string();
-			Mathf::ReplaceAll(&src, "\\", "/"); // パスの区切り文字を変換
+			static AssetPayload payload;
+			payload.filePath = path.string();
+			Mathf::ReplaceAll(&payload.filePath, "\\", "/"); // パスの区切り文字を変換
 
-			const char* cstr = src.c_str();
-			ImGui::Text(cstr);
-			ImGui::SetDragDropPayload("AssetData", cstr, strlen(cstr) + 1);
+			payload.guid = pAssetCollection_->GetAssetGuidFromPath(payload.filePath);
+
+			//const char* cstr = src.c_str();
+			//ImGui::Text(cstr);
+			const AssetPayload* assetPtr = &payload;
+			ImGui::SetDragDropPayload("AssetData", &assetPtr, sizeof(AssetPayload*));
 
 			ImGui::EndDragDropSource();
 		}
@@ -573,6 +581,7 @@ void ImGuiProjectExplorer::PopupContextMenu(const std::filesystem::path& _dir) {
 
 			if (ImGui::MenuItem("Material")) {
 				/// マテリアル作成の処理
+				GenerateMaterialFile(_dir.string() + "/New Material.mat", nullptr);
 			}
 
 

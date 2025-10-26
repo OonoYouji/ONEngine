@@ -32,6 +32,9 @@ struct Guid final {
 	uint64_t high;
 	uint64_t low;
 
+	/// @brief Guidの無効値
+	static const Guid kInvalid;
+
 
 	/// ==================================================
 	/// public : methods

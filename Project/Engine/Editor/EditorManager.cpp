@@ -35,11 +35,11 @@ void EditorManager::Initialize(DxManager* _dxm, ShaderCompiler* _sc) {
 	AddEditorCompute(_dxm, _sc, std::make_unique<GrassArrangementPipeline>());
 }
 
-void EditorManager::Update(AssetCollection* _grc) {
+void EditorManager::Update(AssetCollection* _assetCollection) {
 
 	/// エディタのコマンドを実行する
 	for (auto& compute : editorComputes_) {
-		compute->Execute(pEcs_, pDxManager_->GetDxCommand(), _grc);
+		compute->Execute(pEcs_, pDxManager_->GetDxCommand(), _assetCollection);
 	}
 
 	if (runningCommand_) {

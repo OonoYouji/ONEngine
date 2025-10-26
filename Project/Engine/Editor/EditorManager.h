@@ -40,7 +40,7 @@ public:
 
 	void Initialize(class DxManager* _dxm, class ShaderCompiler* _shaderCompiler);
 
-	void Update(class AssetCollection* _grc);
+	void Update(class AssetCollection* _assetCollection);
 
 
 	/// ----- factory ----- ///

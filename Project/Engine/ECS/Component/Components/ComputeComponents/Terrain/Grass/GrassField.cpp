@@ -37,7 +37,7 @@ void from_json(const nlohmann::json& _j, GrassField& _p) {
 /// ImGuiデバッグ関数
 /// ////////////////////////////////////////////////////////
 
-void COMP_DEBUG::GrassFieldDebug(GrassField* _grassField, AssetCollection* _grc) {
+void COMP_DEBUG::GrassFieldDebug(GrassField* _grassField, AssetCollection* _assetCollection) {
 
 	/// 草の最大本数
 	ImGui::Text("Max Blade Count : %d", _grassField->GetMaxGrassCount());
@@ -66,7 +66,7 @@ void COMP_DEBUG::GrassFieldDebug(GrassField* _grassField, AssetCollection* _grc)
 
 
 	/// material debug
-	ImMathf::MaterialEdit("material", &_grassField->gpuMaterial_, _grc);
+	ImMathf::MaterialEdit("material", &_grassField->gpuMaterial_, _assetCollection);
 
 }
 
@@ -124,7 +124,7 @@ void GrassField::AppendBufferReadCounter(DxManager* _dxm, DxCommand* _dxCommand)
 	cmdList->ResourceBarrier(1, &uavBarrier);
 	rwGrassInstanceBuffer_.GetCounterResource().CreateBarrier(D3D12_RESOURCE_STATE_COPY_SOURCE, _dxCommand);
 
-	_dxCommand->CommandExecute();
+	_dxCommand->CommandExecuteAndWait();
 	_dxCommand->CommandReset();
 	_dxCommand->WaitForGpuComplete();
 

@@ -127,7 +127,29 @@ void SpriteRenderingPipeline::Draw(class ECSGroup* _ecsGroup, CameraComponent* _
 	}
 
 
-	ID3D12GraphicsCommandList* cmdList = _dxCommand->GetCommandList();
+	/// bufferにデータをセット
+	size_t transformIndex = 0;
+	for (auto& renderer : spriteRendererArray->GetUsedComponents()) {
+		if (!renderer->enable) {
+			continue;
+		}
+
+		if (GameEntity* owner = renderer->GetOwner()) {
+			/// Material, Transformのセット
+			materialsBuffer.SetMappedData(transformIndex, renderer->GetMaterial());
+			transformsBuffer_.SetMappedData(transformIndex, owner->GetTransform()->GetMatWorld());
+
+			++transformIndex;
+		}
+	}
+
+	/// 初期値のままなら描画対象なしなので描画しない
+	if (transformIndex == 0) {
+		return;
+	}
+
+
+	auto cmdList = _dxCommand->GetCommandList();
 
 	/// settings
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
@@ -145,23 +167,6 @@ void SpriteRenderingPipeline::Draw(class ECSGroup* _ecsGroup, CameraComponent* _
 	auto& textures = pAssetCollection_->GetTextures();
 	const Texture* firstTexture = &textures.front();
 	cmdList->SetGraphicsRootDescriptorTable(ROOT_PARAM_TEXTURES, firstTexture->GetSRVGPUHandle());
-
-
-	/// bufferにデータをセット
-	size_t transformIndex = 0;
-	for (auto& renderer : spriteRendererArray->GetUsedComponents()) {
-		if (!renderer->enable) {
-			continue;
-		}
-
-		if (GameEntity* owner = renderer->GetOwner()) {
-			/// Material, Transformのセット
-			materialsBuffer.SetMappedData(transformIndex, renderer->GetMaterial());
-			transformsBuffer_.SetMappedData(transformIndex, owner->GetTransform()->GetMatWorld());
-
-			++transformIndex;
-		}
-	}
 
 	materialsBuffer.SRVBindForGraphicsCommandList(cmdList, ROOT_PARAM_MATERIAL);
 	transformsBuffer_.SRVBindForGraphicsCommandList(cmdList, ROOT_PARAM_TRANSFORM);

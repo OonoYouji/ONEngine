@@ -12,7 +12,7 @@ public:
 	/// public : methods
 	/// ===================================================
 	
-	ImGuiSceneWindow(class EntityComponentSystem* _ecs, class AssetCollection* _grc, class SceneManager* _sceneManager, class ImGuiInspectorWindow* _inspector);
+	ImGuiSceneWindow(class EntityComponentSystem* _ecs, class AssetCollection* _assetCollection, class SceneManager* _sceneManager, class ImGuiInspectorWindow* _inspector);
 	~ImGuiSceneWindow() {}
 	
 	/// @brief imgui windowの描画処理

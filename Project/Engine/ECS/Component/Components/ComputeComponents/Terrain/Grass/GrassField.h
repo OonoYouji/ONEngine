@@ -41,7 +41,7 @@ void from_json(const nlohmann::json& _j, GrassField& _p);
 /// Editor
 /// ////////////////////////////////////////////////////////
 namespace COMP_DEBUG {
-	void GrassFieldDebug(GrassField* _grassField, AssetCollection* _grc);
+	void GrassFieldDebug(GrassField* _grassField, AssetCollection* _assetCollection);
 }
 
 
@@ -55,7 +55,7 @@ class GrassField : public IComponent {
 	/// privateメンバ変数の参照のためにフレンド宣言
 	friend void to_json(nlohmann::json& _j, const GrassField& _p);
 	friend void from_json(const nlohmann::json& _j, GrassField& _p);
-	friend void COMP_DEBUG::GrassFieldDebug(GrassField* _grassField, AssetCollection* _grc);
+	friend void COMP_DEBUG::GrassFieldDebug(GrassField* _grassField, AssetCollection* _assetCollection);
 public:
 	/// ===================================================
 	/// public : methods

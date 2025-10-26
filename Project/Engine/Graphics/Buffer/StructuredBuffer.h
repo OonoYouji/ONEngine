@@ -390,7 +390,7 @@ inline uint32_t StructuredBuffer<T>::ReadCounter(DxCommand* _dxCommand) {
 	cmdList->CopyResource(readbackResource_.Get(), counterResource_.Get());
 
 	/// コマンドリストを閉じて実行し、フェンス待ちなどが必要（ここでは省略）
-	_dxCommand->CommandExecute();
+	_dxCommand->CommandExecuteAndWait();
 	_dxCommand->CommandReset();
 	_dxCommand->WaitForGpuComplete();
 

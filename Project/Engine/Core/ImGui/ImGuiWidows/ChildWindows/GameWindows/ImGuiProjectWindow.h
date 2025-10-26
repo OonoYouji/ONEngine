@@ -34,7 +34,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	ImGuiProjectWindow(class AssetCollection* _grc, class EditorManager* _editorManager);
+	ImGuiProjectWindow(class AssetCollection* _assetCollection, class EditorManager* _editorManager);
 	~ImGuiProjectWindow() {}
 
 	/// @brief imgui windowの描画処理

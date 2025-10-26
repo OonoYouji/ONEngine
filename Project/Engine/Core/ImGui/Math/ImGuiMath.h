@@ -62,8 +62,6 @@ void DirectionalLightDebug(class DirectionalLight* _light);
 
 void AudioSourceDebug(class AudioSource* _audioSource);
 
-void MeshRendererDebug(class MeshRenderer* _meshRenderer);
-
 void CustomMeshRendererDebug(class CustomMeshRenderer* _customMeshRenderer);
 
 void EffectDebug(class Effect* _effect);

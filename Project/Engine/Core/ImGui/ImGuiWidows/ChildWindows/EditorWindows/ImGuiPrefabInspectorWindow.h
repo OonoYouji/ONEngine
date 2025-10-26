@@ -16,7 +16,7 @@ public:
 	/// public : methods
 	/// =====================================================
 
-	ImGuiPrefabInspectorWindow(class EntityComponentSystem* _ecs, class EditorManager* _editorManager, class AssetCollection* _grc);
+	ImGuiPrefabInspectorWindow(class EntityComponentSystem* _ecs, class EditorManager* _editorManager, class AssetCollection* _assetCollection);
 	~ImGuiPrefabInspectorWindow() override = default;
 
 	void ShowImGui() override;

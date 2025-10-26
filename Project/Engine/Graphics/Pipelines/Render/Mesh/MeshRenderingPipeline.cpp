@@ -143,8 +143,9 @@ void MeshRenderingPipeline::RenderingMesh(ID3D12GraphicsCommandList* _cmdList, s
 			);
 
 			/// texture id のセット
-			int32_t textureIndex = renderer->GetCPUMaterial().baseTextureIdPair.second;
-			if (textureIndex < 0) {
+			const Guid& texGuid = renderer->GetTextureGuid();
+			int32_t textureIndex = pAssetCollection_->GetTextureIndexFromGuid(texGuid);
+			if (!texGuid.CheckValid()) {
 				textureIndex = pAssetCollection_->GetTextureIndex("./Assets/Textures/white.png");
 			}
 			textureIdBuffer_.SetMappedData(

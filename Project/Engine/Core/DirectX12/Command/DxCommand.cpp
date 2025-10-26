@@ -71,7 +71,10 @@ void DxCommand::CommandExecute() {
 
 	ID3D12CommandList* commandLists[] = { commandList_.Get() };
 	commandQueue_->ExecuteCommandLists(1, commandLists);
+}
 
+void DxCommand::CommandExecuteAndWait() {
+	CommandExecute();
 	WaitForGpuComplete();
 }
 
