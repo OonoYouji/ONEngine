@@ -8,10 +8,29 @@
 #include <format>
 #include <tchar.h>
 
+
+/// @brief 最大のログバッファサイズ
+static const size_t MAX_LOG_BUFFER_SIZE = 1000;
+
+
 /// ////////////////////////////////////////////////
 /// Console Log
 /// ////////////////////////////////////////////////
 class Console final {
+	/// ----- friend class ----- ///
+	friend class GameFramework;
+
+private:
+	/// ===================================================
+	// private : static members
+	/// ===================================================
+
+	/// @brief spdlogの初期化など
+	static void Initialize();
+
+	static void AddToBuffer(const std::string& _msg);
+
+
 public:
 
 	~Console();

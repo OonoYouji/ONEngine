@@ -61,6 +61,7 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 
 	/// timeの初期化
 	Time::Initialize();
+	Console::Initialize();
 
 	/// scene managerの初期化
 	sceneManager_->Initialize(renderingFramework_->GetAssetCollection());
@@ -81,6 +82,12 @@ void GameFramework::Run() {
 
 	/// game loopが終了するまで回す
 	while (true) {
+
+		/// テストログ
+		for (size_t i = 0; i < 1024; i++) {
+			Console::Log("test log");
+		}
+
 
 		/// 更新処理
 		Input::Update();

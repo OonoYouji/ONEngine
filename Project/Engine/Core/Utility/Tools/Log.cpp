@@ -9,6 +9,11 @@
 #include <filesystem>
 #include <chrono>
 
+/// external
+#include <spdlog/spdlog.h>
+#include <spdlog/async.h>
+#include <spdlog/sinks/rotating_file_sink.h>
+
 /// engine
 #include "Engine/Core/Config/EngineConfig.h"
 
@@ -59,8 +64,136 @@ namespace {
 	std::string gMessage;
 	std::vector<std::string> gMessages_;
 
+	/// メンバ変数としてstaticで宣言したくないのでここで定義
+	std::vector<std::string> gLogBuffer_;
+	std::mutex gMutex_;
+
 } /// namespace
 
+
+/// ////////////////////////////////////////////////
+/// Console Log
+/// ////////////////////////////////////////////////
+
+
+Console::~Console() {
+#ifdef DEBUG_MODE
+	OutputLogToFile("../Generated/Log");
+#else 
+	//OutputLogToFile("./Log");
+#endif // DEBUG_MODE
+}
+
+void Console::Initialize() {
+
+	/// 念のため一度だけ初期化するように制限をかける
+	static bool initialized = false;
+	if (initialized) {
+		return;
+	}
+
+	/// 非同期スレッドプール
+	spdlog::init_thread_pool(8192, 1);
+
+	/// ログ出力先
+	auto sink = std::make_shared<spdlog::sinks::rotating_file_sink_mt>(
+		"../Generated/Log/engine.log", 10 * 1024 * 1024, 3);
+
+	auto logger = std::make_shared<spdlog::async_logger>(
+		"engine", sink,
+		spdlog::thread_pool(),
+		spdlog::async_overflow_policy::discard_new // v1.16.0の場合
+	);
+
+	spdlog::set_default_logger(logger);
+	spdlog::set_pattern("[%H:%M:%S.%e] [%l] %v");
+
+	spdlog::info("Logger initialized.");
+
+	initialized = true;
+}
+
+void Console::AddToBuffer(const std::string& _msg) {
+	std::lock_guard<std::mutex> lock(gMutex_);
+	gLogBuffer_.push_back(_msg);
+
+	/// ログの最大数を制限
+	if (gLogBuffer_.size() > MAX_LOG_BUFFER_SIZE) {
+		gLogBuffer_.erase(gLogBuffer_.begin());
+	}
+}
+
+
+void Console::Log(const std::string& _message) {
+	AddToBuffer(_message);
+	spdlog::info(_message);
+	//std::string formattedMessage;
+	//std::istringstream stream(_message);
+	//std::string line;
+	//while (std::getline(stream, line)) {
+	//	formattedMessage += GetCurrentTimeString() + line + "\n";
+	//}
+	//gMessage = formattedMessage;
+	//gMessages_.push_back(gMessage);
+
+	//gLogData.message += gMessage;
+	////OutputDebugStringA(_message.c_str());
+}
+
+void Console::Log(const std::wstring& _message) {
+	Log(ConvertString(_message));
+}
+
+void Console::LogInfo(const std::string& _message) {
+	AddToBuffer("[info] " + _message);
+	spdlog::info(_message);
+}
+
+void Console::LogError(const std::string& _message) {
+	AddToBuffer("[error] " + _message);
+	spdlog::error(_message);
+}
+
+void Console::LogWarning(const std::string& _message) {
+	AddToBuffer("[warning] " + _message);
+	spdlog::warn(_message);
+}
+
+void Console::OutputLogToFile(const std::string& _directory) {
+	std::string fileName = "/log" + GetCurrentDateTimeString() + ".md";
+
+	/// ファイルを開く
+	std::ofstream file(_directory + fileName, std::ios::trunc);
+	if (!file.is_open()) {
+		std::filesystem::create_directories(_directory);
+	}
+
+	file << gLogData.message;
+	file.close();
+}
+
+const std::string& Console::GetCurrentLog() {
+	return gMessage;
+}
+
+const std::string& Console::GetAllLogs() {
+	std::lock_guard<std::mutex> lock(gMutex_);
+	std::string all;
+	for (auto& m : gLogBuffer_) {
+		all += m + "\n";
+	}
+	return all;
+}
+
+const std::vector<std::string>& Console::GetLogVector() {
+	std::lock_guard<std::mutex> lock(gMutex_);
+	return gLogBuffer_;
+}
+
+
+/// ////////////////////////////////////////////////
+/// 文字列変換関数
+/// ////////////////////////////////////////////////
 
 std::string ConvertString(const std::wstring& _wstr) {
 
@@ -130,77 +263,3 @@ std::string HrToString(HRESULT _hr) {
 
 
 
-
-Console::~Console() {
-#ifdef DEBUG_MODE
-	OutputLogToFile("../Generated/Log");
-#else 
-	//OutputLogToFile("./Log");
-#endif // DEBUG_MODE
-}
-
-void Console::Log(const std::string& _message) {
-	std::string formattedMessage;
-	std::istringstream stream(_message);
-	std::string line;
-	while (std::getline(stream, line)) {
-		formattedMessage += GetCurrentTimeString() + line + "\n";
-	}
-	gMessage = formattedMessage;
-	gMessages_.push_back(gMessage);
-
-	gLogData.message += gMessage;
-	OutputDebugStringA(gMessage.c_str());
-}
-
-void Console::Log(const std::wstring& _message) {
-	std::string formattedMessage;
-	std::istringstream stream(ConvertString(_message));
-	std::string line;
-	while (std::getline(stream, line)) {
-		formattedMessage += GetCurrentTimeString() + line + "\n";
-	}
-	gMessage = formattedMessage;
-	gMessages_.push_back(gMessage);
-
-	gLogData.message += gMessage;
-	OutputDebugStringA(gMessage.c_str());
-}
-
-void Console::LogInfo(const std::string& _message) {
-	Log("[info] " + _message);
-}
-
-void Console::LogError(const std::string& _message) {
-	Log("[error] " + _message);
-}
-
-void Console::LogWarning(const std::string& _message) {
-	Log("[warning] " + _message);
-}
-
-void Console::OutputLogToFile(const std::string& _directory) {
-
-	std::string fileName = "/log" + GetCurrentDateTimeString() + ".md";
-
-	/// ファイルを開く
-	std::ofstream file(_directory + fileName, std::ios::trunc);
-	if (!file.is_open()) {
-		std::filesystem::create_directories(_directory);
-	}
-
-	file << gLogData.message;
-	file.close();
-}
-
-const std::string& Console::GetCurrentLog() {
-	return gMessage;
-}
-
-const std::string& Console::GetAllLogs() {
-	return gLogData.message;
-}
-
-const std::vector<std::string>& Console::GetLogVector() {
-	return gMessages_;
-}

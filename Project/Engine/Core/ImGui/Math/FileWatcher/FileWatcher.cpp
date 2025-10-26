@@ -43,7 +43,7 @@ void FileWatcher::Stop() {
 }
 
 std::vector<FileEvent> FileWatcher::ConsumeEvents() {
-	/// ---- 監視イベントの取得とクリア ---- ///
+	/// ----- 監視イベントの取得とクリア ----- ///
 
 	std::lock_guard<std::mutex> lock(mutex_);
 	std::vector<FileEvent> out(fileEvents_.begin(), fileEvents_.end());
@@ -53,7 +53,7 @@ std::vector<FileEvent> FileWatcher::ConsumeEvents() {
 
 
 void FileWatcher::Run() {
-	/// ---- ファイル監視のメインループ ---- ///
+	/// ----- ファイル監視のメインループ ----- ///
 
 	hDir_ = CreateFileW(
 		dirPath_.c_str(),
