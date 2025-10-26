@@ -22,6 +22,9 @@ bool FileWatcher::Start(const std::wstring& _dir) {
 void FileWatcher::Stop() {
 	/// ---- ファイル監視の停止 ---- ///
 
+	/// CloseHandleで別スレッドと競合しないようにロック
+	std::lock_guard<std::mutex> lock(mutex_);
+
 	if (!isRunning_) {
 		return;
 	}
@@ -80,7 +83,7 @@ void FileWatcher::Run() {
 		BOOL ok = ReadDirectoryChangesW(
 			hDir_,
 			buffer.data(), bufferSize,
-			FALSE,
+			TRUE,
 			FILE_NOTIFY_CHANGE_FILE_NAME |
 			FILE_NOTIFY_CHANGE_DIR_NAME |
 			FILE_NOTIFY_CHANGE_ATTRIBUTES |
@@ -145,7 +148,7 @@ void FileWatcher::Run() {
 
 		}
 
-	}	/// while (isRunning_) {
+	}	/// while (isRunning_)
 
 
 	if (hDir_ && hDir_ != INVALID_HANDLE_VALUE) {

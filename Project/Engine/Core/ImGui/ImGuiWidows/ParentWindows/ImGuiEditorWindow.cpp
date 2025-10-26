@@ -23,10 +23,10 @@ ImGuiEditorWindow::ImGuiEditorWindow(EntityComponentSystem* _ecs, AssetCollectio
 
 	AddChild(std::make_unique<ImGuiPrefabFileWindow>(_ecs, _assetCollection, inspector));
 	AddChild(std::make_unique<ImGuiPrefabViewWindow>(_ecs, _assetCollection));
-	ImGuiProjectWindow* project = static_cast<ImGuiProjectWindow*>(
-		AddChild(std::make_unique<ImGuiProjectWindow>(_assetCollection, _editorManager)));
+	//ImGuiProjectWindow* project = static_cast<ImGuiProjectWindow*>(
+	//	AddChild(std::make_unique<ImGuiProjectWindow>(_assetCollection, _editorManager)));
 
-	project->SetWindowName("Prefab Project");
+	//project->SetWindowName("Prefab Project");
 
 }
 
