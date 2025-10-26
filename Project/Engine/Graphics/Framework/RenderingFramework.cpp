@@ -170,6 +170,7 @@ void RenderingFramework::DxCommandExeAndReset() {
 	/// commandの実行
 	pDxManager_->GetDxCommand()->CommandExecuteAndWait();
 	pWindowManager_->PresentAll();
+	pDxManager_->GetDxCommand()->CommandReset();
 }
 
 AssetCollection* RenderingFramework::GetAssetCollection() const {

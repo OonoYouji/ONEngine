@@ -26,6 +26,10 @@ ImGuiProjectWindow::ImGuiProjectWindow(AssetCollection* _assetCollection, Editor
 
 
 void ImGuiProjectWindow::ShowImGui() {
+
+
+
+
 	if (!ImGui::Begin(winName_.c_str())) {
 		ImGui::End();
 		return;
@@ -324,9 +328,43 @@ ImGuiProjectExplorer::ImGuiProjectExplorer(AssetCollection* _assetCollection, Ed
 	: pAssetCollection_(_assetCollection) {
 	rootPath_ = "./";
 	currentPath_ = rootPath_;
+	fileWatcher_.Start(rootPath_);
 }
 
 void ImGuiProjectExplorer::ShowImGui() {
+
+
+	if (ImGui::Begin("FileWatcher")) {
+
+		if (ImGui::Button("start")) {
+			fileWatcher_.Start(rootPath_);
+		}
+
+
+		auto events = fileWatcher_.ConsumeEvents();
+		for (const auto& event : events) {
+			std::string eventType;
+			switch (event.type) {
+			case FileEvent::Type::Added:
+				eventType = "Added";
+				break;
+			case FileEvent::Type::Removed:
+				eventType = "Removed";
+				break;
+			case FileEvent::Type::Modified:
+				eventType = "Modified";
+				break;
+			}
+			ImGui::Text("%s: %s", eventType.c_str(), std::filesystem::path(event.path).filename().string().c_str());
+		}
+
+		ImGui::End();
+	}
+
+
+
+
+
 	if (!ImGui::Begin("ImGuiProjectExplorer")) {
 		ImGui::End();
 		return;

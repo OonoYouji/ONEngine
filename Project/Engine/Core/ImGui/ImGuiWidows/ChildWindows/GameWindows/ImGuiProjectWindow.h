@@ -7,6 +7,7 @@
 
 /// engine
 #include "../../Collection/ImGuiWindowCollection.h"
+#include "Engine/Core/ImGui/Math/FileWatcher/FileWatcher.h"
 
 /// ///////////////////////////////////////////////////
 /// ImGuiProjectWindow
@@ -153,5 +154,6 @@ private:
 	std::filesystem::path renamingPath_;
 	std::string renameBuffer_;
 
+	FileWatcher fileWatcher_;
 
 };
