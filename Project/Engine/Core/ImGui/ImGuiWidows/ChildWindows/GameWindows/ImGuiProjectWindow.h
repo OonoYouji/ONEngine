@@ -13,10 +13,15 @@
 class ImGuiProjectExplorer : public IImGuiChildWindow {
 public:
 
-	struct Entry {
+	//struct Entry {
+	//	std::filesystem::path path;
+	//	bool isDirectory;
+	//	std::vector<Entry> children;
+	//};
+
+	struct FileItem {
 		std::filesystem::path path;
-		bool isDirectory;
-		std::vector<Entry> children;
+		bool isDirectory = false;
 	};
 
 public:
@@ -71,6 +76,15 @@ private:
 	std::unordered_map<std::string, bool> dirOpenState_; // ツリーの開閉状態
 	std::filesystem::file_time_type lastWriteTime_;
 
+
+
+	/// ----- フォルダツリー、ファイルの表示使う ----- ///
+	/// ディレクトリツリーのキャッシュ
+	std::unordered_map<std::string, std::vector<FileItem>> directoryCache_;
+	/// ファイルリストのキャッシュ
+	std::unordered_map<std::string, std::vector<FileItem>> fileCache_;
+
+
 	/// ----- 名前の変更に使う ----- ///
 	bool justStartedRename_;
 	bool isRenaming_ = false;
@@ -79,8 +93,4 @@ private:
 
 	FileWatcher fileWatcher_;
 
-	/// ディレクトリツリーのキャッシュ
-	std::unordered_map<std::string, std::vector<std::filesystem::path>> directoryCache_;
-	/// ファイルリストのキャッシュ
-	std::unordered_map<std::string, std::vector<std::filesystem::path>> fileCache_;
 };

@@ -4,6 +4,7 @@
 #include <filesystem>
 #include <iostream>
 #include <format>
+#include <unordered_set>
 
 /// external
 #include <imgui.h>
@@ -18,14 +19,22 @@
 ImGuiProjectExplorer::ImGuiProjectExplorer(AssetCollection* _assetCollection, EditorManager* /*_editorManager*/)
 	: pAssetCollection_(_assetCollection) {
 	rootPath_ = std::filesystem::absolute("./");
-	currentPath_ = rootPath_;
-	fileWatcher_.Start(rootPath_);
+	currentPath_ = std::filesystem::absolute("./Assets");
+
+
+	std::filesystem::path assetPath = std::filesystem::absolute("./Assets");
+	std::filesystem::path packagesPath = std::filesystem::absolute("./Packages");
+
+	/// ファイルの監視を開始
+	fileWatcher_.Start({ assetPath, packagesPath });
 
 	// rootPath_ の内容を directoryCache_ に追加
 	UpdateDirectoryCache(rootPath_);
+	//UpdateDirectoryCache(packagesPath);
 
 	// rootPath_ の内容を fileCache_ に追加
 	UpdateFileCache(rootPath_);
+	//UpdateFileCache(packagesPath);
 }
 
 void ImGuiProjectExplorer::ShowImGui() {
@@ -35,6 +44,9 @@ void ImGuiProjectExplorer::ShowImGui() {
 	}
 
 
+	/// ---------------------------------------------------
+	/// ファイル監視イベントの処理
+	/// ---------------------------------------------------
 	auto events = fileWatcher_.ConsumeEvents();
 	for (const auto& event : events) {
 		std::string eventType;
@@ -57,8 +69,10 @@ void ImGuiProjectExplorer::ShowImGui() {
 
 
 
-
+	/// ---------------------------------------------------
 	/// ProjectWindowの左上に出すMenuの内容
+	/// ---------------------------------------------------
+
 	if (ImGui::Button("Menu", ImVec2(120, 25))) {
 		ImGui::OpenPopup("FileContextMenu");
 	}
@@ -66,10 +80,13 @@ void ImGuiProjectExplorer::ShowImGui() {
 	ImGui::SameLine();
 
 	ImGui::Text(": Search");
-
-
 	ImGui::Separator();
 
+
+
+	/// ---------------------------------------------------
+	/// テーブルレイアウトの開始
+	/// ---------------------------------------------------
 	if (ImGui::BeginTable("ProjectTable", 2, ImGuiTableFlags_Resizable)) {
 		// 左ペイン（ツリー）
 		ImGui::TableSetupColumn("Tree", ImGuiTableColumnFlags_WidthFixed, 250.0f);
@@ -101,20 +118,21 @@ void ImGuiProjectExplorer::DrawDirectoryTree(const std::filesystem::path& dir) {
 	}
 
 	for (const auto& subDir : it->second) {
-		const std::string name = subDir.filename().string();
+		const std::filesystem::path& subDirectoryPath = subDir.path;
+		const std::string name = subDirectoryPath.filename().string();
 
 		ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow;
-		if (subDir == currentPath_) {
+		if (subDirectoryPath == currentPath_) {
 			flags |= ImGuiTreeNodeFlags_Selected;
 		}
 
 		bool nodeOpen = ImGui::TreeNodeEx(name.c_str(), flags);
 		if (ImGui::IsItemClicked()) {
-			currentPath_ = subDir;
+			currentPath_ = subDirectoryPath;
 		}
 
 		if (nodeOpen) {
-			DrawDirectoryTree(subDir);
+			DrawDirectoryTree(subDirectoryPath);
 			ImGui::TreePop();
 		}
 	}
@@ -130,18 +148,26 @@ void ImGuiProjectExplorer::DrawFileView(const std::filesystem::path& dir) {
 	ImGui::Separator();
 	ImGui::Spacing();
 
+	/// ----- ファイルのアイコンのサイズを決定 ----- ///
 	float iconSize = 64.0f;
 	int columnCount = (std::max)(1, (int)(ImGui::GetContentRegionAvail().x / (iconSize + 16.0f)));
 	ImGui::Columns(columnCount, nullptr, false);
 
 	for (const auto& file : it->second) {
-		const std::string name = file.filename().string();
+		const std::filesystem::path& filePath = file.path;
+		const std::string name = filePath.filename().string();
 
 		ImGui::PushID(name.c_str());
 		ImGui::BeginGroup();
 
-		Texture* texture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/File.png");
-		ImGui::ImageButton("##File", (ImTextureID)(uintptr_t)texture->GetSRVGPUHandle().ptr, { iconSize, iconSize });
+		/// ----- アイコン表示 ----- ///
+		if (file.isDirectory) {
+			Texture* texture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/Folder.png");
+			ImGui::ImageButton("##Folder", (ImTextureID)(uintptr_t)texture->GetSRVGPUHandle().ptr, { iconSize, iconSize });
+		} else {
+			Texture* texture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/File.png");
+			ImGui::ImageButton("##File", (ImTextureID)(uintptr_t)texture->GetSRVGPUHandle().ptr, { iconSize, iconSize });
+		}
 
 		ImGui::TextWrapped("%s", name.c_str());
 		ImGui::EndGroup();
@@ -274,36 +300,59 @@ void ImGuiProjectExplorer::HandleFileRemoved(const std::filesystem::path& path) 
 }
 
 void ImGuiProjectExplorer::HandleFileModified(const std::filesystem::path& path) {
-    if (!std::filesystem::exists(path)) {
-        return; // ファイルが存在しない場合は何もしない
-    }
+	if (!std::filesystem::exists(path)) {
+		return; // ファイルが存在しない場合は何もしない
+	}
 
-    // 親ディレクトリのキャッシュを更新
-    UpdateFileCache(path.parent_path());
+	// 親ディレクトリのキャッシュを更新
+	UpdateFileCache(path.parent_path());
 
-    // 現在のパスが変更された場合、再描画をトリガー
-    if (path.parent_path() == currentPath_) {
-        // ImGuiの再描画はShowImGui内で行われるため、特別な処理は不要
-        // キャッシュが更新されていれば、次回の描画で反映される
-    }
+	// 現在のパスが変更された場合、再描画をトリガー
+	if (path.parent_path() == currentPath_) {
+		// ImGuiの再描画はShowImGui内で行われるため、特別な処理は不要
+		// キャッシュが更新されていれば、次回の描画で反映される
+	}
 }
 
 void ImGuiProjectExplorer::UpdateDirectoryCache(const std::filesystem::path& dir) {
+	// 無視するフォルダ名リスト
+	static const std::unordered_set<std::wstring> ignoredDirs = {
+		L".vs",
+		L"Engine",
+		L"Externals",
+	};
+
 	if (!std::filesystem::exists(dir)) {
 		directoryCache_.erase(dir.string());
 		return;
 	}
 
-	std::vector<std::filesystem::path> subdirectories;
+	std::vector<FileItem> subdirectories;
 	for (const auto& entry : std::filesystem::directory_iterator(dir)) {
-		if (entry.is_directory()) {
-			subdirectories.push_back(entry.path());
-			// 再帰的にサブディレクトリを処理
-			UpdateDirectoryCache(entry.path());
+		if (!entry.is_directory()) {
+			continue;
 		}
+
+		const std::filesystem::path& subdir = entry.path();
+		const std::wstring folderName = subdir.filename().wstring();
+
+		/// 無視対象ならスキップ
+		if (ignoredDirs.contains(folderName)) {
+			continue;
+		}
+
+
+		FileItem item;
+		item.path = subdir;
+		item.isDirectory = true;
+
+		subdirectories.push_back(item);
+		UpdateDirectoryCache(subdir); // 再帰
 	}
+
 	directoryCache_[dir.string()] = std::move(subdirectories);
 }
+
 
 void ImGuiProjectExplorer::UpdateFileCache(const std::filesystem::path& dir) {
 	if (!std::filesystem::exists(dir)) {
@@ -311,15 +360,23 @@ void ImGuiProjectExplorer::UpdateFileCache(const std::filesystem::path& dir) {
 		return;
 	}
 
-	std::vector<std::filesystem::path> files;
+	std::vector<FileItem> files;
 	for (const auto& entry : std::filesystem::directory_iterator(dir)) {
+		FileItem item;
+		item.path = entry.path();
+
 		if (entry.is_regular_file()) {
-			files.push_back(entry.path());
+			item.isDirectory = false;
+			files.push_back(item);
 		} else if (entry.is_directory()) {
 			// 再帰的にサブディレクトリを処理
+			item.isDirectory = true;
+			files.push_back(item);
 			UpdateFileCache(entry.path());
 		}
 	}
+
+
 	fileCache_[dir.string()] = std::move(files);
 }
 
