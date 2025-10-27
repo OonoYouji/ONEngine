@@ -78,7 +78,7 @@ namespace {
 
 Console::~Console() {
 #ifdef DEBUG_MODE
-	OutputLogToFile("../Generated/Log");
+	//OutputLogToFile("../Generated/Log");
 #else 
 	//OutputLogToFile("./Log");
 #endif // DEBUG_MODE
@@ -127,17 +127,6 @@ void Console::AddToBuffer(const std::string& _msg) {
 void Console::Log(const std::string& _message) {
 	AddToBuffer(_message);
 	spdlog::info(_message);
-	//std::string formattedMessage;
-	//std::istringstream stream(_message);
-	//std::string line;
-	//while (std::getline(stream, line)) {
-	//	formattedMessage += GetCurrentTimeString() + line + "\n";
-	//}
-	//gMessage = formattedMessage;
-	//gMessages_.push_back(gMessage);
-
-	//gLogData.message += gMessage;
-	////OutputDebugStringA(_message.c_str());
 }
 
 void Console::Log(const std::wstring& _message) {
@@ -157,19 +146,6 @@ void Console::LogError(const std::string& _message) {
 void Console::LogWarning(const std::string& _message) {
 	AddToBuffer("[warning] " + _message);
 	spdlog::warn(_message);
-}
-
-void Console::OutputLogToFile(const std::string& _directory) {
-	std::string fileName = "/log" + GetCurrentDateTimeString() + ".md";
-
-	/// ファイルを開く
-	std::ofstream file(_directory + fileName, std::ios::trunc);
-	if (!file.is_open()) {
-		std::filesystem::create_directories(_directory);
-	}
-
-	file << gLogData.message;
-	file.close();
 }
 
 const std::string& Console::GetCurrentLog() {
@@ -247,6 +223,10 @@ std::string ConvertTCHARToString(const TCHAR* tstr) {
 #else
 	return std::string(tstr); // もともと char* ならそのまま
 #endif
+}
+
+std::string ConvertString(DWORD _dw) {
+	return std::to_string(_dw);
 }
 
 std::string HrToString(HRESULT _hr) {

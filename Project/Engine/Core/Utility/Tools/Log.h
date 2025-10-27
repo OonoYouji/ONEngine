@@ -42,10 +42,6 @@ public:
 	static void LogWarning(const std::string& _message);
 
 
-	/// @brief logをfileに出力する
-	/// @param _directory
-	static void OutputLogToFile(const std::string& _directory);
-
 	/// @brief 最新のログを返す
 	static const std::string& GetCurrentLog();
 
@@ -65,6 +61,11 @@ std::wstring ConvertString(const std::string& _str);
 
 /// @brief TCHAR* -> string 変換関数
 std::string ConvertTCHARToString(const TCHAR* _tstr);
+
+/// @brief DWORDを文字列に変換する
+/// @param _dw 
+/// @return 
+std::string ConvertString(DWORD _dw);
 
 /// @brief HRESULTを文字列に変換する
 std::string HrToString(HRESULT _hr);

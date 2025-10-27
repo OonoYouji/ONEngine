@@ -1,5 +1,8 @@
 #include "FileWatcher.h"
 
+/// engine
+#include "Engine/Core/Utility/Utility.h"
+
 FileWatcher::FileWatcher() : isRunning_(false), hDir_(INVALID_HANDLE_VALUE) {}
 FileWatcher::~FileWatcher() {
 	Stop();
@@ -33,7 +36,12 @@ void FileWatcher::Stop() {
 
 	if (hDir_ && hDir_ != INVALID_HANDLE_VALUE) {
 		CancelIoEx(hDir_, nullptr);
-		CloseHandle(hDir_);
+		if (!CloseHandle(hDir_)) {
+			DWORD err = GetLastError();
+			// ログ: err を表示
+			Console::LogError(ConvertString(err));
+		}
+
 		hDir_ = INVALID_HANDLE_VALUE;
 	}
 
@@ -97,6 +105,8 @@ void FileWatcher::Run() {
 		if (!ok) {
 			/// ----- エラー発生時の処理 ----- ///
 			DWORD error = GetLastError();
+			Console::LogError(ConvertString(error));
+
 			if (!isRunning_) {
 				break;
 			}

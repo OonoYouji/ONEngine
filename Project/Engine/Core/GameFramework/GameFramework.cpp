@@ -83,12 +83,6 @@ void GameFramework::Run() {
 	/// game loopが終了するまで回す
 	while (true) {
 
-		/// テストログ
-		for (size_t i = 0; i < 1024; i++) {
-			Console::Log("test log");
-		}
-
-
 		/// 更新処理
 		Input::Update();
 		Time::Update();

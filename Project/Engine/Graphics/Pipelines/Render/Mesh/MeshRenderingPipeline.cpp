@@ -146,7 +146,7 @@ void MeshRenderingPipeline::RenderingMesh(ID3D12GraphicsCommandList* _cmdList, s
 			const Guid& texGuid = renderer->GetTextureGuid();
 			int32_t textureIndex = pAssetCollection_->GetTextureIndexFromGuid(texGuid);
 			if (!texGuid.CheckValid()) {
-				textureIndex = pAssetCollection_->GetTextureIndex("./Assets/Textures/white.png");
+				textureIndex = static_cast<int32_t>(pAssetCollection_->GetTextureIndex("./Assets/Textures/white.png"));
 			}
 			textureIdBuffer_.SetMappedData(
 				transformIndex_,
