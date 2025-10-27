@@ -8,16 +8,18 @@
 #include <ImGuizmo.h>
 
 /// engine
+#include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/Core/Config/EngineConfig.h"
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/Core/ImGui/ImGuiManager.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Entity/GameEntity/GameEntity.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
-#include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/Scene/SceneManager.h"
 #include "Engine/Script/MonoScriptEngine.h"
 
+/// engine/imgui
+#include "Engine/Core/ImGui/ImGuiSelection.h"
 #include "ImGuiInspectorWindow.h"
 
 ImGuiSceneWindow::ImGuiSceneWindow(EntityComponentSystem* _ecs, AssetCollection* _assetCollection, SceneManager* _sceneManager, ImGuiInspectorWindow* _inspector)
@@ -111,7 +113,8 @@ void ImGuiSceneWindow::ShowImGui() {
 	/// ----------------------------------------
 
 	// 操作対象のゲット
-	GameEntity* entity = pInspector_->GetSelectedEntity();
+	const Guid& selectedGuid = ImGuiSelection::GetSelectedObject();
+	GameEntity* entity = pEcs_->GetCurrentGroup()->GetEntityFromGuid(selectedGuid);
 	if (entity) {
 
 		ImGuizmo::SetOrthographic(false); // 透視投影
@@ -193,7 +196,7 @@ void ImGuiSceneWindow::SetGamePlay(bool _isGamePlay) {
 		pSceneManager_->SaveCurrentSceneTemporary();
 
 		pSceneManager_->ReloadScene(true);
-		pInspector_->SetSelectedEntity(0);
+		ImGuiSelection::SetSelectedEntity(Guid::kInvalid, SelectionType::None);
 
 		/// Monoスクリプトエンジンのホットリロードでスクリプトの初期化を行う
 		MonoScriptEngine::GetInstance().HotReload();
@@ -201,7 +204,7 @@ void ImGuiSceneWindow::SetGamePlay(bool _isGamePlay) {
 	} else {
 		//!< 更新処理を停止した場合の処理
 		pSceneManager_->ReloadScene(true);
-		pInspector_->SetSelectedEntity(0);
+		ImGuiSelection::SetSelectedEntity(Guid::kInvalid, SelectionType::None);
 
 	}
 

@@ -103,10 +103,6 @@ void ImGuiInspectorWindow::ShowImGui() {
 	ImGui::End();
 }
 
-void ImGuiInspectorWindow::SetSelectedEntity(GameEntity* _entity) {
-	selectedEntity_ = _entity;
-}
-
 
 void ImGuiInspectorWindow::EntityInspector() {
 
@@ -308,6 +304,3 @@ void ImGuiInspectorWindow::AssetInspector() {
 
 }
 
-GameEntity* ImGuiInspectorWindow::GetSelectedEntity() const {
-	return selectedEntity_;
-}

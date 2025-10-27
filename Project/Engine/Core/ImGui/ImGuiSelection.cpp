@@ -5,12 +5,12 @@
 
 namespace {
 
-	const Guid* gSelectionObjectGuid = nullptr;
+	const Guid* gSelectionObjectGuid = &Guid::kInvalid;
 	SelectionType gSelectionType = SelectionType::None;
 
 } /// namespace
 
-
+ 
 const Guid& ImGuiSelection::GetSelectedObject() {
 	return *gSelectionObjectGuid;
 }
