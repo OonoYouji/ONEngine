@@ -5,6 +5,7 @@
 
 /// externals
 #include <imgui.h>
+#include <magic_enum/magic_enum.hpp>
 
 /// engine
 #include "Engine/Core/Utility/Input/Input.h"
@@ -36,9 +37,9 @@ void COMP_DEBUG::TerrainDebug(Terrain* _terrain, EntityComponentSystem* _ecs, As
 
 	/// ボタンの説明文
 	const std::array<const char*, kMaxButtonNum> descriptions = {
-		"Edit Mode: 操作無し\nNo terrain editing.",
-		"Edit Mode: 地形の勾配操作\nEdit terrain vertex heights.",
-		"Edit Mode: テクスチャペイント\nPaint terrain textures."
+		"Edit Mode: 操作無し\nNo terrain editing.\n ショートカットキー [Ctrl+N]",
+		"Edit Mode: 地形の勾配操作\nEdit terrain vertex heights.\n ショートカットキー [Ctrl+V]",
+		"Edit Mode: テクスチャペイント\nPaint terrain textures.\n ショートカットキー [Ctrl+B]"
 	};
 
 	/// 要素ごとにボタンを表示
@@ -48,9 +49,20 @@ void COMP_DEBUG::TerrainDebug(Terrain* _terrain, EntityComponentSystem* _ecs, As
 		/// 最初以外が一行になるようにする
 		if (i != 0) { ImGui::SameLine(); }
 
+		/// 非選択時は半透明にする
+		int32_t saveEditMode = _terrain->editorInfo_.editMode;
+		if (saveEditMode != static_cast<int32_t>(i)) {
+			ImGui::PushStyleVar(ImGuiStyleVar_Alpha, 0.2f);
+		}
+
 		ImTextureID textureId = reinterpret_cast<ImTextureID>(buttonTextures[i]->GetSRVGPUHandle().ptr);
 		if (ImGui::ImageButton("##Button", textureId, ImVec2(32, 32))) {
 			_terrain->editorInfo_.editMode = static_cast<int32_t>(i);
+		}
+
+		/// 非選択時はスタイルを戻す
+		if (saveEditMode != static_cast<int32_t>(i)) {
+			ImGui::PopStyleVar();
 		}
 
 		/// ボタンにカーソルを2秒以上合わせると説明を表示
@@ -76,7 +88,8 @@ void COMP_DEBUG::TerrainDebug(Terrain* _terrain, EntityComponentSystem* _ecs, As
 	/// Modeごとの編集内容を表示
 	/// ---------------------------------------------------
 
-	ImGui::Separator();
+	const std::string enumStr = std::string(magic_enum::enum_name(static_cast<Terrain::EditMode>(_terrain->editorInfo_.editMode)));
+	ImGui::SeparatorText(enumStr.c_str());
 	switch (_terrain->editorInfo_.editMode) {
 	case static_cast<int32_t>(Terrain::EditMode::Vertex):
 
@@ -224,7 +237,6 @@ Terrain::Terrain() {
 	const size_t faceVerts = 6;
 	maxIndexNum_ = static_cast<uint32_t>((terrainWidth - 1) * (terrainHeight - 1) * faceVerts);
 
-	/// river
 
 
 	splattingTexPaths_[GRASS] = "./Packages/Textures/Grass.jpg";

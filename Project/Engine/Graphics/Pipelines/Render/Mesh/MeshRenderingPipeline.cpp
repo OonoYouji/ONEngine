@@ -148,6 +148,12 @@ void MeshRenderingPipeline::RenderingMesh(ID3D12GraphicsCommandList* _cmdList, s
 			if (!texGuid.CheckValid()) {
 				textureIndex = static_cast<int32_t>(pAssetCollection_->GetTextureIndex("./Assets/Textures/white.png"));
 			}
+
+			/// 無効値なら0にする
+			if (textureIndex == -1) {
+				textureIndex = 0;
+			}
+
 			textureIdBuffer_.SetMappedData(
 				transformIndex_,
 				_textures[textureIndex].GetSRVDescriptorIndex()
