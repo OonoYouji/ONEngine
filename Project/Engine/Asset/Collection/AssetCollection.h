@@ -17,7 +17,7 @@
 
 /// @brief TがIAssetを継承しているかのコンセプト
 template <typename T>
-concept IsAsset = std::is_base_of_v<IAsset, T>;
+concept IsAssetExist = std::is_base_of_v<IAsset, T>;
 
 
 static const uint32_t MAX_TEXTURE_COUNT   = 256; ///< 最大テクスチャ数
@@ -56,8 +56,13 @@ public:
 	/// @tparam T 追加するアセットの型
 	/// @param _filepath アセットへのファイルパス
 	/// @param _asset 追加するアセットのインスタンス
-	template <IsAsset T>
+	template <IsAssetExist T>
 	void AddAsset(const std::string& _filepath, T&& _asset);
+
+	/// @brief guidがアセットの物かチェックする
+	/// @param _guid Guid
+	/// @return true: アセット, false: アセットではない
+	bool IsAssetExist(const Guid& _guid) const;
 
 
 	/// リソースパスの取得

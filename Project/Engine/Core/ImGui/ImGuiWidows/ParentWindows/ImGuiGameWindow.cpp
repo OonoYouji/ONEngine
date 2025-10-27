@@ -26,8 +26,8 @@ ImGuiGameWindow::ImGuiGameWindow(
 	/// 子windowの追加
 	ImGuiInspectorWindow* inspector = static_cast<ImGuiInspectorWindow*>(AddChild(std::make_unique<ImGuiInspectorWindow>("Inspector##Game", _ecs, _assetCollection, _editorManager)));
 	AddChild(std::make_unique<ImGuiGameSceneWindow>(_assetCollection));
-	AddChild(std::make_unique<ImGuiNormalHierarchyWindow>("Hierarchy", _ecs, _editorManager, _sceneManager, inspector));
-	AddChild(std::make_unique<ImGuiHierarchyWindow>("DebugHierarchy", _ecs->GetECSGroup("Debug"), _editorManager, _sceneManager, inspector));
+	AddChild(std::make_unique<ImGuiNormalHierarchyWindow>("Hierarchy", _ecs, _editorManager, _sceneManager));
+	AddChild(std::make_unique<ImGuiHierarchyWindow>("DebugHierarchy", _ecs->GetECSGroup("Debug"), _editorManager, _sceneManager));
 	AddChild(std::make_unique<ImGuiSceneWindow>(_ecs, _assetCollection, _sceneManager, inspector));
 	//AddChild(std::make_unique<ImGuiProjectWindow>(_assetCollection, _editorManager));
 	AddChild(std::make_unique<ImGuiProjectExplorer>(_assetCollection, _editorManager));

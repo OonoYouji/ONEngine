@@ -7,10 +7,6 @@
 
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentEditCommands.h"
 
-
-template<typename T>
-concept ComponentType = std::is_base_of_v<IComponent, T>;
-
 template<typename T>
 concept SystemType = std::is_base_of_v<ECSISystem, T>;
 
@@ -33,8 +29,11 @@ public:
 	/// ----- entity ----- ///
 
 	/// 生成
-	GameEntity* GenerateEntity(bool _isRuntime);
-	GameEntity* GenerateEntityFromPrefab(const std::string& _prefabName, bool _isRuntime = true);
+	GameEntity* GenerateEntity(const Guid& _guid, bool _isRuntime);
+	GameEntity* GenerateEntityFromPrefab(const std::string& _prefabName, const Guid& _guid, bool _isRuntime = true);
+
+	/// 取得
+	GameEntity* GetEntityFromGuid(const Guid& _guid);
 
 	/// 削除
 	void RemoveEntity(GameEntity* _entity, bool _deleteChildren = true);

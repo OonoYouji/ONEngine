@@ -48,7 +48,7 @@ void ImGuiPrefabFileWindow::ShowImGui() {
 			Console::Log("Double clicked prefab file: " + file.second);
 
 			ECSGroup* debugGroup = pEcs_->GetECSGroup("Debug");
-			GameEntity* entity = debugGroup->GenerateEntityFromPrefab(file.second, false);
+			GameEntity* entity = debugGroup->GenerateEntityFromPrefab(file.second, GenerateGuid(), false);
 			pInspector_->SetSelectedEntity(entity);
 		}
 

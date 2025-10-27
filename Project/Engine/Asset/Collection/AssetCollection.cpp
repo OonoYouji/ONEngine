@@ -163,6 +163,34 @@ void AssetCollection::AddAsset<Material>(const std::string& _filepath, Material&
 }
 
 
+bool AssetCollection::IsAssetExist(const Guid& _guid) const {
+	/// ----- guidがアセットの物かチェックする ----- ///
+
+	/// 無効値ならfalseを返す
+	if(!_guid.CheckValid()) {
+		return false;
+	}
+
+	/// 各コンテナでguidをチェック
+	if (modelContainer_->GetIndex(_guid) != -1) {
+		return true;
+	}
+
+	if (textureContainer_->GetIndex(_guid) != -1) {
+		return true;
+	}
+
+	if (audioClipContainer_->GetIndex(_guid) != -1) {
+		return true;
+	}
+
+	if (materialContainer_->GetIndex(_guid) != -1) {
+		return true;
+	}
+
+	/// どのコンテナにも存在しなかった場合はfalseを返す
+	return false;
+}
 
 std::vector<std::string> AssetCollection::GetResourceFilePaths(const std::string& _directoryPath) const {
 	/// ----- 指定されたディレクトリパス内のリソースファイルパスをすべて取得する ----- ///

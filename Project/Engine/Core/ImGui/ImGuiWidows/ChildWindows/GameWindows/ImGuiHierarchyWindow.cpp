@@ -7,25 +7,27 @@
 
 /// engine
 #include "Engine/Core/Config/EngineConfig.h"
-#include "Engine/Core/ImGui/Math/ImGuiMath.h"
 #include "Engine/Core/Utility/Math/Mathf.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
+#include "Engine/ECS/Entity/GameEntity/GameEntity.h"
 #include "Engine/Editor/EditorManager.h"
 #include "Engine/Editor/Commands/WorldEditorCommands/WorldEditorCommands.h"
 #include "Engine/Editor/EditCommand.h"
 #include "Engine/Scene/SceneManager.h"
 
+/// engine/imgui
 #include "ImGuiInspectorWindow.h"
+#include "Engine/Core/ImGui/Math/ImGuiMath.h"
+#include "Engine/Core/ImGui/ImGuiSelection.h"
 
 
 ImGuiHierarchyWindow::ImGuiHierarchyWindow(
 	const std::string& _imGuiWindowName,
 	ECSGroup* _ecsGroup,
 	EditorManager* _editorManager,
-	SceneManager* _sceneManager,
-	ImGuiInspectorWindow* _inspectorWindow)
+	SceneManager* _sceneManager)
 	: imGuiWindowName_(_imGuiWindowName), pECSGroup_(_ecsGroup), pEditorManager_(_editorManager),
-	pSceneManager_(_sceneManager), pInspectorWindow_(_inspectorWindow) {
+	pSceneManager_(_sceneManager) {
 
 	newName_.reserve(1024);
 	isNodeOpen_ = false;
@@ -60,7 +62,7 @@ void ImGuiHierarchyWindow::PrefabDragAndDrop() {
 						str.erase(0, pos + 1);
 					}
 
-					pECSGroup_->GenerateEntityFromPrefab(str, DebugConfig::isDebugging);
+					pECSGroup_->GenerateEntityFromPrefab(str, GenerateGuid(), DebugConfig::isDebugging);
 					Console::Log(std::format("entity name set to: {}", str));
 				} else {
 					Console::Log("[error] Invalid entity format. Please use \".prefab\"");
@@ -96,7 +98,7 @@ void ImGuiHierarchyWindow::DrawEntityHierarchy(GameEntity* _entity) {
 			if (_entity == selectedEntity_) {
 
 				/// 入力の処理
-				if(Input::PressKey(DIK_LCONTROL) || Input::PressKey(DIK_RCONTROL)) {
+				if (Input::PressKey(DIK_LCONTROL) || Input::PressKey(DIK_RCONTROL)) {
 					if (Input::TriggerKey(DIK_C)) {
 						EditCommand::Execute<CopyEntityCommand>(_entity);
 					}
@@ -236,7 +238,8 @@ void ImGuiHierarchyWindow::DrawHierarchy() {
 		}
 
 		if (hasValidSelection) {
-			pInspectorWindow_->SetSelectedEntity(selectedEntity_);
+			/// ----- 選択したオブジェクトを設定 ----- ///
+			ImGuiSelection::SetSelectedEntity(selectedEntity_->GetGuid(), SelectionType::Entity);
 		}
 	}
 
@@ -296,7 +299,7 @@ void ImGuiHierarchyWindow::EntityDebug(GameEntity* _entity) {
 			/// 選択中ならInspectorの選択を解除
 			if (selectedEntity_ == _entity) {
 				selectedEntity_ = nullptr;
-				pInspectorWindow_->SetSelectedEntity(0); // 選択を解除
+				ImGuiSelection::SetSelectedEntity(Guid::kInvalid, SelectionType::None);
 			}
 		}
 
@@ -361,8 +364,8 @@ void ImGuiHierarchyWindow::DrawSceneSaveDialog() {
 /// ImGuiNormalHierarchyWindow
 /// /////////////////////////////////////////////////////////////////////////
 
-ImGuiNormalHierarchyWindow::ImGuiNormalHierarchyWindow(const std::string& _imGuiWindowName, EntityComponentSystem* _ecs, EditorManager* _editorManager, SceneManager* _sceneManager, ImGuiInspectorWindow* _imguiInspectorWindow)
-	: ImGuiHierarchyWindow(_imGuiWindowName, nullptr, _editorManager, _sceneManager, _imguiInspectorWindow) {
+ImGuiNormalHierarchyWindow::ImGuiNormalHierarchyWindow(const std::string& _imGuiWindowName, EntityComponentSystem* _ecs, EditorManager* _editorManager, SceneManager* _sceneManager)
+	: ImGuiHierarchyWindow(_imGuiWindowName, nullptr, _editorManager, _sceneManager) {
 	pEcs_ = _ecs;
 }
 

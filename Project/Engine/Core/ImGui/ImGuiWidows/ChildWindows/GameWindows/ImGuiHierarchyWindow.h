@@ -16,7 +16,7 @@ public:
 	/// public : methods   
 	/// ===================================================
 
-	ImGuiHierarchyWindow(const std::string& _imGuiWindowName, class ECSGroup*, class EditorManager*, class SceneManager*, class ImGuiInspectorWindow*);
+	ImGuiHierarchyWindow(const std::string& _imGuiWindowName, class ECSGroup*, class EditorManager*, class SceneManager*);
 	~ImGuiHierarchyWindow() override = default;
 
 	void ShowImGui() override;
@@ -66,7 +66,6 @@ protected:
 	class ECSGroup*             pECSGroup_        = nullptr;
 	class EditorManager*        pEditorManager_   = nullptr;
 	class SceneManager*         pSceneManager_    = nullptr;
-	class ImGuiInspectorWindow* pInspectorWindow_ = nullptr;
 
 
 	std::string       imGuiWindowName_ = "Hierarchy";
@@ -97,7 +96,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	ImGuiNormalHierarchyWindow(const std::string& _imGuiWindowName, class EntityComponentSystem* _ecs, class EditorManager* _editorManager, class SceneManager* _sceneManager, class ImGuiInspectorWindow* _imguiInspectorWindow);
+	ImGuiNormalHierarchyWindow(const std::string& _imGuiWindowName, class EntityComponentSystem* _ecs, class EditorManager* _editorManager, class SceneManager* _sceneManager);
 	~ImGuiNormalHierarchyWindow() override = default;
 	
 	void ShowImGui() override;

@@ -96,17 +96,23 @@ void SceneIO::LoadSceneFromJson(const nlohmann::json& _input, ECSGroup* _ecsGrou
 		const std::string& entityName = entityJson.value("name", "");
 		const uint32_t entityId = entityJson.value("id", 0);
 
+		/// guidの取得、無効値なら新規生成
+		Guid guid = entityJson.value("guid", GenerateGuid());
+		if (guid == Guid::kInvalid) {
+			guid = GenerateGuid();
+		}
+
 		GameEntity* entity = nullptr;
 		if (!prefabName.empty()) {
 			std::string jsonPrefabName = entityJson["prefabName"];
-			entity = _ecsGroup->GenerateEntityFromPrefab(jsonPrefabName, false);
+			entity = _ecsGroup->GenerateEntityFromPrefab(jsonPrefabName, guid, false);
 		} else {
-			entity = _ecsGroup->GenerateEntity(false);
+			entity = _ecsGroup->GenerateEntity(guid, false);
 		}
 
 		if (entity) {
-			entity->SetPrefabName(prefabName);
-			entity->SetName(entityName);
+			entity->prefabName_ = prefabName;
+			entity->name_ = entityName;
 
 			/// prefabがないならシーンに保存されたjsonからエンティティを復元
 			if (prefabName.empty()) {

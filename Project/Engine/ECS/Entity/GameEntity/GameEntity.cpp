@@ -79,6 +79,8 @@ void GameEntity::RemoveComponentAll() {
 }
 
 void GameEntity::UpdateTransform() {
+	/// ----- 行列の更新(親があるならその行列をかけるのか判断して更新する) ----- ///
+
 	transform_->Update();
 
 	if (parent_) {
@@ -156,10 +158,6 @@ void GameEntity::SetPrefabName(const std::string& _name) {
 	prefabName_ = _name;
 }
 
-void GameEntity::SetActive(bool _active) {
-	active_ = _active;
-}
-
 const Vector3& GameEntity::GetLocalPosition() const {
 	return transform_->position;
 }
@@ -220,9 +218,13 @@ GameEntity* GameEntity::GetParent() {
 }
 
 bool GameEntity::RemoveChild(GameEntity* _child) {
+	/// ----- 子エンティティの削除 ----- ///
+
 	if (!_child) {
 		return false;
 	}
+
+	/// 子エンティティが存在するか確認して削除
 	auto it = std::remove(children_.begin(), children_.end(), _child);
 	if (it != children_.end()) {
 		children_.erase(it, children_.end());
@@ -268,6 +270,10 @@ bool GameEntity::GetActive() const {
 
 int32_t GameEntity::GetId() const {
 	return id_;
+}
+
+const Guid& GameEntity::GetGuid() const {
+	return guid_;
 }
 
 ECSGroup* GameEntity::GetECSGroup() const {
