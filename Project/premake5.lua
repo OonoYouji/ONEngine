@@ -135,11 +135,11 @@ project "ONEngine"
 
     filter "configurations:Development"
         runtime "Release"
-        symbols "On"
-        optimize "Off"
+        symbols "Full"                -- /Zi に変更（/GLと両立可）
+        optimize "Speed"              -- 軽い最適化も入れておくと◎
         defines { "DEBUG_BUILD", "_WINDOWS" }
         buildoptions { "/utf-8" }
-        linktimeoptimization "On"
+        linktimeoptimization "On"     -- /GLを有効化（OK）
         staticruntime "On"
         libdirs { "$(ProjectDir)Externals/assimp/lib/Release" }
         links { "assimp-vc143-mt.lib" }
@@ -150,4 +150,4 @@ project "ONEngine"
             "xcopy /E /Y /I \"$(ProjectDir)Assets\" \"$(TargetDir)Assets\"",
             "xcopy /E /Y /I \"$(ProjectDir)Packages\" \"$(TargetDir)Packages\""
         }
-
+    

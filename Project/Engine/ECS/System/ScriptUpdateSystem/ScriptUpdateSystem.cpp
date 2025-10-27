@@ -257,7 +257,7 @@ DebugScriptUpdateSystem::~DebugScriptUpdateSystem() {}
 void DebugScriptUpdateSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
 	/// デバッグのスクリプトは常時更新したいのでRuntimeの更新も呼び出すようにする
 	ScriptUpdateSystem::OutsideOfRuntimeUpdate(_ecs);
-	//ScriptUpdateSystem::RuntimeUpdate(_ecs);
+	ScriptUpdateSystem::RuntimeUpdate(_ecs);
 }
 
 void DebugScriptUpdateSystem::RuntimeUpdate(ECSGroup*) {}
