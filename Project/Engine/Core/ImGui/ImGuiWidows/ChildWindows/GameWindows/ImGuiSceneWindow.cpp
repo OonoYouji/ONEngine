@@ -72,6 +72,20 @@ void ImGuiSceneWindow::ShowImGui() {
 	}
 
 
+	/// ----------------------------------------
+	/// ImGuiInfoをTextに表示
+	/// ----------------------------------------
+	{
+		ImGui::SameLine();
+
+		const std::string& text = ImGuiInfo::GetInfo();
+		float textWidth = ImGui::CalcTextSize(text.c_str()).x;
+		float windowWidth = ImGui::GetContentRegionAvail().x;
+		ImGui::SetCursorPosX(windowWidth - textWidth);
+
+		ImGui::TextColored(ImVec4(0.75f, 0, 0, 1), text.c_str());
+	}
+
 
 	ImGui::Separator();
 

@@ -5,8 +5,12 @@
 
 namespace {
 
+	/// ----- ImGuiSelection ----- ///
 	const Guid* gSelectionObjectGuid = &Guid::kInvalid;
 	SelectionType gSelectionType = SelectionType::None;
+
+	/// ----- ImGuiInfo ----- ///
+	std::string gInfo;
 
 } /// namespace
 
@@ -22,4 +26,14 @@ void ImGuiSelection::SetSelectedEntity(const Guid& _entityGuid, SelectionType _t
 
 SelectionType ImGuiSelection::GetSelectionType() {
 	return gSelectionType;
+}
+
+
+
+const std::string& ImGuiInfo::GetInfo() {
+	return gInfo;
+}
+
+void ImGuiInfo::SetInfo(const std::string& _info) {
+	gInfo = _info;
 }

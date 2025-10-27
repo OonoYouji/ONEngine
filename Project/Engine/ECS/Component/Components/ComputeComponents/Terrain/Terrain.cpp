@@ -8,9 +8,10 @@
 #include <magic_enum/magic_enum.hpp>
 
 /// engine
-#include "Engine/Core/Utility/Input/Input.h"
 #include "Engine/Asset/Assets/Texture/Texture.h"
 #include "Engine/Asset/Collection/AssetCollection.h"
+#include "Engine/Core/Utility/Input/Input.h"
+#include "Engine/Core/ImGui/ImGuiSelection.h"
 
 
 /// ///////////////////////////////////////////////////
@@ -109,13 +110,23 @@ void COMP_DEBUG::TerrainDebug(Terrain* _terrain, EntityComponentSystem* _ecs, As
 		);
 		break;
 	}
-	ImGui::Separator();
 
+
+	{	/// ----- 現在のエディタの情報をImGuiInfoに設定する ----- ///
+		std::string info = "Terrain Editor Info :   ";
+		info += "edit mode: " + enumStr;
+		if(_terrain->editorInfo_.editMode == static_cast<int32_t>(Terrain::EditMode::Texture)) {
+			info += "   :   used texture index: " + std::to_string(_terrain->editorInfo_.usedTextureIndex);
+		}
+
+		ImGuiInfo::SetInfo(info);
+	}
 
 
 	/// ---------------------------------------------------
 	/// brush の情報を変更
 	/// ---------------------------------------------------
+	ImGui::SeparatorText("Brush data");
 
 	/// brush の情報を変更
 	ImGui::SliderFloat("brush radius", &_terrain->editorInfo_.brushRadius, 0.1f, 100.0f);
@@ -133,6 +144,12 @@ void COMP_DEBUG::TerrainDebug(Terrain* _terrain, EntityComponentSystem* _ecs, As
 bool COMP_DEBUG::TerrainTextureEditModeDebug(std::array<std::string, 4>* _texturePaths, int32_t* _usedTextureIndex, AssetCollection* _assetCollection) {
 	/// ----- テクスチャのパスを変更する処理 ----- ///
 
+	const std::vector<std::string> shortcutKeys = {
+		"[Cntrl + 1]", "[Cntrl + 2]",
+		"[Cntrl + 3]", "[Cntrl + 4]"
+	};
+
+
 	for (size_t i = 0; i < 4; i++) {
 		std::string& text = (*_texturePaths)[i];
 
@@ -144,13 +161,15 @@ bool COMP_DEBUG::TerrainTextureEditModeDebug(std::array<std::string, 4>* _textur
 
 			/// このテクスチャを使用しているのかどうか
 			bool isUsing = (i == static_cast<size_t>(*_usedTextureIndex));
-
+			bool isHovered = false;
 
 			/// 地形に使用しているテクスチャを表示
 			ImTextureID id = reinterpret_cast<ImTextureID>(texture->GetSRVGPUHandle().ptr);
 			if (ImGui::ImageButton("##imageButton", id, ImVec2(48, 48))) {
 				*_usedTextureIndex = static_cast<int32_t>(i);
 			}
+
+			isHovered |= ImGui::IsItemHovered();
 
 			/// ドロップしてテクスチャを変える
 			if (ImGui::BeginDragDropTarget()) {
@@ -182,6 +201,15 @@ bool COMP_DEBUG::TerrainTextureEditModeDebug(std::array<std::string, 4>* _textur
 				*_usedTextureIndex = static_cast<int32_t>(i);
 			}
 
+			isHovered |= ImGui::IsItemHovered();
+
+			/// Hoverで説明を表示
+			if (isHovered) {
+				ImGui::BeginTooltip();
+				ImGui::Text("Texture %zu\nPath: %s\nClick the image to select this texture for painting.", i + 1, text.c_str());
+				ImGui::Text(("ショートカットキー " + shortcutKeys[i]).c_str());
+				ImGui::EndTooltip();
+			}
 
 		}
 
