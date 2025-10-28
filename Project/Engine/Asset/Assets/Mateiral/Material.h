@@ -55,6 +55,10 @@ public:
 	/// @return BaseTextureのGuid
 	const Guid& GetBaseTextureGuid() const;
 
+	/// @brief base textureのGuidを設定
+	/// @param _guid base textureのGuid
+	void SetBaseTextureGuid(const Guid& _guid);
+
 
 	/// @brief 法線テクスチャのGuidを持っているかチェック
 	/// @return true: 持っている, false: 持っていない

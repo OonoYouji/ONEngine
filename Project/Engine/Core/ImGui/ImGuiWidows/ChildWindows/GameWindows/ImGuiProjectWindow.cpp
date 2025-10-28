@@ -215,9 +215,37 @@ void ImGuiProjectExplorer::DrawFileView(const std::filesystem::path& dir) {
 
 
 		/// ---------------------------------------------------
+		/// ドラッグドロップの開始
+		/// ---------------------------------------------------
+		if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
+			static AssetPayload payload;
+			payload.filePath = key;
+			payload.guid = pAssetCollection_->GetAssetGuidFromPath(payload.filePath);
+
+			AssetType type = pAssetCollection_->GetAssetTypeFromGuid(payload.guid);
+			if (type == AssetType::Texture) {
+				/// テクスチャのpreview
+				Texture* tex = pAssetCollection_->GetTexture(payload.filePath);
+				if (tex) {
+					Vector2 aspectRatio = tex->GetTextureSize();
+					aspectRatio /= (std::max)(aspectRatio.x, aspectRatio.y);
+					ImTextureID texId = reinterpret_cast<ImTextureID>(tex->GetSRVGPUHandle().ptr);
+					ImGui::Image(texId, ImVec2(64.0f * aspectRatio.x, 64.0f * aspectRatio.y));
+				}
+			}
+
+
+			const AssetPayload* assetPtr = &payload;
+			ImGui::SetDragDropPayload("AssetData", &assetPtr, sizeof(AssetPayload*));
+
+			ImGui::EndDragDropSource();
+		}
+
+
+
+		/// ---------------------------------------------------
 		/// ダブルクリックでフォルダを開く、ファイルを開く処理
 		/// ---------------------------------------------------
-
 		if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
 			if (file.isDirectory) {
 				/// フォルダを開く
@@ -235,8 +263,6 @@ void ImGuiProjectExplorer::DrawFileView(const std::filesystem::path& dir) {
 		if(ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
 			PopupContextMenu(filePath);
 		}
-
-
 
 		ImGui::TextWrapped("%s", name.c_str());
 		ImGui::EndGroup();

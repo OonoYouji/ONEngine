@@ -72,13 +72,28 @@ void from_json(const nlohmann::json& _j, Material& _material) {
 	_material.guid = _j.value("guid", Guid{});
 	_material.baseColor = _j.value("baseColor", Vector4::kWhite);
 	_material.postEffectFlags = _j.value("postEffectFlags", 1u);
+	Guid baseTextureGuid = _j.value("baseTextureGuid", Guid::kInvalid);
+	if (baseTextureGuid.CheckValid()) {
+		_material.baseTextureGuid_ = baseTextureGuid;
+	} else {
+		_material.baseTextureGuid_ = std::nullopt;
+	}
+
+	Guid normalTextureGuid = _j.value("normalTextureGuid", Guid::kInvalid);
+	if (normalTextureGuid.CheckValid()) {
+		_material.normalTextureGuid_ = normalTextureGuid;
+	} else {
+		_material.normalTextureGuid_ = std::nullopt;
+	}
 }
 
 void to_json(nlohmann::json& _j, const Material& _material) {
 	_j = {
 		{ "guid", _material.guid },
 		{ "baseColor", _material.baseColor },
-		{ "postEffectFlags", _material.postEffectFlags }
+		{ "postEffectFlags", _material.postEffectFlags },
+		{ "baseTextureGuid", _material.baseTextureGuid_.has_value() ? _material.baseTextureGuid_.value() : Guid::kInvalid },
+		{ "normalTextureGuid", _material.normalTextureGuid_.has_value() ? _material.normalTextureGuid_.value() : Guid::kInvalid },
 	};
 }
 
@@ -98,6 +113,15 @@ bool Material::HasBaseTexture() const {
 
 const Guid& Material::GetBaseTextureGuid() const {
 	return baseTextureGuid_.value();
+}
+
+void Material::SetBaseTextureGuid(const Guid& _guid) {
+	if (baseTextureGuid_.has_value()) {
+		baseTextureGuid_.value() = _guid;
+	} else {
+		baseTextureGuid_ = std::make_optional<Guid>();
+		baseTextureGuid_ = _guid;
+	}
 }
 
 bool Material::HasNormalTexture() const {

@@ -77,7 +77,7 @@ void RenderingFramework::Draw() {
 	case DebugConfig::SELECTED_MODE_GAME:
 		/// Gameモード時の描画
 		DrawDebug();
-		//DrawScene();
+		DrawScene();
 		break;
 	}
 

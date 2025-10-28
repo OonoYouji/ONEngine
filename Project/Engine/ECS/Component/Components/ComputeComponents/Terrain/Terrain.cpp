@@ -12,6 +12,7 @@
 #include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/Core/Utility/Input/Input.h"
 #include "Engine/Core/ImGui/ImGuiSelection.h"
+#include "Engine/Core/ImGui/Math/AssetPayload.h"
 
 
 /// ///////////////////////////////////////////////////
@@ -115,7 +116,7 @@ void COMP_DEBUG::TerrainDebug(Terrain* _terrain, EntityComponentSystem* _ecs, As
 	{	/// ----- 現在のエディタの情報をImGuiInfoに設定する ----- ///
 		std::string info = "Terrain Editor Info :   ";
 		info += "edit mode: " + enumStr;
-		if(_terrain->editorInfo_.editMode == static_cast<int32_t>(Terrain::EditMode::Texture)) {
+		if (_terrain->editorInfo_.editMode == static_cast<int32_t>(Terrain::EditMode::Texture)) {
 			info += "   :   used texture index: " + std::to_string(_terrain->editorInfo_.usedTextureIndex);
 		}
 
@@ -175,8 +176,8 @@ bool COMP_DEBUG::TerrainTextureEditModeDebug(std::array<std::string, 4>* _textur
 			if (ImGui::BeginDragDropTarget()) {
 				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("AssetData")) {
 					if (payload->Data) {
-						const char* droppedPath = static_cast<const char*>(payload->Data);
-						std::string path = std::string(droppedPath);
+						AssetPayload* assetPayload = *static_cast<AssetPayload**>(payload->Data);
+						const std::string path = assetPayload->filePath;
 
 						/// パスの拡張子をチェック
 						const std::string extension = Mathf::FileExtension(path);
@@ -232,6 +233,10 @@ void from_json(const nlohmann::json& _j, Terrain& _t) {
 	_t.editorInfo_.brushRadius = _j.value("brushRadius", 10.0f);
 	_t.editorInfo_.brushStrength = _j.value("brushStrength", 1.0f);
 	_t.isRenderingProcedural_ = _j.value("isRenderingProcedural", false);
+	_t.splattingTexPaths_[0] = _j.value("splattingTexPath0", std::string("./Packages/Textures/uvChecker.png"));
+	_t.splattingTexPaths_[1] = _j.value("splattingTexPath1", std::string("./Packages/Textures/uvChecker.png"));
+	_t.splattingTexPaths_[2] = _j.value("splattingTexPath2", std::string("./Packages/Textures/uvChecker.png"));
+	_t.splattingTexPaths_[3] = _j.value("splattingTexPath3", std::string("./Packages/Textures/uvChecker.png"));
 }
 
 void to_json(nlohmann::json& _j, const Terrain& _t) {
@@ -240,7 +245,11 @@ void to_json(nlohmann::json& _j, const Terrain& _t) {
 		{ "enable", _t.enable },
 		{ "brushRadius", _t.editorInfo_.brushRadius },
 		{ "brushStrength", _t.editorInfo_.brushStrength },
-		{ "isRenderingProcedural", _t.isRenderingProcedural_ }
+		{ "isRenderingProcedural", _t.isRenderingProcedural_ },
+		{ "splattingTexPath0", _t.splattingTexPaths_[0] },
+		{ "splattingTexPath1", _t.splattingTexPaths_[1] },
+		{ "splattingTexPath2", _t.splattingTexPaths_[2] },
+		{ "splattingTexPath3", _t.splattingTexPaths_[3] },
 	};
 }
 

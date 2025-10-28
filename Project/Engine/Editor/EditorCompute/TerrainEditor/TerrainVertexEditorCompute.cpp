@@ -49,7 +49,7 @@ void TerrainVertexEditorCompute::Initialize(ShaderCompiler* _shaderCompiler, DxM
 void TerrainVertexEditorCompute::Execute(class EntityComponentSystem* _ecs, DxCommand* _dxCommand, AssetCollection* _assetCollection) {
 
 	ComponentArray<Terrain>* terrainArray = _ecs->GetCurrentGroup()->GetComponentArray<Terrain>();
-	if (!terrainArray) {
+	if (!terrainArray || terrainArray->GetUsedComponents().empty()) {
 		Console::LogError("TerrainVertexEditorCompute::Execute: Terrain component array is null");
 		return;
 	}
@@ -85,25 +85,12 @@ void TerrainVertexEditorCompute::Execute(class EntityComponentSystem* _ecs, DxCo
 	/// bufferに値をセット
 	terrainInfo_.SetMappedData(TerrainInfo{ pTerrain->GetOwner()->GetId() });
 
-	bool isRaiseTerrainButtonPressed = Input::TriggerMouse(Mouse::Left) && !Input::PressKey(DIK_LSHIFT);
-	bool isLowerTerrainButtonPressed = Input::TriggerMouse(Mouse::Left) && Input::PressKey(DIK_LSHIFT);
+	bool isRaiseTerrainButtonPressed = Input::PressMouse(Mouse::Left) && !Input::PressKey(DIK_LSHIFT);
+	bool isLowerTerrainButtonPressed = Input::PressMouse(Mouse::Left) && Input::PressKey(DIK_LSHIFT);
 	int byte = 0;
 	byte |= (isRaiseTerrainButtonPressed << 0);
 	byte |= (isLowerTerrainButtonPressed << 1);
 
-	//if (Input::PressKey(DIK_LCONTROL) && !Input::PressKey(DIK_LSHIFT)) {
-
-	//	/// 編集モードの変更
-	//	if (Input::TriggerKey(DIK_N)) { editMode_ = 0; }
-	//	if (Input::TriggerKey(DIK_V)) { editMode_ = 1; }
-	//	if (Input::TriggerKey(DIK_B)) { editMode_ = 2; }
-
-	//	/// 編集するテクスチャのインデックスの変更
-	//	if (Input::TriggerKey(DIK_1)) { editTextureIndex_ = 0; }
-	//	if (Input::TriggerKey(DIK_2)) { editTextureIndex_ = 1; }
-	//	if (Input::TriggerKey(DIK_3)) { editTextureIndex_ = 2; }
-	//	if (Input::TriggerKey(DIK_4)) { editTextureIndex_ = 3; }
-	//}
 
 	inputInfo_.SetMappedData(
 		InputInfo{
@@ -117,12 +104,10 @@ void TerrainVertexEditorCompute::Execute(class EntityComponentSystem* _ecs, DxCo
 	);
 
 
-
 	/// 押していないときは処理をしない
-	if (!Input::TriggerMouse(Mouse::Left)) {
+	if (!Input::PressMouse(Mouse::Left)) {
 		return;
 	}
-
 
 
 	/// pipelineの設定&実行

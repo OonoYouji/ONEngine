@@ -40,6 +40,17 @@ void MeshRenderer::SetupRenderData(AssetCollection* _assetCollection) {
 
 
 	gpuMaterial_ = cpuMaterial_.ToGPUMaterial();
+
+	gpuMaterial_.postEffectFlags = material_.postEffectFlags;
+	gpuMaterial_.baseColor = material_.baseColor;
+	gpuMaterial_.entityId = GetOwner() ? GetOwner()->GetId() : 0;
+
+	if (material_.HasBaseTexture()) {
+		gpuMaterial_.baseTextureId = _assetCollection->GetTextureIndexFromGuid(material_.GetBaseTextureGuid());
+	} else {
+		gpuMaterial_.baseTextureId = 0;
+	}
+
 }
 
 void MeshRenderer::SetMeshPath(const std::string& _path) {
@@ -47,10 +58,12 @@ void MeshRenderer::SetMeshPath(const std::string& _path) {
 }
 
 void MeshRenderer::SetColor(const Vector4& _color) {
+	material_.baseColor = _color;
 	gpuMaterial_.baseColor = _color;
 }
 
 void MeshRenderer::SetPostEffectFlags(uint32_t _flags) {
+	material_.postEffectFlags = _flags;
 	gpuMaterial_.postEffectFlags = _flags;
 }
 
@@ -78,7 +91,7 @@ const CPUMaterial& MeshRenderer::GetCPUMaterial() const {
 }
 
 uint32_t MeshRenderer::GetPostEffectFlags() const {
-	return gpuMaterial_.postEffectFlags;
+	return material_.postEffectFlags;
 }
 
 const Guid& MeshRenderer::GetTextureGuid() const {
@@ -204,12 +217,16 @@ void COMP_DEBUG::MeshRendererDebug(MeshRenderer* _mr, AssetCollection* _assetCol
 	/// ----------------------------------------------
 	/// テクスチャのプレビュー表示
 	/// ----------------------------------------------
-	if (Texture* tex = _assetCollection->GetTexture(_assetCollection->GetTexturePath(_mr->material_.guid))) {
-		Vector2 aspectRatio = tex->GetTextureSize();
-		aspectRatio /= (std::max)(aspectRatio.x, aspectRatio.y);
 
-		ImTextureID texId = reinterpret_cast<ImTextureID>(tex->GetSRVGPUHandle().ptr);
-		ImGui::Image(texId, ImVec2(64.0f * aspectRatio.x, 64.0f * aspectRatio.y));
+	bool hasTextureGuid = _mr->material_.HasBaseTexture();
+	if (hasTextureGuid) {
+		if (Texture* tex = _assetCollection->GetTexture(_assetCollection->GetTexturePath(_mr->material_.GetBaseTextureGuid()))) {
+			Vector2 aspectRatio = tex->GetTextureSize();
+			aspectRatio /= (std::max)(aspectRatio.x, aspectRatio.y);
+
+			ImTextureID texId = reinterpret_cast<ImTextureID>(tex->GetSRVGPUHandle().ptr);
+			ImGui::Image(texId, ImVec2(64.0f * aspectRatio.x, 64.0f * aspectRatio.y));
+		}
 	} else {
 		/// テクスチャがない場合はドラッグドロップ領域を表示する
 		ImVec2 size = ImVec2(64, 64);
@@ -242,8 +259,7 @@ void COMP_DEBUG::MeshRendererDebug(MeshRenderer* _mr, AssetCollection* _assetCol
 				/// テクスチャのパスが有効な形式か確認
 				const AssetType type = GetAssetTypeFromExtension(Mathf::FileExtension(path));
 				if (type == AssetType::Texture) {
-					//_mr->SetTexturePath(path);
-					_mr->material_.guid = assetPayload->guid;
+					_mr->material_.SetBaseTextureGuid(assetPayload->guid);
 
 					Console::Log(std::format("Texture path set to: {}", path));
 				} else {
@@ -290,11 +306,14 @@ void from_json(const nlohmann::json& _j, MeshRenderer& _m) {
 	}
 
 	_m.SetMeshPath(_j.at("meshPath").get<std::string>());
-	//_m.SetTexturePath(_j.at("texturePath").get<std::string>());
-	_m.SetColor(_j.at("color").get<Vector4>());
 
-	_m.cpuMaterial_ = _j.value("material", CPUMaterial{});
-	_m.material_ = _j.value("sin_material", Material{});
+	if (_j.is_object()) {
+
+
+		if (_j.contains("material")) {
+			_m.material_ = _j.at("material").get<Material>();
+		}
+	}
 
 }
 
@@ -303,9 +322,6 @@ void to_json(nlohmann::json& _j, const MeshRenderer& _m) {
 		{ "type", "MeshRenderer" },
 		{ "enable", _m.enable },
 		{ "meshPath", _m.GetMeshPath() },
-		//{ "texturePath", _m.GetTexturePath() },
-		{ "color", _m.GetColor() },
-		{ "material", _m.cpuMaterial_ },
-		{ "sin_material", _m.material_ },
+		{ "material", _m.material_ },
 	};
 }

@@ -9,8 +9,9 @@
 #include <Externals/imgui/dialog/ImGuiFileDialog.h>
 
 /// engine
-#include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/Asset/Collection/AssetCollection.h"
+#include "Engine/Core/ImGui/Math/AssetPayload.h"
+#include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Light/Light.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Audio/AudioSource.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Effect/Effect.h"
@@ -112,9 +113,11 @@ bool ImMathf::MaterialEdit(const char* _label, GPUMaterial* _material, AssetColl
 			if (ImGui::BeginDragDropTarget()) {
 				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("AssetData")) {
 					if (payload->Data) {
-						const char* droppedPath = static_cast<const char*>(payload->Data);
-						std::string path = std::string(droppedPath);
-						if (path.find(".png") != std::string::npos || path.find(".jpg") != std::string::npos) {
+						AssetPayload* assetPayload = *static_cast<AssetPayload**>(payload->Data);	
+						std::string path = assetPayload->filePath;
+
+						AssetType type = GetAssetTypeFromExtension(Mathf::FileExtension(path));
+						if (type == AssetType::Texture) {
 							size_t droppedTextureIndex = _assetCollection->GetTextureIndex(path);
 							_material->baseTextureId = static_cast<int32_t>(droppedTextureIndex);
 							isEdit = true;
