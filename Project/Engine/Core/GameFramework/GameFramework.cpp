@@ -12,6 +12,8 @@ GameFramework::~GameFramework() {
 	/// gpuの処理が終わるまで待つ
 	dxManager_->GetDxCommand()->WaitForGpuComplete();
 
+	MonoScriptEngine::GetInstance().Finalize();
+
 	Time::Finalize();
 	Input::Finalize();
 	Console::Finalize();

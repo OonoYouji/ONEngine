@@ -36,6 +36,8 @@ private:
 
 public:
 
+	~Console();
+
 	static void Log(const std::string& _message);
 	static void Log(const std::wstring& _message);
 	static void LogInfo(const std::string& _message);

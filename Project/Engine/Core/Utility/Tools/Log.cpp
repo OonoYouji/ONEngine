@@ -121,6 +121,8 @@ void Console::AddToBuffer(const std::string& _msg) {
 }
 
 
+Console::~Console() {}
+
 void Console::Log(const std::string& _message) {
 	AddToBuffer(_message);
 	spdlog::info(_message);

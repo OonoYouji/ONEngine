@@ -449,6 +449,27 @@ bool ImGuiHierarchyWindow::DrawEntity(GameEntity* _entity) {
 	/// 右クリックのメニュー表示の開始
 	/// ---------------------------------------------------
 
+	if(ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
+		ImGui::OpenPopup("EntityContextMenu");
+	}
+
+	if(ImGui::BeginPopup("EntityContextMenu")) {
+		if (ImGui::MenuItem("rename")) {
+			newName_ = _entity->GetName();
+			renameEntity_ = _entity;
+		}
+		if (ImGui::MenuItem("delete")) {
+			pEditorManager_->ExecuteCommand<DeleteEntityCommand>(pECSGroup_, _entity);
+			renameEntity_ = nullptr; // 名前変更モードを解除
+			/// 選択中ならInspectorの選択を解除
+			if (selectedEntity_ == _entity) {
+				selectedEntity_ = nullptr;
+				ImGuiSelection::SetSelectedObject(Guid::kInvalid, SelectionType::None);
+			}
+		}
+		ImGui::EndPopup();
+	}
+
 
 	/// ---------------------------------------------------
 	/// 名前変更処理
