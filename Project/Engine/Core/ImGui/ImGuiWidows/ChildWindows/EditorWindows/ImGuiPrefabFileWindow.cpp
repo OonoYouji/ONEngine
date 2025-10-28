@@ -53,7 +53,7 @@ void ImGuiPrefabFileWindow::ShowImGui() {
 
 			ECSGroup* debugGroup = pEcs_->GetECSGroup("Debug");
 			GameEntity* entity = debugGroup->GenerateEntityFromPrefab(file.second, GenerateGuid(), false);
-			ImGuiSelection::SetSelectedEntity(entity->GetGuid(), SelectionType::Entity);
+			ImGuiSelection::SetSelectedObject(entity->GetGuid(), SelectionType::Entity);
 		}
 
 	}

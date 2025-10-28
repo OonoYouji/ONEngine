@@ -21,7 +21,7 @@ namespace ImGuiSelection {
 
 	/// @brief 選択したオブジェクトのGuidを設定する
 	/// @param _entityGuid オブジェクトのGuid
-	void SetSelectedEntity(const Guid& _entityGuid, SelectionType _type);
+	void SetSelectedObject(const Guid& _entityGuid, SelectionType _type);
 
 	/// @brief 選択しているオブジェクトの種類を返す
 	/// @return オブジェクトの種類

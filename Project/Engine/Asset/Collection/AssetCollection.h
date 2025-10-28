@@ -103,6 +103,10 @@ public:
 	/// @return 取得したGuidの参照
 	const Guid& GetAssetGuidFromPath(const std::string& _filepath) const;
 
+	/// @brief Guidからアセットのタイプを取得する
+	/// @param _guid AssetのGuid
+	/// @return Assetのタイプ
+	AssetType GetAssetTypeFromGuid(const Guid& _guid) const;
 
 
 	/// ゲッタ モデル

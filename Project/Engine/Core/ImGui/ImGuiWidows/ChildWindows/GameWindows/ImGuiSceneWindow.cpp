@@ -210,7 +210,7 @@ void ImGuiSceneWindow::SetGamePlay(bool _isGamePlay) {
 		pSceneManager_->SaveCurrentSceneTemporary();
 
 		pSceneManager_->ReloadScene(true);
-		ImGuiSelection::SetSelectedEntity(Guid::kInvalid, SelectionType::None);
+		ImGuiSelection::SetSelectedObject(Guid::kInvalid, SelectionType::None);
 
 		/// Monoスクリプトエンジンのホットリロードでスクリプトの初期化を行う
 		MonoScriptEngine::GetInstance().HotReload();
@@ -218,7 +218,7 @@ void ImGuiSceneWindow::SetGamePlay(bool _isGamePlay) {
 	} else {
 		//!< 更新処理を停止した場合の処理
 		pSceneManager_->ReloadScene(true);
-		ImGuiSelection::SetSelectedEntity(Guid::kInvalid, SelectionType::None);
+		ImGuiSelection::SetSelectedObject(Guid::kInvalid, SelectionType::None);
 
 	}
 

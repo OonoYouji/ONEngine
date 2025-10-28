@@ -12,6 +12,7 @@
 /// engine
 #include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/Core/ImGui/Math/AssetPayload.h"
+#include "Engine/Core/ImGui/ImGuiSelection.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/Editor/EditorManager.h"
 #include "Engine/Editor/Commands/WorldEditorCommands/WorldEditorCommands.h"
@@ -21,7 +22,6 @@ ImGuiProjectExplorer::ImGuiProjectExplorer(AssetCollection* _assetCollection, Ed
 	rootPath_ = std::filesystem::absolute("./");
 	currentPath_ = std::filesystem::absolute("./Assets");
 
-
 	std::filesystem::path assetPath = std::filesystem::absolute("./Assets");
 	std::filesystem::path packagesPath = std::filesystem::absolute("./Packages");
 
@@ -30,11 +30,9 @@ ImGuiProjectExplorer::ImGuiProjectExplorer(AssetCollection* _assetCollection, Ed
 
 	// rootPath_ の内容を directoryCache_ に追加
 	UpdateDirectoryCache(rootPath_);
-	//UpdateDirectoryCache(packagesPath);
 
 	// rootPath_ の内容を fileCache_ に追加
 	UpdateFileCache(rootPath_);
-	//UpdateFileCache(packagesPath);
 }
 
 ImGuiProjectExplorer::~ImGuiProjectExplorer() {
@@ -161,17 +159,84 @@ void ImGuiProjectExplorer::DrawFileView(const std::filesystem::path& dir) {
 		const std::filesystem::path& filePath = file.path;
 		const std::string name = filePath.filename().string();
 
+		/// engine内で扱うために相対パスに変換する
+		std::string key = filePath.string();
+		{
+			/// filePathの絶対パスを相対パスに変換してから取得
+			std::filesystem::path base = std::filesystem::absolute("./"); // 基準ディレクトリ
+			std::filesystem::path relative = std::filesystem::relative(key, base);
+			// 先頭が "." で始まらなければ "./" を付ける
+			if (relative.empty() || relative.string()[0] != '.') {
+				relative = std::filesystem::path(".") / relative;
+			}
+
+			key = relative.string();
+			Mathf::ReplaceAll(&key, "\\", "/");
+		}
+
+
+		/// .meta ファイルは表示しない
+		const std::string extension = filePath.extension().string();
+		if (extension == ".meta") {
+			continue;
+		}
+
+
 		ImGui::PushID(name.c_str());
 		ImGui::BeginGroup();
 
 		/// ----- アイコン表示 ----- ///
 		if (file.isDirectory) {
-			Texture* texture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/Folder.png");
+			/// ----- ディレクトリなのでフォルダアイコンを表示 ----- ///
+			Texture* texture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/FileIcons/FolderIcon.png");
 			ImGui::ImageButton("##Folder", (ImTextureID)(uintptr_t)texture->GetSRVGPUHandle().ptr, { iconSize, iconSize });
 		} else {
-			Texture* texture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/File.png");
+			/// ----- ファイルなのでファイルアイコンを表示(拡張子ごとに) ----- ///
+			Texture* texture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/FileIcons/FileIcon.png");
+
+			AssetType type = GetAssetTypeFromExtension(filePath.extension().string());
+			switch (type) {
+			case AssetType::Texture:
+			{
+				texture = pAssetCollection_->GetTexture(key);
+			}
+			break;
+			case AssetType::Audio:
+				texture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/FileIcons/mp3Icon.png");
+				break;
+			}
+
+			if (!texture) {
+				texture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/FileIcons/FileIcon.png");
+			}
+
 			ImGui::ImageButton("##File", (ImTextureID)(uintptr_t)texture->GetSRVGPUHandle().ptr, { iconSize, iconSize });
 		}
+
+
+		/// ---------------------------------------------------
+		/// ダブルクリックでフォルダを開く、ファイルを開く処理
+		/// ---------------------------------------------------
+
+		if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
+			if (file.isDirectory) {
+				/// フォルダを開く
+				currentPath_ = filePath;
+			} else {
+				/// インスペクターに表示する
+				const Guid& guid = pAssetCollection_->GetAssetGuidFromPath(key);
+				ImGuiSelection::SetSelectedObject(guid, SelectionType::Asset);
+			}
+		}
+
+		/// ---------------------------------------------------
+		/// 右クリックメニュー
+		/// ---------------------------------------------------
+		if(ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
+			PopupContextMenu(filePath);
+		}
+
+
 
 		ImGui::TextWrapped("%s", name.c_str());
 		ImGui::EndGroup();

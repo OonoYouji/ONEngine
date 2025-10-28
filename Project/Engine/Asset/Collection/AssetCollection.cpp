@@ -167,7 +167,7 @@ bool AssetCollection::IsAssetExist(const Guid& _guid) const {
 	/// ----- guidがアセットの物かチェックする ----- ///
 
 	/// 無効値ならfalseを返す
-	if(!_guid.CheckValid()) {
+	if (!_guid.CheckValid()) {
 		return false;
 	}
 
@@ -246,6 +246,28 @@ const Guid& AssetCollection::GetAssetGuidFromPath(const std::string& _filepath) 
 	}
 
 	return Guid::kInvalid;
+}
+
+AssetType AssetCollection::GetAssetTypeFromGuid(const Guid& _guid) const {
+	/// ----- GuidからAssetTypeを取得する ----- ///
+
+	if (modelContainer_->GetIndex(_guid) != -1) {
+		return AssetType::Mesh;
+	}
+
+	if (textureContainer_->GetIndex(_guid) != -1) {
+		return AssetType::Texture;
+	}
+
+	if (audioClipContainer_->GetIndex(_guid) != -1) {
+		return AssetType::Audio;
+	}
+
+	if (materialContainer_->GetIndex(_guid) != -1) {
+		return AssetType::Material;
+	}
+
+	return AssetType::None;
 }
 
 const Model* AssetCollection::GetModel(const std::string& _filepath) const {

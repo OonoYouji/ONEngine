@@ -19,7 +19,7 @@ const Guid& ImGuiSelection::GetSelectedObject() {
 	return *gSelectionObjectGuid;
 }
 
-void ImGuiSelection::SetSelectedEntity(const Guid& _entityGuid, SelectionType _type) {
+void ImGuiSelection::SetSelectedObject(const Guid& _entityGuid, SelectionType _type) {
 	gSelectionObjectGuid = &_entityGuid;
 	gSelectionType = _type;
 }

@@ -83,7 +83,7 @@ ImGuiInspectorWindow::ImGuiInspectorWindow(const std::string& _windowName, Entit
 	inspectorFunctions_.emplace_back([this]() { EntityInspector(); });
 
 	/// SelectionType::Asset
-	inspectorFunctions_.emplace_back([this]() { /* AssetInspector(); */ });
+	inspectorFunctions_.emplace_back([this]() {  AssetInspector();  });
 
 	/// SelectionType::Script
 	inspectorFunctions_.emplace_back([]() {});
@@ -114,7 +114,7 @@ void ImGuiInspectorWindow::EntityInspector() {
 
 	/// アセットなら抜ける
 	bool isAsset = pAssetCollection_->IsAssetExist(selectionGuid);
-	if(isAsset) {
+	if (isAsset) {
 		return;
 	}
 
@@ -216,7 +216,7 @@ void ImGuiInspectorWindow::EntityInspector() {
 		/// ==============================================
 		/// 実際のComponentごとのデバッグ表示
 		/// ==============================================
-		if(isHeaderOpen) {
+		if (isHeaderOpen) {
 			/// 右クリックでポップアップメニューを開く
 			if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
 				ImGui::OpenPopup(label.c_str());
@@ -301,6 +301,24 @@ void ImGuiInspectorWindow::EntityInspector() {
 }
 
 void ImGuiInspectorWindow::AssetInspector() {
+	/// Typeごとに表示を変える
+
+	AssetType type = pAssetCollection_->GetAssetTypeFromGuid(ImGuiSelection::GetSelectedObject());
+
+	switch (type) {
+	case AssetType::Texture:
+		ImGui::Text("Texture Inspector");
+		break;
+	case AssetType::Audio:
+		ImGui::Text("Audio Inspector");
+		break;
+	case AssetType::Mesh:
+		ImGui::Text("Mesh Inspector");
+		break;
+	case AssetType::Material:
+		ImGui::Text("Material Inspector");
+		break;
+	}
 
 }
 

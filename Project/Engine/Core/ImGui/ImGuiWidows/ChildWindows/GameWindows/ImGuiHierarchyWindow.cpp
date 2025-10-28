@@ -239,7 +239,7 @@ void ImGuiHierarchyWindow::DrawHierarchy() {
 
 		if (hasValidSelection) {
 			/// ----- 選択したオブジェクトを設定 ----- ///
-			ImGuiSelection::SetSelectedEntity(selectedEntity_->GetGuid(), SelectionType::Entity);
+			ImGuiSelection::SetSelectedObject(selectedEntity_->GetGuid(), SelectionType::Entity);
 		}
 	}
 
@@ -299,7 +299,7 @@ void ImGuiHierarchyWindow::EntityDebug(GameEntity* _entity) {
 			/// 選択中ならInspectorの選択を解除
 			if (selectedEntity_ == _entity) {
 				selectedEntity_ = nullptr;
-				ImGuiSelection::SetSelectedEntity(Guid::kInvalid, SelectionType::None);
+				ImGuiSelection::SetSelectedObject(Guid::kInvalid, SelectionType::None);
 			}
 		}
 

@@ -23,7 +23,7 @@ public:
 
 	/// @brief inspector に表示する情報のポインタを設定する
 	/// @param _pointer 表示したい物のポインタ(整数型)
-	void SetSelectedEntity(std::uintptr_t _pointer) { selectedPointer_ = _pointer; }
+	void SetSelectedObject(std::uintptr_t _pointer) { selectedPointer_ = _pointer; }
 
 	/// @brief Componentのデバッグ関数を登録する
 	/// @tparam T Componentの型
