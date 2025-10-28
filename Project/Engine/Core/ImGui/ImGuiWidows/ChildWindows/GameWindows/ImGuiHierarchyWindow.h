@@ -57,6 +57,16 @@ protected:
 	void DrawDialog();
 	void DrawSceneSaveDialog();
 
+
+	/// ----- test methods ----- ///
+
+	///
+	bool DrawEntity(class GameEntity* _entity);
+
+	bool IsDescendant(class GameEntity* _ancestor, class GameEntity* _descendant);
+
+	void ShowInvalidParentPopup();
+
 protected:
 	/// ===================================================
 	/// protected : objects
@@ -82,6 +92,11 @@ protected:
 	/// ----- rename ----- ///
 	std::string newName_ = "";
 	GameEntity* renameEntity_;
+
+
+
+	/// ----- test objects ----- ///
+	bool 	showInvalidParentPopup_ = false;
 
 };
 
