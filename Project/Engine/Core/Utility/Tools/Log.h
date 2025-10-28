@@ -28,12 +28,13 @@ private:
 	/// @brief spdlogの初期化など
 	static void Initialize();
 
+	/// @brief spdlogの終了処理など
+	static void Finalize();
+
 	static void AddToBuffer(const std::string& _msg);
 
 
 public:
-
-	~Console();
 
 	static void Log(const std::string& _message);
 	static void Log(const std::wstring& _message);

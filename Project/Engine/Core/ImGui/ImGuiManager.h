@@ -32,6 +32,9 @@ public:
 	/// @param _assetCollection AssetCollection 
 	void Initialize(class AssetCollection* _assetCollection);
 
+	/// @brief 終了処理
+	void Finalize();
+
 	/// @brief 更新
 	void Update();
 

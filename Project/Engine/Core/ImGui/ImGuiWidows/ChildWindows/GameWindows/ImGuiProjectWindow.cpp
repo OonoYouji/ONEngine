@@ -37,6 +37,10 @@ ImGuiProjectExplorer::ImGuiProjectExplorer(AssetCollection* _assetCollection, Ed
 	//UpdateFileCache(packagesPath);
 }
 
+ImGuiProjectExplorer::~ImGuiProjectExplorer() {
+	fileWatcher_.Stop();
+}
+
 void ImGuiProjectExplorer::ShowImGui() {
 	if (!ImGui::Begin("ImGuiProjectExplorer")) {
 		ImGui::End();

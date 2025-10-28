@@ -14,7 +14,9 @@ GameFramework::~GameFramework() {
 
 	Time::Finalize();
 	Input::Finalize();
+	Console::Finalize();
 
+	imGuiManager_->Finalize();
 	/// engineの終了処理
 	windowManager_->Finalize();
 }

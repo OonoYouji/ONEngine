@@ -30,7 +30,7 @@ public:
 	/// ===================================================
 
 	ImGuiProjectExplorer(class AssetCollection* _assetCollection, class EditorManager* _editorManager);
-	~ImGuiProjectExplorer() {}
+	~ImGuiProjectExplorer();
 
 	/// @brief imgui windowの描画処理
 	void ShowImGui() override;

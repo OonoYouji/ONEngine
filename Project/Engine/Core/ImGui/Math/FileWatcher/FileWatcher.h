@@ -1,17 +1,16 @@
 #pragma once
 
 #include <Windows.h>
-
-/// std
 #include <string>
 #include <thread>
 #include <atomic>
 #include <deque>
 #include <mutex>
 #include <vector>
+#include <memory>
 
 
-/// @brief ファイルイベントの構造体
+/// @brief ファイルのイベント情報
 struct FileEvent {
 	enum class Type {
 		Added,
@@ -26,17 +25,17 @@ struct FileEvent {
 	std::wstring watchedDir;
 };
 
-/// @brief 監視対象のディレクトリ構造体
+
+/// @brief 監視ディレクトリ情報
 struct WatchTarget {
 	std::wstring dirPath;
-	HANDLE hDir;
+	HANDLE hDir = INVALID_HANDLE_VALUE;
+	HANDLE hEvent = nullptr;
 	std::thread thread;
 };
 
-
-
 /// ///////////////////////////////////////////////////
-/// ファイルの変更を監視するクラス
+/// ファイルの監視システム
 /// ///////////////////////////////////////////////////
 class FileWatcher {
 public:
@@ -48,36 +47,25 @@ public:
 	~FileWatcher();
 
 	bool Start(const std::vector<std::wstring>& _dirs);
-	//bool Start(const std::wstring& _dir);
 	void Stop();
 
 	std::vector<FileEvent> ConsumeEvents();
-
 
 private:
 	/// ===================================================
 	/// private : methods
 	/// ===================================================
 
-	//void Run();
+	void WatchDirectory(std::shared_ptr<WatchTarget> _ctx);
 
-	void WatchDirectory(const std::wstring& _dir);
-
-
+	
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
 
-	//std::wstring dirPath_;
-	std::atomic<bool> isRunning_;
-	//std::thread th_;
-	//HANDLE hDir_;
-
+	std::atomic<bool> isRunning_{ false };
 	std::mutex mutex_;
 	std::deque<FileEvent> fileEvents_;
 
-
-	std::vector<std::unique_ptr<WatchTarget>> watchers_;
-
-
+	std::vector<std::shared_ptr<WatchTarget>> watchers_;
 };

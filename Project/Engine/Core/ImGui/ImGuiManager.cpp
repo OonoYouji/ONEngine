@@ -602,6 +602,10 @@ void ImGuiManager::Initialize(AssetCollection* _assetCollection) {
 	);
 }
 
+void ImGuiManager::Finalize() {
+
+}
+
 void ImGuiManager::Update() {
 	UpdateMousePosition(
 		pWindowManager_->GetMainWindow()->GetHwnd(),

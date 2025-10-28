@@ -76,14 +76,6 @@ namespace {
 /// ////////////////////////////////////////////////
 
 
-Console::~Console() {
-#ifdef DEBUG_MODE
-	//OutputLogToFile("../Generated/Log");
-#else 
-	//OutputLogToFile("./Log");
-#endif // DEBUG_MODE
-}
-
 void Console::Initialize() {
 
 	/// 念のため一度だけ初期化するように制限をかける
@@ -111,6 +103,11 @@ void Console::Initialize() {
 	spdlog::info("Logger initialized.");
 
 	initialized = true;
+}
+
+void Console::Finalize() {
+	spdlog::info("Logger finalized.");
+	spdlog::shutdown();
 }
 
 void Console::AddToBuffer(const std::string& _msg) {
