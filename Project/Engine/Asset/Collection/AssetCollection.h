@@ -135,6 +135,10 @@ public:
 	/// @return 見つかった場合のパス、見つからなかった場合は空文字
 	const std::string& GetTexturePath(const Guid& _guid) const;
 
+	/// @brief GuidからTextureを取得する
+	/// @param _guid TextureのGuid
+	/// @return Textureのポインタ、見つからなかった場合はnullptr
+	Texture* GetTextureFromGuid(const Guid& _guid) const;
 	
 
 

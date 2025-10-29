@@ -307,8 +307,15 @@ void ImGuiInspectorWindow::AssetInspector() {
 
 	switch (type) {
 	case AssetType::Texture:
+	{
 		ImGui::Text("Texture Inspector");
-		break;
+		Texture* texture = pAssetCollection_->GetTextureFromGuid(ImGuiSelection::GetSelectedObject());
+		if (texture) {
+			TextureAssetInspector(texture);
+		}
+
+	}
+	break;
 	case AssetType::Audio:
 		ImGui::Text("Audio Inspector");
 		break;
@@ -320,5 +327,20 @@ void ImGuiInspectorWindow::AssetInspector() {
 		break;
 	}
 
+}
+
+void ImGuiInspectorWindow::TextureAssetInspector(Texture* _texture) {
+	/// ----- テクスチャのインスペクター表示 ----- /
+
+	/// previewのための枠を確保
+	ImGui::Text("Texture Preview:");
+	ImVec2 availSize = ImGui::GetContentRegionAvail();
+	const Vector2& textureSize = _texture->GetTextureSize();
+	ImVec2 displaySize = ImMathf::CalculateAspectFitSize(textureSize, availSize);
+
+	/// 枠を表示
+	ImGui::BeginChild("TextureFrame", displaySize, true, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+	ImGui::Image((ImTextureID)(uintptr_t)_texture->GetSRVGPUHandle().ptr, displaySize);
+	ImGui::EndChild();
 }
 

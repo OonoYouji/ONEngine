@@ -36,6 +36,10 @@ public:
 	/// @brief アセットInspector表示処理
 	void AssetInspector();
 
+	/// @brief テクスチャのInspector表示
+	/// @param _texture 
+	void TextureAssetInspector(class Texture* _texture);
+
 private:
 	/// ===================================================
 	/// private : methods

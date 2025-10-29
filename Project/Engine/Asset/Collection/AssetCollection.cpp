@@ -307,6 +307,15 @@ const std::string& AssetCollection::GetTexturePath(const Guid& _guid) const {
 	return textureContainer_->GetKey(textureContainer_->GetIndex(_guid));
 }
 
+Texture* AssetCollection::GetTextureFromGuid(const Guid& _guid) const {
+	/// 無効値ならnullptrを返す
+	if (!_guid.CheckValid()) {
+		return nullptr;
+	}
+
+	return textureContainer_->Get(textureContainer_->GetIndex(_guid));
+}
+
 const AudioClip* AssetCollection::GetAudioClip(const std::string& _filepath) const {
 	return audioClipContainer_->Get(_filepath);
 }

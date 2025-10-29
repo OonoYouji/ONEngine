@@ -12,10 +12,12 @@
 /// engine
 #include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/Core/ImGui/Math/AssetPayload.h"
+#include "Engine/Core/ImGui/Math/ImGuiMath.h"
 #include "Engine/Core/ImGui/ImGuiSelection.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/Editor/EditorManager.h"
 #include "Engine/Editor/Commands/WorldEditorCommands/WorldEditorCommands.h"
+
 
 ImGuiProjectExplorer::ImGuiProjectExplorer(AssetCollection* _assetCollection, EditorManager* /*_editorManager*/)
 	: pAssetCollection_(_assetCollection) {
@@ -210,7 +212,11 @@ void ImGuiProjectExplorer::DrawFileView(const std::filesystem::path& dir) {
 				texture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/FileIcons/FileIcon.png");
 			}
 
-			ImGui::ImageButton("##File", (ImTextureID)(uintptr_t)texture->GetSRVGPUHandle().ptr, { iconSize, iconSize });
+			ImGui::ImageButton(
+				"##File",
+				(ImTextureID)(uintptr_t)texture->GetSRVGPUHandle().ptr,
+				ImMathf::CalculateAspectFitSize(texture->GetTextureSize(), 64.0f)
+			);
 		}
 
 
@@ -260,7 +266,7 @@ void ImGuiProjectExplorer::DrawFileView(const std::filesystem::path& dir) {
 		/// ---------------------------------------------------
 		/// 右クリックメニュー
 		/// ---------------------------------------------------
-		if(ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
+		if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
 			PopupContextMenu(filePath);
 		}
 

@@ -1,6 +1,7 @@
 #include "TerrainCollision.h"
 
 /// engine
+#include "Engine/Core/Config/EngineConfig.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/TerrainCollider.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Collision/BoxCollider.h"
@@ -17,6 +18,7 @@ void TerrainCollision::RuntimeUpdate(ECSGroup* _ecs) {
 		return;
 	}
 
+	/// 他のコライダーの配列を取得
 	ComponentArray<BoxCollider>* boxColliderArray = _ecs->GetComponentArray<BoxCollider>();
 	ComponentArray<SphereCollider>* sphereColliderArray = _ecs->GetComponentArray<SphereCollider>();
 
@@ -31,9 +33,9 @@ void TerrainCollision::RuntimeUpdate(ECSGroup* _ecs) {
 		}
 
 
-		/* ----- otherコライダーとの衝突判定を行う ----- */
+		/// ----- other collider との衝突判定を行う----- ///
 
-		/// ボックスコライダー都の処理
+		/// ボックスコライダーとの処理
 		if (boxColliderArray) {
 			for (auto& boxCollider : boxColliderArray->GetUsedComponents()) {
 				if (!boxCollider || !boxCollider->enable) {
@@ -68,6 +70,28 @@ void TerrainCollision::RuntimeUpdate(ECSGroup* _ecs) {
 					Vector3 spherePos = sphere->GetPosition();
 					spherePos.y -= sphereCollider->GetRadius(); // 球の底面の位置を取得
 					if (terrainCollider->IsInsideTerrain(spherePos)) {
+#ifdef DEBUG_MODE
+						{	/// Gizmoで値の確認
+							Vector3 gradient = terrainCollider->GetGradient(sphere->GetPosition());
+							const float maxSlope = 3.0f;
+							float intensity = gradient.Len();
+							Color color = Vector4::Lerp(Color::kBlue, Color::kRed, std::clamp(intensity / maxSlope, 0.0f, 1.0f));
+							Gizmo::DrawRay(spherePos, -gradient.Normalize() * 12.0f, Color::kRed);
+						}
+#endif
+
+						float slopeAngle = GetSlopeAngle(terrainCollider, spherePos);
+						const float maxClimbAngle = 30.0f * Mathf::Deg2Rad;
+
+						/// 傾斜が急すぎる場合は押し上げない
+						if (slopeAngle > maxClimbAngle) {
+							const Vector3& prevPos = sphereCollider->GetPrevPosition();
+							Vector3 velocity = prevPos - sphere->GetPosition();
+							sphere->SetPosition(prevPos + velocity);
+							spherePos = prevPos + velocity;
+							spherePos.y -= sphereCollider->GetRadius();
+						}
+
 						float height = terrainCollider->GetHeight(spherePos);
 						/// 地形の下にいるなら押し上げる
 						if (height > spherePos.y) {
@@ -81,4 +105,10 @@ void TerrainCollision::RuntimeUpdate(ECSGroup* _ecs) {
 		}
 
 	}
+}
+
+float TerrainCollision::GetSlopeAngle(TerrainCollider* _tCollider, const Vector3& _position) {
+	Vector3 grad = _tCollider->GetGradient(_position);
+	float magnitude = std::sqrt(grad.x * grad.x + grad.z * grad.z);
+	return std::atan(magnitude);
 }

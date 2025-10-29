@@ -113,7 +113,7 @@ bool ImMathf::MaterialEdit(const char* _label, GPUMaterial* _material, AssetColl
 			if (ImGui::BeginDragDropTarget()) {
 				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("AssetData")) {
 					if (payload->Data) {
-						AssetPayload* assetPayload = *static_cast<AssetPayload**>(payload->Data);	
+						AssetPayload* assetPayload = *static_cast<AssetPayload**>(payload->Data);
 						std::string path = assetPayload->filePath;
 
 						AssetType type = GetAssetTypeFromExtension(Mathf::FileExtension(path));
@@ -207,6 +207,44 @@ bool ImMathf::UVTransformEdit(const char* _label, UVTransform* _uvTransform) {
 	ImGui::PopID();
 
 	return isEdit;
+}
+
+ImVec2 ImMathf::CalculateAspectFitSize(const Vector2& _textureSize, float _maxSize) {
+	// アスペクト比を計算
+	float aspectRatio = _textureSize.x / _textureSize.y;
+
+	// 最大サイズに基づいて幅と高さを計算
+	float width = _maxSize;
+	float height = _maxSize;
+
+	if (aspectRatio > 1.0f) {
+		// 横長の場合
+		height = _maxSize / aspectRatio;
+	} else {
+		// 縦長または正方形の場合
+		width = _maxSize * aspectRatio;
+	}
+
+	return ImVec2(width, height);
+}
+
+ImVec2 ImMathf::CalculateAspectFitSize(const Vector2& _textureSize, const ImVec2& _maxSize) {
+	// アスペクト比を計算
+	float aspectRatio = _textureSize.x / _textureSize.y;
+
+	// 最大サイズに基づいて幅と高さを計算
+	float width = _maxSize.x;
+	float height = _maxSize.y;
+
+	if (aspectRatio > (_maxSize.x / _maxSize.y)) {
+		// 横長の場合、幅を最大にして高さを調整
+		height = _maxSize.x / aspectRatio;
+	} else {
+		// 縦長または正方形の場合、高さを最大にして幅を調整
+		width = _maxSize.y * aspectRatio;
+	}
+
+	return ImVec2(width, height);
 }
 
 

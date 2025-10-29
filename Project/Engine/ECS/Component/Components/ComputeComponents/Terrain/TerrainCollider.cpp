@@ -157,18 +157,16 @@ Vector3 TerrainCollider::GetGradient(const Vector3& _position) {
 	}
 
 	float h = vertices_[row][col].position.y;
-
-	// X方向の高さ差
 	float hL = (col > 0) ? vertices_[row][col - 1].position.y : h;
 	float hR = (col < vertices_[0].size() - 1) ? vertices_[row][col + 1].position.y : h;
-	float slopeX = std::atan((hR - hL) / (2.0f));
-
-	// Z方向の高さ差
 	float hD = (row > 0) ? vertices_[row - 1][col].position.y : h;
 	float hU = (row < vertices_.size() - 1) ? vertices_[row + 1][col].position.y : h;
-	float slopeZ = std::atan((hU - hD) / (2.0f));
 
-	return { std::abs(slopeX), 0.0f, std::abs(slopeZ) };
+	/// 勾配
+	float slopeX = (hR - hL) / 2.0f;
+	float slopeZ = (hU - hD) / 2.0f;
+
+	return { slopeX, 0.0f, slopeZ };
 }
 
 bool TerrainCollider::IsInsideTerrain(const Vector3& _position) {

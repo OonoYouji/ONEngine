@@ -154,7 +154,7 @@ bool COMP_DEBUG::TerrainTextureEditModeDebug(std::array<std::string, 4>* _textur
 	for (size_t i = 0; i < 4; i++) {
 		std::string& text = (*_texturePaths)[i];
 
-		ImGui::PushID((*_texturePaths)[i].c_str());
+		ImGui::PushID(i);
 
 
 		Texture* texture = _assetCollection->GetTexture(text);
