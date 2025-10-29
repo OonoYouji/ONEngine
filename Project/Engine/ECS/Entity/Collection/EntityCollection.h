@@ -69,7 +69,7 @@ private:
 	/// private : objects
 	/// =========================================
 
-	class ECSGroup* pECSGroup_;
+	class ECSGroup* pEcsGroup_;
 	class DxManager* pDxManager_;
 	class DxDevice* pDxDevice_;
 

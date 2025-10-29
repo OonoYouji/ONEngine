@@ -73,7 +73,7 @@ protected:
 	/// ===================================================
 
 	/// ----- other class ----- ///
-	class ECSGroup*             pECSGroup_        = nullptr;
+	class ECSGroup*             pEcsGroup_        = nullptr;
 	class EditorManager*        pEditorManager_   = nullptr;
 	class SceneManager*         pSceneManager_    = nullptr;
 

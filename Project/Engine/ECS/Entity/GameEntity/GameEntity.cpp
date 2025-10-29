@@ -16,7 +16,7 @@ void GameEntity::Awake() {
 	name_.erase(0, 6);
 	prefabName_ = "";
 
-	pECSGroup_->LoadComponent(this);
+	pEcsGroup_->LoadComponent(this);
 
 	transform_ = AddComponent<Transform>();
 	variables_ = AddComponent<Variables>();
@@ -32,7 +32,7 @@ IComponent* GameEntity::AddComponent(const std::string& _name) {
 	}
 
 	/// component の生成, 追加
-	IComponent* component = pECSGroup_->AddComponent(_name);
+	IComponent* component = pEcsGroup_->AddComponent(_name);
 	if (!component) {
 		return nullptr;
 	}
@@ -62,7 +62,7 @@ void GameEntity::RemoveComponent(const std::string& _compName) {
 	size_t hash = GetComponentHash(_compName);
 	auto it = components_.find(hash);
 	if (it != components_.end()) {
-		pECSGroup_->RemoveComponent(hash, it->second->id); ///< コンポーネントを削除
+		pEcsGroup_->RemoveComponent(hash, it->second->id); ///< コンポーネントを削除
 		components_.erase(it); ///< コンポーネントのマップから削除
 	}
 
@@ -74,7 +74,7 @@ void GameEntity::RemoveComponent(const std::string& _compName) {
 }
 
 void GameEntity::RemoveComponentAll() {
-	pECSGroup_->RemoveComponentAll(this); ///< 全てのコンポーネントを削除
+	pEcsGroup_->RemoveComponentAll(this); ///< 全てのコンポーネントを削除
 	components_.clear();
 }
 
@@ -108,7 +108,7 @@ void GameEntity::UpdateTransform() {
 }
 
 void GameEntity::Destroy() {
-	pECSGroup_->RemoveEntity(this);
+	pEcsGroup_->RemoveEntity(this);
 }
 
 void GameEntity::SetPosition(const Vector3& _v) {
@@ -277,7 +277,7 @@ const Guid& GameEntity::GetGuid() const {
 }
 
 ECSGroup* GameEntity::GetECSGroup() const {
-	return pECSGroup_;
+	return pEcsGroup_;
 }
 
 

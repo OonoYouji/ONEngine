@@ -9,7 +9,7 @@
 namespace EntityJsonConverter {
 	nlohmann::json ToJson(const GameEntity* _entity);
 
-	void FromJson(const nlohmann::json& _json, GameEntity* _entity);
+	void FromJson(const nlohmann::json& _json, GameEntity* _entity, const std::string& _groupName);
 	void TransformFromJson(const nlohmann::json& _json, GameEntity* _entity);
 };
 
