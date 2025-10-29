@@ -153,16 +153,19 @@ bool ImMathf::MaterialEdit(const std::string& _label, Material* _material, Asset
 		HandleTextureDrop(_material);
 
 
-		/// ---------------------------------------------------
-		/// 法線テクスチャの編集
-		/// ---------------------------------------------------
-		bool hasNormalTextureGuid = _material->HasNormalTexture();
-		if (hasNormalTextureGuid) {
-			DrawTexturePreview(_assetCollection->GetTexture(_assetCollection->GetTexturePath(_material->GetNormalTextureGuid())));
-		} else {
-			DrawTextureDropSpace("NormalTex");
+
+		if (_isEditNormalTexture) {
+			/// ---------------------------------------------------
+			/// 法線テクスチャの編集
+			/// ---------------------------------------------------
+			bool hasNormalTextureGuid = _material->HasNormalTexture();
+			if (hasNormalTextureGuid) {
+				DrawTexturePreview(_assetCollection->GetTexture(_assetCollection->GetTexturePath(_material->GetNormalTextureGuid())));
+			} else {
+				DrawTextureDropSpace("NormalTex");
+			}
+			HandleNormalTextureDrop(_material);
 		}
-		HandleNormalTextureDrop(_material);
 
 	}
 

@@ -139,7 +139,7 @@ void MeshRenderingPipeline::RenderingMesh(ID3D12GraphicsCommandList* _cmdList, s
 
 			materialBuffer_.SetMappedData(
 				transformIndex_,
-				renderer->GetMaterial()
+				renderer->GetGpuMaterial()
 			);
 
 			/// texture id のセット

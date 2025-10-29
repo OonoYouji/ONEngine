@@ -43,6 +43,9 @@ public:
 	SpriteRenderer();
 	~SpriteRenderer();
 
+	/// @brief 描画用データのセットアップ
+	void RenderingSetup(class AssetCollection* _assetCollection);
+
 private:
 	/// ===================================================
 	/// private : objects
@@ -62,8 +65,7 @@ public:
 	/// ----- getter ----- ///
 	const Vector4& GetColor() const;
 
-	const GPUMaterial& GetMaterial() const;
-	GPUMaterial& GetMaterial();
+	const GPUMaterial& GetGpuMaterial() const;
 
 };
 

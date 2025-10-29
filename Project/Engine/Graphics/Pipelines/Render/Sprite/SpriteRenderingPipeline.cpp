@@ -121,6 +121,7 @@ void SpriteRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 
 void SpriteRenderingPipeline::Draw(class ECSGroup* _ecsGroup, CameraComponent* _camera, DxCommand* _dxCommand) {
 
+	/// SpriteRendererの配列の取得&存在チェック
 	ComponentArray<SpriteRenderer>* spriteRendererArray = _ecsGroup->GetComponentArray<SpriteRenderer>();
 	if (!spriteRendererArray || spriteRendererArray->GetUsedComponents().empty()) {
 		return;
@@ -129,14 +130,18 @@ void SpriteRenderingPipeline::Draw(class ECSGroup* _ecsGroup, CameraComponent* _
 
 	/// bufferにデータをセット
 	size_t transformIndex = 0;
-	for (auto& renderer : spriteRendererArray->GetUsedComponents()) {
-		if (!renderer->enable) {
+	for (auto& sr : spriteRendererArray->GetUsedComponents()) {
+		if (!sr->enable) {
 			continue;
 		}
 
-		if (GameEntity* owner = renderer->GetOwner()) {
+		if (GameEntity* owner = sr->GetOwner()) {
+
+			/// setup
+			sr->RenderingSetup(pAssetCollection_);
+
 			/// Material, Transformのセット
-			materialsBuffer.SetMappedData(transformIndex, renderer->GetMaterial());
+			materialsBuffer.SetMappedData(transformIndex, sr->GetGpuMaterial());
 			transformsBuffer_.SetMappedData(transformIndex, owner->GetTransform()->GetMatWorld());
 
 			++transformIndex;

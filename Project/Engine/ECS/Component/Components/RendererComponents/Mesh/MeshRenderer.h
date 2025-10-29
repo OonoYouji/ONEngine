@@ -83,7 +83,7 @@ public:
 	/// @return RGBA 0.0f ~ 1.0f
 	const Vector4& GetColor() const;
 
-	const GPUMaterial& GetMaterial() const;
+	const GPUMaterial& GetGpuMaterial() const;
 
 	/// @brief ポストエフェクトのフラグを取得
 	/// @return ポストエフェクトのフラグ

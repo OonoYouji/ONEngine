@@ -7,6 +7,7 @@
 #include "Engine/Core/Utility/Tools/Log.h"
 #include "Engine/Core/ImGui/Math/ImGuiMath.h"
 #include "Engine/Core/ImGui/Math/AssetDebugger.h"
+#include "Engine/ECS/Entity/GameEntity/GameEntity.h"
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentJsonConverter.h"
 #include "Engine/Asset/Collection/AssetCollection.h"
 
@@ -56,6 +57,28 @@ SpriteRenderer::SpriteRenderer() {
 }
 SpriteRenderer::~SpriteRenderer() {}
 
+void SpriteRenderer::RenderingSetup(AssetCollection* _assetCollection) {
+
+	gpuMaterial_.baseColor = material_.baseColor;
+	gpuMaterial_.postEffectFlags = material_.postEffectFlags;
+	/// base texture
+	if (material_.HasBaseTexture()) {
+		int32_t textureIndex = _assetCollection->GetTextureIndexFromGuid(material_.GetBaseTextureGuid());
+		if (textureIndex != -1) {
+			gpuMaterial_.baseTextureId = textureIndex;
+		} else {
+			gpuMaterial_.baseTextureId = 0;
+		}
+	} else {
+		gpuMaterial_.baseTextureId = 0;
+	}
+
+	gpuMaterial_.uvTransform = material_.uvTransform;
+	gpuMaterial_.entityId = owner_ ? static_cast<int32_t>(owner_->GetId()) : 0;
+
+
+}
+
 
 void SpriteRenderer::SetColor(const Vector4& _color) {
 	gpuMaterial_.baseColor = _color;
@@ -65,11 +88,7 @@ const Vector4& SpriteRenderer::GetColor() const {
 	return gpuMaterial_.baseColor;
 }
 
-const GPUMaterial& SpriteRenderer::GetMaterial() const {
-	return gpuMaterial_;
-}
-
-GPUMaterial& SpriteRenderer::GetMaterial() {
+const GPUMaterial& SpriteRenderer::GetGpuMaterial() const {
 	return gpuMaterial_;
 }
 

@@ -13,11 +13,6 @@ void SpriteUpdateSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
 		return;
 	}
 
-	/// EntityIDの更新を行う(EntityIDは描画時にRTVに書き込まれる)
-	for(auto& spriteRenderer : spriteRendererArray->GetUsedComponents()) {
-		GPUMaterial& material = spriteRenderer->GetMaterial();
-		material.entityId = spriteRenderer->GetOwner()->GetId();
-	}
 
 
 }

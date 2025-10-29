@@ -60,7 +60,7 @@ const Vector4& MeshRenderer::GetColor() const {
 	return gpuMaterial_.baseColor;
 }
 
-const GPUMaterial& MeshRenderer::GetMaterial() const {
+const GPUMaterial& MeshRenderer::GetGpuMaterial() const {
 	return gpuMaterial_;
 }
 
