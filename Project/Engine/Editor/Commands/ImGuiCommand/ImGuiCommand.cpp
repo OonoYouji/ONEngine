@@ -6,10 +6,10 @@
 /// engine
 #include "Engine/Editor/EditCommand.h"
 
-bool ImMath::DragFloat(const std::string& _label, float* _pv, float _step, float _min, float _max) {
+bool ImMathf::DragFloat(const std::string& _label, float* _pv, float _step, float _min, float _max, const char* _format) {
 	static float startValue{};
 
-	bool edit = ImGui::DragFloat(_label.c_str(), _pv, _step, _min, _max);
+	bool edit = ImGui::DragFloat(_label.c_str(), _pv, _step, _min, _max, _format);
 	/// 操作を始めた
 	if (ImGui::IsItemActivated()) {
 		startValue = *_pv;
@@ -24,7 +24,8 @@ bool ImMath::DragFloat(const std::string& _label, float* _pv, float _step, float
 	return edit;
 }
 
-bool ImMath::DragFloat3(const std::string& _label, Vector3* _pv, float _step, float _min, float _max) {
+
+bool ImMathf::DragFloat3(const std::string& _label, Vector3* _pv, float _step, float _min, float _max) {
 	static Vector3 startValue{};
 
 	bool edit = ImGui::DragFloat3(_label.c_str(), &_pv->x, _step, _min, _max);
@@ -43,7 +44,7 @@ bool ImMath::DragFloat3(const std::string& _label, Vector3* _pv, float _step, fl
 	return edit;
 }
 
-bool ImMath::DragFloat4(const std::string& _label, Vector4* _pv, float _step, float _min, float _max) {
+bool ImMathf::DragFloat4(const std::string& _label, Vector4* _pv, float _step, float _min, float _max) {
 	static Vector4 startValue{};
 
 	bool edit = ImGui::DragFloat3(_label.c_str(), &_pv->x, _step, _min, _max);
@@ -62,7 +63,7 @@ bool ImMath::DragFloat4(const std::string& _label, Vector4* _pv, float _step, fl
 	return edit;
 }
 
-bool ImMath::DragQuaternion(const std::string& _label, Quaternion* _pq, float _step, float _min, float _max) {
+bool ImMathf::DragQuaternion(const std::string& _label, Quaternion* _pq, float _step, float _min, float _max) {
 	static Quaternion startValue{};
 
 	/// Eulerに変換して表示

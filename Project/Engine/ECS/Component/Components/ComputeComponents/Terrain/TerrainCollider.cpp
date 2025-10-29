@@ -5,8 +5,9 @@
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
-#include "Engine/ECS/Entity/GameEntity/GameEntity.h"
 #include "Engine/Core/Utility/Utility.h"
+#include "Engine/ECS/Entity/GameEntity/GameEntity.h"
+#include "Engine/Editor/Commands/ImGuiCommand/ImGuiCommand.h"
 
 
 void COMP_DEBUG::TerrainColliderDebug(TerrainCollider* _collider) {
@@ -35,12 +36,12 @@ void COMP_DEBUG::TerrainColliderDebug(TerrainCollider* _collider) {
 	/// ---------------------------------------------------
 
 	/// 最大傾斜角
-	
-
+	ImMathf::DragFloat("max slope angle", &_collider->maxSlopeAngle_, 0.1f, 0.0f, 90.0f, "%.2f rad");
 }
 
 void from_json(const nlohmann::json& _j, TerrainCollider& _c) {
 	_c.enable = _j.value("enable", 1);
+	_c.maxSlopeAngle_ = _j.value("maxSlopeAngle", 0.0f);
 }
 
 void to_json(nlohmann::json& _j, const TerrainCollider& _c) {

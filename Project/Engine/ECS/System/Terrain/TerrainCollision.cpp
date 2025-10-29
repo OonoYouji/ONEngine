@@ -70,6 +70,7 @@ void TerrainCollision::RuntimeUpdate(ECSGroup* _ecs) {
 					Vector3 spherePos = sphere->GetPosition();
 					spherePos.y -= sphereCollider->GetRadius(); // 球の底面の位置を取得
 					if (terrainCollider->IsInsideTerrain(spherePos)) {
+
 #ifdef DEBUG_MODE
 						{	/// Gizmoで値の確認
 							Vector3 gradient = terrainCollider->GetGradient(sphere->GetPosition());
@@ -80,13 +81,17 @@ void TerrainCollision::RuntimeUpdate(ECSGroup* _ecs) {
 						}
 #endif
 
+
+						const Vector3 gradient = terrainCollider->GetGradient(sphere->GetPosition());
+						const Vector3& prevPos = sphereCollider->GetPrevPosition();
+						const Vector3 velocity = prevPos - sphere->GetPosition();
+						float dot = Vector3::Dot(velocity.Normalize(), gradient.Normalize());
+
 						float slopeAngle = GetSlopeAngle(terrainCollider, spherePos);
-						const float maxClimbAngle = 30.0f * Mathf::Deg2Rad;
+						float maxClimbAngle = terrainCollider->GetMaxSlopeAngle() * Mathf::Deg2Rad;
 
 						/// 傾斜が急すぎる場合は押し上げない
-						if (slopeAngle > maxClimbAngle) {
-							const Vector3& prevPos = sphereCollider->GetPrevPosition();
-							Vector3 velocity = prevPos - sphere->GetPosition();
+						if (dot < 0.0f && slopeAngle > maxClimbAngle) {
 							sphere->SetPosition(prevPos + velocity);
 							spherePos = prevPos + velocity;
 							spherePos.y -= sphereCollider->GetRadius();

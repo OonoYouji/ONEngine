@@ -20,7 +20,7 @@ void ShowGuiMaterial(const std::string& _label, Material* _material) {
 	ImGui::PushID(_label.c_str());
 
 	/// 色
-	ImMath::DragFloat4("BaseColor", &_material->baseColor);
+	ImMathf::DragFloat4("BaseColor", &_material->baseColor);
 
 
 	ImGui::PopID();

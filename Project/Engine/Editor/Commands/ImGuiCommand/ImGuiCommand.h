@@ -10,7 +10,7 @@
 /// ///////////////////////////////////////////////////
 /// ImGui関連の編集
 /// ///////////////////////////////////////////////////
-namespace ImMath {
+namespace ImMathf {
 
 
 	/// @brief ImGuiのDragFloatでfloatを操作するコマンド
@@ -20,7 +20,7 @@ namespace ImMath {
 	/// @param _min _pvの最小値
 	/// @param _max _pvの最大値
 	/// @return true: 値が変更された, false: 値が変更されなかった
-	bool DragFloat(const std::string& _label, float* _pv, float _step = 1.0f, float _min = 0.0f, float _max = 0.0f);
+	bool DragFloat(const std::string& _label, float* _pv, float _step = 1.0f, float _min = 0.0f, float _max = 0.0f, const char* _format = "%.3f");
 
 	/// @brief ImGuiのDragFloat3でVector3を操作するコマンド
 	/// @param _label DragFloat3のラベル
