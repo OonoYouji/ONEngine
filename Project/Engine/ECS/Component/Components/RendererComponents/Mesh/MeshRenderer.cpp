@@ -17,6 +17,9 @@ MeshRenderer::MeshRenderer() {
 	cpuMaterial_.baseColor = Vector4::kWhite;
 	cpuMaterial_.postEffectFlags = PostEffectFlags_Lighting;
 	cpuMaterial_.SetOwnerEntity(GetOwner());
+
+	material_.baseColor = Vector4::kWhite;
+	material_.postEffectFlags = PostEffectFlags_Lighting;
 }
 
 MeshRenderer::~MeshRenderer() = default;
@@ -307,12 +310,10 @@ void from_json(const nlohmann::json& _j, MeshRenderer& _m) {
 
 	_m.SetMeshPath(_j.at("meshPath").get<std::string>());
 
-	if (_j.is_object()) {
 
-
-		if (_j.contains("material")) {
-			_m.material_ = _j.at("material").get<Material>();
-		}
+	/// デバッグのためにvalueではなくcontainsでチェック
+	if (_j.contains("material")) {
+		_m.material_ = _j.at("material").get<Material>();
 	}
 
 }
