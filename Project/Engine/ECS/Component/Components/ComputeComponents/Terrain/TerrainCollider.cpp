@@ -8,6 +8,55 @@
 #include "Engine/ECS/Entity/GameEntity/GameEntity.h"
 #include "Engine/Core/Utility/Utility.h"
 
+
+void COMP_DEBUG::TerrainColliderDebug(TerrainCollider* _collider) {
+	if (!_collider) {
+		return;
+	}
+
+	if (_collider->GetTerrain()) {
+		ImGui::Text("attached terrain");
+	} else {
+		ImGui::Text("null terrain");
+	}
+
+
+	if (ImGui::Button("attach terrain")) {
+		_collider->AttachTerrain();
+	}
+
+	if (ImGui::Button("copy vertices")) {
+		_collider->SetIsVertexGenerationRequested(true);
+	}
+
+
+	/// ---------------------------------------------------
+	/// parameters
+	/// ---------------------------------------------------
+
+	/// 最大傾斜角
+	
+
+}
+
+void from_json(const nlohmann::json& _j, TerrainCollider& _c) {
+	_c.enable = _j.value("enable", 1);
+}
+
+void to_json(nlohmann::json& _j, const TerrainCollider& _c) {
+	_j = {
+		{ "type", "TerrainCollider" },
+		{ "enable", _c.enable },
+		{ "maxSlopeAngle", _c.maxSlopeAngle_ },
+	};
+}
+
+
+
+/// ///////////////////////////////////////////////////
+/// 地形のコライダーコンポーネント
+/// ///////////////////////////////////////////////////
+
 TerrainCollider::TerrainCollider() {
 	pTerrain_ = nullptr;
 	isVertexGenerationRequested_ = true;
@@ -202,38 +251,9 @@ void TerrainCollider::SetIsVertexGenerationRequested(bool _isRequested) {
 	isVertexGenerationRequested_ = _isRequested;
 }
 
-
-
-
-void COMP_DEBUG::TerrainColliderDebug(TerrainCollider* _collider) {
-	if (!_collider) {
-		return;
-	}
-
-	if (_collider->GetTerrain()) {
-		ImGui::Text("attached terrain");
-	} else {
-		ImGui::Text("null terrain");
-	}
-
-
-	if (ImGui::Button("attach terrain")) {
-		_collider->AttachTerrain();
-	}
-
-	if (ImGui::Button("copy vertices")) {
-		_collider->SetIsVertexGenerationRequested(true);
-	}
-
+float TerrainCollider::GetMaxSlopeAngle() const {
+	return maxSlopeAngle_;
 }
 
-void from_json(const nlohmann::json& _j, TerrainCollider& _c) {
-	_c.enable = _j.value("enable", 1);
-}
 
-void to_json(nlohmann::json& _j, const TerrainCollider& _c) {
-	_j = {
-		{ "type", "TerrainCollider" },
-		{ "enable", _c.enable }
-	};
-}
+

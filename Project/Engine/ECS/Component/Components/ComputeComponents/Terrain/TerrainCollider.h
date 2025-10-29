@@ -10,11 +10,32 @@
 #include "../../Interface/IComponent.h"
 #include "Terrain.h"
 
+
+/// @brief  Debug関数様に前方宣言
+class TerrainCollider;
+
+/// @brief Componentのデバッグ表示
+namespace COMP_DEBUG {
+	void TerrainColliderDebug(TerrainCollider* _collider);
+}
+
+/// Json変換関数
+void from_json(const nlohmann::json& _j, TerrainCollider& _c);
+void to_json(nlohmann::json& _j, const TerrainCollider& _c);
+
+
 /// ///////////////////////////////////////////////////
 /// 地形のコライダーコンポーネント
 /// ///////////////////////////////////////////////////
 class TerrainCollider : public IComponent {
+	/// ----- friend class  ----- ///
 	friend class TerrainColliderVertexGenerator;
+
+	/// ----- friend functions ----- ///
+	friend void COMP_DEBUG::TerrainColliderDebug(TerrainCollider* _collider);
+	friend void from_json(const nlohmann::json& _j, TerrainCollider& _c);
+	friend void to_json(nlohmann::json& _j, const TerrainCollider& _c);
+
 public:
 	/// =========================================
 	/// public : methods
@@ -23,6 +44,7 @@ public:
 	TerrainCollider();
 	~TerrainCollider() override = default;
 
+	/// @brief 地形Componentをアタッチする
 	void AttachTerrain();
 
 	/// @brief 地形の頂点情報をコピーする
@@ -48,22 +70,26 @@ private:
 	/// private : objects
 	/// =========================================
 
+	/// ----- other class  ----- ///
 	Terrain* pTerrain_;
 
 	std::vector<std::vector<TerrainVertex>> vertices_;
 
 	bool isVertexGenerationRequested_;
-
 	bool isCreated_;
 
+	float maxSlopeAngle_;
 
 public:
 	/// =========================================
 	/// public : accessor
 	/// =========================================
 
+	/// @brief Terrainへのポインタ
+	/// @return 
 	Terrain* GetTerrain() const;
 
+	/// @brief Colliderの頂点情報
 	const std::vector<std::vector<TerrainVertex>>& GetVertices() const;
 	std::vector<std::vector<TerrainVertex>>& GetVertices();
 
@@ -72,13 +98,9 @@ public:
 
 	void SetIsVertexGenerationRequested(bool _isRequested);
 
+	/// @brief 地形の移動制限に用いる最大傾斜各を得る
+	/// @return 最大傾斜角
+	float GetMaxSlopeAngle() const;
+
 };
 
-
-
-namespace COMP_DEBUG {
-	void TerrainColliderDebug(TerrainCollider* _collider);
-}
-
-void from_json(const nlohmann::json& _j, TerrainCollider& _c);
-void to_json(nlohmann::json& _j, const TerrainCollider& _c);
