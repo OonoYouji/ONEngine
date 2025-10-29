@@ -13,7 +13,7 @@
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 
 EntityCollection::EntityCollection(ECSGroup* _ecsGroup, DxManager* _dxm)
-	: pECSGroup_(_ecsGroup), pDxManager_(_dxm) {
+	: pEcsGroup_(_ecsGroup), pDxManager_(_dxm) {
 	mainCamera_ = nullptr;
 	mainCamera2D_ = nullptr;
 	pDxDevice_ = pDxManager_->GetDxDevice();
@@ -31,7 +31,7 @@ GameEntity* EntityCollection::GenerateEntity(const Guid& _guid, bool _isRuntime)
 
 		/// 初期化
 		GameEntity* entityPtr = entities_.back().get();
-		entityPtr->pECSGroup_ = pECSGroup_;
+		entityPtr->pEcsGroup_ = pEcsGroup_;
 		entityPtr->id_ = NewEntityID(_isRuntime);
 		entityPtr->guid_ = _guid;
 		entityPtr->Awake();
@@ -284,7 +284,7 @@ GameEntity* EntityCollection::GenerateEntityFromPrefab(const std::string& _prefa
 		}
 		entity->SetPrefabName(_prefabName);
 
-		EntityJsonConverter::FromJson(prefab->GetJson(), entity);
+		EntityJsonConverter::FromJson(prefab->GetJson(), entity, pEcsGroup_->GetGroupName());
 
 		return entity;
 	}

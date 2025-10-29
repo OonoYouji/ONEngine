@@ -167,7 +167,7 @@ EDITOR_STATE RemoveComponentCommand::Undo() {
 /// ////////////////////////////////////////////////
 
 ReloadAllScriptsCommand::ReloadAllScriptsCommand(ECSGroup* _ecs, SceneManager* _sceneManager)
-	: pECSGroup_(_ecs), pSceneManager_(_sceneManager) {}
+	: pEcsGroup_(_ecs), pSceneManager_(_sceneManager) {}
 
 EDITOR_STATE ReloadAllScriptsCommand::Execute() {
 

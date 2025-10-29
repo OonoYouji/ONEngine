@@ -29,7 +29,7 @@ nlohmann::json EntityJsonConverter::ToJson(const GameEntity* _entity) {
 	return entityJson;
 }
 
-void EntityJsonConverter::FromJson(const nlohmann::json& _json, GameEntity* _entity) {
+void EntityJsonConverter::FromJson(const nlohmann::json& _json, GameEntity* _entity, const std::string& _groupName) {
 
 	/// name, prefabNameを設定
 	if (_json.contains("name")) {
@@ -60,12 +60,12 @@ void EntityJsonConverter::FromJson(const nlohmann::json& _json, GameEntity* _ent
 
 			if (componentType == "Variables") {
 				Variables* vars = static_cast<Variables*>(comp);
-				vars->LoadJson("./Assets/Jsons/" + _entity->GetName() + ".json");
+				vars->LoadJson("./Assets/Scene/" + _groupName + "/" + _entity->GetName() + ".json");
 			}
 
 		} else {
 			// コンポーネントの追加に失敗した場合のログ
-			Console::Log("[error] failed add component: " + componentType);
+			Console::LogError("failed add component: " + componentType);
 		}
 	}
 }

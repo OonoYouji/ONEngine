@@ -70,7 +70,7 @@ void SceneIO::SaveSceneToJson(nlohmann::json& _output, ECSGroup* _ecsGroup) {
 		}
 
 		if (Variables* var = entity->GetComponent<Variables>()) {
-			var->SaveJson("./Assets/Jsons/" + entity->GetName() + ".json");
+			var->SaveJson("./Assets/Scene/" + _ecsGroup->GetGroupName() + "/" + entity->GetName() + ".json");
 		}
 
 		nlohmann::json entityJson = EntityJsonConverter::ToJson(entity.get());
@@ -116,11 +116,11 @@ void SceneIO::LoadSceneFromJson(const nlohmann::json& _input, ECSGroup* _ecsGrou
 
 			/// prefabがないならシーンに保存されたjsonからエンティティを復元
 			if (prefabName.empty()) {
-				EntityJsonConverter::FromJson(entityJson, entity);
+				EntityJsonConverter::FromJson(entityJson, entity, _ecsGroup->GetGroupName());
 			} else {
 				EntityJsonConverter::TransformFromJson(entityJson, entity);
 				if (Variables* vars = entity->GetComponent<Variables>()) {
-					vars->LoadJson("./Assets/Jsons/" + entityName + ".json");
+					vars->LoadJson("./Assets/Scene/" + _ecsGroup->GetGroupName() + "/" + entityName + ".json");
 				}
 			}
 

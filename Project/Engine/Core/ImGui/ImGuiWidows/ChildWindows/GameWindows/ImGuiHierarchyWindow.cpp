@@ -26,7 +26,7 @@ ImGuiHierarchyWindow::ImGuiHierarchyWindow(
 	ECSGroup* _ecsGroup,
 	EditorManager* _editorManager,
 	SceneManager* _sceneManager)
-	: imGuiWindowName_(_imGuiWindowName), pECSGroup_(_ecsGroup), pEditorManager_(_editorManager),
+	: imGuiWindowName_(_imGuiWindowName), pEcsGroup_(_ecsGroup), pEditorManager_(_editorManager),
 	pSceneManager_(_sceneManager) {
 
 	newName_.reserve(1024);
@@ -62,7 +62,7 @@ void ImGuiHierarchyWindow::PrefabDragAndDrop() {
 						str.erase(0, pos + 1);
 					}
 
-					pECSGroup_->GenerateEntityFromPrefab(str, GenerateGuid(), DebugConfig::isDebugging);
+					pEcsGroup_->GenerateEntityFromPrefab(str, GenerateGuid(), DebugConfig::isDebugging);
 					Console::Log(std::format("entity name set to: {}", str));
 				} else {
 					Console::Log("[error] Invalid entity format. Please use \".prefab\"");
@@ -175,7 +175,7 @@ void ImGuiHierarchyWindow::DrawMenuBar() {
 void ImGuiHierarchyWindow::DrawMenuEntity() {
 	if (ImGui::BeginMenu("create")) {
 		if (ImGui::MenuItem("create empty object")) {
-			pEditorManager_->ExecuteCommand<CreateGameObjectCommand>(pECSGroup_);
+			pEditorManager_->ExecuteCommand<CreateGameObjectCommand>(pEcsGroup_);
 		}
 
 		ImGui::EndMenu();
@@ -193,7 +193,7 @@ void ImGuiHierarchyWindow::DrawMenuScene() {
 		}
 
 		if (ImGui::MenuItem("save scene")) {
-			pSceneManager_->SaveScene(pECSGroup_->GetGroupName(), pECSGroup_);
+			pSceneManager_->SaveScene(pEcsGroup_->GetGroupName(), pEcsGroup_);
 		}
 
 		if (ImGui::BeginMenu("load scene")) {
@@ -214,7 +214,7 @@ void ImGuiHierarchyWindow::DrawMenuScene() {
 void ImGuiHierarchyWindow::DrawHierarchy() {
 
 	/// ECSGroupないにあるEntityの表示
-	if (ImGui::CollapsingHeader(pECSGroup_->GetGroupName().c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
+	if (ImGui::CollapsingHeader(pEcsGroup_->GetGroupName().c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
 
 		/// 透明なボタンを表示し、ここにエンティティがドロップされたら親子関係を解除する
 		ImVec2 windowSize = ImGui::GetContentRegionAvail();
@@ -236,7 +236,7 @@ void ImGuiHierarchyWindow::DrawHierarchy() {
 		/// ---------------------------------------------------
 
 		std::vector<GameEntity*> entityPtrs;
-		for (auto& entity : pECSGroup_->GetEntities()) {
+		for (auto& entity : pEcsGroup_->GetEntities()) {
 			/// 子を再帰的に処理するので親がないエンティティだけ処理する
 			if (!entity->GetParent()) {
 				entityPtrs.push_back(entity.get());
@@ -328,7 +328,7 @@ void ImGuiHierarchyWindow::EntityDebug(GameEntity* _entity) {
 		}
 
 		if (ImGui::MenuItem("delete")) {
-			pEditorManager_->ExecuteCommand<DeleteEntityCommand>(pECSGroup_, _entity);
+			pEditorManager_->ExecuteCommand<DeleteEntityCommand>(pEcsGroup_, _entity);
 			renameEntity_ = nullptr; // 名前変更モードを解除
 
 			/// 選択中ならInspectorの選択を解除
@@ -362,8 +362,8 @@ void ImGuiHierarchyWindow::DrawDialog() {
 			}
 
 			// action
-			pECSGroup_->RemoveEntityAll();
-			pSceneManager_->GetSceneIO()->Input(filePathName, pECSGroup_);
+			pEcsGroup_->RemoveEntityAll();
+			pSceneManager_->GetSceneIO()->Input(filePathName, pEcsGroup_);
 		}
 
 		// close
@@ -480,7 +480,7 @@ bool ImGuiHierarchyWindow::DrawEntity(GameEntity* _entity) {
 			renameEntity_ = _entity;
 		}
 		if (ImGui::MenuItem("delete")) {
-			pEditorManager_->ExecuteCommand<DeleteEntityCommand>(pECSGroup_, _entity);
+			pEditorManager_->ExecuteCommand<DeleteEntityCommand>(pEcsGroup_, _entity);
 			renameEntity_ = nullptr; // 名前変更モードを解除
 			/// 選択中ならInspectorの選択を解除
 			if (selectedEntity_ == _entity) {
@@ -569,12 +569,12 @@ void ImGuiNormalHierarchyWindow::ShowImGui() {
 		/// エンティティのペーストコマンドの実行
 		if (Input::PressKey(DIK_LCONTROL) || Input::PressKey(DIK_RCONTROL)) {
 			if (Input::TriggerKey(DIK_V)) {
-				EditCommand::Execute<PasteEntityCommand>(pECSGroup_);
+				EditCommand::Execute<PasteEntityCommand>(pEcsGroup_);
 			}
 		}
 	}
 
-	pECSGroup_ = pEcs_->GetCurrentGroup();
+	pEcsGroup_ = pEcs_->GetCurrentGroup();
 
 	/// Prefabのドラッグ＆ドロップ
 	PrefabDragAndDrop();

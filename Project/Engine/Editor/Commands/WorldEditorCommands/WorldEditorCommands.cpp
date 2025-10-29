@@ -22,13 +22,13 @@
 /// ///////////////////////////////////////////////////
 
 CreateGameObjectCommand::CreateGameObjectCommand(ECSGroup* _ecs) {
-	pECSGroup_ = _ecs;
+	pEcsGroup_ = _ecs;
 }
 
 CreateGameObjectCommand::~CreateGameObjectCommand() {}
 
 EDITOR_STATE CreateGameObjectCommand::Execute() {
-	generatedEntity_ = pECSGroup_->GenerateEntity(GenerateGuid(), false);
+	generatedEntity_ = pEcsGroup_->GenerateEntity(GenerateGuid(), false);
 
 	EDITOR_STATE state = EDITOR_STATE_RUNNING;
 	if (generatedEntity_) {
@@ -39,7 +39,7 @@ EDITOR_STATE CreateGameObjectCommand::Execute() {
 }
 
 EDITOR_STATE CreateGameObjectCommand::Undo() {
-	pECSGroup_->RemoveEntity(generatedEntity_);
+	pEcsGroup_->RemoveEntity(generatedEntity_);
 
 	return EDITOR_STATE_FINISH;
 }
@@ -153,16 +153,16 @@ EDITOR_STATE CreateNewEntityClassCommand::CreateNewClassFile(const std::string& 
 /// ///////////////////////////////////////////////////
 
 DeleteEntityCommand::DeleteEntityCommand(ECSGroup* _ecs, GameEntity* _entity)
-	: pECSGroup_(_ecs), pEntity_(_entity) {
+	: pEcsGroup_(_ecs), pEntity_(_entity) {
 }
 
 EDITOR_STATE DeleteEntityCommand::Execute() {
-	if (!pECSGroup_ || !pEntity_) {
+	if (!pEcsGroup_ || !pEntity_) {
 		Console::Log("DeleteEntityCommand : ECS or Entity is nullptr");
 		return EDITOR_STATE_FAILED;
 	}
 
-	pECSGroup_->RemoveEntity(pEntity_);
+	pEcsGroup_->RemoveEntity(pEntity_);
 
 	return EDITOR_STATE_FINISH;
 }
@@ -246,7 +246,7 @@ EDITOR_STATE CopyEntityCommand::Undo() {
 	return EDITOR_STATE::EDITOR_STATE_FINISH;
 }
 
-PasteEntityCommand::PasteEntityCommand(ECSGroup* _ecs) : pECSGroup_(_ecs) {}
+PasteEntityCommand::PasteEntityCommand(ECSGroup* _ecs) : pEcsGroup_(_ecs) {}
 
 EDITOR_STATE PasteEntityCommand::Execute() {
 	/// クリップボードからデータを取得
@@ -259,9 +259,9 @@ EDITOR_STATE PasteEntityCommand::Execute() {
 	/// jsonからエンティティを生成
 	std::string originalName = (*copiedEntity)["name"].get<std::string>();
 
-	uint32_t count = pECSGroup_->CountEntity(originalName);
-	pastedEntity_ = pECSGroup_->GenerateEntity(GenerateGuid(), DebugConfig::isDebugging);
-	EntityJsonConverter::FromJson(*copiedEntity, pastedEntity_);
+	uint32_t count = pEcsGroup_->CountEntity(originalName);
+	pastedEntity_ = pEcsGroup_->GenerateEntity(GenerateGuid(), DebugConfig::isDebugging);
+	EntityJsonConverter::FromJson(*copiedEntity, pastedEntity_, pEcsGroup_->GetGroupName());
 	if (!pastedEntity_) {
 		Console::Log("PasteEntityCommand : Failed to create entity from JSON");
 		return EDITOR_STATE_FAILED;
@@ -284,7 +284,7 @@ EDITOR_STATE PasteEntityCommand::Execute() {
 
 EDITOR_STATE PasteEntityCommand::Undo() {
 	if (pastedEntity_) {
-		pECSGroup_->RemoveEntity(pastedEntity_);
+		pEcsGroup_->RemoveEntity(pastedEntity_);
 		pastedEntity_ = nullptr;
 		return EDITOR_STATE_FINISH;
 	}

@@ -224,7 +224,7 @@ private:
 
 	Transform* transform_;
 	Variables* variables_;
-	class ECSGroup* pECSGroup_;
+	class ECSGroup* pEcsGroup_;
 
 	bool active_ = true; ///< true のときは更新する
 	int32_t id_ = 0; ///< entityのID

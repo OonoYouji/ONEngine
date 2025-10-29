@@ -22,7 +22,7 @@ public:
 	EDITOR_STATE Undo() override;
 
 private:
-	class ECSGroup* pECSGroup_ = nullptr;
+	class ECSGroup* pEcsGroup_ = nullptr;
 	class GameEntity* generatedEntity_ = nullptr;
 };
 
@@ -99,7 +99,7 @@ public:
 	EDITOR_STATE Undo() override;
 
 private:
-	class ECSGroup* pECSGroup_;
+	class ECSGroup* pEcsGroup_;
 	class GameEntity* pEntity_;
 };
 
@@ -132,6 +132,6 @@ public:
 	EDITOR_STATE Undo() override;
 
 private:
-	class ECSGroup* pECSGroup_;
+	class ECSGroup* pEcsGroup_;
 	class GameEntity* pastedEntity_ = nullptr;
 };
