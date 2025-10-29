@@ -36,6 +36,10 @@ namespace COMP_DEBUG {
 } // namespace COMP_DEBUG
 
 
+void from_json(const nlohmann::json& _j, Terrain& _t);
+void to_json(nlohmann::json& _j, const Terrain& _t);
+
+
 /// ///////////////////////////////////////////////////
 /// 地形のエディター情報
 /// ///////////////////////////////////////////////////
@@ -164,6 +168,3 @@ public:
 };
 
 
-
-void from_json(const nlohmann::json& _j, Terrain& _t);
-void to_json(nlohmann::json& _j, const Terrain& _t);

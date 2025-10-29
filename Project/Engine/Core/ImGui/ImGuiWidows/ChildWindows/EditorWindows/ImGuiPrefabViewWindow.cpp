@@ -60,9 +60,13 @@ void ImGuiPrefabViewWindow::ShowImGui() {
 }
 
 void ImGuiPrefabViewWindow::RenderView() {
+	/// ----- SceneのRTVTextureを描画 ----- ///
 
 	/// 描画する画像の取得
-	const Texture* texture = pAssetCollection_->GetTexture("prefabScene");
+	const Texture* texture = pAssetCollection_->GetTexture("./Assets/Scene/RenderTexture/prefabScene");
+	if (!texture) {
+		return;
+	}
 
 	// 最初に空き領域を取得
 	ImVec2 availRegion = ImGui::GetContentRegionAvail();

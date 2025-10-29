@@ -63,7 +63,7 @@ void AssetLoader::LoadTexture([[maybe_unused]] const std::string& _filepath) {
 	texture.dxResource_ = std::move(CreateTextureResource(pDxManager_->GetDxDevice(), metadata));
 	DxResource intermediateResource = UploadTextureData(texture.dxResource_.Get(), scratchImage);
 
-	pDxManager_->GetDxCommand()->CommandExecute();
+	pDxManager_->GetDxCommand()->CommandExecuteAndWait();
 	pDxManager_->GetDxCommand()->CommandReset();
 
 	/// metadataを基に srv の設定
@@ -95,8 +95,14 @@ void AssetLoader::LoadTexture([[maybe_unused]] const std::string& _filepath) {
 	DxDevice* dxDevice = pDxManager_->GetDxDevice();
 	dxDevice->GetDevice()->CreateShaderResourceView(texture.dxResource_.Get(), &srvDesc, texture.srvHandle_->cpuHandle);
 
+
+	/// texture size
+	Vector2 textureSize = { static_cast<float>(metadata.width), static_cast<float>(metadata.height) };
+	texture.textureSize_ = textureSize;
+
+
 	Console::Log("[Load] [Texture] - path:\"" + _filepath + "\"");
-	pAssetCollection_->AddTexture(_filepath, std::move(texture));
+	pAssetCollection_->AddAsset<Texture>(_filepath, std::move(texture));
 }
 
 void AssetLoader::LoadModelObj(const std::string& _filepath) {
@@ -201,7 +207,7 @@ void AssetLoader::LoadModelObj(const std::string& _filepath) {
 	}
 
 	Console::Log("[Load] [Model] - path:\"" + _filepath + "\"");
-	pAssetCollection_->AddModel(_filepath, std::move(model));
+	pAssetCollection_->AddAsset<Model>(_filepath, std::move(model));
 
 }
 
@@ -387,7 +393,7 @@ void AssetLoader::LoadAudioClip(const std::string& _filepath) {
 
 	AudioClip audioClip;
 	audioClip.soundData_ = std::move(soundData);
-	pAssetCollection_->AddAudioClip(_filepath, std::move(audioClip));
+	pAssetCollection_->AddAsset<AudioClip>(_filepath, std::move(audioClip));
 
 	Console::Log("[Load] [AudioClip] - path:\"" + _filepath + "\"");
 }
@@ -408,6 +414,9 @@ void AssetLoader::LoadMaterial(const std::string& _filepath) {
 	}
 
 
+	/// 読み込んだMaterialを格納するオブジェクト
+	Material material;
+
 	/// ----------------------------------------------
 	/// ファイルの読み込み
 	/// ----------------------------------------------
@@ -416,12 +425,20 @@ void AssetLoader::LoadMaterial(const std::string& _filepath) {
 	while (std::getline(ifs, line)) {
 		/// ----- 各文字列ごとに対応した処理を行う ----- ///
 
-		if(Mathf::StartsWith(line, "version: ")) {
-
+		if(Mathf::StartsWith(line, "guid: ")) {
+			/// ファイルの文字列をGuidに変換して格納
+			std::string guidStr = line.substr(6);
+			material.guid = Guid::FromString(guidStr);
 		}
 		
 	}
 
+
+	/// コンソールにログを出力
+	Console::Log("[Load] [Material] - path:\"" + _filepath + "\"");
+
+	/// AssetCollectionにMaterialを追加
+	pAssetCollection_->AddAsset<Material>(_filepath, std::move(material));
 
 }
 

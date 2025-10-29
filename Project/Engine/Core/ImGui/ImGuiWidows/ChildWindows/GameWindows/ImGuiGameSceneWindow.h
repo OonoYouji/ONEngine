@@ -11,7 +11,7 @@ public:
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
-	ImGuiGameSceneWindow(class AssetCollection* _grc) : pAssetCollection_(_grc) {}
+	ImGuiGameSceneWindow(class AssetCollection* _assetCollection) : pAssetCollection_(_assetCollection) {}
 	~ImGuiGameSceneWindow() {}
 	
 	/// @brief imgui windowの描画処理

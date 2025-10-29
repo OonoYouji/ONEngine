@@ -26,8 +26,11 @@ public:
 	/// @param _dxDevice DxDeviceのインスタンス
 	void Initialize(class DxDevice* _dxDevice);
 
-	/// @brief CommandListを実行、GPUの処理を待つ
+	/// @brief CommandListを実行
 	void CommandExecute();
+
+	/// @brief CommandListを実行、GPUの処理を待つ
+	void CommandExecuteAndWait();
 
 	/// @brief CommandAllocatorとCommandListをリセットする
 	void CommandReset();

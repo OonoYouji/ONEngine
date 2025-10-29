@@ -4,12 +4,16 @@
 #include <imgui.h>
 
 /// engine
+#include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/Core/ImGui/Math/ImGuiMath.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
-#include "Engine/Asset/Collection/AssetCollection.h"
-#include "../GameWindows/ImGuiInspectorWindow.h"
 #include "Engine/Script/MonoScriptEngine.h"
+
+/// engine/imgui
+#include "Engine/Core/ImGui/ImGuiSelection.h"
+#include "../GameWindows/ImGuiInspectorWindow.h"
+
 
 ImGuiPrefabFileWindow::ImGuiPrefabFileWindow(EntityComponentSystem* _ecs, AssetCollection* _assetCollection, ImGuiInspectorWindow* _inspector)
 	: pEcs_(_ecs), pAssetCollection_(_assetCollection), pInspector_(_inspector) {
@@ -48,8 +52,8 @@ void ImGuiPrefabFileWindow::ShowImGui() {
 			Console::Log("Double clicked prefab file: " + file.second);
 
 			ECSGroup* debugGroup = pEcs_->GetECSGroup("Debug");
-			GameEntity* entity = debugGroup->GenerateEntityFromPrefab(file.second, false);
-			pInspector_->SetSelectedEntity(entity);
+			GameEntity* entity = debugGroup->GenerateEntityFromPrefab(file.second, GenerateGuid(), false);
+			ImGuiSelection::SetSelectedObject(entity->GetGuid(), SelectionType::Entity);
 		}
 
 	}

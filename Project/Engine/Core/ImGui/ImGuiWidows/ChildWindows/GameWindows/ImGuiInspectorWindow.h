@@ -36,9 +36,9 @@ public:
 	/// @brief アセットInspector表示処理
 	void AssetInspector();
 
-	/// edit target entity の setter getter
-	void SetSelectedEntity(GameEntity* _entity);
-	class GameEntity* GetSelectedEntity() const;
+	/// @brief テクスチャのInspector表示
+	/// @param _texture 
+	void TextureAssetInspector(class Texture* _texture);
 
 private:
 	/// ===================================================
@@ -49,9 +49,6 @@ private:
 	class EntityComponentSystem* pEcs_;
 	class EditorManager* pEditorManager_;
 	class AssetCollection* pAssetCollection_;
-
-	/// ----- edit target ----- ///
-	GameEntity* selectedEntity_ = nullptr; ///< 選択したエンティティのポインタ
 
 	std::string windowName_;
 	class IComponent* selectedComponent_ = nullptr;

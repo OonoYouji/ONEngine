@@ -552,9 +552,9 @@ ImGuiManager::~ImGuiManager() {
 
 
 
-void ImGuiManager::Initialize(AssetCollection* _grc) {
+void ImGuiManager::Initialize(AssetCollection* _assetCollection) {
 
-	pAssetCollection_ = _grc;
+	pAssetCollection_ = _assetCollection;
 
 	DxSRVHeap* dxSRVHeap = dxManager_->GetDxSRVHeap();
 	uint32_t   srvDescriptorIndex = dxSRVHeap->AllocateBuffer();
@@ -600,6 +600,10 @@ void ImGuiManager::Initialize(AssetCollection* _grc) {
 	imGuiWindowCollection_ = std::make_unique<ImGuiWindowCollection>(
 		pEntityComponentSystem_, pAssetCollection_, this, pEditorManager_, pSceneManager_
 	);
+}
+
+void ImGuiManager::Finalize() {
+
 }
 
 void ImGuiManager::Update() {

@@ -11,6 +11,7 @@ nlohmann::json EntityJsonConverter::ToJson(const GameEntity* _entity) {
 	entityJson["prefabName"] = _entity->GetPrefabName();
 	entityJson["name"] = _entity->GetName();
 	entityJson["id"] = _entity->GetId();
+	entityJson["guid"] = _entity->GetGuid();
 
 	// コンポーネントの情報を追加
 	auto& components = _entity->GetComponents();

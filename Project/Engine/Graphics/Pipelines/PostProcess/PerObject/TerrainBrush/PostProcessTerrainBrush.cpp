@@ -72,7 +72,7 @@ void PostProcessTerrainBrush::Execute(
 		}
 	}
 
-	if (!terrain) {
+	if (!terrain || !terrain->enable) {
 		return;
 	}
 

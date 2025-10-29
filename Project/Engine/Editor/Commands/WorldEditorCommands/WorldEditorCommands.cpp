@@ -7,6 +7,7 @@
 #include <numbers>
 
 /// engine
+#include "Engine/Asset/Guid/Guid.h"
 #include "Engine/Core/Config/EngineConfig.h"
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/Core/ImGui/Math/ImGuiMath.h"
@@ -27,7 +28,7 @@ CreateGameObjectCommand::CreateGameObjectCommand(ECSGroup* _ecs) {
 CreateGameObjectCommand::~CreateGameObjectCommand() {}
 
 EDITOR_STATE CreateGameObjectCommand::Execute() {
-	generatedEntity_ = pECSGroup_->GenerateEntity(false);
+	generatedEntity_ = pECSGroup_->GenerateEntity(GenerateGuid(), false);
 
 	EDITOR_STATE state = EDITOR_STATE_RUNNING;
 	if (generatedEntity_) {
@@ -259,7 +260,7 @@ EDITOR_STATE PasteEntityCommand::Execute() {
 	std::string originalName = (*copiedEntity)["name"].get<std::string>();
 
 	uint32_t count = pECSGroup_->CountEntity(originalName);
-	pastedEntity_ = pECSGroup_->GenerateEntity(DebugConfig::isDebugging);
+	pastedEntity_ = pECSGroup_->GenerateEntity(GenerateGuid(), DebugConfig::isDebugging);
 	EntityJsonConverter::FromJson(*copiedEntity, pastedEntity_);
 	if (!pastedEntity_) {
 		Console::Log("PasteEntityCommand : Failed to create entity from JSON");

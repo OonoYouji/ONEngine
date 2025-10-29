@@ -8,20 +8,22 @@
 #include <ImGuizmo.h>
 
 /// engine
+#include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/Core/Config/EngineConfig.h"
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/Core/ImGui/ImGuiManager.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Entity/GameEntity/GameEntity.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
-#include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/Scene/SceneManager.h"
 #include "Engine/Script/MonoScriptEngine.h"
 
+/// engine/imgui
+#include "Engine/Core/ImGui/ImGuiSelection.h"
 #include "ImGuiInspectorWindow.h"
 
-ImGuiSceneWindow::ImGuiSceneWindow(EntityComponentSystem* _ecs, AssetCollection* _grc, SceneManager* _sceneManager, ImGuiInspectorWindow* _inspector)
-	: pEcs_(_ecs), pAssetCollection_(_grc), pSceneManager_(_sceneManager), pInspector_(_inspector) {
+ImGuiSceneWindow::ImGuiSceneWindow(EntityComponentSystem* _ecs, AssetCollection* _assetCollection, SceneManager* _sceneManager, ImGuiInspectorWindow* _inspector)
+	: pEcs_(_ecs), pAssetCollection_(_assetCollection), pSceneManager_(_sceneManager), pInspector_(_inspector) {
 
 	manipulateOperation_ = ImGuizmo::OPERATION::TRANSLATE; // 初期操作モードは移動
 	manipulateMode_ = ImGuizmo::MODE::WORLD; // 初期モードはワールド座標
@@ -70,6 +72,20 @@ void ImGuiSceneWindow::ShowImGui() {
 	}
 
 
+	/// ----------------------------------------
+	/// ImGuiInfoをTextに表示
+	/// ----------------------------------------
+	{
+		ImGui::SameLine();
+
+		const std::string& text = ImGuiInfo::GetInfo();
+		float textWidth = ImGui::CalcTextSize(text.c_str()).x;
+		float windowWidth = ImGui::GetContentRegionAvail().x;
+		ImGui::SetCursorPosX(windowWidth - textWidth);
+
+		ImGui::TextColored(ImVec4(0.75f, 0, 0, 1), text.c_str());
+	}
+
 
 	ImGui::Separator();
 
@@ -111,7 +127,8 @@ void ImGuiSceneWindow::ShowImGui() {
 	/// ----------------------------------------
 
 	// 操作対象のゲット
-	GameEntity* entity = pInspector_->GetSelectedEntity();
+	const Guid& selectedGuid = ImGuiSelection::GetSelectedObject();
+	GameEntity* entity = pEcs_->GetCurrentGroup()->GetEntityFromGuid(selectedGuid);
 	if (entity) {
 
 		ImGuizmo::SetOrthographic(false); // 透視投影
@@ -193,7 +210,7 @@ void ImGuiSceneWindow::SetGamePlay(bool _isGamePlay) {
 		pSceneManager_->SaveCurrentSceneTemporary();
 
 		pSceneManager_->ReloadScene(true);
-		pInspector_->SetSelectedEntity(0);
+		ImGuiSelection::SetSelectedObject(Guid::kInvalid, SelectionType::None);
 
 		/// Monoスクリプトエンジンのホットリロードでスクリプトの初期化を行う
 		MonoScriptEngine::GetInstance().HotReload();
@@ -201,7 +218,7 @@ void ImGuiSceneWindow::SetGamePlay(bool _isGamePlay) {
 	} else {
 		//!< 更新処理を停止した場合の処理
 		pSceneManager_->ReloadScene(true);
-		pInspector_->SetSelectedEntity(0);
+		ImGuiSelection::SetSelectedObject(Guid::kInvalid, SelectionType::None);
 
 	}
 

@@ -9,8 +9,9 @@
 #include <Externals/imgui/dialog/ImGuiFileDialog.h>
 
 /// engine
-#include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/Asset/Collection/AssetCollection.h"
+#include "Engine/Core/ImGui/Math/AssetPayload.h"
+#include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Light/Light.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Audio/AudioSource.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Effect/Effect.h"
@@ -112,9 +113,11 @@ bool ImMathf::MaterialEdit(const char* _label, GPUMaterial* _material, AssetColl
 			if (ImGui::BeginDragDropTarget()) {
 				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("AssetData")) {
 					if (payload->Data) {
-						const char* droppedPath = static_cast<const char*>(payload->Data);
-						std::string path = std::string(droppedPath);
-						if (path.find(".png") != std::string::npos || path.find(".jpg") != std::string::npos) {
+						AssetPayload* assetPayload = *static_cast<AssetPayload**>(payload->Data);
+						std::string path = assetPayload->filePath;
+
+						AssetType type = GetAssetTypeFromExtension(Mathf::FileExtension(path));
+						if (type == AssetType::Texture) {
 							size_t droppedTextureIndex = _assetCollection->GetTextureIndex(path);
 							_material->baseTextureId = static_cast<int32_t>(droppedTextureIndex);
 							isEdit = true;
@@ -204,6 +207,44 @@ bool ImMathf::UVTransformEdit(const char* _label, UVTransform* _uvTransform) {
 	ImGui::PopID();
 
 	return isEdit;
+}
+
+ImVec2 ImMathf::CalculateAspectFitSize(const Vector2& _textureSize, float _maxSize) {
+	// アスペクト比を計算
+	float aspectRatio = _textureSize.x / _textureSize.y;
+
+	// 最大サイズに基づいて幅と高さを計算
+	float width = _maxSize;
+	float height = _maxSize;
+
+	if (aspectRatio > 1.0f) {
+		// 横長の場合
+		height = _maxSize / aspectRatio;
+	} else {
+		// 縦長または正方形の場合
+		width = _maxSize * aspectRatio;
+	}
+
+	return ImVec2(width, height);
+}
+
+ImVec2 ImMathf::CalculateAspectFitSize(const Vector2& _textureSize, const ImVec2& _maxSize) {
+	// アスペクト比を計算
+	float aspectRatio = _textureSize.x / _textureSize.y;
+
+	// 最大サイズに基づいて幅と高さを計算
+	float width = _maxSize.x;
+	float height = _maxSize.y;
+
+	if (aspectRatio > (_maxSize.x / _maxSize.y)) {
+		// 横長の場合、幅を最大にして高さを調整
+		height = _maxSize.x / aspectRatio;
+	} else {
+		// 縦長または正方形の場合、高さを最大にして幅を調整
+		width = _maxSize.y * aspectRatio;
+	}
+
+	return ImVec2(width, height);
 }
 
 
@@ -347,74 +388,6 @@ void AudioSourceDebug(AudioSource* _audioSource) {
 	////if (ImGui::InputText("path", &path)) {
 	////	_audioSource->SetAudioPath(path);
 	////}
-
-}
-
-void MeshRendererDebug(MeshRenderer* _meshRenderer) {
-	if (!_meshRenderer) {
-		return;
-	}
-
-	/// param get
-	Vector4 color = _meshRenderer->GetColor();
-	std::string meshPath = _meshRenderer->GetMeshPath();
-	std::string texturePath = _meshRenderer->GetTexturePath();
-
-	/// edit
-	if (ImGuiColorEdit("color", &color)) {
-		_meshRenderer->SetColor(color);
-	}
-
-
-	ImGui::Spacing();
-
-
-	/// meshの変更
-	ImGui::Text("mesh path");
-	ImGui::InputText("##mesh", meshPath.data(), meshPath.capacity(), ImGuiInputTextFlags_ReadOnly);
-	if (ImGui::BeginDragDropTarget()) {
-		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("AssetData")) {
-			if (payload->Data) {
-				const char* droppedPath = static_cast<const char*>(payload->Data);
-				std::string path = std::string(droppedPath);
-
-				if (path.find(".obj") != std::string::npos
-					|| path.find(".gltf") != std::string::npos) {
-					_meshRenderer->SetMeshPath(path);
-
-					Console::Log(std::format("Mesh path set to: {}", path));
-				} else {
-					Console::Log("Invalid mesh format. Please use .obj or .gltf.");
-				}
-			}
-		}
-		ImGui::EndDragDropTarget();
-	}
-
-
-	/// textureの変更
-	ImGui::Text("texture path");
-	ImGui::InputText("##texture", texturePath.data(), texturePath.capacity(), ImGuiInputTextFlags_ReadOnly);
-	if (ImGui::BeginDragDropTarget()) {
-		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("AssetData")) {
-			if (payload->Data) {
-				const char* droppedPath = static_cast<const char*>(payload->Data);
-				std::string path = std::string(droppedPath);
-
-				if (path.find(".png") != std::string::npos
-					|| path.find(".jpg") != std::string::npos
-					|| path.find(".jpeg") != std::string::npos) {
-					_meshRenderer->SetTexturePath(path);
-
-					Console::Log(std::format("Texture path set to: {}", path));
-				} else {
-					Console::Log("Invalid texture format. Please use .png, .jpg, or .jpeg.");
-				}
-			}
-		}
-
-		ImGui::EndDragDropTarget();
-	}
 
 }
 

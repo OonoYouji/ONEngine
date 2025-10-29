@@ -154,6 +154,11 @@ void RenderingFramework::DrawPrefab() {
 	renderingPipelineCollection_->ExecutePostProcess(renderTex->GetName());
 }
 
+void RenderingFramework::ResetCommand() {
+	pDxManager_->GetDxCommand()->WaitForGpuComplete();
+	pDxManager_->GetDxCommand()->CommandReset();
+}
+
 void RenderingFramework::HeapBindToCommandList() {
 	pDxManager_->GetDxSRVHeap()->BindToCommandList(
 		pDxManager_->GetDxCommand()->GetCommandList()
@@ -163,7 +168,7 @@ void RenderingFramework::HeapBindToCommandList() {
 void RenderingFramework::DxCommandExeAndReset() {
 
 	/// commandの実行
-	pDxManager_->GetDxCommand()->CommandExecute();
+	pDxManager_->GetDxCommand()->CommandExecuteAndWait();
 	pWindowManager_->PresentAll();
 	pDxManager_->GetDxCommand()->CommandReset();
 }

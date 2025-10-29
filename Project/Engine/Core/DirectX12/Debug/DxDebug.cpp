@@ -8,7 +8,7 @@ DxDebug::~DxDebug() = default;
 void DxDebug::Initialize([[maybe_unused]] DxDevice* _dxDevice) {
 	/// ----- Debugモードとして起動させる ----- ///
 
-#ifdef DEBUG_MODE
+#ifdef _DEBUG
 	ComPtr<ID3D12InfoQueue> infoQueue;
 	if (SUCCEEDED(_dxDevice->GetDevice()->QueryInterface(IID_PPV_ARGS(&infoQueue)))) {
 		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, true);
@@ -34,7 +34,7 @@ void DxDebug::Initialize([[maybe_unused]] DxDevice* _dxDevice) {
 
 void DxDebug::SetDebugLayer() {
 	/// ----- Debugモードとして起動させる ----- ///
-#ifdef DEBUG_MODE
+#ifdef _DEBUG
 	if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController_)))) {
 		debugController_->EnableDebugLayer();
 		debugController_->SetEnableGPUBasedValidation(TRUE);

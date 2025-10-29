@@ -7,25 +7,27 @@
 
 /// engine
 #include "Engine/Core/Config/EngineConfig.h"
-#include "Engine/Core/ImGui/Math/ImGuiMath.h"
 #include "Engine/Core/Utility/Math/Mathf.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
+#include "Engine/ECS/Entity/GameEntity/GameEntity.h"
 #include "Engine/Editor/EditorManager.h"
 #include "Engine/Editor/Commands/WorldEditorCommands/WorldEditorCommands.h"
 #include "Engine/Editor/EditCommand.h"
 #include "Engine/Scene/SceneManager.h"
 
+/// engine/imgui
 #include "ImGuiInspectorWindow.h"
+#include "Engine/Core/ImGui/Math/ImGuiMath.h"
+#include "Engine/Core/ImGui/ImGuiSelection.h"
 
 
 ImGuiHierarchyWindow::ImGuiHierarchyWindow(
 	const std::string& _imGuiWindowName,
 	ECSGroup* _ecsGroup,
 	EditorManager* _editorManager,
-	SceneManager* _sceneManager,
-	ImGuiInspectorWindow* _inspectorWindow)
+	SceneManager* _sceneManager)
 	: imGuiWindowName_(_imGuiWindowName), pECSGroup_(_ecsGroup), pEditorManager_(_editorManager),
-	pSceneManager_(_sceneManager), pInspectorWindow_(_inspectorWindow) {
+	pSceneManager_(_sceneManager) {
 
 	newName_.reserve(1024);
 	isNodeOpen_ = false;
@@ -60,7 +62,7 @@ void ImGuiHierarchyWindow::PrefabDragAndDrop() {
 						str.erase(0, pos + 1);
 					}
 
-					pECSGroup_->GenerateEntityFromPrefab(str, DebugConfig::isDebugging);
+					pECSGroup_->GenerateEntityFromPrefab(str, GenerateGuid(), DebugConfig::isDebugging);
 					Console::Log(std::format("entity name set to: {}", str));
 				} else {
 					Console::Log("[error] Invalid entity format. Please use \".prefab\"");
@@ -96,7 +98,7 @@ void ImGuiHierarchyWindow::DrawEntityHierarchy(GameEntity* _entity) {
 			if (_entity == selectedEntity_) {
 
 				/// 入力の処理
-				if(Input::PressKey(DIK_LCONTROL) || Input::PressKey(DIK_RCONTROL)) {
+				if (Input::PressKey(DIK_LCONTROL) || Input::PressKey(DIK_RCONTROL)) {
 					if (Input::TriggerKey(DIK_C)) {
 						EditCommand::Execute<CopyEntityCommand>(_entity);
 					}
@@ -214,30 +216,66 @@ void ImGuiHierarchyWindow::DrawHierarchy() {
 	/// ECSGroupないにあるEntityの表示
 	if (ImGui::CollapsingHeader(pECSGroup_->GetGroupName().c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
 
-		/// entityの選択  
-		entityList_.clear();
+		/// 透明なボタンを表示し、ここにエンティティがドロップされたら親子関係を解除する
+		ImVec2 windowSize = ImGui::GetContentRegionAvail();
+		windowSize.y = 12.0f;
+		ImGui::InvisibleButton("HierarchyDropArea", windowSize);
+		if (ImGui::BeginDragDropTarget()) {
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("EntityData")) {
+				GameEntity** srcEntityPtr = static_cast<GameEntity**>(payload->Data);
+				GameEntity* srcEntity = *srcEntityPtr;
+				/// 親子関係の解除
+				srcEntity->RemoveParent();
+			}
+			ImGui::EndDragDropTarget();
+		}
+
+
+		/// ---------------------------------------------------
+		/// エンティティの表示
+		/// ---------------------------------------------------
+
+		std::vector<GameEntity*> entityPtrs;
 		for (auto& entity : pECSGroup_->GetEntities()) {
-			if (!entity->GetParent()) { //!< 親がいない場合  
-				entityList_.push_back(entity.get());
+			/// 子を再帰的に処理するので親がないエンティティだけ処理する
+			if (!entity->GetParent()) {
+				entityPtrs.push_back(entity.get());
 			}
 		}
 
-		/// entityの表示  
-		for (auto& entity : entityList_) {
-			DrawEntityHierarchy(entity);
+		for (auto& entity : entityPtrs) {
+			DrawEntity(entity);
 		}
 
-		bool hasValidSelection = false;
-		for (auto& entity : pECSGroup_->GetEntities()) {
-			if (entity.get() == selectedEntity_) {
-				hasValidSelection = true;
-				break;
-			}
-		}
 
-		if (hasValidSelection) {
-			pInspectorWindow_->SetSelectedEntity(selectedEntity_);
-		}
+		/// 無効な親子関係のポップアップ表示
+		ShowInvalidParentPopup();
+
+		///// entityの選択  
+		//entityList_.clear();
+		//for (auto& entity : pECSGroup_->GetEntities()) {
+		//	if (!entity->GetParent()) { //!< 親がいない場合  
+		//		entityList_.push_back(entity.get());
+		//	}
+		//}
+
+		///// entityの表示  
+		//for (auto& entity : entityList_) {
+		//	DrawEntityHierarchy(entity);
+		//}
+
+		//bool hasValidSelection = false;
+		//for (auto& entity : pECSGroup_->GetEntities()) {
+		//	if (entity.get() == selectedEntity_) {
+		//		hasValidSelection = true;
+		//		break;
+		//	}
+		//}
+
+		//if (hasValidSelection) {
+		//	/// ----- 選択したオブジェクトを設定 ----- ///
+		//	ImGuiSelection::SetSelectedObject(selectedEntity_->GetGuid(), SelectionType::Entity);
+		//}
 	}
 
 
@@ -296,7 +334,7 @@ void ImGuiHierarchyWindow::EntityDebug(GameEntity* _entity) {
 			/// 選択中ならInspectorの選択を解除
 			if (selectedEntity_ == _entity) {
 				selectedEntity_ = nullptr;
-				pInspectorWindow_->SetSelectedEntity(0); // 選択を解除
+				ImGuiSelection::SetSelectedObject(Guid::kInvalid, SelectionType::None);
 			}
 		}
 
@@ -356,13 +394,167 @@ void ImGuiHierarchyWindow::DrawSceneSaveDialog() {
 	}
 }
 
+bool ImGuiHierarchyWindow::DrawEntity(GameEntity* _entity) {
+	/// ----- Entityの表示 ----- ///
+
+	bool hasChildren = !_entity->GetChildren().empty();
+	ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanFullWidth;
+
+
+	/// ---------------------------------------------------
+	/// Selectableでエンティティ名の表示
+	/// ---------------------------------------------------
+
+	/// 名前被りでエラーになるのを防ぐため、IDを付与
+	ImGui::PushID(_entity->GetId());
+
+	/// 選択中のエンティティならSelectedフラグを付与
+	if (_entity == selectedEntity_) {
+		flags |= ImGuiTreeNodeFlags_Selected;
+	}
+
+	/// 子エンティティがいない場合はLeafフラグを付与
+	if (!hasChildren) {
+		flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
+	}
+
+	/// TreeNodeでエンティティ名を表示 & Ckickで選択処理
+	bool nodeOpen = ImGui::TreeNodeEx((void*)_entity, flags, "%s", _entity->GetName().c_str());
+	if (ImGui::IsItemClicked()) {
+		selectedEntity_ = _entity;
+		ImGuiSelection::SetSelectedObject(_entity->GetGuid(), SelectionType::Entity);
+	}
+
+
+	/// ---------------------------------------------------
+	/// ドラッグの開始
+	/// ---------------------------------------------------
+
+	if (ImGui::BeginDragDropSource()) {
+		ImGui::Text(_entity->GetName().c_str());
+
+		GameEntity** entityPtr = &_entity;
+		ImGui::SetDragDropPayload("EntityData", entityPtr, sizeof(GameEntity**));
+
+		ImGui::EndDragDropSource();
+	}
+
+
+	/// ---------------------------------------------------
+	/// ドロップの処理
+	/// ---------------------------------------------------
+	if (ImGui::BeginDragDropTarget()) {
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("EntityData")) {
+			GameEntity** srcEntityPtr = static_cast<GameEntity**>(payload->Data);
+			GameEntity* srcEntity = *srcEntityPtr;
+
+			/// drop先とdrop元が同じでなければ親子関係を設定
+			if (srcEntity != _entity) {
+				/// _entityがsrcEntityの子孫である場合、無限ループになるので注意
+				if (!IsDescendant(srcEntity, _entity)) {
+
+					// 親子関係の設定
+					srcEntity->RemoveParent();
+					srcEntity->SetParent(_entity);
+				} else {
+					showInvalidParentPopup_ = true;
+					Console::LogError("ドロップ先エンティティがドラッグ元エンティティの子であるためドロップできません");
+				}
+			}
+		}
+		ImGui::EndDragDropTarget();
+	}
+
+
+	/// ---------------------------------------------------
+	/// 右クリックのメニュー表示と表示の開始処理
+	/// ---------------------------------------------------
+
+	if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
+		ImGui::OpenPopup("EntityContextMenu");
+	}
+
+	if (ImGui::BeginPopup("EntityContextMenu")) {
+		if (ImGui::MenuItem("rename")) {
+			newName_ = _entity->GetName();
+			renameEntity_ = _entity;
+		}
+		if (ImGui::MenuItem("delete")) {
+			pEditorManager_->ExecuteCommand<DeleteEntityCommand>(pECSGroup_, _entity);
+			renameEntity_ = nullptr; // 名前変更モードを解除
+			/// 選択中ならInspectorの選択を解除
+			if (selectedEntity_ == _entity) {
+				selectedEntity_ = nullptr;
+				ImGuiSelection::SetSelectedObject(Guid::kInvalid, SelectionType::None);
+			}
+		}
+		ImGui::EndPopup();
+	}
+
+
+	/// ---------------------------------------------------
+	/// 名前変更処理
+	/// ---------------------------------------------------
+
+
+
+	ImGui::PopID();
+
+	/// ---------------------------------------------------
+	/// 子エンティティがいるなら再帰的に表示
+	/// ---------------------------------------------------
+
+	/// 子がある場合は再帰
+	if (hasChildren && nodeOpen) {
+		for (auto* child : _entity->GetChildren()) {
+			DrawEntity(child);
+		}
+		ImGui::TreePop();
+	}
+
+	return nodeOpen;
+}
+
+bool ImGuiHierarchyWindow::IsDescendant(GameEntity* _ancestor, GameEntity* _descendant) {
+	/// ----- _ancestorが_descendantの子ではないかチェック ----- ///
+
+	if (!_descendant) {
+		return false;
+	}
+
+	GameEntity* current = _descendant->GetParent();
+	while (current) {
+		if (current == _ancestor) {
+			return true;
+		}
+		current = current->GetParent();
+	}
+
+	return false;
+}
+
+void ImGuiHierarchyWindow::ShowInvalidParentPopup() {
+	if (showInvalidParentPopup_) {
+		ImGui::OpenPopup("Invalid Parent");
+
+		if (ImGui::BeginPopupModal("Invalid Parent", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+			ImGui::Text("Cannot set a descendant as a parent!");
+			if (ImGui::Button("OK")) {
+				ImGui::CloseCurrentPopup();
+				showInvalidParentPopup_ = false;
+			}
+			ImGui::EndPopup();
+		}
+	}
+}
+
 
 /// /////////////////////////////////////////////////////////////////////////
 /// ImGuiNormalHierarchyWindow
 /// /////////////////////////////////////////////////////////////////////////
 
-ImGuiNormalHierarchyWindow::ImGuiNormalHierarchyWindow(const std::string& _imGuiWindowName, EntityComponentSystem* _ecs, EditorManager* _editorManager, SceneManager* _sceneManager, ImGuiInspectorWindow* _imguiInspectorWindow)
-	: ImGuiHierarchyWindow(_imGuiWindowName, nullptr, _editorManager, _sceneManager, _imguiInspectorWindow) {
+ImGuiNormalHierarchyWindow::ImGuiNormalHierarchyWindow(const std::string& _imGuiWindowName, EntityComponentSystem* _ecs, EditorManager* _editorManager, SceneManager* _sceneManager)
+	: ImGuiHierarchyWindow(_imGuiWindowName, nullptr, _editorManager, _sceneManager) {
 	pEcs_ = _ecs;
 }
 
@@ -398,7 +590,6 @@ void ImGuiNormalHierarchyWindow::ShowImGui() {
 
 	DrawSceneDialog();
 	DrawSceneSaveDialog();
-
 
 	/// ヒエラルキーの表示
 	DrawHierarchy();

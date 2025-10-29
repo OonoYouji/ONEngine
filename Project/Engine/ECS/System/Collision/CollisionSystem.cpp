@@ -118,6 +118,11 @@ void CollisionSystem::RuntimeUpdate(ECSGroup* _ecs) {
 		}
 	}
 
+	/// 全てのColliderのprevPositionを更新する
+	for (auto& collider : colliders) {
+		collider->UpdatePrevPosition();
+	}
+
 
 	/// 衝突計算をしたフレームを記録するマップ
 	using EntityIdPair = std::pair<int, int>;

@@ -143,10 +143,17 @@ void MeshRenderingPipeline::RenderingMesh(ID3D12GraphicsCommandList* _cmdList, s
 			);
 
 			/// texture id のセット
-			int32_t textureIndex = renderer->GetCPUMaterial().baseTextureIdPair.second;
-			if (textureIndex < 0) {
-				textureIndex = pAssetCollection_->GetTextureIndex("./Assets/Textures/white.png");
+			const Guid& texGuid = renderer->GetTextureGuid();
+			int32_t textureIndex = pAssetCollection_->GetTextureIndexFromGuid(texGuid);
+			if (!texGuid.CheckValid()) {
+				textureIndex = static_cast<int32_t>(pAssetCollection_->GetTextureIndex("./Assets/Textures/white.png"));
 			}
+
+			/// 無効値なら0にする
+			if (textureIndex == -1) {
+				textureIndex = 0;
+			}
+
 			textureIdBuffer_.SetMappedData(
 				transformIndex_,
 				_textures[textureIndex].GetSRVDescriptorIndex()

@@ -138,7 +138,9 @@ void DxSwapChain::ClearBackBuffer(ID3D12GraphicsCommandList* _commandList) {
 }
 
 void DxSwapChain::Present() {
-	HRESULT hr = swapChain_->Present(1, 0);
+	UINT presentFlags = 0;
+
+	HRESULT hr = swapChain_->Present(0, presentFlags);
 	Assert(SUCCEEDED(hr), "Failed to present.");
 }
 

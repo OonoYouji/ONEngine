@@ -14,7 +14,7 @@ void RenderTexture::Initialize(DXGI_FORMAT _format, const Vector4& _clearColor, 
 
 	{	/// textureの作成
 		Texture rtvTexture;
-		_assetCollection->AddTexture(_name, std::move(rtvTexture)); /// textureの管理を AssetCollection に任せる
+		_assetCollection->AddAsset<Texture>(_name, std::move(rtvTexture)); /// textureの管理を AssetCollection に任せる
 		texture_ = _assetCollection->GetTexture(_name);
 	}
 
@@ -117,7 +117,7 @@ UAVTexture::~UAVTexture() = default;
 
 void UAVTexture::Initialize(const std::string& _textureName, DxManager* _dxm, AssetCollection* _assetCollection) {
 	Texture uavTexture;
-	_assetCollection->AddTexture(_textureName, std::move(uavTexture));
+	_assetCollection->AddAsset<Texture>(_textureName, std::move(uavTexture));
 	texture_ = _assetCollection->GetTexture(_textureName);
 
 	/// 必要なオブジェクトの取得

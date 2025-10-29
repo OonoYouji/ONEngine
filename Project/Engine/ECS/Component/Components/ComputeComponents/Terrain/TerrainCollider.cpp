@@ -5,8 +5,58 @@
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
-#include "Engine/ECS/Entity/GameEntity/GameEntity.h"
 #include "Engine/Core/Utility/Utility.h"
+#include "Engine/ECS/Entity/GameEntity/GameEntity.h"
+#include "Engine/Editor/Commands/ImGuiCommand/ImGuiCommand.h"
+
+
+void COMP_DEBUG::TerrainColliderDebug(TerrainCollider* _collider) {
+	if (!_collider) {
+		return;
+	}
+
+	if (_collider->GetTerrain()) {
+		ImGui::Text("attached terrain");
+	} else {
+		ImGui::Text("null terrain");
+	}
+
+
+	if (ImGui::Button("attach terrain")) {
+		_collider->AttachTerrain();
+	}
+
+	if (ImGui::Button("copy vertices")) {
+		_collider->SetIsVertexGenerationRequested(true);
+	}
+
+
+	/// ---------------------------------------------------
+	/// parameters
+	/// ---------------------------------------------------
+
+	/// 最大傾斜角
+	ImMathf::DragFloat("max slope angle", &_collider->maxSlopeAngle_, 0.1f, 0.0f, 90.0f, "%.2f rad");
+}
+
+void from_json(const nlohmann::json& _j, TerrainCollider& _c) {
+	_c.enable = _j.value("enable", 1);
+	_c.maxSlopeAngle_ = _j.value("maxSlopeAngle", 0.0f);
+}
+
+void to_json(nlohmann::json& _j, const TerrainCollider& _c) {
+	_j = {
+		{ "type", "TerrainCollider" },
+		{ "enable", _c.enable },
+		{ "maxSlopeAngle", _c.maxSlopeAngle_ },
+	};
+}
+
+
+
+/// ///////////////////////////////////////////////////
+/// 地形のコライダーコンポーネント
+/// ///////////////////////////////////////////////////
 
 TerrainCollider::TerrainCollider() {
 	pTerrain_ = nullptr;
@@ -57,7 +107,7 @@ void TerrainCollider::CopyVertices(DxManager* _dxm) {
 	cmdList->CopyResource(dxReadbackBuffer.Get(), dxResource.Get());
 	dxResource.CreateBarrier(D3D12_RESOURCE_STATE_UNORDERED_ACCESS, dxCommand);
 
-	dxCommand->CommandExecute();
+	dxCommand->CommandExecuteAndWait();
 	dxCommand->CommandReset();
 	_dxm->HeapBindToCommandList();
 
@@ -157,18 +207,16 @@ Vector3 TerrainCollider::GetGradient(const Vector3& _position) {
 	}
 
 	float h = vertices_[row][col].position.y;
-
-	// X方向の高さ差
 	float hL = (col > 0) ? vertices_[row][col - 1].position.y : h;
 	float hR = (col < vertices_[0].size() - 1) ? vertices_[row][col + 1].position.y : h;
-	float slopeX = std::atan((hR - hL) / (2.0f));
-
-	// Z方向の高さ差
 	float hD = (row > 0) ? vertices_[row - 1][col].position.y : h;
 	float hU = (row < vertices_.size() - 1) ? vertices_[row + 1][col].position.y : h;
-	float slopeZ = std::atan((hU - hD) / (2.0f));
 
-	return { std::abs(slopeX), 0.0f, std::abs(slopeZ) };
+	/// 勾配
+	float slopeX = (hR - hL) / 2.0f;
+	float slopeZ = (hU - hD) / 2.0f;
+
+	return { slopeX, 0.0f, slopeZ };
 }
 
 bool TerrainCollider::IsInsideTerrain(const Vector3& _position) {
@@ -204,38 +252,9 @@ void TerrainCollider::SetIsVertexGenerationRequested(bool _isRequested) {
 	isVertexGenerationRequested_ = _isRequested;
 }
 
-
-
-
-void COMP_DEBUG::TerrainColliderDebug(TerrainCollider* _collider) {
-	if (!_collider) {
-		return;
-	}
-
-	if (_collider->GetTerrain()) {
-		ImGui::Text("attached terrain");
-	} else {
-		ImGui::Text("null terrain");
-	}
-
-
-	if (ImGui::Button("attach terrain")) {
-		_collider->AttachTerrain();
-	}
-
-	if (ImGui::Button("copy vertices")) {
-		_collider->SetIsVertexGenerationRequested(true);
-	}
-
+float TerrainCollider::GetMaxSlopeAngle() const {
+	return maxSlopeAngle_;
 }
 
-void from_json(const nlohmann::json& _j, TerrainCollider& _c) {
-	_c.enable = _j.value("enable", 1);
-}
 
-void to_json(nlohmann::json& _j, const TerrainCollider& _c) {
-	_j = {
-		{ "type", "TerrainCollider" },
-		{ "enable", _c.enable }
-	};
-}
+

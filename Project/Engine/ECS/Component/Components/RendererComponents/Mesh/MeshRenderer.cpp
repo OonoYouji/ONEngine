@@ -4,23 +4,27 @@
 #include <format>
 
 /// engine
+#include "Engine/Asset/AssetType.h"
+#include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/Core/ImGui/Math/ImGuiMath.h"
+#include "Engine/Core/ImGui/Math/AssetPayload.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentJsonConverter.h"
-//#include "Engine/Graphics/Pipelines/Collection/RenderingPipelineCollection.h"
-#include "Engine/Asset/Collection/AssetCollection.h"
 
 MeshRenderer::MeshRenderer() {
 	SetMeshPath("./Packages/Models/primitive/cube.obj");
-	SetTexturePath("./Packages/Textures/white.png");
+	//SetTexturePath("./Packages/Textures/white.png");
 	cpuMaterial_.baseColor = Vector4::kWhite;
 	cpuMaterial_.postEffectFlags = PostEffectFlags_Lighting;
 	cpuMaterial_.SetOwnerEntity(GetOwner());
+
+	material_.baseColor = Vector4::kWhite;
+	material_.postEffectFlags = PostEffectFlags_Lighting;
 }
 
 MeshRenderer::~MeshRenderer() = default;
 
-void MeshRenderer::SetupRenderData(AssetCollection* _grc) {
+void MeshRenderer::SetupRenderData(AssetCollection* _assetCollection) {
 	/// OwnerEntityを cpuMaterial_に設定
 	cpuMaterial_.SetOwnerEntity(GetOwner());
 
@@ -28,32 +32,41 @@ void MeshRenderer::SetupRenderData(AssetCollection* _grc) {
 	/// 有効なGuidであれば
 	if (cpuMaterial_.baseTextureIdPair.first.CheckValid()) {
 		/// cpuMaterial_のtexture guidから gpuMaterial_のtexture idを設定
-		cpuMaterial_.baseTextureIdPair.second = _grc->GetTextureIndexFromGuid(cpuMaterial_.baseTextureIdPair.first);
+		cpuMaterial_.baseTextureIdPair.second = _assetCollection->GetTextureIndexFromGuid(cpuMaterial_.baseTextureIdPair.first);
 	}
 
 	/// 有効なGuidであれば
 	if (cpuMaterial_.normalTextureIdPair.first.CheckValid()) {
 		/// cpuMaterial_のtexture guidから gpuMaterial_のtexture idを設定
-		cpuMaterial_.normalTextureIdPair.second = _grc->GetTextureIndexFromGuid(cpuMaterial_.normalTextureIdPair.first);
+		cpuMaterial_.normalTextureIdPair.second = _assetCollection->GetTextureIndexFromGuid(cpuMaterial_.normalTextureIdPair.first);
 	}
 
 
 	gpuMaterial_ = cpuMaterial_.ToGPUMaterial();
+
+	gpuMaterial_.postEffectFlags = material_.postEffectFlags;
+	gpuMaterial_.baseColor = material_.baseColor;
+	gpuMaterial_.entityId = GetOwner() ? GetOwner()->GetId() : 0;
+
+	if (material_.HasBaseTexture()) {
+		gpuMaterial_.baseTextureId = _assetCollection->GetTextureIndexFromGuid(material_.GetBaseTextureGuid());
+	} else {
+		gpuMaterial_.baseTextureId = 0;
+	}
+
 }
 
 void MeshRenderer::SetMeshPath(const std::string& _path) {
 	meshPath_ = _path;
 }
 
-void MeshRenderer::SetTexturePath(const std::string& _path) {
-	texturePath_ = _path;
-}
-
 void MeshRenderer::SetColor(const Vector4& _color) {
+	material_.baseColor = _color;
 	gpuMaterial_.baseColor = _color;
 }
 
 void MeshRenderer::SetPostEffectFlags(uint32_t _flags) {
+	material_.postEffectFlags = _flags;
 	gpuMaterial_.postEffectFlags = _flags;
 }
 
@@ -66,10 +79,6 @@ void MeshRenderer::SetMaterialEntityId() {
 
 const std::string& MeshRenderer::GetMeshPath() const {
 	return meshPath_;
-}
-
-const std::string& MeshRenderer::GetTexturePath() const {
-	return texturePath_;
 }
 
 const Vector4& MeshRenderer::GetColor() const {
@@ -85,7 +94,11 @@ const CPUMaterial& MeshRenderer::GetCPUMaterial() const {
 }
 
 uint32_t MeshRenderer::GetPostEffectFlags() const {
-	return gpuMaterial_.postEffectFlags;
+	return material_.postEffectFlags;
+}
+
+const Guid& MeshRenderer::GetTextureGuid() const {
+	return material_.guid;
 }
 
 
@@ -156,15 +169,15 @@ void InternalSetPostEffectFlags(uint64_t _nativeHandle, uint32_t _flags) {
 	}
 }
 
-void COMP_DEBUG::MeshRendererDebug(MeshRenderer* _mr, AssetCollection* _grc) {
+void COMP_DEBUG::MeshRendererDebug(MeshRenderer* _mr, AssetCollection* _assetCollection) {
 	if (!_mr) {
 		return;
 	}
 
 	/// param get
-	Vector4 color = _mr->GetColor();
-	std::string meshPath = _mr->GetMeshPath();
-	std::string texturePath = _mr->GetTexturePath();
+	Vector4& color = _mr->material_.baseColor;
+	std::string& meshPath = _mr->meshPath_;
+	//std::string& texturePath = _mr->texturePath_;
 
 	/// edit
 	if (ImGuiColorEdit("color", &color)) {
@@ -203,20 +216,53 @@ void COMP_DEBUG::MeshRendererDebug(MeshRenderer* _mr, AssetCollection* _grc) {
 
 	/// textureの変更
 	ImGui::Text("texture path");
-	ImGui::InputText("##texture", texturePath.data(), texturePath.capacity(), ImGuiInputTextFlags_ReadOnly);
+
+	/// ----------------------------------------------
+	/// テクスチャのプレビュー表示
+	/// ----------------------------------------------
+
+	bool hasTextureGuid = _mr->material_.HasBaseTexture();
+	if (hasTextureGuid) {
+		if (Texture* tex = _assetCollection->GetTexture(_assetCollection->GetTexturePath(_mr->material_.GetBaseTextureGuid()))) {
+			Vector2 aspectRatio = tex->GetTextureSize();
+			aspectRatio /= (std::max)(aspectRatio.x, aspectRatio.y);
+
+			ImTextureID texId = reinterpret_cast<ImTextureID>(tex->GetSRVGPUHandle().ptr);
+			ImGui::Image(texId, ImVec2(64.0f * aspectRatio.x, 64.0f * aspectRatio.y));
+		}
+	} else {
+		/// テクスチャがない場合はドラッグドロップ領域を表示する
+		ImVec2 size = ImVec2(64, 64);
+		ImVec2 pos = ImGui::GetCursorScreenPos();
+		ImDrawList* drawList = ImGui::GetWindowDrawList();
+
+		// InvisibleButton はクリック判定やDragDropのターゲット領域になる
+		ImGui::InvisibleButton("DropArea", size);
+
+		// 視覚的な四角形を描く
+		ImU32 imColor = IM_COL32(100, 100, 255, 100); // 半透明の青
+		drawList->AddRectFilled(pos, ImVec2(pos.x + size.x, pos.y + size.y), imColor, 4.0f);
+
+		// 枠線
+		drawList->AddRect(pos, ImVec2(pos.x + size.x, pos.y + size.y), IM_COL32(255, 255, 255, 200), 4.0f, 0, 2.0f);
+	}
+
+
+	/// ----------------------------------------------
+	/// ドラッグアンドドロップでテクスチャを設定
+	/// ----------------------------------------------
 	if (ImGui::BeginDragDropTarget()) {
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("AssetData")) {
 
 			/// ペイロードが存在する場合
 			if (payload->Data) {
-				const char* droppedPath = static_cast<const char*>(payload->Data);
-				std::string path = std::string(droppedPath);
+				AssetPayload* assetPayload = *static_cast<AssetPayload**>(payload->Data);
+				const std::string path = assetPayload->filePath;
 
 				/// テクスチャのパスが有効な形式か確認
-				if (path.find(".png") != std::string::npos
-					|| path.find(".jpg") != std::string::npos
-					|| path.find(".jpeg") != std::string::npos) {
-					_mr->SetTexturePath(path);
+				const AssetType type = GetAssetTypeFromExtension(Mathf::FileExtension(path));
+				if (type == AssetType::Texture) {
+					_mr->material_.SetBaseTextureGuid(assetPayload->guid);
 
 					Console::Log(std::format("Texture path set to: {}", path));
 				} else {
@@ -229,7 +275,9 @@ void COMP_DEBUG::MeshRendererDebug(MeshRenderer* _mr, AssetCollection* _grc) {
 	}
 
 
+	/// ----------------------------------------------
 	/// materialの設定
+	/// ----------------------------------------------
 	const size_t kMaxIndex = 3;
 	const std::string labels[kMaxIndex] = {
 		"Lighting: [ライティング]",
@@ -250,7 +298,7 @@ void COMP_DEBUG::MeshRendererDebug(MeshRenderer* _mr, AssetCollection* _grc) {
 	}
 
 	/// Material Debug
-	ImMathf::MaterialEdit("Material##MeshRenderer", &_mr->gpuMaterial_, _grc);
+	ImMathf::MaterialEdit("Material##MeshRenderer", &_mr->gpuMaterial_, _assetCollection);
 
 }
 
@@ -261,13 +309,13 @@ void from_json(const nlohmann::json& _j, MeshRenderer& _m) {
 	}
 
 	_m.SetMeshPath(_j.at("meshPath").get<std::string>());
-	_m.SetTexturePath(_j.at("texturePath").get<std::string>());
-	_m.SetColor(_j.at("color").get<Vector4>());
 
-	_m.cpuMaterial_ = _j.value("material", CPUMaterial{});
-	//if (_j.contains("postEffectFlags")) {
-	//	_m.SetPostEffectFlags(_j.at("postEffectFlags").get<uint32_t>());
-	//}
+
+	/// デバッグのためにvalueではなくcontainsでチェック
+	if (_j.contains("material")) {
+		_m.material_ = _j.at("material").get<Material>();
+	}
+
 }
 
 void to_json(nlohmann::json& _j, const MeshRenderer& _m) {
@@ -275,8 +323,6 @@ void to_json(nlohmann::json& _j, const MeshRenderer& _m) {
 		{ "type", "MeshRenderer" },
 		{ "enable", _m.enable },
 		{ "meshPath", _m.GetMeshPath() },
-		{ "texturePath", _m.GetTexturePath() },
-		{ "color", _m.GetColor() },
-		{ "material", _m.cpuMaterial_ }
+		{ "material", _m.material_ },
 	};
 }

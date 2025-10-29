@@ -6,7 +6,26 @@
 /// engine
 #include "Engine/Editor/EditCommand.h"
 
-bool ImMath::DragFloat3(const std::string& _label, Vector3* _pv, float _step, float _min, float _max) {
+bool ImMathf::DragFloat(const std::string& _label, float* _pv, float _step, float _min, float _max, const char* _format) {
+	static float startValue{};
+
+	bool edit = ImGui::DragFloat(_label.c_str(), _pv, _step, _min, _max, _format);
+	/// 操作を始めた
+	if (ImGui::IsItemActivated()) {
+		startValue = *_pv;
+	}
+
+	/// 操作を終えた
+	if (ImGui::IsItemDeactivatedAfterEdit()) {
+		float endValue = *_pv;
+		EditCommand::Execute<ImGuiCommand::FloatCommand>(_pv, startValue, endValue);
+	}
+
+	return edit;
+}
+
+
+bool ImMathf::DragFloat3(const std::string& _label, Vector3* _pv, float _step, float _min, float _max) {
 	static Vector3 startValue{};
 
 	bool edit = ImGui::DragFloat3(_label.c_str(), &_pv->x, _step, _min, _max);
@@ -25,7 +44,7 @@ bool ImMath::DragFloat3(const std::string& _label, Vector3* _pv, float _step, fl
 	return edit;
 }
 
-bool ImMath::DragFloat4(const std::string& _label, Vector4* _pv, float _step, float _min, float _max) {
+bool ImMathf::DragFloat4(const std::string& _label, Vector4* _pv, float _step, float _min, float _max) {
 	static Vector4 startValue{};
 
 	bool edit = ImGui::DragFloat3(_label.c_str(), &_pv->x, _step, _min, _max);
@@ -44,13 +63,13 @@ bool ImMath::DragFloat4(const std::string& _label, Vector4* _pv, float _step, fl
 	return edit;
 }
 
-bool ImMath::DragQuaternion(const std::string& _label, Quaternion* _pq, float _step, float _min, float _max) {
+bool ImMathf::DragQuaternion(const std::string& _label, Quaternion* _pq, float _step, float _min, float _max) {
 	static Quaternion startValue{};
 
 	/// Eulerに変換して表示
 	Vector3 euler = Quaternion::ToEuler(*_pq);
 	bool edit = ImGui::DragFloat3(_label.c_str(), &euler.x, _step, _min, _max);
-	if(edit) {
+	if (edit) {
 		*_pq = Quaternion::FromEuler(euler);
 	}
 
@@ -67,6 +86,35 @@ bool ImMath::DragQuaternion(const std::string& _label, Quaternion* _pq, float _s
 
 	return false;
 }
+
+
+/// ///////////////////////////////////////////////////
+/// ImGuiで操作したFloatのRedo,Undoコマンド
+/// ///////////////////////////////////////////////////
+ImGuiCommand::FloatCommand::FloatCommand(float* _v, float _old, float _new)
+	: pValue_(_v), oldValue_(_old), newValue_(_new) {
+}
+
+EDITOR_STATE ImGuiCommand::FloatCommand::Execute() {
+	if (pValue_) {
+		*pValue_ = newValue_;
+	} else {
+		Console::Log("ImGuiCommand::FloatCommand : Value is nullptr");
+		return EDITOR_STATE::EDITOR_STATE_FAILED;
+	}
+	return EDITOR_STATE::EDITOR_STATE_FINISH;
+}
+
+EDITOR_STATE ImGuiCommand::FloatCommand::Undo() {
+	if (pValue_) {
+		*pValue_ = oldValue_;
+	} else {
+		Console::Log("ImGuiCommand::FloatCommand : Value is nullptr");
+		return EDITOR_STATE::EDITOR_STATE_FAILED;
+	}
+	return EDITOR_STATE::EDITOR_STATE_FINISH;
+}
+
 
 /// ///////////////////////////////////////////////////
 /// ImGuiで操作したVector3のRedo,Undoコマンド
@@ -125,8 +173,9 @@ EDITOR_STATE ImGuiCommand::Vec4Command::Undo() {
 /// ///////////////////////////////////////////////////
 /// ImGuiで操作したQuaternionのRedo,Undoコマンド
 /// ///////////////////////////////////////////////////
-ImGuiCommand::QuaternionCommand::QuaternionCommand(Quaternion* _q, const Quaternion& _old, const Quaternion& _new) 
-	: pValue_(_q), oldValue_(_old), newValue_(_new) {}
+ImGuiCommand::QuaternionCommand::QuaternionCommand(Quaternion* _q, const Quaternion& _old, const Quaternion& _new)
+	: pValue_(_q), oldValue_(_old), newValue_(_new) {
+}
 
 EDITOR_STATE ImGuiCommand::QuaternionCommand::Execute() {
 	if (pValue_) {
@@ -147,3 +196,4 @@ EDITOR_STATE ImGuiCommand::QuaternionCommand::Undo() {
 	}
 	return EDITOR_STATE::EDITOR_STATE_FINISH;
 }
+

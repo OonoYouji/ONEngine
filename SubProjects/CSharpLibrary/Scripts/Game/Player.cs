@@ -77,18 +77,6 @@ public class Player : MonoBehavior {
 		t.position += velocity;
 		RotateFromMoveDirection(velocity.Normalized());
 
-
-		/// animationさせるかどうか
-		SkinMeshRenderer smr = entity.GetComponent<SkinMeshRenderer>();
-		if (smr != null) {
-			if (velocity.Length() > 0.01f) {
-				smr.isPlaying = true; // 動いているときはアニメーションを再生
-			} else {
-				smr.isPlaying = false; // 動いていないときはアニメーションを停止
-			}
-		} else {
-			Debug.Log("SkinMeshRenderer not found on entity: " + entity.name);
-		}
 	}
 
 
@@ -107,7 +95,14 @@ public class Player : MonoBehavior {
 	}
 
 
-	[SerializeField] Vector3 lastPlayerPosition = new Vector3();
+	//[SerializeField] Vector3 lastPlayerPosition = new Vector3();
+	[SerializeField] Vector3 direction = new Vector3();
+	[SerializeField] Vector3 cRot = new Vector3();
+
+	/// カメラの角度制限(度数法)
+	[SerializeField] float maxCameraRotationAngleX = 45f; // カメラのX軸回転の最大角度
+	[SerializeField] float minCameraRotationAngleX = 0f;  // カメラのY軸回転の最大角度
+
 	void CameraFollow() {
 		if (camera == null) {
 			return; // 子エンティティがない場合は何もしない
@@ -117,26 +112,34 @@ public class Player : MonoBehavior {
 		Vector2 gamepadAxis = Input.GamepadThumb(GamepadAxis.RightThumb);
 
 		/// 回転角 θ φ
-		sphericalCoord.x += gamepadAxis.y * 0.75f * Time.deltaTime; // X軸の回転
+		sphericalCoord.x -= gamepadAxis.y * 0.75f * Time.deltaTime; // X軸の回転
+		/// x軸の制限
+		sphericalCoord.x = Mathf.Clamp(sphericalCoord.x, Mathf.Deg2Rad * minCameraRotationAngleX, Mathf.Deg2Rad * maxCameraRotationAngleX);
+
 		sphericalCoord.y += gamepadAxis.x * Time.deltaTime; // Y軸の回転
 
 		/// 距離 r
-		float distance = sphericalCoord.z; // カメラとプレイヤーの距離
+		float distance = sphericalCoord.z;
 
 		/// カメラの位置を計算
 		Transform cT = camera.transform;
 		Vector3 cPos = cT.position;
-		//Vector3 cRot = cT.rotate.ToEuler();
 
-		cPos.x = distance * Mathf.Sin(sphericalCoord.y) * Mathf.Cos(sphericalCoord.x);
-		cPos.y = distance * Mathf.Sin(sphericalCoord.x);
-		cPos.z = distance * Mathf.Cos(sphericalCoord.y) * Mathf.Cos(sphericalCoord.x);
+		cPos.x = transform.position.x + distance * Mathf.Sin(sphericalCoord.y) * Mathf.Cos(sphericalCoord.x);
+		cPos.y = transform.position.y + distance * Mathf.Sin(sphericalCoord.x);
+		cPos.z = transform.position.z + distance * Mathf.Cos(sphericalCoord.y) * Mathf.Cos(sphericalCoord.x);
 
-		//cRot = LookAt(transform.position - cPos); // カメラの向きをプレイヤーに向ける
+		/// カメラの向きをプレイヤーに向ける
+		direction = transform.position - cPos; // プレイヤーの位置からカメラの位置へのベクトル
+		cRot = LookAt(direction);
 
-		cT.position = this.transform.position + cameraOffset; // プレイヤーの位置にオフセットを加える
-		lastPlayerPosition = this.transform.position;
-		//cT.rotate = Quaternion.FromEuler(cRot);
+		/// 制限(カメラが地面の中に埋まらないようにする)
+		cRot.x = Mathf.Clamp(cRot.x, minCameraRotationAngleX, maxCameraRotationAngleX);
+
+
+		// カメラの位置と回転を設定
+		cT.position = cPos;
+		cT.rotate = Quaternion.FromEuler(cRot);
 	}
 
 
@@ -166,7 +169,7 @@ public class Player : MonoBehavior {
 	/// 進行方向に回転する
 	private void RotateFromMoveDirection(Vector3 _dir) {
 		float rotateY = Mathf.Atan2(_dir.z, _dir.x);
-		Vector3 euler = transform.rotate.ToEuler();
+		Vector3 euler = Vector3.zero;
 		euler.y = -rotateY + Mathf.PI / 2.0f; // Z軸が前方向なので90度ずらす
 		transform.rotate = Quaternion.FromEuler(euler);
 	}

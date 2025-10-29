@@ -16,7 +16,7 @@ public:
 	/// public : methods   
 	/// ===================================================
 
-	ImGuiHierarchyWindow(const std::string& _imGuiWindowName, class ECSGroup*, class EditorManager*, class SceneManager*, class ImGuiInspectorWindow*);
+	ImGuiHierarchyWindow(const std::string& _imGuiWindowName, class ECSGroup*, class EditorManager*, class SceneManager*);
 	~ImGuiHierarchyWindow() override = default;
 
 	void ShowImGui() override;
@@ -57,6 +57,16 @@ protected:
 	void DrawDialog();
 	void DrawSceneSaveDialog();
 
+
+	/// ----- test methods ----- ///
+
+	///
+	bool DrawEntity(class GameEntity* _entity);
+
+	bool IsDescendant(class GameEntity* _ancestor, class GameEntity* _descendant);
+
+	void ShowInvalidParentPopup();
+
 protected:
 	/// ===================================================
 	/// protected : objects
@@ -66,7 +76,6 @@ protected:
 	class ECSGroup*             pECSGroup_        = nullptr;
 	class EditorManager*        pEditorManager_   = nullptr;
 	class SceneManager*         pSceneManager_    = nullptr;
-	class ImGuiInspectorWindow* pInspectorWindow_ = nullptr;
 
 
 	std::string       imGuiWindowName_ = "Hierarchy";
@@ -84,6 +93,11 @@ protected:
 	std::string newName_ = "";
 	GameEntity* renameEntity_;
 
+
+
+	/// ----- test objects ----- ///
+	bool 	showInvalidParentPopup_ = false;
+
 };
 
 
@@ -97,7 +111,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	ImGuiNormalHierarchyWindow(const std::string& _imGuiWindowName, class EntityComponentSystem* _ecs, class EditorManager* _editorManager, class SceneManager* _sceneManager, class ImGuiInspectorWindow* _imguiInspectorWindow);
+	ImGuiNormalHierarchyWindow(const std::string& _imGuiWindowName, class EntityComponentSystem* _ecs, class EditorManager* _editorManager, class SceneManager* _sceneManager);
 	~ImGuiNormalHierarchyWindow() override = default;
 	
 	void ShowImGui() override;
