@@ -52,11 +52,8 @@ private:
 	/// ===================================================
 
 	std::string meshPath_;
-	//std::string texturePath_;
 
 	GPUMaterial gpuMaterial_;
-	CPUMaterial cpuMaterial_;
-
 	Material material_;
 
 public:
@@ -87,7 +84,6 @@ public:
 	const Vector4& GetColor() const;
 
 	const GPUMaterial& GetMaterial() const;
-	const CPUMaterial& GetCPUMaterial() const;
 
 	/// @brief ポストエフェクトのフラグを取得
 	/// @return ポストエフェクトのフラグ

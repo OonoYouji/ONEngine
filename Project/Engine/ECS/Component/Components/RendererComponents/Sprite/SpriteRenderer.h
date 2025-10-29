@@ -9,10 +9,14 @@
 /// engine
 #include "../../Interface/IComponent.h"
 #include "Engine/Graphics/Buffer/Data/GPUMaterial.h"
+#include "Engine/Asset/Guid/Guid.h"
+#include "Engine/Asset/Assets/Mateiral/Material.h"
 
 
+/// ----- 前方宣言 ----- ///
 class AssetCollection;
 class SpriteRenderer;
+
 namespace COMP_DEBUG {
 	void SpriteDebug(SpriteRenderer* _sr, AssetCollection* _assetCollection);
 }
@@ -45,6 +49,7 @@ private:
 	/// ===================================================
 
 	GPUMaterial gpuMaterial_;
+	Material material_;
 
 public:
 	/// ===================================================

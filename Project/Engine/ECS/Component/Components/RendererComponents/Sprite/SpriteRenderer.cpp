@@ -6,6 +6,7 @@
 /// engine
 #include "Engine/Core/Utility/Tools/Log.h"
 #include "Engine/Core/ImGui/Math/ImGuiMath.h"
+#include "Engine/Core/ImGui/Math/AssetDebugger.h"
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentJsonConverter.h"
 #include "Engine/Asset/Collection/AssetCollection.h"
 
@@ -19,10 +20,11 @@ void COMP_DEBUG::SpriteDebug(SpriteRenderer* _sr, AssetCollection* _assetCollect
 		return;
 	}
 
-	float indentValue = 1.2f;
+	float indentValue = 1.8f;
 	ImGui::Indent(indentValue);
-	/// colorの変更
-	if (ImMathf::MaterialEdit("material", &_sr->gpuMaterial_, _assetCollection)) {}
+
+	ImMathf::MaterialEdit("Material", &_sr->material_, _assetCollection, false);
+
 	ImGui::Unindent(indentValue);
 }
 
@@ -31,13 +33,13 @@ void to_json(nlohmann::json& _j, const SpriteRenderer& _sr) {
 	_j = nlohmann::json{
 		{ "type", "SpriteRenderer" },
 		{ "enable", _sr.enable },
-		{ "material", _sr.gpuMaterial_ }
+		{ "material", _sr.material_ }
 	};
 }
 
 void from_json(const nlohmann::json& _j, SpriteRenderer& _sr) {
 	_sr.enable = _j.value("enable", static_cast<int>(true));
-	_sr.gpuMaterial_ = _j.value("material", GPUMaterial{});
+	_sr.material_ = _j.value("material", Material{});
 }
 
 

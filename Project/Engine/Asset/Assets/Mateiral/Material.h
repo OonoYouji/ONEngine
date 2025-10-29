@@ -7,6 +7,7 @@
 #include "../Asset.h"
 #include "Engine/Asset/Guid/Guid.h"
 #include "Engine/Core/Utility/Utility.h"
+#include "Engine/Graphics/Buffer/Data/UVTransform.h"
 
 /// ShowGuiMaterialように前方宣言
 class Material;
@@ -68,6 +69,9 @@ public:
 	/// @return 法線テクスチャのGuid
 	const Guid& GetNormalTextureGuid() const;
 
+	/// @brief normal textureのGuidを設定
+	/// @param _guid normal textureのGuid
+	void SetNormalTextureGuid(const Guid& _guid);
 
 private:
 	/// ==================================================
@@ -85,5 +89,6 @@ public:
 
 	Vector4             baseColor;
 	uint32_t            postEffectFlags;
+	UVTransform         uvTransform;
 };
 

@@ -131,3 +131,12 @@ bool Material::HasNormalTexture() const {
 const Guid& Material::GetNormalTextureGuid() const {
 	return normalTextureGuid_.value();
 }
+
+void Material::SetNormalTextureGuid(const Guid& _guid) {
+	if (normalTextureGuid_.has_value()) {
+		normalTextureGuid_.value() = _guid;
+	} else {
+		normalTextureGuid_ = std::make_optional<Guid>();
+		normalTextureGuid_ = _guid;
+	}
+}

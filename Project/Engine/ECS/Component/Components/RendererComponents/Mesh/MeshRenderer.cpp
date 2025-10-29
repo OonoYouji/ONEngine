@@ -13,11 +13,6 @@
 
 MeshRenderer::MeshRenderer() {
 	SetMeshPath("./Packages/Models/primitive/cube.obj");
-	//SetTexturePath("./Packages/Textures/white.png");
-	cpuMaterial_.baseColor = Vector4::kWhite;
-	cpuMaterial_.postEffectFlags = PostEffectFlags_Lighting;
-	cpuMaterial_.SetOwnerEntity(GetOwner());
-
 	material_.baseColor = Vector4::kWhite;
 	material_.postEffectFlags = PostEffectFlags_Lighting;
 }
@@ -25,25 +20,6 @@ MeshRenderer::MeshRenderer() {
 MeshRenderer::~MeshRenderer() = default;
 
 void MeshRenderer::SetupRenderData(AssetCollection* _assetCollection) {
-	/// OwnerEntityを cpuMaterial_に設定
-	cpuMaterial_.SetOwnerEntity(GetOwner());
-
-
-	/// 有効なGuidであれば
-	if (cpuMaterial_.baseTextureIdPair.first.CheckValid()) {
-		/// cpuMaterial_のtexture guidから gpuMaterial_のtexture idを設定
-		cpuMaterial_.baseTextureIdPair.second = _assetCollection->GetTextureIndexFromGuid(cpuMaterial_.baseTextureIdPair.first);
-	}
-
-	/// 有効なGuidであれば
-	if (cpuMaterial_.normalTextureIdPair.first.CheckValid()) {
-		/// cpuMaterial_のtexture guidから gpuMaterial_のtexture idを設定
-		cpuMaterial_.normalTextureIdPair.second = _assetCollection->GetTextureIndexFromGuid(cpuMaterial_.normalTextureIdPair.first);
-	}
-
-
-	gpuMaterial_ = cpuMaterial_.ToGPUMaterial();
-
 	gpuMaterial_.postEffectFlags = material_.postEffectFlags;
 	gpuMaterial_.baseColor = material_.baseColor;
 	gpuMaterial_.entityId = GetOwner() ? GetOwner()->GetId() : 0;
@@ -53,7 +29,6 @@ void MeshRenderer::SetupRenderData(AssetCollection* _assetCollection) {
 	} else {
 		gpuMaterial_.baseTextureId = 0;
 	}
-
 }
 
 void MeshRenderer::SetMeshPath(const std::string& _path) {
@@ -87,10 +62,6 @@ const Vector4& MeshRenderer::GetColor() const {
 
 const GPUMaterial& MeshRenderer::GetMaterial() const {
 	return gpuMaterial_;
-}
-
-const CPUMaterial& MeshRenderer::GetCPUMaterial() const {
-	return cpuMaterial_;
 }
 
 uint32_t MeshRenderer::GetPostEffectFlags() const {
