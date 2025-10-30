@@ -8,17 +8,40 @@
 #include "Engine/Graphics/Buffer/ConstantBuffer.h"
 #include "Engine/Graphics/Buffer/Data/ViewProjection.h"
 
+
+/// ----- 前方宣言 ----- ///
+class CameraComponent;
+
+
 /// @brief カメラの種類
 enum class CameraType {
 	Type3D, ///< 3Dカメラ
 	Type2D, ///< 2Dカメラ
 };
 
+
+
+/// @brief Componentのデバッグ関数
+namespace COMP_DEBUG {
+	void CameraDebug(CameraComponent* _camera);
+}
+
+/// Json変換
+void from_json(const nlohmann::json& _j, CameraComponent& _c);
+void to_json(nlohmann::json& _j, const CameraComponent& _c);
+
+
 /// ///////////////////////////////////////////////////
 /// カメラのコンポーネント
 /// ///////////////////////////////////////////////////
 class CameraComponent : public IComponent {
+	/// ----- firend class ----- ///
 	friend class CameraUpdateSystem;
+
+	/// ----- friend function ----- ///
+	friend void COMP_DEBUG::CameraDebug(CameraComponent* _camera);
+	friend void from_json(const nlohmann::json& _j, CameraComponent& _c);
+	friend void to_json(nlohmann::json& _j, const CameraComponent& _c);
 public:
 	/// ===================================================
 	/// public : methods
@@ -56,7 +79,7 @@ private:
 
 	int cameraType_;
 	bool isMainCameraRequest_;
-
+	bool isDrawFrustum_;
 
 public:
 	/// ====================================================
@@ -111,12 +134,3 @@ namespace CameraMath {
 
 }
 
-
-/// Json変換
-void from_json(const nlohmann::json& _j, CameraComponent& _c);
-void to_json(nlohmann::json& _j, const CameraComponent& _c);
-
-/// @brief Componentのデバッグ関数
-namespace COMP_DEBUG {
-	void CameraDebug(CameraComponent* _camera);
-}

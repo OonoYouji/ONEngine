@@ -99,9 +99,119 @@ namespace {
 	}
 
 
+}	/// namespace
+
+
+void COMP_DEBUG::CameraDebug(CameraComponent* _camera) {
+	if (!_camera) {
+		return; // カメラがnullptrの場合は何もしない
+	}
+
+	float fovY = _camera->GetFovY();
+	float nearClip = _camera->GetNearClip();
+	float farClip = _camera->GetFarClip();
+
+	/// param debug
+	if (ImGui::DragFloat("fovY", &fovY, 0.01f, 0.1f, 3.14f)) {
+		_camera->SetFovY(fovY);
+	}
+
+	if (ImGui::DragFloat("near clip", &nearClip, 0.01f, 0.01f, 100.0f)) {
+		_camera->SetNearClip(nearClip);
+	}
+
+	if (ImGui::DragFloat("far clip", &farClip, 0.01f, 100.0f, 10000.0f)) {
+		_camera->SetFarClip(farClip);
+	}
+
+	ImGui::Spacing();
+
+	/// type debug
+	int cameraType = _camera->GetCameraType();
+	if (ImGui::Combo("camera type", &cameraType, "3D\0 2D\0")) {
+		_camera->SetCameraType(cameraType);
+	}
+
+	ImGui::Spacing();
+
+	if (ImGui::Button("main camera setting")) {
+		_camera->SetIsMainCameraRequest(true);
+	}
+
+
+	/// frustum debug
+	ImGui::Checkbox("Draw Frustum", &_camera->isDrawFrustum_);
+
+	if (ImGui::CollapsingHeader("Frustum Debug")) {
+		Frustum frustum = CreateFrustumFromMatrix(_camera->GetViewProjection().matVP);
+		ImGuiShowFrustum(frustum);
+	}
+
+	if (ImGui::CollapsingHeader("Matrix Debug")) {
+
+		/// 行列のデバッグ表示
+		const ViewProjection& vp = _camera->GetViewProjection();
+		ImGui::Text("View Matrix:");
+		for (int i = 0; i < 4; ++i) {
+			ImGui::Text("%.3f %.3f %.3f %.3f", vp.matView.m[i][0], vp.matView.m[i][1], vp.matView.m[i][2], vp.matView.m[i][3]);
+		}
+
+		/// View行列をClipboardにコピーする
+		if (ImGui::Button("Copy View Matrix to Clipboard")) {
+			std::string viewMatrixStr;
+			for (int i = 0; i < 4; ++i) {
+				viewMatrixStr += std::format("{:.6f} {:.6f} {:.6f} {:.6f}\n", vp.matView.m[i][0], vp.matView.m[i][1], vp.matView.m[i][2], vp.matView.m[i][3]);
+			}
+			ImGui::SetClipboardText(viewMatrixStr.c_str());
+		}
+
+
+		ImGui::Text("Projection Matrix:");
+		for (int i = 0; i < 4; ++i) {
+			ImGui::Text("%.3f %.3f %.3f %.3f", vp.matProjection.m[i][0], vp.matProjection.m[i][1], vp.matProjection.m[i][2], vp.matProjection.m[i][3]);
+		}
+
+		/// Projection行列をClipboardにコピーする
+		if (ImGui::Button("Copy Projection Matrix to Clipboard")) {
+			std::string projectionMatrixStr;
+			for (int i = 0; i < 4; ++i) {
+				projectionMatrixStr += std::format("{:.6f} {:.6f} {:.6f} {:.6f}\n", vp.matProjection.m[i][0], vp.matProjection.m[i][1], vp.matProjection.m[i][2], vp.matProjection.m[i][3]);
+			}
+			ImGui::SetClipboardText(projectionMatrixStr.c_str());
+		}
+	}
+
+}
+
+void from_json(const nlohmann::json& _j, CameraComponent& _c) {
+	_c.SetIsMainCameraRequest(_j.value("isMainCamera", true));
+	_c.SetFovY(_j.value("fovY", 0.7f));
+	_c.SetNearClip(_j.value("nearClip", 0.1f));
+	_c.SetFarClip(_j.value("farClip", 1000.0f));
+	_c.SetCameraType(
+		_j.value("cameraType", static_cast<int>(CameraType::Type3D))
+	);
+	_c.isDrawFrustum_ = _j.value("isDrawFrustum", false);
+}
+
+void to_json(nlohmann::json& _j, const CameraComponent& _c) {
+	_j = nlohmann::json{
+		{ "type", "CameraComponent" },
+		{ "enable", _c.enable },
+		{ "fovY", _c.GetFovY() },
+		{ "nearClip", _c.GetNearClip() },
+		{ "farClip", _c.GetFarClip() },
+		{ "cameraType", _c.GetCameraType() },
+		{ "isMainCamera", _c.GetIsMainCameraRequest() },
+		{ "isDrawFrustum", _c.isDrawFrustum_ }
+	};
 }
 
 
+
+/// ///////////////////////////////////////////////////
+/// カメラのコンポーネント
+/// ///////////////////////////////////////////////////
 CameraComponent::CameraComponent() {
 	/// デフォルト値を設定
 	SetFovY(0.7f);
@@ -109,6 +219,7 @@ CameraComponent::CameraComponent() {
 	SetFarClip(1000.0f);
 	SetIsMainCameraRequest(true);
 	SetCameraType(static_cast<int>(CameraType::Type3D));
+	isDrawFrustum_ = false;
 }
 CameraComponent::~CameraComponent() {}
 
@@ -238,104 +349,3 @@ const Matrix4x4& CameraComponent::GetProjectionMatrix() const {
 	return matProjection_;
 }
 
-
-
-void from_json(const nlohmann::json& _j, CameraComponent& _c) {
-	_c.SetIsMainCameraRequest(_j.value("isMainCamera", true));
-	_c.SetFovY(_j.value("fovY", 0.7f));
-	_c.SetNearClip(_j.value("nearClip", 0.1f));
-	_c.SetFarClip(_j.value("farClip", 1000.0f));
-	_c.SetCameraType(
-		_j.value("cameraType", static_cast<int>(CameraType::Type3D))
-	);
-}
-
-void to_json(nlohmann::json& _j, const CameraComponent& _c) {
-	_j = nlohmann::json{
-		{ "type", "CameraComponent" },
-		{ "enable", _c.enable },
-		{ "fovY", _c.GetFovY() },
-		{ "nearClip", _c.GetNearClip() },
-		{ "farClip", _c.GetFarClip() },
-		{ "cameraType", _c.GetCameraType() },
-		{ "isMainCamera", _c.GetIsMainCameraRequest() }
-	};
-}
-
-void COMP_DEBUG::CameraDebug(CameraComponent* _camera) {
-	if (!_camera) {
-		return; // カメラがnullptrの場合は何もしない
-	}
-
-	float fovY = _camera->GetFovY();
-	float nearClip = _camera->GetNearClip();
-	float farClip = _camera->GetFarClip();
-
-	/// param debug
-	if (ImGui::DragFloat("fovY", &fovY, 0.01f, 0.1f, 3.14f)) {
-		_camera->SetFovY(fovY);
-	}
-
-	if (ImGui::DragFloat("near clip", &nearClip, 0.01f, 0.01f, 100.0f)) {
-		_camera->SetNearClip(nearClip);
-	}
-
-	if (ImGui::DragFloat("far clip", &farClip, 0.01f, 100.0f, 10000.0f)) {
-		_camera->SetFarClip(farClip);
-	}
-
-	ImGui::Spacing();
-
-	/// type debug
-	int cameraType = _camera->GetCameraType();
-	if (ImGui::Combo("camera type", &cameraType, "3D\0 2D\0")) {
-		_camera->SetCameraType(cameraType);
-	}
-
-	ImGui::Spacing();
-
-	if (ImGui::Button("main camera setting")) {
-		_camera->SetIsMainCameraRequest(true);
-	}
-
-
-	if (ImGui::CollapsingHeader("Frustum Debug")) {
-		Frustum frustum = CreateFrustumFromMatrix(_camera->GetViewProjection().matVP);
-		ImGuiShowFrustum(frustum);
-	}
-
-	if (ImGui::CollapsingHeader("Matrix Debug")) {
-
-		/// 行列のデバッグ表示
-		const ViewProjection& vp = _camera->GetViewProjection();
-		ImGui::Text("View Matrix:");
-		for (int i = 0; i < 4; ++i) {
-			ImGui::Text("%.3f %.3f %.3f %.3f", vp.matView.m[i][0], vp.matView.m[i][1], vp.matView.m[i][2], vp.matView.m[i][3]);
-		}
-
-		/// View行列をClipboardにコピーする
-		if (ImGui::Button("Copy View Matrix to Clipboard")) {
-			std::string viewMatrixStr;
-			for (int i = 0; i < 4; ++i) {
-				viewMatrixStr += std::format("{:.6f} {:.6f} {:.6f} {:.6f}\n", vp.matView.m[i][0], vp.matView.m[i][1], vp.matView.m[i][2], vp.matView.m[i][3]);
-			}
-			ImGui::SetClipboardText(viewMatrixStr.c_str());
-		}
-
-
-		ImGui::Text("Projection Matrix:");
-		for (int i = 0; i < 4; ++i) {
-			ImGui::Text("%.3f %.3f %.3f %.3f", vp.matProjection.m[i][0], vp.matProjection.m[i][1], vp.matProjection.m[i][2], vp.matProjection.m[i][3]);
-		}
-
-		/// Projection行列をClipboardにコピーする
-		if (ImGui::Button("Copy Projection Matrix to Clipboard")) {
-			std::string projectionMatrixStr;
-			for (int i = 0; i < 4; ++i) {
-				projectionMatrixStr += std::format("{:.6f} {:.6f} {:.6f} {:.6f}\n", vp.matProjection.m[i][0], vp.matProjection.m[i][1], vp.matProjection.m[i][2], vp.matProjection.m[i][3]);
-			}
-			ImGui::SetClipboardText(projectionMatrixStr.c_str());
-		}
-	}
-
-}
