@@ -54,6 +54,9 @@ SpriteRenderer::SpriteRenderer() {
 	gpuMaterial_.baseTextureId = 0;
 	gpuMaterial_.uvTransform = UVTransform();
 	gpuMaterial_.postEffectFlags = 0;
+
+	material_.baseColor = Vector4::kWhite;
+	material_.postEffectFlags = 0;
 }
 SpriteRenderer::~SpriteRenderer() {}
 

@@ -47,7 +47,7 @@ bool ImMathf::DragFloat3(const std::string& _label, Vector3* _pv, float _step, f
 bool ImMathf::DragFloat4(const std::string& _label, Vector4* _pv, float _step, float _min, float _max) {
 	static Vector4 startValue{};
 
-	bool edit = ImGui::DragFloat3(_label.c_str(), &_pv->x, _step, _min, _max);
+	bool edit = ImGui::DragFloat4(_label.c_str(), &_pv->x, _step, _min, _max);
 
 	/// 操作を始めた
 	if (ImGui::IsItemActivated()) {

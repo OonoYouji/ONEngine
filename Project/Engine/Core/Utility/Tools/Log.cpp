@@ -87,9 +87,11 @@ void Console::Initialize() {
 	/// 非同期スレッドプール
 	spdlog::init_thread_pool(8192, 1);
 
-	/// ログ出力先
+	/// ログ出力先(日付入り)
+	const std::string logDir = "../Generated/Log/";
+	const std::string fileName = "engine" + GetCurrentDateTimeString() + ".log";
 	auto sink = std::make_shared<spdlog::sinks::rotating_file_sink_mt>(
-		"../Generated/Log/engine.log", 10 * 1024 * 1024, 3);
+		logDir + fileName, 10 * 1024 * 1024, 3);
 
 	auto logger = std::make_shared<spdlog::async_logger>(
 		"engine", sink,

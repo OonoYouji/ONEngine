@@ -467,13 +467,6 @@ void ImGuiProjectWindow::HandleFileModified(const std::filesystem::path& _path) 
 }
 
 void ImGuiProjectWindow::UpdateDirectoryCache(const std::filesystem::path& dir) {
-	// 無視するフォルダ名リスト
-	static const std::unordered_set<std::wstring> ignoredDirs = {
-		L".vs",
-		L"Engine",
-		L"Externals",
-	};
-
 	if (!std::filesystem::exists(dir)) {
 		directoryCache_.erase(dir.string());
 		return;
@@ -487,12 +480,6 @@ void ImGuiProjectWindow::UpdateDirectoryCache(const std::filesystem::path& dir) 
 
 		const std::filesystem::path& subdir = entry.path();
 		const std::wstring folderName = subdir.filename().wstring();
-
-		/// 無視対象ならスキップ
-		if (ignoredDirs.contains(folderName)) {
-			continue;
-		}
-
 
 		FileItem item;
 		item.path = subdir;

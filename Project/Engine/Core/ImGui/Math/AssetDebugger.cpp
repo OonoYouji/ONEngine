@@ -115,9 +115,7 @@ bool ImMathf::MaterialEdit(const std::string& _label, Material* _material, Asset
 	/// ---------------------------------------------------
 	/// uvTransform
 	/// ---------------------------------------------------
-	if (ImGui::CollapsingHeader("UV Transform")) {
-		edit |= ImMathf::UVTransformEdit("UV Transform", &_material->uvTransform);
-	}
+	edit |= ImMathf::UVTransformEdit("UV Transform", &_material->uvTransform);
 
 
 	/// ---------------------------------------------------
