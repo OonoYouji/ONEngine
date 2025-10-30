@@ -3,6 +3,9 @@ using System;
 using System.Runtime.InteropServices;
 using System.IO;
 
+/// <summary>
+/// ワールドを探索するプレイヤーのクラス
+/// </summary>
 public class Player : MonoBehavior {
 
 	float height = 0.0f;
@@ -12,12 +15,22 @@ public class Player : MonoBehavior {
 	[SerializeField] float moveSpeed = 16f; // 移動速度
 	[SerializeField] float dushSpeed = 32f; // ダッシュ速度
 
-	[SerializeField] Vector3 sphericalCoord = new Vector3(0.0f, 0f, -8f); // カメラのオフセット
-	[SerializeField] Vector3 cameraOffset = new Vector3(0.0f, 4.0f, -11f); // カメラのオフセット（球面座標）
+
+	/// ---------------------------------------------------
+	/// カメラの変数
+	/// ---------------------------------------------------
+
+	[SerializeField] Vector3 sphericalCoord = new Vector3(0.0f, 0f, -8f);
+	[SerializeField] Vector3 cameraOffset = new Vector3(0.0f, 4.0f, -11f);
+	[SerializeField] Vector3 lookAtOffset = new Vector3(0.0f, 4.0f, 0f);
 	Entity camera;
 
-	public override void Awake() {
-	}
+	/// カメラの角度制限(度数法)
+	[SerializeField] float maxCameraRotationAngleX = 45f; // カメラのX軸回転の最大角度
+	[SerializeField] float minCameraRotationAngleX = 0f;  // カメラのY軸回転の最大角度
+
+	Matrix4x4 matCameraRotateY;
+
 
 	public override void Initialize() {
 		camera = ecsGroup.FindEntity("Camera"); // カメラエンティティを取得
@@ -25,11 +38,10 @@ public class Player : MonoBehavior {
 			Debug.LogError("Camera entity not found. Please ensure the camera is initialized before the player.");
 			return;
 		}
-
-		//camera.parent = this.entity;
 	}
 
 	public override void Update() {
+		/// ----- プレイヤーの移動 ----- ///
 
 		Move();
 		//Jump();
@@ -59,6 +71,7 @@ public class Player : MonoBehavior {
 			isDushing = !isDushing; // ダッシュのトグル
 		}
 
+
 		/// 移動速度
 		float speed = isDushing ? dushSpeed : moveSpeed;
 
@@ -69,8 +82,8 @@ public class Player : MonoBehavior {
 
 			Transform cT = camera.transform;
 			if (cT != null) {
-				Matrix4x4 matCameraRotate = Matrix4x4.RotateY(cT.rotate.y);
-				velocity = Matrix4x4.Transform(velocity, matCameraRotate);
+				/// velocityをカメラの向きに合わせる
+				velocity = Matrix4x4.Transform(velocity, matCameraRotateY);
 			}
 		}
 
@@ -95,47 +108,39 @@ public class Player : MonoBehavior {
 	}
 
 
-	//[SerializeField] Vector3 lastPlayerPosition = new Vector3();
-	[SerializeField] Vector3 direction = new Vector3();
-	[SerializeField] Vector3 cRot = new Vector3();
-
-	/// カメラの角度制限(度数法)
-	[SerializeField] float maxCameraRotationAngleX = 45f; // カメラのX軸回転の最大角度
-	[SerializeField] float minCameraRotationAngleX = 0f;  // カメラのY軸回転の最大角度
 
 	void CameraFollow() {
 		if (camera == null) {
-			return; // 子エンティティがない場合は何もしない
+			return;
 		}
 
-		/// 入力
 		Vector2 gamepadAxis = Input.GamepadThumb(GamepadAxis.RightThumb);
+		/// 軸反転を行うことでカメラの上下の回転を自分の好みに合わせる
+		gamepadAxis.y *= -1f;
+
 
 		/// 回転角 θ φ
 		sphericalCoord.x -= gamepadAxis.y * 0.75f * Time.deltaTime; // X軸の回転
 		/// x軸の制限
 		sphericalCoord.x = Mathf.Clamp(sphericalCoord.x, Mathf.Deg2Rad * minCameraRotationAngleX, Mathf.Deg2Rad * maxCameraRotationAngleX);
-
 		sphericalCoord.y += gamepadAxis.x * Time.deltaTime; // Y軸の回転
-
-		/// 距離 r
-		float distance = sphericalCoord.z;
 
 		/// カメラの位置を計算
 		Transform cT = camera.transform;
 		Vector3 cPos = cT.position;
 
-		cPos.x = transform.position.x + distance * Mathf.Sin(sphericalCoord.y) * Mathf.Cos(sphericalCoord.x);
-		cPos.y = transform.position.y + distance * Mathf.Sin(sphericalCoord.x);
-		cPos.z = transform.position.z + distance * Mathf.Cos(sphericalCoord.y) * Mathf.Cos(sphericalCoord.x);
+		/// カメラの位置を計算する
+		matCameraRotateY = Matrix4x4.RotateY(sphericalCoord.y);
+		Matrix4x4 cameraRotation = Matrix4x4.RotateX(sphericalCoord.x) * matCameraRotateY;
+		Vector3 offset = Matrix4x4.Transform(cameraOffset, cameraRotation);
+		cPos = transform.position + lookAtOffset + offset;
 
 		/// カメラの向きをプレイヤーに向ける
-		direction = transform.position - cPos; // プレイヤーの位置からカメラの位置へのベクトル
-		cRot = LookAt(direction);
+		Vector3 direction = transform.position + lookAtOffset - cPos; // プレイヤーの位置からカメラの位置へのベクトル
+		Vector3 cRot = LookAt(direction);
 
 		/// 制限(カメラが地面の中に埋まらないようにする)
 		cRot.x = Mathf.Clamp(cRot.x, minCameraRotationAngleX, maxCameraRotationAngleX);
-
 
 		// カメラの位置と回転を設定
 		cT.position = cPos;

@@ -147,8 +147,18 @@ void FileWatcher::WatchDirectory(std::shared_ptr<WatchTarget> _ctx) {
 			break;
 		}
 
+		/// サイズ保障をすることで破損したメモリを参照しても大丈夫なようにする
+		if (bytesTransferred < sizeof(FILE_NOTIFY_INFORMATION)) {
+			Console::LogError("Invalid data size received.");
+			break;
+		}
+
 		FILE_NOTIFY_INFORMATION* fni = reinterpret_cast<FILE_NOTIFY_INFORMATION*>(buffer);
 		while (true) {
+			if (reinterpret_cast<BYTE*>(fni) + sizeof(FILE_NOTIFY_INFORMATION) > buffer + bytesTransferred) {
+				Console::LogError("Invalid FILE_NOTIFY_INFORMATION structure.");
+				break;
+			}
 
 			/// Eventごとに処理
 			FileEvent ev{};
