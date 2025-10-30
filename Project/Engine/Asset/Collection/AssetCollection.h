@@ -48,10 +48,6 @@ public:
 	/// アンロード
 	void UnloadResources(const std::vector<std::string>& _filepaths);
 
-	/// ホットリロード
-	void HotReloadAll();
-	void HotReload(const std::string& _filepath);
-
 	/// @brief アセットの追加
 	/// @tparam T 追加するアセットの型
 	/// @param _filepath アセットへのファイルパス
@@ -78,13 +74,6 @@ public:
 	/// リソースパスの取得
 	std::vector<std::string> GetResourceFilePaths(const std::string& _directoryPath) const;
 
-private:
-	/// ==================================================
-	/// private : methods
-	/// ==================================================
-	
-	/// リソースのタイプを登録
-	void RegisterResourceType();
 
 private:
 	/// ===================================================
@@ -98,9 +87,6 @@ private:
 	std::unique_ptr<AssetContainer<Texture>>   textureContainer_;
 	std::unique_ptr<AssetContainer<AudioClip>> audioClipContainer_;
 	std::unique_ptr<AssetContainer<Material>>  materialContainer_;
-
-	/// リソースを読む条件
-	std::unordered_map<std::string, AssetType> resourceTypes_;
 
 public:
 	/// ===================================================

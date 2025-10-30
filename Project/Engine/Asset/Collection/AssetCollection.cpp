@@ -22,8 +22,6 @@ void AssetCollection::Initialize(DxManager* _dxm) {
 	audioClipContainer_ = std::make_unique<AssetContainer<AudioClip>>(static_cast<size_t>(MAX_AUDIOCLIP_COUNT));
 	materialContainer_ = std::make_unique<AssetContainer<Material>>(static_cast<size_t>(MAX_MATERIAL_COUNT));
 
-	RegisterResourceType();
-
 	/// Packages内のファイルがすべて読み込む
 	LoadResources(GetResourceFilePaths("./Packages/"));
 	LoadResources(GetResourceFilePaths("./Assets/"));
@@ -34,12 +32,10 @@ void AssetCollection::LoadResources(const std::vector<std::string>& _filePaths) 
 
 	std::string extension;
 	for (auto& path : _filePaths) {
-		AssetType type = AssetType::None;
+		AssetType type = GetAssetTypeFromExtension(Mathf::FileExtension(path));
 
 		/// 拡張子をチェックして、リソースの種類を決定
-		extension = Mathf::FileExtension(path);
-		if (resourceTypes_.contains(extension)) {
-			type = resourceTypes_[extension];
+		if (type != AssetType::None) {
 			Load(path, type);
 		}
 	}
@@ -51,22 +47,26 @@ void AssetCollection::UnloadResources(const std::vector<std::string>& _filePaths
 
 	std::string extension;
 	for (auto& path : _filePaths) {
-		AssetType type = AssetType::None;
-
 		/// 拡張子をチェックして、リソースの種類を決定
-		extension = Mathf::FileExtension(path);
-		if (resourceTypes_.contains(extension)) {
-			type = resourceTypes_[extension];
-		}
+		AssetType type = GetAssetTypeFromExtension(Mathf::FileExtension(path));
 
+		/// 拡張子ごとに処理
 		switch (type) {
-		case AssetType::None:
-			continue; ///< noneの場合は何もしない
 		case AssetType::Texture:
+			/// textureの解放
+			textureContainer_->Remove(path);
 			break;
 		case AssetType::Mesh:
 			/// meshの解放
 			modelContainer_->Remove(path);
+			break;
+		case AssetType::Audio:
+			/// audioの解放
+			audioClipContainer_->Remove(path);
+			break;
+		case AssetType::Material:
+			/// materialの解放
+			materialContainer_->Remove(path);
 			break;
 		}
 
@@ -100,45 +100,6 @@ void AssetCollection::Load(const std::string& _filepath, AssetType _type) {
 		break;
 	}
 
-}
-
-void AssetCollection::HotReload(const std::string& _filepath) {
-	/// ----- 指定されたファイルパスのリソースをホットリロードする ----- ///
-
-	/// ファイルの拡張子を取得
-	const std::string extension = Mathf::FileNameWithoutExtension(_filepath);
-	AssetType type = AssetType::None;
-	/// 拡張子をチェックして、リソースの種類を決定
-	if (resourceTypes_.contains(extension)) {
-		type = resourceTypes_[extension];
-	} else {
-		Console::LogWarning("Unsupported file type for hot reload: " + _filepath);
-		return;
-	}
-
-
-	switch (type) {
-	case AssetType::Texture:
-		/// テクスチャの再読み込み
-		assetLoader_->LoadTexture(_filepath);
-		break;
-	case AssetType::Mesh:
-		/// モデルの再読み込み
-		assetLoader_->LoadModelObj(_filepath);
-		break;
-	}
-}
-
-void AssetCollection::HotReloadAll() {
-	/// ----- すべてのリソースをホットリロードする ----- ///
-
-	for (const auto& model : modelContainer_->GetIndexMap()) {
-		assetLoader_->LoadModelObj(model.first);
-	}
-
-	for (const auto& texture : textureContainer_->GetIndexMap()) {
-		assetLoader_->LoadTexture(texture.first);
-	}
 }
 
 /// AddAssetのテンプレート実装
@@ -279,7 +240,8 @@ std::vector<std::string> AssetCollection::GetResourceFilePaths(const std::string
 			Mathf::ReplaceAll(&path, "\\", "/");
 
 			/// 拡張子をチェックして、リソースの種類を決定
-			if (resourceTypes_.contains(Mathf::FileExtension(path))) {
+			AssetType type = GetAssetTypeFromExtension(Mathf::FileExtension(path));
+			if (type != AssetType::None) {
 				resourcePaths.push_back(path);
 			}
 
@@ -289,25 +251,9 @@ std::vector<std::string> AssetCollection::GetResourceFilePaths(const std::string
 	return resourcePaths;
 }
 
-void AssetCollection::RegisterResourceType() {
-	/// リソースの種類を登録
-	resourceTypes_[".png"] = AssetType::Texture;
-	resourceTypes_[".jpg"] = AssetType::Texture;
-	resourceTypes_[".dds"] = AssetType::Texture;
-	resourceTypes_[".obj"] = AssetType::Mesh;
-	resourceTypes_[".gltf"] = AssetType::Mesh;
-	resourceTypes_[".wav"] = AssetType::Audio;
-	resourceTypes_[".mp3"] = AssetType::Audio;
-	resourceTypes_[".mat"] = AssetType::Material;
-}
-
 const Guid& AssetCollection::GetAssetGuidFromPath(const std::string& _filepath) const {
 	const std::string extension = Mathf::FileExtension(_filepath);
-	AssetType type = AssetType::None;
-	/// 拡張子をチェックして、リソースの種類を決定
-	if (resourceTypes_.contains(extension)) {
-		type = resourceTypes_.at(extension);
-	}
+	AssetType type = GetAssetTypeFromExtension(extension);
 
 	switch (type) {
 	case AssetType::Texture:

@@ -9,6 +9,7 @@ namespace {
 		{ ".png", AssetType::Texture },
 		{ ".jpeg", AssetType::Texture },
 		{ ".jpg", AssetType::Texture },
+		{ ".dds", AssetType::Texture },
 		{ ".obj", AssetType::Mesh },
 		{ ".gltf", AssetType::Mesh },
 		{ ".mp3", AssetType::Audio },
