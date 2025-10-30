@@ -65,6 +65,16 @@ public:
 	bool IsAssetExist(const Guid& _guid) const;
 
 
+	/// @brief アセットを持っているのかチェックする
+	/// @param _filepath アセットのファイルパス
+	/// @return true: 持っている, false: 持っていない
+	bool HasAsset(const std::string& _filepath);
+
+	/// @brief アセットのリロード
+	/// @param _filepath リロード対象のアセットパス
+	/// @return true: リロード成功, false: リロード失敗
+	bool ReloadAsset(const std::string& _filepath);
+
 	/// リソースパスの取得
 	std::vector<std::string> GetResourceFilePaths(const std::string& _directoryPath) const;
 
@@ -81,7 +91,7 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	std::unique_ptr<AssetLoader> resourceLoader_;
+	std::unique_ptr<AssetLoader> assetLoader_;
 
 	/// リソースのコンテナ
 	std::unique_ptr<AssetContainer<Model>>     modelContainer_;

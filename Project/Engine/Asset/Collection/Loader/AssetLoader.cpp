@@ -34,7 +34,8 @@
 
 
 AssetLoader::AssetLoader(DxManager* _dxm, AssetCollection* _collection)
-	: pDxManager_(_dxm), pAssetCollection_(_collection) {}
+	: pDxManager_(_dxm), pAssetCollection_(_collection) {
+}
 
 AssetLoader::~AssetLoader() {
 	HRESULT result = MFShutdown();
@@ -53,8 +54,14 @@ void AssetLoader::Initialize() {
 	Assert(SUCCEEDED(result), "MFStartup failed");
 }
 
-void AssetLoader::LoadTexture([[maybe_unused]] const std::string& _filepath) {
+bool AssetLoader::LoadTexture([[maybe_unused]] const std::string& _filepath) {
 	/// ----- テクスチャの読み込み ----- ///
+
+	/// ファイルが存在するのかチェックする
+	if (!std::filesystem::exists(_filepath)) {
+		Console::LogError("[Load Failed] [Texture] - File not found: \"" + _filepath + "\"");
+		return false;
+	}
 
 	Texture texture;
 	DirectX::ScratchImage       scratchImage = LoadScratchImage(_filepath);
@@ -103,18 +110,26 @@ void AssetLoader::LoadTexture([[maybe_unused]] const std::string& _filepath) {
 
 	Console::Log("[Load] [Texture] - path:\"" + _filepath + "\"");
 	pAssetCollection_->AddAsset<Texture>(_filepath, std::move(texture));
+
+	return true;
 }
 
-void AssetLoader::LoadModelObj(const std::string& _filepath) {
+bool AssetLoader::LoadModelObj(const std::string& _filepath) {
 	/// ----- モデルの読み込み ----- ///
 
+	/// ファイルが存在するのかチェックする
+	if (!std::filesystem::exists(_filepath)) {
+		Console::LogError("[Load Failed] [Model] - File not found: \"" + _filepath + "\"");
+		return false;
+	}
+
 	/// ファイルの拡張子を取得
-	std::string fileExtension = _filepath.substr(_filepath.find_last_of('.'));
+	std::string fileExtension = Mathf::FileExtension(_filepath);
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(_filepath, assimpLoadFlags_);
 
 	if (!scene) {
-		return; ///< 読み込み失敗
+		return false; ///< 読み込み失敗
 	}
 
 	Model model;
@@ -209,6 +224,7 @@ void AssetLoader::LoadModelObj(const std::string& _filepath) {
 	Console::Log("[Load] [Model] - path:\"" + _filepath + "\"");
 	pAssetCollection_->AddAsset<Model>(_filepath, std::move(model));
 
+	return true;
 }
 
 Node AssetLoader::ReadNode(aiNode* _node) {
@@ -317,7 +333,14 @@ void AssetLoader::LoadAnimation(Model* _model, const std::string& _filepath) {
 	}
 }
 
-void AssetLoader::LoadAudioClip(const std::string& _filepath) {
+bool AssetLoader::LoadAudioClip(const std::string& _filepath) {
+	/// ----- オーディオクリップの読み込み ----- ///
+
+	/// ファイルが存在するのかチェックする
+	if (!std::filesystem::exists(_filepath)) {
+		Console::LogError("[Load Failed] [AudioClip] - File not found: \"" + _filepath + "\"");
+		return false;
+	}
 
 	/// wstringに変換
 	std::wstring filePathW = ConvertString(_filepath);
@@ -326,7 +349,10 @@ void AssetLoader::LoadAudioClip(const std::string& _filepath) {
 	/// SourceReaderの作成
 	ComPtr<IMFSourceReader> sourceReader;
 	result = MFCreateSourceReaderFromURL(filePathW.c_str(), nullptr, &sourceReader);
-	Assert(SUCCEEDED(result), "MFCreateSourceReaderFromURL failed");
+	if (!SUCCEEDED(result)) {
+		Console::LogError("[Load Failed] [AudioClip] - MFCreateSourceReaderFromURL failed: \"" + _filepath + "\"");
+		return false;
+	}
 
 	/// PCM形式にフォーマットを指定する
 	ComPtr<IMFMediaType> audioType;
@@ -334,7 +360,10 @@ void AssetLoader::LoadAudioClip(const std::string& _filepath) {
 	audioType->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Audio);
 	audioType->SetGUID(MF_MT_SUBTYPE, MFAudioFormat_PCM);
 	result = sourceReader->SetCurrentMediaType((DWORD)MF_SOURCE_READER_FIRST_AUDIO_STREAM, nullptr, audioType.Get());
-	Assert(SUCCEEDED(result), "SetCurrentMediaType failed");
+	if (!SUCCEEDED(result)) {
+		Console::LogError("[Load Failed] [AudioClip] - SetCurrentMediaType failed: \"" + _filepath + "\"");
+		return false;
+	}
 
 	/// メディアタイプの取得
 	ComPtr<IMFMediaType> pOutType;
@@ -396,21 +425,22 @@ void AssetLoader::LoadAudioClip(const std::string& _filepath) {
 	pAssetCollection_->AddAsset<AudioClip>(_filepath, std::move(audioClip));
 
 	Console::Log("[Load] [AudioClip] - path:\"" + _filepath + "\"");
+	return true;
 }
 
-void AssetLoader::LoadMaterial(const std::string& _filepath) {
+bool AssetLoader::LoadMaterial(const std::string& _filepath) {
 
 	/// ファイル拡張子を確認 Materialファイル以外は処理しない
 	const std::string ext = Mathf::FileExtension(_filepath);
 	if (ext != ".mat") {
-		return;
+		return false;
 	}
 
 	/// ファイルを開く
 	std::ifstream ifs(_filepath);
 	if (!ifs) {
-		Assert(false, ("failed to open file: " + _filepath).c_str());
-		return;
+		Console::LogError("[Load Failed] [Material] - File not found: \"" + _filepath + "\"");
+		return false;
 	}
 
 
@@ -425,12 +455,12 @@ void AssetLoader::LoadMaterial(const std::string& _filepath) {
 	while (std::getline(ifs, line)) {
 		/// ----- 各文字列ごとに対応した処理を行う ----- ///
 
-		if(Mathf::StartsWith(line, "guid: ")) {
+		if (Mathf::StartsWith(line, "guid: ")) {
 			/// ファイルの文字列をGuidに変換して格納
 			std::string guidStr = line.substr(6);
 			material.guid = Guid::FromString(guidStr);
 		}
-		
+
 	}
 
 
@@ -440,13 +470,14 @@ void AssetLoader::LoadMaterial(const std::string& _filepath) {
 	/// AssetCollectionにMaterialを追加
 	pAssetCollection_->AddAsset<Material>(_filepath, std::move(material));
 
+	return true;
 }
 
 void AssetLoader::LoadFont(const std::string& _filepath) {
 
 	/// ファイルを開く
 	std::ifstream ifs(_filepath, std::ios::binary | std::ios::ate);
-	if(!ifs) {
+	if (!ifs) {
 		Assert(false, ("failed to open file: " + _filepath).c_str());
 		return;
 	}
@@ -456,14 +487,14 @@ void AssetLoader::LoadFont(const std::string& _filepath) {
 
 	/// .ttfのバッファ
 	std::vector<unsigned char> buffer(size);
-	if(!ifs.read((char*)buffer.data(), size)) {
+	if (!ifs.read((char*)buffer.data(), size)) {
 		Assert(false, ("failed to read file: " + _filepath).c_str());
 		return;
 	}
 
 	/// フォント情報を初期化
 	stbtt_fontinfo fontInfo;
-	if(!stbtt_InitFont(&fontInfo, buffer.data(), 0)) {
+	if (!stbtt_InitFont(&fontInfo, buffer.data(), 0)) {
 		Assert(false, ("failed to initialize font: " + _filepath).c_str());
 		return;
 	}

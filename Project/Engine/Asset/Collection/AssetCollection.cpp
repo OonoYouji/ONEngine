@@ -13,8 +13,8 @@ AssetCollection::~AssetCollection() {}
 
 
 void AssetCollection::Initialize(DxManager* _dxm) {
-	resourceLoader_ = std::make_unique<AssetLoader>(_dxm, this);
-	resourceLoader_->Initialize();
+	assetLoader_ = std::make_unique<AssetLoader>(_dxm, this);
+	assetLoader_->Initialize();
 
 	/// リソースコンテナの初期化
 	modelContainer_ = std::make_unique<AssetContainer<Model>>(static_cast<size_t>(MAX_MODEL_COUNT));
@@ -86,17 +86,17 @@ void AssetCollection::Load(const std::string& _filepath, AssetType _type) {
 	case AssetType::Texture:
 		/// 読み込み済みかチェックし、読み込んでいない場合のみ読み込む
 		if (GetTexture(_filepath) == nullptr) {
-			resourceLoader_->LoadTexture(_filepath);
+			assetLoader_->LoadTexture(_filepath);
 		}
 		break;
 	case AssetType::Mesh:
-		resourceLoader_->LoadModelObj(_filepath);
+		assetLoader_->LoadModelObj(_filepath);
 		break;
 	case AssetType::Audio:
-		resourceLoader_->LoadAudioClip(_filepath);
+		assetLoader_->LoadAudioClip(_filepath);
 		break;
 	case AssetType::Material:
-		resourceLoader_->LoadMaterial(_filepath);
+		assetLoader_->LoadMaterial(_filepath);
 		break;
 	}
 
@@ -120,11 +120,11 @@ void AssetCollection::HotReload(const std::string& _filepath) {
 	switch (type) {
 	case AssetType::Texture:
 		/// テクスチャの再読み込み
-		resourceLoader_->LoadTexture(_filepath);
+		assetLoader_->LoadTexture(_filepath);
 		break;
 	case AssetType::Mesh:
 		/// モデルの再読み込み
-		resourceLoader_->LoadModelObj(_filepath);
+		assetLoader_->LoadModelObj(_filepath);
 		break;
 	}
 }
@@ -133,11 +133,11 @@ void AssetCollection::HotReloadAll() {
 	/// ----- すべてのリソースをホットリロードする ----- ///
 
 	for (const auto& model : modelContainer_->GetIndexMap()) {
-		resourceLoader_->LoadModelObj(model.first);
+		assetLoader_->LoadModelObj(model.first);
 	}
 
 	for (const auto& texture : textureContainer_->GetIndexMap()) {
-		resourceLoader_->LoadTexture(texture.first);
+		assetLoader_->LoadTexture(texture.first);
 	}
 }
 
@@ -189,6 +189,81 @@ bool AssetCollection::IsAssetExist(const Guid& _guid) const {
 	}
 
 	/// どのコンテナにも存在しなかった場合はfalseを返す
+	return false;
+}
+
+bool AssetCollection::HasAsset(const std::string& _filepath) {
+	/// ----- アセットを持っているのかチェックする ----- ///
+
+	/// Typeの判定
+	const std::string extension = Mathf::FileExtension(_filepath);
+	AssetType type = GetAssetTypeFromExtension(extension);
+
+	/// 各コンテナで存在チェック
+	switch (type) {
+	case AssetType::Texture:
+		/// Textureの存在チェック
+		if (textureContainer_->GetIndex(_filepath) != -1) {
+			return true;
+		}
+		break;
+	case AssetType::Mesh:
+		/// Mesh
+		if (modelContainer_->GetIndex(_filepath) != -1) {
+			return true;
+		}
+		break;
+	case AssetType::Audio:
+		/// Audio
+		if (audioClipContainer_->GetIndex(_filepath) != -1) {
+			return true;
+		}
+		break;
+	case AssetType::Material:
+		/// Material
+		if (materialContainer_->GetIndex(_filepath) != -1) {
+			return true;
+		}
+		break;
+	}
+
+
+	return false;
+}
+
+bool AssetCollection::ReloadAsset(const std::string& _filepath) {
+	/// ----- アセットのリロード ----- ///
+
+	/// Typeの判定
+	const std::string extension = Mathf::FileExtension(_filepath);
+	AssetType type = GetAssetTypeFromExtension(extension);
+
+	/// Typeごとにリロード処理を実行
+	switch (type) {
+	case AssetType::Texture:
+		/// Textureのリロード
+		if (assetLoader_->LoadTexture(_filepath)) {
+			return true;
+		}
+		break;
+	case AssetType::Mesh:
+		/// Meshのリロード
+		if (assetLoader_->LoadModelObj(_filepath)) {
+			return true;
+		}
+		break;
+	case AssetType::Audio:
+		/// Audioのリロード
+		if (assetLoader_->LoadAudioClip(_filepath)) {
+			return true;
+		}
+		break;
+	case AssetType::Material:
+		/// Materialのリロード
+		assetLoader_->LoadMaterial(_filepath);
+		break;
+	}
+
 	return false;
 }
 
