@@ -63,6 +63,13 @@ bool AssetLoader::LoadTexture([[maybe_unused]] const std::string& _filepath) {
 		return false;
 	}
 
+	/// すでに持っているファイルかチェック
+	if (pAssetCollection_->GetTexture(_filepath)) {
+		Console::LogWarning("[Load Skipped] [Texture] - Already loaded: \"" + _filepath + "\"");
+		return true;
+	}
+
+
 	Texture texture;
 	DirectX::ScratchImage       scratchImage = LoadScratchImage(_filepath);
 	const DirectX::TexMetadata& metadata = scratchImage.GetMetadata();
@@ -92,7 +99,6 @@ bool AssetLoader::LoadTexture([[maybe_unused]] const std::string& _filepath) {
 
 	/// srv handleの取得
 	DxSRVHeap* dxSRVHeap = pDxManager_->GetDxSRVHeap();
-
 	texture.CreateEmptySRVHandle();
 	texture.srvHandle_->descriptorIndex = dxSRVHeap->AllocateTexture();
 	texture.srvHandle_->cpuHandle = dxSRVHeap->GetCPUDescriptorHandel(texture.srvHandle_->descriptorIndex);
@@ -111,6 +117,50 @@ bool AssetLoader::LoadTexture([[maybe_unused]] const std::string& _filepath) {
 	Console::Log("[Load] [Texture] - path:\"" + _filepath + "\"");
 	pAssetCollection_->AddAsset<Texture>(_filepath, std::move(texture));
 
+	return true;
+}
+
+bool AssetLoader::ReloadTexture(const std::string& _filepath) {
+	/// ----- テクスチャのリロード ----- ///
+
+	/// ファイルが存在するのかチェックする
+	if (!std::filesystem::exists(_filepath)) {
+		Console::LogError("[Reload Failed] [Texture] - File not found: \"" + _filepath + "\"");
+		return false;
+	}
+
+	Texture* existingTexture = pAssetCollection_->GetTexture(_filepath);
+	if (!existingTexture) {
+		Console::LogError("[Reload Failed] [Texture] - Asset not found: \"" + _filepath + "\"");
+		return false;
+	}
+
+	DirectX::ScratchImage       scratchImage = LoadScratchImage(_filepath);
+	const DirectX::TexMetadata& metadata = scratchImage.GetMetadata();
+
+	existingTexture->dxResource_ = std::move(CreateTextureResource(pDxManager_->GetDxDevice(), metadata));
+	DxResource intermediateResource = UploadTextureData(existingTexture->dxResource_.Get(), scratchImage);
+
+	pDxManager_->GetDxCommand()->CommandExecuteAndWait();
+	pDxManager_->GetDxCommand()->CommandReset();
+
+
+	/// SRVの上書き
+	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
+	srvDesc.Format = metadata.format;
+	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.Texture2D.MipLevels = static_cast<UINT>(metadata.mipLevels);
+
+	auto dxDevice = pDxManager_->GetDxDevice();
+	dxDevice->GetDevice()->CreateShaderResourceView(existingTexture->dxResource_.Get(), &srvDesc, existingTexture->srvHandle_->cpuHandle);
+
+	/// texture size
+	Vector2 textureSize = { static_cast<float>(metadata.width), static_cast<float>(metadata.height) };
+	existingTexture->textureSize_ = textureSize;
+
+
+	Console::Log("[Reload] [Texture] - path:\"" + _filepath + "\"");
 	return true;
 }
 

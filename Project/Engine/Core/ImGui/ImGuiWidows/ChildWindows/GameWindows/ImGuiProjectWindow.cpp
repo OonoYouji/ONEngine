@@ -19,7 +19,37 @@
 #include "Engine/Editor/Commands/WorldEditorCommands/WorldEditorCommands.h"
 
 
-ImGuiProjectExplorer::ImGuiProjectExplorer(AssetCollection* _assetCollection, EditorManager* /*_editorManager*/)
+namespace {
+
+	/// @brief .slnファイルからの絶対パス
+	const std::filesystem::path kRootPath = std::filesystem::absolute("./");
+
+
+	/// @brief 指定した基準パスに対する、与えられた絶対パスの相対パスを計算して文字列で返す。
+	/// @param absolutePath 相対パスに変換する絶対パス（std::filesystem::path の const 参照）。
+	/// @param basePath 相対パスの基準となるパス（std::filesystem::path の const 参照）。
+	/// @return 計算された相対パスを std::string として返す。
+	std::string GetRelativePath(const std::filesystem::path& _absolutePath, const std::filesystem::path& _basePath = kRootPath) {
+		std::filesystem::path relativePath = std::filesystem::relative(_absolutePath, _basePath);
+		std::string relativeStr = relativePath.string();
+
+		/// すでに "./" または "." で始まっていなければ付ける
+		if (!relativeStr.empty() && relativeStr[0] != '.') {
+			relativeStr = "./" + relativeStr;
+		} else if (relativeStr == ".") {
+			// 基準パスそのものの場合は "./" に統一
+			relativeStr = "./";
+		}
+
+		return relativeStr;
+	}
+
+
+}	/// namespace
+
+
+
+ImGuiProjectWindow::ImGuiProjectWindow(AssetCollection* _assetCollection, EditorManager* /*_editorManager*/)
 	: pAssetCollection_(_assetCollection) {
 	rootPath_ = std::filesystem::absolute("./");
 	currentPath_ = std::filesystem::absolute("./Assets");
@@ -37,11 +67,11 @@ ImGuiProjectExplorer::ImGuiProjectExplorer(AssetCollection* _assetCollection, Ed
 	UpdateFileCache(rootPath_);
 }
 
-ImGuiProjectExplorer::~ImGuiProjectExplorer() {
+ImGuiProjectWindow::~ImGuiProjectWindow() {
 	fileWatcher_.Stop();
 }
 
-void ImGuiProjectExplorer::ShowImGui() {
+void ImGuiProjectWindow::ShowImGui() {
 	if (!ImGui::Begin("ImGuiProjectExplorer")) {
 		ImGui::End();
 		return;
@@ -115,7 +145,7 @@ void ImGuiProjectExplorer::ShowImGui() {
 	ImGui::End();
 }
 
-void ImGuiProjectExplorer::DrawDirectoryTree(const std::filesystem::path& dir) {
+void ImGuiProjectWindow::DrawDirectoryTree(const std::filesystem::path& dir) {
 	auto it = directoryCache_.find(dir.string());
 	if (it == directoryCache_.end()) {
 		return;
@@ -142,7 +172,7 @@ void ImGuiProjectExplorer::DrawDirectoryTree(const std::filesystem::path& dir) {
 	}
 }
 
-void ImGuiProjectExplorer::DrawFileView(const std::filesystem::path& dir) {
+void ImGuiProjectWindow::DrawFileView(const std::filesystem::path& dir) {
 	auto it = fileCache_.find(dir.string());
 	if (it == fileCache_.end()) {
 		return;
@@ -165,14 +195,7 @@ void ImGuiProjectExplorer::DrawFileView(const std::filesystem::path& dir) {
 		std::string key = filePath.string();
 		{
 			/// filePathの絶対パスを相対パスに変換してから取得
-			std::filesystem::path base = std::filesystem::absolute("./"); // 基準ディレクトリ
-			std::filesystem::path relative = std::filesystem::relative(key, base);
-			// 先頭が "." で始まらなければ "./" を付ける
-			if (relative.empty() || relative.string()[0] != '.') {
-				relative = std::filesystem::path(".") / relative;
-			}
-
-			key = relative.string();
+			key = GetRelativePath(key);
 			Mathf::ReplaceAll(&key, "\\", "/");
 		}
 
@@ -196,11 +219,14 @@ void ImGuiProjectExplorer::DrawFileView(const std::filesystem::path& dir) {
 			/// ----- ファイルなのでファイルアイコンを表示(拡張子ごとに) ----- ///
 			Texture* texture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/FileIcons/FileIcon.png");
 
-			AssetType type = GetAssetTypeFromExtension(filePath.extension().string());
+			AssetType type = GetAssetTypeFromExtension(extension);
 			switch (type) {
 			case AssetType::Texture:
 			{
-				texture = pAssetCollection_->GetTexture(key);
+				/// previewが出来ないのでデフォルトのアイコンを表示
+				if (extension != ".dds") {
+					texture = pAssetCollection_->GetTexture(key);
+				}
 			}
 			break;
 			case AssetType::Audio:
@@ -279,7 +305,7 @@ void ImGuiProjectExplorer::DrawFileView(const std::filesystem::path& dir) {
 	ImGui::Columns(1);
 }
 
-void ImGuiProjectExplorer::PopupContextMenu(const std::filesystem::path& _dir) {
+void ImGuiProjectWindow::PopupContextMenu(const std::filesystem::path& _dir) {
 
 	/// 右クリックメニュー
 	if (ImGui::BeginPopupContextItem("FileContextMenu")) {
@@ -360,7 +386,7 @@ void ImGuiProjectExplorer::PopupContextMenu(const std::filesystem::path& _dir) {
 
 }
 
-void ImGuiProjectExplorer::SetRenameMode(const std::filesystem::path& _path) {
+void ImGuiProjectWindow::SetRenameMode(const std::filesystem::path& _path) {
 	isRenaming_ = true;
 	renamingPath_ = _path;
 	renameBuffer_ = _path.filename().string();
@@ -368,54 +394,58 @@ void ImGuiProjectExplorer::SetRenameMode(const std::filesystem::path& _path) {
 	ImGui::SetKeyboardFocusHere(0);
 }
 
-void ImGuiProjectExplorer::HandleFileAdded(const std::filesystem::path& path) {
-	if (std::filesystem::is_directory(path)) {
+void ImGuiProjectWindow::HandleFileAdded(const std::filesystem::path& _path) {
+	if (std::filesystem::is_directory(_path)) {
 		// ディレクトリが追加された場合、親ディレクトリのキャッシュを更新
-		UpdateDirectoryCache(path.parent_path());
+		UpdateDirectoryCache(_path.parent_path());
 		// 新しいディレクトリの開閉状態を初期化
-		dirOpenState_[path.string()] = false;
+		dirOpenState_[_path.string()] = false;
 	} else {
 		// ファイルが追加された場合、親ディレクトリのファイルキャッシュを更新
-		UpdateFileCache(path.parent_path());
+		UpdateFileCache(_path.parent_path());
 	}
 }
 
-void ImGuiProjectExplorer::HandleFileRemoved(const std::filesystem::path& path) {
-	if (std::filesystem::is_directory(path)) {
+void ImGuiProjectWindow::HandleFileRemoved(const std::filesystem::path& _path) {
+	if (std::filesystem::is_directory(_path)) {
 		// ディレクトリが削除された場合、親ディレクトリのキャッシュを更新
-		UpdateDirectoryCache(path.parent_path());
+		UpdateDirectoryCache(_path.parent_path());
 		// 削除されたディレクトリのキャッシュを削除
-		directoryCache_.erase(path.string());
-		dirOpenState_.erase(path.string());
+		directoryCache_.erase(_path.string());
+		dirOpenState_.erase(_path.string());
 	} else {
 		// ファイルが削除された場合、親ディレクトリのファイルキャッシュを更新
-		UpdateFileCache(path.parent_path());
+		UpdateFileCache(_path.parent_path());
 		// 削除されたファイルのキャッシュを削除
-		fileCache_.erase(path.string());
+		fileCache_.erase(_path.string());
 	}
 
 	// 現在のパスが削除された場合、ルートパスに戻す
-	if (path == currentPath_) {
+	if (_path == currentPath_) {
 		currentPath_ = rootPath_;
 	}
 }
 
-void ImGuiProjectExplorer::HandleFileModified(const std::filesystem::path& path) {
-	if (!std::filesystem::exists(path)) {
+void ImGuiProjectWindow::HandleFileModified(const std::filesystem::path& _path) {
+	if (!std::filesystem::exists(_path)) {
 		return; // ファイルが存在しない場合は何もしない
 	}
 
-	// 親ディレクトリのキャッシュを更新
-	UpdateFileCache(path.parent_path());
-
-	// 現在のパスが変更された場合、再描画をトリガー
-	if (path.parent_path() == currentPath_) {
-		// ImGuiの再描画はShowImGui内で行われるため、特別な処理は不要
-		// キャッシュが更新されていれば、次回の描画で反映される
+	/// パスのファイルを読み直す
+	const std::string extension = _path.extension().string();
+	AssetType type = GetAssetTypeFromExtension(extension);
+	if (type != AssetType::None) {
+		/// 絶対パスを相対パスに変換してから取得
+		std::string path = GetRelativePath(_path);
+		Mathf::ReplaceAll(&path, "\\", "/");
+		pAssetCollection_->ReloadAsset(path);
 	}
+
+	// 親ディレクトリのキャッシュを更新
+	UpdateFileCache(_path.parent_path());
 }
 
-void ImGuiProjectExplorer::UpdateDirectoryCache(const std::filesystem::path& dir) {
+void ImGuiProjectWindow::UpdateDirectoryCache(const std::filesystem::path& dir) {
 	// 無視するフォルダ名リスト
 	static const std::unordered_set<std::wstring> ignoredDirs = {
 		L".vs",
@@ -455,7 +485,7 @@ void ImGuiProjectExplorer::UpdateDirectoryCache(const std::filesystem::path& dir
 }
 
 
-void ImGuiProjectExplorer::UpdateFileCache(const std::filesystem::path& dir) {
+void ImGuiProjectWindow::UpdateFileCache(const std::filesystem::path& dir) {
 	if (!std::filesystem::exists(dir)) {
 		fileCache_.erase(dir.string());
 		return;

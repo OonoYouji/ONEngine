@@ -33,6 +33,7 @@ public:
 
 	/// テクスチャ
 	bool LoadTexture(const std::string& _filepath);
+	bool ReloadTexture(const std::string& _filepath);
 
 	/// モデル
 	bool LoadModelObj(const std::string& _filepath);

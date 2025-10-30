@@ -10,14 +10,8 @@
 #include "Engine/Core/ImGui/Math/FileWatcher/FileWatcher.h"
 
 
-class ImGuiProjectExplorer : public IImGuiChildWindow {
+class ImGuiProjectWindow : public IImGuiChildWindow {
 public:
-
-	//struct Entry {
-	//	std::filesystem::path path;
-	//	bool isDirectory;
-	//	std::vector<Entry> children;
-	//};
 
 	struct FileItem {
 		std::filesystem::path path;
@@ -29,8 +23,8 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	ImGuiProjectExplorer(class AssetCollection* _assetCollection, class EditorManager* _editorManager);
-	~ImGuiProjectExplorer();
+	ImGuiProjectWindow(class AssetCollection* _assetCollection, class EditorManager* _editorManager);
+	~ImGuiProjectWindow();
 
 	/// @brief imgui windowの描画処理
 	void ShowImGui() override;
