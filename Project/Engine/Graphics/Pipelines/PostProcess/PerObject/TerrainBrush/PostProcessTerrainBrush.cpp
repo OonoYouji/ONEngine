@@ -49,7 +49,22 @@ void PostProcessTerrainBrush::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 
 void PostProcessTerrainBrush::Execute(
 	const std::string& _textureName, DxCommand* _dxCommand,
-	AssetCollection* _assetCollection, EntityComponentSystem* _entityComponentSystem) {
+	AssetCollection* _assetCollection, EntityComponentSystem* _ecs) {
+
+	/// TerrainComponentの有無チェック
+	ComponentArray<Terrain>* terrainArray = _ecs->GetCurrentGroup()->GetComponentArray<Terrain>();
+	if(!terrainArray || terrainArray->GetUsedComponents().empty()){
+		return;
+	}
+
+
+	/// 地形が編集モード中なのかチェック
+	Terrain* editTerrain = terrainArray->GetUsedComponents().front();
+	if (!editTerrain || editTerrain->GetEditorInfo().editMode == static_cast<int32_t>(Terrain::EditMode::None)) {
+		return;
+	}
+
+
 
 	/// brush data
 	const Vector2 mousePos = Input::GetImGuiImageMousePosNormalized("Scene");
@@ -59,25 +74,9 @@ void PostProcessTerrainBrush::Execute(
 		return;
 	}
 
-	/// Terrainの取得
-	Terrain* terrain = nullptr;
-	ComponentArray<Terrain>* terrainArray = _entityComponentSystem->GetCurrentGroup()->GetComponentArray<Terrain>();
-	if (terrainArray) {
-		for (auto& t : terrainArray->GetUsedComponents()) {
-			if (!t) {
-				continue;
-			}
-			terrain = t;
-			break;
-		}
-	}
-
-	if (!terrain || !terrain->enable) {
-		return;
-	}
 
 	brushBuffer_.SetMappedData(
-		Brush{ mousePos, terrain->GetEditorInfo().brushRadius }
+		Brush{ mousePos, editTerrain->GetEditorInfo().brushRadius }
 	);
 
 	/// texture index

@@ -41,7 +41,7 @@ public:
 		const std::string& _textureName,
 		class DxCommand* _dxCommand,
 		class AssetCollection* _assetCollection,
-		class EntityComponentSystem* _entityComponentSystem
+		class EntityComponentSystem* _ecs
 	) override;
 
 private:
