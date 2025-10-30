@@ -153,16 +153,33 @@ void FileWatcher::WatchDirectory(std::shared_ptr<WatchTarget> _ctx) {
 			/// Eventごとに処理
 			FileEvent ev{};
 			switch (fni->Action) {
-			case FILE_ACTION_ADDED:            ev.type = FileEvent::Type::Added;      break;
-			case FILE_ACTION_REMOVED:          ev.type = FileEvent::Type::Removed;    break;
-			case FILE_ACTION_MODIFIED:         ev.type = FileEvent::Type::Modified;   break;
-			case FILE_ACTION_RENAMED_OLD_NAME: ev.type = FileEvent::Type::RenamedOld; break;
-			case FILE_ACTION_RENAMED_NEW_NAME: ev.type = FileEvent::Type::RenamedNew; break;
+			case FILE_ACTION_ADDED:            ev.action = FileEvent::Action::Added;      break;
+			case FILE_ACTION_REMOVED:          ev.action = FileEvent::Action::Removed;    break;
+			case FILE_ACTION_MODIFIED:         ev.action = FileEvent::Action::Modified;   break;
+			case FILE_ACTION_RENAMED_OLD_NAME: ev.action = FileEvent::Action::RenamedOld; break;
+			case FILE_ACTION_RENAMED_NEW_NAME: ev.action = FileEvent::Action::RenamedNew; break;
 			}
 
 			/// Pathの構築
 			ev.path = _ctx->dirPath + L"\\" + std::wstring(fni->FileName, fni->FileNameLength / sizeof(WCHAR));
 			ev.watchedDir = _ctx->dirPath;
+
+			/// タイプ判定（削除でもできるだけ推定）
+			if (std::filesystem::exists(ev.path)) {
+				if (std::filesystem::is_directory(ev.path)) {
+					ev.type = FileEvent::Type::Directory;
+				} else {
+					ev.type = FileEvent::Type::File;
+				}
+			} else {
+				/// 削除された場合、拡張子などで推測
+				if (ev.path.find(L'.') != std::wstring::npos) {
+					ev.type = FileEvent::Type::File;
+				} else {
+					ev.type = FileEvent::Type::Directory;
+				}
+			}
+
 
 			{
 				std::lock_guard<std::mutex> lock(mutex_);

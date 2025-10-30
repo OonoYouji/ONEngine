@@ -84,16 +84,16 @@ void ImGuiProjectWindow::ShowImGui() {
 	auto events = fileWatcher_.ConsumeEvents();
 	for (const auto& event : events) {
 		std::string eventType;
-		switch (event.type) {
-		case FileEvent::Type::Added:
+		switch (event.action) {
+		case FileEvent::Action::Added:
 			eventType = "Added";
 			HandleFileAdded(event.path); // ファイル追加処理
 			break;
-		case FileEvent::Type::Removed:
+		case FileEvent::Action::Removed:
 			eventType = "Removed";
 			HandleFileRemoved(event.path); // ファイル削除処理
 			break;
-		case FileEvent::Type::Modified:
+		case FileEvent::Action::Modified:
 			eventType = "Modified";
 			HandleFileModified(event.path); // ファイル変更処理
 			break;
@@ -403,6 +403,15 @@ void ImGuiProjectWindow::HandleFileAdded(const std::filesystem::path& _path) {
 	} else {
 		// ファイルが追加された場合、親ディレクトリのファイルキャッシュを更新
 		UpdateFileCache(_path.parent_path());
+
+		/// 新規アセットして登録
+		std::string path = GetRelativePath(_path);
+		Mathf::ReplaceAll(&path, "\\", "/");
+		AssetType type = GetAssetTypeFromExtension(Mathf::FileExtension(path));
+		if (type != AssetType::None) {
+			pAssetCollection_->Load(path, type);
+		}
+
 	}
 }
 
@@ -413,8 +422,6 @@ void ImGuiProjectWindow::HandleFileRemoved(const std::filesystem::path& _path) {
 		// 削除されたディレクトリのキャッシュを削除
 		directoryCache_.erase(_path.string());
 		dirOpenState_.erase(_path.string());
-
-		/// ディレクトリ内のアセットをすべて削除
 
 	} else {
 		// ファイルが削除された場合、親ディレクトリのファイルキャッシュを更新

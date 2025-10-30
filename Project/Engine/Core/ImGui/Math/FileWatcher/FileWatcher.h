@@ -12,7 +12,7 @@
 
 /// @brief ファイルのイベント情報
 struct FileEvent {
-	enum class Type {
+	enum class Action {
 		Added,
 		Removed,
 		Modified,
@@ -20,6 +20,12 @@ struct FileEvent {
 		RenamedNew
 	};
 
+	enum class Type {
+		File,
+		Directory
+	};
+
+	Action action;
 	Type type;
 	std::wstring path;
 	std::wstring watchedDir;

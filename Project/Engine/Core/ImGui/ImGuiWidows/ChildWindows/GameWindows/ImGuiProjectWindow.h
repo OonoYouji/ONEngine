@@ -30,8 +30,8 @@ public:
 	void ShowImGui() override;
 
 private:
-	void DrawDirectoryTree(const std::filesystem::path& dir);
-	void DrawFileView(const std::filesystem::path& dir);
+	void DrawDirectoryTree(const std::filesystem::path& _dir);
+	void DrawFileView(const std::filesystem::path& _dir);
 
 	/// @brief 右クリックしたときに表示するポップアップメニュー
 	/// @param _dir 右クリックしたディレクトリのパス
@@ -43,20 +43,19 @@ private:
 
 	/// @brief ファイルが追加された際の処理
 	/// @param path 追加されたファイルのパス
-	void HandleFileAdded(const std::filesystem::path& path);
+	void HandleFileAdded(const std::filesystem::path& _path);
 
 	/// @brief ファイルが削除された際の処理
 	/// @param path 削除されたファイルのパス
-	void HandleFileRemoved(const std::filesystem::path& path);
+	void HandleFileRemoved(const std::filesystem::path& _path);
 
 	/// @brief ファイルが変更された際の処理
 	/// @param path 変更されたファイルのパス
-	void HandleFileModified(const std::filesystem::path& path);
-
+	void HandleFileModified(const std::filesystem::path& _path);
 
 	void UpdateDirectoryCache(const std::filesystem::path& dir);
 
-	void UpdateFileCache(const std::filesystem::path& dir);
+	void UpdateFileCache(const std::filesystem::path& _dir);
 
 private:
 	/// ===================================================
