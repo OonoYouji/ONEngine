@@ -74,6 +74,33 @@ void AssetCollection::UnloadResources(const std::vector<std::string>& _filePaths
 
 }
 
+void AssetCollection::UnloadAssetByPath(const std::string& _filepath) {
+	/// ----- 指定されたファイルパスのアセットを解放する ----- ///
+
+	/// 拡張子をチェックして、リソースの種類を決定
+	AssetType type = GetAssetTypeFromExtension(Mathf::FileExtension(_filepath));
+
+	/// 拡張子ごとに処理
+	switch (type) {
+	case AssetType::Texture:
+		/// textureの解放
+		textureContainer_->Remove(_filepath);
+		break;
+	case AssetType::Mesh:
+		/// meshの解放
+		modelContainer_->Remove(_filepath);
+		break;
+	case AssetType::Audio:
+		/// audioの解放
+		audioClipContainer_->Remove(_filepath);
+		break;
+	case AssetType::Material:
+		/// materialの解放
+		materialContainer_->Remove(_filepath);
+		break;
+	}
+}
+
 void AssetCollection::Load(const std::string& _filepath, AssetType _type) {
 	/// ----- 指定されたファイルパスのリソースを読み込む ----- ///
 

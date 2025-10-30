@@ -47,6 +47,7 @@ public:
 
 	/// アンロード
 	void UnloadResources(const std::vector<std::string>& _filepaths);
+	void UnloadAssetByPath(const std::string& _filepath);
 
 	/// @brief アセットの追加
 	/// @tparam T 追加するアセットの型

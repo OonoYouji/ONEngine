@@ -413,11 +413,19 @@ void ImGuiProjectWindow::HandleFileRemoved(const std::filesystem::path& _path) {
 		// 削除されたディレクトリのキャッシュを削除
 		directoryCache_.erase(_path.string());
 		dirOpenState_.erase(_path.string());
+
+		/// ディレクトリ内のアセットをすべて削除
+
 	} else {
 		// ファイルが削除された場合、親ディレクトリのファイルキャッシュを更新
 		UpdateFileCache(_path.parent_path());
 		// 削除されたファイルのキャッシュを削除
 		fileCache_.erase(_path.string());
+
+		/// アセットコレクションからも削除
+		std::string path = GetRelativePath(_path);
+		Mathf::ReplaceAll(&path, "\\", "/");
+		pAssetCollection_->UnloadAssetByPath(path);
 	}
 
 	// 現在のパスが削除された場合、ルートパスに戻す
