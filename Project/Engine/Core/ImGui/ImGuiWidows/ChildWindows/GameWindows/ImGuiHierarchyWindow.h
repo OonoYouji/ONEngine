@@ -61,7 +61,7 @@ protected:
 	/// ----- test methods ----- ///
 
 	///
-	bool DrawEntity(class GameEntity* _entity);
+	void DrawEntity(class GameEntity* _entity);
 
 	bool IsDescendant(class GameEntity* _ancestor, class GameEntity* _descendant);
 
