@@ -58,3 +58,19 @@ void Mesh::SetVertices(const std::vector<VertexData>& _vertices) {
 void Mesh::SetIndices(const std::vector<uint32_t>& _indices) {
 	indices_ = _indices;
 }
+
+const std::vector<Mesh::VertexData>& Mesh::GetVertices() const {
+	return vertices_;
+}
+
+const std::vector<uint32_t>& Mesh::GetIndices() const {
+	return indices_;
+}
+
+const D3D12_VERTEX_BUFFER_VIEW& Mesh::GetVBV() const {
+	return vbv_;
+}
+
+const D3D12_INDEX_BUFFER_VIEW& Mesh::GetIBV() const {
+	return ibv_;
+}

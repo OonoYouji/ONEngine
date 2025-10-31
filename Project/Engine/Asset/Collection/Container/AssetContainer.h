@@ -40,19 +40,58 @@ public:
 	void Remove(const std::string& _key);
 	void Remove(int32_t _index);
 
-	/// 取得
+
+	/// --------------- 取得用 --------------- ///
+
+	/// @brief stringのキーから取得
+	/// @param _key mapのキー
+	/// @return 見つかったらポインタ、見つからなかったらnullptr
 	T* Get(const std::string& _key);
+
+	/// @brief 
+	/// @param _index 
+	/// @return 
 	T* Get(int32_t _index);
+
+	/// @brief 先頭の要素を返す
+	/// @return 先頭の要素へのポインタ
 	T* GetFirst();
+
+
+	/// @brief vectorのインデックスからキーを取得
+	/// @param _index 配列のインデックス
+	/// @return _indexに対応するキー文字列
 	const std::string& GetKey(int32_t _index) const;
+	
+
+	/// @brief mapのキーからvectorのインデックスを取得
+	/// @param _key マップのキー
+	/// @return _keyに対応する配列のインデックス
 	int32_t GetIndex(const std::string& _key) const;
+
+	/// @brief Guidからvectorのインデックスを取得
+	/// @param _guid 要素のGuid
+	/// @return 存在すればインデックス、存在しなければ-1
 	int32_t GetIndex(const Guid& _guid) const;
+
+
+	/// @brief すべての要素を取得
 	const std::vector<T>& GetValues() const;
 	std::vector<T>& GetValues();
+	
+
+	/// @brief すべてのIndexMapを取得
 	const std::unordered_map<std::string, int32_t>& GetIndexMap() const;
 
-	/// Guidの取得
+
+	/// @brief mapのキーからGuidを取得
+	/// @param _key マップのキー
+	/// @return 見つかったGuidへの参照
 	const Guid& GetGuid(const std::string& _key) const;
+
+	/// @brief vectorのインデックスからGuidを取得
+	/// @param _index 配列のインデックス
+	/// @return 見つかったGuidへの参照
 	const Guid& GetGuid(int32_t _index) const;
 
 
@@ -170,8 +209,9 @@ inline const std::string& AssetContainer<T>::GetKey(int32_t _index) const {
 		return reverseIndexMap_.at(_index);
 	}
 
-	/// 空文字を返す
-	return std::string();
+	/// 空文字を返す(const&で返すためstaticで用意)
+	static const std::string emptyString;
+	return emptyString;
 }
 
 template<typename T>

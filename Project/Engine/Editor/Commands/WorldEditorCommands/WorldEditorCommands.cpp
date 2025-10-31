@@ -223,6 +223,11 @@ EDITOR_STATE CreatePrefabCommand::Undo() {
 	return EDITOR_STATE_FINISH;
 }
 
+
+/// ///////////////////////////////////////////////////
+/// エンティティをコピーするコマンド
+/// ///////////////////////////////////////////////////
+
 CopyEntityCommand::CopyEntityCommand(GameEntity* _entity) : pEntity_(_entity) {}
 
 EDITOR_STATE CopyEntityCommand::Execute() {
@@ -243,6 +248,7 @@ EDITOR_STATE CopyEntityCommand::Execute() {
 }
 
 EDITOR_STATE CopyEntityCommand::Undo() {
+	/// 特にやることなし
 	return EDITOR_STATE::EDITOR_STATE_FINISH;
 }
 

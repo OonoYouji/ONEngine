@@ -81,26 +81,18 @@ public:
 
 	/// @brief 頂点データを取得
 	/// @return 頂点データの配列
-	const std::vector<VertexData>& GetVertices() const {
-		return vertices_;
-	}
+	const std::vector<VertexData>& GetVertices() const;
 
 	/// @brief 頂点インデックスを取得
 	/// @return 頂点インデックスの配列
-	const std::vector<uint32_t>& GetIndices() const {
-		return indices_;
-	}
+	const std::vector<uint32_t>& GetIndices() const;
 
 	/// @brief vertex buffer viewを取得
 	/// @return vbv date
-	const D3D12_VERTEX_BUFFER_VIEW& GetVBV() const {
-		return vbv_;
-	}
+	const D3D12_VERTEX_BUFFER_VIEW& GetVBV() const;
 
 	/// @brief index buffer viewを取得
 	/// @return ibv date
-	const D3D12_INDEX_BUFFER_VIEW& GetIBV() const {
-		return ibv_;
-	}
+	const D3D12_INDEX_BUFFER_VIEW& GetIBV() const;
 
 };

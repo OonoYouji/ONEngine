@@ -31,20 +31,55 @@ public:
 
 	void Initialize();
 
-	/// テクスチャ
+
+	/// --------------- テクスチャ --------------- ///
+
+	/// @brief テクスチャの新規読み込み
+	/// @param _filepath 読み込み対象のファイルパス
+	/// @return true: 読み込み成功, false: 読み込み失敗
 	bool LoadTexture(const std::string& _filepath);
+
+	/// @brief テクスチャの読み直し
+	/// @param _filepath 読み込み対象のファイルパス
+	/// @return true: 読み込み成功, false: 読み込み失敗
 	bool ReloadTexture(const std::string& _filepath);
 
-	/// モデル
+
+	/// --------------- モデル --------------- ///
+
+	/// @brief モデルファイルの読み込み (.obj .gltf)
+	/// @param _filepath 読み込み対象のファイルパス
+	/// @return true: 読み込み成功, false: 読み込み失敗
 	bool LoadModelObj(const std::string& _filepath);
+
+	/// @brief アニメーションのNodeを読み込む
+	/// @param _node 読み込み対象のaiNodeポインタ
+	/// @return 読み込まれたNode構造体
 	Node ReadNode(struct aiNode* _node);
+
+	/// @brief アニメーションの読み込み
+	/// @param _model 読み込み対象のModelポインタ
+	/// @param _filepath 読み込み対象のファイルパス
 	void LoadAnimation(Model* _model, const std::string& _filepath);
 
-	/// サウンド
+
+	/// --------------- サウンド --------------- ///
+
+	/// @brief オーディオファイルの読み込み
+	/// @param _filepath 読み込み対象のファイルパス
+	/// @return true: 読み込み成功, false: 読み込み失敗
 	bool LoadAudioClip(const std::string& _filepath);
 
-	/// マテリアル
+
+	/// --------------- マテリアル --------------- ///
+
+	/// @brief マテリアルファイルの読み込み
+	/// @param _filepath 読み込み対象のファイルパス
+	/// @return true: 読み込み成功, false: 読み込み失敗
 	bool LoadMaterial(const std::string& _filepath);
+
+
+	/// --------------- フォント --------------- ///
 
 	/// フォント
 	void LoadFont(const std::string& _filepath);
@@ -80,11 +115,10 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	class DxManager*                  pDxManager_;
+	class DxManager*       pDxManager_;
 	class AssetCollection* pAssetCollection_;
 
 	unsigned int assimpLoadFlags_; /// assimpで.objを読み込むときに使用するフラグ
-
 
 };
 

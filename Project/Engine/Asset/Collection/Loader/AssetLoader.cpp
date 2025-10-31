@@ -582,14 +582,17 @@ DxResource AssetLoader::CreateTextureResource(DxDevice* _dxDevice, const DirectX
 	/// --------------------------------------
 
 	D3D12_RESOURCE_DESC desc{};
-	desc.Width = UINT(_metadata.width);                         /// textureの幅
-	desc.Height = UINT(_metadata.height);                        /// textureの高さ
-	desc.MipLevels = UINT16(_metadata.mipLevels);                   /// mipmapの数
+
+	/// テクスチャの幅
+	desc.Width = UINT(_metadata.width); 
+	desc.Height = UINT(_metadata.height);
+
+	/// テクスチャの深さ
+	desc.MipLevels = UINT16(_metadata.mipLevels);
 	desc.DepthOrArraySize = UINT16(_metadata.arraySize);                   /// 奥行き or 配列Textureの配列数
 	desc.Format = _metadata.format;                              /// TextureのFormat
 	desc.SampleDesc.Count = 1;                                             /// サンプリングカウント; 1固定
 	desc.Dimension = D3D12_RESOURCE_DIMENSION(_metadata.dimension); /// Textureの次元数
-	//desc.Flags = D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
 
 
 	/// --------------------------------------
