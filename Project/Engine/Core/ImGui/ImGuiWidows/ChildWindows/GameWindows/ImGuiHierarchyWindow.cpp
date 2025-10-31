@@ -62,7 +62,7 @@ void ImGuiHierarchyWindow::PrefabDragAndDrop() {
 						str.erase(0, pos + 1);
 					}
 
-					pEcsGroup_->GenerateEntityFromPrefab(str, GenerateGuid(), DebugConfig::isDebugging);
+					pEcsGroup_->GenerateEntityFromPrefab(str, DebugConfig::isDebugging);
 					Console::Log(std::format("entity name set to: {}", str));
 				} else {
 					Console::Log("[error] Invalid entity format. Please use \".prefab\"");

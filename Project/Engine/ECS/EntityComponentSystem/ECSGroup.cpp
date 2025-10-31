@@ -25,8 +25,8 @@ GameEntity* ECSGroup::GenerateEntity(const Guid& _guid, bool _isRuntime) {
 	return entityCollection_->GenerateEntity(_guid, _isRuntime);
 }
 
-GameEntity* ECSGroup::GenerateEntityFromPrefab(const std::string& _prefabName, const Guid& _guid, bool _isRuntime) {
-	return entityCollection_->GenerateEntityFromPrefab(_prefabName, _guid, _isRuntime);
+GameEntity* ECSGroup::GenerateEntityFromPrefab(const std::string& _prefabName, bool _isRuntime) {
+	return entityCollection_->GenerateEntityFromPrefab(_prefabName, _isRuntime);
 }
 
 

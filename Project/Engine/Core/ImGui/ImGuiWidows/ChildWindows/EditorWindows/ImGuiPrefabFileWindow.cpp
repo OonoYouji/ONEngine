@@ -20,7 +20,6 @@ ImGuiPrefabFileWindow::ImGuiPrefabFileWindow(EntityComponentSystem* _ecs, AssetC
 
 	files_ = Mathf::FindFiles("Assets/Prefabs", ".prefab");
 
-	selectedEntity_ = nullptr;
 }
 
 
@@ -65,13 +64,15 @@ void ImGuiPrefabFileWindow::ShowPrefabFileList() {
 			Console::Log("Double clicked prefab file: " + file.second);
 
 			/// すでに生成されているなら削除してから再生成
-			if (selectedEntity_) {
-				selectedEntity_->Destroy();
+			GameEntity* selectedEntity = pEcs_->GetECSGroup("Debug")->GetEntityFromGuid(selectedPrefabGuid_);
+			if (selectedEntity) {
+				selectedEntity->Destroy();
 			}
 
 			ECSGroup* debugGroup = pEcs_->GetECSGroup("Debug");
-			selectedEntity_ = debugGroup->GenerateEntityFromPrefab(file.second, GenerateGuid(), false);
-			ImGuiSelection::SetSelectedObject(selectedEntity_->GetGuid(), SelectionType::Entity);
+			selectedEntity = debugGroup->GenerateEntityFromPrefab(file.second, false);
+			selectedPrefabGuid_ = selectedEntity->GetGuid();
+			ImGuiSelection::SetSelectedObject(selectedPrefabGuid_, SelectionType::Entity);
 		}
 
 	}
@@ -142,7 +143,10 @@ bool ImGuiPrefabFileWindow::GenerateNewPrefab() {
 		return false;
 	}
 
-	prefabFile << "{}"; // 空のJSONオブジェクトを初期内容として書き込む
+	nlohmann::json json;
+	json["prefabName"] = newPrefabName_;
+
+	prefabFile << json; // 空のJSONオブジェクトを初期内容として書き込む
 	prefabFile.close();
 
 	Console::Log("Prefab file created successfully: " + filename);

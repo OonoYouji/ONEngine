@@ -3,6 +3,7 @@
 /// engine
 #include "../../Collection/ImGuiWindowCollection.h"
 #include "Engine/Core/Utility/Math/Mathf.h"
+#include "Engine/Asset/Guid/Guid.h"
 
 /// //////////////////////////////////////////////////////
 /// PrefabFileを表示するためのImGuiWindow
@@ -46,7 +47,7 @@ private:
 	std::vector<File> files_;
 
 	/// 現在選択されているPrefabのEntity
-	class GameEntity* selectedEntity_ = nullptr;
+	Guid selectedPrefabGuid_;
 
 
 	/// ----- add prefab ----- /// 

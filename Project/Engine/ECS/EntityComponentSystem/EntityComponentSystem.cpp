@@ -340,7 +340,7 @@ void MONO_INTERNAL_METHOD::InternalCreateEntity(int32_t* _entityId, MonoString* 
 
 	/// prefabを検索
 	std::string prefabName = mono_string_to_utf8(_prefabName);
-	GameEntity* entity = group->GenerateEntityFromPrefab(prefabName + ".prefab", GenerateGuid());
+	GameEntity* entity = group->GenerateEntityFromPrefab(prefabName + ".prefab");
 	if (!entity) {
 		entity = group->GenerateEntity(GenerateGuid(), true);
 		if (!entity) {
