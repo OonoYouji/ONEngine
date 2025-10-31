@@ -66,24 +66,16 @@ public class PuzzleStartController : MonoBehavior {
 		/// プレイヤーとパズルの距離を計算
 		toPlayerDistance_ = Vector3.Distance(transform.position, player_.transform.position);
 
-		MeshRenderer mr = startUI_.GetComponent<MeshRenderer>();
-		if (mr) {
-			bool enable = (startPuzzleDistance_ > toPlayerDistance_);
-			if(enable) {
-				mr.color = new Vector4(1, 1, 1, 1);
-			} else {
-				mr.color = new Vector4(1, 1, 1, 0);
-			}
-			//mr.enable = enable ? 1 : 0;
-		}
+		/// パズルの開始用UIを更新
+		UpdateStartUI();
+
 
 		/// 開始出来る状態かチェック
 		if (startPuzzleDistance_ > toPlayerDistance_) {
-
 			/// 入力によってパズルを始める
 			if (Input.TriggerKey(KeyCode.Space) ||
 				Input.TriggerGamepad(Gamepad.A)) {
-				ToggleScriptEnable();
+				StartPuzzle();
 			}
 		}
 	}
@@ -96,6 +88,41 @@ public class PuzzleStartController : MonoBehavior {
 
 		/// パズルの状態に合わせてプレイヤーの状態を変更する
 		player_.enable = !isStartedPuzzle_;
+	}
+
+	private void StartPuzzle() {
+		isStartedPuzzle_ = true;
+		for (int i = 0; i < thisScripts_.Count; i++) {
+			thisScripts_[i].enable = true;
+		}
+		/// パズルの状態に合わせてプレイヤーの状態を変更する
+		player_.enable = false;
+	}
+
+
+	private void UpdateStartUI() {
+		/// ----- パズル開始UIの表示・非表示を切り替え ----- /// 
+
+		MeshRenderer mr = startUI_.GetComponent<MeshRenderer>();
+		if (!mr) {
+			/// 制御対象がないなら何もできない
+			return;
+		}
+
+		/// パズルが開始しているなら非表示
+		if (isStartedPuzzle_) {
+			mr.color = new Vector4(1, 1, 1, 0);
+			return;
+		}
+
+
+		/// パズルスタンドとプレイヤーの距離で表示・非表示を切り替え
+		bool enable = (startPuzzleDistance_ > toPlayerDistance_);
+		if (enable) {
+			mr.color = new Vector4(1, 1, 1, 1);
+		} else {
+			mr.color = new Vector4(1, 1, 1, 0);
+		}
 	}
 
 }
