@@ -5,12 +5,14 @@
 
 /// engine
 #include "Engine/Core/Config/EngineConfig.h"
+#include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "../ChildWindows/EditorWindows/ImGuiPrefabViewWindow.h"
 #include "../ChildWindows/EditorWindows/ImGuiPrefabFileWindow.h"
 #include "../ChildWindows/GameWindows/ImGuiInspectorWindow.h"
 #include "../ChildWindows/GameWindows/ImGuiProjectWindow.h"
+#include "../ChildWindows/GameWindows/ImGuiHierarchyWindow.h"
 
-ImGuiEditorWindow::ImGuiEditorWindow(EntityComponentSystem* _ecs, AssetCollection* _assetCollection, EditorManager* _editorManager) {
+ImGuiEditorWindow::ImGuiEditorWindow(EntityComponentSystem* _ecs, AssetCollection* _assetCollection, EditorManager* _editorManager, SceneManager* _sceneManager) {
 	imGuiFlags_ |= ImGuiWindowFlags_NoMove;
 	imGuiFlags_ |= ImGuiWindowFlags_NoResize;
 	imGuiFlags_ |= ImGuiWindowFlags_NoTitleBar;
@@ -22,13 +24,13 @@ ImGuiEditorWindow::ImGuiEditorWindow(EntityComponentSystem* _ecs, AssetCollectio
 
 	AddChild(std::make_unique<ImGuiPrefabFileWindow>(_ecs, _assetCollection, inspector));
 	AddChild(std::make_unique<ImGuiPrefabViewWindow>(_ecs, _assetCollection));
+	AddChild(std::make_unique<ImGuiHierarchyWindow>("Hierarchy##Prefab", _ecs->GetECSGroup("Debug"), _editorManager, _sceneManager));
 	ImGuiProjectWindow* project = static_cast<ImGuiProjectWindow*>(
 		AddChild(std::make_unique<ImGuiProjectWindow>(_assetCollection, _editorManager)));
 
 	project->SetWindowName("Prefab Project");
 
 }
-
 
 void ImGuiEditorWindow::ShowImGui() {
 
