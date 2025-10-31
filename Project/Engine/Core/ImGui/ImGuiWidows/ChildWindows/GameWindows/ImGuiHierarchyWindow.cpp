@@ -391,6 +391,20 @@ void ImGuiHierarchyWindow::DrawEntity(GameEntity* _entity) {
 	}
 
 	if (ImGui::BeginPopup("EntityContextMenu")) {
+
+		/// 新規の生成(子に追加する
+		if (ImGui::BeginMenu("create")) {
+
+			if (ImGui::MenuItem("create empty object")) {
+				static int count = 0;
+				count++;
+				std::string name = "NewEntity_" + std::to_string(count);
+				pEditorManager_->ExecuteCommand<CreateGameObjectCommand>(pEcsGroup_, name, _entity);
+			}
+
+			ImGui::EndMenu();
+		}
+
 		if (ImGui::MenuItem("rename")) {
 			renameEntity_ = _entity;
 			newName_ = _entity->GetName();

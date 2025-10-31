@@ -8,6 +8,7 @@
 
 /// engine
 #include "../Interface/IEditorCommand.h"
+#include "Engine/Asset/Guid/Guid.h"
 
 
 /// ///////////////////////////////////////////////////
@@ -15,7 +16,7 @@
 /// ///////////////////////////////////////////////////
 class CreateGameObjectCommand : public IEditorCommand {
 public:
-	CreateGameObjectCommand(class ECSGroup* _ecs);
+	CreateGameObjectCommand(class ECSGroup* _ecs, const std::string& _name = "NewEntity", class GameEntity* _parentEntity = nullptr);
 	~CreateGameObjectCommand();
 
 	EDITOR_STATE Execute() override;
@@ -24,6 +25,9 @@ public:
 private:
 	class ECSGroup* pEcsGroup_ = nullptr;
 	class GameEntity* generatedEntity_ = nullptr;
+	Guid generatedGuid_;
+	Guid parentGuid_;
+	const std::string entityName_;
 };
 
 

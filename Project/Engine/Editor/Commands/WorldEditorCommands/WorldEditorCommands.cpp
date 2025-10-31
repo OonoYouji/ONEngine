@@ -21,24 +21,53 @@
 /// ゲームオブジェクトの作成コマンド
 /// ///////////////////////////////////////////////////
 
-CreateGameObjectCommand::CreateGameObjectCommand(ECSGroup* _ecs) {
+CreateGameObjectCommand::CreateGameObjectCommand(ECSGroup* _ecs, const std::string& _name, GameEntity* _parentEntity)
+	: entityName_(_name) {
 	pEcsGroup_ = _ecs;
+	parentGuid_ = Guid::kInvalid;
+	if (_parentEntity) {
+		parentGuid_ = _parentEntity->GetGuid();
+	}
 }
 
 CreateGameObjectCommand::~CreateGameObjectCommand() {}
 
 EDITOR_STATE CreateGameObjectCommand::Execute() {
-	generatedEntity_ = pEcsGroup_->GenerateEntity(GenerateGuid(), false);
+
+	/// 生成するEntityのGuidを生成
+	if (!generatedGuid_.CheckValid()) {
+		generatedGuid_ = GenerateGuid();
+	}
+
+	generatedEntity_ = pEcsGroup_->GenerateEntity(generatedGuid_, false);
 
 	EDITOR_STATE state = EDITOR_STATE_RUNNING;
 	if (generatedEntity_) {
+		generatedEntity_->SetName(entityName_);
+
 		state = EDITOR_STATE_FINISH;
+
+		/// 親子関係の設定
+		if (parentGuid_.CheckValid()) {
+			GameEntity* entity = pEcsGroup_->GetEntityFromGuid(parentGuid_);
+			if (entity) {
+				generatedEntity_->SetParent(entity);
+			}
+		}
 	}
 
 	return state;
 }
 
 EDITOR_STATE CreateGameObjectCommand::Undo() {
+	if (parentGuid_.CheckValid()) {
+		GameEntity* parentEntity = pEcsGroup_->GetEntityFromGuid(parentGuid_);
+		if (parentEntity && generatedEntity_) {
+			generatedEntity_->SetParent(nullptr);
+		}
+	}
+
+
 	pEcsGroup_->RemoveEntity(generatedEntity_);
 
 	return EDITOR_STATE_FINISH;
@@ -329,6 +358,6 @@ EDITOR_STATE ChangeEntityParentCommand::Undo() {
 	/// 親を元に戻す
 	if (pOldParent_) {
 		pEntity_->SetParent(pOldParent_);
-	} 
+	}
 	return EDITOR_STATE_FINISH;
 }
