@@ -29,9 +29,6 @@ protected:
 	/// @brief Prefabのドラッグアンドドロップ処理
 	void PrefabDragAndDrop();
 	
-	/// @brief １つのEntityの階層構造を描画する
-	/// @param _entity 表示するEntity
-	void DrawEntityHierarchy(class GameEntity* _entity);
 
 	/// ----- menu methods----- ///
 

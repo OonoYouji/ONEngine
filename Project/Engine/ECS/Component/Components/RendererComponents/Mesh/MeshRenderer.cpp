@@ -164,15 +164,13 @@ void COMP_DEBUG::MeshRendererDebug(MeshRenderer* _mr, AssetCollection* _assetCol
 	ImGui::InputText("##mesh", meshPath.data(), meshPath.capacity(), ImGuiInputTextFlags_ReadOnly);
 	if (ImGui::BeginDragDropTarget()) {
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("AssetData")) {
-
-			/// ペイロードが存在する場合
 			if (payload->Data) {
-				const char* droppedPath = static_cast<const char*>(payload->Data);
-				std::string path = std::string(droppedPath);
+				AssetPayload* assetPayload = *static_cast<AssetPayload**>(payload->Data);
+				std::string path = assetPayload->filePath;
+				AssetType type = GetAssetTypeFromExtension(Mathf::FileExtension(path));
 
 				/// メッシュのパスが有効な形式か確認
-				if (path.find(".obj") != std::string::npos
-					|| path.find(".gltf") != std::string::npos) {
+				if (type == AssetType::Mesh) {
 					_mr->SetMeshPath(path);
 
 					Console::Log(std::format("Mesh path set to: {}", path));

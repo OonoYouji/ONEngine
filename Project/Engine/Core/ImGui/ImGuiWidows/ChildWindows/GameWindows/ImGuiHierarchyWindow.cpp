@@ -74,83 +74,6 @@ void ImGuiHierarchyWindow::PrefabDragAndDrop() {
 	}
 }
 
-void ImGuiHierarchyWindow::DrawEntityHierarchy(GameEntity* _entity) {
-	entityName_ = _entity->GetName();
-	entityName_ += "##" + std::to_string(reinterpret_cast<uintptr_t>(_entity));
-
-
-	/// 子オブジェクトの表示
-	if (_entity->GetChildren().empty()) {
-		/// ------------------------------------
-		/// 子オブジェクトがいない場合の表示
-		/// ------------------------------------
-
-		if (renameEntity_ && renameEntity_ == _entity) {
-			EntityRename(_entity);
-
-		} else {
-
-			if (ImGui::Selectable(entityName_.c_str(), _entity == selectedEntity_)) {
-				selectedEntity_ = _entity;
-			}
-
-			/// コピーの処理、 アイテムを選択している場合のみコピー可能にする
-			if (_entity == selectedEntity_) {
-
-				/// 入力の処理
-				if (Input::PressKey(DIK_LCONTROL) || Input::PressKey(DIK_RCONTROL)) {
-					if (Input::TriggerKey(DIK_C)) {
-						EditCommand::Execute<CopyEntityCommand>(_entity);
-					}
-				}
-			}
-		}
-
-		EntityDebug(_entity);
-
-	} else {
-		/// ------------------------------------
-		/// 子オブジェクトがいる場合の表示
-		/// ------------------------------------
-
-		ImGuiTreeNodeFlags nodeFlags = ImGuiTreeNodeFlags_OpenOnArrow;
-		selectedEntityName_ = "##";
-
-		/// 名前変更中のエンティティの場合は、名前を表示しない
-		if (renameEntity_ && renameEntity_ == _entity) {
-			selectedEntityName_ += entityName_;
-		} else {
-			nodeFlags |= ImGuiTreeNodeFlags_SpanFullWidth;
-			selectedEntityName_ = entityName_;
-		}
-
-
-		// 子がいる場合はTreeNodeを使用して階層構造を開閉可能にする  
-		isNodeOpen_ = ImGui::TreeNodeEx(selectedEntityName_.c_str(), nodeFlags);
-		if (ImGui::IsItemClicked()) {
-			selectedEntity_ = _entity;
-		}
-
-		if (renameEntity_ && renameEntity_ == _entity) {
-			ImGui::SameLine();
-			EntityRename(_entity);
-		}
-
-		EntityDebug(_entity);
-
-
-		/// ノードが開いている場合は、子エンティティを再帰的に描画する
-		if (isNodeOpen_) {
-			ImGui::Indent();
-			for (auto& child : _entity->GetChildren()) {
-				DrawEntityHierarchy(child);
-			}
-			ImGui::Unindent();
-			ImGui::TreePop();
-		}
-	}
-}
-
 void ImGuiHierarchyWindow::DrawMenuBar() {
 
 	/// 早期リターン
@@ -448,10 +371,7 @@ void ImGuiHierarchyWindow::DrawEntity(GameEntity* _entity) {
 			if (srcEntity != _entity) {
 				/// _entityがsrcEntityの子孫である場合、無限ループになるので注意
 				if (!IsDescendant(srcEntity, _entity)) {
-
-					// 親子関係の設定
-					srcEntity->RemoveParent();
-					srcEntity->SetParent(_entity);
+					EditCommand::Execute<ChangeEntityParentCommand>(srcEntity, _entity);
 				} else {
 					showInvalidParentPopup_ = true;
 					Console::LogError("ドロップ先エンティティがドラッグ元エンティティの子であるためドロップできません");
@@ -488,6 +408,17 @@ void ImGuiHierarchyWindow::DrawEntity(GameEntity* _entity) {
 	}
 
 
+
+	/// ---------------------------------------------------
+	/// エンティティのコピーの処理
+	/// ---------------------------------------------------
+	if (_entity == selectedEntity_) {
+		if (Input::PressKey(DIK_LCONTROL) || Input::PressKey(DIK_RCONTROL)) {
+			if (Input::TriggerKey(DIK_C)) {
+				EditCommand::Execute<CopyEntityCommand>(_entity);
+			}
+		}
+	}
 
 
 

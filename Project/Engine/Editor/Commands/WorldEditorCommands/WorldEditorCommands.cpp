@@ -290,3 +290,39 @@ EDITOR_STATE PasteEntityCommand::Undo() {
 	}
 	return EDITOR_STATE_FAILED;
 }
+
+
+/// ///////////////////////////////////////////////////
+/// エンティティの親子関係を変更するコマンド
+/// ///////////////////////////////////////////////////
+
+ChangeEntityParentCommand::ChangeEntityParentCommand(GameEntity* _entity, GameEntity* _newParent)
+	: pEntity_(_entity), pNewParent_(_newParent) {
+}
+
+EDITOR_STATE ChangeEntityParentCommand::Execute() {
+	if (!pEntity_) {
+		Console::Log("ChangeEntityParentCommand : Entity is nullptr");
+		return EDITOR_STATE_FAILED;
+	}
+	/// 古い親を保存
+	pOldParent_ = pEntity_->GetParent();
+	/// 親を変更
+	pEntity_->SetParent(pNewParent_);
+	return EDITOR_STATE_FINISH;
+}
+
+EDITOR_STATE ChangeEntityParentCommand::Undo() {
+	if (!pEntity_) {
+		Console::Log("ChangeEntityParentCommand : Entity is nullptr");
+		return EDITOR_STATE_FAILED;
+	}
+
+	pEntity_->RemoveParent();
+
+	/// 親を元に戻す
+	if (pOldParent_) {
+		pEntity_->SetParent(pOldParent_);
+	} 
+	return EDITOR_STATE_FINISH;
+}

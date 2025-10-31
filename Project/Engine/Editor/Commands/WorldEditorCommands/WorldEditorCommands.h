@@ -135,3 +135,18 @@ private:
 	class ECSGroup* pEcsGroup_;
 	class GameEntity* pastedEntity_ = nullptr;
 };
+
+/// ///////////////////////////////////////////////////
+/// エンティティの親子付けを変更するコマンド
+/// ///////////////////////////////////////////////////
+class ChangeEntityParentCommand : public IEditorCommand {
+public:
+	ChangeEntityParentCommand(class GameEntity* _entity, class GameEntity* _newParent);
+	~ChangeEntityParentCommand() = default;
+	EDITOR_STATE Execute() override;
+	EDITOR_STATE Undo() override;
+private:
+	class GameEntity* pEntity_ = nullptr;
+	class GameEntity* pNewParent_ = nullptr;
+	class GameEntity* pOldParent_ = nullptr;
+};
