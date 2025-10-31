@@ -112,7 +112,7 @@ void RenderingPipelineCollection::DrawEntities(CameraComponent* _3dCamera, Camer
 void RenderingPipelineCollection::DrawSelectedPrefab(CameraComponent* _3dCamera, CameraComponent* _2dCamera) {
 	ECSGroup* ecsGroup = pEntityComponentSystem_->GetECSGroup("Debug");
 
-	if (_3dCamera) {
+	if (_3dCamera && _3dCamera->IsMakeViewProjection()) {
 		for (auto& renderer : renderer3ds_) {
 			renderer->Draw(ecsGroup, _3dCamera, pDxManager_->GetDxCommand());
 		}
@@ -120,7 +120,7 @@ void RenderingPipelineCollection::DrawSelectedPrefab(CameraComponent* _3dCamera,
 		Console::LogError("RenderingPipelineCollection::DrawEntities: 3D Camera is null");
 	}
 
-	if (_2dCamera) {
+	if (_2dCamera && _2dCamera->IsMakeViewProjection()) {
 		for (auto& renderer : renderer2ds_) {
 			renderer->Draw(ecsGroup, _2dCamera, pDxManager_->GetDxCommand());
 		}
