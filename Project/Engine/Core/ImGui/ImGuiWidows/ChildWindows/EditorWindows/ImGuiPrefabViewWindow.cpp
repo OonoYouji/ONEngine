@@ -20,19 +20,7 @@ void ImGuiPrefabViewWindow::ShowImGui() {
 	}
 
 
-	/// カメラの更新
 	CameraComponent* debugCamera = pEcs_->GetECSGroup("Debug")->GetMainCamera();
-	if (debugCamera) {
-		//debugCamera->Update();
-	}
-
-	//GameEntity* prefabEntity = pECS_->GetECSGroup()->GetPrefabEntity();
-	//if (prefabEntity) {
-	//	prefabEntity->UpdateTransform();
-	//	//pECS_->RuntimeUpdateSystems();
-	//	prefabEntity->UpdateTransform();
-	//}
-
 
 	/// オブジェクトの正面にカメラを配置
 	if (Input::TriggerKey(DIK_F)) {

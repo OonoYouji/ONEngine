@@ -29,6 +29,10 @@ public:
 	/// @brief imgui windowの描画処理
 	void ShowImGui() override;
 
+	/// @brief ImGui::Beginに用いるウィンドウ名を設定する
+	/// @param _windowName ウィンドウ名
+	void SetWindowName(const std::string& _windowName);
+
 private:
 	void DrawDirectoryTree(const std::filesystem::path& _dir);
 	void DrawFileView(const std::filesystem::path& _dir);
@@ -63,6 +67,9 @@ private:
 	/// ===================================================
 
 	class AssetCollection* pAssetCollection_;
+
+	/// ImGui::Beginのlabelに使う
+	std::string windowName_;
 
 	std::vector<std::filesystem::path> rootPaths_;
 	std::filesystem::path rootPath_;

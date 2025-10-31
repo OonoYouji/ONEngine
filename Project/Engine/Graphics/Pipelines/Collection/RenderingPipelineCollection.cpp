@@ -110,7 +110,7 @@ void RenderingPipelineCollection::DrawEntities(CameraComponent* _3dCamera, Camer
 }
 
 void RenderingPipelineCollection::DrawSelectedPrefab(CameraComponent* _3dCamera, CameraComponent* _2dCamera) {
-	ECSGroup* ecsGroup = pEntityComponentSystem_->GetCurrentGroup();
+	ECSGroup* ecsGroup = pEntityComponentSystem_->GetECSGroup("Debug");
 
 	if (_3dCamera) {
 		for (auto& renderer : renderer3ds_) {
