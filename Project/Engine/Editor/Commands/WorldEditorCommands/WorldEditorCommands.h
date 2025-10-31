@@ -84,6 +84,9 @@ public:
 	EDITOR_STATE Execute() override;
 	EDITOR_STATE Undo() override;
 
+	/// @brief 再帰的にエンティティをシリアライズする
+	void SerializeRecursive(class GameEntity* _entity, nlohmann::json& _json);
+
 private:
 	class GameEntity* pEntity_ = nullptr;
 	std::string prefabPath_ = "./Assets/Prefabs/";

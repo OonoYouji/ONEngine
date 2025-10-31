@@ -226,6 +226,10 @@ EDITOR_STATE CreatePrefabCommand::Execute() {
 	/// jsonに変換
 	nlohmann::json entityJson = EntityJsonConverter::ToJson(pEntity_);
 
+	/// 子の要素も入れる
+	SerializeRecursive(pEntity_, entityJson);
+
+
 	/// jsonが空ならログを残して終了
 	if (entityJson.empty()) {
 		Console::Log("CreatePrefabCommand : EntityJson is empty");
@@ -250,6 +254,15 @@ EDITOR_STATE CreatePrefabCommand::Execute() {
 
 EDITOR_STATE CreatePrefabCommand::Undo() {
 	return EDITOR_STATE_FINISH;
+}
+
+void CreatePrefabCommand::SerializeRecursive(GameEntity* _entity, nlohmann::json& _json) {
+	/// 子の要素も入れる
+	for (auto& child : _entity->GetChildren()) {
+		nlohmann::json childJson = EntityJsonConverter::ToJson(child);
+		SerializeRecursive(child, childJson);
+		_json["children"].push_back(childJson);
+	}
 }
 
 
