@@ -1,0 +1,67 @@
+{
+    "components": [
+        {
+            "enable": 1,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "rotate": {
+                "w": 1.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "scale": {
+                "x": 0.10000000149011612,
+                "y": 0.10000000149011612,
+                "z": 0.10000000149011612
+            },
+            "type": "Transform"
+        },
+        {
+            "type": "Variables"
+        },
+        {
+            "enable": 1,
+            "scripts": [
+                {
+                    "enable": true,
+                    "name": "Block"
+                }
+            ],
+            "type": "Script"
+        },
+        {
+            "enable": 1,
+            "material": {
+                "baseColor": {
+                    "w": 1.0,
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "baseTextureGuid": {
+                    "guid": "00000000000000000000000000000000"
+                },
+                "guid": {
+                    "guid": "00000000000000000000000000000000"
+                },
+                "normalTextureGuid": {
+                    "guid": "00000000000000000000000000000000"
+                },
+                "postEffectFlags": 1
+            },
+            "meshPath": "./Packages/Models/primitive/cube.obj",
+            "type": "MeshRenderer"
+        }
+    ],
+    "guid": {
+        "guid": "5d8d692623266f417d498601600f2f9a"
+    },
+    "id": 2,
+    "name": "Block",
+    "parent": null,
+    "prefabName": "Block"
+}

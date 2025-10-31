@@ -10,6 +10,7 @@
 /// engine
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Script/Script.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 #include "Engine/Script/MonoScriptEngine.h"
 
 ScriptUpdateSystem::ScriptUpdateSystem(ECSGroup* _ecs) {
@@ -60,7 +61,116 @@ void ScriptUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
 #endif // DEBUG_MODE
 
 	/// C#側に未追加にエンティティとコンポーネントを追加する
-	AddEntityAndComponent(_ecs);
+	AddAllEntitiesAndComponents(_ecs);
+
+	/// 関数呼び出しの条件
+	CallUpdateEcsGroup();
+
+
+#ifdef DEBUG_MODE
+	auto endTime = std::chrono::high_resolution_clock::now();
+	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime).count();
+	Console::LogInfo("[ScriptUpdateSystem] RuntimeUpdate took " + std::to_string(duration) + " microseconds");
+#endif // DEBUG_MODE
+}
+
+void ScriptUpdateSystem::AddAllEntitiesAndComponents(ECSGroup* _ecsGroup) {
+	/// スクリプトを持たないエンティティも追加することでC#で扱いやすくする
+	for (auto& entity : _ecsGroup->GetEntities()) {
+		AddEntityToScript(entity.get());
+	}
+}
+
+bool ScriptUpdateSystem::AddEntityToScript(GameEntity* _entity) {
+	/// runtime中に生成したオブジェクトは無視
+	if (_entity->GetId() < 0) {
+		return false;
+	}
+
+	/// スクリプトが有効でない場合はスキップ
+	MonoObject* ecsGroupObj = mono_gchandle_get_target(gcHandle_);
+	if (!ecsGroupObj) {
+		Console::LogError("Failed to get target from gcHandle_");
+		return false;
+	}
+
+	/// --------------------------------------------------------------------------------
+	/// Entityの追加関数を呼び出す
+	/// --------------------------------------------------------------------------------
+	void* addEntityArgs[1];
+	int32_t entityId = _entity->GetId();
+	addEntityArgs[0] = &entityId;
+
+	MonoObject* exc = nullptr;
+	mono_runtime_invoke(addEntityMethod_, ecsGroupObj, addEntityArgs, &exc);
+
+	if (exc) {
+		/// 例外の処理
+		char* err = mono_string_to_utf8(mono_object_to_string(exc, nullptr));
+		Console::LogError(std::string("Exception thrown in UpdateEntities: ") + err);
+		mono_free(err);
+	}
+
+	Variables* vars = _entity->GetComponent<Variables>();
+	Script* script = _entity->GetComponent<Script>();
+
+	if (script) {
+		/// --------------------------------------------------------------------------------
+		/// スクリプトの追加
+		/// --------------------------------------------------------------------------------
+		for (auto& data : script->GetScriptDataList()) {
+
+			/// すでに追加済みなら処理しない
+			if (data.isAdded) {
+				continue;
+			}
+			data.isAdded = true;
+
+			/// スクリプト名からMonoObjectを生成する
+			MonoScriptEngine& monoEngine = MonoScriptEngine::GetInstance();
+			MonoClass* behaviorClass = mono_class_from_name(monoEngine.Image(), "", data.scriptName.c_str());
+			if (!behaviorClass) {
+				Console::LogError("Failed to find MonoBehavior class");
+				continue;
+			}
+
+			/// インスタンスを生成
+			MonoObject* scriptInstance = mono_object_new(mono_domain_get(), behaviorClass);
+			mono_runtime_object_init(scriptInstance); /// クラスの初期化、コンストラクタをイメージ
+			if (!script) {
+				continue;
+			}
+
+			void* addScriptArgs[3];
+			addScriptArgs[0] = &entityId;
+			addScriptArgs[1] = scriptInstance;
+			addScriptArgs[2] = &data.enable;
+
+			exc = nullptr;
+			mono_runtime_invoke(addScriptMethod_, ecsGroupObj, addScriptArgs, &exc);
+
+			if (exc) {
+				/// 例外の処理
+				char* err = mono_string_to_utf8(mono_object_to_string(exc, nullptr));
+				Console::LogError(std::string("Exception thrown in AddScript: ") + err);
+				mono_free(err);
+			}
+
+			/// variablesの設定
+			if (vars) {
+				vars->SetScriptVariables(data.scriptName);
+			}
+
+
+		}
+	}
+
+
+	/// 正常に追加できた
+	return true;
+}
+
+void ScriptUpdateSystem::CallUpdateEcsGroup() {
 
 	/// 関数呼び出しの条件
 	if (gcHandle_ != 0) {
@@ -85,105 +195,6 @@ void ScriptUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
 
 		}
 	}
-
-
-#ifdef DEBUG_MODE
-	auto endTime = std::chrono::high_resolution_clock::now();
-	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime).count();
-	Console::LogInfo("[ScriptUpdateSystem] RuntimeUpdate took " + std::to_string(duration) + " microseconds");
-#endif // DEBUG_MODE
-}
-
-void ScriptUpdateSystem::AddEntityAndComponent(ECSGroup* _ecsGroup) {
-	MonoScriptEngine& monoEngine = MonoScriptEngine::GetInstance();
-
-	for (auto& entity : _ecsGroup->GetEntities()) {
-
-		/// runtime中に生成したオブジェクトは無視
-		if (entity->GetId() < 0) {
-			continue;
-		}
-
-		/// スクリプトが有効でない場合はスキップ
-		MonoObject* ecsGroupObj = mono_gchandle_get_target(gcHandle_);
-		if (!ecsGroupObj) {
-			Console::LogError("Failed to get target from gcHandle_");
-			return;
-		}
-
-		/// --------------------------------------------------------------------------------
-		/// Entityの追加関数を呼び出す
-		/// --------------------------------------------------------------------------------
-		void* addEntityArgs[1];
-		int32_t entityId = entity->GetId();
-		addEntityArgs[0] = &entityId;
-
-		MonoObject* exc = nullptr;
-		mono_runtime_invoke(addEntityMethod_, ecsGroupObj, addEntityArgs, &exc);
-
-		if (exc) {
-			/// 例外の処理
-			char* err = mono_string_to_utf8(mono_object_to_string(exc, nullptr));
-			Console::LogError(std::string("Exception thrown in UpdateEntities: ") + err);
-			mono_free(err);
-		}
-
-		Variables* vars = entity->GetComponent<Variables>();
-		Script* script = entity->GetComponent<Script>();
-
-		if (script) {
-			/// --------------------------------------------------------------------------------
-			/// スクリプトの追加
-			/// --------------------------------------------------------------------------------
-			for (auto& data : script->GetScriptDataList()) {
-
-				/// すでに追加済みなら処理しない
-				if (data.isAdded) {
-					continue;
-				}
-				data.isAdded = true;
-
-				/// スクリプト名からMonoObjectを生成する
-				MonoClass* behaviorClass = mono_class_from_name(monoEngine.Image(), "", data.scriptName.c_str());
-				if (!behaviorClass) {
-					Console::LogError("Failed to find MonoBehavior class");
-					continue;
-				}
-
-				/// インスタンスを生成
-				MonoObject* scriptInstance = mono_object_new(mono_domain_get(), behaviorClass);
-				mono_runtime_object_init(scriptInstance); /// クラスの初期化、コンストラクタをイメージ
-				if (!script) {
-					continue;
-				}
-
-				void* addScriptArgs[3];
-				addScriptArgs[0] = &entityId;
-				addScriptArgs[1] = scriptInstance;
-				addScriptArgs[2] = &data.enable;
-
-				exc = nullptr;
-				mono_runtime_invoke(addScriptMethod_, ecsGroupObj, addScriptArgs, &exc);
-
-				if (exc) {
-					/// 例外の処理
-					char* err = mono_string_to_utf8(mono_object_to_string(exc, nullptr));
-					Console::LogError(std::string("Exception thrown in AddScript: ") + err);
-					mono_free(err);
-				}
-
-				/// variablesの設定
-				if (vars) {
-					vars->SetScriptVariables(data.scriptName);
-				}
-
-
-			}
-		}
-
-
-	}
-
 }
 
 
@@ -255,9 +266,18 @@ DebugScriptUpdateSystem::DebugScriptUpdateSystem(ECSGroup* _ecs)
 DebugScriptUpdateSystem::~DebugScriptUpdateSystem() {}
 
 void DebugScriptUpdateSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
-	/// デバッグのスクリプトは常時更新したいのでRuntimeの更新も呼び出すようにする
+	/// 作成中のPrefabを更新してしまう問題を防ぐため、デバッグカメラのみ追加する
+
 	ScriptUpdateSystem::OutsideOfRuntimeUpdate(_ecs);
-	ScriptUpdateSystem::RuntimeUpdate(_ecs);
+
+	if (GameEntity* debugCamera = _ecs->GetMainCamera()->GetOwner()) {
+		AddEntityToScript(debugCamera);
+	}
+
+	/// 関数呼び出しの条件
+	CallUpdateEcsGroup();
 }
 
-void DebugScriptUpdateSystem::RuntimeUpdate(ECSGroup*) {}
+void DebugScriptUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
+	ScriptUpdateSystem::RuntimeUpdate(_ecs);
+}

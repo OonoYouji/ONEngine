@@ -1,0 +1,72 @@
+{
+    "components": [
+        {
+            "enable": 1,
+            "position": {
+                "x": 0.0,
+                "y": -979.0,
+                "z": 0.0
+            },
+            "rotate": {
+                "w": 0.7071067690849304,
+                "x": 0.0,
+                "y": 0.7071067690849304,
+                "z": 0.0
+            },
+            "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "type": "Transform"
+        },
+        {
+            "type": "Variables"
+        },
+        {
+            "enable": 1,
+            "material": {
+                "baseColor": {
+                    "w": 1.0,
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "baseTextureGuid": {
+                    "guid": "00000000000000000000000000000000"
+                },
+                "guid": {
+                    "guid": "00000000000000000000000000000000"
+                },
+                "normalTextureGuid": {
+                    "guid": "00000000000000000000000000000000"
+                },
+                "postEffectFlags": 1
+            },
+            "meshPath": "./Assets/Models/Entity/Animal/Wolf.obj",
+            "type": "MeshRenderer"
+        },
+        {
+            "enable": 1,
+            "scripts": [
+                {
+                    "enable": true,
+                    "name": "Player"
+                }
+            ],
+            "type": "Script"
+        },
+        {
+            "enable": 1,
+            "radius": 1.0,
+            "type": "SphereCollider"
+        }
+    ],
+    "guid": {
+        "guid": "c4f4e8f9157074f082442f104b10ce22"
+    },
+    "id": 2,
+    "name": "Player",
+    "parent": null,
+    "prefabName": "Player"
+}

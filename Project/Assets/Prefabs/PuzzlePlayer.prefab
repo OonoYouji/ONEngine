@@ -1,0 +1,67 @@
+{
+    "components": [
+        {
+            "enable": 1,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "rotate": {
+                "w": 1.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "type": "Transform"
+        },
+        {
+            "type": "Variables"
+        },
+        {
+            "enable": 1,
+            "material": {
+                "baseColor": {
+                    "w": 1.0,
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "baseTextureGuid": {
+                    "guid": "14196fa931d9b8c11196cdd7eca20cf6"
+                },
+                "guid": {
+                    "guid": "00000000000000000000000000000000"
+                },
+                "normalTextureGuid": {
+                    "guid": "00000000000000000000000000000000"
+                },
+                "postEffectFlags": 1
+            },
+            "meshPath": "./Assets/Models/Entity/Puzzle/PuzzlePlayer.obj",
+            "type": "MeshRenderer"
+        },
+        {
+            "enable": 1,
+            "scripts": [
+                {
+                    "enable": true,
+                    "name": "PuzzlePlayer"
+                }
+            ],
+            "type": "Script"
+        }
+    ],
+    "guid": {
+        "guid": "9872d9ea0bae964a933b79267bf9c1a6"
+    },
+    "id": 2,
+    "name": "PuzzlePlayer",
+    "parent": null,
+    "prefabName": "PuzzlePlayer"
+}

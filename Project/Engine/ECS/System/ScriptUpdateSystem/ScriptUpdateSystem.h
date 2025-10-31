@@ -27,7 +27,11 @@ public:
 	void RuntimeUpdate(class ECSGroup* _ecs) override;
 
 	/// エンティティとコンポーネントをC#に追加
-	void AddEntityAndComponent(class ECSGroup* _ecsGroup);
+	void AddAllEntitiesAndComponents(class ECSGroup* _ecsGroup);
+	bool AddEntityToScript(class GameEntity* _entity);
+
+	/// @brief EcsGroupの更新を呼び出す
+	void CallUpdateEcsGroup();
 
 	/// 生成
 	void MakeScriptMethod(MonoImage* _image, const std::string& _ecsGroupName);

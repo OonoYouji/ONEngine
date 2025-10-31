@@ -144,6 +144,10 @@ void ImGuiHierarchyWindow::DrawHierarchy() {
 		/// ---------------------------------------------------
 		ImVec2 windowSize = ImGui::GetContentRegionAvail();
 		windowSize.y = 12.0f;
+		if (windowSize.x == 0.0f) {
+			windowSize.x = 12.0f;
+		}
+
 		ImGui::InvisibleButton("HierarchyDropArea", windowSize);
 		if (ImGui::BeginDragDropTarget()) {
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("EntityData")) {
