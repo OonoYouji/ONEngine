@@ -37,19 +37,10 @@ void MeshRenderer::SetMeshPath(const std::string& _path) {
 
 void MeshRenderer::SetColor(const Vector4& _color) {
 	material_.baseColor = _color;
-	gpuMaterial_.baseColor = _color;
 }
 
 void MeshRenderer::SetPostEffectFlags(uint32_t _flags) {
 	material_.postEffectFlags = _flags;
-	gpuMaterial_.postEffectFlags = _flags;
-}
-
-void MeshRenderer::SetMaterialEntityId() {
-	GameEntity* owner = GetOwner();
-	if (owner) {
-		gpuMaterial_.entityId = owner->GetId();
-	}
 }
 
 const std::string& MeshRenderer::GetMeshPath() const {
@@ -57,7 +48,7 @@ const std::string& MeshRenderer::GetMeshPath() const {
 }
 
 const Vector4& MeshRenderer::GetColor() const {
-	return gpuMaterial_.baseColor;
+	return material_.baseColor;
 }
 
 const GPUMaterial& MeshRenderer::GetGpuMaterial() const {
