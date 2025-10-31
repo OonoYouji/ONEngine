@@ -10,19 +10,48 @@
 
 /// engine
 #include "Engine/Core/ImGui/Math/ImGuiMath.h"
+#include "Engine/Core/Utility/Math/Mathf.h"
 #include "Engine/ECS/EntityComponentSystem/ECSGroup.h"
 #include "Engine/ECS/Entity/GameEntity/GameEntity.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Script/Script.h"
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentJsonConverter.h"
 #include "Engine/Script/MonoScriptEngine.h"
 
-
 using json = nlohmann::json;
 
+namespace {
+
+	bool IsVectorN(const json& j, int n) {
+		if (!j.is_object()) {
+			return false;
+		}
+
+		static const char* keys[] = { "x", "y", "z", "w" };
+		for (int i = 0; i < n; ++i) {
+			if (!j.contains(keys[i]) || !j[keys[i]].is_number()) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+}	/// namespace
+
+
+
+
+
+
+Variables::Variables() {
+	groupKeyMap_.clear();
+	groups_.clear();
+}
+
+Variables::~Variables() = default;
 
 void Variables::LoadJson(const std::string& _path) {
 	/// .jsonファイルかチェック
-	if (_path.find(".json") == std::string::npos) {
+	if (Mathf::FileExtension(_path) != ".json") {
 		return;
 	}
 
@@ -51,28 +80,34 @@ void Variables::LoadJson(const std::string& _path) {
 		Group& group = groups_[groupKeyMap_.at(groupKey)];
 
 		for (auto& [varKey, varValue] : groupValue.items()) {
+			/// ---------------------------------------------------
 			/// 変数の型をチェックして追加
+			/// ---------------------------------------------------
 			if (varValue.is_number_integer()) {
-				/// int
+				/// ----- int ----- ///
 				group.Add(varKey, varValue.get<int>());
 			} else if (varValue.is_number_float()) {
-				/// float
+				/// ----- float ----- ///
 				group.Add(varKey, varValue.get<float>());
 			} else if (varValue.is_boolean()) {
-				/// bool
+				/// ----- bool ----- ///
 				group.Add(varKey, varValue.get<bool>());
 			} else if (varValue.is_string()) {
-				/// string
+				/// ----- string ----- ///
 				group.Add(varKey, varValue.get<std::string>());
-			} else if (varValue.is_array() && varValue.size() == 2) {
 
-				if (varValue[0].is_number_float() && varValue[1].is_number_float()) {
-					group.Add(varKey, Vector2(varValue[0].get<float>(), varValue[1].get<float>()));
-				} else if (varValue[0].is_number_float() && varValue[1].is_number_float()) {
-					group.Add(varKey, Vector3(varValue[0].get<float>(), varValue[1].get<float>(), varValue[2].get<float>()));
-				} else if (varValue[0].is_number_float() && varValue[1].is_number_float() && varValue[2].is_number_float() && varValue[3].is_number_float()) {
-					group.Add(varKey, Vector4(varValue[0].get<float>(), varValue[1].get<float>(), varValue[2].get<float>(), varValue[3].get<float>()));
-				}
+			} else if (IsVectorN(varValue, 4)) {
+				/// ----- Vector4 ----- ///
+				Vector4 value = varValue;
+				group.Add(varKey, value);
+			} else if (IsVectorN(varValue, 3)) {
+				/// ----- Vector3 ----- ///
+				Vector3 value = varValue;
+				group.Add(varKey, value);
+			} else if (IsVectorN(varValue, 2)) {
+				/// ----- Vector2 ----- ///
+				Vector2 value = varValue;
+				group.Add(varKey, value);
 			}
 		}
 	}
@@ -158,10 +193,6 @@ void Variables::RegisterScriptVariables() {
 
 		{
 			MonoObject* safeObj = nullptr;
-			//if (data.gcHandle != 0) {
-			//	safeObj = mono_gchandle_get_target(data.gcHandle);
-			//}
-
 			if (!safeObj) {
 				continue; //!< 対象のスクリプトがない場合はスキップ
 			}
@@ -372,7 +403,8 @@ void Variables::SetScriptVariables(const std::string& _scriptName) {
 
 	/// 一旦保存 (Cloneオブジェクト以外
 	if (owner->GetId() > 0) {
-		SaveJson("Assets/Jsons/" + owner->GetName() + ".json");
+		ECSGroup* ecsGroup = owner->GetECSGroup();
+		SaveJson("Assets/Scene/" + ecsGroup->GetGroupName() + "/" + owner->GetName() + ".json");
 	}
 
 	/// 適用の処理
@@ -496,7 +528,7 @@ void COMP_DEBUG::VariablesDebug(Variables* _variables) {
 
 
 		_variables->ReloadScriptVariables();
-		_variables->SaveJson("Assets/Jsons/" + groupName + "/" + ownerName + ".json");
+		_variables->SaveJson("Assets/Scene/" + groupName + "/" + ownerName + ".json");
 	}
 }
 

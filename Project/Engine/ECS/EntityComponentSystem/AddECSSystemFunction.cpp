@@ -37,6 +37,7 @@ void GameECSGroupAddSystemFunction(ECSGroup* _ecs, DxManager* _dxm, AssetCollect
 	/// 衝突判定に使うsystem
 	_ecs->AddSystem<TerrainCollision>();
 	_ecs->AddSystem<CollisionSystem>();
+	_ecs->AddSystem<TransformUpdateSystem>();
 
 	/// 描画に使うsystem
 	_ecs->AddSystem<MeshBufferRecreate>(_dxm->GetDxDevice());
@@ -61,6 +62,7 @@ void DebugECSGroupAddSystemFunction(ECSGroup* _ecs, DxManager* _dxm, AssetCollec
 	/// 衝突判定に使うsystem
 	_ecs->AddSystem<TerrainCollision>();
 	_ecs->AddSystem<CollisionSystem>();
+	_ecs->AddSystem<TransformUpdateSystem>();
 
 	/// 描画に使うsystem
 	_ecs->AddSystem<MeshBufferRecreate>(_dxm->GetDxDevice());

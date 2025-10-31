@@ -5,6 +5,7 @@
 
 /// math
 #include "Vector3.h"
+#include "Vector4.h"
 
 using namespace DirectX;
 
@@ -87,6 +88,11 @@ struct Matrix4x4 final {
 	/// @return 変換後のベクトル
 	static Vector3 Transform(const Vector3& _v, const Matrix4x4& _m);
 
+	/// @brief ベクトルに行列をかける
+	/// @param _v ベクトル
+	/// @param _m 行列
+	/// @return 変換後のベクトル
+	static Vector4 Transform(const Vector4& _v, const Matrix4x4& _m);
 
 	/// ===================================================
 	/// public : methods
@@ -179,6 +185,10 @@ inline Matrix4x4 operator*(const Matrix4x4& _m1, const Matrix4x4& _m2) {
 }
 
 inline Vector3 operator*(const Vector3& _v, const Matrix4x4& _m) {
+	return Matrix4x4::Transform(_v, _m);
+}
+
+inline Vector4 operator*(const Vector4& _v, const Matrix4x4& _m) {
 	return Matrix4x4::Transform(_v, _m);
 }
 

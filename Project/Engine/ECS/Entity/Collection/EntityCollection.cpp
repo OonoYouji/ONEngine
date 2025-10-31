@@ -13,7 +13,7 @@
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 
 EntityCollection::EntityCollection(ECSGroup* _ecsGroup, DxManager* _dxm)
-	: pECSGroup_(_ecsGroup), pDxManager_(_dxm) {
+	: pEcsGroup_(_ecsGroup), pDxManager_(_dxm) {
 	mainCamera_ = nullptr;
 	mainCamera2D_ = nullptr;
 	pDxDevice_ = pDxManager_->GetDxDevice();
@@ -24,15 +24,16 @@ EntityCollection::EntityCollection(ECSGroup* _ecsGroup, DxManager* _dxm)
 
 EntityCollection::~EntityCollection() {}
 
-GameEntity* EntityCollection::GenerateEntity(bool _isRuntime) {
+GameEntity* EntityCollection::GenerateEntity(const Guid& _guid, bool _isRuntime) {
 	auto entity = std::make_unique<GameEntity>();
 	if (entity) {
 		entities_.emplace_back(std::move(entity));
 
 		/// 初期化
 		GameEntity* entityPtr = entities_.back().get();
-		entityPtr->pECSGroup_ = pECSGroup_;
+		entityPtr->pEcsGroup_ = pEcsGroup_;
 		entityPtr->id_ = NewEntityID(_isRuntime);
+		entityPtr->guid_ = _guid;
 		entityPtr->Awake();
 
 		return entities_.back().get();
@@ -213,6 +214,15 @@ GameEntity* EntityCollection::GetEntity(size_t _entityId) {
 	return nullptr;
 }
 
+GameEntity* EntityCollection::GetEntityFromGuid(const Guid& _guid) {
+	auto itr = guidEntityMap_.find(_guid);
+	if (itr != guidEntityMap_.end()) {
+		return itr->second;
+	}
+	Console::LogWarning("Entity not found for Guid: " + _guid.ToString());
+	return nullptr;
+}
+
 void EntityCollection::LoadPrefabAll() {
 	/// Assets/Prefabs フォルダから全てのプレハブを読み込む
 	std::string prefabPath = "./Assets/Prefabs/";
@@ -251,7 +261,7 @@ void EntityCollection::ReloadPrefab(const std::string& _prefabName) {
 	itr->second->Reload();
 }
 
-GameEntity* EntityCollection::GenerateEntityFromPrefab(const std::string& _prefabName, bool _isRuntime) {
+GameEntity* EntityCollection::GenerateEntityFromPrefab(const std::string& _prefabName, const Guid& _guid, bool _isRuntime) {
 	/// prefabが存在するかチェック
 	auto prefabItr = prefabs_.find(_prefabName);
 	if (prefabItr == prefabs_.end()) {
@@ -263,7 +273,7 @@ GameEntity* EntityCollection::GenerateEntityFromPrefab(const std::string& _prefa
 	EntityPrefab* prefab = prefabItr->second.get();
 
 	/// entityを生成する
-	GameEntity* entity = GenerateEntity(_isRuntime);
+	GameEntity* entity = GenerateEntity(_guid, _isRuntime);
 	if (entity) {
 		const std::string name = Mathf::FileNameWithoutExtension(_prefabName);
 
@@ -274,7 +284,7 @@ GameEntity* EntityCollection::GenerateEntityFromPrefab(const std::string& _prefa
 		}
 		entity->SetPrefabName(_prefabName);
 
-		EntityJsonConverter::FromJson(prefab->GetJson(), entity);
+		EntityJsonConverter::FromJson(prefab->GetJson(), entity, pEcsGroup_->GetGroupName());
 
 		return entity;
 	}

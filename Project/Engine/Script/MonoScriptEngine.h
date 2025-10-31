@@ -44,6 +44,9 @@ public:
 	/// Monoの初期化
 	void Initialize();
 
+	/// @brief monoの終了処理
+	void Finalize();
+
 	/// CSの関数を登録
 	void RegisterFunctions();
 

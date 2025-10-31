@@ -19,7 +19,7 @@ public:
 	/// public : methods
 	/// =================================================
 
-	RiverRenderingPipeline(class AssetCollection* _grc);
+	RiverRenderingPipeline(class AssetCollection* _assetCollection);
 	~RiverRenderingPipeline() override;
 
 	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxm) override;

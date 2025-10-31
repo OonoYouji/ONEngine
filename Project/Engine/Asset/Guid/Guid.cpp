@@ -18,6 +18,9 @@ void to_json(nlohmann::json& _j, const Guid& _guid) {
 }
 
 
+const Guid Guid::kInvalid = Guid{ 0, 0 };
+
+
 Guid::Guid() : high(0), low(0) {}
 Guid::Guid(uint64_t _high, uint64_t _low) : high(_high), low(_low) {}
 

@@ -8,7 +8,7 @@
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 #include "Engine/Asset/Collection/AssetCollection.h"
 
-RiverRenderingPipeline::RiverRenderingPipeline(AssetCollection* _grc) : pAssetCollection_(_grc) {}
+RiverRenderingPipeline::RiverRenderingPipeline(AssetCollection* _assetCollection) : pAssetCollection_(_assetCollection) {}
 RiverRenderingPipeline::~RiverRenderingPipeline() = default;
 
 void RiverRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {

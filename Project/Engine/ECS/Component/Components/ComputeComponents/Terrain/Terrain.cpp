@@ -5,11 +5,14 @@
 
 /// externals
 #include <imgui.h>
+#include <magic_enum/magic_enum.hpp>
 
 /// engine
-#include "Engine/Core/Utility/Input/Input.h"
 #include "Engine/Asset/Assets/Texture/Texture.h"
 #include "Engine/Asset/Collection/AssetCollection.h"
+#include "Engine/Core/Utility/Input/Input.h"
+#include "Engine/Core/ImGui/ImGuiSelection.h"
+#include "Engine/Core/ImGui/Math/AssetPayload.h"
 
 
 /// ///////////////////////////////////////////////////
@@ -36,9 +39,9 @@ void COMP_DEBUG::TerrainDebug(Terrain* _terrain, EntityComponentSystem* _ecs, As
 
 	/// ボタンの説明文
 	const std::array<const char*, kMaxButtonNum> descriptions = {
-		"Edit Mode: 操作無し\nNo terrain editing.",
-		"Edit Mode: 地形の勾配操作\nEdit terrain vertex heights.",
-		"Edit Mode: テクスチャペイント\nPaint terrain textures."
+		"Edit Mode: 操作無し\nNo terrain editing.\n ショートカットキー [Ctrl+N]",
+		"Edit Mode: 地形の勾配操作\nEdit terrain vertex heights.\n ショートカットキー [Ctrl+V]",
+		"Edit Mode: テクスチャペイント\nPaint terrain textures.\n ショートカットキー [Ctrl+B]"
 	};
 
 	/// 要素ごとにボタンを表示
@@ -48,9 +51,20 @@ void COMP_DEBUG::TerrainDebug(Terrain* _terrain, EntityComponentSystem* _ecs, As
 		/// 最初以外が一行になるようにする
 		if (i != 0) { ImGui::SameLine(); }
 
+		/// 非選択時は半透明にする
+		int32_t saveEditMode = _terrain->editorInfo_.editMode;
+		if (saveEditMode != static_cast<int32_t>(i)) {
+			ImGui::PushStyleVar(ImGuiStyleVar_Alpha, 0.2f);
+		}
+
 		ImTextureID textureId = reinterpret_cast<ImTextureID>(buttonTextures[i]->GetSRVGPUHandle().ptr);
 		if (ImGui::ImageButton("##Button", textureId, ImVec2(32, 32))) {
 			_terrain->editorInfo_.editMode = static_cast<int32_t>(i);
+		}
+
+		/// 非選択時はスタイルを戻す
+		if (saveEditMode != static_cast<int32_t>(i)) {
+			ImGui::PopStyleVar();
 		}
 
 		/// ボタンにカーソルを2秒以上合わせると説明を表示
@@ -76,7 +90,8 @@ void COMP_DEBUG::TerrainDebug(Terrain* _terrain, EntityComponentSystem* _ecs, As
 	/// Modeごとの編集内容を表示
 	/// ---------------------------------------------------
 
-	ImGui::Separator();
+	const std::string enumStr = std::string(magic_enum::enum_name(static_cast<Terrain::EditMode>(_terrain->editorInfo_.editMode)));
+	ImGui::SeparatorText(enumStr.c_str());
 	switch (_terrain->editorInfo_.editMode) {
 	case static_cast<int32_t>(Terrain::EditMode::Vertex):
 
@@ -96,13 +111,23 @@ void COMP_DEBUG::TerrainDebug(Terrain* _terrain, EntityComponentSystem* _ecs, As
 		);
 		break;
 	}
-	ImGui::Separator();
 
+
+	{	/// ----- 現在のエディタの情報をImGuiInfoに設定する ----- ///
+		std::string info = "Terrain Editor Info :   ";
+		info += "edit mode: " + enumStr;
+		if (_terrain->editorInfo_.editMode == static_cast<int32_t>(Terrain::EditMode::Texture)) {
+			info += "   :   used texture index: " + std::to_string(_terrain->editorInfo_.usedTextureIndex);
+		}
+
+		ImGuiInfo::SetInfo(info);
+	}
 
 
 	/// ---------------------------------------------------
 	/// brush の情報を変更
 	/// ---------------------------------------------------
+	ImGui::SeparatorText("Brush data");
 
 	/// brush の情報を変更
 	ImGui::SliderFloat("brush radius", &_terrain->editorInfo_.brushRadius, 0.1f, 100.0f);
@@ -120,10 +145,16 @@ void COMP_DEBUG::TerrainDebug(Terrain* _terrain, EntityComponentSystem* _ecs, As
 bool COMP_DEBUG::TerrainTextureEditModeDebug(std::array<std::string, 4>* _texturePaths, int32_t* _usedTextureIndex, AssetCollection* _assetCollection) {
 	/// ----- テクスチャのパスを変更する処理 ----- ///
 
+	const std::vector<std::string> shortcutKeys = {
+		"[Cntrl + 1]", "[Cntrl + 2]",
+		"[Cntrl + 3]", "[Cntrl + 4]"
+	};
+
+
 	for (size_t i = 0; i < 4; i++) {
 		std::string& text = (*_texturePaths)[i];
 
-		ImGui::PushID((*_texturePaths)[i].c_str());
+		ImGui::PushID(i);
 
 
 		Texture* texture = _assetCollection->GetTexture(text);
@@ -131,7 +162,7 @@ bool COMP_DEBUG::TerrainTextureEditModeDebug(std::array<std::string, 4>* _textur
 
 			/// このテクスチャを使用しているのかどうか
 			bool isUsing = (i == static_cast<size_t>(*_usedTextureIndex));
-
+			bool isHovered = false;
 
 			/// 地形に使用しているテクスチャを表示
 			ImTextureID id = reinterpret_cast<ImTextureID>(texture->GetSRVGPUHandle().ptr);
@@ -139,12 +170,14 @@ bool COMP_DEBUG::TerrainTextureEditModeDebug(std::array<std::string, 4>* _textur
 				*_usedTextureIndex = static_cast<int32_t>(i);
 			}
 
+			isHovered |= ImGui::IsItemHovered();
+
 			/// ドロップしてテクスチャを変える
 			if (ImGui::BeginDragDropTarget()) {
 				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("AssetData")) {
 					if (payload->Data) {
-						const char* droppedPath = static_cast<const char*>(payload->Data);
-						std::string path = std::string(droppedPath);
+						AssetPayload* assetPayload = *static_cast<AssetPayload**>(payload->Data);
+						const std::string path = assetPayload->filePath;
 
 						/// パスの拡張子をチェック
 						const std::string extension = Mathf::FileExtension(path);
@@ -169,6 +202,15 @@ bool COMP_DEBUG::TerrainTextureEditModeDebug(std::array<std::string, 4>* _textur
 				*_usedTextureIndex = static_cast<int32_t>(i);
 			}
 
+			isHovered |= ImGui::IsItemHovered();
+
+			/// Hoverで説明を表示
+			if (isHovered) {
+				ImGui::BeginTooltip();
+				ImGui::Text("Texture %zu\nPath: %s\nClick the image to select this texture for painting.", i + 1, text.c_str());
+				ImGui::Text(("ショートカットキー " + shortcutKeys[i]).c_str());
+				ImGui::EndTooltip();
+			}
 
 		}
 
@@ -191,6 +233,10 @@ void from_json(const nlohmann::json& _j, Terrain& _t) {
 	_t.editorInfo_.brushRadius = _j.value("brushRadius", 10.0f);
 	_t.editorInfo_.brushStrength = _j.value("brushStrength", 1.0f);
 	_t.isRenderingProcedural_ = _j.value("isRenderingProcedural", false);
+	_t.splattingTexPaths_[0] = _j.value("splattingTexPath0", std::string("./Packages/Textures/uvChecker.png"));
+	_t.splattingTexPaths_[1] = _j.value("splattingTexPath1", std::string("./Packages/Textures/uvChecker.png"));
+	_t.splattingTexPaths_[2] = _j.value("splattingTexPath2", std::string("./Packages/Textures/uvChecker.png"));
+	_t.splattingTexPaths_[3] = _j.value("splattingTexPath3", std::string("./Packages/Textures/uvChecker.png"));
 }
 
 void to_json(nlohmann::json& _j, const Terrain& _t) {
@@ -199,7 +245,11 @@ void to_json(nlohmann::json& _j, const Terrain& _t) {
 		{ "enable", _t.enable },
 		{ "brushRadius", _t.editorInfo_.brushRadius },
 		{ "brushStrength", _t.editorInfo_.brushStrength },
-		{ "isRenderingProcedural", _t.isRenderingProcedural_ }
+		{ "isRenderingProcedural", _t.isRenderingProcedural_ },
+		{ "splattingTexPath0", _t.splattingTexPaths_[0] },
+		{ "splattingTexPath1", _t.splattingTexPaths_[1] },
+		{ "splattingTexPath2", _t.splattingTexPaths_[2] },
+		{ "splattingTexPath3", _t.splattingTexPaths_[3] },
 	};
 }
 
@@ -224,7 +274,6 @@ Terrain::Terrain() {
 	const size_t faceVerts = 6;
 	maxIndexNum_ = static_cast<uint32_t>((terrainWidth - 1) * (terrainHeight - 1) * faceVerts);
 
-	/// river
 
 
 	splattingTexPaths_[GRASS] = "./Packages/Textures/Grass.jpg";

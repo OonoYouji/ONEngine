@@ -79,7 +79,7 @@ void InternalGetPosition(uint64_t _nativeHandle, float* _x, float* _y, float* _z
 	}
 
 	const Matrix4x4& matWorld = transform->GetMatWorld();
-	const Vector3& position = Matrix4x4::Transform({}, matWorld);
+	const Vector3& position = Matrix4x4::Transform(Vector3::kZero, matWorld);
 
 	if (_x) { *_x = position.x; }
 	if (_y) { *_y = position.y; }
@@ -184,9 +184,9 @@ void COMP_DEBUG::TransformDebug(Transform* _transform) {
 	bool isEdit = false;
 
 
-	isEdit |= ImMath::DragFloat3("position", &_transform->position, 0.1f);
-	isEdit |= ImMath::DragQuaternion("rotate", &_transform->rotate, Mathf::PI / 12.0f);
-	isEdit |= ImMath::DragFloat3("scale", &_transform->scale, 0.1f);
+	isEdit |= ImMathf::DragFloat3("position", &_transform->position, 0.1f);
+	isEdit |= ImMathf::DragQuaternion("rotate", &_transform->rotate, Mathf::PI / 12.0f);
+	isEdit |= ImMathf::DragFloat3("scale", &_transform->scale, 0.1f);
 
 	if (isEdit) {
 		_transform->Update();

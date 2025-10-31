@@ -64,6 +64,8 @@ private:
 	std::optional<Handle> srvHandle_;
 	std::optional<Handle> uavHandle_;
 
+	Vector2 textureSize_;
+
 public:
 	/// ===================================================
 	/// public : accessor
@@ -107,6 +109,8 @@ public:
 
 	const DxResource& GetDxResource() const;
 	DxResource& GetDxResource();
+
+	const Vector2& GetTextureSize() const;
 
 };
 

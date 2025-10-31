@@ -85,7 +85,35 @@ void TerrainProceduralRenderingPipeline::Initialize(ShaderCompiler* _shaderCompi
 	}
 }
 
-void TerrainProceduralRenderingPipeline::PreDraw(ECSGroup*, CameraComponent*, DxCommand* _dxCommand) {
+void TerrainProceduralRenderingPipeline::PreDraw(ECSGroup* _ecs, CameraComponent*, DxCommand* _dxCommand) {
+	/// 配列の取得 & 存在チェック
+	ComponentArray<Terrain>* terrainArray = _ecs->GetComponentArray<Terrain>();
+	if (!terrainArray || terrainArray->GetUsedComponents().empty()) {
+		return;
+	}
+
+	/// 一旦先頭にあるTerrainのみ描画する
+	Terrain* terrain = nullptr;
+	for (auto& terrainComp : terrainArray->GetUsedComponents()) {
+		if (terrainComp->GetOwner()) {
+			terrain = terrainComp;
+			break; // 先頭のTerrainのみを使用
+		}
+	}
+
+	/// 見つからない場合、地形が生成されていない場合、無効な場合は return
+	if (!terrain || !terrain->GetIsCreated() || !terrain->enable) {
+		return;
+	}
+
+
+	/// プロシージャル植生をレンダリングするかチェック
+	if (!terrain->GetIsRenderingProcedural()) {
+		return;
+	}
+
+
+
 	auto cmdList = _dxCommand->GetCommandList();
 
 	computePipeline_->SetPipelineStateForCommandList(_dxCommand);
@@ -109,7 +137,7 @@ void TerrainProceduralRenderingPipeline::PreDraw(ECSGroup*, CameraComponent*, Dx
 	cmdList->ResourceBarrier(1, &uavBarrier);
 	instanceDataAppendBuffer_.GetCounterResource().CreateBarrier(D3D12_RESOURCE_STATE_COPY_SOURCE, _dxCommand);
 
-	_dxCommand->CommandExecute();
+	_dxCommand->CommandExecuteAndWait();
 	_dxCommand->CommandReset();
 	_dxCommand->WaitForGpuComplete();
 

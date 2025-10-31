@@ -13,16 +13,14 @@ AssetCollection::~AssetCollection() {}
 
 
 void AssetCollection::Initialize(DxManager* _dxm) {
-	resourceLoader_ = std::make_unique<AssetLoader>(_dxm, this);
-	resourceLoader_->Initialize();
+	assetLoader_ = std::make_unique<AssetLoader>(_dxm, this);
+	assetLoader_->Initialize();
 
 	/// リソースコンテナの初期化
-	modelContainer_     = std::make_unique<AssetContainer<Model>>(static_cast<size_t>(MAX_MODEL_COUNT));
-	textureContainer_   = std::make_unique<AssetContainer<Texture>>(static_cast<size_t>(MAX_TEXTURE_COUNT));
+	modelContainer_ = std::make_unique<AssetContainer<Model>>(static_cast<size_t>(MAX_MODEL_COUNT));
+	textureContainer_ = std::make_unique<AssetContainer<Texture>>(static_cast<size_t>(MAX_TEXTURE_COUNT));
 	audioClipContainer_ = std::make_unique<AssetContainer<AudioClip>>(static_cast<size_t>(MAX_AUDIOCLIP_COUNT));
-	materialContainer_  = std::make_unique<AssetContainer<Material>>(static_cast<size_t>(MAX_MATERIAL_COUNT));
-
-	RegisterResourceType();
+	materialContainer_ = std::make_unique<AssetContainer<Material>>(static_cast<size_t>(MAX_MATERIAL_COUNT));
 
 	/// Packages内のファイルがすべて読み込む
 	LoadResources(GetResourceFilePaths("./Packages/"));
@@ -34,12 +32,10 @@ void AssetCollection::LoadResources(const std::vector<std::string>& _filePaths) 
 
 	std::string extension;
 	for (auto& path : _filePaths) {
-		AssetType type = AssetType::None;
+		AssetType type = GetAssetTypeFromExtension(Mathf::FileExtension(path));
 
 		/// 拡張子をチェックして、リソースの種類を決定
-		extension = Mathf::FileExtension(path);
-		if (resourceTypes_.contains(extension)) {
-			type = resourceTypes_[extension];
+		if (type != AssetType::None) {
 			Load(path, type);
 		}
 	}
@@ -51,27 +47,58 @@ void AssetCollection::UnloadResources(const std::vector<std::string>& _filePaths
 
 	std::string extension;
 	for (auto& path : _filePaths) {
-		AssetType type = AssetType::None;
-
 		/// 拡張子をチェックして、リソースの種類を決定
-		extension = Mathf::FileExtension(path);
-		if (resourceTypes_.contains(extension)) {
-			type = resourceTypes_[extension];
-		}
+		AssetType type = GetAssetTypeFromExtension(Mathf::FileExtension(path));
 
+		/// 拡張子ごとに処理
 		switch (type) {
-		case AssetType::None:
-			continue; ///< noneの場合は何もしない
 		case AssetType::Texture:
+			/// textureの解放
+			textureContainer_->Remove(path);
 			break;
 		case AssetType::Mesh:
 			/// meshの解放
 			modelContainer_->Remove(path);
 			break;
+		case AssetType::Audio:
+			/// audioの解放
+			audioClipContainer_->Remove(path);
+			break;
+		case AssetType::Material:
+			/// materialの解放
+			materialContainer_->Remove(path);
+			break;
 		}
 
 	}
 
+}
+
+void AssetCollection::UnloadAssetByPath(const std::string& _filepath) {
+	/// ----- 指定されたファイルパスのアセットを解放する ----- ///
+
+	/// 拡張子をチェックして、リソースの種類を決定
+	AssetType type = GetAssetTypeFromExtension(Mathf::FileExtension(_filepath));
+
+	/// 拡張子ごとに処理
+	switch (type) {
+	case AssetType::Texture:
+		/// textureの解放
+		textureContainer_->Remove(_filepath);
+		break;
+	case AssetType::Mesh:
+		/// meshの解放
+		modelContainer_->Remove(_filepath);
+		break;
+	case AssetType::Audio:
+		/// audioの解放
+		audioClipContainer_->Remove(_filepath);
+		break;
+	case AssetType::Material:
+		/// materialの解放
+		materialContainer_->Remove(_filepath);
+		break;
+	}
 }
 
 void AssetCollection::Load(const std::string& _filepath, AssetType _type) {
@@ -86,72 +113,146 @@ void AssetCollection::Load(const std::string& _filepath, AssetType _type) {
 	case AssetType::Texture:
 		/// 読み込み済みかチェックし、読み込んでいない場合のみ読み込む
 		if (GetTexture(_filepath) == nullptr) {
-			resourceLoader_->LoadTexture(_filepath);
+			assetLoader_->LoadTexture(_filepath);
 		}
 		break;
 	case AssetType::Mesh:
-		resourceLoader_->LoadModelObj(_filepath);
+		assetLoader_->LoadModelObj(_filepath);
 		break;
 	case AssetType::Audio:
-		resourceLoader_->LoadAudioClip(_filepath);
+		assetLoader_->LoadAudioClip(_filepath);
 		break;
 	case AssetType::Material:
-		resourceLoader_->LoadFont(_filepath);
+		assetLoader_->LoadMaterial(_filepath);
 		break;
 	}
 
 }
 
-void AssetCollection::HotReload(const std::string& _filepath) {
-	/// ----- 指定されたファイルパスのリソースをホットリロードする ----- ///
+/// AddAssetのテンプレート実装
+template<>
+void AssetCollection::AddAsset<Model>(const std::string& _filepath, Model&& _asset) {
+	modelContainer_->Add(_filepath, std::move(_asset));
+}
 
-	/// ファイルの拡張子を取得
-	const std::string extension = Mathf::FileNameWithoutExtension(_filepath);
-	AssetType type = AssetType::None;
-	/// 拡張子をチェックして、リソースの種類を決定
-	if (resourceTypes_.contains(extension)) {
-		type = resourceTypes_[extension];
-	} else {
-		Console::LogWarning("Unsupported file type for hot reload: " + _filepath);
-		return;
+template<>
+void AssetCollection::AddAsset<Texture>(const std::string& _filepath, Texture&& _asset) {
+	textureContainer_->Add(_filepath, std::move(_asset));
+}
+
+template<>
+void AssetCollection::AddAsset<AudioClip>(const std::string& _filepath, AudioClip&& _asset) {
+	audioClipContainer_->Add(_filepath, std::move(_asset));
+}
+
+template<>
+void AssetCollection::AddAsset<Material>(const std::string& _filepath, Material&& _asset) {
+	materialContainer_->Add(_filepath, std::move(_asset));
+}
+
+
+bool AssetCollection::IsAssetExist(const Guid& _guid) const {
+	/// ----- guidがアセットの物かチェックする ----- ///
+
+	/// 無効値ならfalseを返す
+	if (!_guid.CheckValid()) {
+		return false;
 	}
 
+	/// 各コンテナでguidをチェック
+	if (modelContainer_->GetIndex(_guid) != -1) {
+		return true;
+	}
 
+	if (textureContainer_->GetIndex(_guid) != -1) {
+		return true;
+	}
+
+	if (audioClipContainer_->GetIndex(_guid) != -1) {
+		return true;
+	}
+
+	if (materialContainer_->GetIndex(_guid) != -1) {
+		return true;
+	}
+
+	/// どのコンテナにも存在しなかった場合はfalseを返す
+	return false;
+}
+
+bool AssetCollection::HasAsset(const std::string& _filepath) {
+	/// ----- アセットを持っているのかチェックする ----- ///
+
+	/// Typeの判定
+	const std::string extension = Mathf::FileExtension(_filepath);
+	AssetType type = GetAssetTypeFromExtension(extension);
+
+	/// 各コンテナで存在チェック
 	switch (type) {
 	case AssetType::Texture:
-		/// テクスチャの再読み込み
-		resourceLoader_->LoadTexture(_filepath);
+		/// Textureの存在チェック
+		if (textureContainer_->GetIndex(_filepath) != -1) {
+			return true;
+		}
 		break;
 	case AssetType::Mesh:
-		/// モデルの再読み込み
-		resourceLoader_->LoadModelObj(_filepath);
+		/// Mesh
+		if (modelContainer_->GetIndex(_filepath) != -1) {
+			return true;
+		}
+		break;
+	case AssetType::Audio:
+		/// Audio
+		if (audioClipContainer_->GetIndex(_filepath) != -1) {
+			return true;
+		}
+		break;
+	case AssetType::Material:
+		/// Material
+		if (materialContainer_->GetIndex(_filepath) != -1) {
+			return true;
+		}
 		break;
 	}
+
+
+	return false;
 }
 
-void AssetCollection::HotReloadAll() {
-	/// ----- すべてのリソースをホットリロードする ----- ///
+bool AssetCollection::ReloadAsset(const std::string& _filepath) {
+	/// ----- アセットのリロード ----- ///
 
-	for (const auto& model : modelContainer_->GetIndexMap()) {
-		resourceLoader_->LoadModelObj(model.first);
+	/// Typeの判定
+	const std::string extension = Mathf::FileExtension(_filepath);
+	AssetType type = GetAssetTypeFromExtension(extension);
+
+	/// Typeごとにリロード処理を実行
+	switch (type) {
+	case AssetType::Texture:
+		/// Textureのリロード
+		if (assetLoader_->ReloadTexture(_filepath)) {
+			return true;
+		}
+		break;
+	case AssetType::Mesh:
+		/// Meshのリロード
+		if (assetLoader_->LoadModelObj(_filepath)) {
+			return true;
+		}
+		break;
+	case AssetType::Audio:
+		/// Audioのリロード
+		if (assetLoader_->LoadAudioClip(_filepath)) {
+			return true;
+		}
+		break;
+	case AssetType::Material:
+		/// Materialのリロード
+		assetLoader_->LoadMaterial(_filepath);
+		break;
 	}
 
-	for (const auto& texture : textureContainer_->GetIndexMap()) {
-		resourceLoader_->LoadTexture(texture.first);
-	}
-}
-
-void AssetCollection::AddModel(const std::string& _filepath, Model&& _model) {
-	modelContainer_->Add(_filepath, _model);
-}
-
-void AssetCollection::AddTexture(const std::string& _filepath, Texture&& _texture) {
-	_texture.SetName(_filepath);
-	textureContainer_->Add(_filepath, _texture);
-}
-
-void AssetCollection::AddAudioClip(const std::string& _filepath, AudioClip&& _audioClip) {
-	audioClipContainer_->Add(_filepath, std::move(_audioClip));
+	return false;
 }
 
 std::vector<std::string> AssetCollection::GetResourceFilePaths(const std::string& _directoryPath) const {
@@ -166,7 +267,8 @@ std::vector<std::string> AssetCollection::GetResourceFilePaths(const std::string
 			Mathf::ReplaceAll(&path, "\\", "/");
 
 			/// 拡張子をチェックして、リソースの種類を決定
-			if (resourceTypes_.contains(Mathf::FileExtension(path))) {
+			AssetType type = GetAssetTypeFromExtension(Mathf::FileExtension(path));
+			if (type != AssetType::None) {
 				resourcePaths.push_back(path);
 			}
 
@@ -176,15 +278,44 @@ std::vector<std::string> AssetCollection::GetResourceFilePaths(const std::string
 	return resourcePaths;
 }
 
-void AssetCollection::RegisterResourceType() {
-	/// リソースの種類を登録
-	resourceTypes_[".png"] = AssetType::Texture;
-	resourceTypes_[".jpg"] = AssetType::Texture;
-	resourceTypes_[".dds"] = AssetType::Texture;
-	resourceTypes_[".obj"] = AssetType::Mesh;
-	resourceTypes_[".gltf"] = AssetType::Mesh;
-	resourceTypes_[".wav"] = AssetType::Audio;
-	resourceTypes_[".mp3"] = AssetType::Audio;
+const Guid& AssetCollection::GetAssetGuidFromPath(const std::string& _filepath) const {
+	const std::string extension = Mathf::FileExtension(_filepath);
+	AssetType type = GetAssetTypeFromExtension(extension);
+
+	switch (type) {
+	case AssetType::Texture:
+		return textureContainer_->GetGuid(_filepath);
+	case AssetType::Mesh:
+		return modelContainer_->GetGuid(_filepath);
+	case AssetType::Audio:
+		return audioClipContainer_->GetGuid(_filepath);
+	case AssetType::Material:
+		return materialContainer_->GetGuid(_filepath);
+	}
+
+	return Guid::kInvalid;
+}
+
+AssetType AssetCollection::GetAssetTypeFromGuid(const Guid& _guid) const {
+	/// ----- GuidからAssetTypeを取得する ----- ///
+
+	if (modelContainer_->GetIndex(_guid) != -1) {
+		return AssetType::Mesh;
+	}
+
+	if (textureContainer_->GetIndex(_guid) != -1) {
+		return AssetType::Texture;
+	}
+
+	if (audioClipContainer_->GetIndex(_guid) != -1) {
+		return AssetType::Audio;
+	}
+
+	if (materialContainer_->GetIndex(_guid) != -1) {
+		return AssetType::Material;
+	}
+
+	return AssetType::None;
 }
 
 const Model* AssetCollection::GetModel(const std::string& _filepath) const {
@@ -217,6 +348,20 @@ const std::vector<Texture>& AssetCollection::GetTextures() const {
 
 int32_t AssetCollection::GetTextureIndexFromGuid(const Guid& _guid) const {
 	return textureContainer_->GetIndex(_guid);
+}
+
+const std::string& AssetCollection::GetTexturePath(const Guid& _guid) const {
+	/// Guid -> Index -> Path の順番で取得
+	return textureContainer_->GetKey(textureContainer_->GetIndex(_guid));
+}
+
+Texture* AssetCollection::GetTextureFromGuid(const Guid& _guid) const {
+	/// 無効値ならnullptrを返す
+	if (!_guid.CheckValid()) {
+		return nullptr;
+	}
+
+	return textureContainer_->Get(textureContainer_->GetIndex(_guid));
 }
 
 const AudioClip* AssetCollection::GetAudioClip(const std::string& _filepath) const {

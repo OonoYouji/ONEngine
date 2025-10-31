@@ -40,6 +40,9 @@ namespace ImMathf {
 	/// UV変形の編集
 	bool UVTransformEdit(const char* _label, UVTransform* _uvTransform);
 
+
+	ImVec2 CalculateAspectFitSize(const Vector2& _textureSize, float _maxSize);
+	ImVec2 CalculateAspectFitSize(const Vector2& _textureSize, const ImVec2& _maxSize);
 }
 
 
@@ -61,8 +64,6 @@ bool ImGuiColorEdit(const char* _label, Vector4* _color);
 void DirectionalLightDebug(class DirectionalLight* _light);
 
 void AudioSourceDebug(class AudioSource* _audioSource);
-
-void MeshRendererDebug(class MeshRenderer* _meshRenderer);
 
 void CustomMeshRendererDebug(class CustomMeshRenderer* _customMeshRenderer);
 

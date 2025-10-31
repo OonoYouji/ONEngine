@@ -36,12 +36,13 @@ public:
 	~EntityCollection();
 
 	/// 生成
-	GameEntity* GenerateEntity(bool _isRuntime = false);
+	GameEntity* GenerateEntity(const Guid& _guid, bool _isRuntime = false);
 	int32_t NewEntityID(bool _isRuntime);
 
 	/// 取得
 	uint32_t GetEntityId(const std::string& _name);
 	GameEntity* GetEntity(size_t _entityId);
+	GameEntity* GetEntityFromGuid(const Guid& _guid);
 
 	/// 削除
 	void RemoveEntity(GameEntity* _entity, bool _deleteChildren = true);
@@ -60,7 +61,7 @@ public:
 	void LoadPrefabAll();
 	void ReloadPrefab(const std::string& _prefabName);
 
-	GameEntity* GenerateEntityFromPrefab(const std::string& _prefabName, bool _isRuntime = true);
+	GameEntity* GenerateEntityFromPrefab(const std::string& _prefabName, const Guid& _guid, bool _isRuntime = true);
 	EntityPrefab* GetPrefab(const std::string& _fileName);
 
 private:
@@ -68,7 +69,7 @@ private:
 	/// private : objects
 	/// =========================================
 
-	class ECSGroup* pECSGroup_;
+	class ECSGroup* pEcsGroup_;
 	class DxManager* pDxManager_;
 	class DxDevice* pDxDevice_;
 
@@ -79,6 +80,7 @@ private:
 	/// entityの本体を持つ配列
 	std::vector<std::unique_ptr<GameEntity>> entities_;
 	std::vector<GameEntity*> doNotDestroyEntities_;
+	std::unordered_map<Guid, GameEntity*> guidEntityMap_;
 
 	CameraComponent* mainCamera_ = nullptr;
 	CameraComponent* mainCamera2D_ = nullptr;

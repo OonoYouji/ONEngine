@@ -91,7 +91,7 @@ public:
 	/// @return bufferを再作成するフラグ
 	bool GetIsBufferRecreate() const;
 
-	const GPUMaterial& GetMaterial();
+	const GPUMaterial& GetGpuMaterial();
 
 };
 

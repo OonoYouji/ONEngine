@@ -32,18 +32,19 @@ public:
 	void Initialize();
 
 	/// テクスチャ
-	void LoadTexture(const std::string& _filepath);
+	bool LoadTexture(const std::string& _filepath);
+	bool ReloadTexture(const std::string& _filepath);
 
 	/// モデル
-	void LoadModelObj(const std::string& _filepath);
+	bool LoadModelObj(const std::string& _filepath);
 	Node ReadNode(struct aiNode* _node);
 	void LoadAnimation(Model* _model, const std::string& _filepath);
 
 	/// サウンド
-	void LoadAudioClip(const std::string& _filepath);
+	bool LoadAudioClip(const std::string& _filepath);
 
 	/// マテリアル
-	void LoadMaterial(const std::string& _filepath);
+	bool LoadMaterial(const std::string& _filepath);
 
 	/// フォント
 	void LoadFont(const std::string& _filepath);

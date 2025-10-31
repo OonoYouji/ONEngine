@@ -70,7 +70,7 @@ void SceneIO::SaveSceneToJson(nlohmann::json& _output, ECSGroup* _ecsGroup) {
 		}
 
 		if (Variables* var = entity->GetComponent<Variables>()) {
-			var->SaveJson("./Assets/Jsons/" + entity->GetName() + ".json");
+			var->SaveJson("./Assets/Scene/" + _ecsGroup->GetGroupName() + "/" + entity->GetName() + ".json");
 		}
 
 		nlohmann::json entityJson = EntityJsonConverter::ToJson(entity.get());
@@ -96,25 +96,31 @@ void SceneIO::LoadSceneFromJson(const nlohmann::json& _input, ECSGroup* _ecsGrou
 		const std::string& entityName = entityJson.value("name", "");
 		const uint32_t entityId = entityJson.value("id", 0);
 
+		/// guidの取得、無効値なら新規生成
+		Guid guid = entityJson.value("guid", GenerateGuid());
+		if (guid == Guid::kInvalid) {
+			guid = GenerateGuid();
+		}
+
 		GameEntity* entity = nullptr;
 		if (!prefabName.empty()) {
 			std::string jsonPrefabName = entityJson["prefabName"];
-			entity = _ecsGroup->GenerateEntityFromPrefab(jsonPrefabName, false);
+			entity = _ecsGroup->GenerateEntityFromPrefab(jsonPrefabName, guid, false);
 		} else {
-			entity = _ecsGroup->GenerateEntity(false);
+			entity = _ecsGroup->GenerateEntity(guid, false);
 		}
 
 		if (entity) {
-			entity->SetPrefabName(prefabName);
-			entity->SetName(entityName);
+			entity->prefabName_ = prefabName;
+			entity->name_ = entityName;
 
 			/// prefabがないならシーンに保存されたjsonからエンティティを復元
 			if (prefabName.empty()) {
-				EntityJsonConverter::FromJson(entityJson, entity);
+				EntityJsonConverter::FromJson(entityJson, entity, _ecsGroup->GetGroupName());
 			} else {
 				EntityJsonConverter::TransformFromJson(entityJson, entity);
 				if (Variables* vars = entity->GetComponent<Variables>()) {
-					vars->LoadJson("./Assets/Jsons/" + entityName + ".json");
+					vars->LoadJson("./Assets/Scene/" + _ecsGroup->GetGroupName() + "/" + entityName + ".json");
 				}
 			}
 

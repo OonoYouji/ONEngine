@@ -6,6 +6,7 @@
 
 /// engine
 #include "../../Interface/IComponent.h"
+#include "Engine/Asset/Assets/Mateiral/Material.h"
 #include "Engine/Graphics/Pipelines/Render/Mesh/MeshRenderingPipeline.h"
 #include "Engine/Graphics/Buffer/Data/GPUMaterial.h"
 
@@ -16,7 +17,7 @@ class AssetCollection;
 
 namespace COMP_DEBUG {
 	/// @brief MeshRendererのデバッグ表示
-	void MeshRendererDebug(MeshRenderer* _mr, AssetCollection* _grc);
+	void MeshRendererDebug(MeshRenderer* _mr, AssetCollection* _assetCollection);
 }
 
 /// Json変換
@@ -30,7 +31,7 @@ void to_json(nlohmann::json& _j, const MeshRenderer& _mr);
 /// ///////////////////////////////////////////////////
 class MeshRenderer : public IRenderComponent {
 	/// friend methods
-	friend void COMP_DEBUG::MeshRendererDebug(MeshRenderer* _mr, AssetCollection* _grc);
+	friend void COMP_DEBUG::MeshRendererDebug(MeshRenderer* _mr, AssetCollection* _assetCollection);
 	friend void from_json(const nlohmann::json& _j, MeshRenderer& _mr);
 	friend void to_json(nlohmann::json& _j, const MeshRenderer& _mr);
 
@@ -43,7 +44,7 @@ public:
 	~MeshRenderer();
 
 	/// @brief 描画のために必要なデータを設定する
-	void SetupRenderData(class AssetCollection* _grc);
+	void SetupRenderData(class AssetCollection* _assetCollection);
 
 private:
 	/// ===================================================
@@ -51,10 +52,9 @@ private:
 	/// ===================================================
 
 	std::string meshPath_;
-	std::string texturePath_;
 
 	GPUMaterial gpuMaterial_;
-	CPUMaterial    cpuMaterial_;
+	Material material_;
 
 public:
 	/// ===================================================
@@ -64,10 +64,6 @@ public:
 	/// @brief 描画するmeshの file pathを設定
 	/// @param _path .slnからの相対パス
 	void SetMeshPath(const std::string& _path);
-
-	/// @brief 描画に使用するtextureの file pathを設定
-	/// @param _path .slnからの相対パス
-	void SetTexturePath(const std::string& _path);
 
 	/// @brief 描画する色の設定
 	/// @param _color RGBA 0.0f ~ 1.0f
@@ -83,20 +79,18 @@ public:
 	/// @return .slnからの相対パス
 	const std::string& GetMeshPath() const;
 
-	/// @brief 描画に使用するtextureの file pathを取得
-	/// @return .slnからの相対パス
-	const std::string& GetTexturePath() const;
-
 	/// @brief 色の取得
 	/// @return RGBA 0.0f ~ 1.0f
 	const Vector4& GetColor() const;
 
-	const GPUMaterial& GetMaterial() const;
-	const CPUMaterial&    GetCPUMaterial() const;
+	const GPUMaterial& GetGpuMaterial() const;
 
 	/// @brief ポストエフェクトのフラグを取得
 	/// @return ポストエフェクトのフラグ
 	uint32_t GetPostEffectFlags() const;
+
+	/// @brief テクスチャのGuidを返す
+	const Guid& GetTextureGuid() const;
 
 };
 

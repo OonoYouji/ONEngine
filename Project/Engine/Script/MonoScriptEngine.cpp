@@ -38,12 +38,7 @@ namespace {
 
 
 MonoScriptEngine::MonoScriptEngine() : domainReloadCounter_(0) {}
-MonoScriptEngine::~MonoScriptEngine() {
-	if (domain_) {
-		mono_jit_cleanup(domain_);
-		domain_ = nullptr;
-	}
-}
+MonoScriptEngine::~MonoScriptEngine() = default;
 
 MonoScriptEngine& MonoScriptEngine::GetInstance() {
 	static MonoScriptEngine instance;
@@ -101,6 +96,13 @@ void MonoScriptEngine::Initialize() {
 	}
 
 	RegisterFunctions();
+}
+
+void MonoScriptEngine::Finalize() {
+	if (domain_) {
+		mono_jit_cleanup(domain_);
+		domain_ = nullptr;
+	}
 }
 
 void MonoScriptEngine::RegisterFunctions() {

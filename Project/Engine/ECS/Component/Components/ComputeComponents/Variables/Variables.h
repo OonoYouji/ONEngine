@@ -78,6 +78,11 @@ public:
 	/// public : methods
 	/// ================================================
 
+
+	Variables();
+	~Variables() override;
+
+
 	/// @brief jsonを読み込んで変数を設定する
 	/// @param _path 読み込むjsonファイルのパス
 	void LoadJson(const std::string& _path);

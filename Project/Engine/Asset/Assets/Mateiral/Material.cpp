@@ -20,7 +20,7 @@ void ShowGuiMaterial(const std::string& _label, Material* _material) {
 	ImGui::PushID(_label.c_str());
 
 	/// 色
-	ImMath::DragFloat4("BaseColor", &_material->baseColor);
+	ImMathf::DragFloat4("BaseColor", &_material->baseColor);
 
 
 	ImGui::PopID();
@@ -61,10 +61,40 @@ void GenerateMaterialFile(const std::string& _filepath, Material* _material) {
 	}
 
 	ofs << "MaterialFileVersion: 1\n";
+	ofs << "guid: " << material.guid.ToString() << "\n";
 	ofs << "BaseColor: " << material.baseColor.x << " " << material.baseColor.y << " " << material.baseColor.z << " " << material.baseColor.w << "\n";
 	ofs << "PostEffectFlags: " << material.postEffectFlags << "\n";
 
 	ofs.close();
+}
+
+void from_json(const nlohmann::json& _j, Material& _material) {
+	_material.guid = _j.value("guid", Guid{});
+	_material.baseColor = _j.value("baseColor", Vector4::kWhite);
+	_material.postEffectFlags = _j.value("postEffectFlags", 1u);
+	Guid baseTextureGuid = _j.value("baseTextureGuid", Guid::kInvalid);
+	if (baseTextureGuid.CheckValid()) {
+		_material.baseTextureGuid_ = baseTextureGuid;
+	} else {
+		_material.baseTextureGuid_ = std::nullopt;
+	}
+
+	Guid normalTextureGuid = _j.value("normalTextureGuid", Guid::kInvalid);
+	if (normalTextureGuid.CheckValid()) {
+		_material.normalTextureGuid_ = normalTextureGuid;
+	} else {
+		_material.normalTextureGuid_ = std::nullopt;
+	}
+}
+
+void to_json(nlohmann::json& _j, const Material& _material) {
+	_j = {
+		{ "guid", _material.guid },
+		{ "baseColor", _material.baseColor },
+		{ "postEffectFlags", _material.postEffectFlags },
+		{ "baseTextureGuid", _material.baseTextureGuid_.has_value() ? _material.baseTextureGuid_.value() : Guid::kInvalid },
+		{ "normalTextureGuid", _material.normalTextureGuid_.has_value() ? _material.normalTextureGuid_.value() : Guid::kInvalid },
+	};
 }
 
 
@@ -74,3 +104,39 @@ void GenerateMaterialFile(const std::string& _filepath, Material* _material) {
 
 Material::Material() = default;
 Material::~Material() = default;
+
+
+
+bool Material::HasBaseTexture() const {
+	return baseTextureGuid_.has_value();
+}
+
+const Guid& Material::GetBaseTextureGuid() const {
+	return baseTextureGuid_.value();
+}
+
+void Material::SetBaseTextureGuid(const Guid& _guid) {
+	if (baseTextureGuid_.has_value()) {
+		baseTextureGuid_.value() = _guid;
+	} else {
+		baseTextureGuid_ = std::make_optional<Guid>();
+		baseTextureGuid_ = _guid;
+	}
+}
+
+bool Material::HasNormalTexture() const {
+	return normalTextureGuid_.has_value();
+}
+
+const Guid& Material::GetNormalTextureGuid() const {
+	return normalTextureGuid_.value();
+}
+
+void Material::SetNormalTextureGuid(const Guid& _guid) {
+	if (normalTextureGuid_.has_value()) {
+		normalTextureGuid_.value() = _guid;
+	} else {
+		normalTextureGuid_ = std::make_optional<Guid>();
+		normalTextureGuid_ = _guid;
+	}
+}

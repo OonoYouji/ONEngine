@@ -63,7 +63,7 @@ public class DebugCamera : MonoBehavior {
 			position_ = transform.position;
 		}
 
-		if (Input.TriggerMouse(Mouse.Right)) {
+		if (Input.PressMouse(Mouse.Right)) {
 			isMoving_ = true;
 
 			float speed = moveSpeed_;

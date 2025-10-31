@@ -64,6 +64,6 @@ bool CustomMeshRenderer::GetIsBufferRecreate() const {
 	return isBufferRecreate_;
 }
 
-const GPUMaterial& CustomMeshRenderer::GetMaterial() {
+const GPUMaterial& CustomMeshRenderer::GetGpuMaterial() {
 	return gpuMaterial_;
 }

@@ -16,7 +16,7 @@ void GameEntity::Awake() {
 	name_.erase(0, 6);
 	prefabName_ = "";
 
-	pECSGroup_->LoadComponent(this);
+	pEcsGroup_->LoadComponent(this);
 
 	transform_ = AddComponent<Transform>();
 	variables_ = AddComponent<Variables>();
@@ -32,7 +32,7 @@ IComponent* GameEntity::AddComponent(const std::string& _name) {
 	}
 
 	/// component の生成, 追加
-	IComponent* component = pECSGroup_->AddComponent(_name);
+	IComponent* component = pEcsGroup_->AddComponent(_name);
 	if (!component) {
 		return nullptr;
 	}
@@ -62,7 +62,7 @@ void GameEntity::RemoveComponent(const std::string& _compName) {
 	size_t hash = GetComponentHash(_compName);
 	auto it = components_.find(hash);
 	if (it != components_.end()) {
-		pECSGroup_->RemoveComponent(hash, it->second->id); ///< コンポーネントを削除
+		pEcsGroup_->RemoveComponent(hash, it->second->id); ///< コンポーネントを削除
 		components_.erase(it); ///< コンポーネントのマップから削除
 	}
 
@@ -74,11 +74,13 @@ void GameEntity::RemoveComponent(const std::string& _compName) {
 }
 
 void GameEntity::RemoveComponentAll() {
-	pECSGroup_->RemoveComponentAll(this); ///< 全てのコンポーネントを削除
+	pEcsGroup_->RemoveComponentAll(this); ///< 全てのコンポーネントを削除
 	components_.clear();
 }
 
 void GameEntity::UpdateTransform() {
+	/// ----- 行列の更新(親があるならその行列をかけるのか判断して更新する) ----- ///
+
 	transform_->Update();
 
 	if (parent_) {
@@ -106,7 +108,7 @@ void GameEntity::UpdateTransform() {
 }
 
 void GameEntity::Destroy() {
-	pECSGroup_->RemoveEntity(this);
+	pEcsGroup_->RemoveEntity(this);
 }
 
 void GameEntity::SetPosition(const Vector3& _v) {
@@ -154,10 +156,6 @@ void GameEntity::SetName(const std::string& _name) {
 
 void GameEntity::SetPrefabName(const std::string& _name) {
 	prefabName_ = _name;
-}
-
-void GameEntity::SetActive(bool _active) {
-	active_ = _active;
 }
 
 const Vector3& GameEntity::GetLocalPosition() const {
@@ -220,9 +218,13 @@ GameEntity* GameEntity::GetParent() {
 }
 
 bool GameEntity::RemoveChild(GameEntity* _child) {
+	/// ----- 子エンティティの削除 ----- ///
+
 	if (!_child) {
 		return false;
 	}
+
+	/// 子エンティティが存在するか確認して削除
 	auto it = std::remove(children_.begin(), children_.end(), _child);
 	if (it != children_.end()) {
 		children_.erase(it, children_.end());
@@ -270,8 +272,12 @@ int32_t GameEntity::GetId() const {
 	return id_;
 }
 
+const Guid& GameEntity::GetGuid() const {
+	return guid_;
+}
+
 ECSGroup* GameEntity::GetECSGroup() const {
-	return pECSGroup_;
+	return pEcsGroup_;
 }
 
 

@@ -8,7 +8,7 @@
 /// ///////////////////////////////////////////////////
 namespace DescriptorHeapLimits {
 
-	static const uint32_t RTV = 16;
+	static const uint32_t RTV = 64;
 	static const uint32_t DSV = 1;
 
 	/// Textureのサイズは AssetCollection.h で定義しているのでそれ以上の数を確保する

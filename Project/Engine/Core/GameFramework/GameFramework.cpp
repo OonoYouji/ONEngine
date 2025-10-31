@@ -12,9 +12,13 @@ GameFramework::~GameFramework() {
 	/// gpuの処理が終わるまで待つ
 	dxManager_->GetDxCommand()->WaitForGpuComplete();
 
+	MonoScriptEngine::GetInstance().Finalize();
+
 	Time::Finalize();
 	Input::Finalize();
+	Console::Finalize();
 
+	imGuiManager_->Finalize();
 	/// engineの終了処理
 	windowManager_->Finalize();
 }
@@ -61,6 +65,7 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 
 	/// timeの初期化
 	Time::Initialize();
+	Console::Initialize();
 
 	/// scene managerの初期化
 	sceneManager_->Initialize(renderingFramework_->GetAssetCollection());

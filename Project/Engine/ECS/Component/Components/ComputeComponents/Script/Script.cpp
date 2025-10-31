@@ -1,12 +1,13 @@
 #include "Script.h"
 
 /// engine
+#include "Engine/Core/ImGui/Math/AssetPayload.h"
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/Core/ImGui/Math/ImGuiShowField.h"
-#include "Engine/Script/MonoScriptEngine.h"
 #include "Engine/ECS/Entity/GameEntity/GameEntity.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Variables/Variables.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
+#include "Engine/Script/MonoScriptEngine.h"
 
 using namespace CSGui;
 
@@ -283,8 +284,8 @@ void COMP_DEBUG::ScriptDebug(Script* _script) {
 	ImGui::InvisibleButton("##DropTarget", ImVec2(windowSize.x, 32.0f));
 	if (ImGui::BeginDragDropTarget()) {
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("AssetData")) {
-			const char* droppedPath = static_cast<const char*>(payload->Data);
-			std::string name = std::string(droppedPath);
+			AssetPayload* assetPayload = *static_cast<AssetPayload**>(payload->Data);
+			std::string name = assetPayload->filePath;
 
 			if (name.find(".cs") != std::string::npos) {
 				/// フルパスをファイル名に変更

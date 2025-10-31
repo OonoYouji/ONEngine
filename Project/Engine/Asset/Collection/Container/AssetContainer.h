@@ -51,6 +51,11 @@ public:
 	std::vector<T>& GetValues();
 	const std::unordered_map<std::string, int32_t>& GetIndexMap() const;
 
+	/// Guidの取得
+	const Guid& GetGuid(const std::string& _key) const;
+	const Guid& GetGuid(int32_t _index) const;
+
+
 private:
 	/// ===================================================
 	/// private : objects
@@ -201,4 +206,14 @@ inline std::vector<T>& AssetContainer<T>::GetValues() {
 template<typename T>
 inline const std::unordered_map<std::string, int32_t>& AssetContainer<T>::GetIndexMap() const {
 	return indexMap_;
+}
+
+template<typename T>
+inline const Guid& AssetContainer<T>::GetGuid(const std::string& _key) const {
+	return indexToGuidMap_.at(indexMap_.at(_key));
+}
+
+template<typename T>
+inline const Guid& AssetContainer<T>::GetGuid(int32_t _index) const {
+	return indexToGuidMap_.at(_index);
 }

@@ -50,6 +50,10 @@ public:
 	void DrawPrefab();
 
 
+	/// @brief コマンドのリセット
+	void ResetCommand();
+
+
 	/// @brief SRVHeapをコマンドリストにバインドする
 	void HeapBindToCommandList();
 

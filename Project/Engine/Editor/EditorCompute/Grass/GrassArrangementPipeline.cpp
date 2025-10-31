@@ -42,7 +42,7 @@ void GrassArrangementPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMan
 
 }
 
-void GrassArrangementPipeline::Execute(EntityComponentSystem* _ecs, DxCommand* _dxCommand, AssetCollection* _grc) {
+void GrassArrangementPipeline::Execute(EntityComponentSystem* _ecs, DxCommand* _dxCommand, AssetCollection* _assetCollection) {
 
 	/// ==================================================
 	/// 早期リターン条件のチェック
@@ -58,12 +58,12 @@ void GrassArrangementPipeline::Execute(EntityComponentSystem* _ecs, DxCommand* _
 	/// bufferの設定
 	auto cmdList = _dxCommand->GetCommandList();
 
-	uint32_t grassArrangementTexId = static_cast<uint32_t>(_grc->GetTextureIndex("./Packages/Textures/Terrain/GrassArrangement.png"));
-	uint32_t terrainVertexTexId    = static_cast<uint32_t>(_grc->GetTextureIndex("./Packages/Textures/Terrain/TerrainVertex.png"));
+	uint32_t grassArrangementTexId = static_cast<uint32_t>(_assetCollection->GetTextureIndex("./Packages/Textures/Terrain/GrassArrangement.png"));
+	uint32_t terrainVertexTexId    = static_cast<uint32_t>(_assetCollection->GetTextureIndex("./Packages/Textures/Terrain/TerrainVertex.png"));
 	usedTexIdBuffer_.SetMappedData(UsedTextureIDs{ grassArrangementTexId, terrainVertexTexId });
 	usedTexIdBuffer_.BindForComputeCommandList(cmdList, CBV_USED_TEXTURED_IDS);
 
-	const auto& textures = _grc->GetTextures();
+	const auto& textures = _assetCollection->GetTextures();
 	cmdList->SetComputeRootDescriptorTable(SRV_TEXTURES, textures[0].GetSRVHandle().gpuHandle);
 
 	for (auto& grass : grassArray->GetUsedComponents()) {

@@ -17,7 +17,7 @@ class DxSwapChain {
 public:
 
 	/// @brief SwapChainのバッファ数(Double Buffering)
-	static const int kBufferCount = 2;
+	static const int kBufferCount = 3;
 
 public:
 	/// ===================================================

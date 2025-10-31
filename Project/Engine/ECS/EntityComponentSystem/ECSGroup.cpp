@@ -21,12 +21,29 @@ void ECSGroup::Initialize(const std::string& _groupName) {
 
 void ECSGroup::Update() {}
 
-GameEntity* ECSGroup::GenerateEntity(bool _isRuntime) {
-	return entityCollection_->GenerateEntity(_isRuntime);
+GameEntity* ECSGroup::GenerateEntity(const Guid& _guid, bool _isRuntime) {
+	return entityCollection_->GenerateEntity(_guid, _isRuntime);
 }
 
-GameEntity* ECSGroup::GenerateEntityFromPrefab(const std::string& _prefabName, bool _isRuntime) {
-	return entityCollection_->GenerateEntityFromPrefab(_prefabName, _isRuntime);
+GameEntity* ECSGroup::GenerateEntityFromPrefab(const std::string& _prefabName, const Guid& _guid, bool _isRuntime) {
+	return entityCollection_->GenerateEntityFromPrefab(_prefabName, _guid, _isRuntime);
+}
+
+
+GameEntity* ECSGroup::GetEntityFromGuid(const Guid& _guid) {
+	/// 例外チェック(無効値なら nullptr を返す)
+	if (!_guid.CheckValid()) {
+		return nullptr;
+	}
+
+	const auto& entities = entityCollection_->GetEntities();
+	for (const auto& entity : entities) {
+		if (entity->GetGuid() == _guid) {
+			return entity.get();
+		}
+	}
+
+	return nullptr;
 }
 
 void ECSGroup::RemoveEntity(GameEntity* _entity, bool _deleteChildren) {
@@ -68,7 +85,7 @@ uint32_t ECSGroup::CountEntity(const std::string& _name) {
 		[&_name](const std::unique_ptr<GameEntity>& entity) {
 			std::string name = entity->GetName();
 			/// 後ろから"_"を検索、"_"を含む場合はその前までを比較する
-			if(name.find_last_of('_') != std::string::npos) {
+			if (name.find_last_of('_') != std::string::npos) {
 				return name.substr(0, name.find_last_of('_')) == _name;
 			}
 
