@@ -143,6 +143,10 @@ const std::string& EntityComponentSystem::GetCurrentGroupName() const {
 	return currentGroupName_;
 }
 
+const std::unordered_map<std::string, std::unique_ptr<ECSGroup>>& EntityComponentSystem::GetECSGroups() const {
+	return ecsGroups_;
+}
+
 void EntityComponentSystem::ReloadPrefab(const std::string& _prefabName) {
 	for(auto& group : ecsGroups_) {
 		auto entityCollection = group.second->GetEntityCollection();

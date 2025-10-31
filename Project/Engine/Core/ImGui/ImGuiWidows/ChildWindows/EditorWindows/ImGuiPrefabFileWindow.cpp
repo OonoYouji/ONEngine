@@ -19,6 +19,8 @@ ImGuiPrefabFileWindow::ImGuiPrefabFileWindow(EntityComponentSystem* _ecs, AssetC
 	: pEcs_(_ecs), pAssetCollection_(_assetCollection), pInspector_(_inspector) {
 
 	files_ = Mathf::FindFiles("Assets/Prefabs", ".prefab");
+
+	selectedEntity_ = nullptr;
 }
 
 
@@ -33,11 +35,22 @@ void ImGuiPrefabFileWindow::ShowImGui() {
 
 	ReloadPrefabFiles(&button);
 
+	ImGui::SameLine();
+	ImGui::Spacing();
+	ImGui::SameLine();
+
+	AddNewPrefabWindow();
+
 	ImGui::Separator();
 
 	/// fileの表示
 	ImGuiInputText("search prefab", &searchText_, ImGuiInputTextFlags_EnterReturnsTrue);
+	ShowPrefabFileList();
 
+	ImGui::End();
+}
+
+void ImGuiPrefabFileWindow::ShowPrefabFileList() {
 	for (auto& file : files_) {
 		/// 検索ボックスに入力されたテキストがファイル名に含まれているかチェック
 		size_t size = searchText_.size();
@@ -51,15 +64,17 @@ void ImGuiPrefabFileWindow::ShowImGui() {
 		if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
 			Console::Log("Double clicked prefab file: " + file.second);
 
+			/// すでに生成されているなら削除してから再生成
+			if (selectedEntity_) {
+				selectedEntity_->Destroy();
+			}
+
 			ECSGroup* debugGroup = pEcs_->GetECSGroup("Debug");
-			GameEntity* entity = debugGroup->GenerateEntityFromPrefab(file.second, GenerateGuid(), false);
-			ImGuiSelection::SetSelectedObject(entity->GetGuid(), SelectionType::Entity);
+			selectedEntity_ = debugGroup->GenerateEntityFromPrefab(file.second, GenerateGuid(), false);
+			ImGuiSelection::SetSelectedObject(selectedEntity_->GetGuid(), SelectionType::Entity);
 		}
 
 	}
-
-
-	ImGui::End();
 }
 
 void ImGuiPrefabFileWindow::ReloadPrefabFiles(const Texture* _tex) {
@@ -80,5 +95,62 @@ void ImGuiPrefabFileWindow::ReloadPrefabFiles(const Texture* _tex) {
 
 	}
 
+}
+
+void ImGuiPrefabFileWindow::AddNewPrefabWindow() {
+
+	/// 新規作成ボタン
+	if (ImGui::Button("New Prefab")) {
+		ImGui::OpenPopup("New Prefab");
+	}
+
+	/// 新規作成ポップアップ
+	if (ImGui::BeginPopup("New Prefab")) {
+		ImMathf::InputText("Prefab Name", &newPrefabName_);
+		if (ImGui::Button("Create")) {
+			if (GenerateNewPrefab()) {
+				ImGui::CloseCurrentPopup();
+				newPrefabName_.clear();
+			}
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Cancel")) {
+			ImGui::CloseCurrentPopup();
+			newPrefabName_.clear();
+		}
+		ImGui::EndPopup();
+	}
+
+}
+
+bool ImGuiPrefabFileWindow::GenerateNewPrefab() {
+
+	/// 既に同じ名前のPrefabが存在するかチェック
+	for (const auto& file : files_) {
+		if (file.second == newPrefabName_) {
+			Console::LogWarning("Prefab with the same name already exists: " + newPrefabName_);
+			return false;
+		}
+	}
+
+	/// Prefabの生成
+	const std::string filename = "./Assets/Prefabs/" + newPrefabName_ + ".prefab";
+
+	std::ofstream prefabFile(filename);
+	if (!prefabFile) {
+		Console::LogError("Failed to create prefab file: " + filename);
+		return false;
+	}
+
+	prefabFile << "{}"; // 空のJSONオブジェクトを初期内容として書き込む
+	prefabFile.close();
+
+	Console::Log("Prefab file created successfully: " + filename);
+
+	pEcs_->ReloadPrefab(newPrefabName_ + ".prefab");
+	/// ファイルリストを更新
+	files_ = Mathf::FindFiles("Assets/Prefabs", ".prefab");
+
+	return true;
 }
 

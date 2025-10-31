@@ -6,7 +6,6 @@
 /// engine
 #include "Engine/Core/Config/EngineConfig.h"
 #include "../ChildWindows/EditorWindows/ImGuiPrefabViewWindow.h"
-#include "../ChildWindows/EditorWindows/ImGuiPrefabInspectorWindow.h"
 #include "../ChildWindows/EditorWindows/ImGuiPrefabFileWindow.h"
 #include "../ChildWindows/GameWindows/ImGuiInspectorWindow.h"
 #include "../ChildWindows/GameWindows/ImGuiProjectWindow.h"

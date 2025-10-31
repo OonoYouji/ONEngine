@@ -18,9 +18,20 @@ public:
 
 	void ShowImGui() override;
 
+
+	/// @brief ファイルリストの表示
+	void ShowPrefabFileList();
+
 	/// @brief Prefabファイルを再読み込みする
 	/// @param _tex ImageButtonに使うテクスチャ
 	void ReloadPrefabFiles(const class Texture* _tex);
+
+	/// @brief 新規Prefab作成ウィンドウ
+	void AddNewPrefabWindow();
+
+	/// @brief 新規のPrefabを作成す
+	/// @return true: 作成成功, false: 作成失敗
+	bool GenerateNewPrefab();
 
 private:
 	/// =====================================================
@@ -33,6 +44,10 @@ private:
 
 	std::string searchText_; ///< 検索テキスト
 	std::vector<File> files_;
+
+	/// 現在選択されているPrefabのEntity
+	class GameEntity* selectedEntity_ = nullptr;
+
 
 	/// ----- add prefab ----- /// 
 
