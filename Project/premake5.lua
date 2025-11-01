@@ -113,7 +113,11 @@ project "ONEngine"
         staticruntime "On"
         libdirs { "$(ProjectDir)Externals/assimp/lib/Debug" }
         links { "assimp-vc143-mtd.lib" }
-
+        postbuildcommands {
+            "copy \"$(WindowsSdkDir)bin\\$(TargetPlatformVersion)\\x64\\dxcompiler.dll\" \"$(TargetDir)dxcompiler.dll\"",
+            "copy \"$(WindowsSdkDir)bin\\$(TargetPlatformVersion)\\x64\\dxil.dll\" \"$(TargetDir)dxil.dll\"",
+            "copy \"$(ProjectDir)Packages\\Scripts\\lib\\mono-2.0-sgen.dll\" \"$(TargetDir)mono-2.0-sgen.dll\""
+        }
 
     filter "configurations:Release"
         runtime "Release"
