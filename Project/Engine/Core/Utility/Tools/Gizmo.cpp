@@ -81,6 +81,7 @@ void Gizmo::Reset() {
 }
 
 
+#ifdef DEBUG_BUILD
 
 void Gizmo::DrawSphere(const Vector3& _position, float _radius, const Vector4& _color) {
 	gGizmoSystem->sphereData_.push_back({ _position, _radius, _color });
@@ -105,3 +106,13 @@ void Gizmo::DrawLine(const Vector3& _startPosition, const Vector3& _endPosition,
 void Gizmo::DrawRay(const Vector3& _position, const Vector3& _direction, const Vector4& _color) {
 	gGizmoSystem->lineData_.push_back({ _position, _position + _direction, _color });
 }
+
+#else /// RELEASE_BUILD
+/// リリース用に空の関数を定義
+void Gizmo::DrawSphere(const Vector3&, float, const Vector4&) {}
+void Gizmo::DrawWireSphere(const Vector3&, float, const Vector4&) {}
+void Gizmo::DrawCube(const Vector3&, const Vector3&, const Vector4&) {}
+void Gizmo::DrawWireCube(const Vector3&, const Vector3&, const Vector4&) {}
+void Gizmo::DrawLine(const Vector3&, const Vector3&, const Vector4&) {}
+void Gizmo::DrawRay(const Vector3&, const Vector3&, const Vector4&) {}
+#endif // DEBUG_BUILD

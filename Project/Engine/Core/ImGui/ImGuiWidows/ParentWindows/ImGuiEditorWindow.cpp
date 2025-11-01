@@ -36,7 +36,7 @@ void ImGuiEditorWindow::ShowImGui() {
 
 	ImGui::SetNextWindowPos(ImVec2(0, 20), ImGuiCond_Appearing);
 	ImGui::SetNextWindowSize(ImVec2(EngineConfig::kWindowSize.x, EngineConfig::kWindowSize.y), ImGuiCond_Appearing);
-	if (!ImGui::Begin("Editor", nullptr, imGuiFlags_)) {
+	if (!ImGui::Begin("Prefab", nullptr, imGuiFlags_)) {
 		ImGui::End();
 		return;
 	}

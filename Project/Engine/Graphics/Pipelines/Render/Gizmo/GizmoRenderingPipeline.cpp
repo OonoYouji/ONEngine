@@ -64,8 +64,8 @@ void GizmoRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManag
 	}
 }
 
-void GizmoRenderingPipeline::Draw(class ECSGroup*, CameraComponent* _camera, DxCommand* _dxCommand) {
-
+void GizmoRenderingPipeline::Draw(class ECSGroup*, [[maybe_unused]] CameraComponent* _camera, [[maybe_unused]] DxCommand* _dxCommand) {
+#ifdef _DEBUG
 	/// ---------------------------------------------------
 	/// wire描画を行う
 	/// ---------------------------------------------------
@@ -126,5 +126,6 @@ void GizmoRenderingPipeline::Draw(class ECSGroup*, CameraComponent* _camera, DxC
 	/// 描画データのクリア
 	Gizmo::Reset();
 	vertices_.clear();
+#endif _DEBUG
 }
 
