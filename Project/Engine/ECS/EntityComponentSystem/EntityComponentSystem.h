@@ -56,6 +56,8 @@ public:
 	void SetCurrentGroupName(const std::string& _name);
 	const std::string& GetCurrentGroupName() const;
 
+	/// すべてのECSグループの取得
+	const std::unordered_map<std::string, std::unique_ptr<ECSGroup>>& GetECSGroups() const;
 
 	/// ----- prefab ----- ///
 
@@ -75,9 +77,6 @@ private:
 	std::unordered_map<std::string, std::unique_ptr<ECSGroup>> ecsGroups_;
 	ECSGroup* debugGroup_ = nullptr;
 	std::string currentGroupName_;
-
-	///// ----- prefab ----- ///
-	//std::unique_ptr<EntityPrefabCollection> prefabCollection_;
 
 };
 

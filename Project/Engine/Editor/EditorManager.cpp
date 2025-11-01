@@ -83,9 +83,9 @@ void EditorManager::Redo() {
 	}
 
 	/// stackから実行する
-	std::unique_ptr<IEditorCommand> command = std::move(redoStack_.front());
+	std::unique_ptr<IEditorCommand> command = std::move(redoStack_.back());
 	command->Execute();
-	redoStack_.pop_front();
+	redoStack_.pop_back();
 
 	/// command stackに戻す
 	commandStack_.push_back(std::move(command));

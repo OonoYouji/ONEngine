@@ -205,7 +205,7 @@ GameEntity* EntityCollection::GetEntity(size_t _entityId) {
 			return entity->GetId() == _entityId;
 		}
 	);
-	
+
 	if (itr != entities_.end()) {
 		return (*itr).get();
 	}
@@ -261,35 +261,19 @@ void EntityCollection::ReloadPrefab(const std::string& _prefabName) {
 	itr->second->Reload();
 }
 
-GameEntity* EntityCollection::GenerateEntityFromPrefab(const std::string& _prefabName, const Guid& _guid, bool _isRuntime) {
+GameEntity* EntityCollection::GenerateEntityFromPrefab(const std::string& _prefabName, bool _isRuntime) {
 	/// prefabが存在するかチェック
 	auto prefabItr = prefabs_.find(_prefabName);
 	if (prefabItr == prefabs_.end()) {
-		Console::Log("Prefab not found: " + _prefabName);
-		return 0;
+		Console::LogError("Prefab not found: " + _prefabName);
+		return nullptr;
 	}
 
 	/// prefabを取得
 	EntityPrefab* prefab = prefabItr->second.get();
 
 	/// entityを生成する
-	GameEntity* entity = GenerateEntity(_guid, _isRuntime);
-	if (entity) {
-		const std::string name = Mathf::FileNameWithoutExtension(_prefabName);
-
-		if (_isRuntime) {
-			entity->SetName(name + "(Clone)");
-		} else {
-			entity->SetName(name);
-		}
-		entity->SetPrefabName(_prefabName);
-
-		EntityJsonConverter::FromJson(prefab->GetJson(), entity, pEcsGroup_->GetGroupName());
-
-		return entity;
-	}
-
-	return nullptr;
+	return GenerateEntityRecursive(prefab->GetJson(), nullptr, _isRuntime);
 }
 
 EntityPrefab* EntityCollection::GetPrefab(const std::string& _fileName) {
@@ -298,6 +282,75 @@ EntityPrefab* EntityCollection::GetPrefab(const std::string& _fileName) {
 	}
 
 	return nullptr;
+}
+
+void EntityCollection::ApplyPrefabToEntity(GameEntity* _entity, const std::string& _prefabName) {
+	if (!_entity) {
+		Console::LogError("Entity is null when applying prefab: " + _prefabName);
+		return;
+	}
+
+	/// prefabが存在するかチェック
+	auto prefabItr = prefabs_.find(_prefabName);
+	if (prefabItr == prefabs_.end()) {
+		Console::LogError("Prefab not found: " + _prefabName);
+		return;
+	}
+
+	/// prefabを取得
+	EntityPrefab* prefab = prefabItr->second.get();
+
+	/// Jsonからコンポーネントを生成
+	EntityJsonConverter::FromJson(prefab->GetJson(), _entity, pEcsGroup_->GetGroupName());
+
+}
+
+GameEntity* EntityCollection::GenerateEntityRecursive(const nlohmann::json& _json, GameEntity* _parent, bool _isRuntime) {
+
+	/*
+	* Guidはファイル内のものではなく新規生成する
+	* でないと同じPrefabから生成したときにGuidが被ってしまう
+	*/
+
+	/// entityを生成する
+	GameEntity* entity = GenerateEntity(GenerateGuid(), _isRuntime);
+	if (!entity) {
+		Console::LogError("Failed to generate entity from JSON.");
+		return nullptr;
+	}
+
+	/// 親子関係の設定
+	if (_parent) {
+		entity->SetParent(_parent);
+	}
+
+	/// 名前とPrefab名を設定
+	const std::string prefabName = _json.value("prefabName", "");
+	std::string name = Mathf::FileNameWithoutExtension(prefabName);
+	if(prefabName.empty()) {
+		name = _json.value("name", "New Entity");
+	}
+
+	/// runtime中かどうかで名前を変更
+	if (_isRuntime) {
+		entity->SetName(name + "(Clone)");
+	} else {
+		entity->SetName(name);
+	}
+
+	entity->SetPrefabName(prefabName);
+
+	/// Jsonからコンポーネントを生成
+	EntityJsonConverter::FromJson(_json, entity, pEcsGroup_->GetGroupName());
+
+	/// 子エンティティの生成
+	if (_json.contains("children")) {
+		for (auto& childJson : _json["children"]) {
+			GenerateEntityRecursive(childJson, entity, _isRuntime);
+		}
+	}
+
+	return entity;
 }
 
 

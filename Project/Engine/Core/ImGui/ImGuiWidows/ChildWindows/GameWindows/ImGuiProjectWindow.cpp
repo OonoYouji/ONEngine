@@ -51,6 +51,10 @@ namespace {
 
 ImGuiProjectWindow::ImGuiProjectWindow(AssetCollection* _assetCollection, EditorManager* /*_editorManager*/)
 	: pAssetCollection_(_assetCollection) {
+
+	/// デフォルトのウィンドウ名
+	windowName_ = "ImGuiProjectExplorer";
+
 	// 複数のルートディレクトリを設定
 	rootPaths_ = {
 		std::filesystem::absolute("./Assets"),
@@ -79,103 +83,107 @@ ImGuiProjectWindow::~ImGuiProjectWindow() {
 }
 
 void ImGuiProjectWindow::ShowImGui() {
-    if (!ImGui::Begin("ImGuiProjectExplorer")) {
-        ImGui::End();
-        return;
-    }
+	if (!ImGui::Begin(windowName_.c_str())) {
+		ImGui::End();
+		return;
+	}
 
-    /// ---------------------------------------------------
-    /// ファイル監視イベントの処理
-    /// ---------------------------------------------------
-    auto events = fileWatcher_.ConsumeEvents();
-    for (const auto& event : events) {
-        std::string eventType;
-        switch (event.action) {
-        case FileEvent::Action::Added:
-            eventType = "Added";
-            HandleFileAdded(event.path);
-            break;
-        case FileEvent::Action::Removed:
-            eventType = "Removed";
-            HandleFileRemoved(event.path);
-            break;
-        case FileEvent::Action::Modified:
-            eventType = "Modified";
-            HandleFileModified(event.path);
-            break;
-        }
-        ImGui::Text("%s: %s", eventType.c_str(), std::filesystem::path(event.path).filename().string().c_str());
-    }
+	/// ---------------------------------------------------
+	/// ファイル監視イベントの処理
+	/// ---------------------------------------------------
+	auto events = fileWatcher_.ConsumeEvents();
+	for (const auto& event : events) {
+		std::string eventType;
+		switch (event.action) {
+		case FileEvent::Action::Added:
+			eventType = "Added";
+			HandleFileAdded(event.path);
+			break;
+		case FileEvent::Action::Removed:
+			eventType = "Removed";
+			HandleFileRemoved(event.path);
+			break;
+		case FileEvent::Action::Modified:
+			eventType = "Modified";
+			HandleFileModified(event.path);
+			break;
+		}
+		ImGui::Text("%s: %s", eventType.c_str(), std::filesystem::path(event.path).filename().string().c_str());
+	}
 
-    /// ---------------------------------------------------
-    /// テーブルレイアウトの開始
-    /// ---------------------------------------------------
-    if (ImGui::BeginTable("ProjectTable", 2, ImGuiTableFlags_Resizable)) {
-        ImGui::TableSetupColumn("Tree", ImGuiTableColumnFlags_WidthFixed, 250.0f);
-        ImGui::TableSetupColumn("View", ImGuiTableColumnFlags_WidthStretch);
+	/// ---------------------------------------------------
+	/// テーブルレイアウトの開始
+	/// ---------------------------------------------------
+	if (ImGui::BeginTable("ProjectTable", 2, ImGuiTableFlags_Resizable)) {
+		ImGui::TableSetupColumn("Tree", ImGuiTableColumnFlags_WidthFixed, 250.0f);
+		ImGui::TableSetupColumn("View", ImGuiTableColumnFlags_WidthStretch);
 
-        ImGui::TableNextRow();
+		ImGui::TableNextRow();
 
-        // --- 左カラム ---
-        ImGui::TableSetColumnIndex(0);
-        ImGui::BeginChild("TreeRegion");
+		// --- 左カラム ---
+		ImGui::TableSetColumnIndex(0);
+		ImGui::BeginChild("TreeRegion");
 
-        // rootPaths_ を最上位ノードとして表示
-        for (const auto& rootPath : rootPaths_) {
-            ImGuiTreeNodeFlags rootFlags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DefaultOpen;
-            if (rootPath == currentPath_) {
-                rootFlags |= ImGuiTreeNodeFlags_Selected;
-            }
+		// rootPaths_ を最上位ノードとして表示
+		for (const auto& rootPath : rootPaths_) {
+			ImGuiTreeNodeFlags rootFlags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DefaultOpen;
+			if (rootPath == currentPath_) {
+				rootFlags |= ImGuiTreeNodeFlags_Selected;
+			}
 
-            bool rootNodeOpen = ImGui::TreeNodeEx(rootPath.filename().string().c_str(), rootFlags);
-            if (ImGui::IsItemClicked()) {
-                currentPath_ = rootPath;
-            }
+			bool rootNodeOpen = ImGui::TreeNodeEx(rootPath.filename().string().c_str(), rootFlags);
+			if (ImGui::IsItemClicked()) {
+				currentPath_ = rootPath;
+			}
 
-            if (rootNodeOpen) {
-                DrawDirectoryTree(rootPath); // 子ディレクトリを描画
-                ImGui::TreePop();
-            }
-        }
+			if (rootNodeOpen) {
+				DrawDirectoryTree(rootPath); // 子ディレクトリを描画
+				ImGui::TreePop();
+			}
+		}
 
-        ImGui::EndChild();
+		ImGui::EndChild();
 
-        // --- 右カラム ---
-        ImGui::TableSetColumnIndex(1);
-        ImGui::BeginChild("ViewRegion");
-        DrawFileView(currentPath_);
-        ImGui::EndChild();
+		// --- 右カラム ---
+		ImGui::TableSetColumnIndex(1);
+		ImGui::BeginChild("ViewRegion");
+		DrawFileView(currentPath_);
+		ImGui::EndChild();
 
-        ImGui::EndTable();
-    }
-    ImGui::End();
+		ImGui::EndTable();
+	}
+	ImGui::End();
+}
+
+void ImGuiProjectWindow::SetWindowName(const std::string& _windowName) {
+	windowName_ = _windowName;
 }
 
 void ImGuiProjectWindow::DrawDirectoryTree(const std::filesystem::path& dir) {
-    auto it = directoryCache_.find(dir.string());
-    if (it == directoryCache_.end()) {
-        return;
-    }
+	auto it = directoryCache_.find(dir.string());
+	if (it == directoryCache_.end()) {
+		return;
+	}
 
-    for (const auto& subDir : it->second) {
-        const std::filesystem::path& subDirectoryPath = subDir.path;
-        const std::string name = subDirectoryPath.filename().string();
+	for (const auto& subDir : it->second) {
+		const std::filesystem::path& subDirectoryPath = subDir.path;
+		const std::string name = subDirectoryPath.filename().string();
 
-        ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow;
-        if (subDirectoryPath == currentPath_) {
-            flags |= ImGuiTreeNodeFlags_Selected;
-        }
+		ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow;
+		if (subDirectoryPath == currentPath_) {
+			flags |= ImGuiTreeNodeFlags_Selected;
+		}
 
-        bool nodeOpen = ImGui::TreeNodeEx(name.c_str(), flags);
-        if (ImGui::IsItemClicked()) {
-            currentPath_ = subDirectoryPath;
-        }
+		bool nodeOpen = ImGui::TreeNodeEx(name.c_str(), flags);
+		if (ImGui::IsItemClicked()) {
+			currentPath_ = subDirectoryPath;
+		}
 
-        if (nodeOpen) {
-            DrawDirectoryTree(subDirectoryPath);
-            ImGui::TreePop();
-        }
-    }
+		if (nodeOpen) {
+			DrawDirectoryTree(subDirectoryPath);
+			ImGui::TreePop();
+		}
+	}
 }
 
 void ImGuiProjectWindow::DrawFileView(const std::filesystem::path& dir) {

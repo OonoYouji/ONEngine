@@ -4,6 +4,7 @@
 #include "Engine/Core/Utility/Utility.h"
 
 AudioClip::~AudioClip() {
+	/// 音データの解放
 	SoundDataUnload(&soundData_);
 }
 

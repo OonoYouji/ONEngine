@@ -68,6 +68,11 @@ void GenerateMaterialFile(const std::string& _filepath, Material* _material) {
 	ofs.close();
 }
 
+
+/// ---------------------------------------------------
+/// Json変換
+/// ---------------------------------------------------
+
 void from_json(const nlohmann::json& _j, Material& _material) {
 	_material.guid = _j.value("guid", Guid{});
 	_material.baseColor = _j.value("baseColor", Vector4::kWhite);
@@ -116,6 +121,7 @@ const Guid& Material::GetBaseTextureGuid() const {
 }
 
 void Material::SetBaseTextureGuid(const Guid& _guid) {
+	/// ----- base texture guidの設定 ----- ///
 	if (baseTextureGuid_.has_value()) {
 		baseTextureGuid_.value() = _guid;
 	} else {
@@ -133,6 +139,7 @@ const Guid& Material::GetNormalTextureGuid() const {
 }
 
 void Material::SetNormalTextureGuid(const Guid& _guid) {
+	/// ----- 法線 texture の guid を登録 ----- ///
 	if (normalTextureGuid_.has_value()) {
 		normalTextureGuid_.value() = _guid;
 	} else {

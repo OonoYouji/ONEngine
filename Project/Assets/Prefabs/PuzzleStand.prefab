@@ -3,14 +3,14 @@
         {
             "enable": 1,
             "position": {
-                "x": 72.69215393066406,
-                "y": 3.9130032062530518,
-                "z": 192.8489227294922
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
             },
             "rotate": {
                 "w": 1.0,
                 "x": 0.0,
-                "y": -0.0,
+                "y": 0.0,
                 "z": 0.0
             },
             "scale": {
@@ -24,16 +24,26 @@
             "type": "Variables"
         },
         {
-            "color": {
-                "w": 1.0,
-                "x": 1.0,
-                "y": 0.0,
-                "z": 0.0
-            },
             "enable": 1,
+            "material": {
+                "baseColor": {
+                    "w": 1.0,
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "baseTextureGuid": {
+                    "guid": "14196fa931d9b8c11196cdd7eca20cf6"
+                },
+                "guid": {
+                    "guid": "00000000000000000000000000000000"
+                },
+                "normalTextureGuid": {
+                    "guid": "00000000000000000000000000000000"
+                },
+                "postEffectFlags": 1
+            },
             "meshPath": "./Assets/Models/objects/PuzzleStand/PuzzleStand.obj",
-            "postEffectFlags": 1,
-            "texturePath": "./Packages/Textures/white.png",
             "type": "MeshRenderer"
         },
         {
@@ -57,15 +67,13 @@
                 }
             ],
             "type": "Script"
-        },
-        {
-            "enable": 1,
-            "radius": 1.0,
-            "type": "SphereCollider"
         }
     ],
-    "id": 1,
+    "guid": {
+        "guid": "5511cd7113ee5a56820e5f843ed1e059"
+    },
+    "id": 2,
     "name": "PuzzleStand",
     "parent": null,
-    "prefabName": "PuzzleStand.prefab"
+    "prefabName": "PuzzleStand"
 }

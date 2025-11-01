@@ -77,6 +77,16 @@ public class PuzzleStartController : MonoBehavior {
 				Input.TriggerGamepad(Gamepad.A)) {
 				StartPuzzle();
 			}
+
+		}
+
+
+		/// パズルをやめる入力チェック
+		if (isStartedPuzzle_) {
+			if (Input.TriggerKey(KeyCode.Escape) ||
+				Input.TriggerGamepad(Gamepad.Start)) {
+				EndPuzzle();
+			}
 		}
 	}
 
@@ -99,6 +109,15 @@ public class PuzzleStartController : MonoBehavior {
 		player_.enable = false;
 	}
 
+
+	private void EndPuzzle() {
+		isStartedPuzzle_ = false;
+		for (int i = 0; i < thisScripts_.Count; i++) {
+			thisScripts_[i].enable = false;
+		}
+		/// パズルの状態に合わせてプレイヤーの状態を変更する
+		player_.enable = true;
+	}
 
 	private void UpdateStartUI() {
 		/// ----- パズル開始UIの表示・非表示を切り替え ----- /// 

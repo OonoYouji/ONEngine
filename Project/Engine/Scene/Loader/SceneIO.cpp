@@ -102,12 +102,9 @@ void SceneIO::LoadSceneFromJson(const nlohmann::json& _input, ECSGroup* _ecsGrou
 			guid = GenerateGuid();
 		}
 
-		GameEntity* entity = nullptr;
+		GameEntity* entity = _ecsGroup->GenerateEntity(guid, false);
 		if (!prefabName.empty()) {
-			std::string jsonPrefabName = entityJson["prefabName"];
-			entity = _ecsGroup->GenerateEntityFromPrefab(jsonPrefabName, guid, false);
-		} else {
-			entity = _ecsGroup->GenerateEntity(guid, false);
+			_ecsGroup->GetEntityCollection()->ApplyPrefabToEntity(entity, prefabName);
 		}
 
 		if (entity) {

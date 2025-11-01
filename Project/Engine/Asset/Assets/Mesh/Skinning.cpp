@@ -115,8 +115,8 @@ SkinCluster ANIME_MATH::CreateSkinCluster(const Skeleton& _skeleton, Model* _mod
 	paletteSRVDesc.Buffer.NumElements = static_cast<UINT>(_skeleton.joints.size());
 	paletteSRVDesc.Buffer.StructureByteStride = sizeof(WellForGPU);
 
-	ID3D12Device* pDevice = _dxm->GetDxDevice()->GetDevice();
-	pDevice->CreateShaderResourceView(result.paletteResource.Get(), &paletteSRVDesc, result.paletteSRVHandle.first);
+	ID3D12Device* device = _dxm->GetDxDevice()->GetDevice();
+	device->CreateShaderResourceView(result.paletteResource.Get(), &paletteSRVDesc, result.paletteSRVHandle.first);
 
 
 	/// resource create

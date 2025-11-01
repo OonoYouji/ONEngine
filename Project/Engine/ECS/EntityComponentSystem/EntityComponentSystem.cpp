@@ -143,6 +143,10 @@ const std::string& EntityComponentSystem::GetCurrentGroupName() const {
 	return currentGroupName_;
 }
 
+const std::unordered_map<std::string, std::unique_ptr<ECSGroup>>& EntityComponentSystem::GetECSGroups() const {
+	return ecsGroups_;
+}
+
 void EntityComponentSystem::ReloadPrefab(const std::string& _prefabName) {
 	for(auto& group : ecsGroups_) {
 		auto entityCollection = group.second->GetEntityCollection();
@@ -336,7 +340,7 @@ void MONO_INTERNAL_METHOD::InternalCreateEntity(int32_t* _entityId, MonoString* 
 
 	/// prefabを検索
 	std::string prefabName = mono_string_to_utf8(_prefabName);
-	GameEntity* entity = group->GenerateEntityFromPrefab(prefabName + ".prefab", GenerateGuid());
+	GameEntity* entity = group->GenerateEntityFromPrefab(prefabName + ".prefab");
 	if (!entity) {
 		entity = group->GenerateEntity(GenerateGuid(), true);
 		if (!entity) {

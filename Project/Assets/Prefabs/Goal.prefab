@@ -24,19 +24,6 @@
             "type": "Variables"
         },
         {
-            "color": {
-                "w": 1.0,
-                "x": 1.0,
-                "y": 1.0,
-                "z": 1.0
-            },
-            "enable": 1,
-            "meshPath": "./Assets/Models/entity/puzzle/GoalBlock.obj",
-            "postEffectFlags": 1,
-            "texturePath": "./Packages/Textures/white.png",
-            "type": "MeshRenderer"
-        },
-        {
             "enable": 1,
             "scripts": [
                 {
@@ -45,10 +32,36 @@
                 }
             ],
             "type": "Script"
+        },
+        {
+            "enable": 1,
+            "material": {
+                "baseColor": {
+                    "w": 1.0,
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "baseTextureGuid": {
+                    "guid": "14196fa931d9b8c11196cdd7eca20cf6"
+                },
+                "guid": {
+                    "guid": "00000000000000000000000000000000"
+                },
+                "normalTextureGuid": {
+                    "guid": "00000000000000000000000000000000"
+                },
+                "postEffectFlags": 1
+            },
+            "meshPath": "./Assets/Models/Entity/Puzzle/GoalBlock.obj",
+            "type": "MeshRenderer"
         }
     ],
-    "id": 3,
+    "guid": {
+        "guid": "2b61bb614485da81f5a1a6840c6e48c0"
+    },
+    "id": 2,
     "name": "Goal",
     "parent": null,
-    "prefabName": "Goal.prefab"
+    "prefabName": "Goal"
 }

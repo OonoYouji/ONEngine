@@ -44,28 +44,30 @@ void EntityJsonConverter::FromJson(const nlohmann::json& _json, GameEntity* _ent
 	}
 
 	/// コンポーネントを追加
-	for (const auto& componentJson : _json["components"]) {
+	if (_json.contains("components")) {
+		for (const auto& componentJson : _json["components"]) {
 
-		/// jsonにtypeが無ければスキップ
-		if (!componentJson.contains("type")) {
-			continue;
-		}
-
-		const std::string componentType = componentJson.at("type").get<std::string>();
-
-		IComponent* comp = _entity->AddComponent(componentType);
-		if (comp) {
-			ComponentJsonConverter::FromJson(componentJson, comp);
-			comp->SetOwner(_entity);
-
-			if (componentType == "Variables") {
-				Variables* vars = static_cast<Variables*>(comp);
-				vars->LoadJson("./Assets/Scene/" + _groupName + "/" + _entity->GetName() + ".json");
+			/// jsonにtypeが無ければスキップ
+			if (!componentJson.contains("type")) {
+				continue;
 			}
 
-		} else {
-			// コンポーネントの追加に失敗した場合のログ
-			Console::LogError("failed add component: " + componentType);
+			const std::string componentType = componentJson.at("type").get<std::string>();
+
+			IComponent* comp = _entity->AddComponent(componentType);
+			if (comp) {
+				ComponentJsonConverter::FromJson(componentJson, comp);
+				comp->SetOwner(_entity);
+
+				if (componentType == "Variables") {
+					Variables* vars = static_cast<Variables*>(comp);
+					vars->LoadJson("./Assets/Scene/" + _groupName + "/" + _entity->GetName() + ".json");
+				}
+
+			} else {
+				// コンポーネントの追加に失敗した場合のログ
+				Console::LogError("failed add component: " + componentType);
+			}
 		}
 	}
 }

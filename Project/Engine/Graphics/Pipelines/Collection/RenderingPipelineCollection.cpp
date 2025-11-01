@@ -39,11 +39,11 @@ RenderingPipelineCollection::~RenderingPipelineCollection() {}
 
 void RenderingPipelineCollection::Initialize() {
 
-	/// 2D
+	/// ----- 2D用のパイプラインを生成 ----- ///
 	Generate2DRenderingPipeline<Line2DRenderingPipeline>();
 	Generate2DRenderingPipeline<SpriteRenderingPipeline>(pAssetCollection_);
 
-	/// 3D 
+	/// ----- 3D用のパイプラインを生成 ----- ///
 	Generate3DRenderingPipeline<Line3DRenderingPipeline>();
 	Generate3DRenderingPipeline<SkyboxRenderingPipeline>(pAssetCollection_);
 	Generate3DRenderingPipeline<TerrainRenderingPipeline>(pAssetCollection_);
@@ -52,27 +52,31 @@ void RenderingPipelineCollection::Initialize() {
 	Generate3DRenderingPipeline<MeshRenderingPipeline>(pAssetCollection_);
 	Generate3DRenderingPipeline<SkinMeshRenderingPipeline>(pAssetCollection_);
 #ifdef DEBUG_MODE
+	/// Debug用にスケルトンを描画するパイプラインを追加
 	Generate3DRenderingPipeline<SkinMeshSkeletonRenderingPipeline>();
 #endif // DEBUG_MODE
 	Generate3DRenderingPipeline<EffectRenderingPipeline>(pAssetCollection_);
 	Generate3DRenderingPipeline<GizmoRenderingPipeline>();
 	Generate3DRenderingPipeline<GrassRenderingPipeline>(pAssetCollection_);
 
-	/// post process - per object
+	/// ----- オブジェクトごとのポストエフェクトのパイプラインを生成 ----- ///
 	GeneratePostProcessPipeline<PostProcessLighting>();
 	GeneratePostProcessPipeline<PostProcessGrayscalePerObject>();
 	GeneratePostProcessPipeline<PostProcessTerrainBrush>();
 	GeneratePostProcessPipeline<PostProcessGaussianBlurPerObject>();
 
-	/// post process - screen
+	/// ----- スクリーンにかける用のポストエフェクトのパイプラインを生成 ----- ///
 	GeneratePostProcessPipeline<PostProcessGrayscale>();
 	GeneratePostProcessPipeline<PostProcessRadialBlur>();
 }
 
 void RenderingPipelineCollection::PreDrawEntities(CameraComponent* _3dCamera, CameraComponent* _2dCamera) {
+
+	/// ----- すべてのPipelineのPreDrawを実行する ----- ///
 	ECSGroup* ecsGroup = pEntityComponentSystem_->GetCurrentGroup();
 
-	if (_3dCamera && _3dCamera->IsMakeViewProjection()) {
+	/// 2d,3d 両方ともカメラが有効かチェックしてから描画する
+	if (IsEnableCamera(_3dCamera)) {
 		for (auto& renderer : renderer3ds_) {
 			renderer->PreDraw(ecsGroup, _3dCamera, pDxManager_->GetDxCommand());
 		}
@@ -80,7 +84,7 @@ void RenderingPipelineCollection::PreDrawEntities(CameraComponent* _3dCamera, Ca
 		Console::LogError("RenderingPipelineCollection::DrawEntities: 3D Camera is null");
 	}
 
-	if (_2dCamera && _2dCamera->IsMakeViewProjection()) {
+	if (IsEnableCamera(_2dCamera)) {
 		for (auto& renderer : renderer2ds_) {
 			renderer->PreDraw(ecsGroup, _2dCamera, pDxManager_->GetDxCommand());
 		}
@@ -90,9 +94,12 @@ void RenderingPipelineCollection::PreDrawEntities(CameraComponent* _3dCamera, Ca
 }
 
 void RenderingPipelineCollection::DrawEntities(CameraComponent* _3dCamera, CameraComponent* _2dCamera) {
+
+	/// シーンを描画するので現在のGroupを使用する
 	ECSGroup* ecsGroup = pEntityComponentSystem_->GetCurrentGroup();
 
-	if (_3dCamera && _3dCamera->IsMakeViewProjection()) {
+	/// 2d,3d 両方ともカメラが有効かチェックしてから描画する
+	if (IsEnableCamera(_3dCamera)) {
 		for (auto& renderer : renderer3ds_) {
 			renderer->Draw(ecsGroup, _3dCamera, pDxManager_->GetDxCommand());
 		}
@@ -100,7 +107,7 @@ void RenderingPipelineCollection::DrawEntities(CameraComponent* _3dCamera, Camer
 		Console::LogError("RenderingPipelineCollection::DrawEntities: 3D Camera is null");
 	}
 
-	if (_2dCamera && _2dCamera->IsMakeViewProjection()) {
+	if (IsEnableCamera(_2dCamera)) {
 		for (auto& renderer : renderer2ds_) {
 			renderer->Draw(ecsGroup, _2dCamera, pDxManager_->GetDxCommand());
 		}
@@ -110,9 +117,13 @@ void RenderingPipelineCollection::DrawEntities(CameraComponent* _3dCamera, Camer
 }
 
 void RenderingPipelineCollection::DrawSelectedPrefab(CameraComponent* _3dCamera, CameraComponent* _2dCamera) {
-	ECSGroup* ecsGroup = pEntityComponentSystem_->GetCurrentGroup();
+	/// ----- 選択されているPrefabの描画 ----- ///
 
-	if (_3dCamera) {
+	/// デバッグ用のGroupを使用する
+	ECSGroup* ecsGroup = pEntityComponentSystem_->GetECSGroup("Debug");
+
+	/// 2d,3d 両方ともカメラが有効かチェックしてから描画する
+	if (IsEnableCamera(_3dCamera)) {
 		for (auto& renderer : renderer3ds_) {
 			renderer->Draw(ecsGroup, _3dCamera, pDxManager_->GetDxCommand());
 		}
@@ -120,7 +131,7 @@ void RenderingPipelineCollection::DrawSelectedPrefab(CameraComponent* _3dCamera,
 		Console::LogError("RenderingPipelineCollection::DrawEntities: 3D Camera is null");
 	}
 
-	if (_2dCamera) {
+	if (IsEnableCamera(_2dCamera)) {
 		for (auto& renderer : renderer2ds_) {
 			renderer->Draw(ecsGroup, _2dCamera, pDxManager_->GetDxCommand());
 		}
@@ -134,4 +145,15 @@ void RenderingPipelineCollection::ExecutePostProcess(const std::string& _sceneTe
 	for (auto& postProcess : postProcesses_) {
 		postProcess->Execute(_sceneTextureName, pDxManager_->GetDxCommand(), pAssetCollection_, pEntityComponentSystem_);
 	}
+}
+
+bool RenderingPipelineCollection::IsEnableCamera(const CameraComponent* _camera) const {
+	/*
+	* チェック項目
+	* 1, カメラのポインタが有効
+	* 2, Componentの有効フラグがtrue
+	* 3, Bufferとして利用できるViewProjectionがあるか
+	*/
+
+	return _camera && _camera->enable && _camera->IsMakeViewProjection();
 }

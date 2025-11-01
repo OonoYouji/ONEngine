@@ -34,8 +34,11 @@
             "type": "Script"
         }
     ],
+    "guid": {
+        "guid": "61b20d77ac788d206330e24841243be3"
+    },
     "id": 2,
     "name": "Mapchip",
     "parent": null,
-    "prefabName": "Mapchip.prefab"
+    "prefabName": "Mapchip"
 }

@@ -25,7 +25,7 @@ ImGuiWindowCollection::ImGuiWindowCollection(
 	/// ここでwindowを生成する
 	AddParentWindow("File", std::make_unique<ImGuiFileWindow>());
 	AddParentWindow("Game", std::make_unique<ImGuiGameWindow>(_pEntityComponentSystem, _assetCollection, _editorManager, _sceneManager));
-	AddParentWindow("Edit", std::make_unique<ImGuiEditorWindow>(_pEntityComponentSystem, _assetCollection, _editorManager));
+	AddParentWindow("Prefab", std::make_unique<ImGuiEditorWindow>(_pEntityComponentSystem, _assetCollection, _editorManager, _sceneManager));
 
 	// game windowで開始
 	selectedMenuIndex_ = 1;

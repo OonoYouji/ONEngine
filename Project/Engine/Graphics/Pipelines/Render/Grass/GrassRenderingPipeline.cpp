@@ -131,7 +131,7 @@ void GrassRenderingPipeline::Draw(ECSGroup* _ecs, CameraComponent* _camera, DxCo
 		const UINT grassPerThread = 51; /// 1 スレッドあたりの草の本数
 		const UINT oneDrawInstanceCount = grassPerThread * threadsPerGroup; // 3264
 
-		grass->MaterialMapping();
+		grass->SetupRenderingData(pAssetCollection_);
 		grass->StartIndexMapping(oneDrawInstanceCount);
 
 		// SRV/UAVバインド

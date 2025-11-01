@@ -18,7 +18,7 @@
 #include "Engine/Core/DirectX12/Command/DxCommand.h"
 
 
-Texture::Texture() {}
+Texture::Texture() = default;
 
 void Texture::CreateEmptySRVHandle() {
 	srvHandle_.emplace(Handle());
@@ -67,7 +67,7 @@ void Texture::CreateUAVTexture(UINT _width, UINT _height, DxDevice* _dxDevice, D
 }
 
 void Texture::OutputTexture(const std::wstring& _filename, DxDevice* _dxDevice, DxCommand* _dxCommand) {
-	// 1. Readbackリソースを作成（1行ごとのAlignmentに注意）
+	/// Readbackリソースを作成（1行ごとのAlignmentに注意）
 	D3D12_RESOURCE_DESC desc = dxResource_.Get()->GetDesc();
 
 	D3D12_PLACED_SUBRESOURCE_FOOTPRINT footprint = {};
@@ -83,13 +83,13 @@ void Texture::OutputTexture(const std::wstring& _filename, DxDevice* _dxDevice, 
 		&rbDesc, D3D12_RESOURCE_STATE_COPY_DEST, nullptr
 	);
 
-	// dst (Readback側) の設定
+	/// dst (Readback側) の設定
 	D3D12_TEXTURE_COPY_LOCATION dst = {};
 	dst.pResource = readbackTexture_.Get();
 	dst.Type = D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT;
 	dst.PlacedFootprint = footprint;
 
-	// src (UAV側) の設定
+	/// src (UAV側) の設定
 	D3D12_TEXTURE_COPY_LOCATION src = {};
 	src.pResource = dxResource_.Get();
 	src.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
@@ -104,7 +104,7 @@ void Texture::OutputTexture(const std::wstring& _filename, DxDevice* _dxDevice, 
 	_dxCommand->CommandReset();
 
 
-	// 4. ReadbackしてDirectXTexに詰め替え
+	/// ReadbackしてDirectXTexに詰め替え
 	D3D12_RANGE range = { 0, static_cast<SIZE_T>(totalBytes) };
 	void* mappedData = nullptr;
 	readbackTexture_.Get()->Map(0, &range, &mappedData);
@@ -120,10 +120,13 @@ void Texture::OutputTexture(const std::wstring& _filename, DxDevice* _dxDevice, 
 	DirectX::ScratchImage scratch;
 	scratch.InitializeFromImage(image);
 
-	DirectX::SaveToWICFile(*scratch.GetImage(0, 0, 0),
+	/// .pngで保存
+	DirectX::SaveToWICFile(
+		*scratch.GetImage(0, 0, 0),
 		DirectX::WIC_FLAGS_NONE,
 		GUID_ContainerFormatPng,
-		_filename.c_str());
+		_filename.c_str()
+	);
 
 	readbackTexture_.Get()->Unmap(0, nullptr);
 }

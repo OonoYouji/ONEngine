@@ -73,8 +73,6 @@ public:
 	/// @param _flags ポストエフェクトのフラグ
 	void SetPostEffectFlags(uint32_t _flags);
 
-	void SetMaterialEntityId();
-
 	/// @brief 描画するmeshの file pathを取得
 	/// @return .slnからの相対パス
 	const std::string& GetMeshPath() const;
@@ -83,6 +81,7 @@ public:
 	/// @return RGBA 0.0f ~ 1.0f
 	const Vector4& GetColor() const;
 
+	/// @brief GPUで使用するMaterialデータの取得
 	const GPUMaterial& GetGpuMaterial() const;
 
 	/// @brief ポストエフェクトのフラグを取得

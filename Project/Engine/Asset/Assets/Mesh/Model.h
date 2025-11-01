@@ -10,9 +10,9 @@
 #include "Mesh.h"
 #include "Skinning.h"
 
-/// ===================================================
-/// mesh描画クラス
-/// ===================================================
+/// ///////////////////////////////////////////////////
+/// Meshの集合体、モデルデータ (アニメーションがある場合も含む)
+/// ///////////////////////////////////////////////////
 class Model final : public IAsset {
 public:
 	/// ===================================================
@@ -59,18 +59,25 @@ public:
 
 	/// ----- getters ----- ///
 
+	/// @brief Modelのソースパスを取得
+	const std::string& GetPath() const;
+
+	/// @brief Modelが持つMesh群を取得
 	const std::vector<std::shared_ptr<Mesh>>& GetMeshes() const;
 	std::vector<std::shared_ptr<Mesh>>& GetMeshes();
 
-	const std::string& GetPath() const;
+	/// @brief アニメーションのルートノードを取得
 	const Node& GetRootNode() const;
 
+	/// @brief アニメーションのJointWeightDataを取得
 	const std::unordered_map<std::string, JointWeightData>& GetJointWeightData() const;
 	std::unordered_map<std::string, JointWeightData>& GetJointWeightData();
 
+	/// @brief アニメーションのNodeAnimationのマップを取得
 	const std::unordered_map<std::string, NodeAnimation>& GetNodeAnimationMap() const;
 	std::unordered_map<std::string, NodeAnimation>& GetNodeAnimationMap();
 
+	/// @brief アニメーションの再生時間を取得
 	float GetAnimationDuration() const;
 
 

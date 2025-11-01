@@ -106,11 +106,37 @@ class Model;
 class DxManager;
 
 namespace ANIME_MATH {
+
+	/// @brief Vector3のキーフームを基に補間計算を行う
+	/// @param _keyFrames Vector3のキーフレーム配列
+	/// @param _time 補間時間
+	/// @return 補間後のVector3値
 	Vector3 CalculateValue(const std::vector<KeyFrameVector3>& _keyFrames, float _time);
+
+	/// @brief Quaternionのキーフームを基に補間計算を行う
+	/// @param _keyFrames Quaternionのキーフーム配列
+	/// @param _time 補間時間
+	/// @return 補間後のQuaternion値
 	Quaternion CalculateValue(const std::vector<KeyFrameQuaternion>& _keyFrames, float _time);
 
+
+	/// @brief ノードからジョイントを作成
+	/// @param _node ソースのノード
+	/// @param _parent 親子関係を示す親のインデックス
+	/// @param _joints Joint配列への参照
+	/// @return 生成されたJointのインデックス
 	int32_t CreateJoint(const Node& _node, const std::optional<int32_t>& _parent, std::vector<Joint>& _joints);
+
+	/// @brief モデルのスケルトン構築
+	/// @param _rootNode ソースのルートノード
+	/// @return 構築されたスケルトン
 	Skeleton CreateSkeleton(const Node& _rootNode);
+
+	/// @brief スキンクラスターの作成
+	/// @param _skeleton CreateSkeletonで作成されたスケルトン
+	/// @param _model ソースモデル
+	/// @param _dxm DxManagerのインスタンスへのポインタ
+	/// @return 構築されたスキンクラスター
 	SkinCluster CreateSkinCluster(const Skeleton& _skeleton, Model* _model, DxManager* _dxm);
 }
 

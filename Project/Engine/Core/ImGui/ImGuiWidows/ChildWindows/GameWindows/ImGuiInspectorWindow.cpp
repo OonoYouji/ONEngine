@@ -118,8 +118,14 @@ void ImGuiInspectorWindow::EntityInspector() {
 		return;
 	}
 
-	/// 選択したGuidが存在するかチェック
-	GameEntity* selectedEntity = pEcs_->GetCurrentGroup()->GetEntityFromGuid(selectionGuid);
+	GameEntity* selectedEntity = nullptr;
+	for(auto& group : pEcs_->GetECSGroups()) {
+		selectedEntity = group.second->GetEntityFromGuid(selectionGuid);
+		if (selectedEntity) {
+			break;
+		}
+	}
+
 	if (!selectedEntity) {
 		return;
 	}

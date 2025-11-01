@@ -7,6 +7,9 @@
 #include <string>
 #include <deque>
 
+/// externals
+#include <nlohmann/json.hpp>
+
 #include "../GameEntity/GameEntity.h"
 #include "../Prefab/EntityPrefab.h"
 
@@ -61,8 +64,18 @@ public:
 	void LoadPrefabAll();
 	void ReloadPrefab(const std::string& _prefabName);
 
-	GameEntity* GenerateEntityFromPrefab(const std::string& _prefabName, const Guid& _guid, bool _isRuntime = true);
+	GameEntity* GenerateEntityFromPrefab(const std::string& _prefabName, bool _isRuntime = true);
 	EntityPrefab* GetPrefab(const std::string& _fileName);
+
+	/// prefabの内容をEntityに反映する
+	void ApplyPrefabToEntity(GameEntity* _entity, const std::string& _prefabName);
+
+private:
+
+
+	/// @brief 再帰的にEntityを生成する
+	GameEntity* GenerateEntityRecursive(const nlohmann::json& _json, GameEntity* _entity, bool _isRuntime);
+
 
 private:
 	/// =========================================

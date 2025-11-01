@@ -23,11 +23,6 @@ void ImGuiMainWindow::ShowImGui() {
 	ImGuiID dockspaceID = ImGui::GetID("mainDockingSpace");
 	ImGui::DockSpace(dockspaceID, ImVec2(0.0f, 0.0f), 0);
 
-	//// ウィンドウを最背面に移動
-	//ImGui::SetWindowPos("main", ImVec2(0, 20), ImGuiCond_Always);
-	//ImGui::SetWindowSize("main", ImVec2(1280, 700), ImGuiCond_Always);
-	//ImGui::SetWindowFocus(nullptr);
-
 	ImGui::End();
 }
 

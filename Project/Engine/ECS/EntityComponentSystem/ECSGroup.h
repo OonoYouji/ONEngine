@@ -30,7 +30,7 @@ public:
 
 	/// 生成
 	GameEntity* GenerateEntity(const Guid& _guid, bool _isRuntime);
-	GameEntity* GenerateEntityFromPrefab(const std::string& _prefabName, const Guid& _guid, bool _isRuntime = true);
+	GameEntity* GenerateEntityFromPrefab(const std::string& _prefabName, bool _isRuntime = true);
 
 	/// 取得
 	GameEntity* GetEntityFromGuid(const Guid& _guid);

@@ -21,24 +21,53 @@
 /// ゲームオブジェクトの作成コマンド
 /// ///////////////////////////////////////////////////
 
-CreateGameObjectCommand::CreateGameObjectCommand(ECSGroup* _ecs) {
+CreateGameObjectCommand::CreateGameObjectCommand(ECSGroup* _ecs, const std::string& _name, GameEntity* _parentEntity)
+	: entityName_(_name) {
 	pEcsGroup_ = _ecs;
+	parentGuid_ = Guid::kInvalid;
+	if (_parentEntity) {
+		parentGuid_ = _parentEntity->GetGuid();
+	}
 }
 
 CreateGameObjectCommand::~CreateGameObjectCommand() {}
 
 EDITOR_STATE CreateGameObjectCommand::Execute() {
-	generatedEntity_ = pEcsGroup_->GenerateEntity(GenerateGuid(), false);
+
+	/// 生成するEntityのGuidを生成
+	if (!generatedGuid_.CheckValid()) {
+		generatedGuid_ = GenerateGuid();
+	}
+
+	generatedEntity_ = pEcsGroup_->GenerateEntity(generatedGuid_, false);
 
 	EDITOR_STATE state = EDITOR_STATE_RUNNING;
 	if (generatedEntity_) {
+		generatedEntity_->SetName(entityName_);
+
 		state = EDITOR_STATE_FINISH;
+
+		/// 親子関係の設定
+		if (parentGuid_.CheckValid()) {
+			GameEntity* entity = pEcsGroup_->GetEntityFromGuid(parentGuid_);
+			if (entity) {
+				generatedEntity_->SetParent(entity);
+			}
+		}
 	}
 
 	return state;
 }
 
 EDITOR_STATE CreateGameObjectCommand::Undo() {
+	if (parentGuid_.CheckValid()) {
+		GameEntity* parentEntity = pEcsGroup_->GetEntityFromGuid(parentGuid_);
+		if (parentEntity && generatedEntity_) {
+			generatedEntity_->SetParent(nullptr);
+		}
+	}
+
+
 	pEcsGroup_->RemoveEntity(generatedEntity_);
 
 	return EDITOR_STATE_FINISH;
@@ -197,6 +226,10 @@ EDITOR_STATE CreatePrefabCommand::Execute() {
 	/// jsonに変換
 	nlohmann::json entityJson = EntityJsonConverter::ToJson(pEntity_);
 
+	/// 子の要素も入れる
+	SerializeRecursive(pEntity_, entityJson);
+
+
 	/// jsonが空ならログを残して終了
 	if (entityJson.empty()) {
 		Console::Log("CreatePrefabCommand : EntityJson is empty");
@@ -223,6 +256,20 @@ EDITOR_STATE CreatePrefabCommand::Undo() {
 	return EDITOR_STATE_FINISH;
 }
 
+void CreatePrefabCommand::SerializeRecursive(GameEntity* _entity, nlohmann::json& _json) {
+	/// 子の要素も入れる
+	for (auto& child : _entity->GetChildren()) {
+		nlohmann::json childJson = EntityJsonConverter::ToJson(child);
+		SerializeRecursive(child, childJson);
+		_json["children"].push_back(childJson);
+	}
+}
+
+
+/// ///////////////////////////////////////////////////
+/// エンティティをコピーするコマンド
+/// ///////////////////////////////////////////////////
+
 CopyEntityCommand::CopyEntityCommand(GameEntity* _entity) : pEntity_(_entity) {}
 
 EDITOR_STATE CopyEntityCommand::Execute() {
@@ -243,6 +290,7 @@ EDITOR_STATE CopyEntityCommand::Execute() {
 }
 
 EDITOR_STATE CopyEntityCommand::Undo() {
+	/// 特にやることなし
 	return EDITOR_STATE::EDITOR_STATE_FINISH;
 }
 
@@ -323,6 +371,6 @@ EDITOR_STATE ChangeEntityParentCommand::Undo() {
 	/// 親を元に戻す
 	if (pOldParent_) {
 		pEntity_->SetParent(pOldParent_);
-	} 
+	}
 	return EDITOR_STATE_FINISH;
 }

@@ -62,7 +62,7 @@ void ImGuiHierarchyWindow::PrefabDragAndDrop() {
 						str.erase(0, pos + 1);
 					}
 
-					pEcsGroup_->GenerateEntityFromPrefab(str, GenerateGuid(), DebugConfig::isDebugging);
+					pEcsGroup_->GenerateEntityFromPrefab(str, DebugConfig::isDebugging);
 					Console::Log(std::format("entity name set to: {}", str));
 				} else {
 					Console::Log("[error] Invalid entity format. Please use \".prefab\"");
@@ -144,6 +144,10 @@ void ImGuiHierarchyWindow::DrawHierarchy() {
 		/// ---------------------------------------------------
 		ImVec2 windowSize = ImGui::GetContentRegionAvail();
 		windowSize.y = 12.0f;
+		if (windowSize.x == 0.0f) {
+			windowSize.x = 12.0f;
+		}
+
 		ImGui::InvisibleButton("HierarchyDropArea", windowSize);
 		if (ImGui::BeginDragDropTarget()) {
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("EntityData")) {
@@ -391,6 +395,20 @@ void ImGuiHierarchyWindow::DrawEntity(GameEntity* _entity) {
 	}
 
 	if (ImGui::BeginPopup("EntityContextMenu")) {
+
+		/// 新規の生成(子に追加する
+		if (ImGui::BeginMenu("create")) {
+
+			if (ImGui::MenuItem("create empty object")) {
+				static int count = 0;
+				count++;
+				std::string name = "NewEntity_" + std::to_string(count);
+				pEditorManager_->ExecuteCommand<CreateGameObjectCommand>(pEcsGroup_, name, _entity);
+			}
+
+			ImGui::EndMenu();
+		}
+
 		if (ImGui::MenuItem("rename")) {
 			renameEntity_ = _entity;
 			newName_ = _entity->GetName();

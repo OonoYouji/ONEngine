@@ -5,6 +5,7 @@
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
+#include "Engine/Core/ImGui/Math/AssetDebugger.h"
 #include "Engine/Core/ImGui/Math/ImGuiMath.h"
 #include "Engine/Editor/Commands/ImGuiCommand/ImGuiCommand.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Terrain.h"
@@ -21,7 +22,7 @@ void to_json(nlohmann::json& _j, const GrassField& _p) {
 		{ "type", "GrassField" },
 		{ "maxGrassCount", _p.maxGrassCount_ },
 		{ "distributionTexturePath", _p.distributionTexturePath_ },
-		{ "material", _p.gpuMaterial_ }
+		{ "material", _p.material_ }
 	};
 }
 
@@ -29,7 +30,7 @@ void from_json(const nlohmann::json& _j, GrassField& _p) {
 	/// Json -> GrassField
 	_p.maxGrassCount_ = _j.value("maxGrassCount", 128);
 	_p.distributionTexturePath_ = _j.value("distributionTexturePath", "");
-	_p.gpuMaterial_ = _j.value("material", GPUMaterial{});
+	_p.material_ = _j.value("material", Material{});
 }
 
 
@@ -66,7 +67,7 @@ void COMP_DEBUG::GrassFieldDebug(GrassField* _grassField, AssetCollection* _asse
 
 
 	/// material debug
-	ImMathf::MaterialEdit("material", &_grassField->gpuMaterial_, _assetCollection);
+	ImMathf::MaterialEdit("material", &_grassField->material_, _assetCollection);
 
 }
 
@@ -100,7 +101,27 @@ void GrassField::Initialize(uint32_t _maxBladeCount, DxDevice* _dxDevice, DxComm
 	materialBuffer_.Create(_dxDevice);
 }
 
-void GrassField::MaterialMapping() {
+void GrassField::SetupRenderingData(AssetCollection* _assetCollection) {
+
+	/// material_の情報をgpuMaterial_にセット
+	gpuMaterial_.baseColor = material_.baseColor;
+	gpuMaterial_.postEffectFlags = material_.postEffectFlags;
+	gpuMaterial_.uvTransform = material_.uvTransform;
+	/// テクスチャの情報をセット
+	if (material_.HasBaseTexture()) {
+		const Guid& baseTextureGuid = material_.GetBaseTextureGuid();
+		gpuMaterial_.baseTextureId = static_cast<int32_t>(_assetCollection->GetTextureIndexFromGuid(baseTextureGuid));
+	} else {
+		gpuMaterial_.baseTextureId = 0;
+	}
+
+	if (material_.HasNormalTexture()) {
+		const Guid& normalTextureGuid = material_.GetNormalTextureGuid();
+		gpuMaterial_.normalTextureId = static_cast<int32_t>(_assetCollection->GetTextureIndexFromGuid(normalTextureGuid));
+	} else {
+		gpuMaterial_.normalTextureId = 0;
+	}
+
 	materialBuffer_.SetMappedData(gpuMaterial_);
 }
 
