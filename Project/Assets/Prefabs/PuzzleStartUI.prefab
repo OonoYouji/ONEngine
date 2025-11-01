@@ -1,0 +1,67 @@
+{
+    "components": [
+        {
+            "enable": 1,
+            "position": {
+                "x": 0.0,
+                "y": 4.0,
+                "z": 0.0
+            },
+            "rotate": {
+                "w": 1.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "type": "Transform"
+        },
+        {
+            "type": "Variables"
+        },
+        {
+            "enable": 1,
+            "scripts": [
+                {
+                    "enable": true,
+                    "name": "Billboard"
+                }
+            ],
+            "type": "Script"
+        },
+        {
+            "enable": 1,
+            "material": {
+                "baseColor": {
+                    "w": 1.0,
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "baseTextureGuid": {
+                    "guid": "7f5868ac5097bb270f707527ec7945fe"
+                },
+                "guid": {
+                    "guid": "00000000000000000000000000000000"
+                },
+                "normalTextureGuid": {
+                    "guid": "00000000000000000000000000000000"
+                },
+                "postEffectFlags": 0
+            },
+            "meshPath": "./Packages/Models/primitive/plane.obj",
+            "type": "MeshRenderer"
+        }
+    ],
+    "guid": {
+        "guid": "54bbfa81d372742edc49947c2b980cfa"
+    },
+    "id": 2,
+    "name": "PuzzleStartUI",
+    "parent": null,
+    "prefabName": "PuzzleStartUI"
+}

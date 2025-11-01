@@ -7,6 +7,7 @@
 #include <nlohmann/json.hpp>
 
 /// engine
+#include "Engine/Asset/Assets/Mateiral/Material.h"
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/Graphics/Buffer/StructuredBuffer.h"
 #include "Engine/Graphics/Buffer/ConstantBuffer.h"
@@ -71,7 +72,7 @@ public:
 	);
 
 	/// material_をBufferにMapする
-	void MaterialMapping();
+	void SetupRenderingData(class AssetCollection* _assetCollection);
 	/// rwGrassInstanceBuffer_の開始インデックスを設定する
 	void StartIndexMapping(UINT _oneDrawInstanceCount);
 
@@ -97,6 +98,7 @@ private:
 	uint32_t instanceCount_; ///< 実際に配置された草の本数
 
 	GPUMaterial gpuMaterial_;
+	Material material_;
 
 public:
 	/// ===================================================
