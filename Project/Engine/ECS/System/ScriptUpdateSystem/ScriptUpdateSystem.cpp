@@ -278,6 +278,4 @@ void DebugScriptUpdateSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
 	CallUpdateEcsGroup();
 }
 
-void DebugScriptUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
-	ScriptUpdateSystem::RuntimeUpdate(_ecs);
-}
+void DebugScriptUpdateSystem::RuntimeUpdate(ECSGroup* /*_ecs*/) {}
