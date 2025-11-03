@@ -4,6 +4,7 @@
 #include <numbers>
 
 /// engine
+#include "Engine/Core/Config/EngineConfig.h"
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Core/Utility/Tools/Gizmo.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
@@ -65,7 +66,7 @@ void GizmoRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManag
 }
 
 void GizmoRenderingPipeline::Draw(class ECSGroup*, [[maybe_unused]] CameraComponent* _camera, [[maybe_unused]] DxCommand* _dxCommand) {
-#ifdef _DEBUG
+#ifdef DEBUG_MODE
 	/// ---------------------------------------------------
 	/// wire描画を行う
 	/// ---------------------------------------------------
