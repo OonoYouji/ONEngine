@@ -184,7 +184,7 @@ void RenderingFramework::DrawShadowMap() {
 	SceneRenderTexture* renderTex = renderTextures_[RENDER_TEXTURE_SHADOW_MAP].get();
 	renderTex->CreateBarrierRenderTarget(pDxManager_->GetDxCommand());
 	renderTex->SetRenderTarget(pDxManager_->GetDxCommand(), pDxManager_->GetDxDSVHeap());
-	renderingPipelineCollection_->DrawEntities(shadowCamera, currentGroup->GetMainCamera2D());
+	renderingPipelineCollection_->DrawEntities(shadowCamera, nullptr);
 	renderTex->CreateBarrierPixelShaderResource(pDxManager_->GetDxCommand());
 }
 

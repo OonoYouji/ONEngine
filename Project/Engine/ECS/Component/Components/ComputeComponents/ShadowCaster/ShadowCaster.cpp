@@ -16,8 +16,22 @@ void COMP_DEBUG::ShadowCasterDebug(ShadowCaster* _shadowCaster) {
 	}
 
 
+	if (ImGui::Button("toggle camera type")) {
+		ShadowCaster* shadowCaster = _shadowCaster;
+		CameraComponent* camera = shadowCaster->GetShadowCasterCamera();
+		if (camera) {
+			int currentType = camera->GetCameraType();
+			if (currentType == static_cast<int>(CameraType::Type2D)) {
+				camera->SetCameraType(static_cast<int>(CameraType::Type3D));
+			} else {
+				camera->SetCameraType(static_cast<int>(CameraType::Type2D));
+			}
+		}
+	}
+
+
 	if (ImGui::Button("create camera")) {
-		_shadowCaster->CreateShadowCaster(nullptr);
+		_shadowCaster->CreateShadowCaster();
 	}
 
 }
@@ -33,29 +47,30 @@ void to_json(nlohmann::json& _j, const ShadowCaster& _c) {
 	};
 }
 
-ShadowCaster::ShadowCaster() : camera_(nullptr) {};
+
+/// ///////////////////////////////////////////////////
+/// 影の投影を行うためのコンポーネント
+/// ///////////////////////////////////////////////////
+
+ShadowCaster::ShadowCaster()
+	: camera_(nullptr),
+	isCreated_(false) {
+};
+
 ShadowCaster::~ShadowCaster() = default;
 
-void ShadowCaster::CreateShadowCaster(DxDevice* _dxDevice) {
+void ShadowCaster::CreateShadowCaster() {
+	/// 生成済みかチェック
+	if (!isCreated_) {
+		isCreated_ = true;
+	} else {
+		Console::LogWarning("ShadowCaster::CreateShadowCaster: ShadowCaster is already created.");
+		return;
+	}
+
 	camera_ = GetOwner()->AddComponent<CameraComponent>();
 	camera_->SetCameraType(static_cast<int>(CameraType::Type2D));
-
-	//vpBuffer_.Create(_dxDevice);
-
-
-	///// DirectionalLightからライトビュー行列を計算
-	//if (ECSGroup* ecsGroup = GetOwner()->GetECSGroup()) {
-	//	ComponentArray<DirectionalLight>* dirLightArray = ecsGroup->GetComponentArray<DirectionalLight>();
-	//	if (dirLightArray && !dirLightArray->GetUsedComponents().empty()) {
-	//		DirectionalLight* dirLight = dirLightArray->GetUsedComponents().front();
-
-	//		CalculationLightViewMatrix(dirLight);
-	//	}
-	//}
-}
-
-void ShadowCaster::CreateVPBuffer(DxDevice* _dxDevice) {
-	//vpBuffer_.Create(_dxDevice);
+	camera_->SetIsMainCameraRequest(false); /// シャドウキャスター用カメラはメインカメラにしない
 }
 
 void ShadowCaster::CalculationLightViewMatrix(DirectionalLight* _directionLight) {
@@ -66,25 +81,19 @@ void ShadowCaster::CalculationLightViewMatrix(DirectionalLight* _directionLight)
 	}
 
 
-	//const Vector3& lightDir = _directionLight->GetDirection();
-	//const Vector3& upDir = Vector3::kUp;
+	/// オーナーの位置を取得し、ライトの方向を基にカメラの回転を計算
+	GameEntity* owner = GetOwner();
+	Vector3 lightPos = owner->GetPosition();
 
-	//GameEntity* owner = GetOwner();
-	//const Vector3& lightPos = owner->GetPosition();
+	const Vector3& dir = _directionLight->GetDirection();
+	Quaternion cameraRotation = Quaternion::LookAt(
+		{}, dir,
+		Vector3::kUp
+	);
 
-	///// 行列の計算
-	//matLightView_ = Matrix4x4::MakeLookAtLH(lightPos, lightPos + lightDir, upDir);
-	//matLightProj_ = CameraMath::MakeOrthographicMatrix(
-	//	-(EngineConfig::kWindowSize.x / 2.0f), (EngineConfig::kWindowSize.x / 2.0f),
-	//	-(EngineConfig::kWindowSize.y / 2.0f), (EngineConfig::kWindowSize.y / 2.0f),
-	//	nearClip_, farClip_
-	//);
-
-
-	//vpBuffer_.SetMappedData(ViewProjection(
-	//	matLightView_ * matLightProj_,
-	//	matLightView_, matLightProj_
-	//));
+	/// カメラの回転を設定
+	owner->SetRotate(cameraRotation);
+	camera_->UpdateViewProjection();
 
 }
 

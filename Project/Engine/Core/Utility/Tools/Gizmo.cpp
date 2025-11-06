@@ -3,6 +3,9 @@
 /// std
 #include <memory>
 
+/// engine
+#include "Engine/Core/Config/EngineConfig.h"
+
 namespace {
 
 	/// ///////////////////////////////////////////////////
@@ -81,7 +84,7 @@ void Gizmo::Reset() {
 }
 
 
-#ifdef DEBUG_BUILD
+#ifdef DEBUG_MODE
 
 void Gizmo::DrawSphere(const Vector3& _position, float _radius, const Vector4& _color) {
 	gGizmoSystem->sphereData_.push_back({ _position, _radius, _color });

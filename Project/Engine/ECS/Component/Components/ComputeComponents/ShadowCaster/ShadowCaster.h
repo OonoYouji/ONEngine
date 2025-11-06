@@ -37,12 +37,7 @@ public:
 
 
 	/// @brief 自身をシャドウキャスターとして作成
-	/// @param _dxDevice DxDeviceへのポインタ
-	void CreateShadowCaster(class DxDevice* _dxDevice);
-
-	/// @brief ViewProjectionバッファの作成
-	/// @param _dxDevice DxDeviceへのポインタ
-	void CreateVPBuffer(DxDevice* _dxDevice);
+	void CreateShadowCaster();
 
 	/// @brief DirectionalLightからライトビュー行列を設定
 	/// @param _directionLight DirectionalLightへのポインタ
@@ -57,6 +52,8 @@ private:
 	/// ===========================================
 	/// private : objects
 	/// ===========================================
+
+	bool isCreated_;
 
 	CameraComponent* camera_;
 };
