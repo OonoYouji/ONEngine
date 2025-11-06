@@ -13,6 +13,7 @@
 #include "Engine/ECS/Component/Components/ComputeComponents/Script/Script.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Audio/AudioSource.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Variables/Variables.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/ShadowCaster/ShadowCaster.h"
 /// engine/renderer
 #include "Engine/ECS/Component/Components/RendererComponents/Skybox/Skybox.h"
 #include "Engine/ECS/Component/Components/RendererComponents/Sprite/SpriteRenderer.h"
@@ -42,6 +43,7 @@ namespace {
 			Register<GrassField>();
 			Register<TerrainCollider>();
 			Register<CameraComponent>();
+			Register<ShadowCaster>();
 
 			/// renderer
 			Register<SpriteRenderer>();

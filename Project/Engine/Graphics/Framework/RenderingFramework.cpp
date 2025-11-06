@@ -6,6 +6,7 @@
 #include "Engine/Core/ImGui/ImGuiManager.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/ShadowCaster/ShadowCaster.h"
 
 RenderingFramework::RenderingFramework() {}
 RenderingFramework::~RenderingFramework() {}
@@ -27,9 +28,9 @@ void RenderingFramework::Initialize(DxManager* _dxm, WindowManager* _windowManag
 	assetCollection_->Initialize(pDxManager_);
 
 
-	const size_t kRenderTexCount = 3;
+	const size_t kRenderTexCount = 4;
 	const std::array<std::string, kRenderTexCount> renderTexNames = {
-		"scene", "debug", "prefab"
+		"scene", "debug", "prefab", "shadowMap"
 	};
 	renderTextures_.resize(kRenderTexCount);
 
@@ -78,6 +79,7 @@ void RenderingFramework::Draw() {
 		/// Gameモード時の描画
 		DrawDebug();
 		DrawScene();
+		DrawShadowMap();
 		break;
 	}
 
@@ -152,6 +154,38 @@ void RenderingFramework::DrawPrefab() {
 	renderTex->CreateBarrierPixelShaderResource(pDxManager_->GetDxCommand());
 
 	renderingPipelineCollection_->ExecutePostProcess(renderTex->GetName());
+}
+
+void RenderingFramework::DrawShadowMap() {
+	ECSGroup* currentGroup = pEntityComponentSystem_->GetCurrentGroup();
+
+	/// ShadowCaster ComponentArrayの取得&確認
+	ComponentArray<ShadowCaster>* shadowCasterArray = currentGroup->GetComponentArray<ShadowCaster>();
+	if (!shadowCasterArray || shadowCasterArray->GetUsedComponents().empty()) {
+		Console::LogError("RenderingFramework::DrawShadowMap: ShadowCaster ComponentArray is null");
+		return;
+	}
+
+	/// ShadowCasterの取得&確認
+	ShadowCaster* shadowCaster = shadowCasterArray->GetUsedComponents().front();
+	if (!shadowCaster) {
+		Console::LogError("RenderingFramework::DrawShadowMap: ShadowCaster is null");
+		return;
+	}
+
+	/// 投影用のカメラの取得&確認
+	CameraComponent* shadowCamera = shadowCaster->GetShadowCasterCamera();
+	if (!shadowCamera) {
+		Console::LogError("RenderingFramework::DrawShadowMap: ShadowCaster Camera is null");
+		return;
+	}
+
+
+	SceneRenderTexture* renderTex = renderTextures_[RENDER_TEXTURE_SHADOW_MAP].get();
+	renderTex->CreateBarrierRenderTarget(pDxManager_->GetDxCommand());
+	renderTex->SetRenderTarget(pDxManager_->GetDxCommand(), pDxManager_->GetDxDSVHeap());
+	renderingPipelineCollection_->DrawEntities(shadowCamera, currentGroup->GetMainCamera2D());
+	renderTex->CreateBarrierPixelShaderResource(pDxManager_->GetDxCommand());
 }
 
 void RenderingFramework::ResetCommand() {
