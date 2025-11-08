@@ -4,6 +4,7 @@
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/Graphics/Pipelines/Interface/IPostProcessPipeline.h"
 #include "Engine/Graphics/Buffer/ConstantBuffer.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/ShadowCaster/ShadowCaster.h"
 
 /// ///////////////////////////////////////////////////
 /// 影を適用するためのポストプロセス
@@ -18,14 +19,6 @@ class PostProcessShadowApply : public ScreenPostProcess {
 		SRV_SHADOW_MAP,
 		SRV_WORLD_POSITION,
 		UAV_OUTPUT_COLOR,
-	};
-
-	struct ShadowParameter {
-		Vector2 screenSize;
-		Vector2 texelSizeShadow;
-		float shadowBias;
-		float shadowDarkness;
-		int pcfRadius;
 	};
 
 public:

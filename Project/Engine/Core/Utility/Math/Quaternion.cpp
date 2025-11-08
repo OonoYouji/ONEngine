@@ -96,13 +96,20 @@ Quaternion Quaternion::LookAt(const Vector3& _position, const Vector3& _target, 
 	XMVECTOR lookAtVec = XMVectorSubtract(targetVec, posVec);
 	lookAtVec = XMVector3Normalize(lookAtVec);
 
+	// forward と up がほぼ平行な場合は up を差し替える（真上 or 真下対策）
+	float dot = XMVectorGetX(XMVector3Dot(lookAtVec, upVec));
+	if (fabsf(dot) > 0.999f) {
+		// Y軸とほぼ同一方向なのでZ軸をUpに使用
+		upVec = XMVectorSet(0, 0, 1, 0);
+	}
+
 	// View 行列を作成（左手系）
 	XMMATRIX viewMatrix = XMMatrixLookToLH(posVec, lookAtVec, upVec);
 
 	// View は World の逆行列なので逆行列を取る（これがカメラのワールド行列になる）
 	XMMATRIX worldMatrix = XMMatrixInverse(nullptr, viewMatrix);
 
-	// worldMatrix から回転成分を取り出す（スケールが入っている場合でも安全に回転を抽出）
+	// worldMatrix から回転成分を取り出す
 	XMVECTOR scalePart;
 	XMVECTOR rotQuat;
 	XMVECTOR transPart;
@@ -110,9 +117,8 @@ Quaternion Quaternion::LookAt(const Vector3& _position, const Vector3& _target, 
 
 	XMVECTOR finalQuat;
 	if (decomposed) {
-		finalQuat = rotQuat; // decomposed で得た回転クォータニオンを使う
+		finalQuat = rotQuat;
 	} else {
-		// 万一分解に失敗したらフォールバック（世界行列から直接回転行列→クォータニオン）
 		finalQuat = XMQuaternionRotationMatrix(worldMatrix);
 	}
 
@@ -121,6 +127,7 @@ Quaternion Quaternion::LookAt(const Vector3& _position, const Vector3& _target, 
 
 	return { result.x, result.y, result.z, result.w };
 }
+
 
 
 Quaternion Quaternion::LookAt(const Vector3& _position, const Vector3& _target) {

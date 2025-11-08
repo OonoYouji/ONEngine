@@ -94,6 +94,11 @@ void PostProcessShadowApply::Execute(const std::string& _textureName, DxCommand*
 		return;
 	}
 
+	/// Bufferが生成済みかチェック
+	if (!shadowCamera->GetViewProjectionBuffer().Get()) {
+		return;
+	}
+
 
 	/// ---------------------------------------------------
 	/// PipelineとBufferの設定
@@ -111,6 +116,7 @@ void PostProcessShadowApply::Execute(const std::string& _textureName, DxCommand*
 		cmdList, ROOT_PARAM::CBV_VIEW_PROJECTION
 	);
 
+	shadowParamBuffer_.SetMappedData(shadowCaster->GetShadowParameters());
 	shadowParamBuffer_.BindForComputeCommandList(
 		cmdList, ROOT_PARAM::CBV_SHADOW_PARAM
 	);

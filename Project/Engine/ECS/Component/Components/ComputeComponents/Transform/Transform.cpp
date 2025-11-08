@@ -188,6 +188,15 @@ void COMP_DEBUG::TransformDebug(Transform* _transform) {
 	isEdit |= ImMathf::DragQuaternion("rotate", &_transform->rotate, Mathf::PI / 12.0f);
 	isEdit |= ImMathf::DragFloat3("scale", &_transform->scale, 0.1f);
 
+
+	/// matrixCalcFlags 編集
+	int matrixCalcFlags = _transform->matrixCalcFlags;
+	isEdit |= ImGui::CheckboxFlags("matrixCalcFlags: position", &matrixCalcFlags, Transform::kPosition);
+	isEdit |= ImGui::CheckboxFlags("matrixCalcFlags: rotate", &matrixCalcFlags, Transform::kRotate);
+	isEdit |= ImGui::CheckboxFlags("matrixCalcFlags: scale", &matrixCalcFlags, Transform::kScale);
+
+	_transform->matrixCalcFlags = matrixCalcFlags;
+
 	if (isEdit) {
 		_transform->Update();
 	}

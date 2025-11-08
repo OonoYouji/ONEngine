@@ -14,7 +14,7 @@ void RenderTexture::Initialize(DXGI_FORMAT _format, const Vector4& _clearColor, 
 	pDxDepthStencil_ = _dxDepthStencil;
 
 	{	/// textureの作成
-		Texture rtvTexture;
+		Texture rtvTexture(_textureSize);
 		_assetCollection->AddAsset<Texture>(_name, std::move(rtvTexture)); /// textureの管理を AssetCollection に任せる
 		texture_ = _assetCollection->GetTexture(_name);
 	}
