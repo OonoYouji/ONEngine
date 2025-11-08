@@ -3,6 +3,9 @@
 /// directX
 #include <d3d12.h>
 
+/// std
+#include <cstdint>
+
 /// engine
 #include "../ComPtr/ComPtr.h"
 
@@ -22,7 +25,7 @@ public:
 	/// @brief 初期化処理
 	/// @param _dxDevice  DxDeviceのインスタンス
 	/// @param _dxDsvHeap DxDSVHeapのインスタンス
-	void Initialize(class DxDevice* _dxDevice, class DxDSVHeap* _dxDsvHeap);
+	void Initialize(class DxDevice* _dxDevice, class DxDSVHeap* _dxDsvHeap, class DxSRVHeap* _dxSrvHeap);
 
 
 private:
@@ -31,5 +34,6 @@ private:
 	/// ===================================================
 
 	ComPtr<ID3D12Resource> depthStencilResource_;
+	uint32_t depthSrvHandle_;
 };
 
