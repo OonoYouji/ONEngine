@@ -27,49 +27,57 @@ SamplerComparisonState shadowSampler : register(s1);
 
 RWTexture2D<float4> outputTexture : register(u0);
 
+
 [numthreads(16, 16, 1)]
 void main(uint3 DTid : SV_DispatchThreadID) {
     uint2 px = DTid.xy;
+    if (px.x >= (uint)shadowParams.screenSize.x || px.y >= (uint)shadowParams.screenSize.y) return;
 
-    /// 範囲外チェック
-    if(px.x >= shadowParams.screenSize.x || px.y >= shadowParams.screenSize.y) {
-        return;
-    }
-
-
-    /// UV座標計算(pixelの中心をサンプリングできるように 0.5を加算)
     float2 uv = (float2(px) + 0.5) / shadowParams.screenSize;
 
     float4 sceneColor = sceneTexture.Sample(linearSampler, uv);
     float3 worldPos = worldTexture.Sample(linearSampler, uv).xyz;
 
-
+    // ライト空間へ変換（world -> view -> proj）
     float4 lightH = mul(float4(worldPos, 1.0), viewProjection.matVP);
-    lightH.xyz /= lightH.w;
 
+    // ホモジニアス除算（w成分まで割る）
+    lightH /= lightH.w;
+
+    // UVに変換（NDC -> [0,1]）
     float2 shadowUV = lightH.xy * 0.5 + 0.5;
-    float shadowDepth = lightH.z * 0.5 + 0.5;
 
-    /// シャドウ比較+PCF
-    float shadowSum = 0.0;
+    // ----- Y反転が必要ならここを有効化して試す -----
+    // shadowUV.y = 1.0 - shadowUV.y;
+    // ----------------------------------------------
+
+    // Depthの扱い（DirectXの標準：NDC.zは[0,1]なのでそのまま使う）
+    float shadowDepth = lightH.z;
+
+    // 範囲外チェック: シャドウマップ外は lit とする（または好みで shadow）
+    if (shadowUV.x < 0.0 || shadowUV.x > 1.0 || shadowUV.y < 0.0 || shadowUV.y > 1.0) {
+        outputTexture[px] = sceneColor; // そのまま lit
+        return;
+    }
+
+    // PCF サンプリング
+    int radius = max(0, shadowParams.pcfRadius);
+    float litSum = 0.0;
     int count = 0;
-
-    for(int y = -shadowParams.pcfRadius; y <= shadowParams.pcfRadius; ++y) {
-        for(int x = -shadowParams.pcfRadius; x <= shadowParams.pcfRadius; ++x) {
-
-            float2 offset = float2(x,y) * shadowParams.texelSizeShadow;
+    for (int y = -radius; y <= radius; ++y) {
+        for (int x = -radius; x <= radius; ++x) {
+            float2 offset = float2(x, y) * shadowParams.texelSizeShadow;
             float cmp = shadowMap.SampleCmpLevelZero(shadowSampler, shadowUV + offset, shadowDepth - shadowParams.shadowBias);
-            shadowSum += cmp;
+            litSum += cmp;
             count++;
         }
     }
+    float lit = litSum / count; // 1 = lit, 0 = shadow
 
-    float shadow = shadowSum / count;
-
-    /// シャドウ適用
-    float shadowFactor = lerp(1.0f, 1.0f - shadowParams.shadowDarkness, 1.0f - shadow);
+    float shadowFactor = lerp(1.0f, 1.0f - shadowParams.shadowDarkness, 1.0f - lit);
     float3 finalColor = sceneColor.rgb * shadowFactor;
+    outputTexture[px] = float4(finalColor, sceneColor.a);
 
-    outputTexture[px] = float4(finalColor, 1.0);
+    // outputTexture[px] = float4( saturate(lightH.xyz * 0.5 + 0.5), 1.0 );
 
 }

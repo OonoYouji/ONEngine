@@ -1,5 +1,8 @@
 #include "DxDepthStencil.h"
 
+/// directX
+#include <d3dx12.h>
+
 /// engine
 #include "Engine/Core/Config/EngineConfig.h"
 #include "../Device/DxDevice.h"
@@ -54,11 +57,10 @@ void DxDepthStencil::Initialize(DxDevice* _dxDevice, DxDSVHeap* _dxDsvHeap, DxSR
 		desc.ViewDimension       = D3D12_DSV_DIMENSION_TEXTURE2D;
 		desc.Flags               = D3D12_DSV_FLAG_NONE;
 
-		uint32_t descriptorIndex = _dxDsvHeap->Allocate();
-
+		depthDsvHandle_ = _dxDsvHeap->Allocate();
 		_dxDevice->GetDevice()->CreateDepthStencilView(
 			depthStencilResource_.Get(), &desc, 
-			_dxDsvHeap->GetCPUDescriptorHandel(descriptorIndex)
+			_dxDsvHeap->GetCPUDescriptorHandel(depthDsvHandle_)
 		);
 	}
 
@@ -69,15 +71,62 @@ void DxDepthStencil::Initialize(DxDevice* _dxDevice, DxDSVHeap* _dxDsvHeap, DxSR
 		desc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 		desc.Texture2D.MipLevels = 1;
 	
-		uint32_t descriptorIndex = _dxSrvHeap->AllocateBuffer();
-		
+		depthSrvHandle_ = _dxSrvHeap->AllocateBuffer();
 		_dxDevice->GetDevice()->CreateShaderResourceView(
 			depthStencilResource_.Get(), &desc,
-			_dxSrvHeap->GetCPUDescriptorHandel(descriptorIndex)
+			_dxSrvHeap->GetCPUDescriptorHandel(depthSrvHandle_)
 		);
 
-		depthSrvHandle_ = descriptorIndex;
 	}
 
+	currentResourceState_ = D3D12_RESOURCE_STATE_DEPTH_WRITE;
 	Console::Log("dx depth stencil create success!!");
+}
+
+void DxDepthStencil::CreateBarrierPixelShaderResource(ID3D12GraphicsCommandList* _cmdList) {
+
+	/// すでにpixel shader resourceなら何もしない
+	if(currentResourceState_ == D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE) {
+		Console::LogWarning("DxDepthStencil::CreateBarrierPixelShaderResource(): already in pixel shader resource state.");
+		return;
+	}
+
+
+	/// depth stencil -> pixel shader resource
+	D3D12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(
+		depthStencilResource_.Get(),
+		D3D12_RESOURCE_STATE_DEPTH_WRITE,
+		D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE
+	);
+
+	_cmdList->ResourceBarrier(1, &barrier);
+	currentResourceState_ = D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE;
+}
+
+void DxDepthStencil::CreateBarrierDepthWrite(ID3D12GraphicsCommandList* _cmdList) {
+
+	/// すでにdepth writeなら何もしない
+	if(currentResourceState_ == D3D12_RESOURCE_STATE_DEPTH_WRITE) {
+		Console::LogWarning("DxDepthStencil::CreateBarrierDepthWrite(): already in depth write state.");
+		return;
+	}
+
+	/// pixel shader resource -> depth stencil
+	D3D12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(
+		depthStencilResource_.Get(),
+		D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE,
+		D3D12_RESOURCE_STATE_DEPTH_WRITE
+	);
+
+	_cmdList->ResourceBarrier(1, &barrier);
+	currentResourceState_ = D3D12_RESOURCE_STATE_DEPTH_WRITE;
+
+}
+
+uint32_t DxDepthStencil::GetDepthSrvHandle() const {
+	return depthSrvHandle_;
+}
+
+uint32_t DxDepthStencil::GetDepthDsvHandle() const {
+	return depthDsvHandle_;
 }

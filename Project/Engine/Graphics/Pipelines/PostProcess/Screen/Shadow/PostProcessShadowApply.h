@@ -51,6 +51,8 @@ private:
 	/// private : methods
 	/// ===================================================
 	
+	class DxManager* pDxManager_ = nullptr;
+
 	ConstantBuffer<ShadowParameter> shadowParamBuffer_;
 
 };

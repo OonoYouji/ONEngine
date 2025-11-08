@@ -29,7 +29,7 @@ public:
 	~SceneRenderTexture() = default;
 
 	void Initialize(
-		const std::string& _name, const Vector4& _clearColor,
+		const std::string& _name, const Vector4& _clearColor, const Vector2& _textureSize,
 		class DxManager* _dxm, class AssetCollection* _assetCollection
 	);
 
@@ -51,6 +51,7 @@ private:
 	Vector4 clearColor_;
 
 	std::vector<std::unique_ptr<RenderTexture>> renderTextures_;
+	class DxDepthStencil* pDxDepthStencil_ = nullptr;
 
 };
 

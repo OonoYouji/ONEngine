@@ -37,17 +37,25 @@ void DxManager::Initialize() {
 		heap->Initialize();
 	}
 
-
-	/// depth stencilの初期化
-	dxDepthStencil_.reset(new DxDepthStencil());
-	dxDepthStencil_->Initialize(dxDevice_.get(), GetDxDSVHeap(), GetDxSRVHeap());
-
 }
 
 void DxManager::HeapBindToCommandList() {
 	GetDxSRVHeap()->BindToCommandList(
 		GetDxCommand()->GetCommandList()
 	);
+}
+
+DxDepthStencil* DxManager::AddDepthStencil(const std::string& _name) {
+	/// ----- depth stencil 作成 ----- ///
+	std::unique_ptr<DxDepthStencil> newDepthStencil = std::make_unique<DxDepthStencil>();
+	newDepthStencil->Initialize(dxDevice_.get(), GetDxDSVHeap(), GetDxSRVHeap());
+	dxDepthStencils_.emplace_back(std::move(newDepthStencil));
+
+	/// ----- 名前登録 ----- ///
+	depthStencilNameMap_[_name] = dxDepthStencils_.size() - 1;
+
+	/// 最後に追加したDepthStencilを返す
+	return dxDepthStencils_.back().get();
 }
 
 
@@ -70,4 +78,13 @@ DxRTVHeap* DxManager::GetDxRTVHeap() const {
 
 DxDSVHeap* DxManager::GetDxDSVHeap() const {
 	return static_cast<DxDSVHeap*>(dxDescriptorHeaps_[DescriptorHeapType_DSV].get());
+}
+
+DxDepthStencil* DxManager::GetDxDepthStencil(const std::string& _name) const {
+	if(depthStencilNameMap_.contains(_name)) {
+		size_t index = depthStencilNameMap_.at(_name);
+		return dxDepthStencils_[index].get();
+	}
+	
+	return nullptr;
 }

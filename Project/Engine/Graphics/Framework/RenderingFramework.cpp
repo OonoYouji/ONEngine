@@ -37,7 +37,8 @@ void RenderingFramework::Initialize(DxManager* _dxm, WindowManager* _windowManag
 	for (size_t i = 0; i < kRenderTexCount; i++) {
 		renderTextures_[i] = std::make_unique<SceneRenderTexture>();
 		renderTextures_[i]->Initialize(
-			"./Assets/Scene/RenderTexture/" + renderTexNames[i], Vector4(0.1f, 0.25f, 0.5f, 1.0f),
+			"./Assets/Scene/RenderTexture/" + renderTexNames[i], 
+			Vector4(0.1f, 0.25f, 0.5f, 1.0f), EngineConfig::kWindowSize,
 			pDxManager_, assetCollection_.get()
 		);
 	}

@@ -8,6 +8,8 @@
 
 
 void PostProcessShadowApply::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {
+	pDxManager_ = _dxm;
+
 	{	/// shader
 		Shader shader;
 		shader.Initialize(_shaderCompiler);
@@ -49,7 +51,7 @@ void PostProcessShadowApply::Initialize(ShaderCompiler* _shaderCompiler, DxManag
 		shadowParamBuffer_.SetMappedData(ShadowParameter{
 			.screenSize = EngineConfig::kWindowSize,
 			.texelSizeShadow = Vector2(1.0f / EngineConfig::kWindowSize.x, 1.0f / EngineConfig::kWindowSize.y),
-			.shadowBias = 0.001f,
+			.shadowBias = 0.005f,
 			.shadowDarkness = 0.7f,
 			.pcfRadius = 2,
 			});
@@ -114,7 +116,7 @@ void PostProcessShadowApply::Execute(const std::string& _textureName, DxCommand*
 	);
 
 
-	/// --------------- 格テクスチャの設定 --------------- ///
+	/// --------------- テクスチャの設定 --------------- ///
 
 	// シーンカラー
 	Texture* sceneColorTex = _assetCollection->GetTexture(_textureName + "Scene");
@@ -123,4 +125,53 @@ void PostProcessShadowApply::Execute(const std::string& _textureName, DxCommand*
 		sceneColorTex->GetSRVHandle().gpuHandle
 	);
 
+	/// ワールドポジション
+	Texture* worldPosTex = _assetCollection->GetTexture(_textureName + "WorldPosition");
+	cmdList->SetComputeRootDescriptorTable(
+		ROOT_PARAM::SRV_WORLD_POSITION,
+		worldPosTex->GetSRVHandle().gpuHandle
+	);
+
+
+	/// depth テクスチャ
+	DxDepthStencil* sceneDepth = pDxManager_->GetDxDepthStencil(_textureName);
+	DxDepthStencil* shadowDepth = pDxManager_->GetDxDepthStencil("./Assets/Scene/RenderTexture/shadowMap");
+	sceneDepth->CreateBarrierPixelShaderResource(cmdList);
+	shadowDepth->CreateBarrierPixelShaderResource(cmdList);
+
+	auto sceneGpuHandle = pDxManager_->GetDxSRVHeap()->GetGPUDescriptorHandel(sceneDepth->GetDepthSrvHandle());
+	cmdList->SetComputeRootDescriptorTable(
+		ROOT_PARAM::SRV_SCENE_DEPTH, sceneGpuHandle
+	);
+
+	auto shadowGpuHandle = pDxManager_->GetDxSRVHeap()->GetGPUDescriptorHandel(shadowDepth->GetDepthSrvHandle());
+	cmdList->SetComputeRootDescriptorTable(
+		ROOT_PARAM::SRV_SHADOW_MAP, shadowGpuHandle
+	);
+
+
+	/// output テクスチャ
+	Texture* outputTex = _assetCollection->GetTexture("postProcessResult");
+	cmdList->SetComputeRootDescriptorTable(
+		ROOT_PARAM::UAV_OUTPUT_COLOR,
+		outputTex->GetUAVHandle().gpuHandle
+	);
+
+	/// --------------- ディスパッチ --------------- ///
+	UINT dispatchX = static_cast<UINT>(Mathf::DivideAndRoundUp(static_cast<uint32_t>(EngineConfig::kWindowSize.x), 16));
+	UINT dispatchY = static_cast<UINT>(Mathf::DivideAndRoundUp(static_cast<uint32_t>(EngineConfig::kWindowSize.y), 16));
+	cmdList->Dispatch(dispatchX, dispatchY, 1);
+
+
+
+
+	/// 大本のsceneテクスチャに結果をコピー
+	CopyResource(
+		outputTex->GetDxResource().Get(),
+		sceneColorTex->GetDxResource().Get(),
+		cmdList
+	);
+
+	sceneDepth->CreateBarrierDepthWrite(cmdList);
+	shadowDepth->CreateBarrierDepthWrite(cmdList);
 }

@@ -27,7 +27,7 @@ public:
 	RenderTexture();
 	~RenderTexture();
 
-	void Initialize(DXGI_FORMAT _format, const Vector4& _clearColor, const std::string& _name, class DxManager* _dxm, class AssetCollection* _assetCollection);
+	void Initialize(DXGI_FORMAT _format, const Vector4& _clearColor, const Vector2& _textureSize, const std::string& _name, class DxManager* _dxm, class DxDepthStencil* _dxDepthStencil, class AssetCollection* _assetCollection);
 
 	/// @brief render targetとして設定
 	/// @param _dxCommand DxCommandのインスタンスへのポインタ
@@ -55,6 +55,8 @@ private:
 	/// ===================================================
 	/// private : methods
 	/// ===================================================
+
+	class DxDepthStencil* pDxDepthStencil_ = nullptr;
 
 	std::string name_;
 	Vector4 clearColor_;
