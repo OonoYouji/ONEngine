@@ -81,6 +81,8 @@ private:
 	bool isMainCameraRequest_;
 	bool isDrawFrustum_;
 
+	Vector2 orthographicSize_;
+
 public:
 	/// ====================================================
 	/// public : accessor
@@ -91,6 +93,7 @@ public:
 	void SetNearClip(float _nearClip);
 	void SetFarClip(float _farClip);
 	void SetCameraType(int _cameraType);
+	void SetOrthographicSize(const Vector2& _size);
 
 
 	bool GetIsMainCameraRequest() const;

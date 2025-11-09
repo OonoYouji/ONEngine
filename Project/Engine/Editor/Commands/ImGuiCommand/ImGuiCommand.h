@@ -12,6 +12,7 @@
 /// ///////////////////////////////////////////////////
 namespace ImMathf {
 
+	bool DragInt(const std::string& _label, int* _pv, int _step = 1, int _min = 0, int _max = 0);
 
 	/// @brief ImGuiのDragFloatでfloatを操作するコマンド
 	/// @param _label DragFloatのラベル
@@ -21,6 +22,15 @@ namespace ImMathf {
 	/// @param _max _pvの最大値
 	/// @return true: 値が変更された, false: 値が変更されなかった
 	bool DragFloat(const std::string& _label, float* _pv, float _step = 1.0f, float _min = 0.0f, float _max = 0.0f, const char* _format = "%.3f");
+
+	/// @brief ImGuiのDragFloat2でVector2を操作するコマンド
+	/// @param _label DragFloat2のラベル
+	/// @param _pv floatのポインタ
+	/// @param _step 1回の操作で変化する値
+	/// @param _min _pvの最小値
+	/// @param _max _pvの最大値
+	/// @return true: 値が変更された, false: 値が変更されなかった
+	bool DragFloat2(const std::string& _label, Vector2* _pv, float _step = 1.0f, float _min = 0.0f, float _max = 0.0f);
 
 	/// @brief ImGuiのDragFloat3でVector3を操作するコマンド
 	/// @param _label DragFloat3のラベル
@@ -58,6 +68,37 @@ namespace ImMathf {
 namespace ImGuiCommand {
 
 
+	template <typename T>
+	class TCommand : public IEditorCommand {
+	public:
+		TCommand(T* _v, const T& _old, const T& _new)
+			: pValue_(_v), oldValue_(_old), newValue_(_new) {
+		}
+		~TCommand() = default;
+		EDITOR_STATE Execute() {
+			if (pValue_) {
+				*pValue_ = newValue_;
+			} else {
+				Console::Log("ImGuiCommand::TCommand : Value is nullptr");
+				return EDITOR_STATE::EDITOR_STATE_FAILED;
+			}
+			return EDITOR_STATE::EDITOR_STATE_FINISH;
+		}
+		EDITOR_STATE Undo() {
+			if (pValue_) {
+				*pValue_ = oldValue_;
+			} else {
+				Console::Log("ImGuiCommand::TCommand : Value is nullptr");
+				return EDITOR_STATE::EDITOR_STATE_FAILED;
+			}
+			return EDITOR_STATE::EDITOR_STATE_FINISH;
+		}
+	private:
+		T* pValue_;
+		T oldValue_, newValue_;
+	};
+
+
 	/// ///////////////////////////////////////////////////
 	/// ImGuiで操作したFloatのRedo,Undoコマンド
 	/// ///////////////////////////////////////////////////
@@ -72,6 +113,20 @@ namespace ImGuiCommand {
 		float oldValue_, newValue_;
 	};
 
+
+	/// ///////////////////////////////////////////////////
+	/// ImGuiで操作したVector2のRedo,Undoコマンド
+	/// ///////////////////////////////////////////////////
+	class Vec2Command : public IEditorCommand {
+	public:
+		Vec2Command(Vector2* _v, const Vector2& _old, const Vector2& _new);
+		~Vec2Command() override = default;
+		EDITOR_STATE Execute() override;
+		EDITOR_STATE Undo() override;
+	private:
+		Vector2* pValue_;
+		Vector2 oldValue_, newValue_;
+	};
 
 	/// ///////////////////////////////////////////////////
 	/// ImGuiで操作したVector3のRedo,Undoコマンド

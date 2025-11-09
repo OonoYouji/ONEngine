@@ -82,6 +82,13 @@ struct Matrix4x4 final {
 	/// @return 逆行列
 	static Matrix4x4 MakeInverse(const Matrix4x4& _matrix);
 
+	/// @brief 左手座標系のビュー行列を作成する
+	/// @param _eye 視線の位置
+	/// @param _target 視線の注視点
+	/// @param _up 視線の上方向
+	/// @return 計算したビュー行列
+	static Matrix4x4 MakeLookAtLH(const Vector3& _eye, const Vector3& _target, const Vector3& _up);
+
 	/// @brief ベクトルに行列をかける
 	/// @param _v ベクトル
 	/// @param _m 行列

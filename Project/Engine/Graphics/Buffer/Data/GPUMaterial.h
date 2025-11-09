@@ -19,6 +19,7 @@ enum PostEffectFlags_ {
 	PostEffectFlags_Lighting = 1 << 0, ///< ライティング
 	PostEffectFlags_Grayscale = 1 << 1, ///< グレースケール
 	PostEffectFlags_EnvironmentReflection = 1 << 2, ///< 天球に合わせて環境反射を行う
+	PostEffectFlags_Shadow = 1 << 3, ///< 影
 };
 
 /// /////////////////////////////////////////////////

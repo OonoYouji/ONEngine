@@ -134,6 +134,10 @@ bool ImMathf::MaterialEdit(const std::string& _label, Material* _material, Asset
 		if (ImGui::CheckboxFlags("EnvironmentReflection", &_material->postEffectFlags, PostEffectFlags_EnvironmentReflection)) {
 			edit = true;
 		}
+
+		if (ImGui::CheckboxFlags("Shadow", &_material->postEffectFlags, PostEffectFlags_Shadow)) {
+			edit = true;
+		}
 	}
 
 

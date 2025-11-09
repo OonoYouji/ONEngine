@@ -10,6 +10,7 @@
 
 /// engine
 #include "../../Interface/IComponent.h"
+#include "Engine/Asset/Assets/Mateiral/Material.h"
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/Graphics/Buffer/StructuredBuffer.h"
 
@@ -107,6 +108,10 @@ public:
 	/// @brief 描画用にIBVを生成する
 	D3D12_INDEX_BUFFER_VIEW CreateIBV();
 
+	/// @brief 自身のMaterialデータをGPUマテリアルデータに変換して返す
+	/// @return GPUMaterialデータ
+	GPUMaterial GetMaterialData();
+
 private:
 	/// =========================================
 	/// private : objects
@@ -124,6 +129,8 @@ private:
 	Vector2 terrainSize_ = Vector2(1000.0f, 1000.0f); ///< 地形のサイズ
 	uint32_t maxVertexNum_;
 	uint32_t maxIndexNum_;
+
+	Material material_;
 
 	/// ----- river ----- ///
 	River river_;

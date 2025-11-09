@@ -15,7 +15,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	ConstantBuffer() = default;
+	ConstantBuffer() : mappingData_(nullptr) {}
 	~ConstantBuffer() = default;
 
 	/// @brief バッファの生成
@@ -82,5 +82,7 @@ inline void ConstantBuffer<T>::BindForComputeCommandList(ID3D12GraphicsCommandLi
 
 template<typename T>
 inline void ConstantBuffer<T>::SetMappedData(const T& _mappingData) {
-	*mappingData_ = _mappingData;
+	if (mappingData_) {
+		*mappingData_ = _mappingData;
+	}
 }

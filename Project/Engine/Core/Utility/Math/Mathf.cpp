@@ -141,3 +141,11 @@ std::vector<std::vector<int>> Mathf::LoadCSV(const std::string& _filePath) {
 bool Mathf::StartsWith(const std::string& _str, const std::string& _prefix) {
 	return _str.rfind(_prefix, 0) == 0;
 }
+
+uint32_t Mathf::DivideAndRoundUp(uint32_t _numerator, uint32_t _denominator) {
+	if (_denominator == 0) {
+		return 0; // ゼロ除算防止
+	}
+
+	return (_numerator + _denominator - 1) / _denominator;
+}

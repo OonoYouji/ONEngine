@@ -6,6 +6,24 @@
 /// engine
 #include "Engine/Editor/EditCommand.h"
 
+bool ImMathf::DragInt(const std::string& _label, int* _pv, int _step, int _min, int _max) {
+	static int startValue{};
+
+	bool edit = ImGui::DragInt(_label.c_str(), _pv, static_cast<float>(_step), _min, _max);
+	/// 操作を始めた
+	if (ImGui::IsItemActivated()) {
+		startValue = *_pv;
+	}
+
+	/// 操作を終えた
+	if (ImGui::IsItemDeactivatedAfterEdit()) {
+		int endValue = *_pv;
+		EditCommand::Execute<ImGuiCommand::TCommand<int>>(_pv, startValue, endValue);
+	}
+
+	return edit;
+}
+
 bool ImMathf::DragFloat(const std::string& _label, float* _pv, float _step, float _min, float _max, const char* _format) {
 	static float startValue{};
 
@@ -19,6 +37,25 @@ bool ImMathf::DragFloat(const std::string& _label, float* _pv, float _step, floa
 	if (ImGui::IsItemDeactivatedAfterEdit()) {
 		float endValue = *_pv;
 		EditCommand::Execute<ImGuiCommand::FloatCommand>(_pv, startValue, endValue);
+	}
+
+	return edit;
+}
+
+bool ImMathf::DragFloat2(const std::string& _label, Vector2* _pv, float _step, float _min, float _max) {
+	static Vector2 startValue{};
+
+	bool edit = ImGui::DragFloat2(_label.c_str(), &_pv->x, _step, _min, _max);
+	/// 操作を始めた
+	if (ImGui::IsItemActivated()) {
+		startValue = *_pv;
+	}
+
+	/// 操作を終えた
+	if (ImGui::IsItemDeactivatedAfterEdit()) {
+		Vector2 endValue = *_pv;
+		return EDITOR_STATE();
+		EditCommand::Execute<ImGuiCommand::Vec2Command>(_pv, startValue, endValue);
 	}
 
 	return edit;
@@ -115,6 +152,34 @@ EDITOR_STATE ImGuiCommand::FloatCommand::Undo() {
 	return EDITOR_STATE::EDITOR_STATE_FINISH;
 }
 
+
+
+/// ///////////////////////////////////////////////////
+/// ImGuiで操作したVector2のRedo,Undoコマンド
+/// ///////////////////////////////////////////////////
+ImGuiCommand::Vec2Command::Vec2Command(Vector2* _v, const Vector2& _old, const Vector2& _new) 
+	: pValue_(_v), oldValue_(_old), newValue_(_new) {
+}
+
+EDITOR_STATE ImGuiCommand::Vec2Command::Execute() {
+	if (pValue_) {
+		*pValue_ = newValue_;
+	} else {
+		Console::Log("ImGuiCommand::Vec3Command : Value is nullptr");
+		return EDITOR_STATE::EDITOR_STATE_FAILED;
+	}
+	return EDITOR_STATE::EDITOR_STATE_FINISH;
+}
+
+EDITOR_STATE ImGuiCommand::Vec2Command::Undo() {
+	if (pValue_) {
+		*pValue_ = oldValue_;
+	} else {
+		Console::Log("ImGuiCommand::Vec3Command : Value is nullptr");
+		return EDITOR_STATE::EDITOR_STATE_FAILED;
+	}
+	return EDITOR_STATE::EDITOR_STATE_FINISH;
+}
 
 /// ///////////////////////////////////////////////////
 /// ImGuiで操作したVector3のRedo,Undoコマンド

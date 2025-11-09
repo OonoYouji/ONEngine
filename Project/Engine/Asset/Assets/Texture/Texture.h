@@ -30,6 +30,7 @@ public:
 	/// ===================================================
 
 	Texture();
+	Texture(const Vector2& _textureSize);
 	~Texture() override = default;
 
 

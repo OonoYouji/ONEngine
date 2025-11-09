@@ -27,6 +27,7 @@
 #include "Engine/ECS/Component/Components/ComputeComponents/Collision/BoxCollider.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Collision/SphereCollider.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Script/Script.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/ShadowCaster/ShadowCaster.h"
 /// renderer
 #include "Engine/ECS/Component/Components/RendererComponents/Skybox/Skybox.h"
 #include "Engine/ECS/Component/Components/RendererComponents/Mesh/MeshRenderer.h"
@@ -37,12 +38,6 @@
 #include "Engine/ECS/Component/Components/RendererComponents/Primitive/Line3DRenderer.h"
 #include "Engine/ECS/Component/Components/RendererComponents/ScreenPostEffectTag/ScreenPostEffectTag.h"
 
-
-//enum SelectedType {
-//	kNone,
-//	kEntity,
-//	kResource
-//};
 
 ImGuiInspectorWindow::ImGuiInspectorWindow(const std::string& _windowName, EntityComponentSystem* _ecs, AssetCollection* _assetCollection, EditorManager* _editorManager)
 	: pEcs_(_ecs), pAssetCollection_(_assetCollection), pEditorManager_(_editorManager) {
@@ -59,6 +54,7 @@ ImGuiInspectorWindow::ImGuiInspectorWindow(const std::string& _windowName, Entit
 	RegisterComponent<TerrainCollider>([&](IComponent* _comp) { COMP_DEBUG::TerrainColliderDebug(static_cast<TerrainCollider*>(_comp)); });
 	RegisterComponent<GrassField>([&](IComponent* _comp) { COMP_DEBUG::GrassFieldDebug(static_cast<GrassField*>(_comp), pAssetCollection_); });
 	RegisterComponent<CameraComponent>([&](IComponent* _comp) { COMP_DEBUG::CameraDebug(static_cast<CameraComponent*>(_comp)); });
+	RegisterComponent<ShadowCaster>([&](IComponent* _comp) { COMP_DEBUG::ShadowCasterDebug(static_cast<ShadowCaster*>(_comp)); });
 
 	/// renderer
 	RegisterComponent<MeshRenderer>([&](IComponent* _comp) { COMP_DEBUG::MeshRendererDebug(static_cast<MeshRenderer*>(_comp), pAssetCollection_); });

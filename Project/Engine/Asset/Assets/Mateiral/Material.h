@@ -13,9 +13,6 @@
 class Material;
 
 
-/// @brief Material用のGUI表示
-void ShowGuiMaterial(const std::string& _label, Material* _material);
-
 /// @brief デフォルトのマテリアルを生成
 Material GenerateMaterial();
 
@@ -35,7 +32,6 @@ void to_json(nlohmann::json& _j, const Material& _material);
 /// ////////////////////////////////////////////////////////
 class Material final : public IAsset {
 	/// friend functions
-	friend void ShowGuiMaterial(const std::string& _label, Material* _material);
 	friend void from_json(const nlohmann::json& _j, Material& _material);
 	friend void to_json(nlohmann::json& _j, const Material& _material);
 

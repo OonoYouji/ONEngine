@@ -29,6 +29,7 @@
 #include "../PostProcess/PerObject/Blur/PostProcessGaussianBlurPerObject.h"
 #include "../PostProcess/Screen/Grayscale/PostProcessGrayscale.h"
 #include "../PostProcess/Screen/RadialBlur/PostProcessRadialBlur.h"
+#include "../PostProcess/Screen/Shadow/PostProcessShadowApply.h"
 #include "../PostProcess/PerObject/TerrainBrush/PostProcessTerrainBrush.h"
 
 RenderingPipelineCollection::RenderingPipelineCollection(ShaderCompiler* _shaderCompiler, DxManager* _dxm, EntityComponentSystem* _pEntityComponentSystem, AssetCollection* _assetCollection)
@@ -68,6 +69,7 @@ void RenderingPipelineCollection::Initialize() {
 	/// ----- スクリーンにかける用のポストエフェクトのパイプラインを生成 ----- ///
 	GeneratePostProcessPipeline<PostProcessGrayscale>();
 	GeneratePostProcessPipeline<PostProcessRadialBlur>();
+	GeneratePostProcessPipeline<PostProcessShadowApply>();
 }
 
 void RenderingPipelineCollection::PreDrawEntities(CameraComponent* _3dCamera, CameraComponent* _2dCamera) {

@@ -58,7 +58,8 @@ public:
 	/// @brief static samplerを追加する
 	/// @param _shaderVisibility 使用するshaderの種類(vs, ps)
 	/// @param _shaderRegister   shaderのregister(s0)の0の部分
-	void AddStaticSampler(D3D12_SHADER_VISIBILITY _shaderVisibility, uint32_t _shaderRegister);
+	/// @param _isComparisonSampler 比較サンプラーにするかどうか
+	void AddStaticSampler(D3D12_SHADER_VISIBILITY _shaderVisibility, uint32_t _shaderRegister, bool _isComparisonSampler = false);
 
 	/// @brief fill modeを設定する
 	/// @param _fillMode 設定するfill mode
