@@ -82,26 +82,36 @@ void main(uint3 DTid : SV_DispatchThreadID)
         return;
     }
 
-    // 従来のPCFループはコメントアウト
-    // float litSum = 0.0;
-    // int sampleCount = 0;
-    // for (...) { ... }
+    // ===================================================
+    // PCFサンプリングによるシャドウ判定
+    // ===================================================
+	int radius = max(0, shadowParams.pcfRadius);
+	float litSum = 0.0f;
+	int sampleCount = 0;
 
-    float cmp = shadowMap.SampleCmpLevelZero(shadowSampler, shadowUV, shadowDepth - shadowParams.shadowBias);
-    // lit = 1なら光、0なら影
-    float lit = cmp;
+    [loop]
+	for (int y = -radius; y <= radius; ++y) {
+        [loop]
+		for (int x = -radius; x <= radius; ++x) {
+			float2 offset = float2(x, y) * shadowParams.texelSizeShadow;
+			float cmp = shadowMap.SampleCmpLevelZero(
+                shadowSampler,
+                shadowUV + offset,
+                shadowDepth - shadowParams.shadowBias
+            );
+			litSum += cmp;
+			sampleCount++;
+		}
+	}
 
+	float lit = (sampleCount > 0) ? (litSum / sampleCount) : 1.0f; // 1=lit, 0=shadow
+
+    // ===================================================
     // シャドウ適用
-    float shadowFactor = lerp(1.0f, 1.0f - shadowParams.shadowDarkness, 1.0f - lit);
-    float3 finalColor = sceneColor.rgb * shadowFactor;
+    // ===================================================
+	float shadowFactor = lerp(1.0f, 1.0f - shadowParams.shadowDarkness, 1.0f - lit);
+	float3 finalColor = sceneColor.rgb * shadowFactor;
 
-    outputTexture[px] = float4(finalColor, sceneColor.a);
-
-
-    // float depth = shadowMap.SampleLevel(linearSampler, shadowUV, 0);
-    // outputTexture[px] = float4(depth, depth, depth, 1.0f);
-
-    // float4 lightPos = mul(float4(worldPos, 1.0), viewProjection.matVP);
-    // outputTexture[px] = float4(lightPos.xyz * 0.5 + 0.5, 1.0f);
+	outputTexture[px] = float4(finalColor, sceneColor.a);
 
 }

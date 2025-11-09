@@ -97,7 +97,6 @@ private:
 	bool isArranged_; ///< 配置済みかどうか
 	uint32_t instanceCount_; ///< 実際に配置された草の本数
 
-	GPUMaterial gpuMaterial_;
 	Material material_;
 
 public:

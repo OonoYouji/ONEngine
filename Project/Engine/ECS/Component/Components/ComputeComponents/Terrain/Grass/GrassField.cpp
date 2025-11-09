@@ -77,7 +77,7 @@ void COMP_DEBUG::GrassFieldDebug(GrassField* _grassField, AssetCollection* _asse
 /// ////////////////////////////////////////////////////////
 
 GrassField::GrassField() :
-	maxGrassCount_(static_cast<uint32_t>(std::pow(2, 32) - 1)), distributionTexturePath_(""), isCreated_(false), isArranged_(false), gpuMaterial_({}) {
+	maxGrassCount_(static_cast<uint32_t>(std::pow(2, 32) - 1)), distributionTexturePath_(""), isCreated_(false), isArranged_(false) {
 };
 GrassField::~GrassField() = default;
 
@@ -103,26 +103,30 @@ void GrassField::Initialize(uint32_t _maxBladeCount, DxDevice* _dxDevice, DxComm
 
 void GrassField::SetupRenderingData(AssetCollection* _assetCollection) {
 
+	GPUMaterial gpuMaterial{};
+
 	/// material_の情報をgpuMaterial_にセット
-	gpuMaterial_.baseColor = material_.baseColor;
-	gpuMaterial_.postEffectFlags = material_.postEffectFlags;
-	gpuMaterial_.uvTransform = material_.uvTransform;
+	gpuMaterial.baseColor = material_.baseColor;
+	gpuMaterial.postEffectFlags = material_.postEffectFlags;
+	gpuMaterial.uvTransform = material_.uvTransform;
+	gpuMaterial.entityId = GetOwner()->GetId();
+
 	/// テクスチャの情報をセット
 	if (material_.HasBaseTexture()) {
 		const Guid& baseTextureGuid = material_.GetBaseTextureGuid();
-		gpuMaterial_.baseTextureId = static_cast<int32_t>(_assetCollection->GetTextureIndexFromGuid(baseTextureGuid));
+		gpuMaterial.baseTextureId = static_cast<int32_t>(_assetCollection->GetTextureIndexFromGuid(baseTextureGuid));
 	} else {
-		gpuMaterial_.baseTextureId = 0;
+		gpuMaterial.baseTextureId = 0;
 	}
 
 	if (material_.HasNormalTexture()) {
 		const Guid& normalTextureGuid = material_.GetNormalTextureGuid();
-		gpuMaterial_.normalTextureId = static_cast<int32_t>(_assetCollection->GetTextureIndexFromGuid(normalTextureGuid));
+		gpuMaterial.normalTextureId = static_cast<int32_t>(_assetCollection->GetTextureIndexFromGuid(normalTextureGuid));
 	} else {
-		gpuMaterial_.normalTextureId = 0;
+		gpuMaterial.normalTextureId = 0;
 	}
 
-	materialBuffer_.SetMappedData(gpuMaterial_);
+	materialBuffer_.SetMappedData(gpuMaterial);
 }
 
 void GrassField::StartIndexMapping(UINT _oneDrawInstanceCount) {

@@ -22,7 +22,7 @@ PSOutput main(VSOutput input) {
 	output.color = textureColor;
 	output.normal = float4(input.normal, 1);
 	output.wPosition = input.wPosition;
-	output.flags = float4(PostEffectFlags_Lighting, 0, 0, 1);
+	output.flags = float4(PostEffectFlags_Lighting | PostEffectFlags_Shadow, 0, 0, 1);
 
 	return output;
 }

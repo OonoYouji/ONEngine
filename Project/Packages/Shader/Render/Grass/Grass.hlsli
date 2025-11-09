@@ -1,6 +1,7 @@
 // Grass.hlsli
 struct VertexOut {
 	float4 position : SV_Position; // 頂点位置（Pixel Shader へ渡す）
+	float4 wPosition : POSITIONT0; // ワールド位置
 	float3 normal : NORMAL; // 法線
 	float2 uv : TEXCOORD; // UV
 };

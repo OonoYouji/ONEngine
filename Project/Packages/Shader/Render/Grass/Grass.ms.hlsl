@@ -37,8 +37,10 @@ void MSMain(uint3 DTid : SV_DispatchThreadID,
     // 一時バッファ：可視と判定した草の gi 値を保存
 	uint visibleIds[kMaxRenderingGrassSize];
 	uint visibleCount = 0;
-
-    // ---- パス1：可視判定だけ（頂点/インデックスは書かない） ----
+	
+	/// ---------------------------------------------------
+	/// 先に可視判定を行う
+	/// ---------------------------------------------------
 	for (int gi = 0; gi < kMaxRenderingGrassSize; ++gi) {
 		uint grassIndex = baseIndex + gi;
 		BladeInstance instance = bladeInstances[grassIndex];
@@ -87,11 +89,12 @@ void MSMain(uint3 DTid : SV_DispatchThreadID,
 		}
 	}
 
-    // ---- ここで全ての出力はまだ発生していない ----
-    // (numthreadsが1ならGroupMemoryBarrierは不要だが、他のスレッドがある場合は同期を入れる)
+	/// 可視判定分の頂点・インデックス数を設定
 	SetMeshOutputCounts(visibleCount * kMaxBladeVertexNum, visibleCount * 2);
 
-    // ---- パス2：確定した可視リストを使って頂点/インデックスを書き込む ----
+	/// ---------------------------------------------------
+	/// 可視判定後の頂点・インデックス出力
+	/// ---------------------------------------------------
 	for (uint vi = 0; vi < visibleCount; ++vi) {
 		uint gi = visibleIds[vi];
 		uint grassIndex = baseIndex + gi;
@@ -125,6 +128,7 @@ void MSMain(uint3 DTid : SV_DispatchThreadID,
 		for (int i = 0; i < kMaxBladeVertexNum; ++i) {
 			float4 clip = mul(float4(bladePoss[i], 1.0), viewProjection.matVP);
 			verts[startVertIndex + i].position = clip;
+			verts[startVertIndex + i].wPosition = float4(bladePoss[i], 1);
 			verts[startVertIndex + i].normal = float3(0, 1, 0);
 			verts[startVertIndex + i].uv = bladeUVs[i];
 		}
