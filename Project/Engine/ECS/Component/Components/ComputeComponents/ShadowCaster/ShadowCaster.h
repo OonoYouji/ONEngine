@@ -73,6 +73,9 @@ private:
 	CameraComponent* camera_;
 
 
+	Vector3 baseLightPos_;
+	float lightLength_;
+
 	Vector2 orthographicSize_;
 	float scaleFactor_;
 	Vector2 texelSizeShadow_;

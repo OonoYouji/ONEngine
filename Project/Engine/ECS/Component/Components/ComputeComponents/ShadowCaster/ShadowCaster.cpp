@@ -56,11 +56,16 @@ void COMP_DEBUG::ShadowCasterDebug(ShadowCaster* _shadowCaster) {
 	}
 
 
+	ImGui::SeparatorText("light parameter");
+
+	ImMathf::DragFloat3("base light pos", &_shadowCaster->baseLightPos_, 1.0f, -10000.0f, 10000.0f);
+	ImMathf::DragFloat("light length", &_shadowCaster->lightLength_, 1.0f, 0.0f, 10000.0f);
+
+
 	ImGui::SeparatorText("shadow caster parameters");
 
 	ImMathf::DragFloat2("window size", &_shadowCaster->orthographicSize_, 1.0f, 0.0f, 0.0f);
 	ImMathf::DragFloat("scale factor", &_shadowCaster->scaleFactor_, 0.01f, 0.0f, 10.0f);
-	_shadowCaster->orthographicSize_ = EngineConfig::kWindowSize * _shadowCaster->scaleFactor_;
 
 
 	ImGui::Spacing();
@@ -81,6 +86,8 @@ void from_json(const nlohmann::json& _j, ShadowCaster& _c) {
 	_c.shadowBias_ = _j.value("shadowBias", 0.005f);
 	_c.shadowDarkness_ = _j.value("shadowDarkness", 0.7f);
 	_c.pcfRadius_ = _j.value("pcfRadius", 2);
+	_c.baseLightPos_ = _j.value("baseLightPos", Vector3(500, 0, 500));
+	_c.lightLength_ = _j.value("lightLength", 300.0f);
 
 }
 
@@ -94,6 +101,8 @@ void to_json(nlohmann::json& _j, const ShadowCaster& _c) {
 		{ "shadowBias", _c.shadowBias_ },
 		{ "shadowDarkness", _c.shadowDarkness_ },
 		{ "pcfRadius", _c.pcfRadius_ },
+		{ "baseLightPos", _c.baseLightPos_ },
+		{ "lightLength", _c.lightLength_ }
 	};
 }
 
@@ -109,7 +118,9 @@ ShadowCaster::ShadowCaster()
 	texelSizeShadow_(Vector2(1.0f / EngineConfig::kWindowSize.x, 1.0f / EngineConfig::kWindowSize.y)),
 	shadowBias_(0.005f),
 	shadowDarkness_(0.7f),
-	pcfRadius_(2) {
+	pcfRadius_(2),
+	baseLightPos_(Vector3(500, 0, 500)),
+	lightLength_(300) {
 
 };
 
@@ -151,9 +162,9 @@ void ShadowCaster::CalculationLightViewMatrix(DirectionalLight* _directionLight)
 	owner->SetRotate(cameraRotation);
 
 	/// ライトの方向に合わせて座標を計算
-	owner->SetPosition(Vector3(500, 0, 500) - dir * 200.0f);
+	owner->SetPosition(baseLightPos_ - dir * lightLength_);
 
-	camera_->SetOrthographicSize(orthographicSize_);
+	camera_->SetOrthographicSize(orthographicSize_ * scaleFactor_);
 	camera_->UpdateViewProjection();
 
 }

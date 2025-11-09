@@ -15,9 +15,9 @@ class PostProcessShadowApply : public ScreenPostProcess {
 		CBV_VIEW_PROJECTION,
 		CBV_SHADOW_PARAM,
 		SRV_SCENE_COLOR,
-		SRV_SCENE_DEPTH,
 		SRV_SHADOW_MAP,
 		SRV_WORLD_POSITION,
+		SRV_FLAGS,
 		UAV_OUTPUT_COLOR,
 	};
 

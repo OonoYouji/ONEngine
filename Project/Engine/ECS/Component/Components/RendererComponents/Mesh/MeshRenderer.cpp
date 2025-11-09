@@ -7,6 +7,7 @@
 #include "Engine/Asset/AssetType.h"
 #include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/Core/ImGui/Math/ImGuiMath.h"
+#include "Engine/Core/ImGui/Math/AssetDebugger.h"
 #include "Engine/Core/ImGui/Math/AssetPayload.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentJsonConverter.h"
@@ -238,27 +239,7 @@ void COMP_DEBUG::MeshRendererDebug(MeshRenderer* _mr, AssetCollection* _assetCol
 	/// ----------------------------------------------
 	/// materialの設定
 	/// ----------------------------------------------
-	const size_t kMaxIndex = 3;
-	const std::string labels[kMaxIndex] = {
-		"Lighting: [ライティング]",
-		"Grayscale: [グレースケール]",
-		"EnvironmentReflection: [環境反射]",
-	};
-
-	for (size_t i = 0; i < kMaxIndex; i++) {
-		int bit = 1 << (i);
-		bool isChecked = (_mr->GetPostEffectFlags() & bit) != 0;
-		if (ImGui::Checkbox(labels[i].c_str(), &isChecked)) {
-			if (isChecked) {
-				_mr->SetPostEffectFlags(_mr->GetPostEffectFlags() | bit);
-			} else {
-				_mr->SetPostEffectFlags(_mr->GetPostEffectFlags() & ~bit);
-			}
-		}
-	}
-
-	/// Material Debug
-	ImMathf::MaterialEdit("Material##MeshRenderer", &_mr->gpuMaterial_, _assetCollection);
+	ImMathf::MaterialEdit("Material##MeshRenderer", &_mr->material_, _assetCollection);
 
 }
 

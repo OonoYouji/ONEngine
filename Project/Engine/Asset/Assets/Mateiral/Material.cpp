@@ -11,21 +11,6 @@
 #include "Engine/Editor/Commands/ImGuiCommand/ImGuiCommand.h"
 
 
-void ShowGuiMaterial(const std::string& _label, Material* _material) {
-	if (!_material) {
-		return;
-	}
-
-	/// Idを振る
-	ImGui::PushID(_label.c_str());
-
-	/// 色
-	ImMathf::DragFloat4("BaseColor", &_material->baseColor);
-
-
-	ImGui::PopID();
-}
-
 Material GenerateMaterial() {
 	Material material;
 
@@ -107,7 +92,12 @@ void to_json(nlohmann::json& _j, const Material& _material) {
 /// Material
 /// //////////////////////////////////////////////////////////
 
-Material::Material() = default;
+Material::Material() {
+	baseColor = Vector4::kWhite;
+	postEffectFlags = 1;
+	uvTransform = UVTransform();
+
+};
 Material::~Material() = default;
 
 

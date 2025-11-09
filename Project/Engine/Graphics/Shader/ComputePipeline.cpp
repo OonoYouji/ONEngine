@@ -86,6 +86,8 @@ void ComputePipeline::AddStaticSampler(D3D12_SHADER_VISIBILITY _shaderVisibility
 		// 比較サンプラー（シャドウマップ用）
 		sampler.Filter = D3D12_FILTER_COMPARISON_MIN_MAG_LINEAR_MIP_POINT;
 		sampler.ComparisonFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
+		sampler.AddressU = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
+		sampler.AddressV = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
 	} else {
 		// 通常のサンプラー
 		sampler.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;

@@ -13,6 +13,8 @@
 #include "Engine/Core/Utility/Input/Input.h"
 #include "Engine/Core/ImGui/ImGuiSelection.h"
 #include "Engine/Core/ImGui/Math/AssetPayload.h"
+#include "Engine/Core/ImGui/Math/AssetDebugger.h"
+#include "Engine/ECS/Entity/GameEntity/GameEntity.h"
 
 
 /// ///////////////////////////////////////////////////
@@ -138,6 +140,10 @@ void COMP_DEBUG::TerrainDebug(Terrain* _terrain, EntityComponentSystem* _ecs, As
 	/// flags
 	ImGui::Checkbox("is rendering procedural", &_terrain->isRenderingProcedural_);
 
+	/// material
+	ImMathf::MaterialEdit("Material", &_terrain->material_, _assetCollection, false);
+
+
 	/// river
 	_terrain->river_.Edit(_ecs);
 }
@@ -237,6 +243,9 @@ void from_json(const nlohmann::json& _j, Terrain& _t) {
 	_t.splattingTexPaths_[1] = _j.value("splattingTexPath1", std::string("./Packages/Textures/uvChecker.png"));
 	_t.splattingTexPaths_[2] = _j.value("splattingTexPath2", std::string("./Packages/Textures/uvChecker.png"));
 	_t.splattingTexPaths_[3] = _j.value("splattingTexPath3", std::string("./Packages/Textures/uvChecker.png"));
+	_t.material_ = _j.value("material", Material());
+	_t.material_.uvTransform.scale = Vector2(100, 100);
+	_t.material_.postEffectFlags = PostEffectFlags_Lighting | PostEffectFlags_Shadow;
 }
 
 void to_json(nlohmann::json& _j, const Terrain& _t) {
@@ -250,6 +259,7 @@ void to_json(nlohmann::json& _j, const Terrain& _t) {
 		{ "splattingTexPath1", _t.splattingTexPaths_[1] },
 		{ "splattingTexPath2", _t.splattingTexPaths_[2] },
 		{ "splattingTexPath3", _t.splattingTexPaths_[3] },
+		{ "material", _t.material_ },
 	};
 }
 
@@ -345,6 +355,15 @@ D3D12_INDEX_BUFFER_VIEW Terrain::CreateIBV() {
 	ibv.SizeInBytes = static_cast<UINT>(sizeof(uint32_t) * GetMaxIndexNum());
 	ibv.Format = DXGI_FORMAT_R32_UINT;
 	return ibv;
+}
+
+GPUMaterial Terrain::GetMaterialData() {
+	return GPUMaterial{
+		.uvTransform = material_.uvTransform,
+		.baseColor = material_.baseColor,
+		.postEffectFlags = material_.postEffectFlags,
+		.entityId = GetOwner()->GetId(),
+	};
 }
 
 const std::array<std::string, kMaxTerrainTextureNum>& Terrain::GetSplatTexPaths() const {

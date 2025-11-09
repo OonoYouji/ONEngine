@@ -102,6 +102,11 @@ bool ImMathf::MaterialEdit(const char* _label, GPUMaterial* _material, AssetColl
 			if (ImGui::CheckboxFlags("EnvironmentReflection", &_material->postEffectFlags, PostEffectFlags_EnvironmentReflection)) {
 				isEdit = true;
 			}
+
+			if(ImGui::CheckboxFlags("Shadow", &_material->postEffectFlags, PostEffectFlags_Shadow)) {
+				isEdit = true;
+			}
+
 		}
 
 

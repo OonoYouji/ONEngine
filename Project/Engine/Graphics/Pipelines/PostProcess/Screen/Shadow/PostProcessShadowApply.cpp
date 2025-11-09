@@ -24,9 +24,9 @@ void PostProcessShadowApply::Initialize(ShaderCompiler* _shaderCompiler, DxManag
 		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_ALL, ROOT_PARAM::CBV_SHADOW_PARAM);
 
 		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // SRV_SCENE_COLOR
-		pipeline_->AddDescriptorRange(1, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // SRV_SCENE_DEPTH
-		pipeline_->AddDescriptorRange(2, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // SRV_SHADOW_MAP
-		pipeline_->AddDescriptorRange(3, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // SRV_WORLD_POSITION
+		pipeline_->AddDescriptorRange(1, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // SRV_SHADOW_MAP
+		pipeline_->AddDescriptorRange(2, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // SRV_WORLD_POSITION
+		pipeline_->AddDescriptorRange(3, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // SRV_FLAGS
 		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_UAV); // UAV_OUTPUT_COLOR
 
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 0);
@@ -138,18 +138,17 @@ void PostProcessShadowApply::Execute(const std::string& _textureName, DxCommand*
 		worldPosTex->GetSRVHandle().gpuHandle
 	);
 
-
-	/// depth テクスチャ
-	DxDepthStencil* sceneDepth = pDxManager_->GetDxDepthStencil(_textureName);
-	DxDepthStencil* shadowDepth = pDxManager_->GetDxDepthStencil("./Assets/Scene/RenderTexture/shadowMap");
-	sceneDepth->CreateBarrierPixelShaderResource(cmdList);
-	shadowDepth->CreateBarrierPixelShaderResource(cmdList);
-
-	auto sceneGpuHandle = pDxManager_->GetDxSRVHeap()->GetGPUDescriptorHandel(sceneDepth->GetDepthSrvHandle());
+	/// フラグ
+	Texture* flagTex = _assetCollection->GetTexture(_textureName + "Flags");
 	cmdList->SetComputeRootDescriptorTable(
-		ROOT_PARAM::SRV_SCENE_DEPTH, sceneGpuHandle
+		ROOT_PARAM::SRV_FLAGS,
+		flagTex->GetSRVHandle().gpuHandle
 	);
 
+
+	/// depth テクスチャ
+	DxDepthStencil* shadowDepth = pDxManager_->GetDxDepthStencil("./Assets/Scene/RenderTexture/shadowMap");
+	shadowDepth->CreateBarrierPixelShaderResource(cmdList);
 	auto shadowGpuHandle = pDxManager_->GetDxSRVHeap()->GetGPUDescriptorHandel(shadowDepth->GetDepthSrvHandle());
 	cmdList->SetComputeRootDescriptorTable(
 		ROOT_PARAM::SRV_SHADOW_MAP, shadowGpuHandle
@@ -178,6 +177,5 @@ void PostProcessShadowApply::Execute(const std::string& _textureName, DxCommand*
 		cmdList
 	);
 
-	sceneDepth->CreateBarrierDepthWrite(cmdList);
 	shadowDepth->CreateBarrierDepthWrite(cmdList);
 }
