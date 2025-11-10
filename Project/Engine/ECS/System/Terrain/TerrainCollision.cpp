@@ -42,6 +42,11 @@ void TerrainCollision::RuntimeUpdate(ECSGroup* _ecs) {
 					continue;
 				}
 
+				/// state が static の場合は処理しない
+				if(boxCollider->GetCollisionState() == CollisionState::Static){
+					continue;
+				}
+
 				if (GameEntity* box = boxCollider->GetOwner()) {
 					Vector3 boxPos = box->GetPosition();
 					if (terrainCollider->IsInsideTerrain(boxPos)) {
@@ -65,6 +70,12 @@ void TerrainCollision::RuntimeUpdate(ECSGroup* _ecs) {
 				if (!sphereCollider || !sphereCollider->enable) {
 					continue;
 				}
+
+				/// state が static の場合は処理しない
+				if (sphereCollider->GetCollisionState() == CollisionState::Static) {
+					continue;
+				}
+
 
 				if (GameEntity* sphere = sphereCollider->GetOwner()) {
 					Vector3 spherePos = sphere->GetPosition();

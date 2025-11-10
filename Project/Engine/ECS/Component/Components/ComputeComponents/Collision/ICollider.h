@@ -7,14 +7,19 @@
 #include "../../Interface/IComponent.h"
 #include "Engine/Core/Utility/Math/Vector3.h"
 
-using ColliderCallBackFunc = std::function<void(class ICollider*)>;
 
+/// ///////////////////////////////////////////////////
+/// 衝突状態の列挙型
+/// ///////////////////////////////////////////////////
+enum class CollisionState {
+	Static,
+	Dynamic,
+};
 
 /// ///////////////////////////////////////////////////
 /// Colliderのインターフェース
 /// ///////////////////////////////////////////////////
 class ICollider : public IComponent {
-	friend class CollisionManager;
 public:
 	/// ===================================================
 	/// public : methods
@@ -26,28 +31,22 @@ public:
 	/// @brief 1frame前の座標を更新する
 	void UpdatePrevPosition();
 
+	/// @brief 前フレームの位置を返す
+	/// @return 前フレームの位置(ワールド座標)
 	const Vector3& GetPrevPosition() const;
 
-private:
-	/// ===================================================
-	/// private : objects
-	/// ===================================================
+	/// @brief コライダーの状態(静的、動的)かを返す、これを用いて押し戻しをするかどうかを判定する
+	/// @return コライダーの状態
+	CollisionState GetCollisionState() const;
 
-	ColliderCallBackFunc onCollisionEnterCallBackFunc_;
-	ColliderCallBackFunc onCollisionExitCallBackFunc_;
-	ColliderCallBackFunc onCollisionStayCallBackFunc_;
+protected:
+	/// ===================================================
+	/// protected : objects
+	/// ===================================================
 
 	Vector3 prevPosition_;
-
-public:
-	/// ===================================================
-	/// public : accessors
-	/// ===================================================
-
-	void SetOnCollisionEnterCallBackFunc(ColliderCallBackFunc _func);
-	void SetOnCollisionExitCallBackFunc(ColliderCallBackFunc _func);
-	void SetOnCollisionStayCallBackFunc(ColliderCallBackFunc _func);
-
+	bool enablePushBack_ = true;
+	CollisionState collisionState_ = CollisionState::Dynamic;
 
 };
 

@@ -29,31 +29,35 @@ CollisionSystem::CollisionSystem() {
 	std::string boxCompName = typeid(BoxCollider).name();
 
 	/// 関数の登録をする
-	collisionCheckMap_[sphereCompName + "Vs" + sphereCompName] = [](const CollisionPair& _pair) -> bool {
+	collisionCheckMap_[sphereCompName + "Vs" + sphereCompName] = [](const CollisionPair& _pair, CollisionInfo* _info) -> bool {
 		return CheckMethod::CollisionCheckSphereVsSphere(
 			_pair.first->GetComponent<SphereCollider>(),
-			_pair.second->GetComponent<SphereCollider>()
+			_pair.second->GetComponent<SphereCollider>(),
+			_info
 		);
 		};
 
-	collisionCheckMap_[sphereCompName + "Vs" + boxCompName] = [](const CollisionPair& _pair) -> bool {
+	collisionCheckMap_[sphereCompName + "Vs" + boxCompName] = [](const CollisionPair& _pair, CollisionInfo* _info) -> bool {
 		return CheckMethod::CollisionCheckSphereVsBox(
 			_pair.first->GetComponent<SphereCollider>(),
-			_pair.second->GetComponent<BoxCollider>()
+			_pair.second->GetComponent<BoxCollider>(),
+			_info
 		);
 		};
 
-	collisionCheckMap_[boxCompName + "Vs" + sphereCompName] = [](const CollisionPair& _pair) -> bool {
-		return CheckMethod::CollisionCheckSphereVsBox(
+	collisionCheckMap_[boxCompName + "Vs" + sphereCompName] = [](const CollisionPair& _pair, CollisionInfo* _info) -> bool {
+		return CheckMethod::CollisionCheckBoxVsSphere(
+			_pair.first->GetComponent<BoxCollider>(),
 			_pair.second->GetComponent<SphereCollider>(),
-			_pair.first->GetComponent<BoxCollider>()
+			_info
 		);
 		};
 
-	collisionCheckMap_[boxCompName + "Vs" + boxCompName] = [](const CollisionPair& _pair) -> bool {
+	collisionCheckMap_[boxCompName + "Vs" + boxCompName] = [](const CollisionPair& _pair, CollisionInfo* _info) -> bool {
 		return CheckMethod::CollisionCheckBoxVsBox(
 			_pair.first->GetComponent<BoxCollider>(),
-			_pair.second->GetComponent<BoxCollider>()
+			_pair.second->GetComponent<BoxCollider>(),
+			_info
 		);
 		};
 
@@ -178,8 +182,18 @@ void CollisionSystem::RuntimeUpdate(ECSGroup* _ecs) {
 			}
 
 			/// 衝突計算を行う
-			bool isCollided = collisionCheckItr->second(pair);
+			CollisionInfo info;
+			bool isCollided = collisionCheckItr->second(pair, &info);
 			if (isCollided) {
+
+				/// 押し戻しを行う
+				PushBack(
+					a->GetOwner(), a->GetCollisionState(),
+					b->GetOwner(), b->GetCollisionState(),
+					info
+				);
+
+
 				/// collidedPairs_にペアがすでに存在しているかチェック
 				auto collisionPairItr = std::find_if(collidedPairs_.begin(), collidedPairs_.end(), [&pair](const CollisionPair& _p) {
 					return (_p.first == pair.first && _p.second == pair.second)
@@ -396,8 +410,35 @@ void CollisionSystem::CallExitFunc(const std::string& _ecsGroupName) {
 	}
 }
 
+void CollisionSystem::PushBack(GameEntity* _a, CollisionState _aState, GameEntity* _b, CollisionState _bState, const CollisionInfo& _info) {
+	if (!_a || !_b) {
+		return;
+	}
 
-bool CheckMethod::CollisionCheckSphereVsSphere(SphereCollider* _s1, SphereCollider* _s2) {
+	// Dynamic / Static フラグ
+	bool aDynamic = _aState == CollisionState::Dynamic;
+	bool bDynamic = _bState == CollisionState::Dynamic;
+
+	// 押し戻しベクトル
+	Vector3 correction = _info.normal * _info.penetration;
+
+	if (aDynamic && !bDynamic) {
+		// _aだけ押し戻す
+		_a->SetPosition(_a->GetPosition() - correction);
+	} else if (!aDynamic && bDynamic) {
+		// _bだけ押し戻す
+		_b->SetPosition(_b->GetPosition() + correction);
+	} else if (aDynamic && bDynamic) {
+		// 両方Dynamicなら半分ずつ押し戻す
+		_a->SetPosition(_a->GetPosition() - correction * 0.5f);
+		_b->SetPosition(_b->GetPosition() + correction * 0.5f);
+	}
+	// 両方Staticなら何もしない
+
+}
+
+
+bool CheckMethod::CollisionCheckSphereVsSphere(SphereCollider* _s1, SphereCollider* _s2, CollisionInfo* _info) {
 	if (!_s1 || !_s2) {
 		return false; // 型が一致しない場合は衝突なし
 	}
@@ -406,30 +447,135 @@ bool CheckMethod::CollisionCheckSphereVsSphere(SphereCollider* _s1, SphereCollid
 	GameEntity* e2 = _s2->GetOwner();
 
 	float distance = (e1->GetPosition() - e2->GetPosition()).Len();
+
+	/// 衝突情報の設定
+	if (_info) {
+		/// 法線はe1からe2への方向
+		_info->normal = Vector3::Normalize(e2->GetPosition() - e1->GetPosition());
+		_info->penetration = (_s1->GetRadius() + _s2->GetRadius()) - distance;
+	}
+
+
 	return distance <= (_s1->GetRadius() + _s2->GetRadius());
 }
 
-bool CheckMethod::CollisionCheckSphereVsBox(SphereCollider* _s, BoxCollider* _b) {
+bool CheckMethod::CollisionCheckSphereVsBox(SphereCollider* _s, BoxCollider* _b, CollisionInfo* _info) {
 	if (!_s || !_b) {
 		return false; // 型が一致しない場合は衝突なし
 	}
 	GameEntity* e1 = _s->GetOwner();
 	GameEntity* e2 = _b->GetOwner();
-	return CollisionCheck::CubeVsSphere(
+
+
+	Vector3 closestPoint;
+	float distance;
+
+	bool collided = CollisionCheck::CubeVsSphere(
 		e2->GetPosition(), _b->GetSize(),
-		e1->GetPosition(), _s->GetRadius()
+		e1->GetPosition(), _s->GetRadius(),
+		&closestPoint, &distance
 	);
+
+	/// 衝突情報の設定
+	if (collided) {
+		const Vector3& sphereCenter = e1->GetPosition();
+		Vector3 cubeMin = e2->GetPosition() - (_b->GetSize() * 0.5f);
+		Vector3 cubeMax = e2->GetPosition() + (_b->GetSize() * 0.5f);
+
+		/// 最近接点と球中心の差
+		Vector3 delta = sphereCenter - closestPoint;
+		float dist = delta.Len();
+
+		/// AABBとの各軸方向の距離
+		float dxMin = std::fabs(sphereCenter.x - cubeMin.x);
+		float dxMax = std::fabs(sphereCenter.x - cubeMax.x);
+		float dyMin = std::fabs(sphereCenter.y - cubeMin.y);
+		float dyMax = std::fabs(sphereCenter.y - cubeMax.y);
+		float dzMin = std::fabs(sphereCenter.z - cubeMin.z);
+		float dzMax = std::fabs(sphereCenter.z - cubeMax.z);
+
+		/// 最も近い面を探す
+		float minDist = (std::min)({ dxMin, dxMax, dyMin, dyMax, dzMin, dzMax });
+		Vector3 normal = Vector3::kZero;
+
+		/// 最も近い面の法線を設定
+		if (minDist == dxMin) {
+			normal = Vector3::kLeft;
+		} else if (minDist == dxMax) {
+			normal = Vector3::kRight;
+		} else if (minDist == dyMin) {
+			normal = Vector3::kDown;
+		} else if (minDist == dyMax) {
+			normal = Vector3::kUp;
+		} else if (minDist == dzMin) {
+			normal = Vector3::kBack;
+		} else if (minDist == dzMax) {
+			normal = Vector3::kFront;
+		}
+
+		// めり込み量（球がAABBの表面を越えた距離）
+		float penetration = _s->GetRadius() - dist;
+		if (_info) {
+			_info->normal = -normal;
+			_info->penetration = penetration;
+			_info->contactPoint = closestPoint;
+		}
+	}
+
+	return collided;
 }
 
-bool CheckMethod::CollisionCheckBoxVsBox(BoxCollider* _b1, BoxCollider* _b2) {
+bool CheckMethod::CollisionCheckBoxVsSphere(BoxCollider* _b, SphereCollider* _s, CollisionInfo* _info) {
+	if (!_s || !_b) {
+		return false; // 型が一致しない場合は衝突なし
+	}
+	GameEntity* e1 = _s->GetOwner();
+	GameEntity* e2 = _b->GetOwner();
+
+
+	Vector3 closestPoint;
+	float distance;
+
+	bool collided = CollisionCheck::CubeVsSphere(
+		e2->GetPosition(), _b->GetSize(),
+		e1->GetPosition(), _s->GetRadius(),
+		&closestPoint, &distance
+	);
+
+	/// 衝突情報の設定
+	if (collided) {
+		if (_info) {
+			_info->normal = Vector3::Normalize(e1->GetPosition() - closestPoint);
+			_info->penetration = _s->GetRadius() - distance;
+		}
+	}
+
+
+	return collided;
+}
+
+bool CheckMethod::CollisionCheckBoxVsBox(BoxCollider* _b1, BoxCollider* _b2, CollisionInfo* _info) {
 	if (!_b1 || !_b2) {
 		return false; // 型が一致しない場合は衝突なし
 	}
 	GameEntity* e1 = _b1->GetOwner();
 	GameEntity* e2 = _b2->GetOwner();
-	return CollisionCheck::CubeVsCube(
+
+	Vector3 outNormal;
+	float outPenetration;
+	bool collided = CollisionCheck::CubeVsCube(
 		e1->GetPosition(), _b1->GetSize(),
-		e2->GetPosition(), _b2->GetSize()
+		e2->GetPosition(), _b2->GetSize(),
+		&outNormal, &outPenetration
 	);
+
+	if (collided) {
+		if (_info) {
+			_info->normal = outNormal;
+			_info->penetration = outPenetration;
+		}
+	}
+
+	return collided;
 }
 
