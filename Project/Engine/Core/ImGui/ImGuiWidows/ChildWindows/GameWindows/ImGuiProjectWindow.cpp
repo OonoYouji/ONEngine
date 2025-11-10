@@ -307,8 +307,11 @@ void ImGuiProjectWindow::DrawFileView(const std::filesystem::path& dir) {
 		/// 右クリックメニュー
 		/// ---------------------------------------------------
 		if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
-			PopupContextMenu(filePath);
+			/// 開く
+			ImGui::OpenPopup("FileContextMenu");
 		}
+
+		PopupContextMenu(filePath);
 
 		ImGui::TextWrapped("%s", name.c_str());
 		ImGui::EndGroup();
@@ -377,7 +380,7 @@ void ImGuiProjectWindow::PopupContextMenu(const std::filesystem::path& _dir) {
 
 		if (ImGui::MenuItem("Show in Explorer")) {
 			std::string folder = std::filesystem::absolute(_dir).string();
-			ShellExecuteA(nullptr, "open", "explorer", folder.c_str(), nullptr, SW_SHOWNORMAL);
+			ShellExecuteA(nullptr, "open", "explorer.exe", folder.c_str(), nullptr, SW_SHOWNORMAL);
 		}
 
 		if (ImGui::MenuItem("Open")) {
@@ -387,6 +390,7 @@ void ImGuiProjectWindow::PopupContextMenu(const std::filesystem::path& _dir) {
 
 		if (ImGui::MenuItem("Delete")) {
 			/// 一度警告を出す
+			
 		}
 
 		if (ImGui::MenuItem("Rename")) {

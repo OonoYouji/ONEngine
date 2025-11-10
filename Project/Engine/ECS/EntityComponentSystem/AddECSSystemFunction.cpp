@@ -33,8 +33,8 @@ void GameECSGroupAddSystemFunction(ECSGroup* _ecs, DxManager* _dxm, AssetCollect
 	_ecs->AddSystem<AudioPlaybackSystem>(_assetCollection);
 	_ecs->AddSystem<EffectUpdateSystem>();
 	_ecs->AddSystem<SpriteUpdateSystem>();
-	_ecs->AddSystem<ShadowCasterUpdateSystem>();
 	_ecs->AddSystem<TransformUpdateSystem>();
+	_ecs->AddSystem<ShadowCasterUpdateSystem>();
 
 	/// 衝突判定に使うsystem
 	_ecs->AddSystem<TerrainCollision>();

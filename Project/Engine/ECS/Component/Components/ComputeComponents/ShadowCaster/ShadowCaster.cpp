@@ -141,7 +141,7 @@ void ShadowCaster::CreateShadowCaster() {
 	camera_->SetOrthographicSize(Vector2(1280.0f, 720.0f) * 0.01f);
 }
 
-void ShadowCaster::CalculationLightViewMatrix(DirectionalLight* _directionLight) {
+void ShadowCaster::CalculationLightViewMatrix(ECSGroup* _ecsGroup, DirectionalLight* _directionLight) {
 	/// nullチェック
 	if (!_directionLight) {
 		Console::LogError("ShadowCaster::CalculationLightViewMatrix: DirectionalLight is null");
@@ -161,8 +161,12 @@ void ShadowCaster::CalculationLightViewMatrix(DirectionalLight* _directionLight)
 	/// カメラの回転を設定
 	owner->SetRotate(cameraRotation);
 
+	/// 現在のグループのmain cameraを取得し、座標を補正
+	CameraComponent* mainCamera = _ecsGroup->GetMainCamera();
+	Vector3 mainCamPos = mainCamera->GetOwner()->GetPosition();
+
 	/// ライトの方向に合わせて座標を計算
-	owner->SetPosition(baseLightPos_ - dir * lightLength_);
+	owner->SetPosition(mainCamPos + baseLightPos_ - dir * lightLength_);
 
 	camera_->SetOrthographicSize(orthographicSize_ * scaleFactor_);
 	camera_->UpdateViewProjection();

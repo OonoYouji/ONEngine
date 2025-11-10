@@ -23,7 +23,8 @@ namespace DebugConfig {
 
 	/// @brief デバッグ中かどうか
 	extern bool isDebugging; 
-	
+	extern bool isShowDebugScene;
+	extern bool isShowGameScene;
 
 	enum SELECTED_MODE {
 		SELECTED_MODE_FILE,

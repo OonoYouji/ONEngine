@@ -54,7 +54,7 @@ public:
 
 	/// @brief DirectionalLightからライトビュー行列を設定
 	/// @param _directionLight DirectionalLightへのポインタ
-	void CalculationLightViewMatrix(class DirectionalLight* _directionLight);
+	void CalculationLightViewMatrix(class ECSGroup* _ecsGroup, class DirectionalLight* _directionLight);
 
 
 	/// @brief 影の投影用のカメラを取得する

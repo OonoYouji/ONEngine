@@ -1,7 +1,7 @@
 ﻿
 public class Breathe : MonoBehavior {
 
-	public Vector3 defaultScale = Vector3.one; // デフォルトのスケール
+	[SerializeField] public Vector3 defaultScale = Vector3.one; // デフォルトのスケール
 	Vector3 scale = Vector3.one;
 
 	public override void Awake() {
@@ -10,7 +10,7 @@ public class Breathe : MonoBehavior {
 
 	public override void Initialize() {
 		Debug.Log("Breathe initialized.");
-		defaultScale = transform.scale; // 初期スケールを保存
+		//defaultScale = transform.scale; // 初期スケールを保存
 	}
 
 	public override void Update() {
@@ -19,9 +19,6 @@ public class Breathe : MonoBehavior {
 		Transform t = transform;
 		scale = defaultScale * Mathf.Clamp(Mathf.Sin(Time.time) * 0.5f + 0.5f, 0.2f, 1f);
 		t.scale = scale;
-		//t.rotate = Quaternion.FromEuler(
-		//	new Vector3(0, Mathf.Sin(Time.time), 0)
-		//	);
 	}
 
 }

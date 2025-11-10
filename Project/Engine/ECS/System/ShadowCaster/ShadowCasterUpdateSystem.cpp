@@ -32,7 +32,7 @@ void ShadowCasterUpdateSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
 
 		/// DirectionalLightが存在する場合、ライトビュー行列を計算
 		if (dirLight) {
-			shadowCaster->CalculationLightViewMatrix(dirLight);
+			shadowCaster->CalculationLightViewMatrix(_ecs, dirLight);
 		}
 	}
 

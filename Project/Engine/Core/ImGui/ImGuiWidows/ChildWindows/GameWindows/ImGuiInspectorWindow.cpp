@@ -247,6 +247,7 @@ void ImGuiInspectorWindow::EntityInspector() {
 				/// endじゃないかチェック
 				if (itr == selectedEntity->GetComponents().end()) {
 					ImGui::EndPopup();
+					ImGui::PopID();
 					break; // もしendに到達したらループを抜ける
 				}
 
