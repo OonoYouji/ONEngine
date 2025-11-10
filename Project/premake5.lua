@@ -136,7 +136,7 @@ project "ONEngine"
     filter "configurations:Development"
         runtime "Release"
         symbols "Full"                -- /Zi に変更（/GLと両立可）
-        optimize "Speed"              -- 軽い最適化も入れておくと◎
+        optimize "Speed"              -- 軽い最適化も入れておく
         defines { "DEBUG_BUILD", "_WINDOWS" }
         buildoptions { "/utf-8" }
         linktimeoptimization "On"     -- /GLを有効化（OK）
@@ -147,7 +147,7 @@ project "ONEngine"
             "copy \"$(WindowsSdkDir)bin\\$(TargetPlatformVersion)\\x64\\dxcompiler.dll\" \"$(TargetDir)dxcompiler.dll\"",
             "copy \"$(WindowsSdkDir)bin\\$(TargetPlatformVersion)\\x64\\dxil.dll\" \"$(TargetDir)dxil.dll\"",
             "copy \"$(ProjectDir)Packages\\Scripts\\lib\\mono-2.0-sgen.dll\" \"$(TargetDir)mono-2.0-sgen.dll\"",
-            "xcopy /E /Y /I \"$(ProjectDir)Assets\" \"$(TargetDir)Assets\"",
-            "xcopy /E /Y /I \"$(ProjectDir)Packages\" \"$(TargetDir)Packages\""
+            -- "xcopy /E /Y /I \"$(ProjectDir)Assets\" \"$(TargetDir)Assets\"",
+            -- "xcopy /E /Y /I \"$(ProjectDir)Packages\" \"$(TargetDir)Packages\""
         }
     
