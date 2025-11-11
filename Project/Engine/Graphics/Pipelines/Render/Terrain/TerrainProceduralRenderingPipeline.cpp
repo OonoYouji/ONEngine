@@ -110,7 +110,7 @@ void TerrainProceduralRenderingPipeline::Initialize(ShaderCompiler* _shaderCompi
 		drawInstanceCount_ = 0;
 
 		dataBuffer_.Create(_dxm->GetDxDevice());
-		dataBuffer_.SetMappedData(1000);
+		dataBuffer_.SetMappedData(2000);
 
 		maxInstanceCountBuffer_.Create(_dxm->GetDxDevice());
 		maxInstanceCountBuffer_.SetMappedData(drawInstanceCount_);

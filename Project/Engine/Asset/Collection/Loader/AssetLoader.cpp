@@ -138,6 +138,13 @@ bool AssetLoader::ReloadTexture(const std::string& _filepath) {
 	DirectX::ScratchImage       scratchImage = LoadScratchImage(_filepath);
 	const DirectX::TexMetadata& metadata = scratchImage.GetMetadata();
 
+	/// metadataを確認して、サイズが0などの場合であればリロード失敗
+	if (metadata.width == 0 || metadata.height == 0) {
+		Console::LogError("[Reload Failed] [Texture] - Invalid texture metadata: \"" + _filepath + "\"");
+		return false;
+	}
+
+
 	existingTexture->dxResource_ = std::move(CreateTextureResource(pDxManager_->GetDxDevice(), metadata));
 	DxResource intermediateResource = UploadTextureData(existingTexture->dxResource_.Get(), scratchImage);
 
@@ -584,7 +591,7 @@ DxResource AssetLoader::CreateTextureResource(DxDevice* _dxDevice, const DirectX
 	D3D12_RESOURCE_DESC desc{};
 
 	/// テクスチャの幅
-	desc.Width = UINT(_metadata.width); 
+	desc.Width = UINT(_metadata.width);
 	desc.Height = UINT(_metadata.height);
 
 	/// テクスチャの深さ
