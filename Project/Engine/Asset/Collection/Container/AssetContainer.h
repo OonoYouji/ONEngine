@@ -136,7 +136,6 @@ inline T* AssetContainer<T>::Add(const std::string& _key, T _t) {
 	uint32_t index = static_cast<uint32_t>(indexMap_.size());
 	indexMap_[_key] = index;
 	reverseIndexMap_[index] = _key;
-	values_[index] = _t;
 
 	
 	/// _keyのファイルがあるなら.metaファイルを読み込んでGuidを登録する
@@ -146,14 +145,17 @@ inline T* AssetContainer<T>::Add(const std::string& _key, T _t) {
 		Guid& guid = metaFile.guid;
 		guidToIndexMap_[guid] = index;
 		indexToGuidMap_[index] = guid;
+		_t.guid = guid;
 	} else {
 		/// .metaファイルがない場合は新しくMetaファイルを作成しGuidを登録、保存する
 		MetaFile metaFile = GenerateMetaFile(_key);
 		Guid& guid = metaFile.guid;
 		guidToIndexMap_[guid] = index;
 		indexToGuidMap_[index] = guid;
+		_t.guid = guid;
 	}
 
+	values_[index] = _t;
 	return &values_[index];
 }
 

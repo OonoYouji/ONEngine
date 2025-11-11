@@ -17,9 +17,11 @@ class TerrainProceduralRenderingPipeline : public IRenderingPipeline {
 
 	/// @brief compute shader用root param index
 	enum CP_ROOT_PARAM : UINT {
+		CP_DATA,
 		CP_INSNTANCE_DATA,
 		CP_SRV_VERTEX_TEXTURE,
-		CP_SRV_SPLAT_BLEND_TEXTURE
+		CP_SRV_SPLAT_BLEND_TEXTURE,
+		CP_SRV_TREE_ARRANGEMENT_TEXTURE,
 	};
 
 	/// @brief 
@@ -32,6 +34,8 @@ class TerrainProceduralRenderingPipeline : public IRenderingPipeline {
 
 	struct InstanceData {
 		Matrix4x4 matWorld;
+		//Vector4 minBounds;
+		//Vector4 maxBounds;
 	};
 
 	struct TextureId {
@@ -61,6 +65,7 @@ private:
 	std::unique_ptr<ComputePipeline> computePipeline_;
 	StructuredBuffer<InstanceData> instanceDataAppendBuffer_;
 	ConstantBuffer<TextureId> textureIdBuffer_;
+	ConstantBuffer<float> dataBuffer_;
 
 	uint32_t instanceCount_;
 	bool isFirstPreDraw_ = true;

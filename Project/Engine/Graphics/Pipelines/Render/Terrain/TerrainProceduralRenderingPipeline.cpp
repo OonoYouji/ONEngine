@@ -8,7 +8,8 @@
 #include "Engine/Asset/Collection/AssetCollection.h"
 
 TerrainProceduralRenderingPipeline::TerrainProceduralRenderingPipeline(AssetCollection* _assetCollection)
-	: pAssetCollection_(_assetCollection) {}
+	: pAssetCollection_(_assetCollection) {
+}
 TerrainProceduralRenderingPipeline::~TerrainProceduralRenderingPipeline() {}
 
 void TerrainProceduralRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {
@@ -25,13 +26,16 @@ void TerrainProceduralRenderingPipeline::Initialize(ShaderCompiler* _shaderCompi
 		computePipeline_->SetShader(&shader);
 
 		/// Buffer
+		computePipeline_->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 0); /// CBV_DATA_BUFFER
 		computePipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_UAV); /// UAV_INSTANCE_DATA
 		computePipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); /// SRV_VERTEX_TEXTURE
 		computePipeline_->AddDescriptorRange(1, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); /// SRV_SPLAT_BLEND_TEXTURE
+		computePipeline_->AddDescriptorRange(2, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); /// SRV_TREE_ARRANGEMENT_TEXTURE
 
 		computePipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 0); /// UAV_INSTANCE_DATA
 		computePipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 1); /// SRV_VERTEX_TEXTURE
 		computePipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 2); /// SRV_SPLAT_BLEND_TEXTURE
+		computePipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 3); /// SRV_TREE_ARRANGEMENT_TEXTURE
 
 		computePipeline_->AddStaticSampler(D3D12_SHADER_VISIBILITY_ALL, 0);
 
@@ -82,6 +86,9 @@ void TerrainProceduralRenderingPipeline::Initialize(ShaderCompiler* _shaderCompi
 		instanceDataAppendBuffer_.CreateAppendBuffer(static_cast<uint32_t>(std::pow(2, 24)), _dxm->GetDxDevice(), _dxm->GetDxCommand(), _dxm->GetDxSRVHeap());
 		textureIdBuffer_.Create(_dxm->GetDxDevice());
 		instanceCount_ = 0;
+
+		dataBuffer_.Create(_dxm->GetDxDevice());
+		dataBuffer_.SetMappedData(1000);
 	}
 }
 
@@ -116,20 +123,25 @@ void TerrainProceduralRenderingPipeline::PreDraw(ECSGroup* _ecs, CameraComponent
 
 	auto cmdList = _dxCommand->GetCommandList();
 
+	pDxManager_->HeapBindToCommandList();
 	computePipeline_->SetPipelineStateForCommandList(_dxCommand);
+	dataBuffer_.BindForComputeCommandList(cmdList, CP_DATA);
 	instanceDataAppendBuffer_.AppendBindForComputeCommandList(cmdList, CP_INSNTANCE_DATA); // UAV_INSTANCE_DATA
 
 	/// 使用するテクスチャを取得、バインドする
-	const Texture* vertexTexture = pAssetCollection_->GetTexture("./Packages/Textures/Terrain/TerrainVertex.png");
-	const Texture* splatBlendTexture = pAssetCollection_->GetTexture("./Packages/Textures/Terrain/TerrainSplatBlend.png");
+	const Texture* vertexTexture      = pAssetCollection_->GetTexture("./Packages/Textures/Terrain/TerrainVertex.png");
+	const Texture* splatBlendTexture  = pAssetCollection_->GetTexture("./Packages/Textures/Terrain/TerrainSplatBlend.png");
+	const Texture* arrangementTexture = pAssetCollection_->GetTexture("./Packages/Textures/Terrain/TreeArrangement.png");
 	cmdList->SetComputeRootDescriptorTable(CP_SRV_VERTEX_TEXTURE, vertexTexture->GetSRVGPUHandle());
 	cmdList->SetComputeRootDescriptorTable(CP_SRV_SPLAT_BLEND_TEXTURE, splatBlendTexture->GetSRVGPUHandle());
+	cmdList->SetComputeRootDescriptorTable(CP_SRV_TREE_ARRANGEMENT_TEXTURE, arrangementTexture->GetSRVGPUHandle());
 
 	/// numthreadsに合わせてDispatchする
+	UINT size = static_cast<UINT>(dataBuffer_.GetMappingData());
 	const uint32_t threadGroupSize = 32;
 	cmdList->Dispatch(
-		(2000 + threadGroupSize - 1) / threadGroupSize,
-		(2000 + threadGroupSize - 1) / threadGroupSize,
+		(size + threadGroupSize - 1) / threadGroupSize,
+		(size + threadGroupSize - 1) / threadGroupSize,
 		1
 	);
 

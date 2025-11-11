@@ -3,9 +3,9 @@
         {
             "enable": 1,
             "position": {
-                "x": 0.0,
-                "y": -979.0,
-                "z": 0.0
+                "x": 229.0957794189453,
+                "y": 1.9371049404144287,
+                "z": 321.23712158203125
             },
             "rotate": {
                 "w": 0.7071067690849304,
@@ -15,8 +15,8 @@
             },
             "scale": {
                 "x": 1.0,
-                "y": 1.0,
-                "z": 1.0
+                "y": 1.0000050067901611,
+                "z": 1.0000050067901611
             },
             "type": "Transform"
         },
@@ -59,14 +59,15 @@
         {
             "enable": 1,
             "radius": 1.0,
+            "state": "Dynamic",
             "type": "SphereCollider"
         }
     ],
     "guid": {
-        "guid": "c4f4e8f9157074f082442f104b10ce22"
+        "guid": "df274d3ee52318428b3869cddb073790"
     },
-    "id": 2,
+    "id": 7,
     "name": "Player",
     "parent": null,
-    "prefabName": "Player"
+    "prefabName": "Player.prefab"
 }

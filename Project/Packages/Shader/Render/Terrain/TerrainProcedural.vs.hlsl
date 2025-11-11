@@ -4,10 +4,6 @@
 #include "../../ConstantBufferData/Transform.hlsli"
 #include "../../ConstantBufferData/ViewProjection.hlsli"
 
-struct InstanceData {
-	float4x4 matWorld;
-};
-
 ConstantBuffer<ViewProjection> viewProjection : register(b0);
 StructuredBuffer<InstanceData> instanceData : register(t0);
 

@@ -2,14 +2,21 @@
 #include "../Math/Noise/Noise.hlsli"
 #include "../ConstantBufferData/ViewProjection.hlsli"
 
+struct Data {
+	float size;
+};
+
 struct InstanceData {
 	float4x4 matWorld;
 };
 
+ConstantBuffer<Data> data : register(b0);
+
 AppendStructuredBuffer<InstanceData> instanceData : register(u0);
 
-Texture2D<float4> vertexTexture : register(t0);
-Texture2D<float4> splatBlendTexture : register(t1);
+Texture2D<float4> vertexTexture      : register(t0);
+Texture2D<float4> splatBlendTexture  : register(t1);
+Texture2D<float4> arrangementTexture : register(t2); /// 配置用の輝度テクスチャ
 SamplerState textureSampler : register(s0);
 
 float Hash(float2 p) {
@@ -27,17 +34,32 @@ float GetGradientMagnitude(float2 uv, float texelSize) {
 	return sqrt(dx * dx + dy * dy);
 }
 
-static const float size = 2000;
+float GetLuminance(float4 _color) {
+    return dot(_color.rgb, float3(0.2126, 0.7152, 0.0722));
+}
 
 [numthreads(32, 32, 1)]
 void main(uint3 DTid : SV_DispatchThreadID) {
+
+	float size = data.size;
 	float2 uv = float2(DTid.xy) / float2(size, size);
 
+	/// 配置用テクスチャの輝度を用いて、配置判定を行う
+	float2 arrangementUV = float2(uv.x, 1.0f - uv.y);
+	float4 arrangement = arrangementTexture.Sample(textureSampler, arrangementUV);
+	float luminance = GetLuminance(arrangement);
+	if (luminance < 0.2f) {
+		return;
+	}
+
+
+	/// 勾配が急な箇所には配置しない
 	float grad = GetGradientMagnitude(uv, 1.0f / size);
 	if (grad > 0.005f) {
 		return;
 	}
 
+	/// スプラットブレンドの草がないところには配置しない
 	float4 blend = splatBlendTexture.Sample(textureSampler, uv);
 	if (blend.r < 0.1f) {
 		return;
@@ -54,7 +76,7 @@ void main(uint3 DTid : SV_DispatchThreadID) {
 		return;
 	}
 
-	float scale = lerp(2.0f, 4.0f, noiseValue);
+	float scale = lerp(2.0f, 8.0f, noiseValue);
 	float angle = Hash(seed + 1.0f) * 6.2831853f;
 	float cosA = cos(angle);
 	float sinA = sin(angle);
