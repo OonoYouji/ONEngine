@@ -43,7 +43,7 @@ public:
 	void Draw();
 
 	/// @brief 描画前処理
-	void PreDraw();
+	void PreDraw(ECSGroup* _ecsGroup);
 
 	/// @brief 各シーンの描画
 	void DrawScene();

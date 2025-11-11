@@ -6,30 +6,39 @@
 #include "TerrainProcedural.hlsli"
 
 
+struct MaxInstanceData {
+    uint value;
+};
+
+
 /// --------------- Buffer --------------- ///
 
 ConstantBuffer<ViewProjection> viewProjection : register(b0);
+ConstantBuffer<MaxInstanceData> maxInstanceData : register(b1);
 StructuredBuffer<InstanceData> instanceData : register(t0);
-RWStructuredBuffer<RenderingInstance> renderingInstances : register(u0);
+AppendStructuredBuffer<RenderingInstance> renderingInstances : register(u0);
 
 
 /// --------------- Main --------------- ///
 
-[numthreads(1024, 1, 1)]
+[numthreads(32, 1, 1)]
 void main(uint DTid : SV_DispatchThreadID) {
 
     /// インスタンス数を超えたら処理しない
     uint index = DTid.x;
+    if (index >= maxInstanceData.value) {
+        return;
+    }
 
-    InstanceData instance = instanceData[index];
+    InstanceData treeInst = instanceData[index];
 
-    float4x4 matWVP = mul(instance.matWorld, viewProjection.matVP);
+    float4x4 matWVP = mul(treeInst.matWorld, viewProjection.matVP);
     float4 ndcPos = mul(float4(0.0f, 0.0f, 0.0f, 1.0f), matWVP);
     ndcPos /= ndcPos.w;
 
     // AABB -> 8 corners (local space)
-    float3 bmin = instance.minBounds.xyz;
-    float3 bmax = instance.maxBounds.xyz;
+    float3 bmin = treeInst.minBounds.xyz;
+    float3 bmax = treeInst.maxBounds.xyz;
     float3 corners[8] = {
         float3(bmin.x, bmin.y, bmin.z),
         float3(bmax.x, bmin.y, bmin.z),
@@ -71,9 +80,14 @@ void main(uint DTid : SV_DispatchThreadID) {
         }
     }
 
+    /// カリング判定
     bool culled = outsideLeft || outsideRight || outsideBottom || outsideTop || outsideNear || outsideFar;
-    uint visibleFlag = culled ? 0u : 1u;
+    if(culled) {
+        return;
+    }
 
-    // Store result (adjust field name as needed in RenderingInstance)
-    renderingInstances[index].id = visibleFlag;
+    /// 描画インスタンス登録
+    RenderingInstance appendIns;
+    appendIns.id = index;
+    renderingInstances.Append(appendIns);
 }

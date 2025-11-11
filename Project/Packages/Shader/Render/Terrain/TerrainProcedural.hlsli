@@ -1,7 +1,7 @@
 struct InstanceData {
 	float4x4 matWorld;
-	// float4 minBounds;
-	// float4 maxBounds;
+	float4 minBounds;
+	float4 maxBounds;
 };
 
 struct RenderingInstance {

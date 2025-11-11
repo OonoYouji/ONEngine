@@ -60,9 +60,7 @@ void RenderingFramework::Initialize(DxManager* _dxm, WindowManager* _windowManag
 
 void RenderingFramework::Draw() {
 	/// ----- 描画全体の処理 ----- ///
-
-	/// 事前処理
-	PreDraw();
+	PreDraw(pEntityComponentSystem_->GetCurrentGroup());
 
 #ifdef DEBUG_MODE /// imguiの描画
 	/// ----- debug build の描画 ----- ///
@@ -79,6 +77,7 @@ void RenderingFramework::Draw() {
 	case DebugConfig::SELECTED_MODE_GAME:
 		/// Gameモード時の描画
 		if(DebugConfig::isShowDebugScene) {
+			/// 事前処理
 			DrawDebug();
 		}
 		DrawScene();
@@ -111,9 +110,9 @@ void RenderingFramework::Draw() {
 	DxCommandExeAndReset();
 }
 
-void RenderingFramework::PreDraw() {
-	CameraComponent* camera = pEntityComponentSystem_->GetECSGroup("Debug")->GetMainCamera();
-	CameraComponent* camera2d = pEntityComponentSystem_->GetECSGroup("Debug")->GetMainCamera2D();
+void RenderingFramework::PreDraw(ECSGroup* _ecsGroup) {
+	CameraComponent* camera = _ecsGroup->GetMainCamera();
+	CameraComponent* camera2d = _ecsGroup->GetMainCamera2D();
 	renderingPipelineCollection_->PreDrawEntities(camera, camera2d);
 }
 

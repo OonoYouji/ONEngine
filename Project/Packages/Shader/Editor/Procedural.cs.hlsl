@@ -8,6 +8,8 @@ struct Data {
 
 struct InstanceData {
 	float4x4 matWorld;
+	float4 minBounds;
+	float4 maxBounds;
 };
 
 ConstantBuffer<Data> data : register(b0);
@@ -119,5 +121,7 @@ void main(uint3 DTid : SV_DispatchThreadID) {
 
 	InstanceData output;
 	output.matWorld = mul(mul(matScale, matRotateY), matTranslate);
+	output.minBounds = float4(-0.5f * scale, 0.0f, -0.5f * scale, 1.0f);
+	output.maxBounds = float4(0.5f * scale, scale, 0.5f * scale, 1.0f);
 	instanceData.Append(output);
 }
