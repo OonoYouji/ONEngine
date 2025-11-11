@@ -79,7 +79,7 @@ void InternalGetPosition(uint64_t _nativeHandle, float* _x, float* _y, float* _z
 	}
 
 	const Matrix4x4& matWorld = transform->GetMatWorld();
-	const Vector3& position = Matrix4x4::Transform(Vector3::kZero, matWorld);
+	const Vector3& position = { matWorld.m[3][0], matWorld.m[3][1], matWorld.m[3][2] };
 
 	if (_x) { *_x = position.x; }
 	if (_y) { *_y = position.y; }
@@ -108,7 +108,7 @@ void InternalGetRotate(uint64_t _nativeHandle, float* _x, float* _y, float* _z, 
 	if (_x) { *_x = transform->rotate.x; }
 	if (_y) { *_y = transform->rotate.y; }
 	if (_z) { *_z = transform->rotate.z; }
-	if (_w) { *_w = transform->rotate.w; } 
+	if (_w) { *_w = transform->rotate.w; }
 }
 
 void InternalGetScale(uint64_t _nativeHandle, float* _x, float* _y, float* _z) {

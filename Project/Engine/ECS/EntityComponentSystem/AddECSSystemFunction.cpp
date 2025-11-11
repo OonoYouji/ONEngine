@@ -34,7 +34,6 @@ void GameECSGroupAddSystemFunction(ECSGroup* _ecs, DxManager* _dxm, AssetCollect
 	_ecs->AddSystem<EffectUpdateSystem>();
 	_ecs->AddSystem<SpriteUpdateSystem>();
 	_ecs->AddSystem<TransformUpdateSystem>();
-	_ecs->AddSystem<ShadowCasterUpdateSystem>();
 
 	/// 衝突判定に使うsystem
 	_ecs->AddSystem<TerrainCollision>();
@@ -44,6 +43,7 @@ void GameECSGroupAddSystemFunction(ECSGroup* _ecs, DxManager* _dxm, AssetCollect
 	/// 描画に使うsystem
 	_ecs->AddSystem<MeshBufferRecreate>(_dxm->GetDxDevice());
 	_ecs->AddSystem<ColliderRenderQueueSystem>();
+	_ecs->AddSystem<ShadowCasterUpdateSystem>();
 }
 
 void DebugECSGroupAddSystemFunction(ECSGroup* _ecs, DxManager* _dxm, AssetCollection* _assetCollection) {

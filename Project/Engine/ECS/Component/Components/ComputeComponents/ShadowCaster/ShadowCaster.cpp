@@ -163,7 +163,9 @@ void ShadowCaster::CalculationLightViewMatrix(ECSGroup* _ecsGroup, DirectionalLi
 
 	/// 現在のグループのmain cameraを取得し、座標を補正
 	CameraComponent* mainCamera = _ecsGroup->GetMainCamera();
-	Vector3 mainCamPos = mainCamera->GetOwner()->GetPosition();
+	GameEntity* mainCamEntity = mainCamera->GetOwner();
+	mainCamEntity->UpdateTransform();
+	Vector3 mainCamPos = mainCamEntity->GetPosition();
 
 	/// ライトの方向に合わせて座標を計算
 	owner->SetPosition(mainCamPos + baseLightPos_ - dir * lightLength_);

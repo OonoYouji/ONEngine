@@ -110,7 +110,6 @@ public class Player : MonoBehavior {
 		Vector3 position = t.position;
 		position.y = height;
 		t.position = position;
-
 	}
 
 
@@ -154,14 +153,6 @@ public class Player : MonoBehavior {
 
 
 	public override void OnCollisionEnter(Entity collision) {
-
-		MeshRenderer mr = entity.GetComponent<MeshRenderer>();
-		if (mr == null) {
-			Debug.Log("Collision with non-mesh object: " + collision.name);
-			return; // メッシュレンダラーがない場合は何もしない
-		}
-
-		mr.color = new Vector4(0f, 0f, 0f, 1f); // 衝突したオブジェクトの色を赤に変更
 
 	}
 
