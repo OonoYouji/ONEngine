@@ -25,6 +25,7 @@ project "DirectXTex"
     filter "configurations:Development"
         runtime "Release" -- 開発用のリリースビルド
         symbols "On"
+        editandcontinue "Off"
         staticruntime "On"
     filter "configurations:Release"
          runtime "Release"     -- Release ランタイム (MT) を使用
@@ -55,6 +56,7 @@ project "ImGui"
     filter "configurations:Development"
         runtime "Release" -- 開発用のリリースビルド
         symbols "On"
+        editandcontinue "Off"
         staticruntime "On"
     filter "configurations:Release"
          runtime "Release"     -- Release ランタイム (MT) を使用
@@ -134,20 +136,31 @@ project "ONEngine"
         }
 
     filter "configurations:Development"
-        runtime "Release"
-        symbols "Full"                -- /Zi に変更（/GLと両立可）
-        optimize "Speed"              -- 軽い最適化も入れておく
+        runtime "Release"                 -- Releaseランタイム (/MT)
+        symbols "Full"                    -- /Zi （Edit and Continueなし）
+        optimize "Speed"                  -- /O2 とほぼ同等の最適化
         defines { "DEBUG_BUILD", "_WINDOWS" }
-        buildoptions { "/utf-8" }
-        linktimeoptimization "On"     -- /GLを有効化（OK）
+        buildoptions {
+            "/utf-8",
+            "/Zo",                        -- デバッグ時のソース位置情報強化（任意）
+            "/Oi",                        -- インライン展開ヒントを有効化
+            "/Ot",                        -- スピード優先最適化
+            "/GL",                        -- リンク時コード生成（LTCG）
+        }
+        linkoptions {
+            "/OPT:REF",                   -- 未使用関数を削除
+            "/OPT:ICF",                   -- 同一関数の統合（ICF）
+            "/LTCG",                      -- /GL対応リンク
+        }
+        linktimeoptimization "On"         -- PremakeのLTO指定（/GLと整合）
         staticruntime "On"
+
         libdirs { "$(ProjectDir)Externals/assimp/lib/Release" }
         links { "assimp-vc143-mt.lib" }
+
         postbuildcommands {
             "copy \"$(WindowsSdkDir)bin\\$(TargetPlatformVersion)\\x64\\dxcompiler.dll\" \"$(TargetDir)dxcompiler.dll\"",
             "copy \"$(WindowsSdkDir)bin\\$(TargetPlatformVersion)\\x64\\dxil.dll\" \"$(TargetDir)dxil.dll\"",
-            "copy \"$(ProjectDir)Packages\\Scripts\\lib\\mono-2.0-sgen.dll\" \"$(TargetDir)mono-2.0-sgen.dll\"",
-            -- "xcopy /E /Y /I \"$(ProjectDir)Assets\" \"$(TargetDir)Assets\"",
-            -- "xcopy /E /Y /I \"$(ProjectDir)Packages\" \"$(TargetDir)Packages\""
+            "copy \"$(ProjectDir)Packages\\Scripts\\lib\\mono-2.0-sgen.dll\" \"$(TargetDir)mono-2.0-sgen.dll\""
         }
-    
+

@@ -53,16 +53,8 @@ namespace {
 		return oss.str();
 	}
 
-	/// ////////////////////////////////////////////
-	/// LogData
-	/// ////////////////////////////////////////////
-	struct LogData {
-		std::string message;
-	};
 
-	LogData gLogData;
 	std::string gMessage;
-	std::vector<std::string> gMessages_;
 
 	/// メンバ変数としてstaticで宣言したくないのでここで定義
 	std::vector<std::string> gLogBuffer_;
@@ -147,19 +139,6 @@ void Console::LogError(const std::string& _message) {
 void Console::LogWarning(const std::string& _message) {
 	AddToBuffer("[warning] " + _message);
 	spdlog::warn(_message);
-}
-
-const std::string& Console::GetCurrentLog() {
-	return gMessage;
-}
-
-const std::string& Console::GetAllLogs() {
-	std::lock_guard<std::mutex> lock(gMutex_);
-	std::string all;
-	for (auto& m : gLogBuffer_) {
-		all += m + "\n";
-	}
-	return all;
 }
 
 const std::vector<std::string>& Console::GetLogVector() {

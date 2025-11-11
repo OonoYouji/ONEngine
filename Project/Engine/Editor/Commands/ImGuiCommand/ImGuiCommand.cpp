@@ -54,7 +54,6 @@ bool ImMathf::DragFloat2(const std::string& _label, Vector2* _pv, float _step, f
 	/// 操作を終えた
 	if (ImGui::IsItemDeactivatedAfterEdit()) {
 		Vector2 endValue = *_pv;
-		return EDITOR_STATE();
 		EditCommand::Execute<ImGuiCommand::Vec2Command>(_pv, startValue, endValue);
 	}
 
