@@ -1,12 +1,11 @@
 #pragma once
 
-#define DIRECTINPUT_VERSION 0x0800
-#include <dinput.h>
-#include <wrl/client.h>
-
 /// std
 #include <cmath>
 #include <array>
+
+/// engine
+#include "DInput.h"
 
 /// //////////////////////////////////////////////////
 /// キーボード入力処理クラス

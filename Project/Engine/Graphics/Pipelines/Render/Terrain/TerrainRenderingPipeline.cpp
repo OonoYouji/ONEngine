@@ -117,13 +117,10 @@ void TerrainRenderingPipeline::Draw(class ECSGroup* _ecs, CameraComponent* _came
 		return;
 	}
 
-	/// value setting
+	/// bufferの値を更新
 	const Matrix4x4& matWorld = pTerrain_->GetOwner()->GetTransform()->GetMatWorld();
 	transformBuffer_.SetMappedData(matWorld);
 
-	GameEntity* entity = pTerrain_->GetOwner();
-	/// bufferの値を更新
-	transformBuffer_.SetMappedData(matWorld);
 	materialBuffer_.SetMappedData(0, pTerrain_->GetMaterialData());
 
 

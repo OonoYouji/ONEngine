@@ -1,9 +1,8 @@
 #pragma once
 
+#include "DInput.h"
 /// directX12
-#include <wrl/client.h>
 #include <XInput.h>
-#include <dinput.h>
 
 /// engine
 #include "Engine/Core/DirectX12/ComPtr/ComPtr.h"
