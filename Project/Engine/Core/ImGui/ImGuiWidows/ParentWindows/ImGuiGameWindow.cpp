@@ -12,6 +12,7 @@
 #include "../ChildWindows/GameWindows/ImGuiInspectorWindow.h"
 #include "../ChildWindows/GameWindows/ImGuiHierarchyWindow.h"
 #include "../ChildWindows/GameWindows/ImGuiConsoleWindow.h"
+#include "../ChildWindows/GameWindows/ImGuiTexturePreviewWindow.h"
 
 ImGuiGameWindow::ImGuiGameWindow(
 	EntityComponentSystem* _ecs, AssetCollection* _assetCollection,
@@ -32,6 +33,7 @@ ImGuiGameWindow::ImGuiGameWindow(
 	//AddChild(std::make_unique<ImGuiProjectWindow>(_assetCollection, _editorManager));
 	AddChild(std::make_unique<ImGuiProjectWindow>(_assetCollection, _editorManager));
 	AddChild(std::make_unique<ImGuiConsoleWindow>());
+	AddChild(std::make_unique<ImGuiTexturePreviewWindow>(_assetCollection));
 }
 
 

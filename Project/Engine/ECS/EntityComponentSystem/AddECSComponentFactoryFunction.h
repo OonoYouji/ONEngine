@@ -13,6 +13,7 @@
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Collision/BoxCollider.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Collision/SphereCollider.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/ShadowCaster/ShadowCaster.h"
 
 /// renderer
 #include "Engine/ECS/Component/Components/RendererComponents/Skybox/Skybox.h"
@@ -35,6 +36,7 @@ inline void AddComponentFactoryFunction(ComponentCollection* _compCollection) {
 	_compCollection->RegisterComponentFactory<GrassField>();
 	_compCollection->RegisterComponentFactory<TerrainCollider>();
 	_compCollection->RegisterComponentFactory<CameraComponent>();
+	_compCollection->RegisterComponentFactory<ShadowCaster>();
 
 	/// renderer
 	_compCollection->RegisterComponentFactory<MeshRenderer>();

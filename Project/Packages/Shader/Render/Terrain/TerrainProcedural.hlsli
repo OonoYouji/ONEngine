@@ -1,3 +1,14 @@
+struct InstanceData {
+	float4x4 matWorld;
+	float4 minBounds;
+	float4 maxBounds;
+};
+
+struct RenderingInstance {
+	uint id;
+};
+
+
 struct VSInput {
 	float4 position : POSITION0;
 	float2 uv : TEXCOORD0;

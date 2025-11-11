@@ -71,18 +71,28 @@ void ComputePipeline::AddDescriptorTable(D3D12_SHADER_VISIBILITY _shaderVisibili
 	rootParameters_.push_back(parameter);
 }
 
-void ComputePipeline::AddStaticSampler(D3D12_SHADER_VISIBILITY _shaderVisibility, uint32_t _shaderRegister) {
+void ComputePipeline::AddStaticSampler(D3D12_SHADER_VISIBILITY _shaderVisibility, uint32_t _shaderRegister, bool _isComparisonSampler) {
 	/// ----- static samplerの追加 ----- ///
 
 	D3D12_STATIC_SAMPLER_DESC sampler{};
-	sampler.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR; /// バイリニアフィルタ
 	sampler.AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP; /// 0~1の範囲外をリピート
 	sampler.AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
 	sampler.AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-	sampler.ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;     /// 比較しない
 	sampler.MaxLOD = D3D12_FLOAT32_MAX;               /// ありったけのMipMapを使う
 	sampler.ShaderRegister = _shaderRegister;                 /// 使用するRegister番号
 	sampler.ShaderVisibility = _shaderVisibility;
+
+	if (_isComparisonSampler) {
+		// 比較サンプラー（シャドウマップ用）
+		sampler.Filter = D3D12_FILTER_COMPARISON_MIN_MAG_LINEAR_MIP_POINT;
+		sampler.ComparisonFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
+		sampler.AddressU = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
+		sampler.AddressV = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
+	} else {
+		// 通常のサンプラー
+		sampler.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
+		sampler.ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
+	}
 
 	staticSamplers_.push_back(sampler);
 }

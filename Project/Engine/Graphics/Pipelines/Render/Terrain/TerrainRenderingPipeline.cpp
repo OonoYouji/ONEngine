@@ -117,24 +117,11 @@ void TerrainRenderingPipeline::Draw(class ECSGroup* _ecs, CameraComponent* _came
 		return;
 	}
 
-	/// value setting
+	/// bufferの値を更新
 	const Matrix4x4& matWorld = pTerrain_->GetOwner()->GetTransform()->GetMatWorld();
 	transformBuffer_.SetMappedData(matWorld);
 
-	GameEntity* entity = pTerrain_->GetOwner();
-	/// bufferの値を更新
-	transformBuffer_.SetMappedData(matWorld);
-	materialBuffer_.SetMappedData(
-		0,
-		GPUMaterial{
-			.uvTransform = UVTransform{ Vector2(0, 0), Vector2(100, 100), 0.0f },
-			.baseColor = Vector4(1, 2, 3, 4),
-			.postEffectFlags = 1,
-			.entityId = entity->GetId(),
-			.baseTextureId = 0,
-			.normalTextureId = 0,
-		}
-		);
+	materialBuffer_.SetMappedData(0, pTerrain_->GetMaterialData());
 
 
 	/// 描画する

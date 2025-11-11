@@ -1,7 +1,53 @@
 #include "BoxCollider.h"
 
+#include <magic_enum/magic_enum.hpp>
+
 /// externals
 #include <imgui.h>
+
+/// engine
+#include "Engine/Editor/Commands/ImGuiCommand/ImGuiCommand.h"
+
+
+void COMP_DEBUG::BoxColliderDebug(BoxCollider* _bc) {
+	if (!_bc) {
+		return;
+	}
+
+	/// 共通パラメータ
+	ImGui::SeparatorText("common parameter");
+	int currentIndex = static_cast<int>(_bc->collisionState_);
+
+	auto names = magic_enum::enum_names<CollisionState>();
+	std::vector<const char*> items;
+	for (auto& n : names) items.push_back(n.data());
+
+	if (ImGui::Combo("CollisionState", &currentIndex, items.data(), (int)items.size())) {
+		_bc->collisionState_ = static_cast<CollisionState>(currentIndex);
+	}
+
+
+	/// box parameter
+	ImGui::SeparatorText("box parameter");
+	ImMathf::DragFloat3("size", &_bc->size_, 0.1f, 0.0f, 100.0f);
+
+}
+
+void from_json(const nlohmann::json& _j, BoxCollider& _b) {
+	_b.enable = _j.value("enable", 1);
+	_b.size_ = _j.value("size", Vector3::kOne);
+	_b.collisionState_ = magic_enum::enum_cast<CollisionState>(_j.value("state", "Dynamic")).value_or(CollisionState::Dynamic);
+}
+
+void to_json(nlohmann::json& _j, const BoxCollider& _b) {
+	_j = nlohmann::json{
+		{ "type", "BoxCollider" },
+		{ "enable", _b.enable },
+		{ "size", _b.size_ },
+		{ "state", magic_enum::enum_name(_b.collisionState_) }
+	};
+}
+
 
 BoxCollider::BoxCollider() {
 	// デフォルトの値をセット
@@ -16,14 +62,4 @@ const Vector3& BoxCollider::GetSize() const {
 	return size_;
 }
 
-void COMP_DEBUG::BoxColliderDebug(BoxCollider* _bc) {
-	if (!_bc) {
-		return;
-	}
-	/// サイズの取得
-	Vector3 size = _bc->GetSize();
-	/// サイズの編集
-	if (ImGui::DragFloat3("Box Collider Size", &size.x, 0.1f, 0.0f, FLT_MAX)) {
-		_bc->SetSize(size);
-	}
-}
+

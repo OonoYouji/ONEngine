@@ -89,7 +89,10 @@ bool CollisionCheck::RayVsCube(const Vector3& _rayStartPosition, const Vector3& 
 	return false;
 }
 
-bool CollisionCheck::CubeVsCube(const Vector3& _cube1Position, const Vector3& _cube1Size, const Vector3& _cube2Position, const Vector3& _cube2Size) {
+bool CollisionCheck::CubeVsCube(
+	const Vector3& _cube1Position, const Vector3& _cube1Size, const Vector3& _cube2Position, const Vector3& _cube2Size,
+	Vector3* _outNormal, float* _outPenetration) {
+
 	Vector3&& aMin = (_cube1Position - _cube1Size / 2.0f);
 	Vector3&& aMax = (_cube1Position + _cube1Size / 2.0f);
 	Vector3&& bMin = (_cube2Position - _cube2Size / 2.0f);
@@ -98,21 +101,64 @@ bool CollisionCheck::CubeVsCube(const Vector3& _cube1Position, const Vector3& _c
 	if (!(aMin.x <= bMax.x && aMax.x >= bMin.x)) { return false; }
 	if (!(aMin.y <= bMax.y && aMax.y >= bMin.y)) { return false; }
 	if (!(aMin.z <= bMax.z && aMax.z >= bMin.z)) { return false; }
+
+
+	/// 各軸ごとのめりこみ量を計算
+	float overlapX = std::min(aMax.x - bMin.x, bMax.x - aMin.x);
+	float overlapY = std::min(aMax.y - bMin.y, bMax.y - aMin.y);
+	float overlapZ = std::min(aMax.z - bMin.z, bMax.z - aMin.z);
+	float penetration = overlapX;
+	Vector3 normal;
+
+	Vector3 delta = _cube2Position - _cube1Position;
+
+	/// どの軸が最も浅いめりこみかを調べる かつ 法線を設定
+	if (overlapY < penetration) {
+		penetration = overlapY;
+		normal = (delta.y > 0.0f) ? Vector3::kUp : Vector3::kDown;
+	} else {
+		normal = (delta.x > 0.0f) ? Vector3::kRight : Vector3::kLeft;
+	}
+
+	if (overlapZ < penetration) {
+		penetration = overlapZ;
+		normal = (delta.z > 0.0f) ? Vector3::kFront : Vector3::kBack;
+	}
+
+	if (_outNormal) {
+		*_outNormal = normal;
+	}
+	if (_outPenetration) {
+		*_outPenetration = penetration;
+	}
+
 	return true;
 }
 
-bool CollisionCheck::CubeVsSphere(const Vector3& _cubePosition, const Vector3& _cubeSize, const Vector3& _sphereCenter, float _sphereRadius) {
+bool CollisionCheck::CubeVsSphere(
+	const Vector3& _cubePosition, const Vector3& _cubeSize, const Vector3& _sphereCenter, float _sphereRadius,
+	Vector3* _outClosestPoint, float* _outDistance) {
 
 	Vector3&& cubeMin = _cubePosition - _cubeSize / 2.0f;
 	Vector3&& cubeMax = _cubePosition + _cubeSize / 2.0f;
 
-	Vector3&& colsestPoint = {
+	Vector3&& closestPoint = {
 		std::clamp(_sphereCenter.x, cubeMin.x, cubeMax.x),
 		std::clamp(_sphereCenter.y, cubeMin.y, cubeMax.y),
 		std::clamp(_sphereCenter.z, cubeMin.z, cubeMax.z)
 	};
 
-	float distance = Vector3::Length(_sphereCenter - colsestPoint);
+	float distance = Vector3::Length(_sphereCenter - closestPoint);
+
+	/// 出力パラメータの設定
+	if (_outClosestPoint) {
+		*_outClosestPoint = closestPoint;
+	}
+	if (_outDistance) {
+		*_outDistance = distance;
+	}
+
+
 	if (distance <= _sphereRadius) {
 		return true;
 	}
@@ -127,7 +173,7 @@ bool CollisionCheck::CubeVsCapsule(const Vector3& _cubePosition, const Vector3& 
 		_cubePosition - _cubeSize / 2.0f, _cubePosition + _cubeSize / 2.0f,
 		capsulePoint, boxPoint
 	);
-	
+
 	float distance = Vector3::Length(capsulePoint - boxPoint);
 
 	return distance < _capsuleRadius;

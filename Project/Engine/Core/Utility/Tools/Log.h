@@ -44,13 +44,6 @@ public:
 	static void LogError(const std::string& _message);
 	static void LogWarning(const std::string& _message);
 
-
-	/// @brief 最新のログを返す
-	static const std::string& GetCurrentLog();
-
-	/// @brief すべてのログを返す
-	static const std::string& GetAllLogs();
-
 	/// @brief ログのvectorを返す
 	static const std::vector<std::string>& GetLogVector();
 };

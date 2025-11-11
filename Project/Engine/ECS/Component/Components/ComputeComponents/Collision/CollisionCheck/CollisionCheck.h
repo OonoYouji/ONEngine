@@ -62,7 +62,9 @@ namespace CollisionCheck {
 	/// @return true: 衝突している false: 衝突していない
 	bool CubeVsCube(
 		const Vector3& _cube1Position, const Vector3& _cube1Size,
-		const Vector3& _cube2Position, const Vector3& _cube2Size
+		const Vector3& _cube2Position, const Vector3& _cube2Size,
+		Vector3* _outNormal = nullptr,
+		float* _outPenetration = nullptr
 	);
 
 	/// @brief AABBと球の当たり判定を取る
@@ -70,10 +72,14 @@ namespace CollisionCheck {
 	/// @param _cubeSize AABBのサイズ
 	/// @param _sphereCenter Sphereの中心点
 	/// @param _sphereRadius Sphereの半径
+	/// @param _outClosestPoint AABB上の最も近い点の出力先ポインタ
+	/// @param _outDistanceSq 球の中心とAABB上の最も近い点の距離の出力先ポインタ
 	/// @return true: 衝突している false: 衝突していない
 	bool CubeVsSphere(
 		const Vector3& _cubePosition, const Vector3& _cubeSize,
-		const Vector3& _sphereCenter, float _sphereRadius
+		const Vector3& _sphereCenter, float _sphereRadius,
+		Vector3* _outClosestPoint = nullptr,
+		float* _outDistance = nullptr
 	);
 
 	/// @brief AABBとカプセルの当たり判定を取る

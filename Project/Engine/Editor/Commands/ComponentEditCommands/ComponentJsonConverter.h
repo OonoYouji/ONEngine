@@ -9,8 +9,6 @@
 #include "Engine/ECS/Component/Components/ComputeComponents/Light/Light.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Effect/Effect.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Variables/Variables.h"
-#include "Engine/ECS/Component/Components/ComputeComponents/Collision/BoxCollider.h"
-#include "Engine/ECS/Component/Components/ComputeComponents/Collision/SphereCollider.h"
 #include "Engine/ECS/Component/Components/RendererComponents/Mesh/CustomMeshRenderer.h"
 #include "Engine/ECS/Component/Components/RendererComponents/Primitive/Line2DRenderer.h"
 #include "Engine/ECS/Component/Components/RendererComponents/Primitive/Line3DRenderer.h"
@@ -83,10 +81,3 @@ void to_json(nlohmann::json& _j, const Line2DRenderer& _l);
 void from_json(const nlohmann::json& _j, Line3DRenderer& _l);
 void to_json(nlohmann::json& _j, const Line3DRenderer& _l);
 
-// SphereCollider
-void from_json(const nlohmann::json& _j, SphereCollider& _s);
-void to_json(nlohmann::json& _j, const SphereCollider& _s);
-
-// BoxCollider
-void from_json(const nlohmann::json& _j, BoxCollider& _b);
-void to_json(nlohmann::json& _j, const BoxCollider& _b);

@@ -220,6 +220,7 @@ CameraComponent::CameraComponent() {
 	SetIsMainCameraRequest(true);
 	SetCameraType(static_cast<int>(CameraType::Type3D));
 	isDrawFrustum_ = false;
+	orthographicSize_ = EngineConfig::kWindowSize;
 }
 CameraComponent::~CameraComponent() {}
 
@@ -243,8 +244,8 @@ void CameraComponent::UpdateViewProjection() {
 		/// 2Dカメラの場合
 
 		matProjection_ = CameraMath::MakeOrthographicMatrix(
-			-(EngineConfig::kWindowSize.x / 2.0f), (EngineConfig::kWindowSize.x / 2.0f),
-			-(EngineConfig::kWindowSize.y / 2.0f), (EngineConfig::kWindowSize.y / 2.0f),
+			-(orthographicSize_.x / 2.0f), (orthographicSize_.x / 2.0f),
+			-(orthographicSize_.y / 2.0f), (orthographicSize_.y / 2.0f),
 			nearClip_, farClip_
 		);
 
@@ -307,6 +308,10 @@ void CameraComponent::SetFarClip(float _farClip) {
 
 void CameraComponent::SetCameraType(int _cameraType) {
 	cameraType_ = _cameraType;
+}
+
+void CameraComponent::SetOrthographicSize(const Vector2& _size) {
+	orthographicSize_ = _size;
 }
 
 bool CameraComponent::GetIsMainCameraRequest() const {

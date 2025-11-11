@@ -8,12 +8,13 @@
 RenderTexture::RenderTexture() = default;
 RenderTexture::~RenderTexture() = default;
 
-void RenderTexture::Initialize(DXGI_FORMAT _format, const Vector4& _clearColor, const std::string& _name, DxManager* _dxm, AssetCollection* _assetCollection) {
+void RenderTexture::Initialize(DXGI_FORMAT _format, const Vector4& _clearColor, const Vector2& _textureSize, const std::string& _name, DxManager* _dxm, DxDepthStencil* _dxDepthStencil, AssetCollection* _assetCollection) {
 	clearColor_ = _clearColor;
 	name_ = _name;
+	pDxDepthStencil_ = _dxDepthStencil;
 
 	{	/// textureの作成
-		Texture rtvTexture;
+		Texture rtvTexture(_textureSize);
 		_assetCollection->AddAsset<Texture>(_name, std::move(rtvTexture)); /// textureの管理を AssetCollection に任せる
 		texture_ = _assetCollection->GetTexture(_name);
 	}
@@ -26,7 +27,7 @@ void RenderTexture::Initialize(DXGI_FORMAT _format, const Vector4& _clearColor, 
 
 	/// render texture resourceの作成
 	renderTextureResource.CreateRenderTextureResource(
-		dxDevice, EngineConfig::kWindowSize, _format, _clearColor
+		dxDevice, _textureSize, _format, _clearColor
 	);
 
 	uint32_t rtvHeapIndex = dxRTVHeap->Allocate();
@@ -62,7 +63,8 @@ void RenderTexture::Initialize(DXGI_FORMAT _format, const Vector4& _clearColor, 
 
 void RenderTexture::SetRenderTarget(DxCommand* _dxCommand, DxDSVHeap* _dxDSVHeap) {
 	auto command = _dxCommand->GetCommandList();
-	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = _dxDSVHeap->GetCPUDescriptorHandel(0);
+	uint32_t dsvIndex = pDxDepthStencil_->GetDepthDsvHandle();
+	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = _dxDSVHeap->GetCPUDescriptorHandel(dsvIndex);
 
 	command->OMSetRenderTargets(1, &rtvHandle_.cpuHandle, FALSE, &dsvHandle);
 	command->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
@@ -71,7 +73,8 @@ void RenderTexture::SetRenderTarget(DxCommand* _dxCommand, DxDSVHeap* _dxDSVHeap
 
 void RenderTexture::SetRenderTarget(DxCommand* _dxCommand, DxDSVHeap* _dxDSVHeap, const std::vector<std::unique_ptr<class RenderTexture>>& _others) {
 	auto command = _dxCommand->GetCommandList();
-	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = _dxDSVHeap->GetCPUDescriptorHandel(0);
+	uint32_t dsvIndex = pDxDepthStencil_->GetDepthDsvHandle();
+	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = _dxDSVHeap->GetCPUDescriptorHandel(dsvIndex);
 
 	std::vector<D3D12_CPU_DESCRIPTOR_HANDLE> rtvHandles;
 	for (auto& rt : _others) {

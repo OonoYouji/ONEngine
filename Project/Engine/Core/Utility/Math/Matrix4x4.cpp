@@ -187,6 +187,24 @@ Matrix4x4 Matrix4x4::MakeInverse(const Matrix4x4& _matrix) {
 	return Convert(inverseMatrix);
 }
 
+Matrix4x4 Matrix4x4::MakeLookAtLH(const Vector3& _eye, const Vector3& _target, const Vector3& _up) {
+	Matrix4x4 result{};
+
+	Vector3 zaxis = Vector3::Normalize(_target - _eye);
+	Vector3 xaxis = Vector3::Normalize(Vector3::Cross(_up, zaxis));
+	Vector3 yaxis = Vector3::Cross(zaxis, xaxis);
+	result.m[0][0] = xaxis.x; result.m[1][0] = xaxis.y; result.m[2][0] = xaxis.z;
+	result.m[0][1] = yaxis.x; result.m[1][1] = yaxis.y; result.m[2][1] = yaxis.z;
+	result.m[0][2] = zaxis.x; result.m[1][2] = zaxis.y; result.m[2][2] = zaxis.z;
+	
+	result.m[3][0] = -Vector3::Dot(xaxis, _eye);
+	result.m[3][1] = -Vector3::Dot(yaxis, _eye);
+	result.m[3][2] = -Vector3::Dot(zaxis, _eye);
+	result.m[3][3] = 1.0f;
+
+	return result;
+}
+
 Vector3 Matrix4x4::Transform(const Vector3& _v, const Matrix4x4& _m) {
 	Vector3 result{};
 

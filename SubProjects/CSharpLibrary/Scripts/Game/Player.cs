@@ -11,9 +11,15 @@ public class Player : MonoBehavior {
 	float height = 0.0f;
 	float jumpPower = 5.0f;
 
+	/// ---------------------------------------------------
+	/// プレイヤーの移動の変数
+	/// ---------------------------------------------------
 	bool isDushing = false; // ダッシュ中かどうか
 	[SerializeField] float moveSpeed = 16f; // 移動速度
 	[SerializeField] float dushSpeed = 32f; // ダッシュ速度
+	float lastRotationY_ = 0.0f;
+	bool prevIsOperating_ = false;
+	bool isOperating_ = false;
 
 
 	/// ---------------------------------------------------
@@ -72,6 +78,7 @@ public class Player : MonoBehavior {
 		}
 
 
+
 		/// 移動速度
 		float speed = isDushing ? dushSpeed : moveSpeed;
 
@@ -79,7 +86,6 @@ public class Player : MonoBehavior {
 
 		/// カメラの回転に合わせて移動する
 		if (camera != null) {
-
 			Transform cT = camera.transform;
 			if (cT != null) {
 				/// velocityをカメラの向きに合わせる
@@ -104,7 +110,6 @@ public class Player : MonoBehavior {
 		Vector3 position = t.position;
 		position.y = height;
 		t.position = position;
-
 	}
 
 
@@ -117,7 +122,6 @@ public class Player : MonoBehavior {
 		Vector2 gamepadAxis = Input.GamepadThumb(GamepadAxis.RightThumb);
 		/// 軸反転を行うことでカメラの上下の回転を自分の好みに合わせる
 		gamepadAxis.y *= -1f;
-
 
 		/// 回転角 θ φ
 		sphericalCoord.x -= gamepadAxis.y * 0.75f * Time.deltaTime; // X軸の回転
@@ -150,14 +154,6 @@ public class Player : MonoBehavior {
 
 	public override void OnCollisionEnter(Entity collision) {
 
-		MeshRenderer mr = entity.GetComponent<MeshRenderer>();
-		if (mr == null) {
-			Debug.Log("Collision with non-mesh object: " + collision.name);
-			return; // メッシュレンダラーがない場合は何もしない
-		}
-
-		mr.color = new Vector4(0f, 0f, 0f, 1f); // 衝突したオブジェクトの色を赤に変更
-
 	}
 
 
@@ -173,10 +169,30 @@ public class Player : MonoBehavior {
 
 	/// 進行方向に回転する
 	private void RotateFromMoveDirection(Vector3 _dir) {
+		/// _dirを参照して入力をしているのかどうかを確認する
+		prevIsOperating_ = isOperating_;
+		if (_dir.Length() > 0.1f) {
+			isOperating_ = true;
+		} else {
+			isOperating_ = false;
+		}
+
+		/// 移動していないのであれば最後の回転を維持する
 		float rotateY = Mathf.Atan2(_dir.z, _dir.x);
+		if (!isOperating_) {
+			rotateY = lastRotationY_;
+		}
+
 		Vector3 euler = Vector3.zero;
 		euler.y = -rotateY + Mathf.PI / 2.0f; // Z軸が前方向なので90度ずらす
 		transform.rotate = Quaternion.FromEuler(euler);
+
+
+		/// 入力をやめたときに最後の回転量を保存しておく
+		if (prevIsOperating_ && !isOperating_) {
+			lastRotationY_ = euler.y;
+		}
+
 	}
 
 }

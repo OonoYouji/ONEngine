@@ -71,6 +71,12 @@ void ImGuiSceneWindow::ShowImGui() {
 		DebugConfig::isDebugging = false;
 	}
 
+	ImGui::SameLine();
+
+	/// DebugConfig::
+	if (ImGui::Checkbox("show debug scene", &DebugConfig::isShowDebugScene)) {
+		Console::Log("ImGuiSceneWindow::ShowImGui -> clicked show debug scene");
+	}
 
 	/// ----------------------------------------
 	/// ImGuiInfoをTextに表示

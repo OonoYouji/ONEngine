@@ -84,32 +84,51 @@ Matrix4x4 Quaternion::MakeRotateAxisAngle(const Vector3& _axis, float _theta) {
 }
 
 Quaternion Quaternion::LookAt(const Vector3& _position, const Vector3& _target, const Vector3& _up) {
-	XMFLOAT3 xmPosition, xmTarget, xmUp;
-	xmPosition = { _position.x, _position.y, _position.z };
-	xmTarget = { _target.x, _target.y, _target.z };
-	xmUp = { _up.x, _up.y, _up.z };
+	XMFLOAT3 xmPosition = { _position.x, _position.y, _position.z };
+	XMFLOAT3 xmTarget = { _target.x, _target.y, _target.z };
+	XMFLOAT3 xmUp = { _up.x, _up.y, _up.z };
 
-	// カメラの現在位置とターゲット方向ベクトルを定義
-	XMVECTOR posVec = XMLoadFloat3(&xmPosition);  // カメラの位置
-	XMVECTOR targetVec = XMLoadFloat3(&xmTarget); // カメラが向くターゲット位置
-	XMVECTOR upVec = XMLoadFloat3(&xmUp);         // 上方向ベクトル
+	XMVECTOR posVec = XMLoadFloat3(&xmPosition);
+	XMVECTOR targetVec = XMLoadFloat3(&xmTarget);
+	XMVECTOR upVec = XMLoadFloat3(&xmUp);
 
-	// 視線方向ベクトルを計算
+	// 視線方向（forward）を計算
 	XMVECTOR lookAtVec = XMVectorSubtract(targetVec, posVec);
-	lookAtVec = XMVector3Normalize(lookAtVec); // 正規化
+	lookAtVec = XMVector3Normalize(lookAtVec);
 
-	// ビュー行列を作成
+	// forward と up がほぼ平行な場合は up を差し替える（真上 or 真下対策）
+	float dot = XMVectorGetX(XMVector3Dot(lookAtVec, upVec));
+	if (fabsf(dot) > 0.999f) {
+		// Y軸とほぼ同一方向なのでZ軸をUpに使用
+		upVec = XMVectorSet(0, 0, 1, 0);
+	}
+
+	// View 行列を作成（左手系）
 	XMMATRIX viewMatrix = XMMatrixLookToLH(posVec, lookAtVec, upVec);
 
-	// ビュー行列をクォータニオンに変換
-	XMVECTOR quaternion = XMQuaternionRotationMatrix(viewMatrix);
+	// View は World の逆行列なので逆行列を取る（これがカメラのワールド行列になる）
+	XMMATRIX worldMatrix = XMMatrixInverse(nullptr, viewMatrix);
 
-	// クォータニオン（XMFLOAT4）を返す
+	// worldMatrix から回転成分を取り出す
+	XMVECTOR scalePart;
+	XMVECTOR rotQuat;
+	XMVECTOR transPart;
+	bool decomposed = XMMatrixDecompose(&scalePart, &rotQuat, &transPart, worldMatrix);
+
+	XMVECTOR finalQuat;
+	if (decomposed) {
+		finalQuat = rotQuat;
+	} else {
+		finalQuat = XMQuaternionRotationMatrix(worldMatrix);
+	}
+
 	XMFLOAT4 result;
-	XMStoreFloat4(&result, quaternion);
+	XMStoreFloat4(&result, finalQuat);
 
 	return { result.x, result.y, result.z, result.w };
 }
+
+
 
 Quaternion Quaternion::LookAt(const Vector3& _position, const Vector3& _target) {
 	XMFLOAT3 xmPosition, xmTarget;

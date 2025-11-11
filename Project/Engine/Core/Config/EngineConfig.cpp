@@ -3,6 +3,8 @@
 namespace DebugConfig {
 	/// @brief デバッグ中かどうか
 	bool isDebugging = false;
+	bool isShowDebugScene = true;
+	bool isShowGameScene = true;
 
 	int selectedMode_ = 0; ///< 選択中のデバッグウィンドウ
 

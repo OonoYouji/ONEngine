@@ -79,7 +79,7 @@ void InternalGetPosition(uint64_t _nativeHandle, float* _x, float* _y, float* _z
 	}
 
 	const Matrix4x4& matWorld = transform->GetMatWorld();
-	const Vector3& position = Matrix4x4::Transform(Vector3::kZero, matWorld);
+	const Vector3& position = { matWorld.m[3][0], matWorld.m[3][1], matWorld.m[3][2] };
 
 	if (_x) { *_x = position.x; }
 	if (_y) { *_y = position.y; }
@@ -108,7 +108,7 @@ void InternalGetRotate(uint64_t _nativeHandle, float* _x, float* _y, float* _z, 
 	if (_x) { *_x = transform->rotate.x; }
 	if (_y) { *_y = transform->rotate.y; }
 	if (_z) { *_z = transform->rotate.z; }
-	if (_w) { *_w = transform->rotate.w; } 
+	if (_w) { *_w = transform->rotate.w; }
 }
 
 void InternalGetScale(uint64_t _nativeHandle, float* _x, float* _y, float* _z) {
@@ -187,6 +187,15 @@ void COMP_DEBUG::TransformDebug(Transform* _transform) {
 	isEdit |= ImMathf::DragFloat3("position", &_transform->position, 0.1f);
 	isEdit |= ImMathf::DragQuaternion("rotate", &_transform->rotate, Mathf::PI / 12.0f);
 	isEdit |= ImMathf::DragFloat3("scale", &_transform->scale, 0.1f);
+
+
+	/// matrixCalcFlags 編集
+	int matrixCalcFlags = _transform->matrixCalcFlags;
+	isEdit |= ImGui::CheckboxFlags("matrixCalcFlags: position", &matrixCalcFlags, Transform::kPosition);
+	isEdit |= ImGui::CheckboxFlags("matrixCalcFlags: rotate", &matrixCalcFlags, Transform::kRotate);
+	isEdit |= ImGui::CheckboxFlags("matrixCalcFlags: scale", &matrixCalcFlags, Transform::kScale);
+
+	_transform->matrixCalcFlags = matrixCalcFlags;
 
 	if (isEdit) {
 		_transform->Update();

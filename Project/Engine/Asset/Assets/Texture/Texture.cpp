@@ -20,6 +20,10 @@
 
 Texture::Texture() = default;
 
+Texture::Texture(const Vector2& _textureSize)
+	: textureSize_(_textureSize) {
+}
+
 void Texture::CreateEmptySRVHandle() {
 	srvHandle_.emplace(Handle());
 }

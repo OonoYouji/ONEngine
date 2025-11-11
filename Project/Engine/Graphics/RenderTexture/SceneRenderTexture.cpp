@@ -1,6 +1,7 @@
 #include "SceneRenderTexture.h"
 
 /// engine
+#include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Graphics/Shader/GraphicsPipeline.h"
 
 SceneRenderTexture::SceneRenderTexture() {
@@ -9,13 +10,16 @@ SceneRenderTexture::SceneRenderTexture() {
 }
 
 
-void SceneRenderTexture::Initialize(
-	const std::string& _name, const Vector4& _clearColor,
+void SceneRenderTexture::Initialize( 
+	const std::string& _name, const Vector4& _clearColor, const Vector2& _textureSize,
 	DxManager* _dxm, AssetCollection* _assetCollection) {
 
 	/// パラメータの設定
 	name_ = _name;
 	clearColor_ = _clearColor;
+
+	/// 新規のDepthStencilを作成
+	pDxDepthStencil_ = _dxm->AddDepthStencil(_name);
 
 
 	/// texture init
@@ -26,10 +30,10 @@ void SceneRenderTexture::Initialize(
 			renderTexture = std::make_unique<RenderTexture>();
 		}
 
-		renderTextures_[0]->Initialize(static_cast<DXGI_FORMAT>(RTVFormat::Color),         clearColor_, name_ + "Scene",         _dxm, _assetCollection);
-		renderTextures_[1]->Initialize(static_cast<DXGI_FORMAT>(RTVFormat::WorldPosition), clearColor_, name_ + "WorldPosition", _dxm, _assetCollection);
-		renderTextures_[2]->Initialize(static_cast<DXGI_FORMAT>(RTVFormat::Normal),        clearColor_, name_ + "Normal",        _dxm, _assetCollection);
-		renderTextures_[3]->Initialize(static_cast<DXGI_FORMAT>(RTVFormat::Flags),         {},          name_ + "Flags",         _dxm, _assetCollection);
+		renderTextures_[0]->Initialize(static_cast<DXGI_FORMAT>(RTVFormat::Color),         clearColor_, _textureSize, name_ + "Scene",         _dxm, pDxDepthStencil_, _assetCollection);
+		renderTextures_[1]->Initialize(static_cast<DXGI_FORMAT>(RTVFormat::WorldPosition), clearColor_, _textureSize, name_ + "WorldPosition", _dxm, pDxDepthStencil_, _assetCollection);
+		renderTextures_[2]->Initialize(static_cast<DXGI_FORMAT>(RTVFormat::Normal),        clearColor_, _textureSize, name_ + "Normal",        _dxm, pDxDepthStencil_, _assetCollection);
+		renderTextures_[3]->Initialize(static_cast<DXGI_FORMAT>(RTVFormat::Flags),         {},          _textureSize, name_ + "Flags",         _dxm, pDxDepthStencil_, _assetCollection);
 	}
 
 }

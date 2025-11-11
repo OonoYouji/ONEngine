@@ -35,6 +35,7 @@ static const int PostEffectFlags_None                  = 0;
 static const int PostEffectFlags_Lighting              = 1 << 0;
 static const int PostEffectFlags_Grayscale             = 1 << 1;
 static const int PostEffectFlags_EnvironmentReflection = 1 << 2;
+static const int PostEffectFlags_Shadow                = 1 << 3;
 
 
 bool IsPostEffectEnabled(int flags, int effect) {

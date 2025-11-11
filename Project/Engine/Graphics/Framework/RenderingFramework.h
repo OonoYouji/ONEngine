@@ -24,6 +24,7 @@ class RenderingFramework final {
 		RENDER_TEXTURE_SCENE,  ///< シーンの描画用
 		RENDER_TEXTURE_DEBUG,  ///< デバッグ用
 		RENDER_TEXTURE_PREFAB, ///< Prefabの描画用
+		RENDER_TEXTURE_SHADOW_MAP, ///< 影の描画用
 		RENDER_TEXTURE_COUNT,  ///< レンダーテクスチャの数
 	};
 
@@ -42,12 +43,13 @@ public:
 	void Draw();
 
 	/// @brief 描画前処理
-	void PreDraw();
+	void PreDraw(ECSGroup* _ecsGroup);
 
 	/// @brief 各シーンの描画
 	void DrawScene();
 	void DrawDebug();
 	void DrawPrefab();
+	void DrawShadowMap();
 
 
 	/// @brief コマンドのリセット

@@ -17,6 +17,7 @@
 #include "../System/Terrain/TerrainColliderVertexGenerator.h"
 #include "../System/Terrain/TerrainCollision.h"
 #include "../System/Transform/TransformUpdateSystem.h"
+#include "../System/ShadowCaster/ShadowCasterUpdateSystem.h"
 #include "../System/GrassBufferCreateSystem/GrassBufferCreateSystem.h"
 
 void GameECSGroupAddSystemFunction(ECSGroup* _ecs, DxManager* _dxm, AssetCollection* _assetCollection) {
@@ -42,6 +43,7 @@ void GameECSGroupAddSystemFunction(ECSGroup* _ecs, DxManager* _dxm, AssetCollect
 	/// 描画に使うsystem
 	_ecs->AddSystem<MeshBufferRecreate>(_dxm->GetDxDevice());
 	_ecs->AddSystem<ColliderRenderQueueSystem>();
+	_ecs->AddSystem<ShadowCasterUpdateSystem>();
 }
 
 void DebugECSGroupAddSystemFunction(ECSGroup* _ecs, DxManager* _dxm, AssetCollection* _assetCollection) {
@@ -57,6 +59,7 @@ void DebugECSGroupAddSystemFunction(ECSGroup* _ecs, DxManager* _dxm, AssetCollec
 	_ecs->AddSystem<AudioPlaybackSystem>(_assetCollection);
 	_ecs->AddSystem<EffectUpdateSystem>();
 	_ecs->AddSystem<SpriteUpdateSystem>();
+	_ecs->AddSystem<ShadowCasterUpdateSystem>();
 	_ecs->AddSystem<TransformUpdateSystem>();
 
 	/// 衝突判定に使うsystem

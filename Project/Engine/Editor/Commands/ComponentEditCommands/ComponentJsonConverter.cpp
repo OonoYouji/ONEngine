@@ -10,9 +10,13 @@
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Grass/GrassField.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/TerrainCollider.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Collision/SphereCollider.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Collision/BoxCollider.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Script/Script.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Audio/AudioSource.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Variables/Variables.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/ShadowCaster/ShadowCaster.h"
+
 /// engine/renderer
 #include "Engine/ECS/Component/Components/RendererComponents/Skybox/Skybox.h"
 #include "Engine/ECS/Component/Components/RendererComponents/Sprite/SpriteRenderer.h"
@@ -42,6 +46,7 @@ namespace {
 			Register<GrassField>();
 			Register<TerrainCollider>();
 			Register<CameraComponent>();
+			Register<ShadowCaster>();
 
 			/// renderer
 			Register<SpriteRenderer>();
@@ -336,31 +341,7 @@ void to_json(nlohmann::json& _j, const Line3DRenderer& _l) {
 
 
 
-void from_json(const nlohmann::json& _j, SphereCollider& _s) {
-	_s.enable = _j.at("enable").get<int>();
-	_s.SetRadius(_j.at("radius").get<float>());
-}
 
-void to_json(nlohmann::json& _j, const SphereCollider& _s) {
-	_j = nlohmann::json{
-		{ "type", "SphereCollider" },
-		{ "enable", _s.enable },
-		{ "radius", _s.GetRadius() }
-	};
-}
-
-void from_json(const nlohmann::json& _j, BoxCollider& _b) {
-	_b.enable = _j.at("enable").get<int>();
-	_b.SetSize(_j.at("size").get<Vector3>());
-}
-
-void to_json(nlohmann::json& _j, const BoxCollider& _b) {
-	_j = nlohmann::json{
-		{ "type", "BoxCollider" },
-		{ "enable", _b.enable },
-		{ "size", _b.GetSize() }
-	};
-}
 
 
 

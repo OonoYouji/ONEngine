@@ -21,8 +21,10 @@ PSOutput PSMain(VertexOut input) {
 	
 	float4 texColor = textures[material.intValues.z].Sample(texSampler, input.uv);
 	
+	float3 wPosition = input.wPosition.xyz / input.wPosition.w;
+	
 	output.color = texColor * material.baseColor;
-	output.wPosition = input.position; // ワールド位置を出力
+	output.wPosition = float4(wPosition, 1); // ワールド位置を出力
 	output.normal = float4(normalize(input.normal), 1); // 法線を出力
 	output.flags = float4(material.intValues.x, material.intValues.y, 0, 1); // 草フラグを立てる
 
