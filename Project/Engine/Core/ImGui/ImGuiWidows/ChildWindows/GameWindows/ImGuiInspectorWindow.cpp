@@ -28,6 +28,7 @@
 #include "Engine/ECS/Component/Components/ComputeComponents/Collision/SphereCollider.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Script/Script.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/ShadowCaster/ShadowCaster.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/VoxelTerrain/VoxelTerrain.h"
 /// renderer
 #include "Engine/ECS/Component/Components/RendererComponents/Skybox/Skybox.h"
 #include "Engine/ECS/Component/Components/RendererComponents/Mesh/MeshRenderer.h"
@@ -59,6 +60,7 @@ ImGuiInspectorWindow::ImGuiInspectorWindow(const std::string& _windowName, Entit
 	RegisterComponent<GrassField>([&](IComponent* _comp) { COMP_DEBUG::GrassFieldDebug(static_cast<GrassField*>(_comp), pAssetCollection_); });
 	RegisterComponent<CameraComponent>([&](IComponent* _comp) { COMP_DEBUG::CameraDebug(static_cast<CameraComponent*>(_comp)); });
 	RegisterComponent<ShadowCaster>([&](IComponent* _comp) { COMP_DEBUG::ShadowCasterDebug(static_cast<ShadowCaster*>(_comp)); });
+	RegisterComponent<VoxelTerrain>([&](IComponent* _comp) { COMP_DEBUG::VoxelTerrainDebug(static_cast<VoxelTerrain*>(_comp)); });
 
 	/// renderer
 	RegisterComponent<MeshRenderer>([&](IComponent* _comp) { COMP_DEBUG::MeshRendererDebug(static_cast<MeshRenderer*>(_comp), pAssetCollection_); });

@@ -31,4 +31,7 @@ struct Vector2Int final {
 	static Vector2Int kLeft; ///< (-1, 0)
 	static Vector2Int kRight;///< (1, 0)
 
+
+	Vector2Int& operator= (const Vector2Int& _other);
+
 };

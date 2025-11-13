@@ -97,6 +97,11 @@ public:
 
 
 	/// 各種Resourceの取得
+	const DxResource& GetResource() const;
+	const DxResource& GetCounterResource() const;
+	const DxResource& GetCounterResetResource() const;
+	const DxResource& GetReadbackResource() const;
+
 	DxResource& GetResource();
 	DxResource& GetCounterResource();
 	DxResource& GetCounterResetResource();
@@ -468,6 +473,28 @@ template<typename T>
 inline const T& StructuredBuffer<T>::GetMappedData(size_t _index) const {
 	return mappedDataArray_[_index];
 }
+
+template<typename T>
+inline const DxResource& StructuredBuffer<T>::GetResource() const {
+	return bufferResource_;
+}
+
+template<typename T>
+inline const DxResource& StructuredBuffer<T>::GetCounterResource() const {
+	return counterResource_;
+}
+
+template<typename T>
+inline const DxResource& StructuredBuffer<T>::GetCounterResetResource() const {
+	return counterResetResource_;
+}
+
+template<typename T>
+inline const DxResource& StructuredBuffer<T>::GetReadbackResource() const {
+	return readbackResource_;
+}
+
+
 
 template<typename T>
 inline DxResource& StructuredBuffer<T>::GetResource() {

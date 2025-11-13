@@ -9,6 +9,7 @@
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Terrain.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Grass/GrassField.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/TerrainCollider.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/VoxelTerrain/VoxelTerrain.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Collision/SphereCollider.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Collision/BoxCollider.h"
@@ -47,6 +48,7 @@ namespace {
 			Register<TerrainCollider>();
 			Register<CameraComponent>();
 			Register<ShadowCaster>();
+			Register<VoxelTerrain>();
 
 			/// renderer
 			Register<SpriteRenderer>();

@@ -14,6 +14,10 @@ namespace ImMathf {
 
 	bool DragInt(const std::string& _label, int* _pv, int _step = 1, int _min = 0, int _max = 0);
 
+	bool DragInt2(const std::string& _label, Vector2Int* _pv, int _step = 1, int _min = 0, int _max = 0);
+
+	bool DragInt3(const std::string& _label, Vector3Int* _pv, int _step = 1, int _min = 0, int _max = 0);
+
 	/// @brief ImGuiのDragFloatでfloatを操作するコマンド
 	/// @param _label DragFloatのラベル
 	/// @param _pv floatのポインタ
@@ -67,18 +71,24 @@ namespace ImMathf {
 /// ///////////////////////////////////////////////////
 namespace ImGuiCommand {
 
+	/// @brief T型の値を変更するコマンド
+	/// @tparam T 変更する値の型 (T型のoperator=が定義されている必要がある)
 	template <typename T>
-	class TCommand : public IEditorCommand {
+	class ModifyValueCommand : public IEditorCommand {
 	public:
-		TCommand(T* _v, const T& _old, const T& _new)
+		/// ===================================================
+		/// public : methods
+		/// ===================================================
+
+		ModifyValueCommand(T* _v, const T& _old, const T& _new)
 			: pValue_(_v), oldValue_(_old), newValue_(_new) {
 		}
-		~TCommand() = default;
+		~ModifyValueCommand() = default;
 		EDITOR_STATE Execute() {
 			if (pValue_) {
 				*pValue_ = newValue_;
 			} else {
-				Console::LogError("ImGuiCommand::TCommand : Value is nullptr");
+				Console::LogError("ImGuiCommand::ModifyValueCommand : Value is nullptr");
 				return EDITOR_STATE::EDITOR_STATE_FAILED;
 			}
 			return EDITOR_STATE::EDITOR_STATE_FINISH;
@@ -87,12 +97,16 @@ namespace ImGuiCommand {
 			if (pValue_) {
 				*pValue_ = oldValue_;
 			} else {
-				Console::LogError("ImGuiCommand::TCommand : Value is nullptr");
+				Console::LogError("ImGuiCommand::ModifyValueCommand : Value is nullptr");
 				return EDITOR_STATE::EDITOR_STATE_FAILED;
 			}
 			return EDITOR_STATE::EDITOR_STATE_FINISH;
 		}
 	private:
+		/// ===================================================
+		/// private : objects
+		/// ===================================================
+
 		T* pValue_;
 		T oldValue_, newValue_;
 	};

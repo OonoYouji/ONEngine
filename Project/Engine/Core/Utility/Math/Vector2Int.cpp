@@ -15,3 +15,9 @@ Vector2Int Vector2Int::kUp = Vector2Int(0, 1);    ///< (0, 1)
 Vector2Int Vector2Int::kDown = Vector2Int(0, -1); ///< (0, -1)
 Vector2Int Vector2Int::kLeft = Vector2Int(-1, 0); ///< (-1, 0)
 Vector2Int Vector2Int::kRight = Vector2Int(1, 0); ///< (1, 0)
+
+Vector2Int& Vector2Int::operator=(const Vector2Int& _other) {
+	this->x = _other.x;
+	this->y = _other.y;
+	return *this;
+}

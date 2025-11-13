@@ -14,6 +14,16 @@
 /// Terrainの描画pipeline
 /// /////////////////////////////////////////////////
 class VoxelTerrainRenderingPipeline : public IRenderingPipeline {
+
+
+	enum ROOT_PARAM {
+		CBV_VOXEL_TERRAIN_INFO,
+		CBV_VIEW_PROJECTION,
+		SRV_CHUNK_ARRAY,
+		SRV_VOXEL_TERRAIN_TEXTURE3D,
+	};
+
+
 public:
 	/// ===================================================
 	/// public : methods
@@ -34,6 +44,7 @@ private:
 
 	/// --------------- other class pointers --------------- ///
 	class AssetCollection* pAssetCollection_;
+	class DxManager*       pDxManager_;
 
 };
 
