@@ -43,6 +43,10 @@ ImGuiInspectorWindow::ImGuiInspectorWindow(const std::string& _windowName, Entit
 	: pEcs_(_ecs), pAssetCollection_(_assetCollection), pEditorManager_(_editorManager) {
 	windowName_ = _windowName;
 
+	/// ---------------------------------------------------
+	/// 各ComponentのImGui関数登録
+	/// ---------------------------------------------------
+
 	/// compute
 	RegisterComponent<Transform>([&](IComponent* _comp) { COMP_DEBUG::TransformDebug(static_cast<Transform*>(_comp)); });
 	RegisterComponent<DirectionalLight>([&](IComponent* _comp) { DirectionalLightDebug(static_cast<DirectionalLight*>(_comp)); });
@@ -71,16 +75,17 @@ ImGuiInspectorWindow::ImGuiInspectorWindow(const std::string& _windowName, Entit
 	RegisterComponent<BoxCollider>([&](IComponent* _comp) { COMP_DEBUG::BoxColliderDebug(static_cast<BoxCollider*>(_comp)); });
 
 
+	
+	/// ---------------------------------------------------
 	/// 関数を登録(SelectionTypeの順番に)
+	/// ---------------------------------------------------
+
 	/// SelectionType::None
 	inspectorFunctions_.emplace_back([]() {});
-
 	/// SelectionType::Entity
 	inspectorFunctions_.emplace_back([this]() { EntityInspector(); });
-
 	/// SelectionType::Asset
 	inspectorFunctions_.emplace_back([this]() {  AssetInspector();  });
-
 	/// SelectionType::Script
 	inspectorFunctions_.emplace_back([]() {});
 

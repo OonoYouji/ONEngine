@@ -61,7 +61,9 @@ bool ImMathf::InputText(const char* _label, std::string* _text, ImGuiInputTextFl
 	auto callback = [](ImGuiInputTextCallbackData* data) -> int {
 		if (data->EventFlag == ImGuiInputTextFlags_CallbackResize) {
 			auto* user = static_cast<CallbackUserData*>(data->UserData);
-			user->text->resize(data->BufTextLen);   // ← 入力が減っても size が追従する！
+
+			/// stringのサイズを変更
+			user->text->resize(data->BufTextLen);
 			data->Buf = user->text->data();
 		}
 		return 0;
@@ -89,6 +91,10 @@ bool ImMathf::MaterialEdit(const char* _label, GPUMaterial* _material, AssetColl
 			isEdit = true;
 		}
 
+
+		/// ---------------------------------------------------
+		/// ポストエフェクトフラグの編集
+		/// ---------------------------------------------------
 		if (ImGui::CollapsingHeader("PostEffectFlags")) {
 			/// ポストエフェクトのフラグ
 			if (ImGui::CheckboxFlags("Lighting", &_material->postEffectFlags, PostEffectFlags_Lighting)) {
@@ -103,13 +109,16 @@ bool ImMathf::MaterialEdit(const char* _label, GPUMaterial* _material, AssetColl
 				isEdit = true;
 			}
 
-			if(ImGui::CheckboxFlags("Shadow", &_material->postEffectFlags, PostEffectFlags_Shadow)) {
+			if (ImGui::CheckboxFlags("Shadow", &_material->postEffectFlags, PostEffectFlags_Shadow)) {
 				isEdit = true;
 			}
 
 		}
 
 
+		/// ---------------------------------------------------
+		/// テクスチャの編集
+		/// ---------------------------------------------------
 		if (ImGui::CollapsingHeader("Texture")) {
 
 			/// textureの変更

@@ -9,7 +9,6 @@
 #include "../System/MeshBufferRecreate/MeshBufferRecreate.h"
 #include "../System/EffectUpdateSystem/EffectUpdateSystem.h"
 #include "../System/ScriptUpdateSystem/ScriptUpdateSystem.h"
-#include "../System/Sprite/SpriteUpdateSystem.h"
 #include "../System/Collision/CollisionSystem.h"
 #include "../System/Collision/ColliderRenderQueueSystem.h"
 #include "../System/SkinMesh/SkinMeshUpdateSystem.h"
@@ -20,6 +19,9 @@
 #include "../System/ShadowCaster/ShadowCasterUpdateSystem.h"
 #include "../System/GrassBufferCreateSystem/GrassBufferCreateSystem.h"
 
+/// ---------------------------------------------------
+/// ゲームように使用するシステム追加関数
+/// ---------------------------------------------------
 void GameECSGroupAddSystemFunction(ECSGroup* _ecs, DxManager* _dxm, AssetCollection* _assetCollection) {
 
 	/// 初期化に使うsystem
@@ -32,7 +34,6 @@ void GameECSGroupAddSystemFunction(ECSGroup* _ecs, DxManager* _dxm, AssetCollect
 	_ecs->AddSystem<ScriptUpdateSystem>(_ecs);
 	_ecs->AddSystem<AudioPlaybackSystem>(_assetCollection);
 	_ecs->AddSystem<EffectUpdateSystem>();
-	_ecs->AddSystem<SpriteUpdateSystem>();
 	_ecs->AddSystem<TransformUpdateSystem>();
 
 	/// 衝突判定に使うsystem
@@ -46,6 +47,10 @@ void GameECSGroupAddSystemFunction(ECSGroup* _ecs, DxManager* _dxm, AssetCollect
 	_ecs->AddSystem<ShadowCasterUpdateSystem>();
 }
 
+
+/// ---------------------------------------------------
+/// DebugGroup用のシステム追加関数 (Debugでしか用いないシステムをここに追加する)
+/// ---------------------------------------------------
 void DebugECSGroupAddSystemFunction(ECSGroup* _ecs, DxManager* _dxm, AssetCollection* _assetCollection) {
 
 	/// 初期化に使うsystem
@@ -58,7 +63,6 @@ void DebugECSGroupAddSystemFunction(ECSGroup* _ecs, DxManager* _dxm, AssetCollec
 	_ecs->AddSystem<DebugScriptUpdateSystem>(_ecs);
 	_ecs->AddSystem<AudioPlaybackSystem>(_assetCollection);
 	_ecs->AddSystem<EffectUpdateSystem>();
-	_ecs->AddSystem<SpriteUpdateSystem>();
 	_ecs->AddSystem<ShadowCasterUpdateSystem>();
 	_ecs->AddSystem<TransformUpdateSystem>();
 

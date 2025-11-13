@@ -89,17 +89,11 @@ public:
 	/// ====================================================
 
 	void SetIsMainCameraRequest(bool _isMainCamera);
-	void SetFovY(float _fovY);
-	void SetNearClip(float _nearClip);
-	void SetFarClip(float _farClip);
 	void SetCameraType(int _cameraType);
 	void SetOrthographicSize(const Vector2& _size);
 
 
 	bool GetIsMainCameraRequest() const;
-	float GetFovY() const;
-	float GetNearClip() const;
-	float GetFarClip() const;
 	int GetCameraType() const;
 
 	bool IsMakeViewProjection() const;

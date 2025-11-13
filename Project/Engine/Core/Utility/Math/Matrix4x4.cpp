@@ -53,12 +53,12 @@ Matrix4x4::Matrix4x4(float _m00, float _m01, float _m02, float _m03, float _m10,
 	m[1][1] = _m11;
 	m[1][2] = _m12;
 	m[1][3] = _m13;
-	
+
 	m[2][0] = _m20;
 	m[2][1] = _m21;
 	m[2][2] = _m22;
 	m[2][3] = _m23;
-	
+
 	m[3][0] = _m30;
 	m[3][1] = _m31;
 	m[3][2] = _m32;
@@ -83,7 +83,7 @@ Matrix4x4 Matrix4x4::MakeScale(const Vector3& _v) {
 Matrix4x4 Matrix4x4::MakeRotateX(float _angle) {
 	return Matrix4x4(
 		1.0f, 0.0f, 0.0f, 0.0f,
-		0.0f,  std::cos(_angle), std::sin(_angle), 0.0f,
+		0.0f, std::cos(_angle), std::sin(_angle), 0.0f,
 		0.0f, -std::sin(_angle), std::cos(_angle), 0.0f,
 		0.0f, 0.0f, 0.0f, 1.0f
 	);
@@ -93,14 +93,14 @@ Matrix4x4 Matrix4x4::MakeRotateY(float _angle) {
 	return Matrix4x4(
 		std::cos(_angle), 0.0f, -std::sin(_angle), 0.0f,
 		0.0f, 1.0f, 0.0f, 0.0f,
-		std::sin(_angle), 0.0f,  std::cos(_angle), 0.0f,
+		std::sin(_angle), 0.0f, std::cos(_angle), 0.0f,
 		0.0f, 0.0f, 0.0f, 1.0f
 	);
 }
 
 Matrix4x4 Matrix4x4::MakeRotateZ(float _angle) {
 	return Matrix4x4(
-		 std::cos(_angle), std::sin(_angle), 0.0f, 0.0f,
+		std::cos(_angle), std::sin(_angle), 0.0f, 0.0f,
 		-std::sin(_angle), std::cos(_angle), 0.0f, 0.0f,
 		0.0f, 0.0f, 1.0f, 0.0f,
 		0.0f, 0.0f, 0.0f, 1.0f
@@ -118,6 +118,8 @@ Matrix4x4 Matrix4x4::MakeRotate(const Vector3& _v) {
 }
 
 Matrix4x4 Matrix4x4::MakeRotate(const Quaternion& _q) {
+	/// ----- Quaternionでの回転行列の作成 ----- ///
+
 	if (Quaternion::Length(_q) == 0.0f) {
 		return kIdentity;
 	}
@@ -161,8 +163,8 @@ Matrix4x4 Matrix4x4::MakeTranslate(const Vector3& _v) {
 }
 
 Matrix4x4 Matrix4x4::MakeAffine(const Vector3& _scale, const Vector3& _rotation, const Vector3& _translation) {
-	Matrix4x4&& scale     = MakeScale(_scale);
-	Matrix4x4&& rotate    = MakeRotate(_rotation);
+	Matrix4x4&& scale = MakeScale(_scale);
+	Matrix4x4&& rotate = MakeRotate(_rotation);
 	Matrix4x4&& translate = MakeTranslate(_translation);
 
 	Matrix4x4&& result = scale * rotate * translate;
@@ -181,6 +183,8 @@ Matrix4x4 Matrix4x4::MakeTranspose(const Matrix4x4& _matrix) {
 }
 
 Matrix4x4 Matrix4x4::MakeInverse(const Matrix4x4& _matrix) {
+	/// ----- DirectXMathを使って逆行列を計算 ----- ///
+
 	XMVECTOR determinant;
 	XMMATRIX inverseMatrix = XMMatrixInverse(&determinant, Convert(_matrix));
 
@@ -188,42 +192,45 @@ Matrix4x4 Matrix4x4::MakeInverse(const Matrix4x4& _matrix) {
 }
 
 Matrix4x4 Matrix4x4::MakeLookAtLH(const Vector3& _eye, const Vector3& _target, const Vector3& _up) {
+	/// ----- 左手座標系のビュー行列作成 ----- ///
+
 	Matrix4x4 result{};
 
-	Vector3 zaxis = Vector3::Normalize(_target - _eye);
-	Vector3 xaxis = Vector3::Normalize(Vector3::Cross(_up, zaxis));
-	Vector3 yaxis = Vector3::Cross(zaxis, xaxis);
-	result.m[0][0] = xaxis.x; result.m[1][0] = xaxis.y; result.m[2][0] = xaxis.z;
-	result.m[0][1] = yaxis.x; result.m[1][1] = yaxis.y; result.m[2][1] = yaxis.z;
-	result.m[0][2] = zaxis.x; result.m[1][2] = zaxis.y; result.m[2][2] = zaxis.z;
-	
-	result.m[3][0] = -Vector3::Dot(xaxis, _eye);
-	result.m[3][1] = -Vector3::Dot(yaxis, _eye);
-	result.m[3][2] = -Vector3::Dot(zaxis, _eye);
+	Vector3 zAxis = Vector3::Normalize(_target - _eye);
+	Vector3 xAxis = Vector3::Normalize(Vector3::Cross(_up, zAxis));
+	Vector3 yAxis = Vector3::Cross(zAxis, xAxis);
+	result.m[0][0] = xAxis.x; result.m[1][0] = xAxis.y; result.m[2][0] = xAxis.z;
+	result.m[0][1] = yAxis.x; result.m[1][1] = yAxis.y; result.m[2][1] = yAxis.z;
+	result.m[0][2] = zAxis.x; result.m[1][2] = zAxis.y; result.m[2][2] = zAxis.z;
+
+	result.m[3][0] = -Vector3::Dot(xAxis, _eye);
+	result.m[3][1] = -Vector3::Dot(yAxis, _eye);
+	result.m[3][2] = -Vector3::Dot(zAxis, _eye);
 	result.m[3][3] = 1.0f;
 
 	return result;
 }
 
 Vector3 Matrix4x4::Transform(const Vector3& _v, const Matrix4x4& _m) {
-	Vector3 result{};
+	/// ----- Vector3に行列をかける ----- ///
 
-	result.x = _v.x * _m.m[0][0] + _v.y * _m.m[1][0] + _v.z * _m.m[2][0] + 1.0f * _m.m[3][0];
-	result.y = _v.x * _m.m[0][1] + _v.y * _m.m[1][1] + _v.z * _m.m[2][1] + 1.0f * _m.m[3][1];
-	result.z = _v.x * _m.m[0][2] + _v.y * _m.m[1][2] + _v.z * _m.m[2][2] + 1.0f * _m.m[3][2];
+	float v[3];
+	for (size_t i = 0; i < 3; i++) {
+		v[i] = _v.x * _m.m[0][i] + _v.y * _m.m[1][i] + _v.z * _m.m[2][i] + 1.0f * _m.m[3][i];
+	}
 
-	return result;
+	return { v[0], v[1], v[2] };
 }
 
 Vector4 Matrix4x4::Transform(const Vector4& _v, const Matrix4x4& _m) {
-	Vector4 result{};
+	/// ----- Vector4に行列をかける ----- ///
 
-	result.x = _v.x * _m.m[0][0] + _v.y * _m.m[1][0] + _v.z * _m.m[2][0] + _v.w * _m.m[3][0];
-	result.y = _v.x * _m.m[0][1] + _v.y * _m.m[1][1] + _v.z * _m.m[2][1] + _v.w * _m.m[3][1];
-	result.z = _v.x * _m.m[0][2] + _v.y * _m.m[1][2] + _v.z * _m.m[2][2] + _v.w * _m.m[3][2];
-	result.w = _v.x * _m.m[0][3] + _v.y * _m.m[1][3] + _v.z * _m.m[2][3] + _v.w * _m.m[3][3];
+	float v[4];
+	for (size_t i = 0; i < 4; i++) {
+		v[i] = _v.x * _m.m[0][i] + _v.y * _m.m[1][i] + _v.z * _m.m[2][i] + _v.w * _m.m[3][i];
+	}
 
-	return result;
+	return { v[0], v[1], v[2], v[3] };
 }
 
 Matrix4x4 Matrix4x4::Transpose() const {

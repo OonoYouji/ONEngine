@@ -121,7 +121,7 @@ CreateNewEntityClassCommand::CreateNewEntityClassCommand(GameEntity* _entity, co
 
 EDITOR_STATE CreateNewEntityClassCommand::Execute() {
 	if (pEntity_->GetName().empty()) {
-		Console::Log("CreateNewEntityClassCommand : Entity name is empty");
+		Console::LogError("CreateNewEntityClassCommand : Entity name is empty");
 		return EDITOR_STATE_FAILED;
 	}
 
@@ -135,22 +135,12 @@ EDITOR_STATE CreateNewEntityClassCommand::Undo() {
 	return EDITOR_STATE::EDITOR_STATE_FINISH;
 }
 
-std::string CreateNewEntityClassCommand::ReplaceAll(const std::string& _str, const std::string& _from, const std::string& _to) {
-	std::string result = _str;
-	size_t start_pos = 0;
-	while ((start_pos = result.find(_from, start_pos)) != std::string::npos) {
-		result.replace(start_pos, _from.length(), _to);
-		start_pos += _to.length(); // `to` の長さ分進める
-	}
-	return result;;
-}
-
 EDITOR_STATE CreateNewEntityClassCommand::CreateNewClassFile(const std::string& _srcFilePath, const std::string& _outputFileName, const std::string& _newClassName) {
 
 	// ファイルを読み込む
 	std::ifstream inputFile(_srcFilePath);
 	if (!inputFile) {
-		Console::Log("ファイルを開けません: " + _srcFilePath);
+		Console::LogError("ファイルを開けません: " + _srcFilePath);
 		return EDITOR_STATE_FAILED;
 	}
 
@@ -161,12 +151,12 @@ EDITOR_STATE CreateNewEntityClassCommand::CreateNewClassFile(const std::string& 
 	inputFile.close();
 
 	// 置き換える
-	content = ReplaceAll(content, sourceClassName_, pEntity_->GetName());
+	Mathf::ReplaceAll(&content, sourceClassName_, pEntity_->GetName());
 
 	// 新しいファイルに書き込む
 	std::ofstream outputFile(_outputFileName + "/" + _newClassName);
 	if (!outputFile) {
-		Console::Log("ファイルを書き込めません: " + _outputFileName);
+		Console::LogError("ファイルを書き込めません: " + _outputFileName);
 		return EDITOR_STATE_FAILED;
 	}
 
@@ -187,7 +177,7 @@ DeleteEntityCommand::DeleteEntityCommand(ECSGroup* _ecs, GameEntity* _entity)
 
 EDITOR_STATE DeleteEntityCommand::Execute() {
 	if (!pEcsGroup_ || !pEntity_) {
-		Console::Log("DeleteEntityCommand : ECS or Entity is nullptr");
+		Console::LogError("DeleteEntityCommand : ECS or Entity is nullptr");
 		return EDITOR_STATE_FAILED;
 	}
 
@@ -207,7 +197,7 @@ EDITOR_STATE DeleteEntityCommand::Undo() {
 CreatePrefabCommand::CreatePrefabCommand(GameEntity* _entity)
 	: pEntity_(_entity) {
 	if (pEntity_ == nullptr) {
-		Console::Log("CreatePrefabCommand : Entity is nullptr");
+		Console::LogError("CreatePrefabCommand : Entity is nullptr");
 		return;
 	}
 
@@ -232,7 +222,7 @@ EDITOR_STATE CreatePrefabCommand::Execute() {
 
 	/// jsonが空ならログを残して終了
 	if (entityJson.empty()) {
-		Console::Log("CreatePrefabCommand : EntityJson is empty");
+		Console::LogError("CreatePrefabCommand : EntityJson is empty");
 		return EDITOR_STATE_FAILED;
 	}
 
@@ -241,7 +231,7 @@ EDITOR_STATE CreatePrefabCommand::Execute() {
 	std::string prefabPath = "./Assets/Prefabs/" + prefabName_;
 	std::ofstream outputFile(prefabPath);
 	if (!outputFile.is_open()) {
-		Console::Log("CreatePrefabCommand : Failed to open prefab file: " + prefabPath);
+		Console::LogError("CreatePrefabCommand : Failed to open prefab file: " + prefabPath);
 		return EDITOR_STATE_FAILED;
 	}
 
@@ -300,7 +290,7 @@ EDITOR_STATE PasteEntityCommand::Execute() {
 	/// クリップボードからデータを取得
 	nlohmann::json* copiedEntity = EditCommand::GetClipboardData<nlohmann::json>();
 	if (!copiedEntity || copiedEntity->empty()) {
-		Console::Log("PasteEntityCommand : Clipboard is empty or invalid");
+		Console::LogError("PasteEntityCommand : Clipboard is empty or invalid");
 		return EDITOR_STATE_FAILED;
 	}
 
@@ -311,7 +301,7 @@ EDITOR_STATE PasteEntityCommand::Execute() {
 	pastedEntity_ = pEcsGroup_->GenerateEntity(GenerateGuid(), DebugConfig::isDebugging);
 	EntityJsonConverter::FromJson(*copiedEntity, pastedEntity_, pEcsGroup_->GetGroupName());
 	if (!pastedEntity_) {
-		Console::Log("PasteEntityCommand : Failed to create entity from JSON");
+		Console::LogError("PasteEntityCommand : Failed to create entity from JSON");
 		return EDITOR_STATE_FAILED;
 	}
 
@@ -350,7 +340,7 @@ ChangeEntityParentCommand::ChangeEntityParentCommand(GameEntity* _entity, GameEn
 
 EDITOR_STATE ChangeEntityParentCommand::Execute() {
 	if (!pEntity_) {
-		Console::Log("ChangeEntityParentCommand : Entity is nullptr");
+		Console::LogError("ChangeEntityParentCommand : Entity is nullptr");
 		return EDITOR_STATE_FAILED;
 	}
 	/// 古い親を保存
@@ -362,7 +352,7 @@ EDITOR_STATE ChangeEntityParentCommand::Execute() {
 
 EDITOR_STATE ChangeEntityParentCommand::Undo() {
 	if (!pEntity_) {
-		Console::Log("ChangeEntityParentCommand : Entity is nullptr");
+		Console::LogError("ChangeEntityParentCommand : Entity is nullptr");
 		return EDITOR_STATE_FAILED;
 	}
 

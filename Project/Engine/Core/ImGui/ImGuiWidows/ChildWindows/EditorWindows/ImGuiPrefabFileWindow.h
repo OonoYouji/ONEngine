@@ -39,18 +39,21 @@ private:
 	/// private : objects
 	/// =====================================================
 
+	/// --------------- other class pointers --------------- ///
 	class EntityComponentSystem* pEcs_;
-	class ImGuiInspectorWindow* pInspector_;
-	class AssetCollection* pAssetCollection_;
+	class ImGuiInspectorWindow*  pInspector_;
+	class AssetCollection*       pAssetCollection_;
 
-	std::string searchText_; ///< 検索テキスト
+
+	/// --------------- member objects --------------- ///
+	std::string       searchText_; ///< 検索テキスト
 	std::vector<File> files_;
 
 	/// 現在選択されているPrefabのEntity
 	Guid selectedPrefabGuid_;
 
 
-	/// ----- add prefab ----- /// 
+	/// --------------- add prefab --------------- ///
 
 	std::string newPrefabName_; ///< 新規Prefabの名前
 

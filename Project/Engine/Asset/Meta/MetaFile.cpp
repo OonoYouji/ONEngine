@@ -22,6 +22,8 @@ MetaFile::MetaFile() : guid(), assetType(AssetType::Texture) {}
 MetaFile::~MetaFile() = default;
 
 bool MetaFile::LoadFromFile(const std::string& _metaFilePath) {
+	/// ----- .metaファイルを読み込む ----- ///
+
 	bool result = false;
 
 	/// FilePathから.metaを開く
@@ -87,6 +89,8 @@ bool MetaFile::SaveToFile(const std::string& _metaFilePath) const {
 }
 
 MetaFile GenerateMetaFile(const std::string& _refFile) {
+	/// ----- 新規の.metaファイルを作成する ----- ///
+
 	MetaFile metaFile;
 
 	/// Guidの生成

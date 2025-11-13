@@ -46,10 +46,6 @@ protected:
 	/// @param _entity 変更対象のEntity
 	void EntityRename(class GameEntity* _entity);
 
-	/// @brief Entityのデバッグ表示処理
-	/// @param _entity 対象のEntity
-	void EntityDebug(class GameEntity* _entity);
-
 	/// Dialogの表示
 	void DrawDialog();
 	void DrawSceneSaveDialog();

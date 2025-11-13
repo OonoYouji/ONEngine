@@ -183,6 +183,7 @@ inline void AssetContainer<T>::Remove(int32_t _index) {
 
 template<typename T>
 inline T* AssetContainer<T>::Get(const std::string& _key) {
+	/// ----- IndexMapを_keyで参照して T型の Assetを返す ----- ///
 	if (indexMap_.contains(_key)) {
 		uint32_t index = indexMap_[_key];
 		return &values_[index];
@@ -193,6 +194,8 @@ inline T* AssetContainer<T>::Get(const std::string& _key) {
 
 template<typename T>
 inline T* AssetContainer<T>::Get(int32_t _index) {
+	/// ----- Indexで直接参照してアセットを返す ----- ///
+
 	if( _index < values_.size()) {
 		return &values_[_index];
 	}
@@ -232,6 +235,7 @@ inline int32_t AssetContainer<T>::GetIndex(const Guid& _guid) const {
 		return guidToIndexMap_.at(_guid);
 	}
 
+	/// 存在しない場合は無効なインデックスを返す
 	return -1;
 }
 

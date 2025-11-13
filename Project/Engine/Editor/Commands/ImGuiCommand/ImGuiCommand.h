@@ -67,7 +67,6 @@ namespace ImMathf {
 /// ///////////////////////////////////////////////////
 namespace ImGuiCommand {
 
-
 	template <typename T>
 	class TCommand : public IEditorCommand {
 	public:
@@ -79,7 +78,7 @@ namespace ImGuiCommand {
 			if (pValue_) {
 				*pValue_ = newValue_;
 			} else {
-				Console::Log("ImGuiCommand::TCommand : Value is nullptr");
+				Console::LogError("ImGuiCommand::TCommand : Value is nullptr");
 				return EDITOR_STATE::EDITOR_STATE_FAILED;
 			}
 			return EDITOR_STATE::EDITOR_STATE_FINISH;
@@ -88,7 +87,7 @@ namespace ImGuiCommand {
 			if (pValue_) {
 				*pValue_ = oldValue_;
 			} else {
-				Console::Log("ImGuiCommand::TCommand : Value is nullptr");
+				Console::LogError("ImGuiCommand::TCommand : Value is nullptr");
 				return EDITOR_STATE::EDITOR_STATE_FAILED;
 			}
 			return EDITOR_STATE::EDITOR_STATE_FINISH;
@@ -96,78 +95,6 @@ namespace ImGuiCommand {
 	private:
 		T* pValue_;
 		T oldValue_, newValue_;
-	};
-
-
-	/// ///////////////////////////////////////////////////
-	/// ImGuiで操作したFloatのRedo,Undoコマンド
-	/// ///////////////////////////////////////////////////
-	class FloatCommand : public IEditorCommand {
-	public:
-		FloatCommand(float* _v, float _old, float _new);
-		~FloatCommand() override = default;
-		EDITOR_STATE Execute() override;
-		EDITOR_STATE Undo() override;
-	private:
-		float* pValue_;
-		float oldValue_, newValue_;
-	};
-
-
-	/// ///////////////////////////////////////////////////
-	/// ImGuiで操作したVector2のRedo,Undoコマンド
-	/// ///////////////////////////////////////////////////
-	class Vec2Command : public IEditorCommand {
-	public:
-		Vec2Command(Vector2* _v, const Vector2& _old, const Vector2& _new);
-		~Vec2Command() override = default;
-		EDITOR_STATE Execute() override;
-		EDITOR_STATE Undo() override;
-	private:
-		Vector2* pValue_;
-		Vector2 oldValue_, newValue_;
-	};
-
-	/// ///////////////////////////////////////////////////
-	/// ImGuiで操作したVector3のRedo,Undoコマンド
-	/// ///////////////////////////////////////////////////
-	class Vec3Command : public IEditorCommand {
-	public:
-		Vec3Command(Vector3* _v, const Vector3& _old, const Vector3& _new);
-		~Vec3Command() override = default;
-		EDITOR_STATE Execute() override;
-		EDITOR_STATE Undo() override;
-	private:
-		Vector3* pValue_;
-		Vector3 oldValue_, newValue_;
-	};
-
-	/// ///////////////////////////////////////////////////
-	/// ImGuiで操作したVector4のRedo,Undoコマンド
-	/// ///////////////////////////////////////////////////
-	class Vec4Command : public IEditorCommand {
-	public:
-		Vec4Command(Vector4* _v, const Vector4& _old, const Vector4& _new);
-		~Vec4Command() override = default;
-		EDITOR_STATE Execute() override;
-		EDITOR_STATE Undo() override;
-	private:
-		Vector4* pValue_;
-		Vector4 oldValue_, newValue_;
-	};
-
-	/// ///////////////////////////////////////////////////
-	/// ImGuiで操作したQuaternionのRedo,Undoコマンド
-	/// ///////////////////////////////////////////////////
-	class QuaternionCommand : public IEditorCommand {
-	public:
-		QuaternionCommand(Quaternion* _q, const Quaternion& _old, const Quaternion& _new);
-		~QuaternionCommand() override = default;
-		EDITOR_STATE Execute() override;
-		EDITOR_STATE Undo() override;
-	private:
-		Quaternion* pValue_;
-		Quaternion oldValue_, newValue_;
 	};
 
 }

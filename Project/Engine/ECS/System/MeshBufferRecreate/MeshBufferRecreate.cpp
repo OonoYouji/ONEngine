@@ -20,8 +20,10 @@ void MeshBufferRecreate::RuntimeUpdate(ECSGroup* _ecs) {
 			continue;
 		}
 
+		/// 頂点データの転送
 		meshRenderer->VertexMemcpy();
 
+		/// メッシュの生成関数の呼び出し
 		if (meshRenderer->GetIsBufferRecreate()) {
 			meshRenderer->MeshRecreate(pDxDevice_);
 			meshRenderer->SetIsBufferRecreate(false);

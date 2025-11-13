@@ -92,6 +92,8 @@ void FileWatcher::Stop() {
 }
 
 std::vector<FileEvent> FileWatcher::ConsumeEvents() {
+	/// ----- Eventをすべて得る ----- ///
+
 	std::lock_guard<std::mutex> lock(mutex_);
 	std::vector<FileEvent> out(fileEvents_.begin(), fileEvents_.end());
 	fileEvents_.clear();
@@ -99,6 +101,8 @@ std::vector<FileEvent> FileWatcher::ConsumeEvents() {
 }
 
 void FileWatcher::WatchDirectory(std::shared_ptr<WatchTarget> _ctx) {
+	/// ----- ディレクトリ監視ループ ----- ///
+
 	if (!_ctx || _ctx->hDir == INVALID_HANDLE_VALUE || !_ctx->hEvent) {
 		return;
 	}

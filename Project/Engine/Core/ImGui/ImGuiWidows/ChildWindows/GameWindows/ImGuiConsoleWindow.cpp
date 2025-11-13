@@ -11,12 +11,12 @@
 #include "Engine/Core/Utility/Tools/Log.h"
 
 void ImGuiConsoleWindow::ShowImGui() {
-
 	if (!ImGui::Begin("Console")) {
 		ImGui::End();
 		return;
 	}
 
+	/// エンジン側のfpsとデルタタイムを表示
 	std::string&& text = std::format("fps: {:.3f} / delta time: {:.3f}", 1.0f / Time::DeltaTime(), Time::DeltaTime());
 	ImGui::Text(text.c_str());
 
@@ -24,17 +24,14 @@ void ImGuiConsoleWindow::ShowImGui() {
 	ImGui::Text(" : ");
 	ImGui::SameLine();
 
+	/// ImGui側のfpsとデルタタイムも表示
 	ImGuiIO& io = ImGui::GetIO();
-	std::string&& imguiText = std::format("imgui   fps: {:.3f} / delta time: {:.3f}", 1.0f / io.DeltaTime, io.DeltaTime);
+	std::string&& imguiText = std::format("imgui -> fps: {:.3f} / delta time: {:.3f}", 1.0f / io.DeltaTime, io.DeltaTime);
 	ImGui::Text(imguiText.c_str());
 
 	ImGui::SameLine();
 	ImGui::Text(" : ");
 	ImGui::SameLine();
-
-	// 現在のログを取得し、整形して表示
-	//std::string currentLog = Console::GetCurrentLog();
-	//ImGui::Text(currentLog.c_str());
 
 	// 右クリックで全てのログを表示するポップアップを開く
 	if (ImGui::BeginPopupContextItem("LogPopup")) {

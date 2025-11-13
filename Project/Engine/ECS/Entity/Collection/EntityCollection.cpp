@@ -110,7 +110,7 @@ void EntityCollection::RemoveEntityId(int32_t _id) {
 		runtimeEntityIDs_.usedIds.erase(std::remove(runtimeEntityIDs_.usedIds.begin(), runtimeEntityIDs_.usedIds.end(), _id), runtimeEntityIDs_.usedIds.end());
 		runtimeEntityIDs_.removedIds.push_back(_id);
 	} else {
-		Console::Log("Invalid entity ID: " + std::to_string(_id));
+		Console::LogWarning("Invalid entity ID: " + std::to_string(_id));
 		return;
 	}
 }
@@ -158,7 +158,7 @@ int32_t EntityCollection::NewEntityID(bool _isRuntime) {
 	int32_t resultId = 0;
 
 	if (_isRuntime) {
-		/* --- 実行時 --- */
+		/// Runtime起動後のID生成
 
 		// 削除されたIDがあればそれを使用
 		if (runtimeEntityIDs_.removedIds.size() > 0) {
@@ -173,7 +173,8 @@ int32_t EntityCollection::NewEntityID(bool _isRuntime) {
 
 
 	} else {
-		/* --- 初期化時 --- */
+		
+		/// Runtime起動前のID生成
 		if (initEntityIDs_.removedIds.size() > 0) {
 			resultId = initEntityIDs_.removedIds.front();
 			initEntityIDs_.removedIds.pop_front();

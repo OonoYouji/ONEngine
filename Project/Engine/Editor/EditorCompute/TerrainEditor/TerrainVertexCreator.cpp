@@ -102,8 +102,8 @@ void TerrainVertexCreator::Execute(EntityComponentSystem* _ecs, DxCommand* _dxCo
 
 		const size_t TGSize = 16; // 16x16のグループサイズ
 		cmdList->Dispatch(
-			(1000 + TGSize - 1) / TGSize, // width
-			(1000 + TGSize - 1) / TGSize, // depth
+			Mathf::DivideAndRoundUp(1000, TGSize), // width
+			Mathf::DivideAndRoundUp(1000, TGSize), // depth
 			1
 		);
 	}

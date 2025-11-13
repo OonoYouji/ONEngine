@@ -14,10 +14,7 @@ const Quaternion Quaternion::kIdentity = Quaternion(0.0f, 0.0f, 0.0f, 1.0f); ///
 
 
 Quaternion::Quaternion() {
-	x = 0.0f;
-	y = 0.0f;
-	z = 0.0f;
-	w = 0.0f;
+	*this = kIdentity;
 }
 
 Quaternion::Quaternion(float _x, float _y, float _z, float _w) {
@@ -84,6 +81,8 @@ Matrix4x4 Quaternion::MakeRotateAxisAngle(const Vector3& _axis, float _theta) {
 }
 
 Quaternion Quaternion::LookAt(const Vector3& _position, const Vector3& _target, const Vector3& _up) {
+	/// ----- 視線の方向への回転を計算する ----- ///
+
 	XMFLOAT3 xmPosition = { _position.x, _position.y, _position.z };
 	XMFLOAT3 xmTarget = { _target.x, _target.y, _target.z };
 	XMFLOAT3 xmUp = { _up.x, _up.y, _up.z };
@@ -289,6 +288,13 @@ Quaternion Quaternion::FromRotationMatrix(const Matrix4x4& _m) {
 }
 
 
+Quaternion Quaternion::Conjugate() const {
+	return { -x, -y, -z, w };
+}
+
+float Quaternion::Length() const {
+	return std::sqrt(w * w + x * x + y * y + z * z);
+}
 
 Quaternion Quaternion::Inverse() const {
 	Quaternion conjugate = this->Conjugate(); // 共役を計算

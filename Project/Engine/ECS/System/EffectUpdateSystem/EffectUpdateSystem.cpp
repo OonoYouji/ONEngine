@@ -20,7 +20,7 @@ void EffectUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
 
 	mainCamera_ = _ecs->GetMainCamera();
 	if (!mainCamera_) {
-		Console::Log("EffectUpdateSystem::Update: main camera is null");
+		Console::LogWarning("EffectUpdateSystem::Update: main camera is null");
 		return;
 	}
 
@@ -160,7 +160,7 @@ void EffectUpdateSystem::UpdateElement(Effect* _effect, Effect::Element* _elemen
 	}
 
 	if (_element->velocity != Vector3::kZero) {
-		Console::Log("effect element velocity not zero");
+		Console::LogWarning("effect element velocity not zero");
 	}
 
 	_element->transform.position += _element->velocity * Time::DeltaTime();

@@ -39,6 +39,8 @@ void DxResource::CreateResource(DxDevice* _dxDevice, size_t _sizeInByte) {
 }
 
 void DxResource::CreateUAVResource(DxDevice* _dxDevice, class DxCommand* _dxCommand, size_t _sizeInByte) {
+	/// ----- UAVリソースとして作成する ----- ///
+
 	HRESULT result = S_FALSE;
 
 	CD3DX12_HEAP_PROPERTIES heapProps(D3D12_HEAP_TYPE_DEFAULT);
@@ -46,7 +48,6 @@ void DxResource::CreateUAVResource(DxDevice* _dxDevice, class DxCommand* _dxComm
 		_sizeInByte,
 		D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS
 	);
-
 
 	currentState_ = D3D12_RESOURCE_STATE_COMMON;
 	_dxDevice->GetDevice()->CreateCommittedResource(
@@ -79,6 +80,9 @@ void DxResource::CreateCommittedResource(DxDevice* _dxDevice, const D3D12_HEAP_P
 }
 
 void DxResource::CreateRenderTextureResource(DxDevice* _dxDevice, const Vector2& _size, DXGI_FORMAT _format, const Vector4& _clearColor) {
+	/// ----- RTVとして利用できるようリソースを作成する ----- ///
+
+
 	CD3DX12_RESOURCE_DESC resourceDesc = CD3DX12_RESOURCE_DESC::Tex2D(
 		_format,
 		static_cast<UINT64>(_size.x),
@@ -108,6 +112,8 @@ void DxResource::CreateRenderTextureResource(DxDevice* _dxDevice, const Vector2&
 }
 
 void DxResource::CreateUAVTextureResource(DxDevice* _dxDevice, const Vector2& _size, DXGI_FORMAT _format) {
+	/// ----- UAV用のテクスチャとして作成する ----- ///
+
 	currentState_ = D3D12_RESOURCE_STATE_UNORDERED_ACCESS;
 
 	CD3DX12_RESOURCE_DESC resourceDesc = CD3DX12_RESOURCE_DESC::Tex2D(
@@ -157,6 +163,8 @@ D3D12_RESOURCE_STATES DxResource::GetCurrentState() const {
 
 
 void CreateBarrier(ID3D12Resource* _resource, D3D12_RESOURCE_STATES _before, D3D12_RESOURCE_STATES _after, DxCommand* _dxCommand) {
+	/// ----- リソースバリアーの作成 ----- ///
+
 	if (_before == _after) {
 		return;
 	}

@@ -157,6 +157,11 @@ struct Matrix4x4 final {
 
 
 namespace {
+
+
+	/// @brief DirectXの行列型から自作の行列型へ変換
+	/// @param _matrix DirectXの行列型
+	/// @return 自作の行列型
 	inline Matrix4x4 Convert(const XMMATRIX& _matrix) {
 		Matrix4x4  result;
 		XMFLOAT4X4 tempMatrix;
@@ -170,6 +175,9 @@ namespace {
 		return result;
 	}
 
+	/// @brief 自作の行列型からDirectXの行列型へ変換
+	/// @param _matrix 自作の行列型
+	/// @return DirectXの行列型
 	inline XMMATRIX Convert(const Matrix4x4& _matrix) {
 		return XMMATRIX(
 			_matrix.m[0][0], _matrix.m[0][1], _matrix.m[0][2], _matrix.m[0][3],

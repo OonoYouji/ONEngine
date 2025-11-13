@@ -37,6 +37,7 @@ void ImGuiWindowCollection::Update() {
 
 	MainMenuUpdate();
 
+	/// 選択されたMenuの内容を表示する
 	parentWindows_[selectedMenuIndex_]->ShowImGui();
 	DebugConfig::selectedMode_ = selectedMenuIndex_;
 
@@ -53,6 +54,8 @@ void ImGuiWindowCollection::AddParentWindow(const std::string& _name, std::uniqu
 }
 
 void ImGuiWindowCollection::MainMenuUpdate() {
+	/// ----- MainMenuの更新(選択されたMenuの内容を別の処理で表示する) ----- ///
+
 	if (!ImGui::BeginMainMenuBar()) {
 		return;
 	}

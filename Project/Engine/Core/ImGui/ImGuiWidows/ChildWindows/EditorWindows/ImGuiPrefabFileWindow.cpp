@@ -18,6 +18,7 @@
 ImGuiPrefabFileWindow::ImGuiPrefabFileWindow(EntityComponentSystem* _ecs, AssetCollection* _assetCollection, ImGuiInspectorWindow* _inspector)
 	: pEcs_(_ecs), pAssetCollection_(_assetCollection), pInspector_(_inspector) {
 
+	/// Prefabファイルの取得
 	files_ = Mathf::FindFiles("Assets/Prefabs", ".prefab");
 
 }
@@ -29,6 +30,9 @@ void ImGuiPrefabFileWindow::ShowImGui() {
 		return;
 	}
 
+	/// ---------------------------------------------------
+	/// prefabファイルの再読み込みボタン
+	/// ---------------------------------------------------
 	const auto& textures = pAssetCollection_->GetTextures();
 	const Texture& button = textures[pAssetCollection_->GetTextureIndex("./Packages/Textures/ImGui/reload.png")];
 
@@ -38,11 +42,18 @@ void ImGuiPrefabFileWindow::ShowImGui() {
 	ImGui::Spacing();
 	ImGui::SameLine();
 
+
+	/// ---------------------------------------------------
+	/// prefab新規作成ボタン
+	/// ---------------------------------------------------
 	AddNewPrefabWindow();
 
 	ImGui::Separator();
 
+	
+	/// ---------------------------------------------------
 	/// fileの表示
+	/// ---------------------------------------------------
 	ImGuiInputText("search prefab", &searchText_, ImGuiInputTextFlags_EnterReturnsTrue);
 	ShowPrefabFileList();
 
@@ -50,6 +61,8 @@ void ImGuiPrefabFileWindow::ShowImGui() {
 }
 
 void ImGuiPrefabFileWindow::ShowPrefabFileList() {
+	/// ----- prefabファイルのpreview (検索機能付き) ----- ///
+
 	for (auto& file : files_) {
 		/// 検索ボックスに入力されたテキストがファイル名に含まれているかチェック
 		size_t size = searchText_.size();
@@ -125,6 +138,7 @@ void ImGuiPrefabFileWindow::AddNewPrefabWindow() {
 }
 
 bool ImGuiPrefabFileWindow::GenerateNewPrefab() {
+	/// ----- 新規のprefabファイルを作成する ----- ///
 
 	/// 既に同じ名前のPrefabが存在するかチェック
 	for (const auto& file : files_) {

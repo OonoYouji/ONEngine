@@ -14,7 +14,7 @@ EntityPrefab::EntityPrefab(const std::string& _path)
 
 	/// pathが存在するかチェック
 	if (!std::filesystem::exists(path_)) {
-		Console::Log("[warning] Prefab path does not exist: " + path_);
+		Console::LogWarning("Prefab path does not exist: " + path_);
 		return;
 	}
 
@@ -22,7 +22,7 @@ EntityPrefab::EntityPrefab(const std::string& _path)
 	/// JSONファイルを読み込む
 	std::ifstream file(path_);
 	if (!file.is_open()) {
-		Console::Log("[error] Failed to open prefab file: " + path_);
+		Console::LogError("Failed to open prefab file: " + path_);
 		return;
 	}
 
@@ -38,7 +38,7 @@ void EntityPrefab::Reload() {
 
 	/// pathが存在するかチェック
 	if (!std::filesystem::exists(path_)) {
-		Console::Log("[warning] Prefab path does not exist: " + path_);
+		Console::LogWarning("Prefab path does not exist: " + path_);
 		return;
 	}
 
@@ -46,7 +46,7 @@ void EntityPrefab::Reload() {
 	/// JSONファイルを読み込む
 	std::ifstream file(path_);
 	if (!file.is_open()) {
-		Console::Log("[error] Failed to open prefab file: " + path_);
+		Console::LogError("Failed to open prefab file: " + path_);
 		return;
 	}
 

@@ -130,7 +130,7 @@ void TerrainVertexEditorCompute::Execute(class EntityComponentSystem* _ecs, DxCo
 
 	const UINT threadGroupSize = 256;
 	cmdList->Dispatch(
-		(pTerrain->GetMaxVertexNum() + threadGroupSize - 1) / threadGroupSize,
+		Mathf::DivideAndRoundUp(pTerrain->GetMaxVertexNum(), threadGroupSize),
 		1, 1
 	);
 }

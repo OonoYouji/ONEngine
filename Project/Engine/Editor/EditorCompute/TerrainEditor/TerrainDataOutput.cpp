@@ -85,8 +85,8 @@ void TerrainDataOutput::Execute(EntityComponentSystem* _ecs, DxCommand* _dxComma
 
 	const size_t threadGroupSize = 16;
 	cmdList->Dispatch(
-		(width + threadGroupSize - 1) / threadGroupSize,
-		(height + threadGroupSize - 1) / threadGroupSize,
+		Mathf::DivideAndRoundUp(width, threadGroupSize),
+		Mathf::DivideAndRoundUp(height, threadGroupSize),
 		1
 	);
 

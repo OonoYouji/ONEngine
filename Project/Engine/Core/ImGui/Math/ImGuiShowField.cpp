@@ -18,8 +18,6 @@ namespace {
 		gFieldDrawers[MONO_TYPE_R8] = std::make_unique<CSGui::DoubleField>();
 		gFieldDrawers[MONO_TYPE_BOOLEAN] = std::make_unique<CSGui::BoolField>();
 		gFieldDrawers[MONO_TYPE_STRING] = std::make_unique<CSGui::StringField>();
-		gFieldDrawers[MONO_TYPE_SZARRAY] = std::make_unique<CSGui::ArrayField>();
-		gFieldDrawers[MONO_TYPE_ARRAY] = std::make_unique<CSGui::ArrayField>();
 		gFieldDrawers[MONO_TYPE_VALUETYPE] = std::make_unique<CSGui::StructGui>();
 
 		// 他の型も同様に登録
@@ -39,6 +37,7 @@ void CSGui::ShowFiled(int _type, MonoObject* _obj, MonoClassField* _field, const
 		return;
 	}
 
+	/// Typeごとに登録されたフィールドドロワーを使用して描画
 	gFieldDrawers[_type]->Draw(_obj, _field, _name);
 }
 
@@ -102,11 +101,6 @@ void CSGui::StringField::Draw(MonoObject* _obj, MonoClassField* _field, const ch
 	}
 }
 
-
-void CSGui::ArrayField::Draw(MonoObject*, MonoClassField*, const char*) {
-	/// TODO: 配列の表示、編集 
-	/// 多次元配列の対応は今後考える
-}
 
 void CSGui::StructGui::Draw(MonoObject* _obj, MonoClassField* _field, [[maybe_unused]] const char* _name) {
 	if (fieldDrawers.empty()) {

@@ -92,10 +92,25 @@ struct Quaternion final {
 	/// @return 補間されたクォータニオン
 	static Quaternion Slerp(const Quaternion& _start, const Quaternion& _end, float _t);
 
+
+
+	/// @brief Euler角からクォータニオンを作成
+	/// @param _euler Vector3形式のオイラー角（ラジアン）
+	/// @return 生成されたクォータニオン
 	static Quaternion FromEuler(const Vector3& _euler);
+
+	/// @brief QuaternionからEuler角を作成
+	/// @param _q Quaternion形式の回転情報
+	/// @return Vector3形式のオイラー角（ラジアン）
 	static Vector3 ToEuler(const Quaternion& _q);
 
+
+	/// @brief 行列からクォータニオンを作成
+	/// @param _m Matrix4x4形式の行列
+	/// @return Quaternion形式の回転情報
 	static Quaternion FromRotationMatrix(const Matrix4x4& _m);
+
+
 
 	/// ===================================================
 	/// public : methods
@@ -103,15 +118,11 @@ struct Quaternion final {
 
 	/// @brief クォータニオンの共役を計算する
 	/// @return 共役クォータニオン
-	Quaternion Conjugate() const {
-		return { -x, -y, -z, w };
-	}
+	Quaternion Conjugate() const;
 
 	/// @brief クォータニオンのノルムを計算する
 	/// @return クォータニオンのノルム
-	float Length() const {
-		return std::sqrt(w * w + x * x + y * y + z * z);
-	}
+	float Length() const;
 
 	/// @brief 逆クォータニオンを計算する
 	/// @return 逆クォータニオン

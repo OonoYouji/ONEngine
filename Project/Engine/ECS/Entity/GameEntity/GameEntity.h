@@ -223,7 +223,6 @@ private:
 	/// ===================================================
 
 	Transform* transform_;
-	Variables* variables_;
 	class ECSGroup* pEcsGroup_;
 
 	bool active_ = true; ///< true のときは更新する

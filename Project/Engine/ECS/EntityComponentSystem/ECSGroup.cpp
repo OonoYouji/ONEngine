@@ -33,6 +33,7 @@ GameEntity* ECSGroup::GenerateEntityFromPrefab(const std::string& _prefabName, b
 GameEntity* ECSGroup::GetEntityFromGuid(const Guid& _guid) {
 	/// 例外チェック(無効値なら nullptr を返す)
 	if (!_guid.CheckValid()) {
+		Console::LogError("ECSGroup::GetEntityFromGuid: Invalid Guid provided.");
 		return nullptr;
 	}
 
@@ -49,6 +50,7 @@ GameEntity* ECSGroup::GetEntityFromGuid(const Guid& _guid) {
 void ECSGroup::RemoveEntity(GameEntity* _entity, bool _deleteChildren) {
 	/// 例外チェック
 	if (_entity == nullptr) {
+		Console::LogError("ECSGroup::RemoveEntity: Null entity provided.");
 		return;
 	}
 
@@ -61,6 +63,7 @@ void ECSGroup::RemoveEntityAll() {
 
 void ECSGroup::AddDoNotDestroyEntity(GameEntity* _entity) {
 	if (_entity == nullptr) {
+		Console::LogError("ECSGroup::AddDoNotDestroyEntity: Null entity provided.");
 		return;
 	}
 
@@ -69,6 +72,7 @@ void ECSGroup::AddDoNotDestroyEntity(GameEntity* _entity) {
 
 void ECSGroup::RemoveDoNotDestroyEntity(GameEntity* _entity) {
 	if (_entity == nullptr) {
+		Console::LogError("ECSGroup::RemoveDoNotDestroyEntity: Null entity provided.");
 		return;
 	}
 

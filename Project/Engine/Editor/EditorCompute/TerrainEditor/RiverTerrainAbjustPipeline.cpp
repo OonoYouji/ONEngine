@@ -75,8 +75,7 @@ void RiverTerrainAbjustPipeline::Execute(EntityComponentSystem* _ecs, DxCommand*
 
 	UINT maxVertex = static_cast<UINT>(terrain->GetMaxVertexNum());
 	UINT groupSize = 32;
-	UINT dispatchCount = (maxVertex + groupSize - 1) / groupSize;
-	cmdList->Dispatch(dispatchCount, 1, 1);
+	cmdList->Dispatch(Mathf::DivideAndRoundUp(maxVertex, groupSize), 1, 1);
 
 }
 

@@ -196,7 +196,7 @@ void WindowManager::CreateGameWindow(const wchar_t* _title, const Vector2& _size
 	/// windowの生成できたかチェック
 	if (!_windowPtr->hwnd_) {
 		DWORD err = GetLastError();
-		Console::Log("CreateWindowEx failed. Error code: " + std::to_string(err));
+		Console::LogError("CreateWindowEx failed. Error code: " + std::to_string(err));
 		Assert(false, "Failed CreateWindowEx");
 	}
 

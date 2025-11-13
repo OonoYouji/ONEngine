@@ -19,7 +19,7 @@ void GameEntity::Awake() {
 	pEcsGroup_->LoadComponent(this);
 
 	transform_ = AddComponent<Transform>();
-	variables_ = AddComponent<Variables>();
+	AddComponent<Variables>();
 }
 
 IComponent* GameEntity::AddComponent(const std::string& _name) {
@@ -68,8 +68,6 @@ void GameEntity::RemoveComponent(const std::string& _compName) {
 
 	if (_compName == "Transform") {
 		transform_ = nullptr; ///< Transformコンポーネントを削除した場合はnullptrに設定
-	} else if (_compName == "Variables") {
-		variables_ = nullptr; ///< Variablesコンポーネントを削除した場合はnullptrに設定
 	}
 }
 
@@ -180,7 +178,7 @@ Vector3 GameEntity::GetPosition() {
 		transform_->matWorld.m[3][1],
 		transform_->matWorld.m[3][2]
 	};
-	
+
 	return position;
 }
 

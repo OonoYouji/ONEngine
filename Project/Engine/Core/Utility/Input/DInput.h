@@ -1,5 +1,9 @@
 #pragma once
 
+/*
+* DirectInputのバージョンを指定
+*/
+
 #ifdef DIRECTINPUT_VERSION
 #undef DIRECTINPUT_VERSION
 #endif

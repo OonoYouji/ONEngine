@@ -13,18 +13,27 @@ bool CollisionCheck::LineVsSphere(const Vector3& _lineStart, const Vector3& _lin
 bool CollisionCheck::LineVsTriangle(const Vector3& _lineStart, const Vector3& _lineEnd, const std::array<Vector3, 3>& _triangleVertices) {
 
 	Vector3&& lineDiff = _lineEnd - _lineStart;
+
+	/// 三角形の頂点同士のベクトルを計算
 	Vector3&& v01 = _triangleVertices[1] - _triangleVertices[0];
 	Vector3&& v12 = _triangleVertices[2] - _triangleVertices[1];
 	Vector3&& v20 = _triangleVertices[0] - _triangleVertices[2];
 
+	/// 三角形の法線ベクトルと平面の距離を計算
 	Vector3&& normal = Vector3::Cross(v01, v12);
 	float distance = Vector3::Dot(
 		(_triangleVertices[0] + _triangleVertices[1] + _triangleVertices[2]) / 3.0f, /// 3頂点の平均が中心
 		normal
 	);
 
+	/// 線分と平面の交点を計算
 	float dot = Vector3::Dot(normal, lineDiff);
-	if (dot == 0.0f) { return false; }
+
+	/// 平面と線分が平行の場合は衝突しない
+	if (dot == 0.0f) {
+		return false;
+	}
+
 	float t = (distance - Vector3::Dot(normal, _lineStart)) / dot;
 	Vector3&& planePoint = _lineStart + (lineDiff * t);
 

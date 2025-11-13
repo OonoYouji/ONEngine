@@ -12,6 +12,7 @@
 
 
 Material GenerateMaterial() {
+	/// ----- 新規のMaterialを作成して返す ----- ///
 	Material material;
 
 	material.guid = GenerateGuid();
@@ -45,6 +46,7 @@ void GenerateMaterialFile(const std::string& _filepath, Material* _material) {
 		material = GenerateMaterial();
 	}
 
+	/// ファイルに情報を書きこむ
 	ofs << "MaterialFileVersion: 1\n";
 	ofs << "guid: " << material.guid.ToString() << "\n";
 	ofs << "BaseColor: " << material.baseColor.x << " " << material.baseColor.y << " " << material.baseColor.z << " " << material.baseColor.w << "\n";
@@ -59,6 +61,8 @@ void GenerateMaterialFile(const std::string& _filepath, Material* _material) {
 /// ---------------------------------------------------
 
 void from_json(const nlohmann::json& _j, Material& _material) {
+	/// ----- JsonデータをMaterialに変換する ----- ///
+
 	_material.guid = _j.value("guid", Guid{});
 	_material.baseColor = _j.value("baseColor", Vector4::kWhite);
 	_material.postEffectFlags = _j.value("postEffectFlags", 1u);
@@ -78,6 +82,7 @@ void from_json(const nlohmann::json& _j, Material& _material) {
 }
 
 void to_json(nlohmann::json& _j, const Material& _material) {
+	/// ----- MaterialデータをJsonに変換する ----- ///
 	_j = {
 		{ "guid", _material.guid },
 		{ "baseColor", _material.baseColor },
@@ -96,7 +101,6 @@ Material::Material() {
 	baseColor = Vector4::kWhite;
 	postEffectFlags = 1;
 	uvTransform = UVTransform();
-
 };
 Material::~Material() = default;
 

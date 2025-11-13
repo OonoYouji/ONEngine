@@ -7,9 +7,9 @@
 /// @brief UV変形用データ構造体
 /// /////////////////////////////////////////////////
 struct UVTransform {
-	Vector2 position; /// オフセット
+	Vector2 position = Vector2::kZero; /// オフセット
 	Vector2 scale = Vector2::kOne; /// スケール
-	float   rotate;   /// 回転
+	float   rotate = 0.0f;   /// 回転
 	float   pad1[3];
 };
 

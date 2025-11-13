@@ -269,8 +269,13 @@ void DebugScriptUpdateSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
 	/// 作成中のPrefabを更新してしまう問題を防ぐため、デバッグカメラのみ追加する
 
 	ScriptUpdateSystem::OutsideOfRuntimeUpdate(_ecs);
+	CameraComponent* camera = _ecs->GetMainCamera();
+	if (!camera) {
+		Console::LogError("Main camera is not set in ECSGroup: " + _ecs->GetGroupName());
+		return;
+	}
 
-	if (GameEntity* debugCamera = _ecs->GetMainCamera()->GetOwner()) {
+	if (GameEntity* debugCamera = camera->GetOwner()) {
 		AddEntityToScript(debugCamera);
 	}
 

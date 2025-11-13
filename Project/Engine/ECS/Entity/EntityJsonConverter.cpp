@@ -94,7 +94,7 @@ void EntityJsonConverter::TransformFromJson(const nlohmann::json& _json, GameEnt
 			comp->SetOwner(_entity);
 		} else {
 			// コンポーネントの追加に失敗した場合のログ
-			Console::Log("[error] failed add component: " + componentType);
+			Console::LogError("failed add component: " + componentType);
 		}
 	}
 }
