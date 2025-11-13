@@ -146,6 +146,9 @@ const std::vector<std::string>& Console::GetLogVector() {
 	return gLogBuffer_;
 }
 
+void Console::Shutdown() {
+	Finalize();
+}
 
 /// ////////////////////////////////////////////////
 /// 文字列変換関数

@@ -25,6 +25,10 @@ GameFramework::~GameFramework() {
 
 void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 
+	/// ログ出力の初期化
+	Console::Initialize();
+
+
 	/// --------------------------------------------------
 	/// 各クラスのインスタンスを生成する
 	/// --------------------------------------------------
@@ -65,7 +69,6 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 
 	/// timeの初期化
 	Time::Initialize();
-	Console::Initialize();
 
 	/// scene managerの初期化
 	sceneManager_->Initialize(renderingFramework_->GetAssetCollection());

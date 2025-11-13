@@ -1,9 +1,18 @@
 #include "VoxelTerrain.hlsli"
 
 
-StructuredBuffer<Chunk> chunks : register(t0);
+/// ---------------------------------------------------
+/// Buffers
+/// ---------------------------------------------------
+
 Texture3D<float4> voxelChunkTextures[] : register(t1);
 SamplerState voxelSampler : register(s0);
+
+
+
+/// ---------------------------------------------------
+/// Main
+/// ---------------------------------------------------
 
 /// max numthreads: 1024
 [shader("amplification")]
@@ -14,6 +23,7 @@ void main(
     
     uint3 uvw = DTid;
     uint textureId = chunks[groupId].textureId;
+    
 
     Payload payload;
     DispatchMesh(1, 1, 1, payload);

@@ -21,5 +21,13 @@ struct VoxelTerrainInfo {
 
 
 struct Payload {
-
+    uint id;
 };
+
+
+/// ---------------------------------------------------
+/// VoxelTerrain Common Buffers
+/// ---------------------------------------------------
+
+ConstantBuffer<VoxelTerrainInfo> voxelTerrainInfo : register(b0);
+StructuredBuffer<Chunk> chunks : register(t0);
