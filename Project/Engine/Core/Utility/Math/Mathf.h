@@ -18,20 +18,46 @@ namespace Mathf {
 	static const float Rad2Deg = 180.0f / std::numbers::pi_v<float>;
 	static const float PI = std::numbers::pi_v<float>;
 
+
+	/// @brief 逆タンジェント
+	/// @param _t 
+	/// @return 
 	float Cot(float _t);
 
 	/// ----- ファイル ----- ///
 
+	/// @brief ファイルの検索
+	/// @param _fileDirectory 検索対象のディレクトリ
+	/// @param _fileExtension 探索対象のファイル拡張子
+	/// @return 見つかったファイルのパスと名前のペアのベクター
 	std::vector<File> FindFiles(const std::string& _fileDirectory, const std::string& _fileExtension);
+
+	/// @brief ファイルの探索
+	/// @param _fileDirectory 探索対象のディレクトリ
+	/// @param _filename 探索対象のファイル名
+	/// @return 見つかったファイル
 	File FindFile(const std::string& _fileDirectory, const std::string& _filename);
 	
+	
+	/// @brief _str内の_allを_toに置換する
+	/// @param _str 変換対象の文字列ポインタ
+	/// @param _from 変換する文字列
+	/// @param _to 変換後の文字列
 	void ReplaceAll(std::string* _str, const std::string& _from, const std::string& _to);
 
-	/// 拡張子を除いたファイル名を取得
+
+
+	/// @brief 引数のファイル名から拡張子を除いた名前を取得
+	/// @param _filename ファイル名
+	/// @return ファイル名
 	std::string FileNameWithoutExtension(const std::string& _filename);
 
-	/// 拡張子を取得
+	/// @brief ファイルの拡張子を取得
+	/// @param _filename ファイル名
+	/// @return 拡張子
 	std::string FileExtension(const std::string& _filename);
+
+
 
 	/// @brief 指定されたファイルパスからCSVファイルを読み込み、2次元の整数ベクターとして返します。
 	/// @param _filePath 読み込むCSVファイルのパス。

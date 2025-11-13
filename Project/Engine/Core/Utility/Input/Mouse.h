@@ -67,7 +67,7 @@ private:
 	/// =========================================
 
 	/// ----- other class ----- ///
-	class ImGuiManager* pImGuiManager_ = nullptr; ///< ImGuiManagerへのポインタ
+	class ImGuiManager* pImGuiManager_; ///< ImGuiManagerへのポインタ
 
 
 	Microsoft::WRL::ComPtr<IDirectInputDevice8> mouse_;

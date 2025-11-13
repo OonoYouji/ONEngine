@@ -60,8 +60,6 @@ public:
 	EDITOR_STATE Execute() override;
 	EDITOR_STATE Undo() override;
 
-	std::string ReplaceAll(const std::string& _str, const std::string& _from, const std::string& _to);
-
 	EDITOR_STATE CreateNewClassFile(const std::string& _srcFilePath, const std::string& _outputFileName, const std::string& _newClassName);
 
 private:

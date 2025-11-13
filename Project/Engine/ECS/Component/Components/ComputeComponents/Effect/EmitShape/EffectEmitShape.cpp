@@ -13,10 +13,6 @@ EffectEmitShape::EffectEmitShape() {
 	/// 立方体の初期化
 	cube_.center = Vector3::kZero;
 	cube_.size = Vector3(1.0f, 1.0f, 1.0f);
-	/// 円柱の初期化
-	//cylinder_.center = Vector3::kZero;
-	/*cylinder_.radius = 1.0f;
-	cylinder_.height = 1.0f;*/
 	/// 円錐の初期化
 	cone_.center = Vector3::kZero;
 	cone_.angle = 30.0f;
@@ -29,7 +25,6 @@ EffectEmitShape::EffectEmitShape(const EffectEmitShape& _shape) {
 	switch (shapeType_) {
 	case ShapeType::Sphere:   sphere_ = _shape.sphere_;     break;
 	case ShapeType::Cube:     cube_ = _shape.cube_;         break;
-		//case ShapeType::Cylinder: cylinder_ = _shape.cylinder_; break;
 	case ShapeType::Cone:     cone_ = _shape.cone_;         break;
 	}
 }
@@ -49,7 +44,6 @@ Vector3 EffectEmitShape::GetEmitPosition() {
 			r * std::sin(phi) * std::sin(theta)
 		);
 	}
-
 	case ShapeType::Cube:
 	{
 		return cube_.center + Vector3(

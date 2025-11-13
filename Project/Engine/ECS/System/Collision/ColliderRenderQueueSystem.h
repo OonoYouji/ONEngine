@@ -18,7 +18,8 @@ public:
 	ColliderRenderQueueSystem();
 	~ColliderRenderQueueSystem() override = default;
 
-	void RuntimeUpdate(class ECSGroup* _ecs) override;
+	void OutsideOfRuntimeUpdate(class ECSGroup* _ecs) override;
+	void RuntimeUpdate(class ECSGroup*) override {};
 
 	/// @brief SphereのデータからGizmoを更新する
 	void UpdateSphereCollider(ComponentArray<SphereCollider>* _sphereColliderArray);

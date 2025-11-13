@@ -16,7 +16,14 @@ public:
 	MetaFile();
 	~MetaFile();
 
+	/// @brief ファイルの読み込み
+	/// @param _metaFilePath .mataファイルのパス
+	/// @return true: 読み込み成功, false: 読み込み失敗
 	bool LoadFromFile(const std::string& _metaFilePath);
+
+	/// @brief ファイルの保存
+	/// @param _metaFilePath 保存先の.metaファイルパス
+	/// @return true: 保存成功, false: 保存失敗
 	bool SaveToFile(const std::string& _metaFilePath) const;
 
 	/// ==================================================
@@ -25,7 +32,6 @@ public:
 
 	Guid guid;
 	AssetType assetType;
-
 
 };
 

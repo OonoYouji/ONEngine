@@ -57,12 +57,6 @@ namespace CSGui {
 	};
 
 
-	/// @brief 配列をImGuiで表示するための構造体
-	struct ArrayField : public ImGuiShowField {
-		void Draw(MonoObject* _obj, MonoClassField* _field, const char* _name) override;
-	};
-
-
 	/// -------------------------------------
 	/// 自作構造体の表示用
 	/// -------------------------------------

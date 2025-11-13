@@ -31,7 +31,7 @@ void Window::Initialize(const std::wstring& _windowName, const Vector2& _windowS
 
 	processMessage_ = false;
 
-	dxSwapChain_.reset(new DxSwapChain());
+	dxSwapChain_ = std::make_unique<DxSwapChain>();
 	dxSwapChain_->Initialize(_dxm, this);
 
 	isFullScreen_ = false;

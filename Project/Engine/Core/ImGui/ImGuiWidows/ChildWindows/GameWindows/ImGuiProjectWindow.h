@@ -57,8 +57,13 @@ private:
 	/// @param path 変更されたファイルのパス
 	void HandleFileModified(const std::filesystem::path& _path);
 
-	void UpdateDirectoryCache(const std::filesystem::path& dir);
 
+	/// @brief DirectoryCacheの更新
+	/// @param _dir 更新対象のディレクトリパス
+	void UpdateDirectoryCache(const std::filesystem::path& _dir);
+
+	/// @brief FileCacheの更新
+	/// @param _dir 更新対象のディレクトリパス
 	void UpdateFileCache(const std::filesystem::path& _dir);
 
 private:

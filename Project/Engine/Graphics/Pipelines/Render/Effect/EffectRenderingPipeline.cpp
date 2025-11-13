@@ -93,7 +93,6 @@ void EffectRenderingPipeline::Draw(class ECSGroup* _ecs, CameraComponent* _camer
 
 	ComponentArray<Effect>* effectArray = _ecs->GetComponentArray<Effect>();
 	if (!effectArray || effectArray->GetUsedComponents().empty()) {
-		Console::LogError("EffectRenderingPipeline::Draw: Effect component array is null");
 		return;
 	}
 
@@ -109,7 +108,7 @@ void EffectRenderingPipeline::Draw(class ECSGroup* _ecs, CameraComponent* _camer
 
 	for (const auto& effect : effectArray->GetUsedComponents()) {
 		/// ----- EffectをBlendModeごとに仕分け、さらにMeshごとにListを作る ----- ///
-		if (!effect || effect->enable) {
+		if (!effect || !effect->enable) {
 			continue;
 		}
 
@@ -118,6 +117,7 @@ void EffectRenderingPipeline::Draw(class ECSGroup* _ecs, CameraComponent* _camer
 	}
 
 
+	/// BlendModeごとに描画
 	for (auto& [blendMode, meshPerComp] : meshEffectsByBlendMode) {
 
 		/// 対応するBlendModeのパイプラインをセット

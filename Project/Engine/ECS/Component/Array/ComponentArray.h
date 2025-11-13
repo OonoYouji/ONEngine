@@ -122,7 +122,7 @@ inline IComponent* ComponentArray<Comp>::AddComponentUntyped() {
 template<typename Comp> requires std::is_base_of_v<IComponent, Comp>
 inline void ComponentArray<Comp>::RemoveComponent(size_t _id) {
 	if (_id >= components_.size()) {
-		Console::Log("ComponentArray: RemoveComponent failed, index out of range.");
+		Console::LogError("ComponentArray: RemoveComponent failed, index out of range.");
 		return;
 	}
 

@@ -9,7 +9,7 @@ void EntityPrefabCollection::LoadPrefabAll() {
 	std::vector<File> prefabFiles = Mathf::FindFiles(prefabPath, ".prefab");
 
 	if (prefabFiles.empty()) {
-		Console::Log("No prefab files found in: " + prefabPath);
+		Console::LogError("No prefab files found in: " + prefabPath);
 		return;
 	}
 

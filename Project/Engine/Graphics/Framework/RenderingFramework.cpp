@@ -28,6 +28,7 @@ void RenderingFramework::Initialize(DxManager* _dxm, WindowManager* _windowManag
 	assetCollection_->Initialize(pDxManager_);
 
 
+	/// ----- RenderTextureの初期化 ----- ///
 	const size_t kRenderTexCount = 4;
 	const std::array<std::string, kRenderTexCount> renderTexNames = {
 		"scene", "debug", "prefab", "shadowMap"
@@ -44,6 +45,7 @@ void RenderingFramework::Initialize(DxManager* _dxm, WindowManager* _windowManag
 	}
 
 
+	/// PostProcess用UAVTextureの初期化
 	std::unique_ptr<UAVTexture> uavTexture = std::make_unique<UAVTexture>();
 	uavTexture->Initialize("postProcessResult", pDxManager_, assetCollection_.get());
 

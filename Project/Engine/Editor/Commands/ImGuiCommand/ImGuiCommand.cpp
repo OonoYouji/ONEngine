@@ -36,7 +36,7 @@ bool ImMathf::DragFloat(const std::string& _label, float* _pv, float _step, floa
 	/// 操作を終えた
 	if (ImGui::IsItemDeactivatedAfterEdit()) {
 		float endValue = *_pv;
-		EditCommand::Execute<ImGuiCommand::FloatCommand>(_pv, startValue, endValue);
+		EditCommand::Execute<ImGuiCommand::TCommand<float>>(_pv, startValue, endValue);
 	}
 
 	return edit;
@@ -54,7 +54,7 @@ bool ImMathf::DragFloat2(const std::string& _label, Vector2* _pv, float _step, f
 	/// 操作を終えた
 	if (ImGui::IsItemDeactivatedAfterEdit()) {
 		Vector2 endValue = *_pv;
-		EditCommand::Execute<ImGuiCommand::Vec2Command>(_pv, startValue, endValue);
+		EditCommand::Execute<ImGuiCommand::TCommand<Vector2>>(_pv, startValue, endValue);
 	}
 
 	return edit;
@@ -74,7 +74,7 @@ bool ImMathf::DragFloat3(const std::string& _label, Vector3* _pv, float _step, f
 	/// 操作を終えた
 	if (ImGui::IsItemDeactivatedAfterEdit()) {
 		Vector3 endValue = *_pv;
-		EditCommand::Execute<ImGuiCommand::Vec3Command>(_pv, startValue, endValue);
+		EditCommand::Execute<ImGuiCommand::TCommand<Vector3>>(_pv, startValue, endValue);
 	}
 
 	return edit;
@@ -93,7 +93,7 @@ bool ImMathf::DragFloat4(const std::string& _label, Vector4* _pv, float _step, f
 	/// 操作を終えた
 	if (ImGui::IsItemDeactivatedAfterEdit()) {
 		Vector4 endValue = *_pv;
-		EditCommand::Execute<ImGuiCommand::Vec4Command>(_pv, startValue, endValue);
+		EditCommand::Execute<ImGuiCommand::TCommand<Vector4>>(_pv, startValue, endValue);
 	}
 
 	return edit;
@@ -117,147 +117,9 @@ bool ImMathf::DragQuaternion(const std::string& _label, Quaternion* _pq, float _
 	/// 操作を終えた
 	if (ImGui::IsItemDeactivatedAfterEdit()) {
 		Quaternion endValue = *_pq;
-		EditCommand::Execute<ImGuiCommand::QuaternionCommand>(_pq, startValue, endValue);
+		EditCommand::Execute<ImGuiCommand::TCommand<Quaternion>>(_pq, startValue, endValue);
 	}
 
 	return false;
-}
-
-
-/// ///////////////////////////////////////////////////
-/// ImGuiで操作したFloatのRedo,Undoコマンド
-/// ///////////////////////////////////////////////////
-ImGuiCommand::FloatCommand::FloatCommand(float* _v, float _old, float _new)
-	: pValue_(_v), oldValue_(_old), newValue_(_new) {
-}
-
-EDITOR_STATE ImGuiCommand::FloatCommand::Execute() {
-	if (pValue_) {
-		*pValue_ = newValue_;
-	} else {
-		Console::Log("ImGuiCommand::FloatCommand : Value is nullptr");
-		return EDITOR_STATE::EDITOR_STATE_FAILED;
-	}
-	return EDITOR_STATE::EDITOR_STATE_FINISH;
-}
-
-EDITOR_STATE ImGuiCommand::FloatCommand::Undo() {
-	if (pValue_) {
-		*pValue_ = oldValue_;
-	} else {
-		Console::Log("ImGuiCommand::FloatCommand : Value is nullptr");
-		return EDITOR_STATE::EDITOR_STATE_FAILED;
-	}
-	return EDITOR_STATE::EDITOR_STATE_FINISH;
-}
-
-
-
-/// ///////////////////////////////////////////////////
-/// ImGuiで操作したVector2のRedo,Undoコマンド
-/// ///////////////////////////////////////////////////
-ImGuiCommand::Vec2Command::Vec2Command(Vector2* _v, const Vector2& _old, const Vector2& _new) 
-	: pValue_(_v), oldValue_(_old), newValue_(_new) {
-}
-
-EDITOR_STATE ImGuiCommand::Vec2Command::Execute() {
-	if (pValue_) {
-		*pValue_ = newValue_;
-	} else {
-		Console::Log("ImGuiCommand::Vec3Command : Value is nullptr");
-		return EDITOR_STATE::EDITOR_STATE_FAILED;
-	}
-	return EDITOR_STATE::EDITOR_STATE_FINISH;
-}
-
-EDITOR_STATE ImGuiCommand::Vec2Command::Undo() {
-	if (pValue_) {
-		*pValue_ = oldValue_;
-	} else {
-		Console::Log("ImGuiCommand::Vec3Command : Value is nullptr");
-		return EDITOR_STATE::EDITOR_STATE_FAILED;
-	}
-	return EDITOR_STATE::EDITOR_STATE_FINISH;
-}
-
-/// ///////////////////////////////////////////////////
-/// ImGuiで操作したVector3のRedo,Undoコマンド
-/// ///////////////////////////////////////////////////
-ImGuiCommand::Vec3Command::Vec3Command(Vector3* _v, const Vector3& _old, const Vector3& _new)
-	: pValue_(_v), oldValue_(_old), newValue_(_new) {
-}
-
-EDITOR_STATE ImGuiCommand::Vec3Command::Execute() {
-	if (pValue_) {
-		*pValue_ = newValue_;
-	} else {
-		Console::Log("ImGuiCommand::Vec3Command : Value is nullptr");
-		return EDITOR_STATE::EDITOR_STATE_FAILED;
-	}
-	return EDITOR_STATE::EDITOR_STATE_FINISH;
-}
-
-EDITOR_STATE ImGuiCommand::Vec3Command::Undo() {
-	if (pValue_) {
-		*pValue_ = oldValue_;
-	} else {
-		Console::Log("ImGuiCommand::Vec3Command : Value is nullptr");
-		return EDITOR_STATE::EDITOR_STATE_FAILED;
-	}
-	return EDITOR_STATE::EDITOR_STATE_FINISH;
-}
-
-/// ///////////////////////////////////////////////////
-/// ImGuiで操作したVector4のRedo,Undoコマンド
-/// ///////////////////////////////////////////////////
-ImGuiCommand::Vec4Command::Vec4Command(Vector4* _v, const Vector4& _old, const Vector4& _new)
-	: pValue_(_v), oldValue_(_old), newValue_(_new) {
-}
-
-EDITOR_STATE ImGuiCommand::Vec4Command::Execute() {
-	if (pValue_) {
-		*pValue_ = newValue_;
-	} else {
-		Console::Log("ImGuiCommand::Vec4Command : Value is nullptr");
-		return EDITOR_STATE::EDITOR_STATE_FAILED;
-	}
-	return EDITOR_STATE::EDITOR_STATE_FINISH;
-}
-
-EDITOR_STATE ImGuiCommand::Vec4Command::Undo() {
-	if (pValue_) {
-		*pValue_ = oldValue_;
-	} else {
-		Console::Log("ImGuiCommand::Vec4Command : Value is nullptr");
-		return EDITOR_STATE::EDITOR_STATE_FAILED;
-	}
-	return EDITOR_STATE::EDITOR_STATE_FINISH;
-}
-
-/// ///////////////////////////////////////////////////
-/// ImGuiで操作したQuaternionのRedo,Undoコマンド
-/// ///////////////////////////////////////////////////
-ImGuiCommand::QuaternionCommand::QuaternionCommand(Quaternion* _q, const Quaternion& _old, const Quaternion& _new)
-	: pValue_(_q), oldValue_(_old), newValue_(_new) {
-}
-
-EDITOR_STATE ImGuiCommand::QuaternionCommand::Execute() {
-	if (pValue_) {
-		*pValue_ = newValue_;
-	} else {
-		Console::Log("ImGuiCommand::QuaternionCommand : Value is nullptr");
-		return EDITOR_STATE::EDITOR_STATE_FAILED;
-	}
-	return EDITOR_STATE::EDITOR_STATE_FINISH;
-}
-
-EDITOR_STATE ImGuiCommand::QuaternionCommand::Undo() {
-	if (pValue_) {
-		*pValue_ = oldValue_;
-	} else {
-		Console::Log("ImGuiCommand::QuaternionCommand : Value is nullptr");
-		return EDITOR_STATE::EDITOR_STATE_FAILED;
-	}
-	return EDITOR_STATE::EDITOR_STATE_FINISH;
 }
 

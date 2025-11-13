@@ -12,10 +12,13 @@ namespace fs = std::filesystem;
 
 
 float Mathf::Cot(float _t) {
+	/// 逆タンジェント
 	return 1.0f / std::tan(_t);
 }
 
 std::vector<File> Mathf::FindFiles(const std::string& _fileDirectory, const std::string& _fileExtension) {
+	/// ----- 指定されたディレクトリ内のファイルを全て探索 ----- ///
+
 	std::vector<File> result{};
 	// ディレクトリが存在するか確認
 	if (!fs::exists(_fileDirectory) || !fs::is_directory(_fileDirectory)) {
@@ -107,15 +110,18 @@ std::string Mathf::FileExtension(const std::string& _filename) {
 }
 
 std::vector<std::vector<int>> Mathf::LoadCSV(const std::string& _filePath) {
+	/// ----- CSVファイルを読み込む ----- ///
+
 	std::vector<std::vector<int>> data;
 
+	/// ファイルを開く
 	std::ifstream file(_filePath);
-
 	if (!file.is_open()) {
-		Console::Log("[error] Mathf::LoadCSV: Could not open file " + _filePath);
+		Console::LogError("Mathf::LoadCSV: Could not open file " + _filePath);
 		return data; // 空のベクターを返す
 	}
 
+	/// 行ごとに読み込む
 	std::string line;
 	while (std::getline(file, line)) {
 		std::vector<int> row;

@@ -38,7 +38,6 @@ void RiverMeshGeneratePipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMa
 }
 
 void RiverMeshGeneratePipeline::Execute(EntityComponentSystem* _ecs, DxCommand* _dxCommand, AssetCollection* /*_assetCollection*/) {
-
 	/// --------------------------------------------------------------------
 	/// 早期リターンチェック
 	/// --------------------------------------------------------------------
@@ -89,7 +88,9 @@ void RiverMeshGeneratePipeline::Execute(EntityComponentSystem* _ecs, DxCommand* 
 	/// 起動
 	UINT totalVertices = river->GetSamplePerSegment() * (river->GetNumControlPoint() - 3) * 2;
 	UINT threadsPerGroup = 16;
-	UINT dispatchX = (totalVertices + threadsPerGroup - 1) / threadsPerGroup;
-	cmdList->Dispatch(dispatchX, 1, 1);
+	cmdList->Dispatch(
+		Mathf::DivideAndRoundUp(totalVertices, threadsPerGroup),
+		1, 1
+	);
 }
 

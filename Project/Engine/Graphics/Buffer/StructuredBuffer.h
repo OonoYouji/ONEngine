@@ -37,10 +37,34 @@ public:
 	StructuredBuffer();
 	~StructuredBuffer();
 
+	/// @brief SRVバッファの生成
+	/// @param _size Bufferのサイズ
+	/// @param _dxDevice DxDeviceへのポインタ
+	/// @param _dxSRVHeap DxSRVHeapへのポインタ
 	void Create(uint32_t _size, DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap);
+
+	/// @brief UAVバッファの生成
+	/// @param _size Bufferのサイズ
+	/// @param _dxDevice DxDeviceへのポインタ
+	/// @param _dxCommand DxCommandへのポインタ
+	/// @param _dxSRVHeap DxSRVHeapへのポインタ
 	void CreateUAV(uint32_t _size, DxDevice* _dxDevice, DxCommand* _dxCommand, DxSRVHeap* _dxSRVHeap);
+
+	/// @brief AppendBufferの生成
+	/// @param _size Bufferのサイズ
+	/// @param _dxDevice DxDeviceへのポインタ
+	/// @param _dxCommand DxCommandへのポインタ
+	/// @param _dxSRVHeap DxSRVHeapへのポインタ
 	void CreateAppendBuffer(uint32_t _size, DxDevice* _dxDevice, DxCommand* _dxCommand, DxSRVHeap* _dxSRVHeap);
+
+	/// @brief SRVとUAVの両方を生成する
+	/// @param _size Bufferのサイズ
+	/// @param _dxDevice DxDeviceへのポインタ
+	/// @param _dxCommand DxCommandへのポインタ
+	/// @param _dxSRVHeap DxSRVHeapへのポインタ
 	void CreateSRVAndUAV(uint32_t _size, DxDevice* _dxDevice, DxCommand* _dxCommand, DxSRVHeap* _dxSRVHeap);
+
+
 
 	/* ----- append structure buffer methods ----- */
 

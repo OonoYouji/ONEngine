@@ -120,7 +120,9 @@ void ImGuiProjectWindow::ShowImGui() {
 
 		ImGui::TableNextRow();
 
-		// --- 左カラム ---
+		/// ---------------------------------------------------
+		/// 左カラム : ディレクトリTree
+		/// ---------------------------------------------------
 		ImGui::TableSetColumnIndex(0);
 		ImGui::BeginChild("TreeRegion");
 
@@ -144,7 +146,9 @@ void ImGuiProjectWindow::ShowImGui() {
 
 		ImGui::EndChild();
 
-		// --- 右カラム ---
+		/// ---------------------------------------------------
+		/// 右カラム : ファイルビュー
+		/// ---------------------------------------------------
 		ImGui::TableSetColumnIndex(1);
 		ImGui::BeginChild("ViewRegion");
 		DrawFileView(currentPath_);
@@ -159,8 +163,10 @@ void ImGuiProjectWindow::SetWindowName(const std::string& _windowName) {
 	windowName_ = _windowName;
 }
 
-void ImGuiProjectWindow::DrawDirectoryTree(const std::filesystem::path& dir) {
-	auto it = directoryCache_.find(dir.string());
+void ImGuiProjectWindow::DrawDirectoryTree(const std::filesystem::path& _dir) {
+	/// ----- 引数のディレクトリを再帰的に表示していく ----- ///
+
+	auto it = directoryCache_.find(_dir.string());
 	if (it == directoryCache_.end()) {
 		return;
 	}
@@ -187,6 +193,8 @@ void ImGuiProjectWindow::DrawDirectoryTree(const std::filesystem::path& dir) {
 }
 
 void ImGuiProjectWindow::DrawFileView(const std::filesystem::path& dir) {
+	/// ----- 引数のディレクトリ内のファイルを表示していく ----- ///
+
 	auto it = fileCache_.find(dir.string());
 	if (it == fileCache_.end()) {
 		return;
@@ -224,7 +232,9 @@ void ImGuiProjectWindow::DrawFileView(const std::filesystem::path& dir) {
 		ImGui::PushID(name.c_str());
 		ImGui::BeginGroup();
 
-		/// ----- アイコン表示 ----- ///
+		/// ---------------------------------------------------
+		/// 対応のアイコンを表示
+		/// ---------------------------------------------------
 		if (file.isDirectory) {
 			/// ----- ディレクトリなのでフォルダアイコンを表示 ----- ///
 			Texture* texture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/FileIcons/FolderIcon.png");
@@ -478,14 +488,16 @@ void ImGuiProjectWindow::HandleFileModified(const std::filesystem::path& _path) 
 	UpdateFileCache(_path.parent_path());
 }
 
-void ImGuiProjectWindow::UpdateDirectoryCache(const std::filesystem::path& dir) {
-	if (!std::filesystem::exists(dir)) {
-		directoryCache_.erase(dir.string());
+void ImGuiProjectWindow::UpdateDirectoryCache(const std::filesystem::path& _dir) {
+	/// ----- 引数のディレクトリ内のサブディレクトリをキャッシュに保存 ----- ///
+
+	if (!std::filesystem::exists(_dir)) {
+		directoryCache_.erase(_dir.string());
 		return;
 	}
 
 	std::vector<FileItem> subdirectories;
-	for (const auto& entry : std::filesystem::directory_iterator(dir)) {
+	for (const auto& entry : std::filesystem::directory_iterator(_dir)) {
 		if (!entry.is_directory()) {
 			continue;
 		}
@@ -501,11 +513,13 @@ void ImGuiProjectWindow::UpdateDirectoryCache(const std::filesystem::path& dir) 
 		UpdateDirectoryCache(subdir); // 再帰
 	}
 
-	directoryCache_[dir.string()] = std::move(subdirectories);
+	directoryCache_[_dir.string()] = std::move(subdirectories);
 }
 
 
 void ImGuiProjectWindow::UpdateFileCache(const std::filesystem::path& dir) {
+	/// ----- 引数のディレクトリ内のファイルをキャッシュに保存 ----- ///
+
 	if (!std::filesystem::exists(dir)) {
 		fileCache_.erase(dir.string());
 		return;

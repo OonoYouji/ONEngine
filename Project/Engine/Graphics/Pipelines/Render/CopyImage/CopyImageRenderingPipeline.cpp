@@ -50,16 +50,16 @@ void CopyImageRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxM
 void CopyImageRenderingPipeline::Draw(class ECSGroup* /*_ecs*/, CameraComponent*, DxCommand* _dxCommand) {
 
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
-	ID3D12GraphicsCommandList* commandList = _dxCommand->GetCommandList();
+	ID3D12GraphicsCommandList* cmdList = _dxCommand->GetCommandList();
 
 	/// settings
-	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	auto& textures = pAssetCollection_->GetTextures();
 	size_t index = pAssetCollection_->GetTextureIndex("./Assets/Scene/RenderTexture/sceneScene");
 
-	commandList->SetGraphicsRootDescriptorTable(0, textures[index].GetSRVGPUHandle());
+	cmdList->SetGraphicsRootDescriptorTable(0, textures[index].GetSRVGPUHandle());
 
-	commandList->DrawInstanced(3, 1, 0, 0);
+	cmdList->DrawInstanced(3, 1, 0, 0);
 
 }

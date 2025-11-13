@@ -46,6 +46,7 @@ void ImGuiHierarchyWindow::ShowImGui() {
 }
 
 void ImGuiHierarchyWindow::PrefabDragAndDrop() {
+	/// ----- Prefabのドラッグアンドドロップ処理 ----- ///
 
 	if (ImGui::BeginDragDropTarget()) {
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("AssetData")) {
@@ -75,14 +76,13 @@ void ImGuiHierarchyWindow::PrefabDragAndDrop() {
 }
 
 void ImGuiHierarchyWindow::DrawMenuBar() {
+	/// ----- MenuBarの表示 ----- ///
 
-	/// 早期リターン
+	/// 新規作成やシーンの保存などなど
 	if (ImGui::BeginMenuBar()) {
 		if (ImGui::BeginMenu("+")) {
-
 			DrawMenuEntity();
 			DrawMenuScene();
-
 			ImGui::EndMenu();
 		}
 
@@ -90,7 +90,7 @@ void ImGuiHierarchyWindow::DrawMenuBar() {
 	}
 
 
-	// display
+	/// シーンの保存、読み込みに使うダイアログの表示
 	DrawDialog();
 	DrawSceneSaveDialog();
 }
@@ -106,6 +106,8 @@ void ImGuiHierarchyWindow::DrawMenuEntity() {
 }
 
 void ImGuiHierarchyWindow::DrawMenuScene() {
+	/// ----- sceneメニューの表示 ----- ///
+
 	if (ImGui::BeginMenu("scene")) {
 
 		if (ImGui::MenuItem("create scene")) {
@@ -199,56 +201,6 @@ void ImGuiHierarchyWindow::EntityRename(GameEntity* _entity) {
 	}
 }
 
-void ImGuiHierarchyWindow::EntityDebug(GameEntity* _entity) {
-	/// -------------------------------------
-	// ドラッグの開始
-	/// -------------------------------------
-	if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
-		ImGui::SetDragDropPayload("ENTITY_HIERARCHY", _entity, sizeof(GameEntity));
-		ImGui::TextUnformatted(entityName_.c_str());
-		ImGui::EndDragDropSource();
-	}
-
-	if (ImGui::BeginDragDropTarget()) {
-		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_HIERARCHY")) {
-			GameEntity* srcEntity = static_cast<GameEntity*>(payload->Data);
-			if (srcEntity != _entity) {
-				//srcEntity->RemoveParent();
-				//srcEntity->SetParent(_entity);
-			}
-		}
-		ImGui::EndDragDropTarget();
-	}
-
-
-
-	/// -------------------------------------
-	/// 右クリックしたときのメニューの表示
-	/// -------------------------------------
-	if (ImGui::BeginPopupContextItem(entityName_.c_str())) {
-		if (ImGui::MenuItem("rename")) {
-			newName_ = _entity->GetName();
-			renameEntity_ = _entity;
-		}
-
-		if (ImGui::MenuItem("delete")) {
-			pEditorManager_->ExecuteCommand<DeleteEntityCommand>(pEcsGroup_, _entity);
-			renameEntity_ = nullptr; // 名前変更モードを解除
-
-			/// 選択中ならInspectorの選択を解除
-			if (selectedEntity_ == _entity) {
-				selectedEntity_ = nullptr;
-				ImGuiSelection::SetSelectedObject(Guid::kInvalid, SelectionType::None);
-			}
-		}
-
-		ImGui::EndPopup();
-	}
-
-
-
-}
-
 void ImGuiHierarchyWindow::DrawDialog() {
 	// display
 	if (ImGuiFileDialog::Instance()->Display("Dialog", ImGuiWindowFlags_NoDocking)) {
@@ -277,6 +229,8 @@ void ImGuiHierarchyWindow::DrawDialog() {
 }
 
 void ImGuiHierarchyWindow::DrawSceneSaveDialog() {
+	/// ----- シーン保存ダイアログの表示 ----- ///
+
 	if (ImGuiFileDialog::Instance()->Display("save file dialog")) {
 		if (ImGuiFileDialog::Instance()->IsOk()) {
 			std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();

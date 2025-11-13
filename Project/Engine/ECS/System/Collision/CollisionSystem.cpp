@@ -63,33 +63,6 @@ CollisionSystem::CollisionSystem() {
 
 }
 
-void CollisionSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
-
-	/// SphereColliderのGizmo描画
-	ComponentArray<SphereCollider>* sphereColliderArray = _ecs->GetComponentArray<SphereCollider>();
-	if (sphereColliderArray) {
-		for (auto& sphereCollider : sphereColliderArray->GetUsedComponents()) {
-			if (sphereCollider) {
-				if (GameEntity* owner = sphereCollider->GetOwner()) {
-					Gizmo::DrawWireSphere(owner->GetPosition(), sphereCollider->GetRadius(), Color::kRed);
-				}
-			}
-		}
-	}
-
-	/// BoxColliderのGizmo描画
-	ComponentArray<BoxCollider>* boxColliderArray = _ecs->GetComponentArray<BoxCollider>();
-	if (boxColliderArray) {
-		for (auto& boxCollider : boxColliderArray->GetUsedComponents()) {
-			if (boxCollider) {
-				if (GameEntity* owner = boxCollider->GetOwner()) {
-					Gizmo::DrawWireCube(owner->GetPosition(), boxCollider->GetSize(), Color::kRed);
-				}
-			}
-		}
-	}
-
-}
 
 void CollisionSystem::RuntimeUpdate(ECSGroup* _ecs) {
 

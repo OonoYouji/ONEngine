@@ -28,7 +28,7 @@ void SkinMeshUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
 			Model* model = pAssetCollection_->GetModel(skinMesh->GetMeshPath());
 			if (!model) {
 				//!< nullの場合は適当なメッセージを出力してスキップ
-				Console::Log("[error] SkinMeshUpdateSystem::Update: Model not found for path: " + skinMesh->GetMeshPath());
+				Console::LogError("SkinMeshUpdateSystem::Update: Model not found for path: " + skinMesh->GetMeshPath());
 				skinMesh->isChangingMesh_ = false; ///< モデルが見つからない場合はメッシュ変更フラグを下げる
 				continue; ///< モデルが見つからない場合はスキップ
 			}

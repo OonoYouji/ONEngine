@@ -12,10 +12,10 @@
 #include "Engine/Core/Config/EngineConfig.h"
 
 
-DxSwapChain::DxSwapChain() {}
+DxSwapChain::DxSwapChain() = default;
+
 DxSwapChain::~DxSwapChain() {
 	DxRTVHeap* dxRTVHeap = pDxManager_->GetDxRTVHeap();
-
 	for(uint32_t index : rtvIndices_) {
 		dxRTVHeap->Free(index);
 	}
@@ -111,6 +111,7 @@ void DxSwapChain::Initialize(DxManager* _dxm, Window* _window) {
 }
 
 void DxSwapChain::BindViewportAndScissorRectForCommandList(ID3D12GraphicsCommandList* _commandList) const {
+	/// ビューポートとシザー矩形の設定
 	_commandList->RSSetViewports(1, &viewport_);
 	_commandList->RSSetScissorRects(1, &scissorRect_);
 }

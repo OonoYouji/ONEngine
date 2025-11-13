@@ -90,6 +90,8 @@ public:
 	ID3D12Resource* Get() const;
 	ComPtr<ID3D12Resource>& GetComPtr();
 
+	/// @brief 現在のリソース状態を取得する
+	/// @return リソース状態
 	D3D12_RESOURCE_STATES GetCurrentState() const;
 
 };

@@ -35,7 +35,7 @@ public:
 	void Run();
 
 	/// debug用のシーン.jsonを読み込む
-	void LoadDebugJson();
+	void LoadDebugScene();
 
 private:
 	/// ===================================================

@@ -36,7 +36,6 @@ void ImGuiPrefabViewWindow::ShowImGui() {
 				debugCamera->UpdateViewProjection();
 			}
 		}
-
 	}
 
 

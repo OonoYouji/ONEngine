@@ -94,7 +94,7 @@ void CameraUpdateSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
 	}
 
 	for (auto& cameraComponent : cameraArray->GetUsedComponents()) {
-		if (!cameraComponent) {
+		if (!cameraComponent || !cameraComponent->enable) {
 			continue; /// nullptrチェック
 		}
 

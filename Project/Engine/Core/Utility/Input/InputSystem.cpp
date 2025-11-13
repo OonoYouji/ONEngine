@@ -27,6 +27,10 @@ void InputSystem::Initialize(WindowManager* _windowManager, ImGuiManager* _imGui
 	Assert(SUCCEEDED(hr), "Failed to generate directInput.");
 
 
+	/// ---------------------------------------------------
+	/// 各入力デバイスの初期化
+	/// ---------------------------------------------------
+
 	keyboard_ = std::make_unique<Keyboard>();
 	keyboard_->Initialize(directInput_.Get(), pWindowManager_);
 

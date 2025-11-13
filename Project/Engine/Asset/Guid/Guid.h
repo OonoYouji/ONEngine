@@ -18,6 +18,7 @@ void to_json(nlohmann::json& _j, const struct Guid& _guid);
 /// GUID 構造体
 /// ////////////////////////////////////////////////////
 struct Guid final {
+	/// --------------- friend function --------------- ///
 	friend void from_json(const nlohmann::json& _j, struct Guid& _guid);
 	friend void to_json(nlohmann::json& _j, const struct Guid& _guid);
 

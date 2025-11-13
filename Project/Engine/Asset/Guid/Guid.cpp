@@ -18,6 +18,7 @@ void to_json(nlohmann::json& _j, const Guid& _guid) {
 }
 
 
+/// @brief 無効値のGuid定義
 const Guid Guid::kInvalid = Guid{ 0, 0 };
 
 
@@ -25,6 +26,8 @@ Guid::Guid() : high(0), low(0) {}
 Guid::Guid(uint64_t _high, uint64_t _low) : high(_high), low(_low) {}
 
 std::string Guid::ToString() const {
+	/// ----- GuidをStringに変換する ----- ///
+
 	std::ostringstream oss;
 	oss << std::hex << std::setfill('0')
 		<< std::setw(16) << high
@@ -41,6 +44,8 @@ std::string Guid::ToString(const Guid& _guid) {
 }
 
 Guid Guid::FromString(const std::string& _str) {
+	/// ----- StringをGuidに変換して返す ----- ///
+
 	/// _str が32文字でない場合は無効なGuidを返す
 	if (_str.size() != 32) {
 		return Guid{};

@@ -8,8 +8,8 @@
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/Core/Utility/Math/Mathf.h"
 
-AssetCollection::AssetCollection() {}
-AssetCollection::~AssetCollection() {}
+AssetCollection::AssetCollection() = default;
+AssetCollection::~AssetCollection() = default;
 
 
 void AssetCollection::Initialize(DxManager* _dxm) {
@@ -17,10 +17,10 @@ void AssetCollection::Initialize(DxManager* _dxm) {
 	assetLoader_->Initialize();
 
 	/// リソースコンテナの初期化
-	modelContainer_ = std::make_unique<AssetContainer<Model>>(static_cast<size_t>(MAX_MODEL_COUNT));
-	textureContainer_ = std::make_unique<AssetContainer<Texture>>(static_cast<size_t>(MAX_TEXTURE_COUNT));
+	modelContainer_     = std::make_unique<AssetContainer<Model>>(static_cast<size_t>(MAX_MODEL_COUNT));
+	textureContainer_   = std::make_unique<AssetContainer<Texture>>(static_cast<size_t>(MAX_TEXTURE_COUNT));
 	audioClipContainer_ = std::make_unique<AssetContainer<AudioClip>>(static_cast<size_t>(MAX_AUDIOCLIP_COUNT));
-	materialContainer_ = std::make_unique<AssetContainer<Material>>(static_cast<size_t>(MAX_MATERIAL_COUNT));
+	materialContainer_  = std::make_unique<AssetContainer<Material>>(static_cast<size_t>(MAX_MATERIAL_COUNT));
 
 	/// Packages内のファイルがすべて読み込む
 	LoadResources(GetResourceFilePaths("./Packages/"));

@@ -32,7 +32,6 @@ public:
 	CollisionSystem();
 	virtual ~CollisionSystem() = default;
 
-	void OutsideOfRuntimeUpdate(class ECSGroup* _ecs) override;
 	void RuntimeUpdate(class ECSGroup* _ecs);
 
 	/// コールバック関数の呼び出し
@@ -40,6 +39,12 @@ public:
 	void CallStayFunc(const std::string& _ecsGroupName);
 	void CallExitFunc(const std::string& _ecsGroupName);
 
+	/// @brief AとBの押し戻しを行う
+	/// @param _a Aエンティティのポインタ
+	/// @param _aState Aエンティティのコリジョン状態
+	/// @param _b Bエンティティのポインタ
+	/// @param _bState Bエンティティのコリジョン状態
+	/// @param _info AとBの衝突情報
 	void PushBack(
 		class GameEntity* _a, CollisionState _aState,
 		class GameEntity* _b, CollisionState _bState,

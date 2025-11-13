@@ -132,10 +132,9 @@ void ImGuiSceneWindow::ShowImGui() {
 	/// gizmoの表示
 	/// ----------------------------------------
 
-	// 操作対象のゲット
+	/// Guidを元に操作対象のエンティティを取得する、
 	const Guid& selectedGuid = ImGuiSelection::GetSelectedObject();
-	GameEntity* entity = pEcs_->GetCurrentGroup()->GetEntityFromGuid(selectedGuid);
-	if (entity) {
+	if (GameEntity* entity = pEcs_->GetCurrentGroup()->GetEntityFromGuid(selectedGuid)) {
 
 		ImGuizmo::SetOrthographic(false); // 透視投影
 		ImGuizmo::SetDrawlist();          // ImGuiの現在のDrawListに出力
