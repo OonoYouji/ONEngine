@@ -1,0 +1,95 @@
+#pragma once
+
+/// std
+#include <vector>
+
+/// engine
+#include "../../Interface/IComponent.h"
+#include "Engine/Asset/Guid/Guid.h"
+
+/*
+* このボクセル地形の仕様、構造について
+* 
+* [ 基本構造 ]
+* ボクセル地形は複数のチャンク(Chunk)で構成される。
+* 各チャンクは3Dテクスチャ(Texture3D)で表現され、各ボクセルの情報を格納する。
+* チャンクの大きさは親であるボクセル地形が決定する。
+* 
+* [ ボクセル情報 ]
+* 各ボクセルは以下の情報を持つ。
+* - マテリアルID: ボクセルの材質を識別するためのID。これをもとにマテリアルテクスチャから色や質感を取得する。
+* 
+* [ 入出力形式 ]
+* チャンクのデータはDDS形式の3Dテクスチャとして保存される。
+* 空のチャンクは入出力を行わないことで、パフォーマンスを最適化する。
+* ファイル名をチャンクのIdに基づいて決定することで、チャンクの位置を特定できるようにする。
+* 
+* [ 描画 ]
+* AS, MS, PSを用いてボクセル地形を描画する。
+* ASではチャンクの可視性を判定し、MSでジオメトリを生成、PSで最終的な色を決定する。
+* 
+* [ 衝突判定 ]
+* チャンクごとに衝突判定を行う。
+* チャンクが存在しない場合は衝突判定をスキップする。
+* 
+*/
+
+
+
+/// ///////////////////////////////////////////////////
+/// ボクセル地形におけるチャンク
+/// ///////////////////////////////////////////////////
+struct Chunk {
+	/*
+	*  [ 必要なデータ ]
+	* このチャンクを表現するTexture3D (.dds形式)
+	* チャンクのId (座標から計算可能)
+	*/
+
+	Guid texture3DId; ///< このチャンクを表現するTexture3DのId
+};
+
+
+/// @brief デバッグ関数用に前方宣言をする
+class VoxelTerrain;
+
+namespace COMP_DEBUG {
+	void PrintVoxelTerrainInfo(const VoxelTerrain& _voxelTerrain);
+}
+
+void from_json(const nlohmann::json& _j, VoxelTerrain& _voxelTerrain);
+void to_json(nlohmann::json& _j, const VoxelTerrain& _voxelTerrain);
+
+
+/// ///////////////////////////////////////////////////
+/// ボクセルで表現された地形
+/// ///////////////////////////////////////////////////
+class VoxelTerrain : public IComponent {
+	/// --------------- friend function --------------- ///
+	friend void COMP_DEBUG::PrintVoxelTerrainInfo(const VoxelTerrain& _voxelTerrain);
+	friend void from_json(const nlohmann::json& _j, VoxelTerrain& _voxelTerrain);
+	friend void to_json(nlohmann::json& _j, const VoxelTerrain& _voxelTerrain);
+
+public:
+	/// ===========================================
+	/// public : methods
+	/// ===========================================
+	
+	VoxelTerrain();
+	~VoxelTerrain() override;
+
+private:
+	/// ===========================================
+	/// private : objects
+	/// ===========================================
+	
+	/*
+	*  [ 必要なデータ ]
+	* Chunkの配列
+	* １つあたりのチャンクの大きさ (x*y*z)
+	*/
+
+	std::vector<Chunk> chunks_; ///< チャンクの配列
+
+};
+
