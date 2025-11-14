@@ -73,12 +73,12 @@ VoxelTerrain::VoxelTerrain() {
 VoxelTerrain::~VoxelTerrain() {}
 
 void VoxelTerrain::SettingChunksGuid(AssetCollection* _assetCollection) {
-	size_t maxChunks = static_cast<size_t>(chunkCountXZ_.x * chunkCountXZ_.y);
-	if(maxChunks > chunks_.size()) {
-		chunks_.resize(maxChunks);
+	maxChunkCount_ = static_cast<size_t>(chunkCountXZ_.x * chunkCountXZ_.y);
+	if (maxChunkCount_ > chunks_.size()) {
+		chunks_.resize(maxChunkCount_);
 	}
 
-	for (size_t i = 0; i < maxChunks; i++) {
+	for (size_t i = 0; i < maxChunkCount_; i++) {
 		/// indexを元にファイルパスを生成
 		const std::string filepath = "./Packages/Textures/Terrain/Chunk/" + std::to_string(i) + ".dds";
 
@@ -106,7 +106,6 @@ void VoxelTerrain::CreateBuffers(DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap) {
 }
 
 void VoxelTerrain::SetupGraphicBuffers(ID3D12GraphicsCommandList* _cmdList, const std::array<UINT, 2> _rootParamIndices, AssetCollection* _assetCollection) {
-
 	maxChunkCount_ = static_cast<UINT>(chunkCountXZ_.x * chunkCountXZ_.y);
 
 	/// VoxelTerrainInfoの設定
@@ -114,11 +113,20 @@ void VoxelTerrain::SetupGraphicBuffers(ID3D12GraphicsCommandList* _cmdList, cons
 	cBufferTerrainInfo_.BindForGraphicsCommandList(_cmdList, _rootParamIndices[0]);
 
 	/// ChunkArrayの設定
-	size_t maxChunks = static_cast<size_t>(chunkCountXZ_.x * chunkCountXZ_.y);
-	for (size_t i = 0; i < maxChunks; i++) {
-		uint32_t textureIndex = _assetCollection->GetTextureIndexFromGuid(chunks_[i].texture3DId);
-		sBufferChunks_.SetMappedData(i, GPUData::Chunk{ textureIndex });
+	for (size_t i = 0; i < maxChunkCount_; i++) {
+		int32_t textureIndex = _assetCollection->GetTextureIndexFromGuid(chunks_[i].texture3DId);
+
+		/// 0番は必ず存在する想定なので、見つからなかったら0番を設定する
+		if (textureIndex == -1) {
+			textureIndex = _assetCollection->GetTextureIndexFromGuid(chunks_[0].texture3DId);
+		}
+
+		sBufferChunks_.SetMappedData(i, GPUData::Chunk{ static_cast<uint32_t>(textureIndex) });
 	}
 
 	sBufferChunks_.SRVBindForGraphicsCommandList(_cmdList, _rootParamIndices[1]);
+}
+
+UINT VoxelTerrain::MaxChunkCount() const {
+	return maxChunkCount_;
 }

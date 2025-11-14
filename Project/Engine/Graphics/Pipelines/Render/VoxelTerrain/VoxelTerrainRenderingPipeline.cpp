@@ -42,7 +42,7 @@ void VoxelTerrainRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, 
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 1); // VoxelTerrain Texture3D
 
 
-		pipeline_->AddStaticSampler(D3D12_SHADER_VISIBILITY_PIXEL, 0);
+		pipeline_->AddStaticSampler(D3D12_SHADER_VISIBILITY_ALL, 0);
 
 
 		pipeline_->SetBlendDesc(BlendMode::Normal());
@@ -106,7 +106,10 @@ void VoxelTerrainRenderingPipeline::Draw(ECSGroup* _ecs, CameraComponent* _camer
 
 
 	/// --------------- ディスパッチ --------------- ///
-
+	cmdList->DispatchMesh(
+		/*voxelTerrain->MaxChunkCount(),*/
+		1, 1, 1
+	);
 
 
 }

@@ -119,6 +119,10 @@ public:
 	/// @param _rootParamIndices [0]: VoxelTerrainInfo, [1]: ChunkArray
 	void SetupGraphicBuffers(ID3D12GraphicsCommandList* _cmdList, const std::array<UINT, 2> _rootParamIndices, class AssetCollection* _assetCollection);
 
+	/// @brief 現在のチャンクの総数を取得する
+	/// @return 今あるチャンクの総数
+	UINT MaxChunkCount() const;
+
 private:
 	/// ===========================================
 	/// private : objects
