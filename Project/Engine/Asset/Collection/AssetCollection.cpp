@@ -113,7 +113,7 @@ void AssetCollection::Load(const std::string& _filepath, AssetType _type) {
 	case AssetType::Texture:
 		/// 読み込み済みかチェックし、読み込んでいない場合のみ読み込む
 		if (GetTexture(_filepath) == nullptr) {
-			assetLoader_->LoadTexture(_filepath);
+			assetLoader_->LoadTextureAuto(_filepath);
 		}
 		break;
 	case AssetType::Mesh:
