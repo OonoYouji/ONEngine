@@ -1,6 +1,7 @@
 #include "ShadowCasterUpdateSystem.h"
 
 /// engine
+#include "Engine/Core/Config/EngineConfig.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/ShadowCaster/ShadowCaster.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
@@ -10,6 +11,19 @@ ShadowCasterUpdateSystem::ShadowCasterUpdateSystem() = default;
 ShadowCasterUpdateSystem::~ShadowCasterUpdateSystem() = default;
 
 void ShadowCasterUpdateSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
+	if (!DebugConfig::isDebugging) {
+		Update(_ecs);
+	}
+
+}
+
+void ShadowCasterUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
+	if (DebugConfig::isDebugging) {
+		Update(_ecs);
+	}
+}
+
+void ShadowCasterUpdateSystem::Update(ECSGroup* _ecs) {
 	/// ----- ShadowCasterの更新 ----- ///
 
 
@@ -35,9 +49,4 @@ void ShadowCasterUpdateSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
 			shadowCaster->CalculationLightViewMatrix(_ecs, dirLight);
 		}
 	}
-
-
-}
-
-void ShadowCasterUpdateSystem::RuntimeUpdate(ECSGroup* /*_ecs*/) {
 }

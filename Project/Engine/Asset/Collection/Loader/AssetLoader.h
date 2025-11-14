@@ -44,6 +44,11 @@ public:
 	/// @return true: 読み込み成功, false: 読み込み失敗
 	bool ReloadTexture(const std::string& _filepath);
 
+	/// @brief Texture3DのDDSファイルの読み込み
+	/// @param _filepath 読み込み対象のファイルパス
+	/// @return true: 読み込み成功, false: 読み込み失敗
+	bool LoadTextureDDS(const std::string& _filepath);
+	
 
 	/// --------------- モデル --------------- ///
 

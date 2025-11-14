@@ -171,6 +171,14 @@ bool AssetLoader::ReloadTexture(const std::string& _filepath) {
 	return true;
 }
 
+bool AssetLoader::LoadTextureDDS(const std::string& _filepath) {
+	/// ----- DDSファイルの読み込み ----- ///
+
+
+
+	return false;
+}
+
 bool AssetLoader::LoadModelObj(const std::string& _filepath) {
 	/// ----- モデルの読み込み ----- ///
 

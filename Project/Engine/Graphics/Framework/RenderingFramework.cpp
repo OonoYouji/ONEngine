@@ -77,13 +77,14 @@ void RenderingFramework::Draw() {
 		DrawPrefab();
 		break;
 	case DebugConfig::SELECTED_MODE_GAME:
+		DrawShadowMap();
+
 		/// Gameモード時の描画
 		if(DebugConfig::isShowDebugScene) {
 			/// 事前処理
 			DrawDebug();
 		}
 		DrawScene();
-		DrawShadowMap();
 		break;
 	}
 
@@ -100,6 +101,7 @@ void RenderingFramework::Draw() {
 #else
 	/// ----- release build の描画 ----- ///
 	releaseBuildSubWindow_->PreDraw();
+	DrawShadowMap();
 	DrawScene();
 	releaseBuildSubWindow_->PostDraw();
 
