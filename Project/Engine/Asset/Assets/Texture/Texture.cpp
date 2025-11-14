@@ -285,3 +285,70 @@ void SaveTextureToPNG(const std::wstring& _filename, size_t _width, size_t _heig
 
 }
 
+void SaveTextureToDDS(const std::wstring& _filename, size_t _width, size_t _height, size_t _depth, bool _overwrite) {
+
+	/// _filenameの先のディレクトリが存在しない場合は作成
+	std::filesystem::path filePath(_filename);
+	if (!std::filesystem::exists(filePath.parent_path())) {
+		std::filesystem::create_directories(filePath.parent_path());
+	} else {
+		// ファイルが既に存在しているかチェック
+		if (std::filesystem::is_regular_file(filePath)) {
+			/// あった場合上書きするのかどうか
+			if (!_overwrite) {
+				return;
+			}
+		}
+	}
+
+
+	DXGI_FORMAT format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	size_t rowPitch = _width * 4;
+
+	// 3Dテクスチャ用 ScratchImage
+	DirectX::ScratchImage volumeImage;
+	HRESULT hr = volumeImage.Initialize3D(format, _width, _height, _depth, 1);
+	Assert(SUCCEEDED(hr));
+
+	// 仮のデータで埋める（白）
+	for (size_t z = 0; z < _depth; ++z) {
+
+		// 0.0 ～ 1.0 のグラデーション係数
+		float t = static_cast<float>(z) / static_cast<float>(_depth - 1);
+
+		const DirectX::Image* img = volumeImage.GetImage(0, 0, z);
+		uint8_t* dst = img->pixels;
+
+		for (size_t y = 0; y < _height; ++y) {
+			for (size_t x = 0; x < _width; ++x) {
+
+				size_t index = y * rowPitch + x * 4;
+
+				// t に応じたグラデーション
+				uint8_t r = static_cast<uint8_t>(255 * t);        // 黒 → 赤
+				uint8_t g = static_cast<uint8_t>(128 * (1 - t));  // 緑成分が減る例
+				uint8_t b = static_cast<uint8_t>(255 * (1 - t));  // 青 → 黒
+				uint8_t a = 255;
+
+				dst[index + 0] = r;
+				dst[index + 1] = g;
+				dst[index + 2] = b;
+				dst[index + 3] = a;
+			}
+		}
+	}
+
+
+	// DDS 保存
+	hr = DirectX::SaveToDDSFile(
+		volumeImage.GetImages(),
+		volumeImage.GetImageCount(),
+		volumeImage.GetMetadata(),
+		DirectX::DDS_FLAGS_NONE,
+		_filename.c_str()
+	);
+
+	Assert(SUCCEEDED(hr));
+
+}
+

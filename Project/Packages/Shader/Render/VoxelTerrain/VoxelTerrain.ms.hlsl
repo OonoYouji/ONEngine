@@ -22,19 +22,19 @@ void main(
     out indices uint3 indices[256]) {
 
         
-    SetMeshOutputCounts(256, 256);
+	SetMeshOutputCounts(256, 256);
 
-    for(uint i = 0; i < 256; i++) {
-        verts[i].position = float4(0,0,0,1);
-        verts[i].worldPosition = float4(0,0,0,1);
-        verts[i].normal = float3(0,1,0);
+	for (uint i = 0; i < 256; i++) {
+		verts[i].position = float4(0, 0, 0, 1);
+		verts[i].worldPosition = float4(0, 0, 0, 1);
+		verts[i].normal = float3(0, 1, 0);
         
-        indices[i] = uint3(0,0,0);
-    }
+		indices[i] = uint3(0, 0, 0);
+	}
 
-    for(uint i = 0; i < 256; i++) {
-        indices[i] = uint3(0,1,2);
-    }
+	for (uint i = 0; i < 256; i++) {
+		indices[i] = uint3(0, 1, 2);
+	}
     
     
 }

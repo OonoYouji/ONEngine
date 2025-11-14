@@ -4,24 +4,24 @@
 /// ---------------------------------------------------
 
 struct VertexOut {
-    float4 position : SV_POSITION;
-    float4 worldPosition : POSITION0;
-    float3 normal : NORMAL0;
+	float4 position : SV_POSITION;
+	float4 worldPosition : POSITION0;
+	float3 normal : NORMAL0;
 };
 
 
 struct Chunk {
     /// Texture3D Id
-    uint textureId;       
+	uint textureId;
 };
 
 struct VoxelTerrainInfo {
-    float3 chunkSize;
+	float3 chunkSize;
 };
 
 
 struct Payload {
-    uint id;
+	uint id;
 };
 
 

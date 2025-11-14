@@ -1,6 +1,10 @@
 #include "VoxelTerrain.h"
 
+/// externals
+#include <imgui.h>
+
 /// engine
+#include "Engine/Asset/Assets/Texture/Texture.h"
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/Editor/Commands/ImGuiCommand/ImGuiCommand.h"
 
@@ -15,6 +19,19 @@ void COMP_DEBUG::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain) {
 	/// チャンクのデバッグ表示
 	ImMathf::DragInt("Max Chunk Count", reinterpret_cast<int*>(&_voxelTerrain->maxChunkCount_), 1, 1, 10000);
 	ImMathf::DragInt3("Chunk Size", &_voxelTerrain->chunkSize_, 1, 1, 1024);
+
+
+	/// 仮
+	if (ImGui::Button("Create Texture3D (chunk size)")) {
+		SaveTextureToDDS(
+			L"./Sample3DTexture.dds",
+			_voxelTerrain->chunkSize_.x,
+			_voxelTerrain->chunkSize_.y,
+			_voxelTerrain->chunkSize_.z,
+			true
+		);
+	}
+
 
 }
 

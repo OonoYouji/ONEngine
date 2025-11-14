@@ -122,3 +122,6 @@ public:
 /// @param _height テクスチャの高さ
 /// @param _overwrite 上書き保存するかどうか
 void SaveTextureToPNG(const std::wstring& _filename, size_t _width, size_t _height, bool _overwrite);
+
+
+void SaveTextureToDDS(const std::wstring& _filename, size_t _width, size_t _height, size_t _depth, bool _overwrite);

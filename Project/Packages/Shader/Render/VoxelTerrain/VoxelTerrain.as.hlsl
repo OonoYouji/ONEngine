@@ -21,10 +21,10 @@ void main(
     uint3 DTid : SV_DispatchThreadID,
     uint groupId : SV_GroupID) {
     
-    uint3 uvw = DTid;
-    uint textureId = chunks[groupId].textureId;
+	uint3 uvw = DTid;
+	uint textureId = chunks[groupId].textureId;
     
 
-    Payload payload;
-    DispatchMesh(1, 1, 1, payload);
+	Payload payload;
+	DispatchMesh(1, 1, 1, payload);
 }
