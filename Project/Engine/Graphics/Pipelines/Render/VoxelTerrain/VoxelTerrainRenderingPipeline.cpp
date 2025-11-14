@@ -84,6 +84,7 @@ void VoxelTerrainRenderingPipeline::Draw(ECSGroup* _ecs, CameraComponent* _camer
 
 	/// --------------- パイプラインの設定 --------------- ///
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
+	pDxManager_->HeapBindToCommandList();
 
 
 	/// --------------- バッファの設定 --------------- ///

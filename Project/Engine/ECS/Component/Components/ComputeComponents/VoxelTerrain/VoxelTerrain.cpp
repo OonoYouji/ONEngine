@@ -22,14 +22,17 @@ void COMP_DEBUG::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain) {
 
 
 	/// 仮
-	if (ImGui::Button("Create Texture3D (chunk size)")) {
-		SaveTextureToDDS(
-			L"./Sample3DTexture.dds",
-			_voxelTerrain->chunkSize_.x,
-			_voxelTerrain->chunkSize_.y,
-			_voxelTerrain->chunkSize_.z,
-			true
-		);
+	if (ImGui::Button("Create Texture3D (all chunks)")) {
+		for (size_t i = 0; i < _voxelTerrain->maxChunkCount_; i++) {
+			const std::wstring filename = L"./Packages/Textures/Terrain/Chunk/" + std::to_wstring(i) + L".dds";
+			SaveTextureToDDS(
+				filename,
+				_voxelTerrain->chunkSize_.x,
+				_voxelTerrain->chunkSize_.y,
+				_voxelTerrain->chunkSize_.z,
+				true
+			);
+		}
 	}
 
 
