@@ -92,10 +92,11 @@ void VoxelTerrainRenderingPipeline::Draw(ECSGroup* _ecs, CameraComponent* _camer
 	auto cmdList = _dxCommand->GetCommandList();
 
 	if (!voxelTerrain->CheckCreatedBuffers()) {
+		voxelTerrain->SettingChunksGuid(pAssetCollection_);
 		voxelTerrain->CreateBuffers(pDxManager_->GetDxDevice(), pDxManager_->GetDxSRVHeap());
 	}
 
-	voxelTerrain->SetupGraphicBuffers(cmdList, { CBV_VOXEL_TERRAIN_INFO, SRV_CHUNK_ARRAY });
+	voxelTerrain->SetupGraphicBuffers(cmdList, { CBV_VOXEL_TERRAIN_INFO, SRV_CHUNK_ARRAY }, pAssetCollection_);
 	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(_dxCommand->GetCommandList(), CBV_VIEW_PROJECTION);
 
 	const Texture& frontTexture = pAssetCollection_->GetTextures().front();

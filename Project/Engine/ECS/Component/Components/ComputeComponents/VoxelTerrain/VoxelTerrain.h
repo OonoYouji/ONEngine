@@ -72,6 +72,8 @@ namespace GPUData {
 	/// @brief 地形のデータ
 	struct VoxelTerrainInfo {
 		Vector3Int chunkSize;
+		Vector2Int chunkCountXZ; /// XZ平面でのチャンク数
+		uint32_t maxChunkCount;
 	};
 
 	/// @brief チャンクごとのGPU用データ
@@ -99,6 +101,10 @@ public:
 	~VoxelTerrain() override;
 
 
+	/// @brief チャンクのGuid設定を行う
+	/// @param _assetCollection AssetCollectionのポインタ
+	void SettingChunksGuid(class AssetCollection* _assetCollection);
+
 	/// @brief Bufferが生成されているかチェックする
 	/// @return true: 生成済み, false: 未生成
 	bool CheckCreatedBuffers() const;
@@ -111,7 +117,7 @@ public:
 	/// @brief GraphicsPipeline用のバッファ設定を行う
 	/// @param _cmdList GraphicsCommandListのポインタ
 	/// @param _rootParamIndices [0]: VoxelTerrainInfo, [1]: ChunkArray
-	void SetupGraphicBuffers(ID3D12GraphicsCommandList* _cmdList, const std::array<UINT, 2> _rootParamIndices);
+	void SetupGraphicBuffers(ID3D12GraphicsCommandList* _cmdList, const std::array<UINT, 2> _rootParamIndices, class AssetCollection* _assetCollection);
 
 private:
 	/// ===========================================
@@ -131,8 +137,9 @@ private:
 	ConstantBuffer<GPUData::VoxelTerrainInfo> cBufferTerrainInfo_;
 	StructuredBuffer<GPUData::Chunk> sBufferChunks_;
 
-	UINT maxChunkCount_;
 	Vector3Int chunkSize_;
+	Vector2Int chunkCountXZ_;
+	UINT maxChunkCount_;
 
 };
 

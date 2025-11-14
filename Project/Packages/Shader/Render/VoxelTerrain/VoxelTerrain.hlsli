@@ -17,6 +17,8 @@ struct Chunk {
 
 struct VoxelTerrainInfo {
 	float3 chunkSize;
+	uint2 chunkCountXZ;
+	uint maxChunkCount;
 };
 
 

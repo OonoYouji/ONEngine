@@ -21,3 +21,15 @@ Vector2Int& Vector2Int::operator=(const Vector2Int& _other) {
 	this->y = _other.y;
 	return *this;
 }
+
+void from_json(const nlohmann::json& _j, Vector2Int& _v) {
+	_v.x = _j.value("x", 0);
+	_v.y = _j.value("y", 0);
+}
+
+void to_json(nlohmann::json& _j, const Vector2Int& _v) {
+	_j = {
+		{ "x", _v.x },
+		{ "y", _v.y },
+	};
+}
