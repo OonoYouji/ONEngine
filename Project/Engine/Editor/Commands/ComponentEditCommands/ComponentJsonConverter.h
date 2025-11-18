@@ -8,7 +8,6 @@
 
 #include "Engine/ECS/Component/Components/ComputeComponents/Light/Light.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Effect/Effect.h"
-#include "Engine/ECS/Component/Components/ComputeComponents/Variables/Variables.h"
 #include "Engine/ECS/Component/Components/RendererComponents/Mesh/CustomMeshRenderer.h"
 #include "Engine/ECS/Component/Components/RendererComponents/Primitive/Line2DRenderer.h"
 #include "Engine/ECS/Component/Components/RendererComponents/Primitive/Line3DRenderer.h"
@@ -44,10 +43,6 @@ void to_json(nlohmann::json& _j, const Color& _c);
 // DirectionalLight
 void from_json(const nlohmann::json& _j, DirectionalLight& _l);
 void to_json(nlohmann::json& _j, const DirectionalLight& _l);
-
-// Variables
-void from_json(const nlohmann::json& _j, Variables& _v);
-void to_json(nlohmann::json& _j, const Variables& _v);
 
 // Effect
 void from_json(const nlohmann::json& _j, Effect& _e);

@@ -65,6 +65,25 @@ public struct Vector3 {
 		return dist.Length();
 	}
 
+	static public float Dot(Vector3 _a, Vector3 _b) {
+		return _a.x * _b.x + _a.y * _b.y + _a.z * _b.z;
+	}
+
+	static public Vector3 Cross(Vector3 _a, Vector3 _b) {
+		return new Vector3(
+			_a.y * _b.z - _a.z * _b.y,
+			_a.z * _b.x - _a.x * _b.z,
+			_a.x * _b.y - _a.y * _b.x
+		);
+	}
+
+	static public Vector3 Lerp(Vector3 _a, Vector3 _b, float _t) {
+		return new Vector3(
+			_a.x + (_b.x - _a.x) * _t,
+			_a.y + (_b.y - _a.y) * _t,
+			_a.z + (_b.z - _a.z) * _t
+		);
+	}
 
 	/// =================================
 	/// 定数

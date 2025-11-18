@@ -77,7 +77,6 @@ public class PuzzleStartController : MonoBehavior {
 				Input.TriggerGamepad(Gamepad.A)) {
 				StartPuzzle();
 			}
-
 		}
 
 
@@ -107,6 +106,10 @@ public class PuzzleStartController : MonoBehavior {
 		}
 		/// パズルの状態に合わせてプレイヤーの状態を変更する
 		player_.enable = false;
+		MeshRenderer playerMR = player_.entity.GetComponent<MeshRenderer>();
+		if (playerMR) {
+			playerMR.color = Vector4.zero;
+		}
 	}
 
 
@@ -117,6 +120,10 @@ public class PuzzleStartController : MonoBehavior {
 		}
 		/// パズルの状態に合わせてプレイヤーの状態を変更する
 		player_.enable = true;
+		MeshRenderer playerMR = player_.entity.GetComponent<MeshRenderer>();
+		if (playerMR) {
+			playerMR.color = Vector4.one;
+		}
 	}
 
 	private void UpdateStartUI() {

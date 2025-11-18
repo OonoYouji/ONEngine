@@ -50,7 +50,7 @@ void MonoScriptEngine::Initialize() {
 	SetEnvironmentVariableA("PATH", "Packages/mono/bin;C:/Windows/System32");
 	SetEnvironmentVariableA("MONO_PATH", "Packages/mono/lib/4.5");
 
-	// ===== 高速化用オプション =====
+	/// 高速化用オプション
 	const char* options[] = {
 		"--optimize=all",   // JIT最適化フル
 		//"--gc=sgen",        // Generational GC
@@ -58,14 +58,14 @@ void MonoScriptEngine::Initialize() {
 	};
 	mono_jit_parse_options(sizeof(options) / sizeof(char*), (char**)options);
 
-	// ===== ログ出力（任意、デバッグ時だけでもOK） =====
+	/// ログ出力(任意、デバッグ時だけでもOK)
 	mono_trace_set_level_string("info");
 	mono_trace_set_log_handler(LogCallback, nullptr);
 
 	/// versionの出力
 	Console::Log("Mono version: " + std::string(mono_get_runtime_build_info()));
 
-	/// Mono の検索パス設定（必ず先）
+	/// Monoの検索パス設定
 	mono_set_dirs("./Packages/Scripts/lib", "./Externals/mono/etc");
 	mono_config_parse(nullptr);
 
@@ -136,7 +136,7 @@ void MonoScriptEngine::HotReload() {
 	domain_ = CreateReloadDomain();
 	mono_domain_set(domain_, true);
 
-	if(domain_ != oldDomain) {
+	if (domain_ != oldDomain) {
 		Console::Log("Created new Mono domain for hot reload.");
 	} else {
 		Console::Log("Reusing existing Mono domain for hot reload.");
@@ -314,7 +314,7 @@ MonoMethod* MonoScriptEngine::GetMethodFromCS(const std::string& _className, con
 		Console::LogError("Failed to find class: " + _className);
 		return nullptr;
 	}
-	
+
 	/// クラス階層を親まで辿って検索
 	for (MonoClass* current = monoClass; current != nullptr; current = mono_class_get_parent(current)) {
 		MonoMethod* method = mono_class_get_method_from_name(current, _methodName.c_str(), _argsCount);

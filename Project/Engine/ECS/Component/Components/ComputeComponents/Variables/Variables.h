@@ -16,10 +16,17 @@
 #include "Engine/Core/Utility/Math/Vector2.h"
 #include "Engine/Core/Utility/Tools/Log.h"
 
+/// Json変換
+void from_json(const nlohmann::json& _j, class Variables& _g);
+void to_json(nlohmann::json& _j, const class Variables& _g);
+
+
 /// ///////////////////////////////////////////////////
 /// 変数component
 /// ///////////////////////////////////////////////////
 class Variables : public IComponent {
+	friend void from_json(const nlohmann::json& _j, Variables& _v);
+	friend void to_json(nlohmann::json& _j, const Variables& _v);
 public:
 	/// ================================================
 	/// public : sub class
@@ -130,8 +137,8 @@ private:
 	/// private : objects
 	/// ================================================
 
-	std::unordered_map<std::string, size_t> groupKeyMap_; ///< グループ名とインデックスのマップ
-	std::vector<Group> groups_; ///< 変数のグループ
+	std::unordered_map<std::string, size_t> groupKeyMap_; /// グループ名とインデックスのマップ
+	std::vector<Group> groups_; /// 変数のグループ
 };
 
 

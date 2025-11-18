@@ -248,7 +248,7 @@ void COMP_DEBUG::ScriptDebug(Script* _script) {
 		if (scriptList.size() > 2) {
 			/// スクリプトの順番を入れ替える処理
 			// ---- ドラッグソース ----
-			if (ImGui::BeginDragDropSource()) {
+			if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
 				ImGui::SetDragDropPayload("ScriptData", &i, sizeof(int)); // i番目のインデックスを送る
 				ImGui::Text("script name : %s", scriptList[i].scriptName.c_str());
 				ImGui::EndDragDropSource();
