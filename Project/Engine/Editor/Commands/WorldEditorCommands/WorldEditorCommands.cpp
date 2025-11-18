@@ -249,6 +249,11 @@ EDITOR_STATE CreatePrefabCommand::Undo() {
 void CreatePrefabCommand::SerializeRecursive(GameEntity* _entity, nlohmann::json& _json) {
 	/// 子の要素も入れる
 	for (auto& child : _entity->GetChildren()) {
+		/// クローンオブジェクトはスキップ
+		if (child->GetId() < 0) {
+			continue;
+		}
+
 		nlohmann::json childJson = EntityJsonConverter::ToJson(child);
 		SerializeRecursive(child, childJson);
 		_json["children"].push_back(childJson);

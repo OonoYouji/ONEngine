@@ -151,16 +151,6 @@ void to_json(nlohmann::json& _j, const DirectionalLight& _l) {
 	};
 }
 
-void from_json([[maybe_unused]] const nlohmann::json& _j, [[maybe_unused]] Variables& _v) {
-	
-}
-void to_json(nlohmann::json& _j, const Variables& /*_v*/) {
-	_j = nlohmann::json{
-		{ "type", "Variables" },
-		// 変数の内容はここで定義する必要があります
-	};
-}
-
 void from_json(const nlohmann::json& _j, Effect& _e) {
 	_e.enable = _j.at("enable").get<int>();
 	_e.SetIsCreateParticle(_j.at("isCreateParticle").get<bool>());

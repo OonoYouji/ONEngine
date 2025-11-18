@@ -3,14 +3,14 @@
         {
             "enable": 1,
             "position": {
-                "x": 0.0,
-                "y": 0.0,
-                "z": 0.0
+                "x": 228.32765197753906,
+                "y": 1.389177918434143,
+                "z": 330.8933410644531
             },
             "rotate": {
                 "w": 1.0,
                 "x": 0.0,
-                "y": 0.0,
+                "y": -0.0,
                 "z": 0.0
             },
             "scale": {
@@ -29,8 +29,8 @@
                 "baseColor": {
                     "w": 1.0,
                     "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
+                    "y": 0.0,
+                    "z": 0.0
                 },
                 "baseTextureGuid": {
                     "guid": "14196fa931d9b8c11196cdd7eca20cf6"
@@ -74,10 +74,10 @@
         }
     ],
     "guid": {
-        "guid": "affcc73a859589137e9cb3d81473a73e"
+        "guid": "a4a73897821ffc9b90465b2f3271d4ca"
     },
-    "id": 2,
-    "name": "PuzzleStand",
+    "id": 12,
+    "name": "PuzzleStand_3",
     "parent": null,
-    "prefabName": "PuzzleStand"
+    "prefabName": "PuzzleStand.prefab"
 }

@@ -74,6 +74,74 @@ public struct Quaternion {
 		);
 	}
 
+	static public Quaternion LookAt(Vector3 position, Vector3 target, Vector3 _up) {
+
+		// forward
+		Vector3 forward = Vector3.Normalize(target - position);
+
+		// forward と up の平行対策
+		float dot = Vector3.Dot(forward, _up);
+		if (Mathf.Abs(dot) > 0.999f) {
+			// 上すぎ問題の応急処置
+			_up = new Vector3(0, 0, 1);
+		}
+
+		// 左手系の LookTo 行列を作る
+		Matrix4x4 view = Matrix4x4.CreateLookToLH(position, forward, _up);
+
+		// カメラのワールド行列 = view の逆行列
+		Matrix4x4 world = Matrix4x4.Inverse(view);
+
+		// 回転部分をクォータニオンへ
+		Quaternion rot = Quaternion.CreateFromRotationMatrix(world);
+		return Quaternion.Normalized(rot);
+	}
+
+
+	static public Quaternion CreateFromRotationMatrix(Matrix4x4 _m) {
+		float trace = _m.m00 + _m.m11 + _m.m22;
+
+		Quaternion q = new Quaternion();
+
+		if (trace > 0.0f) {
+			float s = Mathf.Sqrt(trace + 1.0f) * 2.0f; // 4 * w
+			q.w = 0.25f * s;
+			q.x = (_m.m21 - _m.m12) / s;
+			q.y = (_m.m02 - _m.m20) / s;
+			q.z = (_m.m10 - _m.m01) / s;
+		} else if (_m.m00 > _m.m11 && _m.m00 > _m.m22) {
+			float s = Mathf.Sqrt(1.0f + _m.m00 - _m.m11 - _m.m22) * 2.0f; // 4 * x
+			q.w = (_m.m21 - _m.m12) / s;
+			q.x = 0.25f * s;
+			q.y = (_m.m01 + _m.m10) / s;
+			q.z = (_m.m02 + _m.m20) / s;
+		} else if (_m.m11 > _m.m22) {
+			float s = Mathf.Sqrt(1.0f + _m.m11 - _m.m00 - _m.m22) * 2.0f; // 4 * y
+			q.w = (_m.m02 - _m.m20) / s;
+			q.x = (_m.m01 + _m.m10) / s;
+			q.y = 0.25f * s;
+			q.z = (_m.m12 + _m.m21) / s;
+		} else {
+			float s = Mathf.Sqrt(1.0f + _m.m22 - _m.m00 - _m.m11) * 2.0f; // 4 * z
+			q.w = (_m.m10 - _m.m01) / s;
+			q.x = (_m.m02 + _m.m20) / s;
+			q.y = (_m.m12 + _m.m21) / s;
+			q.z = 0.25f * s;
+		}
+
+		// 任意のQuaternion型にNormalizeが無い場合は自前で処理
+		float len = Mathf.Sqrt(q.x * q.x + q.y * q.y + q.z * q.z + q.w * q.w);
+		if (len > 1e-8f) {
+			float inv = 1.0f / len;
+			q.x *= inv;
+			q.y *= inv;
+			q.z *= inv;
+			q.w *= inv;
+		}
+
+		return q;
+	}
+
 
 	/// -----------------------------------------
 	/// public methods
