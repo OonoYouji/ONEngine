@@ -55,10 +55,17 @@
                 }
             ],
             "type": "Script"
+        },
+        {
+            "enable": 1,
+            "path": "",
+            "pitch": 1.0,
+            "type": "AudioSource",
+            "volume": 0.20000000298023224
         }
     ],
     "guid": {
-        "guid": "9872d9ea0bae964a933b79267bf9c1a6"
+        "guid": "36ed70d55e80fd8f7c9202f628580819"
     },
     "id": 2,
     "name": "PuzzlePlayer",
