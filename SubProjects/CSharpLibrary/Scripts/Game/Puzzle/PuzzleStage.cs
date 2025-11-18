@@ -270,6 +270,7 @@ public class PuzzleStage : MonoBehavior {
 
 		PuzzlePlayer puzzlePlayer = activePlayer_.GetScript<PuzzlePlayer>();
 		if (!puzzlePlayer) {
+			Debug.LogError("PuzzleStage UpdatePlayer: puzzlePlayer is null");
 			return;
 		}
 

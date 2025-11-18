@@ -71,10 +71,16 @@
                 }
             ],
             "type": "Script"
+        },
+        {
+            "enable": 1,
+            "radius": 1.7000000476837158,
+            "state": "Static",
+            "type": "SphereCollider"
         }
     ],
     "guid": {
-        "guid": "affcc73a859589137e9cb3d81473a73e"
+        "guid": "fdac1900ed65d2a922335ee235c1a94d"
     },
     "id": 2,
     "name": "PuzzleStand",
