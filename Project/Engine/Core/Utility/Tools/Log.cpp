@@ -213,15 +213,32 @@ std::string ConvertString(DWORD _dw) {
 }
 
 std::string HrToString(HRESULT _hr) {
-	_com_error err(_hr);
-	const wchar_t* wmsg = err.ErrorMessage();
+	//_com_error err(_hr);
+	//const wchar_t* wmsg = err.ErrorMessage();
 
-	// UTF-16 → UTF-8 変換
-	int sizeNeeded = WideCharToMultiByte(CP_UTF8, 0, wmsg, -1, nullptr, 0, nullptr, nullptr);
-	std::string msg(sizeNeeded - 1, 0); // 終端を除く
-	WideCharToMultiByte(CP_UTF8, 0, wmsg, -1, msg.data(), sizeNeeded, nullptr, nullptr);
+	//// UTF-16 → UTF-8 変換
+	//int sizeNeeded = WideCharToMultiByte(CP_UTF8, 0, wmsg, -1, nullptr, 0, nullptr, nullptr);
+	//std::string msg(sizeNeeded - 1, 0); // 終端を除く
+	//WideCharToMultiByte(CP_UTF8, 0, wmsg, -1, msg.data(), sizeNeeded, nullptr, nullptr);
 
-	return msg;
+	//return msg;
+
+	char* errorMsg = nullptr;
+
+	FormatMessageA(
+		FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+		nullptr,
+		_hr,
+		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+		reinterpret_cast<LPSTR>(&errorMsg),
+		0,
+		nullptr
+	);
+
+	std::string errorString = errorMsg ? errorMsg : "Unknown error";
+	LocalFree(errorMsg); // メモリを解放
+
+	return errorString;
 }
 
 

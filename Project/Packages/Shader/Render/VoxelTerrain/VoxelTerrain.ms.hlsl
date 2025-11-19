@@ -37,20 +37,6 @@ void main(
 	uint numVertices = maxDrawVoxels * 3;
 	uint numPrimitives = numVertices / 3;
 
-	/// テクスチャの最大値を超えないようにする
-	//if (DTid.x >= kTextureSize.x || DTid.y >= kTextureSize.y || DTid.z >= kTextureSize.z) {
-	//	numVertices   = 0;
-	//	numPrimitives = 0;
-	//}
-	
-	
-	///// sub chunkの範囲外なら何もしない
-	//if (DTid.x >= asPayload.subChunkSize.x ||
-	//	DTid.y >= asPayload.subChunkSize.y ||
-	//	DTid.z >= asPayload.subChunkSize.z) {
-	//	numVertices = 0;
-	//	numPrimitives = 0;
-	//}
 
 	/// とりあえずは最大値を設定
 	SetMeshOutputCounts(numVertices, numPrimitives);
@@ -74,7 +60,7 @@ void main(
 	/// チャンクの位置とボクセルのローカル位置からワールド座標を計算
 	float3 chunkOrigin = asPayload.chunkOrigin;
 	float3 chunkLocalPos = float3(loadPos.x, loadPos.y, loadPos.z);
-	float3 worldPos = chunkLocalPos;
+	float3 worldPos = chunkLocalPos + asPayload.chunkOrigin;
 
 	float offset = 0.5f;
 	

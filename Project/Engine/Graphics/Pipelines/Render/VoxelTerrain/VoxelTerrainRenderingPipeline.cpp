@@ -105,14 +105,31 @@ void VoxelTerrainRenderingPipeline::Draw(ECSGroup* _ecs, CameraComponent* _camer
 	);
 
 	/// --------------- ディスパッチ --------------- ///
-	//cmdList->DispatchMesh(
-	//	voxelTerrain->GetChunkCountXZ().x,
-	//	1,
-	//	voxelTerrain->GetChunkCountXZ().y
-	//);
 	cmdList->DispatchMesh(
-		1, 1, 1
+		voxelTerrain->GetChunkCountXZ().x,
+		1,
+		voxelTerrain->GetChunkCountXZ().y
 	);
 
+
+	/// ----- Gizmoでチャンクの枠線を描画 ----- ///
+	const auto& chunkCount = voxelTerrain->GetChunkCountXZ();
+	for (int x = 0; x < chunkCount.x; ++x) {
+		for (int z = 0; z < chunkCount.y; ++z) {
+			// 各チャンクの位置を計算
+			const Vector3Int& chunkSizeInt = voxelTerrain->GetChunkSize();
+			Vector3 chunkSize = Vector3(
+				static_cast<float>(chunkSizeInt.x),
+				static_cast<float>(chunkSizeInt.y),
+				static_cast<float>(chunkSizeInt.z)
+			);
+
+			Vector3 chunkPosition = Vector3(x, chunkSize.y, z) * chunkSize;
+			chunkPosition += chunkSize * 0.5f;
+
+			// Gizmoで枠線を描画
+			Gizmo::DrawWireCube(chunkPosition, chunkSize, Color::kWhite);
+		}
+	}
 
 }

@@ -127,6 +127,10 @@ public:
 	/// @return 
 	const Vector2Int& GetChunkCountXZ() const;
 
+	/// @brief チャンクの大きさを取得する
+	/// @return チャンクの大きさ
+	const Vector3Int& GetChunkSize() const;
+
 private:
 	/// ===========================================
 	/// private : objects

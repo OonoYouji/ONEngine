@@ -134,3 +134,7 @@ UINT VoxelTerrain::MaxChunkCount() const {
 const Vector2Int& VoxelTerrain::GetChunkCountXZ() const {
 	return chunkCountXZ_;
 }
+
+const Vector3Int& VoxelTerrain::GetChunkSize() const {
+	return chunkSize_;
+}

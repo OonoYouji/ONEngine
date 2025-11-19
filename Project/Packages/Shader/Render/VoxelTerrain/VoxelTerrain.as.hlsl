@@ -19,23 +19,29 @@ SamplerState voxelSampler : register(s0);
 [numthreads(8, 1, 8)]
 void main(
     uint3 DTid : SV_DispatchThreadID,
-    uint groupId : SV_GroupID) {
+	uint3 groupId : SV_GroupID,
+	uint groupIndex : SV_GroupIndex) {
 
 	uint3 dispatchSize = uint3(0, 0, 0);
 	Payload asPayload;
+		
+	/// チャンクの原点を計算
+	uint3 chunkGridPosition = uint3(groupId.x, groupId.y, groupId.z);
+	asPayload.chunkOrigin = float3(chunkGridPosition) * voxelTerrainInfo.chunkSize;
 
-	asPayload.chunkIndex = groupId;
-	asPayload.chunkOrigin = float3(DTid.x, DTid.y, DTid.z) * voxelTerrainInfo.chunkSize;
 
-	//uint3 chunkDivision = uint3(32, 64, 32);
-	//asPayload.subChunkSize = voxelTerrainInfo.chunkSize / chunkDivision;
-	asPayload.subChunkSize = uint3(4, 4, 4);
-	dispatchSize = voxelTerrainInfo.chunkSize / asPayload.subChunkSize;
+	AABB aabb;
+	aabb.min = asPayload.chunkOrigin;
+	aabb.max = asPayload.chunkOrigin + float3(voxelTerrainInfo.chunkSize);
+	if (IsVisible(aabb, CreateFrustumFromMatrix(viewProjection.matVP))) {
+		asPayload.chunkIndex = groupIndex;
+
+		asPayload.subChunkSize = uint3(4, 4, 4);
+		dispatchSize = voxelTerrainInfo.chunkSize / asPayload.subChunkSize;
 	
-	asPayload.dispatchSize = dispatchSize;
-	
+		asPayload.dispatchSize = dispatchSize;
+	}
 	
 	/// 分割された個数でディスパッチ
 	DispatchMesh(dispatchSize.x, dispatchSize.y, dispatchSize.z, asPayload);
-	//DispatchMesh(2, 1, 2, asPayload);
 }
