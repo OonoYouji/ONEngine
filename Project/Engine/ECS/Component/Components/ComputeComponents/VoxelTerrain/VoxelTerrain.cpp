@@ -44,7 +44,7 @@ void from_json(const nlohmann::json& _j, VoxelTerrain& _voxelTerrain) {
 	_voxelTerrain.enable = _j.value("enable", 1);
 
 	_voxelTerrain.maxChunkCount_ = _j.value("maxChunkCount", 400);
-	_voxelTerrain.chunkCountXZ_ = _j.value("chunkCountXZ", Vector2Int{ 20, 20 });
+	_voxelTerrain.chunkCountXZ_ = _j.value("chunkCountXZ", Vector2Int{ 2, 2 });
 	_voxelTerrain.chunkSize_ = _j.value("chunkSize", Vector3Int{ 16, 128, 16 });
 }
 
@@ -55,6 +55,7 @@ void to_json(nlohmann::json& _j, const VoxelTerrain& _voxelTerrain) {
 		{ "enable", _voxelTerrain.enable },
 		{ "maxChunkCount", _voxelTerrain.maxChunkCount_ },
 		{ "chunkSize", _voxelTerrain.chunkSize_ },
+		{ "chunkCountXZ", _voxelTerrain.chunkCountXZ_ }
 	};
 }
 

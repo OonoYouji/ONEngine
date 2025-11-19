@@ -16,7 +16,7 @@ SamplerState voxelSampler : register(s0);
 
 /// max numthreads: 1024
 [shader("amplification")]
-[numthreads(8, 1, 8)]
+[numthreads(1, 1, 1)]
 void main(
     uint3 DTid : SV_DispatchThreadID,
 	uint3 groupId : SV_GroupID,
