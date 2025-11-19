@@ -23,6 +23,9 @@ class VoxelTerrainRenderingPipeline : public IRenderingPipeline {
 		SRV_VOXEL_TERRAIN_TEXTURE3D,
 	};
 
+	struct CommandInfo {
+		Vector3Int dispatchSize;
+	};
 
 public:
 	/// ===================================================

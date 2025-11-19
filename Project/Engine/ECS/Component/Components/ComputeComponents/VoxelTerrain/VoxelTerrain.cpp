@@ -130,3 +130,7 @@ void VoxelTerrain::SetupGraphicBuffers(ID3D12GraphicsCommandList* _cmdList, cons
 UINT VoxelTerrain::MaxChunkCount() const {
 	return maxChunkCount_;
 }
+
+const Vector2Int& VoxelTerrain::GetChunkCountXZ() const {
+	return chunkCountXZ_;
+}

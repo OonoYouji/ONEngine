@@ -123,6 +123,10 @@ public:
 	/// @return 今あるチャンクの総数
 	UINT MaxChunkCount() const;
 
+	/// @brief チャンクの大きさを取得する
+	/// @return 
+	const Vector2Int& GetChunkCountXZ() const;
+
 private:
 	/// ===========================================
 	/// private : objects

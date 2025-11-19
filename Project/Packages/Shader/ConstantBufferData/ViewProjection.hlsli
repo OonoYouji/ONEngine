@@ -9,12 +9,12 @@ struct Camera {
 };
 
 struct Plane {
-	float4 plane; 
+	float4 plane;
 	// xyz = normal, w = -distance
 };
 
 struct Frustum {
-	Plane planes[6]; 
+	Plane planes[6];
 	/// 0: Left
 	/// 1: Right
 	/// 2: Bottom
@@ -28,24 +28,6 @@ struct AABB {
 	float3 max;
 };
 
-//Frustum CreateFrustumFromMatrix(float4x4 matVP) {
-//	Frustum f;
-
-//	f.planes[0].plane = matVP[3] + matVP[0]; // Left
-//	f.planes[1].plane = matVP[3] - matVP[0]; // Right
-//	f.planes[2].plane = matVP[3] + matVP[1]; // Bottom
-//	f.planes[3].plane = matVP[3] - matVP[1]; // Top
-//	f.planes[4].plane = matVP[2];            // Near
-//	f.planes[5].plane = matVP[3] - matVP[2]; // Far
-
-//	for (int i = 0; i < 6; ++i) {
-//		float3 n = f.planes[i].plane.xyz;
-//		float len = length(n);
-//		f.planes[i].plane /= len;
-//	}
-
-//	return f;
-//}
 // LH座標系、World空間でのAABBと直接比較可能
 Frustum CreateFrustumFromMatrix(float4x4 matVP) {
 	Frustum f;

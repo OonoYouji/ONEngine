@@ -104,10 +104,13 @@ void VoxelTerrainRenderingPipeline::Draw(ECSGroup* _ecs, CameraComponent* _camer
 		SRV_VOXEL_TERRAIN_TEXTURE3D, frontTexture.GetSRVHandle().gpuHandle
 	);
 
-
 	/// --------------- ディスパッチ --------------- ///
+	//cmdList->DispatchMesh(
+	//	voxelTerrain->GetChunkCountXZ().x,
+	//	1,
+	//	voxelTerrain->GetChunkCountXZ().y
+	//);
 	cmdList->DispatchMesh(
-		/*voxelTerrain->MaxChunkCount(),*/
 		1, 1, 1
 	);
 

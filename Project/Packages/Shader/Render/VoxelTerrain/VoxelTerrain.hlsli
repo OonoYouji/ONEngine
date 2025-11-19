@@ -25,11 +25,36 @@ struct VoxelTerrainInfo {
 };
 
 
+struct SubChunk {
+	uint3 subChunkOrigin;
+	uint3 subChunkSize;
+};
+
+
 struct Payload {
-	//uint3 chunkCoord;
 	uint chunkIndex;
 	float3 chunkOrigin;
+
+	uint3 subChunkSize;
+
+	uint3 dispatchSize;
 };
+
+
+struct CommandInfo {
+	int3 dispatchSize;
+};
+
+
+/// ---------------------------------------------------
+/// functions
+/// ---------------------------------------------------
+
+uint IndexOfMeshGroup(uint3 _groupID, uint3 _dim) {
+	return _groupID.x
+         + _groupID.y * _dim.x
+         + _groupID.z * (_dim.x * _dim.y);
+}
 
 
 /// ---------------------------------------------------
