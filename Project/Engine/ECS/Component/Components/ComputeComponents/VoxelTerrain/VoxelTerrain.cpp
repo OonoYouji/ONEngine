@@ -17,7 +17,7 @@ void COMP_DEBUG::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain) {
 	}
 
 	/// チャンクのデバッグ表示
-	ImMathf::DragInt2("Chunk Count XZ", &_voxelTerrain->chunkCountXZ_, 1, 1, 10000);
+	ImMathf::DragInt2("Chunk Count XZ", &_voxelTerrain->chunkCountXZ_, 1, 1, 32);
 	ImMathf::DragInt3("Chunk Size", &_voxelTerrain->chunkSize_, 1, 1, 1024);
 
 
@@ -101,7 +101,7 @@ bool VoxelTerrain::CheckCreatedBuffers() const {
 
 void VoxelTerrain::CreateBuffers(DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap) {
 	//maxChunkCount_ = static_cast<UINT>(chunkCountXZ_.x * chunkCountXZ_.y);
-	UINT chunkCount = static_cast<UINT>(20 * 20);
+	UINT chunkCount = static_cast<UINT>(32 * 32);
 
 	cBufferTerrainInfo_.Create(_dxDevice);
 	sBufferChunks_.Create(chunkCount, _dxDevice, _dxSRVHeap);
