@@ -26,11 +26,9 @@ void main(
 	Payload asPayload;
 		
 	/// チャンクの原点を計算
-	uint3 chunkGridPosition = uint3(groupId.x, groupId.y, groupId.z);
-	asPayload.chunkOrigin = float3(chunkGridPosition) * voxelTerrainInfo.chunkSize;
+	asPayload.chunkOrigin = float3(groupId) * voxelTerrainInfo.chunkSize;
 
-	//uint3 tempDispatchSize = uint3(0, 0, 0);
-
+	/// カリング判定、可視ならディスパッチサイズを設定
 	AABB aabb;
 	aabb.min = asPayload.chunkOrigin;
 	aabb.max = asPayload.chunkOrigin + float3(voxelTerrainInfo.chunkSize);
@@ -41,13 +39,8 @@ void main(
 		dispatchSize = voxelTerrainInfo.chunkSize / asPayload.subChunkSize;
 	
 		asPayload.dispatchSize = dispatchSize;
-		
-		//tempDispatchSize = uint3(1, 1, 1);
-
 	}
 	
 	/// 分割された個数でディスパッチ
 	DispatchMesh(dispatchSize.x, dispatchSize.y, dispatchSize.z, asPayload);
-	//DispatchMesh(tempDispatchSize.x, tempDispatchSize.y, tempDispatchSize.z, asPayload);
-	//DispatchMesh(1, 1, 1, asPayload);
 }
