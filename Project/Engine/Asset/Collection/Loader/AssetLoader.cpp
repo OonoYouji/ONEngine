@@ -90,6 +90,11 @@ bool AssetLoader::LoadTexture([[maybe_unused]] const std::string& _filepath) {
 	const DirectX::TexMetadata& metadata = scratchImage.GetMetadata();
 
 	texture.dxResource_ = std::move(CreateTextureResource(pDxManager_->GetDxDevice(), metadata));
+	if (!texture.dxResource_.Get()) {
+		Console::LogError("[Load Failed] [Texture] - Don't Create DxResource: \"" + _filepath + "\"");
+		return false;
+	}
+
 	DxResource intermediateResource = UploadTextureData(texture.dxResource_.Get(), scratchImage);
 
 	pDxManager_->GetDxCommand()->CommandExecuteAndWait();
@@ -222,6 +227,11 @@ bool AssetLoader::LoadTextureDDS(const std::string& _filepath) {
 
 
 	texture.dxResource_ = std::move(CreateTexture3DResource(pDxManager_->GetDxDevice(), metadata));
+	if (!texture.dxResource_.Get()) {
+		Console::LogError("[Load Failed] [Texture DDS] - Don't Create DxResource: \"" + _filepath + "\"");
+		return false;
+	}
+
 	DxResource intermediateResource = UploadTextureData(texture.dxResource_.Get(), scratchImage);
 
 	pDxManager_->GetDxCommand()->CommandExecuteAndWait();
@@ -245,6 +255,24 @@ bool AssetLoader::LoadTextureDDS(const std::string& _filepath) {
 	/// srvの生成
 	DxDevice* dxDevice = pDxManager_->GetDxDevice();
 	dxDevice->GetDevice()->CreateShaderResourceView(texture.dxResource_.Get(), &srvDesc, texture.srvHandle_->cpuHandle);
+
+
+	/// uav desc の設定
+	//D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc{};
+	//uavDesc.Format = metadata.format;
+	//uavDesc.ViewDimension = D3D12_UAV_DIMENSION_TEXTURE3D;
+	//uavDesc.Texture3D.MipSlice = 0;
+	//uavDesc.Texture3D.FirstWSlice = 0;
+	//uavDesc.Texture3D.WSize = static_cast<UINT>(metadata.depth);
+
+	///// uav handleの取得
+	//texture.CreateEmptyUAVHandle();
+	//texture.uavHandle_->descriptorIndex = dxSRVHeap->AllocateTexture();
+	//texture.uavHandle_->cpuHandle = dxSRVHeap->GetCPUDescriptorHandel(texture.uavHandle_->descriptorIndex);
+	//texture.uavHandle_->gpuHandle = dxSRVHeap->GetGPUDescriptorHandel(texture.uavHandle_->descriptorIndex);
+
+	///// uavの生成
+	//dxDevice->GetDevice()->CreateUnorderedAccessView(texture.dxResource_.Get(), nullptr, &uavDesc, texture.uavHandle_->cpuHandle);
 
 
 	/// texture size

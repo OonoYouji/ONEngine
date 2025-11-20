@@ -44,21 +44,22 @@ void main(
 		return;
 	}
 
-	/// 3dTextureのuvw座標を計算
-	float3 uvw = float3(DTid.xyz) / float3(kNumthreads);
-
-	
 	/// ボクセルの位置を計算
 	int4 voxelPos = int4(DTid.xyz, 1);
-	
-	uint chunkTextureId = chunks[asPayload.chunkIndex].textureId;
-	float4 voxelColor = voxelChunkTextures[chunkTextureId].SampleLevel(texSampler, uvw, 0);
-	voxelColor.a = 1.0f;
-	
 	/// チャンクの位置とボクセルのローカル位置からワールド座標を計算
 	float3 chunkOrigin = asPayload.chunkOrigin;
 	float3 chunkLocalPos = float3(voxelPos.x, voxelPos.y, voxelPos.z);
 	float3 worldPos = chunkLocalPos + asPayload.chunkOrigin;
+
+
+	/// 3dTextureのuvw座標を計算
+	float3 uvw = (float3(DTid.xyz) + float3(1, 0, 1)) / float3(kTextureSize);
+	uvw.y = 1.0f - uvw.y; // Y軸の反転
+	
+	uint chunkTextureId = chunks[asPayload.chunkIndex].textureId;
+	float4 voxelColor = voxelChunkTextures[chunkTextureId].SampleLevel(texSampler, uvw, 0);
+	//voxelColor.a = 1.0f;
+
 
 	float offset = 0.5f;
 	

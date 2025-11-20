@@ -16,5 +16,9 @@ PSOutput main(VertexOut _out) {
 	output.normal = float4(normalize(_out.normal), 1);
 	output.flags = float4(1, 0, 0, 1);
 
+	if (output.color.a == 0.0f) {
+		discard;
+	}
+	
 	return output;
 }

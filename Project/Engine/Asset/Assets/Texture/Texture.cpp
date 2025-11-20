@@ -310,7 +310,7 @@ void SaveTextureToDDS(const std::wstring& _filename, size_t _width, size_t _heig
 	HRESULT hr = volumeImage.Initialize3D(format, _width, _height, _depth, 1);
 	Assert(SUCCEEDED(hr));
 
-	// 仮のデータで埋める（白）
+	// 仮のデータで埋める（上半分を透明にする）
 	for (size_t z = 0; z < _depth; ++z) {
 
 		// 0.0 ～ 1.0 のグラデーション係数
@@ -328,7 +328,14 @@ void SaveTextureToDDS(const std::wstring& _filename, size_t _width, size_t _heig
 				uint8_t r = static_cast<uint8_t>(255 * t);        // 黒 → 赤
 				uint8_t g = static_cast<uint8_t>(128 * (1 - t));  // 緑成分が減る例
 				uint8_t b = static_cast<uint8_t>(255 * (1 - t));  // 青 → 黒
-				uint8_t a = 255;
+
+				// 上半分を透明にする
+				uint8_t a = (y < _height / 2) ? 0 : 255;
+				if (a == 0) {
+					r = 0;
+					g = 0;
+					b = 0;
+				}
 
 				dst[index + 0] = r;
 				dst[index + 1] = g;
