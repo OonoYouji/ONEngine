@@ -1,5 +1,6 @@
 
 #include "../../ConstantBufferData/ViewProjection.hlsli"
+//#include "VoxelTerrainCommon.hlsli"
 
 /// ---------------------------------------------------
 /// Structs
@@ -44,6 +45,7 @@ struct Payload {
 struct CommandInfo {
 	int3 dispatchSize;
 };
+
 
 
 /// ---------------------------------------------------

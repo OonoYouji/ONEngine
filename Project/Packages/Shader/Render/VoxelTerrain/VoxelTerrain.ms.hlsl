@@ -50,9 +50,10 @@ void main(
 	
 	/// ボクセルの位置を計算
 	int4 voxelPos = int4(DTid.xyz, 1);
+	
 	uint chunkTextureId = chunks[asPayload.chunkIndex].textureId;
-	float4 voxelColor = voxelChunkTextures[chunkTextureId].Load(voxelPos);
-
+	float4 voxelColor = voxelChunkTextures[chunkTextureId].SampleLevel(texSampler, uvw, 0);
+	voxelColor.a = 1.0f;
 	
 	/// チャンクの位置とボクセルのローカル位置からワールド座標を計算
 	float3 chunkOrigin = asPayload.chunkOrigin;

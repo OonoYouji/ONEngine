@@ -100,10 +100,11 @@ bool VoxelTerrain::CheckCreatedBuffers() const {
 }
 
 void VoxelTerrain::CreateBuffers(DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap) {
-	maxChunkCount_ = static_cast<UINT>(chunkCountXZ_.x * chunkCountXZ_.y);
+	//maxChunkCount_ = static_cast<UINT>(chunkCountXZ_.x * chunkCountXZ_.y);
+	UINT chunkCount = static_cast<UINT>(20 * 20);
 
 	cBufferTerrainInfo_.Create(_dxDevice);
-	sBufferChunks_.Create(maxChunkCount_, _dxDevice, _dxSRVHeap);
+	sBufferChunks_.Create(chunkCount, _dxDevice, _dxSRVHeap);
 }
 
 void VoxelTerrain::SetupGraphicBuffers(ID3D12GraphicsCommandList* _cmdList, const std::array<UINT, 2> _rootParamIndices, AssetCollection* _assetCollection) {
