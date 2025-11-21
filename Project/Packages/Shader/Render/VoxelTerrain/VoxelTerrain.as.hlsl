@@ -43,4 +43,5 @@ void main(
 	
 	/// 分割された個数でディスパッチ
 	DispatchMesh(dispatchSize.x, dispatchSize.y, dispatchSize.z, asPayload);
+	//DispatchMesh(1, 1, 1, asPayload);
 }
