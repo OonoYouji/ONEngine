@@ -311,36 +311,70 @@ void SaveTextureToDDS(const std::wstring& _filename, size_t _width, size_t _heig
 	Assert(SUCCEEDED(hr));
 
 	// 仮のデータで埋める（上半分を透明にする）
+	//for (size_t z = 0; z < _depth; ++z) {
+
+	//	// 0.0 ～ 1.0 のグラデーション係数
+	//	float t = static_cast<float>(z) / static_cast<float>(_depth - 1);
+
+	//	const DirectX::Image* img = volumeImage.GetImage(0, 0, z);
+	//	uint8_t* dst = img->pixels;
+
+	//	for (size_t y = 0; y < _height; ++y) {
+	//		for (size_t x = 0; x < _width; ++x) {
+
+	//			size_t index = y * rowPitch + x * 4;
+
+	//			// t に応じたグラデーション
+	//			uint8_t r = static_cast<uint8_t>(255 * t);        // 黒 → 赤
+	//			uint8_t g = static_cast<uint8_t>(128 * (1 - t));  // 緑成分が減る例
+	//			uint8_t b = static_cast<uint8_t>(255 * (1 - t));  // 青 → 黒
+
+	//			// 上半分を透明にする
+	//			uint8_t a = (y < _height / 2) ? 0 : 255;
+	//			if (a == 0) {
+	//				r = 0;
+	//				g = 0;
+	//				b = 0;
+	//			}
+
+	//			dst[index + 0] = r;
+	//			dst[index + 1] = g;
+	//			dst[index + 2] = b;
+	//			dst[index + 3] = a;
+	//		}
+	//	}
+	//}
+
+	///*
+	//	□□□□□□□□
+	//	□□□□□□□■
+	//	□□□□□□■■
+	//	□□□□□■■■
+	//	□□□□■■■■
+	//	□□□■■■■■
+	//	□□■■■■■■
+	//	□■■■■■■■
+	//	■■■■■■■■
+	//*/
+
+
+	// 仮のデータで埋める（ピラミッド型のグラデーション）
 	for (size_t z = 0; z < _depth; ++z) {
-
-		// 0.0 ～ 1.0 のグラデーション係数
-		float t = static_cast<float>(z) / static_cast<float>(_depth - 1);
-
 		const DirectX::Image* img = volumeImage.GetImage(0, 0, z);
 		uint8_t* dst = img->pixels;
 
 		for (size_t y = 0; y < _height; ++y) {
 			for (size_t x = 0; x < _width; ++x) {
-
 				size_t index = y * rowPitch + x * 4;
 
-				// t に応じたグラデーション
-				uint8_t r = static_cast<uint8_t>(255 * t);        // 黒 → 赤
-				uint8_t g = static_cast<uint8_t>(128 * (1 - t));  // 緑成分が減る例
-				uint8_t b = static_cast<uint8_t>(255 * (1 - t));  // 青 → 黒
+				// ピクセルの透明度を計算
+				uint8_t alpha = (x + y >= _width - 1) ? 255 : 0;
 
-				// 上半分を透明にする
-				uint8_t a = (y < _height / 2) ? 0 : 255;
-				if (a == 0) {
-					r = 0;
-					g = 0;
-					b = 0;
-				}
-
-				dst[index + 0] = r;
-				dst[index + 1] = g;
-				dst[index + 2] = b;
-				dst[index + 3] = a;
+				// ピクセルデータを設定
+				dst[index + 0] = 0;      // R
+				dst[index + 1] = 0;      // G
+				dst[index + 2] = 0;      // B
+				dst[index + 3] = alpha;  // A
 			}
 		}
 	}

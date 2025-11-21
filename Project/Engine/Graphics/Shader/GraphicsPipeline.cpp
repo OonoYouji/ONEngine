@@ -156,6 +156,16 @@ void GraphicsPipeline::AddStaticSampler(D3D12_SHADER_VISIBILITY _shaderVisibilit
 	staticSamplers_.push_back(sampler);
 }
 
+void GraphicsPipeline::AddStaticSampler(const D3D12_STATIC_SAMPLER_DESC& _samplerDesc, D3D12_SHADER_VISIBILITY _shaderVisibility, uint32_t _shaderRegister) {
+	/// ----- Static Samplerを追加 ----- ///
+
+	D3D12_STATIC_SAMPLER_DESC sampler = _samplerDesc;
+	sampler.ShaderRegister   = _shaderRegister;
+	sampler.ShaderVisibility = _shaderVisibility;
+
+	staticSamplers_.push_back(sampler);
+}
+
 void GraphicsPipeline::SetFillMode(D3D12_FILL_MODE _fillMode) {
 	rasterizerDesc_.FillMode = _fillMode;
 }
@@ -454,4 +464,25 @@ D3D12_DEPTH_STENCIL_DESC DefaultDepthStencilDesc() {
 	depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
 	depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
 	return depthStencilDesc;
+}
+
+D3D12_STATIC_SAMPLER_DESC StaticSampler::ClampSampler() {
+	D3D12_STATIC_SAMPLER_DESC sampler = {};
+
+	sampler.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
+	sampler.AddressU = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
+	sampler.AddressV = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
+	sampler.AddressW = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
+
+	sampler.MipLODBias = 0.0f;
+	sampler.MaxAnisotropy = 1;
+	sampler.ComparisonFunc = D3D12_COMPARISON_FUNC_ALWAYS;
+
+	sampler.BorderColor = D3D12_STATIC_BORDER_COLOR_OPAQUE_BLACK; // Clamp では不要だが初期化上書き
+	sampler.MinLOD = 0.0f;
+	sampler.MaxLOD = D3D12_FLOAT32_MAX;
+
+	sampler.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+
+	return sampler;
 }
