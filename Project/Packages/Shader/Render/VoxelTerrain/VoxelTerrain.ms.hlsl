@@ -6,10 +6,6 @@ struct VoxelVertexColor {
 	float4 color[9];
 };
 
-//struct SubChunkVoxel {
-//	float4 color[64]; /// 4*4*4(kNumthreads)の値
-//};
-
 /// 3x3x3のボクセルカラー情報 (中心[1][1][1]の周囲8頂点を含む)
 struct VoxelColors {
 	float4 color[3][3][3];
@@ -17,7 +13,6 @@ struct VoxelColors {
 
 struct Vertices {
 	VertexOut verts[4];
-	//uint3 indis;
 };
 
 /// ---------------------------------------------------
@@ -123,6 +118,7 @@ void main(
     out vertices VertexOut verts[256],
     out indices uint3 indices[256]) {
 	
+	/// グループ内の最初のスレッドのみ処理
 	if (gi != 0) {
 		return;
 	}
@@ -132,39 +128,52 @@ void main(
 
 	uint drawVoxelCount = 0;
 	uint3 drawVoxelPositions[64];
+	
+	/// ---------------------------------------------------
+	/// 事前にカリング、ボクセルごとに描画するか判定
+	/// ---------------------------------------------------
 
-	for (int z = 0; z < 4; z++) {
-		for (int y = 0; y < 4; y++) {
-			for (int x = 0; x < 4; x++) {
-				uint3 voxelPos = uint3(x, y, z) + DTid;
+	AABB aabb;
+	aabb.min = asPayload.chunkOrigin + DTid;
+	aabb.max = aabb.min + asPayload.subChunkSize;
+	if (IsVisible(aabb, CreateFrustumFromMatrix(viewProjection.matVP))) {
+
+		[unroll]
+		for (int z = 0; z < 4; z++) {
+			[unroll]
+			for (int y = 0; y < 4; y++) {
+				[unroll]
+				for (int x = 0; x < 4; x++) {
+					uint3 voxelPos = uint3(x, y, z) + DTid;
+				
+					/// voxelPosを中心に3x3x3のボクセルカラー情報を取得
+					uint chunkTextureId = chunks[asPayload.chunkIndex].textureId;
+					VoxelVertexColor vvc = GetVoxelVertexColor(voxelPos, chunkTextureId);
+					if (vvc.color[8].a == 0.0f) {
+						/// 中心のボクセルが透明なら描画しない
+						continue;
+					}
 
 				
-				/// voxelPosを中心に3x3x3のボクセルカラー情報を取得
-				uint chunkTextureId = chunks[asPayload.chunkIndex].textureId;
-				VoxelVertexColor vvc = GetVoxelVertexColor(voxelPos, chunkTextureId);
-				if (vvc.color[8].a == 0.0f) {
-					/// 中心のボクセルが透明なら描画しない
-					continue;
-				}
+					float averageAlpha = 0.0f;
+					for (int i = 0; i < 8; i++) {
+						averageAlpha += vvc.color[i].a;
+					}
+					averageAlpha /= 8.0f;
+					if (averageAlpha >= 1.0f) {
+						/// 周囲のボクセルがすべて不透明なら描画しない
 
-				
-				float averageAlpha = 0.0f;
-				for (int i = 0; i < 8; i++) {
-					averageAlpha += vvc.color[i].a;
-				}
-				averageAlpha /= 8.0f;
-				if (averageAlpha >= 1.0f) {
-					///// 周囲のボクセルがすべて不透明なら描画しない
-					//drawVoxelCount++;
-					//drawVoxelPositions[drawVoxelCount - 1] = voxelPos;
-					//drawVoxelColors[drawVoxelCount - 1] = float4(0, 0, 0, 0.1f);
+						//drawVoxelCount++;
+						//drawVoxelPositions[drawVoxelCount - 1] = voxelPos;
+						//drawVoxelColors[drawVoxelCount - 1] = float4(0, 0, 0, 0.1f);
 
-				} else if (averageAlpha != 0.0f) {
-					/// 周囲に透明なボクセルがある場合は描画する
-					drawVoxelCount++;
-					drawVoxelPositions[drawVoxelCount - 1] = voxelPos;
-				}
+					} else if (averageAlpha != 0.0f) {
+						/// 周囲に透明なボクセルがある場合は描画する
+						drawVoxelCount++;
+						drawVoxelPositions[drawVoxelCount - 1] = voxelPos;
+					}
 				
+				}
 			}
 		}
 	}
@@ -180,17 +189,16 @@ void main(
 	}
 
 
+	/// ---------------------------------------------------
+	/// ボクセルごとに頂点、インデックスを設定
+	/// ---------------------------------------------------
+
 	for (uint i = 0; i < drawVoxelCount; i++) {
 		uint3 voxelPos = drawVoxelPositions[i];
 		
 		uint vIndex = i * 4;
 		if (vIndex + 3 < numVertices) {
 			float3 worldPos = float3(voxelPos) + asPayload.chunkOrigin;
-			
-			//float3 uvw = (float3(voxelPos.xyz) + kUVWOffset) / float3(kTextureSize);
-			//uvw.y = 1.0f - uvw.y;
-			//uint chunkTextureId = chunks[asPayload.chunkIndex].textureId;
-			//float4 voxelColor = voxelChunkTextures[chunkTextureId].SampleLevel(texSampler, uvw, 0);
 			
 			Vertices vs = GetVoxelVertices(worldPos, float4(1, 0, 0, 1));
 			for (int j = 0; j < 4; j++) {
