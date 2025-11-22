@@ -6,13 +6,12 @@ struct VoxelVertexColor {
 	float4 color[9];
 };
 
-/// 3x3x3のボクセルカラー情報 (中心[1][1][1]の周囲8頂点を含む)
-struct VoxelColors {
-	float4 color[3][3][3];
+struct Vertices {
+	VertexOut verts[8];
 };
 
-struct Vertices {
-	VertexOut verts[4];
+struct Indices {
+	uint3 indis[12];
 };
 
 /// ---------------------------------------------------
@@ -23,7 +22,7 @@ Texture3D<float4> voxelChunkTextures[] : register(t1);
 SamplerState texSampler : register(s0);
 
 static const uint3 kTextureSize = uint3(100, 256, 100);
-static const float3 kUVWOffset = float3(1, -1, 1);
+static const float3 kUVWOffset = float3(0.5f, -0.0f, 0.5f);
 
 
 /// ---------------------------------------------------
@@ -67,40 +66,96 @@ VoxelVertexColor GetVoxelVertexColor(uint3 _voxelPos, uint _chunkTextureId) {
 	return vvc;
 }
 
-/// 指定したボクセル位置の頂点情報を取得
-Vertices GetVoxelVertices(float3 _voxelPos, float4 _color) {
+/// 呼び出し元ではすでに描画の可否は判定済みなので、ここでは単純に頂点情報を返すだけ
+Vertices GetVoxelVertices(VoxelVertexColor _voxelColors, float3 _voxelPos, float4 _color) {
 	Vertices verts;
+	
+	/// 4頂点の色を設定
+	/// 各頂点のindexは値が低い方が下に来る
 
-	/// 上のコメントを参照して順番に頂点情報を設定、透明度から頂点の座標を調整
+	/// デバッグのためColorは ~~Heightを元に 黒->赤に変化させる
 
-	/// 0: 手前左 
-	float3 frontLeft = _voxelPos + float3(-0.5f, 0.0f, -0.5f);
-	verts.verts[0].worldPosition = float4(frontLeft, 1);
-	verts.verts[0].position = mul(float4(frontLeft, 1), viewProjection.matVP);
+	//float heightOffset = 0.5f;
 	
+	///// 0: 手前左 (0, 2)
+	//float flHeight = _voxelColors.color[0].a == _voxelColors.color[2].a ? -heightOffset : heightOffset;
+	//float3 frontLeft = float3(-0.5f, flHeight, -0.5f) + _voxelPos;
+	//verts.verts[0].worldPosition = float4(frontLeft, 1);
 	
-	/// 1: 手前右
-	float3 frontRight = _voxelPos + float3(0.5f, 0.0f, -0.5f);
-	verts.verts[1].worldPosition = float4(frontRight, 1);
-	verts.verts[1].position = mul(float4(frontRight, 1), viewProjection.matVP);
+	///// 1: 手前右 (1, 3)
+	//float frHeight = _voxelColors.color[1].a < _voxelColors.color[3].a ? -heightOffset : heightOffset;
+	//float3 frontRight = float3(0.5f, frHeight, -0.5f) + _voxelPos;
+	//verts.verts[1].worldPosition = float4(frontRight, 1);
 	
-	/// 2: 奥左
-	float3 backLeft = _voxelPos + float3(-0.5f, 0.0f, 0.5f);
-	verts.verts[2].worldPosition = float4(backLeft, 1.0f);
-	verts.verts[2].position = mul(float4(backLeft, 1), viewProjection.matVP);
+	///// 2: 奥左 (4, 6)
+	//float blHeight = _voxelColors.color[4].a < _voxelColors.color[6].a ? -heightOffset : heightOffset;
+	//float3 backLeft = float3(-0.5f, blHeight, 0.5f) + _voxelPos;
+	//verts.verts[2].worldPosition = float4(backLeft, 1);
 	
-	/// 3: 奥右
-	float3 backRight = _voxelPos + float3(0.5f, 0.0f, 0.5f);
-	verts.verts[3].worldPosition = float4(backRight, 1.0f);
-	verts.verts[3].position = mul(float4(backRight, 1), viewProjection.matVP);
+	///// 3: 奥右 (5, 7)
+	//float brHeight = _voxelColors.color[5].a < _voxelColors.color[7].a ? -heightOffset : heightOffset;
+	//float3 backRight = float3(0.5f, brHeight, 0.5f) + _voxelPos;
+	//verts.verts[3].worldPosition = float4(backRight, 1);
 	
-	
-	for (int i = 0; i < 4; i++) {
-		verts.verts[i].normal = float3(0, 1, 0);
-		verts.verts[i].color = _color;
+
+	[unroll]
+	for (int i = 0; i < 8; i++) {
+		float3 offset = float3(
+			(i & 1) ? 0.5f : -0.5f,
+			(i & 2) ? 0.5f : -0.5f,
+			(i & 4) ? 0.5f : -0.5f
+		);
+		
+		float3 vertexPos = offset + _voxelPos;
+		verts.verts[i].worldPosition = float4(vertexPos, 1);
+
+		float heightFactor = vertexPos.y / kTextureSize.y;
+		verts.verts[i].color = float4(1 - heightFactor, 1, 1 - heightFactor, 1);
+		verts.verts[i].normal = float3(0, 1, 0); // 仮
+		verts.verts[i].position = mul(verts.verts[i].worldPosition, viewProjection.matVP);
 	}
 
+	
+
+	//float3 normal = normalize(cross(flHeight - brHeight, frHeight - brHeight));
+	//for (int i = 0; i < 4; i++) {
+	//	verts.verts[i].position = mul(verts.verts[i].worldPosition, viewProjection.matVP);
+	//	verts.verts[i].normal = normal;
+		
+	//	//verts.verts[i].color = _voxelColors.color[8];
+	//	verts.verts[i].color.a = 1.0f;
+	//}
+	
 	return verts;
+}
+
+
+Indices GetIndices(uint _offset) {
+	Indices indis;
+	
+	indis.indis[0] = uint3(0, 2, 1);
+	indis.indis[1] = uint3(2, 3, 1);
+	
+	indis.indis[2] = uint3(2, 6, 3);
+	indis.indis[3] = uint3(6, 7, 3);
+	
+	indis.indis[4] = uint3(6, 4, 5);
+	indis.indis[5] = uint3(7, 6, 5);
+	
+	indis.indis[6] = uint3(4, 0, 1);
+	indis.indis[7] = uint3(1, 4, 5);
+
+	indis.indis[8] = uint3(1, 3, 5);
+	indis.indis[9] = uint3(3, 7, 5);
+	
+	indis.indis[10] = uint3(4, 6, 2);
+	indis.indis[11] = uint3(4, 2, 0);
+	
+	for (int i = 0; i < 12; i++) {
+		indis.indis[i] += _offset;
+	}
+
+	return indis;
 }
 
 
@@ -109,7 +164,7 @@ Vertices GetVoxelVertices(float3 _voxelPos, float4 _color) {
 /// ---------------------------------------------------
 [shader("mesh")]
 [outputtopology("triangle")]
-[numthreads(4, 4, 4)]
+[numthreads(2, 2, 2)]
 void main(
     uint3 DTid : SV_DispatchThreadID,
 	uint gi : SV_GroupIndex,
@@ -128,6 +183,7 @@ void main(
 
 	uint drawVoxelCount = 0;
 	uint3 drawVoxelPositions[64];
+	VoxelVertexColor drawVoxelVertexColors[64];
 	
 	/// ---------------------------------------------------
 	/// 事前にカリング、ボクセルごとに描画するか判定
@@ -139,11 +195,11 @@ void main(
 	if (IsVisible(aabb, CreateFrustumFromMatrix(viewProjection.matVP))) {
 
 		[unroll]
-		for (int z = 0; z < 4; z++) {
+		for (int z = 0; z < 2; z++) {
 			[unroll]
 			for (int y = 0; y < 4; y++) {
 				[unroll]
-				for (int x = 0; x < 4; x++) {
+				for (int x = 0; x < 2; x++) {
 					uint3 voxelPos = uint3(x, y, z) + DTid;
 				
 					/// voxelPosを中心に3x3x3のボクセルカラー情報を取得
@@ -153,8 +209,7 @@ void main(
 						/// 中心のボクセルが透明なら描画しない
 						continue;
 					}
-
-				
+					
 					float averageAlpha = 0.0f;
 					for (int i = 0; i < 8; i++) {
 						averageAlpha += vvc.color[i].a;
@@ -162,17 +217,14 @@ void main(
 					averageAlpha /= 8.0f;
 					if (averageAlpha >= 1.0f) {
 						/// 周囲のボクセルがすべて不透明なら描画しない
-
-						//drawVoxelCount++;
-						//drawVoxelPositions[drawVoxelCount - 1] = voxelPos;
-						//drawVoxelColors[drawVoxelCount - 1] = float4(0, 0, 0, 0.1f);
-
 					} else if (averageAlpha != 0.0f) {
 						/// 周囲に透明なボクセルがある場合は描画する
 						drawVoxelCount++;
 						drawVoxelPositions[drawVoxelCount - 1] = voxelPos;
+						drawVoxelVertexColors[drawVoxelCount - 1] = vvc;
+
 					}
-				
+
 				}
 			}
 		}
@@ -180,8 +232,8 @@ void main(
 
 	
 	/// 描画するボクセル数に応じて頂点数、プリミティブ数を計算
-	uint numVertices = drawVoxelCount * 4;
-	uint numPrimitives = numVertices / 2;
+	uint numVertices = drawVoxelCount * 8;
+	uint numPrimitives = drawVoxelCount * 12;
 
 	SetMeshOutputCounts(numVertices, numPrimitives);
 	if (numVertices == 0 || numPrimitives == 0) {
@@ -196,92 +248,27 @@ void main(
 	for (uint i = 0; i < drawVoxelCount; i++) {
 		uint3 voxelPos = drawVoxelPositions[i];
 		
-		uint vIndex = i * 4;
+		uint vIndex = i * 8;
 		if (vIndex + 3 < numVertices) {
 			float3 worldPos = float3(voxelPos) + asPayload.chunkOrigin;
 			
-			Vertices vs = GetVoxelVertices(worldPos, float4(1, 0, 0, 1));
-			for (int j = 0; j < 4; j++) {
+			Vertices vs = GetVoxelVertices(drawVoxelVertexColors[i], worldPos, float4(1, 0, 0, 1));
+			for (int j = 0; j < 8; j++) {
 				verts[vIndex + j] = vs.verts[j];
 			}
 		}
 
-		uint iIndex = i * 2;
-		if (iIndex + 1 < numPrimitives) {
-			uint baseVIndex = iIndex / 2 * 4;
-			indices[iIndex + 0] = uint3(baseVIndex + 0, baseVIndex + 2, baseVIndex + 1);
-			indices[iIndex + 1] = uint3(baseVIndex + 2, baseVIndex + 3, baseVIndex + 1);
+		uint iIndex = i * 12;
+		if (iIndex + 11 < numPrimitives) {
+			uint baseVIndex = i * 8;
+			Indices indis = GetIndices(baseVIndex);
+			
+			//[uroll]
+			for (int j = 0; j < 12; ++j) {
+				indices[iIndex + j] = indis.indis[j];
+			}
 		}
 		
 	}
 
 }
-
-
-/*
-[shader("mesh")]
-[outputtopology("triangle")]
-[numthreads(4, 4, 4)]
-void main(
-    uint3 DTid : SV_DispatchThreadID,
-	uint gi : SV_GroupIndex,
-	uint3 groupId : SV_GroupID,
-    in payload Payload asPayload,
-    out vertices VertexOut verts[256],
-    out indices uint3 indices[256]) {
-	
-	uint maxDrawVoxels = kNumthreads.x * kNumthreads.y * kNumthreads.z;
-	uint numVertices = maxDrawVoxels * 3;
-	uint numPrimitives = numVertices / 3;
-
-
-	/// とりあえずは最大値を設定
-	SetMeshOutputCounts(numVertices, numPrimitives);
-	if (numVertices == 0 || numPrimitives == 0) {
-		return;
-	}
-
-	/// ボクセルの位置を計算
-	int4 voxelPos = int4(DTid.xyz, 1);
-	/// チャンクの位置とボクセルのローカル位置からワールド座標を計算
-	float3 chunkOrigin = asPayload.chunkOrigin;
-	float3 chunkLocalPos = float3(voxelPos.x, voxelPos.y, voxelPos.z);
-	float3 worldPos = chunkLocalPos + asPayload.chunkOrigin;
-
-
-	/// 3dTextureのuvw座標を計算
-	float3 uvw = (float3(DTid.xyz) + float3(1, 0, 1)) / float3(kTextureSize);
-	uvw.y = 1.0f - uvw.y; // Y軸の反転
-	
-	uint chunkTextureId = chunks[asPayload.chunkIndex].textureId;
-	float4 voxelColor = voxelChunkTextures[chunkTextureId].SampleLevel(texSampler, uvw, 0);
-	//voxelColor.a = 1.0f;
-
-
-	float offset = 0.5f;
-	
-	uint vIndex = gi * 3;
-	if (vIndex + 2 < 256) {
-		verts[vIndex + 0].position = mul(float4(worldPos + float3(0, 0, offset), 1), viewProjection.matVP);
-		verts[vIndex + 1].position = mul(float4(worldPos + float3(offset, 0, -offset), 1), viewProjection.matVP);
-		verts[vIndex + 2].position = mul(float4(worldPos + float3(-offset, 0, -offset), 1), viewProjection.matVP);
-	
-		verts[vIndex + 0].worldPosition = float4(worldPos + float3(0, 0, offset), 1);
-		verts[vIndex + 1].worldPosition = float4(worldPos + float3(offset, 0, -offset), 1);
-		verts[vIndex + 2].worldPosition = float4(worldPos + float3(-offset, 0, -offset), 1);
-
-		for (int i = 0; i < 3; i++) {
-			verts[vIndex + i].normal = float3(0, 1, 0);
-			verts[vIndex + i].color = voxelColor;
-		}
-	}
-	
-	
-	uint iIndex = gi;
-	if (iIndex < 256) {
-		indices[iIndex] = uint3(vIndex + 0, vIndex + 1, vIndex + 2);
-	}
-	
-}
-
-*/

@@ -475,7 +475,7 @@ D3D12_STATIC_SAMPLER_DESC StaticSampler::ClampSampler() {
 	sampler.AddressW = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
 
 	sampler.MipLODBias = 0.0f;
-	sampler.MaxAnisotropy = 1;
+	sampler.MaxAnisotropy = 16;
 	sampler.ComparisonFunc = D3D12_COMPARISON_FUNC_ALWAYS;
 
 	sampler.BorderColor = D3D12_STATIC_BORDER_COLOR_OPAQUE_BLACK; // Clamp では不要だが初期化上書き

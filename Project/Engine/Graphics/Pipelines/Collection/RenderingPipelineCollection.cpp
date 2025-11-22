@@ -59,8 +59,10 @@ void RenderingPipelineCollection::Initialize() {
 	Generate3DRenderingPipeline<SkinMeshSkeletonRenderingPipeline>();
 #endif // DEBUG_MODE
 	Generate3DRenderingPipeline<EffectRenderingPipeline>(pAssetCollection_);
-	Generate3DRenderingPipeline<GizmoRenderingPipeline>();
 	Generate3DRenderingPipeline<GrassRenderingPipeline>(pAssetCollection_);
+
+	/// Gizmoは最後に描画する
+	Generate3DRenderingPipeline<GizmoRenderingPipeline>();
 
 	/// ----- オブジェクトごとのポストエフェクトのパイプラインを生成 ----- ///
 	GeneratePostProcessPipeline<PostProcessLighting>();

@@ -33,9 +33,9 @@ void main(
 	aabb.min = asPayload.chunkOrigin;
 	aabb.max = asPayload.chunkOrigin + float3(voxelTerrainInfo.chunkSize);
 	if (IsVisible(aabb, CreateFrustumFromMatrix(viewProjection.matVP))) {
-		asPayload.chunkIndex = groupIndex;
+		asPayload.chunkIndex = IndexOfMeshGroup(groupId, uint3(voxelTerrainInfo.chunkCountXZ.x, 1, voxelTerrainInfo.chunkCountXZ.y));
 
-		asPayload.subChunkSize = uint3(4, 4, 4);
+		asPayload.subChunkSize = uint3(2, 2, 2);
 		dispatchSize = voxelTerrainInfo.chunkSize / asPayload.subChunkSize;
 	
 		asPayload.dispatchSize = dispatchSize;

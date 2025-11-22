@@ -69,7 +69,7 @@ void GizmoRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManag
 void GizmoRenderingPipeline::Draw(class ECSGroup* _ecsGroup, [[maybe_unused]] CameraComponent* _camera, [[maybe_unused]] DxCommand* _dxCommand) {
 #ifdef DEBUG_MODE
 
-	if (_ecsGroup->GetGroupName() != "Debug") {
+	if (_camera->GetOwner()->GetECSGroup()->GetGroupName() != "Debug") {
 		return;
 	}
 
