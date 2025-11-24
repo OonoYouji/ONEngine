@@ -9,8 +9,10 @@
 struct VertexOut {
 	float4 position : SV_POSITION;
 	float4 worldPosition : POSITION0;
-	float3 normal : NORMAL0;
+	//float3 normal : NORMAL0;
 	float4 color : COLOR0;
+	float4 otherVertexPos1 : POSITION1;
+	float4 otherVertexPos2 : POSITION2;
 };
 
 

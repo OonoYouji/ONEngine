@@ -10,11 +10,15 @@ struct PSOutput {
 
 PSOutput main(VertexOut _out) {
 	PSOutput output;
+	
+	float3 direction1to2 = normalize(_out.otherVertexPos2.xyz - _out.otherVertexPos1.xyz);
+	float3 direction1toSelf = normalize(_out.worldPosition.xyz - _out.otherVertexPos1.xyz);
+	float3 normal = cross(direction1to2, direction1toSelf);
 
-	output.color = _out.color;
+	output.color    = _out.color;
 	output.worldPos = _out.worldPosition;
-	output.normal = float4(normalize(_out.normal), 1);
-	output.flags = float4(1, 0, 0, 1);
+	output.normal = float4(normalize(normal), 1);
+	output.flags    = float4(1, 0, 0, 1);
 
 	if (output.color.a <= 0.001f) {
 		discard;

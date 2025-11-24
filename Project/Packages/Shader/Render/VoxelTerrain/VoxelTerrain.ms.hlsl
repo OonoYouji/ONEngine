@@ -29,6 +29,36 @@ static const float3 kUVWOffset = float3(0.5f, -0.0f, 0.5f);
 /// function
 /// ---------------------------------------------------
 
+
+Indices GetIndices(uint _offset) {
+	Indices indis;
+	
+	indis.indis[0] = uint3(0, 2, 1);
+	indis.indis[1] = uint3(2, 3, 1);
+	
+	indis.indis[2] = uint3(2, 6, 3);
+	indis.indis[3] = uint3(6, 7, 3);
+	
+	indis.indis[4] = uint3(6, 4, 5);
+	indis.indis[5] = uint3(7, 6, 5);
+	
+	indis.indis[6] = uint3(4, 0, 1);
+	indis.indis[7] = uint3(1, 4, 5);
+
+	indis.indis[8] = uint3(1, 3, 5);
+	indis.indis[9] = uint3(3, 7, 5);
+	
+	indis.indis[10] = uint3(4, 6, 2);
+	indis.indis[11] = uint3(4, 2, 0);
+	
+	for (int i = 0; i < 12; i++) {
+		indis.indis[i] += _offset;
+	}
+
+	return indis;
+}
+
+
 /// 指定したボクセル位置の周囲8頂点の色を取得
 VoxelVertexColor GetVoxelVertexColor(uint3 _voxelPos, uint _chunkTextureId) {
 	float3 uvw = (float3(_voxelPos.xyz) + kUVWOffset) / float3(kTextureSize);
@@ -70,40 +100,12 @@ VoxelVertexColor GetVoxelVertexColor(uint3 _voxelPos, uint _chunkTextureId) {
 Vertices GetVoxelVertices(VoxelVertexColor _voxelColors, float3 _voxelPos, float4 _color) {
 	Vertices verts;
 	
-	/// 4頂点の色を設定
-	/// 各頂点のindexは値が低い方が下に来る
-
-	/// デバッグのためColorは ~~Heightを元に 黒->赤に変化させる
-
-	//float heightOffset = 0.5f;
-	
-	///// 0: 手前左 (0, 2)
-	//float flHeight = _voxelColors.color[0].a == _voxelColors.color[2].a ? -heightOffset : heightOffset;
-	//float3 frontLeft = float3(-0.5f, flHeight, -0.5f) + _voxelPos;
-	//verts.verts[0].worldPosition = float4(frontLeft, 1);
-	
-	///// 1: 手前右 (1, 3)
-	//float frHeight = _voxelColors.color[1].a < _voxelColors.color[3].a ? -heightOffset : heightOffset;
-	//float3 frontRight = float3(0.5f, frHeight, -0.5f) + _voxelPos;
-	//verts.verts[1].worldPosition = float4(frontRight, 1);
-	
-	///// 2: 奥左 (4, 6)
-	//float blHeight = _voxelColors.color[4].a < _voxelColors.color[6].a ? -heightOffset : heightOffset;
-	//float3 backLeft = float3(-0.5f, blHeight, 0.5f) + _voxelPos;
-	//verts.verts[2].worldPosition = float4(backLeft, 1);
-	
-	///// 3: 奥右 (5, 7)
-	//float brHeight = _voxelColors.color[5].a < _voxelColors.color[7].a ? -heightOffset : heightOffset;
-	//float3 backRight = float3(0.5f, brHeight, 0.5f) + _voxelPos;
-	//verts.verts[3].worldPosition = float4(backRight, 1);
-	
-
 	[unroll]
 	for (int i = 0; i < 8; i++) {
 		float3 offset = float3(
-			(i & 1) ? 0.5f : -0.5f,
-			(i & 2) ? 0.5f : -0.5f,
-			(i & 4) ? 0.5f : -0.5f
+			(i & 1) ? 0.45f : -0.45f,
+			(i & 2) ? 0.45f : -0.45f,
+			(i & 4) ? 0.45f : -0.45f
 		);
 		
 		float3 vertexPos = offset + _voxelPos;
@@ -111,52 +113,23 @@ Vertices GetVoxelVertices(VoxelVertexColor _voxelColors, float3 _voxelPos, float
 
 		float heightFactor = vertexPos.y / kTextureSize.y;
 		verts.verts[i].color = float4(1 - heightFactor, 1, 1 - heightFactor, 1);
-		verts.verts[i].normal = float3(0, 1, 0); // 仮
 		verts.verts[i].position = mul(verts.verts[i].worldPosition, viewProjection.matVP);
 	}
 
-	
+	Indices indis = GetIndices(0);
+	for (int i = 0; i < 12; i++) {
 
-	//float3 normal = normalize(cross(flHeight - brHeight, frHeight - brHeight));
-	//for (int i = 0; i < 4; i++) {
-	//	verts.verts[i].position = mul(verts.verts[i].worldPosition, viewProjection.matVP);
-	//	verts.verts[i].normal = normal;
-		
-	//	//verts.verts[i].color = _voxelColors.color[8];
-	//	verts.verts[i].color.a = 1.0f;
-	//}
+		VertexOut v0 = verts.verts[indis.indis[i].x];
+		v0.otherVertexPos1 = verts.verts[indis.indis[i].y].worldPosition;
+		v0.otherVertexPos2 = verts.verts[indis.indis[i].z].worldPosition;
+
+		verts.verts[indis.indis[i].x] = v0;
+	}
 	
 	return verts;
 }
 
 
-Indices GetIndices(uint _offset) {
-	Indices indis;
-	
-	indis.indis[0] = uint3(0, 2, 1);
-	indis.indis[1] = uint3(2, 3, 1);
-	
-	indis.indis[2] = uint3(2, 6, 3);
-	indis.indis[3] = uint3(6, 7, 3);
-	
-	indis.indis[4] = uint3(6, 4, 5);
-	indis.indis[5] = uint3(7, 6, 5);
-	
-	indis.indis[6] = uint3(4, 0, 1);
-	indis.indis[7] = uint3(1, 4, 5);
-
-	indis.indis[8] = uint3(1, 3, 5);
-	indis.indis[9] = uint3(3, 7, 5);
-	
-	indis.indis[10] = uint3(4, 6, 2);
-	indis.indis[11] = uint3(4, 2, 0);
-	
-	for (int i = 0; i < 12; i++) {
-		indis.indis[i] += _offset;
-	}
-
-	return indis;
-}
 
 
 /// ---------------------------------------------------
