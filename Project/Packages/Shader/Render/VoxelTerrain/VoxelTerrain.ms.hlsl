@@ -14,6 +14,10 @@ struct Indices {
 	uint3 indis[12];
 };
 
+struct VoxelColorCluter {
+	float4 colors[3][3][3];
+};
+
 /// ---------------------------------------------------
 /// Buffers
 /// ---------------------------------------------------
@@ -21,9 +25,9 @@ struct Indices {
 Texture3D<float4> voxelChunkTextures[] : register(t1);
 SamplerState texSampler : register(s0);
 
-static const uint3 kTextureSize = uint3(100, 256, 100);
-static const float3 kUVWOffset = float3(0.5f, -0.0f, 0.5f);
 
+static const float3 kUVWOffset = float3(0.5f, -0.0f, 0.5f);
+static const float kVertexOffset = 0.5f;
 
 /// ---------------------------------------------------
 /// function
@@ -59,9 +63,59 @@ Indices GetIndices(uint _offset) {
 }
 
 
+/// 指定したボクセル位置の周囲3x3x3の色を取得
+VoxelColorCluter GetVoxelColorCluster(uint3 _voxelPos, uint _chunkTextureId) {
+	VoxelColorCluter vcc;
+	
+	[unroll]
+	for (int z = -1; z <= 1; z++) {
+		[unroll]
+		for (int y = -1; y <= 1; y++) {
+			[unroll]
+			for (int x = -1; x <= 1; x++) {
+				uint3 samplePos = _voxelPos + uint3(x, y, z);
+				float3 uvw = (float3(samplePos.xyz) + kUVWOffset) / float3(voxelTerrainInfo.chunkSize);
+				uvw.y = 1.0f - uvw.y; // Y軸の反転
+				
+				/// 範囲外であれば隣のチャンクからサンプリングする
+				uint textureId = _chunkTextureId;
+				
+				/// X方向
+				if (uvw.x < 0.0f) {
+					/// 右隣のチャンクからサンプリング
+					uvw.x += 1.0f;
+					textureId = max(0, int(_chunkTextureId) - 1);
+				} else if (uvw.x > 1.0f) {
+					/// 左隣のチャンクからサンプリング
+					uvw.x -= 1.0f;
+					textureId = min(int(_chunkTextureId) + 1, int(voxelTerrainInfo.maxChunkCount) - 1);
+				}
+				
+				
+				/// Z方向
+				if (uvw.z < 0.0f) {
+					/// 手前のチャンクからサンプリング
+					uvw.z += 1.0f;
+					textureId = max(0, int(_chunkTextureId) - int(voxelTerrainInfo.chunkCountXZ.x));
+				} else if (uvw.z > 1.0f) {
+					/// 奥のチャンクからサンプリング
+					uvw.z -= 1.0f;
+					textureId = min(int(_chunkTextureId) + int(voxelTerrainInfo.chunkCountXZ.x), int(voxelTerrainInfo.maxChunkCount) - 1);
+				}
+				
+				
+				vcc.colors[x + 1][y + 1][z + 1] = voxelChunkTextures[textureId].SampleLevel(texSampler, uvw, 0);
+			}
+		}
+	}
+	
+	
+	return vcc;
+}
+
 /// 指定したボクセル位置の周囲8頂点の色を取得
 VoxelVertexColor GetVoxelVertexColor(uint3 _voxelPos, uint _chunkTextureId) {
-	float3 uvw = (float3(_voxelPos.xyz) + kUVWOffset) / float3(kTextureSize);
+	float3 uvw = (float3(_voxelPos.xyz) + kUVWOffset) / float3(voxelTerrainInfo.chunkSize);
 	uvw.y = 1.0f - uvw.y; // Y軸の反転
 
 	/*
@@ -86,8 +140,38 @@ VoxelVertexColor GetVoxelVertexColor(uint3 _voxelPos, uint _chunkTextureId) {
 			(i & 2) ? 0.5f : -0.5f,
 			(i & 4) ? 0.5f : -0.5f
 		);
-		float3 sampleUVW = uvw + offset / float3(kTextureSize);
-		vvc.color[i] = voxelChunkTextures[_chunkTextureId].SampleLevel(texSampler, sampleUVW, 0);
+		float3 sampleUVW = uvw + offset / float3(voxelTerrainInfo.chunkSize);
+
+		uint chunkTextureId = _chunkTextureId;
+
+		
+		/// ---------------------------------------------------
+		/// uvwが範囲外の時は隣のチャンクからサンプリングする
+		/// ---------------------------------------------------
+
+		/// X方向
+		if (sampleUVW.x < 0.0f) {
+			/// 右隣のチャンクからサンプリング
+			sampleUVW.x += 1.0f;
+			chunkTextureId = max(0, int(_chunkTextureId) - 1);
+		} else if (sampleUVW.x > 1.0f) {
+			/// 左隣のチャンクからサンプリング
+			sampleUVW.x -= 1.0f;
+			chunkTextureId = min(int(_chunkTextureId) + 1, int(voxelTerrainInfo.maxChunkCount) - 1);
+		}
+		
+		/// Z方向
+		if (sampleUVW.z < 0.0f) {
+			/// 手前のチャンクからサンプリング
+			sampleUVW.z += 1.0f;
+			chunkTextureId = max(0, int(_chunkTextureId) - int(voxelTerrainInfo.chunkCountXZ.x));
+		} else if (sampleUVW.z > 1.0f) {
+			/// 奥のチャンクからサンプリング
+			sampleUVW.z -= 1.0f;
+			chunkTextureId = min(int(_chunkTextureId) + int(voxelTerrainInfo.chunkCountXZ.x), int(voxelTerrainInfo.maxChunkCount) - 1);
+		}
+
+		vvc.color[i] = voxelChunkTextures[chunkTextureId].SampleLevel(texSampler, sampleUVW, 0);
 	}
 
 	/// 中心の色も取得
@@ -103,33 +187,46 @@ Vertices GetVoxelVertices(VoxelVertexColor _voxelColors, float3 _voxelPos, float
 	[unroll]
 	for (int i = 0; i < 8; i++) {
 		float3 offset = float3(
-			(i & 1) ? 0.45f : -0.45f,
-			(i & 2) ? 0.45f : -0.45f,
-			(i & 4) ? 0.45f : -0.45f
+			(i & 1) ? kVertexOffset : -kVertexOffset,
+			(i & 2) ? kVertexOffset : -kVertexOffset,
+			(i & 4) ? kVertexOffset : -kVertexOffset
 		);
 		
 		float3 vertexPos = offset + _voxelPos;
 		verts.verts[i].worldPosition = float4(vertexPos, 1);
 
-		float heightFactor = vertexPos.y / kTextureSize.y;
-		verts.verts[i].color = float4(1 - heightFactor, 1, 1 - heightFactor, 1);
+		float heightFactor = vertexPos.y / voxelTerrainInfo.chunkSize.y;
+		verts.verts[i].color = _color;
 		verts.verts[i].position = mul(verts.verts[i].worldPosition, viewProjection.matVP);
+		
+		verts.verts[i].normal = normalize(offset);
 	}
 
-	Indices indis = GetIndices(0);
-	for (int i = 0; i < 12; i++) {
-
-		VertexOut v0 = verts.verts[indis.indis[i].x];
-		v0.otherVertexPos1 = verts.verts[indis.indis[i].y].worldPosition;
-		v0.otherVertexPos2 = verts.verts[indis.indis[i].z].worldPosition;
-
-		verts.verts[indis.indis[i].x] = v0;
-	}
-	
 	return verts;
 }
 
-
+Vertices GetVoxelVertices(VoxelColorCluter _voxelColors, float3 _voxelPos, float4 _color) {
+	Vertices verts;
+	
+	[unroll]
+	for (int i = 0; i < 8; i++) {
+		float3 offset = float3(
+			(i & 1) ? kVertexOffset : -kVertexOffset,
+			(i & 2) ? kVertexOffset : -kVertexOffset,
+			(i & 4) ? kVertexOffset : -kVertexOffset
+		);
+		
+		float3 vertexPos = offset + _voxelPos;
+		verts.verts[i].worldPosition = float4(vertexPos, 1);
+		float heightFactor = vertexPos.y / voxelTerrainInfo.chunkSize.y;
+		//verts.verts[i].color = _voxelColors.colors[(i & 1) ? 2 : 0][(i & 2) ? 2 : 0][(i & 4) ? 2 : 0];
+		verts.verts[i].color = _color;
+		verts.verts[i].position = mul(verts.verts[i].worldPosition, viewProjection.matVP);
+		
+		verts.verts[i].normal = normalize(offset);
+	}
+	return verts;
+}
 
 
 /// ---------------------------------------------------
@@ -156,7 +253,7 @@ void main(
 
 	uint drawVoxelCount = 0;
 	uint3 drawVoxelPositions[64];
-	VoxelVertexColor drawVoxelVertexColors[64];
+	VoxelColorCluter drawVoxelVertexColors[64];
 	
 	/// ---------------------------------------------------
 	/// 事前にカリング、ボクセルごとに描画するか判定
@@ -170,33 +267,35 @@ void main(
 		[unroll]
 		for (int z = 0; z < 2; z++) {
 			[unroll]
-			for (int y = 0; y < 4; y++) {
+			for (int y = 0; y < 2; y++) {
 				[unroll]
 				for (int x = 0; x < 2; x++) {
 					uint3 voxelPos = uint3(x, y, z) + DTid;
 				
 					/// voxelPosを中心に3x3x3のボクセルカラー情報を取得
 					uint chunkTextureId = chunks[asPayload.chunkIndex].textureId;
-					VoxelVertexColor vvc = GetVoxelVertexColor(voxelPos, chunkTextureId);
-					if (vvc.color[8].a == 0.0f) {
-						/// 中心のボクセルが透明なら描画しない
+					
+					VoxelColorCluter vcc = GetVoxelColorCluster(voxelPos, chunkTextureId);
+					
+					/// 中心のボクセルが透明なら描画しない
+					if (vcc.colors[1][1][1].a == 0.0f) {
 						continue;
 					}
 					
-					float averageAlpha = 0.0f;
-					for (int i = 0; i < 8; i++) {
-						averageAlpha += vvc.color[i].a;
+					/// 自身をが見えない状況か判定
+					if (vcc.colors[1][0][1].a != 0.0f &&
+						vcc.colors[1][2][1].a != 0.0f &&
+						vcc.colors[0][1][1].a != 0.0f &&
+						vcc.colors[2][1][1].a != 0.0f &&
+						vcc.colors[1][1][0].a != 0.0f &&
+						vcc.colors[1][1][2].a != 0.0f) {
+						continue;
 					}
-					averageAlpha /= 8.0f;
-					if (averageAlpha >= 1.0f) {
-						/// 周囲のボクセルがすべて不透明なら描画しない
-					} else if (averageAlpha != 0.0f) {
-						/// 周囲に透明なボクセルがある場合は描画する
-						drawVoxelCount++;
-						drawVoxelPositions[drawVoxelCount - 1] = voxelPos;
-						drawVoxelVertexColors[drawVoxelCount - 1] = vvc;
-
-					}
+					
+					/// 描画するボクセルとして登録
+					drawVoxelCount++;
+					drawVoxelPositions[drawVoxelCount - 1] = voxelPos;
+					drawVoxelVertexColors[drawVoxelCount - 1] = vcc;
 
 				}
 			}
