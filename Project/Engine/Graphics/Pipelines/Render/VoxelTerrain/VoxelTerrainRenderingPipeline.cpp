@@ -34,6 +34,7 @@ void VoxelTerrainRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, 
 
 		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 0); // VoxelTerrainInfo
 		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 1); // ViewProjection
+		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 2); // CameraPosition
 
 		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // Chunk array
 		pipeline_->AddDescriptorRange(1, MAX_TEXTURE_COUNT, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // VoxelTerrain Texture3D
@@ -98,6 +99,7 @@ void VoxelTerrainRenderingPipeline::Draw(ECSGroup* _ecs, CameraComponent* _camer
 
 	voxelTerrain->SetupGraphicBuffers(cmdList, { CBV_VOXEL_TERRAIN_INFO, SRV_CHUNK_ARRAY }, pAssetCollection_);
 	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(_dxCommand->GetCommandList(), CBV_VIEW_PROJECTION);
+	_camera->GetCameraPosBuffer().BindForGraphicsCommandList(_dxCommand->GetCommandList(), CBV_CAMERA_POSITION);
 
 	const Texture& frontTexture = pAssetCollection_->GetTextures().front();
 	cmdList->SetGraphicsRootDescriptorTable(
@@ -113,23 +115,23 @@ void VoxelTerrainRenderingPipeline::Draw(ECSGroup* _ecs, CameraComponent* _camer
 
 
 	/// ----- Gizmoでチャンクの枠線を描画 ----- ///
-	const auto& chunkCount = voxelTerrain->GetChunkCountXZ();
-	for (int x = 0; x < chunkCount.x; ++x) {
-		for (int z = 0; z < chunkCount.y; ++z) {
-			// 各チャンクの位置を計算
-			const Vector3Int& chunkSizeInt = voxelTerrain->GetChunkSize();
-			Vector3 chunkSize = Vector3(
-				static_cast<float>(chunkSizeInt.x),
-				static_cast<float>(chunkSizeInt.y),
-				static_cast<float>(chunkSizeInt.z)
-			);
+	//const auto& chunkCount = voxelTerrain->GetChunkCountXZ();
+	//for (int x = 0; x < chunkCount.x; ++x) {
+	//	for (int z = 0; z < chunkCount.y; ++z) {
+	//		// 各チャンクの位置を計算
+	//		const Vector3Int& chunkSizeInt = voxelTerrain->GetChunkSize();
+	//		Vector3 chunkSize = Vector3(
+	//			static_cast<float>(chunkSizeInt.x),
+	//			static_cast<float>(chunkSizeInt.y),
+	//			static_cast<float>(chunkSizeInt.z)
+	//		);
 
-			Vector3 chunkPosition = Vector3(x, chunkSize.y, z) * chunkSize;
-			chunkPosition += chunkSize * 0.5f;
+	//		Vector3 chunkPosition = Vector3(x, chunkSize.y, z) * chunkSize;
+	//		chunkPosition += chunkSize * 0.5f;
 
-			// Gizmoで枠線を描画
-			Gizmo::DrawWireCube(chunkPosition, chunkSize, Color::kWhite);
-		}
-	}
+	//		// Gizmoで枠線を描画
+	//		Gizmo::DrawWireCube(chunkPosition, chunkSize, Color::kWhite);
+	//	}
+	//}
 
 }

@@ -39,9 +39,21 @@ void main(
 		dispatchSize = voxelTerrainInfo.chunkSize / asPayload.subChunkSize;
 	
 		asPayload.dispatchSize = dispatchSize;
+
+		float3 center = (aabb.min + aabb.max) * 0.5;
+		float3 diff = center - camera.position.xyz;
+		float lengthToCamera = length(diff);
+
+		/// LOD レベルを ndc.z の値に基づいて設定
+		if (lengthToCamera < 100.0f) {
+			asPayload.lodLevel = 0; // 高詳細度
+		} else if (lengthToCamera < 500.0f) {
+			asPayload.lodLevel = 1; // 中詳細度
+		} else {
+			asPayload.lodLevel = 2; // 低詳細度
+		}
 	}
 	
 	/// 分割された個数でディスパッチ
 	DispatchMesh(dispatchSize.x, dispatchSize.y, dispatchSize.z, asPayload);
-	//DispatchMesh(1, 1, 1, asPayload);
 }

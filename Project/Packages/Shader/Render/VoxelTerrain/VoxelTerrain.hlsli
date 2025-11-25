@@ -35,10 +35,10 @@ struct SubChunk {
 struct Payload {
 	uint chunkIndex;
 	float3 chunkOrigin;
-
 	uint3 subChunkSize;
 
 	uint3 dispatchSize;
+	uint lodLevel;
 };
 
 
@@ -65,5 +65,6 @@ uint IndexOfMeshGroup(uint3 _groupID, uint3 _dim) {
 
 ConstantBuffer<VoxelTerrainInfo> voxelTerrainInfo : register(b0);
 ConstantBuffer<ViewProjection>   viewProjection   : register(b1);
+ConstantBuffer<Camera>           camera           : register(b2);
 
 StructuredBuffer<Chunk> chunks : register(t0);

@@ -19,6 +19,7 @@ class VoxelTerrainRenderingPipeline : public IRenderingPipeline {
 	enum ROOT_PARAM {
 		CBV_VOXEL_TERRAIN_INFO,
 		CBV_VIEW_PROJECTION,
+		CBV_CAMERA_POSITION,
 		SRV_CHUNK_ARRAY,
 		SRV_VOXEL_TERRAIN_TEXTURE3D,
 	};

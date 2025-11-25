@@ -259,6 +259,8 @@ void main(
 	/// 事前にカリング、ボクセルごとに描画するか判定
 	/// ---------------------------------------------------
 
+	if(asPayload.lodLevel != 2) {
+	
 	AABB aabb;
 	aabb.min = asPayload.chunkOrigin + DTid;
 	aabb.max = aabb.min + asPayload.subChunkSize;
@@ -301,6 +303,7 @@ void main(
 			}
 		}
 	}
+	}
 
 	
 	/// 描画するボクセル数に応じて頂点数、プリミティブ数を計算
@@ -324,7 +327,15 @@ void main(
 		if (vIndex + 3 < numVertices) {
 			float3 worldPos = float3(voxelPos) + asPayload.chunkOrigin;
 			
-			Vertices vs = GetVoxelVertices(drawVoxelVertexColors[i], worldPos, float4(1, 0, 0, 1));
+			/// LODレベルに応じて頂点カラーを変更
+			float4 color;
+			if(asPayload.lodLevel == 0) {
+				color = float4(1, 1, 1, 1); // 高詳細度は白
+			} else {
+				color = float4(1, 0, 0, 1); // 中詳細度は赤
+			}
+			
+			Vertices vs = GetVoxelVertices(drawVoxelVertexColors[i], worldPos, color);
 			for (int j = 0; j < 8; j++) {
 				verts[vIndex + j] = vs.verts[j];
 			}
