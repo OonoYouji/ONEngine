@@ -217,40 +217,70 @@ static const float4 kPatternColor[10] = {
 VoxelColorCluter GetVoxelColorCluster(uint3 _voxelPos, uint _chunkTextureId) {
 	VoxelColorCluter vcc;
 	
-	[unroll]
 	for (int z = -1; z <= 1; z++) {
-		[unroll]
 		for (int y = -1; y <= 1; y++) {
-			[unroll]
 			for (int x = -1; x <= 1; x++) {
+
 				uint3 samplePos = _voxelPos + uint3(x, y, z);
 				float3 uvw = (float3(samplePos.xyz) + kUVWOffset) / float3(voxelTerrainInfo.chunkSize);
 				uvw.y = 1.0f - uvw.y; // Y軸の反転
 				
 				/// 範囲外であれば隣のチャンクからサンプリングする
-				uint textureId = _chunkTextureId;
+				int textureId = _chunkTextureId;
+
+				float4 noDrawColor = float4(1, 1, 1, 1);
 				
 				/// X方向
 				if (uvw.x < 0.0f) {
-					/// 右隣のチャンクからサンプリング
-					uvw.x += 1.0f;
-					textureId = max(0, int(_chunkTextureId) - 1);
-				} else if (uvw.x > 1.0f) {
 					/// 左隣のチャンクからサンプリング
-					uvw.x -= 1.0f;
-					textureId = min(int(_chunkTextureId) + 1, int(voxelTerrainInfo.maxChunkCount) - 1);
+					int newTexId = int(_chunkTextureId) - 1;
+					if (newTexId >= 0) {
+						uvw.x += 1.0f;
+						textureId = newTexId;
+					} else {
+						/// 範囲外なので透明な色を設定
+						vcc.colors[x + 1][y + 1][z + 1] = noDrawColor;
+						continue;
+					}
+					
+				} else if (uvw.x > 1.0f) {
+					/// 右隣のチャンクからサンプリング
+					int newTexId = int(_chunkTextureId) + 1;
+					if (newTexId < int(voxelTerrainInfo.maxChunkCount) - 1) {
+						uvw.x -= 1.0f;
+						textureId = newTexId;
+					} else {
+						/// 範囲外なので透明な色を設定
+						vcc.colors[x + 1][y + 1][z + 1] = noDrawColor;
+						continue;
+					}
 				}
 				
 				
 				/// Z方向
 				if (uvw.z < 0.0f) {
 					/// 手前のチャンクからサンプリング
-					uvw.z += 1.0f;
-					textureId = max(0, int(_chunkTextureId) - int(voxelTerrainInfo.chunkCountXZ.x));
+					int newTexId = int(_chunkTextureId) - int(voxelTerrainInfo.chunkCountXZ.x);
+					if (newTexId >= 0) {
+						uvw.z += 1.0f;
+						textureId = newTexId;
+					} else {
+						/// 範囲外なので透明な色を設定
+						vcc.colors[x + 1][y + 1][z + 1] = noDrawColor;
+						continue;
+					}
+
 				} else if (uvw.z > 1.0f) {
 					/// 奥のチャンクからサンプリング
-					uvw.z -= 1.0f;
-					textureId = min(int(_chunkTextureId) + int(voxelTerrainInfo.chunkCountXZ.x), int(voxelTerrainInfo.maxChunkCount) - 1);
+					int newTexId = int(_chunkTextureId) + int(voxelTerrainInfo.chunkCountXZ.x);
+					if (newTexId < int(voxelTerrainInfo.maxChunkCount) - 1) {
+						uvw.z -= 1.0f;
+						textureId = newTexId;
+					} else {
+						/// 範囲外なので透明な色を設定
+						vcc.colors[x + 1][y + 1][z + 1] = noDrawColor;
+						continue;
+					}
 				}
 				
 				
@@ -872,10 +902,6 @@ void main(
 					if (patternIndex == -1) {
 						continue;
 					}
-					
-					//if (patternIndex != 7) {
-					//	continue;
-					//}
 					
 					/// 描画するボクセルとして登録
 					DrawInstanceInfo dii;
