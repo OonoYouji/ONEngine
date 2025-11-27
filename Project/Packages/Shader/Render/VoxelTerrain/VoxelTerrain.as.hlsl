@@ -36,7 +36,7 @@ void main(
 		asPayload.chunkIndex = IndexOfMeshGroup(groupId, uint3(voxelTerrainInfo.chunkCountXZ.x, 1, voxelTerrainInfo.chunkCountXZ.y));
 
 		asPayload.subChunkSize = uint3(2, 2, 2);
-		dispatchSize = voxelTerrainInfo.chunkSize / asPayload.subChunkSize;
+		dispatchSize = voxelTerrainInfo.chunkSize / asPayload.subChunkSize + uint3(0, 1, 0);
 	
 		asPayload.dispatchSize = dispatchSize;
 

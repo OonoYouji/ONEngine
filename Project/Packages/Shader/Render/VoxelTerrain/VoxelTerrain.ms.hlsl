@@ -46,7 +46,7 @@ Texture3D<float4> voxelChunkTextures[] : register(t1);
 SamplerState texSampler : register(s0);
 
 
-static const float3 kUVWOffset = float3(0.5f, -0.0f, 0.5f);
+static const float3 kPixelOffset = float3(0.5f, 0.5f, 0.5f);
 static const float kVertexOffset = 0.5f;
 
 /*
@@ -118,12 +118,12 @@ static const uint3 kVoxelTriangles[12] = {
 
 
 /*
-	Bit 0 : Up
-	Bit 1 : Down
-	Bit 2 : Left
-	Bit 3 : Right
-	Bit 4 : Front
-	Bit 5 : Back
+	Bit 0 : Up    -> Y+
+	Bit 1 : Down  -> Y-
+	Bit 2 : Right -> X+
+	Bit 3 : Left  -> X-
+	Bit 4 : Front -> Z-
+	Bit 5 : Back  -> Z+
 */
 
 /// 6bitでボクセルの周囲の有無を表現したデータ
@@ -213,44 +213,53 @@ static const float4 kPatternColor[10] = {
 /// function
 /// ---------------------------------------------------
 
+uint NormalizeTextureId(uint _textureId) {
+	/// チャンクテクスチャIDを0始まりに変換する
+	return _textureId - chunks[0].textureId;
+}
+
+uint DenormalizeTextureId(uint _textureId) {
+	/// チャンクテクスチャIDを元のIDに戻す
+	return _textureId + chunks[0].textureId;
+}
+
+
 /// 指定したボクセル位置の周囲3x3x3の色を取得
-VoxelColorCluter GetVoxelColorCluster(uint3 _voxelPos, uint _chunkTextureId) {
+VoxelColorCluter GetVoxelColorCluster(uint3 _voxelPos, uint _chunkId) {
 	VoxelColorCluter vcc;
 	
 	for (int z = -1; z <= 1; z++) {
 		for (int y = -1; y <= 1; y++) {
 			for (int x = -1; x <= 1; x++) {
 
-				uint3 samplePos = _voxelPos + uint3(x, y, z);
-				float3 uvw = (float3(samplePos.xyz) + kUVWOffset) / float3(voxelTerrainInfo.chunkSize);
+				int3 samplePos = _voxelPos + uint3(x, y, z);
+				float3 uvw = (float3(samplePos.xyz) + kPixelOffset) / float3(voxelTerrainInfo.chunkSize);
 				uvw.y = 1.0f - uvw.y; // Y軸の反転
 				
 				/// 範囲外であれば隣のチャンクからサンプリングする
-				int textureId = _chunkTextureId;
+				int chunkId = _chunkId;
 
-				float4 noDrawColor = float4(1, 1, 1, 1);
+				float4 noDrawColor = float4(1, 1, 1, 0);
 				
 				/// X方向
 				if (uvw.x < 0.0f) {
 					/// 左隣のチャンクからサンプリング
-					int newTexId = int(_chunkTextureId) - 1;
-					if (newTexId >= 0) {
+					int leftChunkId = chunkId - 1;
+					if (leftChunkId % voxelTerrainInfo.chunkCountXZ.x != voxelTerrainInfo.chunkCountXZ.x - 1) {
 						uvw.x += 1.0f;
-						textureId = newTexId;
+						chunkId = leftChunkId;
 					} else {
-						/// 範囲外なので透明な色を設定
 						vcc.colors[x + 1][y + 1][z + 1] = noDrawColor;
 						continue;
 					}
 					
 				} else if (uvw.x > 1.0f) {
 					/// 右隣のチャンクからサンプリング
-					int newTexId = int(_chunkTextureId) + 1;
-					if (newTexId < int(voxelTerrainInfo.maxChunkCount) - 1) {
+					int rightChunkId = chunkId + 1;
+					if (rightChunkId % voxelTerrainInfo.chunkCountXZ.x != 0) {
 						uvw.x -= 1.0f;
-						textureId = newTexId;
+						chunkId = rightChunkId;
 					} else {
-						/// 範囲外なので透明な色を設定
 						vcc.colors[x + 1][y + 1][z + 1] = noDrawColor;
 						continue;
 					}
@@ -260,31 +269,29 @@ VoxelColorCluter GetVoxelColorCluster(uint3 _voxelPos, uint _chunkTextureId) {
 				/// Z方向
 				if (uvw.z < 0.0f) {
 					/// 手前のチャンクからサンプリング
-					int newTexId = int(_chunkTextureId) - int(voxelTerrainInfo.chunkCountXZ.x);
-					if (newTexId >= 0) {
-						uvw.z += 1.0f;
-						textureId = newTexId;
+					int frontChunkId = chunkId - int(voxelTerrainInfo.chunkCountXZ.x);
+					if (frontChunkId >= 0) {
+						uvw.z -= 1.0f;
+						chunkId = frontChunkId;
 					} else {
-						/// 範囲外なので透明な色を設定
 						vcc.colors[x + 1][y + 1][z + 1] = noDrawColor;
 						continue;
 					}
 
 				} else if (uvw.z > 1.0f) {
 					/// 奥のチャンクからサンプリング
-					int newTexId = int(_chunkTextureId) + int(voxelTerrainInfo.chunkCountXZ.x);
-					if (newTexId < int(voxelTerrainInfo.maxChunkCount) - 1) {
-						uvw.z -= 1.0f;
-						textureId = newTexId;
+					int backChunkId = int(chunkId) + int(voxelTerrainInfo.chunkCountXZ.x);
+					if (backChunkId < voxelTerrainInfo.maxChunkCount) {
+						uvw.z += 1.0f;
+						chunkId = backChunkId;
 					} else {
-						/// 範囲外なので透明な色を設定
 						vcc.colors[x + 1][y + 1][z + 1] = noDrawColor;
 						continue;
 					}
 				}
 				
 				
-				vcc.colors[x + 1][y + 1][z + 1] = voxelChunkTextures[textureId].SampleLevel(texSampler, uvw, 0);
+				vcc.colors[x + 1][y + 1][z + 1] = voxelChunkTextures[chunks[chunkId].textureId].SampleLevel(texSampler, uvw, 0);
 			}
 		}
 	}
@@ -581,14 +588,14 @@ RenderingData GenerateRenderingDataPattern4() {
 	
 	uint3 indis[6] = {
 		/// 上面
-		uint3(0, 1, 2),
-		uint3(1, 3, 2),
+		uint3(2, 3, 6),
+		uint3(3, 7, 6),
 		/// 右面
-		uint3(0, 7, 1),
-		uint3(0, 6, 7),
+		uint3(3, 5, 7),
+		uint3(3, 1, 5),
 		/// 下面
-		uint3(4, 6, 7),
-		uint3(4, 7, 5)
+		uint3(0, 4, 1),
+		uint3(1, 4, 5)
 	};
 	
 	
@@ -885,8 +892,7 @@ void main(
 					uint3 voxelPos = uint3(x, y, z) + DTid;
 				
 					/// ボクセルの色クラスタを取得
-					uint chunkTextureId = chunks[asPayload.chunkIndex].textureId;
-					VoxelColorCluter vcc = GetVoxelColorCluster(voxelPos, chunkTextureId);
+					VoxelColorCluter vcc = GetVoxelColorCluster(voxelPos, asPayload.chunkIndex);
 					
 					if (vcc.colors[1][1][1].a != 0.0f) {
 						continue; // 自身が地ボクセルならスキップ
@@ -938,8 +944,7 @@ void main(
 	/// ---------------------------------------------------
 
 	for (uint i = 0; i < drawVoxelCount; i++) {
-		uint3 voxelPos = diis[i].voxelPos;
-		float3 worldPos = float3(voxelPos) + asPayload.chunkOrigin;
+		float3 worldPos = float3(diis[i].voxelPos) + asPayload.chunkOrigin + float3(0.0f, 0.0f, 0.0f);
 		
 		RenderingData rd = GenerateVoxelRenderingData(diis[i].patternIndex, worldPos, diis[i].rotation);
 

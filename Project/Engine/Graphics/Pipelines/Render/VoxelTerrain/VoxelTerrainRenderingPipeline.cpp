@@ -115,23 +115,24 @@ void VoxelTerrainRenderingPipeline::Draw(ECSGroup* _ecs, CameraComponent* _camer
 
 
 	/// ----- Gizmoでチャンクの枠線を描画 ----- ///
-	//const auto& chunkCount = voxelTerrain->GetChunkCountXZ();
-	//for (int x = 0; x < chunkCount.x; ++x) {
-	//	for (int z = 0; z < chunkCount.y; ++z) {
-	//		// 各チャンクの位置を計算
-	//		const Vector3Int& chunkSizeInt = voxelTerrain->GetChunkSize();
-	//		Vector3 chunkSize = Vector3(
-	//			static_cast<float>(chunkSizeInt.x),
-	//			static_cast<float>(chunkSizeInt.y),
-	//			static_cast<float>(chunkSizeInt.z)
-	//		);
+	const auto& chunkCount = voxelTerrain->GetChunkCountXZ();
+	for (int x = 0; x < chunkCount.x; ++x) {
+		for (int z = 0; z < chunkCount.y; ++z) {
+			// 各チャンクの位置を計算
+			const Vector3Int& chunkSizeInt = voxelTerrain->GetChunkSize();
+			Vector3 chunkSize = Vector3(
+				static_cast<float>(chunkSizeInt.x),
+				static_cast<float>(chunkSizeInt.y),
+				static_cast<float>(chunkSizeInt.z)
+			);
 
-	//		Vector3 chunkPosition = Vector3(x, chunkSize.y, z) * chunkSize;
-	//		chunkPosition += chunkSize * 0.5f;
+			Vector3 chunkPosition = Vector3(static_cast<float>(x), 0.0f, static_cast<float>(z)) * chunkSize;
+			chunkPosition += chunkSize * 0.5f;
+			chunkPosition -= Vector3(0.5f, 0.0f, 0.5f); // 中心を合わせる調整
 
-	//		// Gizmoで枠線を描画
-	//		Gizmo::DrawWireCube(chunkPosition, chunkSize, Color::kWhite);
-	//	}
-	//}
+			// Gizmoで枠線を描画
+			Gizmo::DrawWireCube(chunkPosition, chunkSize, Color::kWhite);
+		}
+	}
 
 }
