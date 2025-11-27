@@ -20,8 +20,8 @@ struct VoxelColorCluter {
 
 /// １つのボクセルを描画するための最大のデータ
 struct RenderingData {
-	/// 8頂点分の情報
-	VertexOut verts[8];
+	/// 重複込みでの20頂点分の情報
+	VertexOut verts[20];
 	/// 最大10三角形分のインデックス情報
 	uint3 indis[10];
 };
@@ -79,44 +79,6 @@ static const float4 kDefaultVertices[8] = {
 	float4(+kVertexOffset, +kVertexOffset, +kVertexOffset, 1.0f), /// 奥右上
 };
 
-/// ボクセルの頂点インデックス定義
-static const uint FRONT_LEFT_BOTTOM = 0;
-static const uint FRONT_RIGHT_BOTTOM = 1;
-static const uint FRONT_LEFT_TOP = 2;
-static const uint FRONT_RIGHT_TOP = 3;
-static const uint BACK_LEFT_BOTTOM = 4;
-static const uint BACK_RIGHT_BOTTOM = 5;
-static const uint BACK_LEFT_TOP = 6;
-static const uint BACK_RIGHT_TOP = 7;
-
-/// 立方体の三角形インデックス (外側向き CCW)
-static const uint3 kVoxelTriangles[12] = {
-    /// 前面 (Zマイナス側)
-	uint3(FRONT_LEFT_BOTTOM, FRONT_RIGHT_BOTTOM, FRONT_LEFT_TOP), // 0-1-2
-    uint3(FRONT_LEFT_TOP, FRONT_RIGHT_BOTTOM, FRONT_RIGHT_TOP), // 2-1-3
-
-    /// 背面 (Zプラス側)
-    uint3(BACK_RIGHT_BOTTOM, BACK_LEFT_BOTTOM, BACK_LEFT_TOP), // 5-4-6
-    uint3(BACK_RIGHT_TOP, BACK_RIGHT_BOTTOM, BACK_LEFT_TOP), // 7-5-6
-
-    /// 左面 (Xマイナス側)
-    uint3(BACK_LEFT_BOTTOM, FRONT_LEFT_BOTTOM, FRONT_LEFT_TOP), // 4-0-2
-    uint3(BACK_LEFT_TOP, BACK_LEFT_BOTTOM, FRONT_LEFT_TOP), // 6-4-2
-
-    /// 右面 (Xプラス側)
-    uint3(FRONT_RIGHT_BOTTOM, BACK_RIGHT_BOTTOM, BACK_RIGHT_TOP), // 1-5-7
-    uint3(FRONT_RIGHT_TOP, FRONT_RIGHT_BOTTOM, BACK_RIGHT_TOP), // 3-1-7
-
-    /// 上面 (Yプラス側)
-    uint3(FRONT_LEFT_TOP, FRONT_RIGHT_TOP, BACK_RIGHT_TOP), // 2-3-7
-    uint3(BACK_LEFT_TOP, FRONT_LEFT_TOP, BACK_RIGHT_TOP), // 6-2-7
-
-    /// 下面 (Yマイナス側)
-    uint3(FRONT_RIGHT_BOTTOM, FRONT_LEFT_BOTTOM, BACK_LEFT_BOTTOM), // 1-0-4
-    uint3(BACK_RIGHT_BOTTOM, FRONT_RIGHT_BOTTOM, BACK_LEFT_BOTTOM), // 5-1-4
-};
-
-
 /*
 	Bit 0 : Up    -> Y+
 	Bit 1 : Down  -> Y-
@@ -158,31 +120,32 @@ static const uint kPatternMultiplicity[10] = {
 
 /// 各代表パターンが三角形を何個持つか
 static const uint kPatternPrimitiveCount[10] = {
-	0, // 0x00
-	2, // 0x01
-	4, // 0x03
-	2, // 0x05
-	6, // 0x07
-	8, // 0x0F
-	4, // 0x15
-	8, // 0x17
-	10, // 0x1F
+	0, // 0x00 パターン0
+	2, // 0x01 パターン1
+	4, // 0x03 パターン2
+	4, // 0x05 パターン3
+	6, // 0x07 パターン4
+	8, // 0x0F パターン5
+	4, // 0x15 パターン6
+	8, // 0x17 パターン7
+	10, // 0x1F パターン8
 	0 // 0x3F (全方向は描画しない)
 };
 
-/// 各代表パターンが頂点を何個持つか (重複頂点は排除済み)
+/// 各代表パターンが頂点を何個持つか (法線を分けるため重複込み)
 static const uint kPatternVertexCount[10] = {
-	0, // 0x00
-	4, // 0x01
-	8, // 0x03
-	4, // 0x05
-	8, // 0x07
-	8, // 0x0F
-	6, // 0x15
-	8, // 0x17
-	8, // 0x1F
+	0, // 0x00 パターン0
+	4, // 0x01 パターン1 [000001]
+	8, // 0x03 パターン2 [000011]
+	10, // 0x05 パターン3 [000101]
+	12, // 0x07 パターン4 [000111]
+	16, // 0x0F パターン5 [001111]
+	12, // 0x15 パターン6 [010101]
+	16, // 0x17 パターン7 [010111]
+	20, // 0x1F パターン8 [011111]
 	0 // 0x3F (全方向は描画しないので0頂点)
 };
+
 
 
 /// ビットマスク定義
@@ -212,17 +175,6 @@ static const float4 kPatternColor[10] = {
 /// ---------------------------------------------------
 /// function
 /// ---------------------------------------------------
-
-uint NormalizeTextureId(uint _textureId) {
-	/// チャンクテクスチャIDを0始まりに変換する
-	return _textureId - chunks[0].textureId;
-}
-
-uint DenormalizeTextureId(uint _textureId) {
-	/// チャンクテクスチャIDを元のIDに戻す
-	return _textureId + chunks[0].textureId;
-}
-
 
 /// 指定したボクセル位置の周囲3x3x3の色を取得
 VoxelColorCluter GetVoxelColorCluster(uint3 _voxelPos, uint _chunkId) {
@@ -495,10 +447,7 @@ RenderingData GenerateRenderingDataPattern1() {
 	/// デフォBitより 上方向にボクセルが存在するパターン
 
 	uint used[4] = {
-		FRONT_LEFT_TOP,
-		FRONT_RIGHT_TOP,
-		BACK_RIGHT_TOP,
-		BACK_LEFT_TOP
+		2, 3, 7, 6
 	};
 
 	uint3 indis[2] = {
@@ -512,6 +461,7 @@ RenderingData GenerateRenderingDataPattern1() {
 	RenderingData rd;
 	for (int i = 0; i < 4; i++) {
 		rd.verts[i].worldPosition = kDefaultVertices[used[i]];
+		rd.verts[i].normal = float3(0, -1, 0);
 	}
 	
 	for (int i = 0; i < 2; i++) {
@@ -528,19 +478,35 @@ RenderingData GenerateRenderingDataPattern2() {
 	
 	uint3 indis[4] = {
 		/// 上面
-		kVoxelTriangles[8],
-		kVoxelTriangles[9],
+		uint3(2, 3, 7),
+		uint3(2, 7, 6),
 		/// 下面
-		kVoxelTriangles[10],
-		kVoxelTriangles[11]
+		uint3(1, 0, 4),
+		uint3(1, 4, 5)
 	};
 	
+	/// 上面と下面で法線が異なるので別々に設定する
+	float3 upNormal = float3(0, 1, 0);
+	float3 downNormal = float3(0, -1, 0);
 	
 	RenderingData rd;
 	for (int i = 0; i < 8; i++) {
 		rd.verts[i].worldPosition = kDefaultVertices[i];
 	}
+
+	/// 上面の法線設定
+	rd.verts[2].normal = upNormal;
+	rd.verts[3].normal = upNormal;
+	rd.verts[6].normal = upNormal;
+	rd.verts[7].normal = upNormal;
+
+	/// 下面の法線設定
+	rd.verts[0].normal = downNormal;
+	rd.verts[1].normal = downNormal;
+	rd.verts[4].normal = downNormal;
+	rd.verts[5].normal = downNormal;
 	
+
 	for (int i = 0; i < 4; i++) {
 		rd.indis[i] = indis[i];
 	}
@@ -553,26 +519,48 @@ RenderingData GenerateRenderingDataPattern3() {
 	/// パターン3(垂直な2方向(12通りの回転)) デフォBit: 000101
 	/// デフォBitより 上方向、右方向にボクセルが存在するパターン
 	
-	uint used[4] = {
-		BACK_RIGHT_BOTTOM,
-		FRONT_RIGHT_BOTTOM,
-		BACK_LEFT_TOP,
-		FRONT_LEFT_TOP
+
+	uint used[10] = {
+		/// 斜め面
+		5, 1, 6, 2,
+		/// 前面
+		2, 3, 1,
+		/// 奥面
+		6, 5, 7,
 	};
 
-	uint3 indis[2] = {
+
+	uint3 indis[4] = {
 		/// 斜め面
 		uint3(2, 1, 0),
-		uint3(2, 3, 1)
+		uint3(2, 3, 1),
+		/// 奥面
+		uint3(4, 5, 6),
+		/// 前面
+		uint3(7, 8, 9)
 	};
 	
+	float3 normals[3] = {
+		normalize(float3(-1, -1, 0)), // 斜め面
+		float3(0, 0, 1), // 奥面
+		float3(0, 0, -1) // 前面
+	};
+
 	
 	RenderingData rd;
-	for (int i = 0; i < 4; i++) {
+	for (int i = 0; i < 10; i++) {
 		rd.verts[i].worldPosition = kDefaultVertices[used[i]];
+
+		if (i < 4) {
+			rd.verts[i].normal = normals[0]; // 斜め面
+		} else if (i < 7) {
+			rd.verts[i].normal = normals[1]; // 奥面
+		} else {
+			rd.verts[i].normal = normals[2]; // 前面
+		}
 	}
 	
-	for (int i = 0; i < 2; i++) {
+	for (int i = 0; i < 4; i++) {
 		rd.indis[i] = indis[i];
 	}
 	
@@ -584,24 +572,39 @@ RenderingData GenerateRenderingDataPattern4() {
 	/// パターン4(T字型3方向(24通りの回転)) デフォBit: 000111
 	/// デフォBitより 上下方向、右方向にボクセルが存在するパターン
 
-	/// 8頂点なのでデフォルト頂点をそのまま使用
-	
+	uint used[12] = {
+		/// 上面
+		6, 7, 3, 2,
+		/// 下面
+		0, 4, 5, 1,
+		/// 右面 
+		7, 5, 1, 3
+	};
+
+	float3 normals[3] = {
+		float3(0, -1, 0), // 上面
+		float3(0, 1, 0), // 下面
+		float3(-1, 0, 0) // 右面
+	};
+
+
 	uint3 indis[6] = {
 		/// 上面
-		uint3(2, 3, 6),
-		uint3(3, 7, 6),
-		/// 右面
-		uint3(3, 5, 7),
-		uint3(3, 1, 5),
+		uint3(0, 1, 2),
+		uint3(0, 2, 3),
 		/// 下面
-		uint3(0, 4, 1),
-		uint3(1, 4, 5)
+		uint3(4, 5, 6),
+		uint3(4, 6, 7),
+		/// 右面
+		uint3(8, 9, 10),
+		uint3(8, 10, 11)
 	};
 	
 	
 	RenderingData rd;
-	for (int i = 0; i < 8; i++) {
-		rd.verts[i].worldPosition = kDefaultVertices[i];
+	for (int i = 0; i < 12; i++) {
+		rd.verts[i].worldPosition = kDefaultVertices[used[i]];
+		rd.verts[i].normal = normals[i / 4];
 	}
 	
 	for (int i = 0; i < 6; i++) {
@@ -616,8 +619,24 @@ RenderingData GenerateRenderingDataPattern5() {
 	/// パターン5(平面4方向(6通りの回転)) デフォBit: 001111
 	/// デフォBitより 上下左右方向にボクセルが存在するパターン
 
-	/// 8頂点なのでデフォルト頂点をそのまま使用
-	
+	uint used[16] = {
+		/// 上面
+		2, 3, 7, 6,
+		/// 右面
+		3, 5, 7, 1,
+		/// 下面
+		0, 4, 5, 1,
+		/// 左面
+		0, 2, 6, 4
+	};
+
+	float3 normals[4] = {
+		float3(0, 1, 0), // 上面
+		float3(1, 0, 0), // 右面
+		float3(0, -1, 0), // 下面
+		float3(-1, 0, 0) // 左面
+	};
+
 	uint3 indis[8] = {
 		/// 上面
 		uint3(2, 3, 6),
@@ -633,10 +652,10 @@ RenderingData GenerateRenderingDataPattern5() {
 		uint3(2, 6, 4)
 	};
 	
-	
 	RenderingData rd;
-	for (int i = 0; i < 8; i++) {
-		rd.verts[i].worldPosition = kDefaultVertices[i];
+	for (int i = 0; i < 16; i++) {
+		rd.verts[i].worldPosition = kDefaultVertices[used[i]];
+		rd.verts[i].normal = normals[i / 4];
 	}
 
 	for (int i = 0; i < 6; ++i) {
@@ -651,30 +670,40 @@ RenderingData GenerateRenderingDataPattern6() {
 	/// パターン6(3軸各1方向(8通りの回転)) デフォBit: 010101
 	/// デフォBitより 上方向、右方向、奥方向にボクセルが存在するパターン
 	
-	uint used[6] = {
-		BACK_LEFT_TOP,
-		BACK_RIGHT_TOP,
-		BACK_RIGHT_BOTTOM,
-		FRONT_LEFT_TOP,
-		FRONT_LEFT_BOTTOM,
-		FRONT_RIGHT_BOTTOM
+	uint used[12] = {
+		/// 奥(三角)
+		6, 5, 7, 
+		/// 左(三角)
+		6, 2, 0,
+		/// 下(三角)
+		5, 1, 0,
+		/// 斜め(三角)
+		6, 0, 5
+	};
+	
+	float3 normals[4] = {
+		float3(0, 0, 1), // 奥面
+		float3(-1, 0, 0), // 左面
+		float3(0, -1, 0), // 下面
+		float3(-1, -1, -1) // 斜め面
 	};
 	
 	uint3 indis[4] = {
 		/// 奥(三角)
-		uint3(0, 2, 1),
+		uint3(0, 1, 2),
 		/// 左(三角)
-		uint3(0, 3, 4),
+		uint3(3, 4, 5),
 		/// 下(三角)
-		uint3(4, 5, 2),
+		uint3(6, 7, 8),
 		/// 斜め(三角)
-		uint3(0, 2, 4)
+		uint3(9, 10, 11)
 	};
 	
 	
 	RenderingData rd;
-	for (int i = 0; i < 6; i++) {
+	for (int i = 0; i < 12; i++) {
 		rd.verts[i].worldPosition = kDefaultVertices[used[i]];
+		rd.verts[i].normal = normalize(normals[i / 3]);
 	}
 	for (int i = 0; i < 4; ++i) {
 		rd.indis[i] = indis[i];
@@ -688,6 +717,24 @@ RenderingData GenerateRenderingDataPattern7() {
 	/// パターン7(L字+対向(24通りの回転)) デフォBit: 010111
 	/// デフォBitより 上下方向、右方向、前方向にボクセルが存在するパターン
 	
+	uint used[16] = {
+		/// 上面
+		6, 7, 3, 2,
+		/// 下面
+		4, 5, 1, 0,
+		/// 右面
+		7, 5, 1, 3,
+		/// 前面
+		3, 2, 0, 1
+	};
+	
+	float3 normals[4] = {
+		float3(0, 1, 0), // 上面
+		float3(0, -1, 0), // 下面
+		float3(1, 0, 0), // 右面
+		float3(0, 0, 1) // 前面
+	};
+
 	/// 8頂点なのでデフォルト頂点をそのまま使用
 	uint3 indis[8] = {
 		/// 上面
@@ -706,8 +753,9 @@ RenderingData GenerateRenderingDataPattern7() {
 	
 	
 	RenderingData rd;
-	for (int i = 0; i < 8; i++) {
+	for (int i = 0; i < 16; i++) {
 		rd.verts[i].worldPosition = kDefaultVertices[i];
+		rd.verts[i].normal = normals[i / 4];
 	}
 	for (int i = 0; i < 8; ++i) {
 		rd.indis[i] = indis[i];
@@ -721,6 +769,27 @@ RenderingData GenerateRenderingDataPattern8() {
 	/// パターン8(斜め4方向(8通りの回転)) デフォBit: 011111
 	/// デフォBitより 上下、左右、前方向にボクセルが存在するパターン
 	
+	uint used[20] = {
+		/// 上面
+		2, 3, 7, 6,
+		/// 下面
+		0, 1, 5, 4,
+		/// 右面
+		3, 5, 7, 1,
+		/// 左面
+		0, 2, 6, 4,
+		/// 前面
+		3, 2, 0, 1
+	};
+
+	float3 normals[5] = {
+		float3(0, 1, 0), // 上面
+		float3(0, -1, 0), // 下面
+		float3(1, 0, 0), // 右面
+		float3(-1, 0, 0), // 左面
+		float3(0, 0, 1) // 前面
+	};
+
 	/// 8頂点なのでデフォルト頂点をそのまま使用
 	uint3 indis[10] = {
 		/// 上面
@@ -742,8 +811,9 @@ RenderingData GenerateRenderingDataPattern8() {
 	
 	
 	RenderingData rd;
-	for (int i = 0; i < 8; i++) {
-		rd.verts[i].worldPosition = kDefaultVertices[i];
+	for (int i = 0; i < 20; i++) {
+		rd.verts[i].worldPosition = kDefaultVertices[used[i]];
+		rd.verts[i].normal = normals[i / 4];
 	}
 	for (int i = 0; i < 10; ++i) {
 		rd.indis[i] = indis[i];
@@ -807,6 +877,7 @@ RenderingData GenerateVoxelRenderingData(uint _patternIndex, uint3 _voxelPos, ui
 		for (int v = 0; v < 8; ++v) {
 			float3 pos = rd.verts[v].worldPosition.xyz;
 			rd.verts[v].worldPosition.xyz = RotateZ90Pos(pos);
+			rd.verts[v].normal = RotateZ90Pos(rd.verts[v].normal);
 		}
 	}
 
@@ -815,6 +886,7 @@ RenderingData GenerateVoxelRenderingData(uint _patternIndex, uint3 _voxelPos, ui
 		for (int v = 0; v < 8; ++v) {
 			float3 pos = rd.verts[v].worldPosition.xyz;
 			rd.verts[v].worldPosition.xyz = RotateY90Pos(pos);
+			rd.verts[v].normal = RotateY90Pos(rd.verts[v].normal);
 		}
 	}
 
@@ -823,6 +895,7 @@ RenderingData GenerateVoxelRenderingData(uint _patternIndex, uint3 _voxelPos, ui
 		for (int v = 0; v < 8; ++v) {
 			float3 pos = rd.verts[v].worldPosition.xyz;
 			rd.verts[v].worldPosition.xyz = RotateX90Pos(pos);
+			rd.verts[v].normal = RotateX90Pos(rd.verts[v].normal);
 		}
 	}
 
@@ -837,8 +910,6 @@ RenderingData GenerateVoxelRenderingData(uint _patternIndex, uint3 _voxelPos, ui
 		rd.verts[i].color = kPatternColor[_patternIndex];
 		rd.verts[i].position = mul(rd.verts[i].worldPosition, viewProjection.matVP);
 
-		float3 normal = wp - float3(_voxelPos);
-		rd.verts[i].normal = normalize(normal);
 	}
 
 	return rd;
