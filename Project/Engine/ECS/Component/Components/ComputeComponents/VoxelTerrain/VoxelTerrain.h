@@ -77,7 +77,6 @@ namespace GPUData {
 		float pad0;
 		Vector2Int chunkCountXZ; /// XZ平面でのチャンク数
 		uint32_t maxChunkCount;
-		//uint32_t startTextureIndex; /// テクスチャ配列の開始インデックス
 	};
 
 	/// @brief チャンクごとのGPU用データ
@@ -154,11 +153,10 @@ private:
 	StructuredBuffer<GPUData::Chunk> sBufferChunks_;
 	ConstantBuffer<GPUMaterial> cBufferMaterial_;
 
-	Material material_;
-
 	Vector3Int chunkSize_;
 	Vector2Int chunkCountXZ_;
 	UINT maxChunkCount_;
 
+	Material material_;
 };
 

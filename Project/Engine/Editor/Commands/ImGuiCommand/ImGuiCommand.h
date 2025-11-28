@@ -12,10 +12,31 @@
 /// ///////////////////////////////////////////////////
 namespace ImMathf {
 
+	/// @brief ImGuiのDragIntでintを操作するコマンド
+	/// @param _label DragIntのラベル
+	/// @param _pv intのポインタ
+	/// @param _step 1回の操作で変化する値
+	/// @param _min _pvの最小値
+	/// @param _max _pvの最大値
+	/// @return true: 値が変更された, false: 値が変更されなかった
 	bool DragInt(const std::string& _label, int* _pv, int _step = 1, int _min = 0, int _max = 0);
 
+	/// @brief ImGuiのDragInt2でVector2Intを操作するコマンド
+	/// @param _label DragInt2のラベル
+	/// @param _pv Vector2Intのポインタ
+	/// @param _step 1回の操作で変化する値
+	/// @param _min _pvの最小値
+	/// @param _max _pvの最大値
+	/// @return true: 値が変更された, false: 値が変更されなかった
 	bool DragInt2(const std::string& _label, Vector2Int* _pv, int _step = 1, int _min = 0, int _max = 0);
 
+	/// @brief ImGuiのDragInt3でVector3Intを操作するコマンド
+	/// @param _label DragInt3のラベル
+	/// @param _pv Vector3Intのポインタ
+	/// @param _step 1回の操作で変化する値
+	/// @param _min _pvの最小値
+	/// @param _max _pvの最大値
+	/// @return true: 値が変更された, false: 値が変更されなかった
 	bool DragInt3(const std::string& _label, Vector3Int* _pv, int _step = 1, int _min = 0, int _max = 0);
 
 	/// @brief ImGuiのDragFloatでfloatを操作するコマンド
@@ -62,6 +83,14 @@ namespace ImMathf {
 	/// @param _max 調整可能な最大値（デフォルトは0.0f、制限なし）。
 	/// @return 値が変更された場合はtrue、変更されなかった場合はfalse。
 	bool DragQuaternion(const std::string& _label, Quaternion* _pq, float _step = 0.1f, float _min = 0.0f, float _max = 0.0f);
+
+
+	/// @brief フラグを切り替えるチェックボックスを表示します。
+	/// @param _label UI上で表示するラベル文字列。
+	/// @param _pv 調整対象となるブール値へのポインタ。
+	/// @return true: 値が変更された, false: 値が変更されなかった
+	bool Checkbox(const std::string& _label, bool* _pv);
+
 }
 
 

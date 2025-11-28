@@ -159,3 +159,18 @@ bool ImMathf::DragQuaternion(const std::string& _label, Quaternion* _pq, float _
 	return false;
 }
 
+bool ImMathf::Checkbox(const std::string& _label, bool* _pv) {
+
+	static bool startValue{};
+
+	startValue = *_pv;
+	bool edit = ImGui::Checkbox(_label.c_str(), _pv);
+	if (edit) {
+		bool endValue = *_pv;
+		EditCommand::Execute<ImGuiCommand::ModifyValueCommand<bool>>(_pv, startValue, endValue);
+	}
+
+
+	return edit;
+}
+

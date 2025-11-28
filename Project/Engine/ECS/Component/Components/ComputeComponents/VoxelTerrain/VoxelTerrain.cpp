@@ -39,6 +39,33 @@ void COMP_DEBUG::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain) {
 	}
 
 
+	/// ----- Gizmoでチャンクの枠線を描画 ----- ///
+	static bool showChunkBounds = false;
+	ImMathf::Checkbox("Show Chunk Bounds", &showChunkBounds);
+	if (showChunkBounds) {
+		const Vector3Int& chunkSizeInt = _voxelTerrain->GetChunkSize();
+		const Vector2Int& chunkCount = _voxelTerrain->GetChunkCountXZ();
+		for (int x = 0; x < chunkCount.x; ++x) {
+			for (int z = 0; z < chunkCount.y; ++z) {
+				// 各チャンクの位置を計算
+				Vector3 chunkSize = Vector3(
+					static_cast<float>(chunkSizeInt.x),
+					static_cast<float>(chunkSizeInt.y),
+					static_cast<float>(chunkSizeInt.z)
+				);
+
+				Vector3 chunkPosition = Vector3(static_cast<float>(x), 0.0f, static_cast<float>(z)) * chunkSize;
+				chunkPosition += chunkSize * 0.5f;
+				chunkPosition -= Vector3(0.5f, 0.0f, 0.5f); // 中心を合わせる調整
+
+				// Gizmoで枠線を描画
+				Gizmo::DrawWireCube(chunkPosition, chunkSize, Color::kWhite);
+			}
+		}
+	}
+
+
+
 }
 
 
@@ -61,7 +88,7 @@ void to_json(nlohmann::json& _j, const VoxelTerrain& _voxelTerrain) {
 		{ "maxChunkCount", _voxelTerrain.maxChunkCount_ },
 		{ "chunkSize", _voxelTerrain.chunkSize_ },
 		{ "chunkCountXZ", _voxelTerrain.chunkCountXZ_ },
-		{ "material", _voxelTerrain.material_ }, 
+		{ "material", _voxelTerrain.material_ },
 	};
 }
 

@@ -28,7 +28,8 @@ float3 ScreenToWorldRay(float2 _screenPos) {
 }
 
 
-[numthreads(8, 8, 1)]
+/// 現在最大チャンク数が 32*32 なので それに合わせる
+[numthreads(32, 32, 1)]
 void main( 
     uint3 DTid : SV_DispatchThreadID,
     uint groupIndex : SV_GroupIndex) {
