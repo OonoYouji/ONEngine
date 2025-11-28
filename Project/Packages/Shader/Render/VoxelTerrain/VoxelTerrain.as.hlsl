@@ -33,25 +33,43 @@ void main(
 	aabb.min = asPayload.chunkOrigin;
 	aabb.max = asPayload.chunkOrigin + float3(voxelTerrainInfo.chunkSize);
 	if (IsVisible(aabb, CreateFrustumFromMatrix(viewProjection.matVP))) {
-		asPayload.chunkIndex = IndexOfMeshGroup(groupId, uint3(voxelTerrainInfo.chunkCountXZ.x, 1, voxelTerrainInfo.chunkCountXZ.y));
 
-		asPayload.subChunkSize = uint3(2, 2, 2);
-		dispatchSize = voxelTerrainInfo.chunkSize / asPayload.subChunkSize + uint3(0, 1, 0);
-	
-		asPayload.dispatchSize = dispatchSize;
-
+		/// ---------------------------------------------------
+		/// LODレベルを決め、サブチャンクの大きさを設定、高~低解像度に対応する
+		/// ---------------------------------------------------
+		
 		float3 center = (aabb.min + aabb.max) * 0.5;
 		float3 diff = center - camera.position.xyz;
+		diff.y = 0.0f; // Y軸方向は考慮しない
 		float lengthToCamera = length(diff);
+
+		uint subChunkSizeValue;
 
 		/// LOD レベルを ndc.z の値に基づいて設定
 		if (lengthToCamera < 100.0f) {
 			asPayload.lodLevel = 0; // 高詳細度
-		} else if (lengthToCamera < 500.0f) {
+			subChunkSizeValue = 4;
+
+		} else if (lengthToCamera < 300.0f) {
 			asPayload.lodLevel = 1; // 中詳細度
+			subChunkSizeValue = 4;
+
 		} else {
 			asPayload.lodLevel = 2; // 低詳細度
+			subChunkSizeValue = 8;
 		}
+
+
+
+
+		asPayload.chunkIndex = IndexOfMeshGroup(groupId, uint3(voxelTerrainInfo.chunkCountXZ.x, 1, voxelTerrainInfo.chunkCountXZ.y));
+
+		asPayload.subChunkSize = uint3(subChunkSizeValue, subChunkSizeValue, subChunkSizeValue);
+		dispatchSize = voxelTerrainInfo.chunkSize / asPayload.subChunkSize;
+	
+		asPayload.dispatchSize = dispatchSize;
+
+	
 	}
 	
 	/// 分割された個数でディスパッチ

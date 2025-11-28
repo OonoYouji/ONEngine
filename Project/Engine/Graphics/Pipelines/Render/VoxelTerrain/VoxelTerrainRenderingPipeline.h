@@ -20,6 +20,7 @@ class VoxelTerrainRenderingPipeline : public IRenderingPipeline {
 		CBV_VOXEL_TERRAIN_INFO,
 		CBV_VIEW_PROJECTION,
 		CBV_CAMERA_POSITION,
+		CBV_MATERIAL,
 		SRV_CHUNK_ARRAY,
 		SRV_VOXEL_TERRAIN_TEXTURE3D,
 	};

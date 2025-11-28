@@ -4,11 +4,12 @@
 #include <imgui.h>
 
 /// engine
+#include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/Asset/Assets/Texture/Texture.h"
 #include "Engine/Core/Utility/Utility.h"
+#include "Engine/Core/ImGui/Math/AssetDebugger.h"
 #include "Engine/Editor/Commands/ImGuiCommand/ImGuiCommand.h"
-#include "Engine/Asset/Collection/AssetCollection.h"
-
+#include "Engine/ECS/Entity/GameEntity/GameEntity.h"
 
 void COMP_DEBUG::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain) {
 	if (!_voxelTerrain) {
@@ -19,6 +20,8 @@ void COMP_DEBUG::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain) {
 	/// チャンクのデバッグ表示
 	ImMathf::DragInt2("Chunk Count XZ", &_voxelTerrain->chunkCountXZ_, 1, 1, 32);
 	ImMathf::DragInt3("Chunk Size", &_voxelTerrain->chunkSize_, 1, 1, 1024);
+
+	ImMathf::MaterialEdit("Material", &_voxelTerrain->material_, nullptr, false);
 
 
 	/// 仮
@@ -46,6 +49,8 @@ void from_json(const nlohmann::json& _j, VoxelTerrain& _voxelTerrain) {
 	_voxelTerrain.maxChunkCount_ = _j.value("maxChunkCount", 400);
 	_voxelTerrain.chunkCountXZ_ = _j.value("chunkCountXZ", Vector2Int{ 2, 2 });
 	_voxelTerrain.chunkSize_ = _j.value("chunkSize", Vector3Int{ 16, 128, 16 });
+
+	_voxelTerrain.material_ = _j.value("material", Material{});
 }
 
 void to_json(nlohmann::json& _j, const VoxelTerrain& _voxelTerrain) {
@@ -55,7 +60,8 @@ void to_json(nlohmann::json& _j, const VoxelTerrain& _voxelTerrain) {
 		{ "enable", _voxelTerrain.enable },
 		{ "maxChunkCount", _voxelTerrain.maxChunkCount_ },
 		{ "chunkSize", _voxelTerrain.chunkSize_ },
-		{ "chunkCountXZ", _voxelTerrain.chunkCountXZ_ }
+		{ "chunkCountXZ", _voxelTerrain.chunkCountXZ_ },
+		{ "material", _voxelTerrain.material_ }, 
 	};
 }
 
@@ -105,14 +111,23 @@ void VoxelTerrain::CreateBuffers(DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap) {
 
 	cBufferTerrainInfo_.Create(_dxDevice);
 	sBufferChunks_.Create(chunkCount, _dxDevice, _dxSRVHeap);
+	cBufferMaterial_.Create(_dxDevice);
 }
 
-void VoxelTerrain::SetupGraphicBuffers(ID3D12GraphicsCommandList* _cmdList, const std::array<UINT, 2> _rootParamIndices, AssetCollection* _assetCollection) {
+void VoxelTerrain::SetupGraphicBuffers(ID3D12GraphicsCommandList* _cmdList, const std::array<UINT, 3> _rootParamIndices, AssetCollection* _assetCollection) {
 	maxChunkCount_ = static_cast<UINT>(chunkCountXZ_.x * chunkCountXZ_.y);
 
 	/// VoxelTerrainInfoの設定
-	cBufferTerrainInfo_.SetMappedData(GPUData::VoxelTerrainInfo{ chunkSize_, 0.0f/*pad*/, chunkCountXZ_, maxChunkCount_ });
+	cBufferTerrainInfo_.SetMappedData(GPUData::VoxelTerrainInfo{ chunkSize_, 0.0f, chunkCountXZ_, maxChunkCount_ });
 	cBufferTerrainInfo_.BindForGraphicsCommandList(_cmdList, _rootParamIndices[0]);
+
+	/// Materialの設定
+	cBufferMaterial_.SetMappedData({
+		.baseColor = material_.baseColor,
+		.postEffectFlags = material_.postEffectFlags,
+		.entityId = GetOwner()->GetId(),
+		});
+	cBufferMaterial_.BindForGraphicsCommandList(_cmdList, _rootParamIndices[1]);
 
 	/// ChunkArrayの設定
 	for (size_t i = 0; i < maxChunkCount_; i++) {
@@ -126,7 +141,7 @@ void VoxelTerrain::SetupGraphicBuffers(ID3D12GraphicsCommandList* _cmdList, cons
 		sBufferChunks_.SetMappedData(i, GPUData::Chunk{ static_cast<uint32_t>(textureIndex) });
 	}
 
-	sBufferChunks_.SRVBindForGraphicsCommandList(_cmdList, _rootParamIndices[1]);
+	sBufferChunks_.SRVBindForGraphicsCommandList(_cmdList, _rootParamIndices[2]);
 }
 
 UINT VoxelTerrain::MaxChunkCount() const {

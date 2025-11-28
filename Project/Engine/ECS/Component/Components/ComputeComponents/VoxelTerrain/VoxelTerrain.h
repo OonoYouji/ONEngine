@@ -6,10 +6,12 @@
 /// engine
 #include "../../Interface/IComponent.h"
 #include "Engine/Asset/Guid/Guid.h"
+#include "Engine/Asset/Assets/Mateiral/Material.h"
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/Core/Utility/Math/Vector3Int.h"
 #include "Engine/Graphics/Buffer/ConstantBuffer.h"
 #include "Engine/Graphics/Buffer/StructuredBuffer.h"
+#include "Engine/Graphics/Buffer/Data/GPUMaterial.h"
 
 /*
 * このボクセル地形の仕様、構造について
@@ -119,7 +121,7 @@ public:
 	/// @brief GraphicsPipeline用のバッファ設定を行う
 	/// @param _cmdList GraphicsCommandListのポインタ
 	/// @param _rootParamIndices [0]: VoxelTerrainInfo, [1]: ChunkArray
-	void SetupGraphicBuffers(ID3D12GraphicsCommandList* _cmdList, const std::array<UINT, 2> _rootParamIndices, class AssetCollection* _assetCollection);
+	void SetupGraphicBuffers(ID3D12GraphicsCommandList* _cmdList, const std::array<UINT, 3> _rootParamIndices, class AssetCollection* _assetCollection);
 
 	/// @brief 現在のチャンクの総数を取得する
 	/// @return 今あるチャンクの総数
@@ -150,6 +152,9 @@ private:
 	/// --------------- Buffer --------------- ///
 	ConstantBuffer<GPUData::VoxelTerrainInfo> cBufferTerrainInfo_;
 	StructuredBuffer<GPUData::Chunk> sBufferChunks_;
+	ConstantBuffer<GPUMaterial> cBufferMaterial_;
+
+	Material material_;
 
 	Vector3Int chunkSize_;
 	Vector2Int chunkCountXZ_;
