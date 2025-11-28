@@ -1,19 +1,5 @@
 #include "VoxelTerrain.hlsli"
 
-static const uint3 kNumthreads = uint3(4, 4, 4);
-
-struct VoxelVertexColor {
-	float4 color[9];
-};
-
-struct Vertices {
-	VertexOut verts[8];
-};
-
-struct Indices {
-	uint3 indis[12];
-};
-
 struct VoxelColorCluter {
 	float4 colors[3][3][3];
 };
@@ -138,7 +124,7 @@ static const uint kPatternVertexCount[10] = {
 	4, // 0x01 パターン1 [000001]
 	8, // 0x03 パターン2 [000011]
 	10, // 0x05 パターン3 [000101]
-	12, // 0x07 パターン4 [000111]
+	8, // 0x07 パターン4 [000111]
 	16, // 0x0F パターン5 [001111]
 	12, // 0x15 パターン6 [010101]
 	16, // 0x17 パターン7 [010111]
@@ -453,11 +439,11 @@ RenderingData GenerateRenderingDataPattern1() {
 	/// パターン1(1方向のみ(6通りの回転)) デフォBit: 000001
 	/// デフォBitより 上方向にボクセルが存在するパターン
 
-	uint used[4] = {
+	const uint used[4] = {
 		2, 3, 7, 6
 	};
 
-	uint3 indis[2] = {
+	const uint3 indis[2] = {
 		/// 上面
 		uint3(0, 1, 2),
 		uint3(0, 2, 3)
@@ -466,12 +452,12 @@ RenderingData GenerateRenderingDataPattern1() {
 
 	/// データを適用　(color, position, normalは呼び出し元で設定する)
 	RenderingData rd;
-	for (int i = 0; i < 4; i++) {
+	for (int i = 0; i < kPatternVertexCount[1]; i++) {
 		rd.verts[i].worldPosition = kDefaultVertices[used[i]];
 		rd.verts[i].normal = float3(0, -1, 0);
 	}
 	
-	for (int i = 0; i < 2; i++) {
+	for (int i = 0; i < kPatternPrimitiveCount[1]; i++) {
 		rd.indis[i] = indis[i];
 	}
 	
@@ -482,8 +468,15 @@ RenderingData GenerateRenderingDataPattern1() {
 RenderingData GenerateRenderingDataPattern2() {
 	/// パターン2(対向する2方向(3通りの回転)) デフォBit: 000011
 	/// デフォBitより 上下方向にボクセルが存在するパターン
-	
-	uint3 indis[4] = {
+
+	const uint used[8] = {
+		/// 上面
+		2, 3, 7, 6,
+		/// 下面
+		1, 0, 4, 5
+	};
+
+	const uint3 indis[4] = {
 		/// 上面
 		uint3(2, 3, 7),
 		uint3(2, 7, 6),
@@ -497,7 +490,7 @@ RenderingData GenerateRenderingDataPattern2() {
 	float3 downNormal = float3(0, -1, 0);
 	
 	RenderingData rd;
-	for (int i = 0; i < 8; i++) {
+	for (int i = 0; i < kPatternVertexCount[2]; i++) {
 		rd.verts[i].worldPosition = kDefaultVertices[i];
 	}
 
@@ -514,7 +507,7 @@ RenderingData GenerateRenderingDataPattern2() {
 	rd.verts[5].normal = downNormal;
 	
 
-	for (int i = 0; i < 4; i++) {
+	for (int i = 0; i < kPatternPrimitiveCount[2]; i++) {
 		rd.indis[i] = indis[i];
 	}
 	
@@ -525,9 +518,8 @@ RenderingData GenerateRenderingDataPattern2() {
 RenderingData GenerateRenderingDataPattern3() {
 	/// パターン3(垂直な2方向(12通りの回転)) デフォBit: 000101
 	/// デフォBitより 上方向、右方向にボクセルが存在するパターン
-	
 
-	uint used[10] = {
+	const uint used[10] = {
 		/// 斜め面
 		5, 1, 6, 2,
 		/// 前面
@@ -537,7 +529,7 @@ RenderingData GenerateRenderingDataPattern3() {
 	};
 
 
-	uint3 indis[4] = {
+	const uint3 indis[4] = {
 		/// 斜め面
 		uint3(2, 1, 0),
 		uint3(2, 3, 1),
@@ -555,7 +547,7 @@ RenderingData GenerateRenderingDataPattern3() {
 
 	
 	RenderingData rd;
-	for (int i = 0; i < 10; i++) {
+	for (int i = 0; i < kPatternVertexCount[3]; i++) {
 		rd.verts[i].worldPosition = kDefaultVertices[used[i]];
 
 		if (i < 4) {
@@ -567,7 +559,7 @@ RenderingData GenerateRenderingDataPattern3() {
 		}
 	}
 	
-	for (int i = 0; i < 4; i++) {
+	for (int i = 0; i < kPatternPrimitiveCount[3]; i++) {
 		rd.indis[i] = indis[i];
 	}
 	
@@ -578,43 +570,32 @@ RenderingData GenerateRenderingDataPattern3() {
 RenderingData GenerateRenderingDataPattern4() {
 	/// パターン4(T字型3方向(24通りの回転)) デフォBit: 000111
 	/// デフォBitより 上下方向、右方向にボクセルが存在するパターン
-
-	uint used[12] = {
-		/// 上面
-		6, 7, 3, 2,
-		/// 下面
-		0, 4, 5, 1,
-		/// 右面 
-		7, 5, 1, 3
-	};
-
-	float3 normals[3] = {
-		float3(0, -1, 0), // 上面
-		float3(0, 1, 0), // 下面
-		float3(-1, 0, 0) // 右面
-	};
-
-
-	uint3 indis[6] = {
-		/// 上面
-		uint3(0, 1, 2),
-		uint3(0, 2, 3),
-		/// 下面
-		uint3(4, 5, 6),
-		uint3(4, 6, 7),
-		/// 右面
-		uint3(8, 9, 10),
-		uint3(8, 10, 11)
-	};
 	
+	const uint used[8] = {
+		6,7,2,3,
+		4,5,0,1
+	};
+
+	const uint3 indis[6] = {
+		/// 上面
+		uint3(0,2,1),
+		uint3(1,2,3),
+		/// 下面
+		uint3(4,5,6),
+		uint3(5,7,6),
+		/// 右面
+		uint3(1,3,5),
+		uint3(5,3,7)
+	};
+
 	
 	RenderingData rd;
-	for (int i = 0; i < 12; i++) {
+	for (int i = 0; i < kPatternVertexCount[4]; i++) {
 		rd.verts[i].worldPosition = kDefaultVertices[used[i]];
-		rd.verts[i].normal = normals[i / 4];
+		rd.verts[i].normal = float3(0, 1, 0); 
 	}
 	
-	for (int i = 0; i < 6; i++) {
+	for (int i = 0; i < kPatternPrimitiveCount[4]; i++) {
 		rd.indis[i] = indis[i];
 	}
 	
@@ -626,7 +607,7 @@ RenderingData GenerateRenderingDataPattern5() {
 	/// パターン5(平面4方向(6通りの回転)) デフォBit: 001111
 	/// デフォBitより 上下左右方向にボクセルが存在するパターン
 
-	uint used[16] = {
+	const uint used[16] = {
 		/// 上面
 		2, 3, 7, 6,
 		/// 右面
@@ -637,14 +618,7 @@ RenderingData GenerateRenderingDataPattern5() {
 		0, 2, 6, 4
 	};
 
-	float3 normals[4] = {
-		float3(0, 1, 0), // 上面
-		float3(1, 0, 0), // 右面
-		float3(0, -1, 0), // 下面
-		float3(-1, 0, 0) // 左面
-	};
-
-	uint3 indis[8] = {
+	const uint3 indis[8] = {
 		/// 上面
 		uint3(2, 3, 6),
 		uint3(3, 7, 6),
@@ -659,13 +633,22 @@ RenderingData GenerateRenderingDataPattern5() {
 		uint3(2, 6, 4)
 	};
 	
+	const float3 normals[4] = {
+		float3(0, 1, 0), // 上面
+		float3(1, 0, 0), // 右面
+		float3(0, -1, 0), // 下面
+		float3(-1, 0, 0) // 左面
+	};
+
+	
+	
 	RenderingData rd;
-	for (int i = 0; i < 16; i++) {
+	for (int i = 0; i < kPatternVertexCount[5]; i++) {
 		rd.verts[i].worldPosition = kDefaultVertices[used[i]];
 		rd.verts[i].normal = normals[i / 4];
 	}
 
-	for (int i = 0; i < 6; ++i) {
+	for (int i = 0; i < kPatternPrimitiveCount[5]; ++i) {
 		rd.indis[i] = indis[i];
 	}
 	
@@ -676,8 +659,8 @@ RenderingData GenerateRenderingDataPattern5() {
 RenderingData GenerateRenderingDataPattern6() {
 	/// パターン6(3軸各1方向(8通りの回転)) デフォBit: 010101
 	/// デフォBitより 上方向、右方向、奥方向にボクセルが存在するパターン
-	
-	uint used[12] = {
+
+	const uint used[12] = {
 		/// 奥(三角)
 		6, 5, 7, 
 		/// 左(三角)
@@ -695,7 +678,7 @@ RenderingData GenerateRenderingDataPattern6() {
 		float3(-1, -1, -1) // 斜め面
 	};
 	
-	uint3 indis[4] = {
+	const uint3 indis[4] = {
 		/// 奥(三角)
 		uint3(0, 1, 2),
 		/// 左(三角)
@@ -708,11 +691,11 @@ RenderingData GenerateRenderingDataPattern6() {
 	
 	
 	RenderingData rd;
-	for (int i = 0; i < 12; i++) {
+	for (int i = 0; i < kPatternVertexCount[6]; i++) {
 		rd.verts[i].worldPosition = kDefaultVertices[used[i]];
 		rd.verts[i].normal = normalize(normals[i / 3]);
 	}
-	for (int i = 0; i < 4; ++i) {
+	for (int i = 0; i < kPatternPrimitiveCount[6]; ++i) {
 		rd.indis[i] = indis[i];
 	}
 	
@@ -723,8 +706,8 @@ RenderingData GenerateRenderingDataPattern6() {
 RenderingData GenerateRenderingDataPattern7() {
 	/// パターン7(L字+対向(24通りの回転)) デフォBit: 010111
 	/// デフォBitより 上下方向、右方向、前方向にボクセルが存在するパターン
-	
-	uint used[16] = {
+
+	const uint used[16] = {
 		/// 上面
 		6, 7, 3, 2,
 		/// 下面
@@ -743,7 +726,7 @@ RenderingData GenerateRenderingDataPattern7() {
 	};
 
 	/// 8頂点なのでデフォルト頂点をそのまま使用
-	uint3 indis[8] = {
+	const uint3 indis[8] = {
 		/// 上面
 		uint3(6, 3, 2),
 		uint3(6, 7, 3),
@@ -760,11 +743,11 @@ RenderingData GenerateRenderingDataPattern7() {
 	
 	
 	RenderingData rd;
-	for (int i = 0; i < 16; i++) {
+	for (int i = 0; i < kPatternVertexCount[7]; i++) {
 		rd.verts[i].worldPosition = kDefaultVertices[i];
 		rd.verts[i].normal = normals[i / 4];
 	}
-	for (int i = 0; i < 8; ++i) {
+	for (int i = 0; i < kPatternPrimitiveCount[7]; ++i) {
 		rd.indis[i] = indis[i];
 	}
 	
@@ -776,7 +759,7 @@ RenderingData GenerateRenderingDataPattern8() {
 	/// パターン8(斜め4方向(8通りの回転)) デフォBit: 011111
 	/// デフォBitより 上下、左右、前方向にボクセルが存在するパターン
 	
-	uint used[20] = {
+	const uint used[20] = {
 		/// 上面
 		2, 3, 7, 6,
 		/// 下面
@@ -798,7 +781,7 @@ RenderingData GenerateRenderingDataPattern8() {
 	};
 
 	/// 8頂点なのでデフォルト頂点をそのまま使用
-	uint3 indis[10] = {
+	const uint3 indis[10] = {
 		/// 上面
 		uint3(2, 3, 6),
 		uint3(3, 7, 6),
@@ -818,11 +801,11 @@ RenderingData GenerateRenderingDataPattern8() {
 	
 	
 	RenderingData rd;
-	for (int i = 0; i < 20; i++) {
+	for (int i = 0; i < kPatternVertexCount[8]; i++) {
 		rd.verts[i].worldPosition = kDefaultVertices[used[i]];
 		rd.verts[i].normal = normals[i / 4];
 	}
-	for (int i = 0; i < 10; ++i) {
+	for (int i = 0; i < kPatternPrimitiveCount[8]; ++i) {
 		rd.indis[i] = indis[i];
 	}
 	
@@ -971,7 +954,7 @@ void main(
 	aabb.max = aabb.min + asPayload.subChunkSize;
 	
 	if (IsVisible(aabb, CreateFrustumFromMatrix(viewProjection.matVP))) {
-
+		
 		for (int z = 0; z < 2; z++) {
 			for (int y = 0; y < 2; y++) {
 				for (int x = 0; x < 2; x++) {

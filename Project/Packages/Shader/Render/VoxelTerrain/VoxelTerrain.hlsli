@@ -36,6 +36,7 @@ struct Payload {
 	uint chunkIndex;
 	float3 chunkOrigin;
 	uint3 subChunkSize;
+	uint chunkDivision;
 
 	uint3 dispatchSize;
 	uint lodLevel;

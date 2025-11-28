@@ -39,8 +39,13 @@ void main(
 		/// ---------------------------------------------------
 		
 		float3 center = (aabb.min + aabb.max) * 0.5;
-		float3 diff = center - camera.position.xyz;
-		diff.y = 0.0f; // Y軸方向は考慮しない
+		float3 nearPoint = float3(
+			clamp(camera.position.x, aabb.min.x, aabb.max.x),
+			clamp(camera.position.y, aabb.min.y, aabb.max.y),
+			clamp(camera.position.z, aabb.min.z, aabb.max.z)
+		);
+
+		float3 diff = nearPoint - camera.position.xyz;
 		float lengthToCamera = length(diff);
 
 		uint subChunkSizeValue;
@@ -48,15 +53,15 @@ void main(
 		/// LOD レベルを ndc.z の値に基づいて設定
 		if (lengthToCamera < 100.0f) {
 			asPayload.lodLevel = 0; // 高詳細度
-			subChunkSizeValue = 4;
+			subChunkSizeValue = 2;
 
 		} else if (lengthToCamera < 300.0f) {
 			asPayload.lodLevel = 1; // 中詳細度
-			subChunkSizeValue = 4;
+			subChunkSizeValue = 8;
 
 		} else {
 			asPayload.lodLevel = 2; // 低詳細度
-			subChunkSizeValue = 8;
+			subChunkSizeValue = 16;
 		}
 
 
