@@ -73,8 +73,10 @@ namespace GPUData {
 
 	/// @brief 地形のデータ
 	struct VoxelTerrainInfo {
-		Vector3Int chunkSize;
+		Vector3 terrainOrigin;
 		float pad0;
+		Vector3Int chunkSize;
+		float pad1;
 		Vector2Int chunkCountXZ; /// XZ平面でのチャンク数
 		uint32_t maxChunkCount;
 	};

@@ -145,7 +145,8 @@ void VoxelTerrain::SetupGraphicBuffers(ID3D12GraphicsCommandList* _cmdList, cons
 	maxChunkCount_ = static_cast<UINT>(chunkCountXZ_.x * chunkCountXZ_.y);
 
 	/// VoxelTerrainInfoの設定
-	cBufferTerrainInfo_.SetMappedData(GPUData::VoxelTerrainInfo{ chunkSize_, 0.0f, chunkCountXZ_, maxChunkCount_ });
+	Vector3 terrainOrigin = GetOwner()->GetTransform()->GetPosition();
+	cBufferTerrainInfo_.SetMappedData(GPUData::VoxelTerrainInfo{ terrainOrigin, 0, chunkSize_, 0.0f, chunkCountXZ_, maxChunkCount_ });
 	cBufferTerrainInfo_.BindForGraphicsCommandList(_cmdList, _rootParamIndices[0]);
 
 	/// Materialの設定

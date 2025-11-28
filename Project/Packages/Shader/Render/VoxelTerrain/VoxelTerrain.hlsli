@@ -1,6 +1,6 @@
 
 #include "../../ConstantBufferData/ViewProjection.hlsli"
-//#include "VoxelTerrainCommon.hlsli"
+#include "VoxelTerrainCommon.hlsli"
 
 /// ---------------------------------------------------
 /// Structs
@@ -11,24 +11,6 @@ struct VertexOut {
 	float4 worldPosition : POSITION0;
 	float3 normal : NORMAL0;
 	float4 color : COLOR0;
-};
-
-
-struct Chunk {
-    /// Texture3D Id
-	uint textureId;
-};
-
-struct VoxelTerrainInfo {
-	uint3 chunkSize;
-	uint2 chunkCountXZ;
-	uint maxChunkCount;
-};
-
-
-struct SubChunk {
-	uint3 subChunkOrigin;
-	uint3 subChunkSize;
 };
 
 
