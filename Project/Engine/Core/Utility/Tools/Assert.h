@@ -39,6 +39,7 @@ inline void Assert(bool _condition, const char* _errorMessage, const std::source
 		MessageBoxA(nullptr, errorMsg.c_str(), "ONEngine Assertion", MB_OK | MB_ICONERROR);
 		Console::Log("[ASSERTION ERROR] " + errorMsg); // Log the last part if any
 
+		Console::Shutdown();
 		__debugbreak();
 	}
 }

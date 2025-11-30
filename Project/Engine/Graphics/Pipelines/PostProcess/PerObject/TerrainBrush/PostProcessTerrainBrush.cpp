@@ -5,6 +5,7 @@
 #include "Engine/Core/Utility/Input/Input.h"
 #include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Terrain.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/VoxelTerrain/VoxelTerrain.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 
 PostProcessTerrainBrush::PostProcessTerrainBrush() = default;
@@ -53,14 +54,35 @@ void PostProcessTerrainBrush::Execute(
 
 	/// TerrainComponentの有無チェック
 	ComponentArray<Terrain>* terrainArray = _ecs->GetCurrentGroup()->GetComponentArray<Terrain>();
-	if(!terrainArray || terrainArray->GetUsedComponents().empty()){
+	ComponentArray<VoxelTerrain>* voxelTerrainArray = _ecs->GetCurrentGroup()->GetComponentArray<VoxelTerrain>();
+
+	/// 両方とも存在しない、もしくは使用中のコンポーネントが無い場合は処理しない
+	if ((!terrainArray || terrainArray->GetUsedComponents().empty()) &&
+		(!voxelTerrainArray || voxelTerrainArray->GetUsedComponents().empty())) {
 		return;
 	}
 
 
+
 	/// 地形が編集モード中なのかチェック
-	Terrain* editTerrain = terrainArray->GetUsedComponents().front();
-	if (!editTerrain || editTerrain->GetEditorInfo().editMode == static_cast<int32_t>(Terrain::EditMode::None)) {
+	Terrain* editTerrain = nullptr;
+	for (const auto& terrain : terrainArray->GetUsedComponents()) {
+		if (terrain->GetEditorInfo().editMode != static_cast<int32_t>(Terrain::EditMode::None)) {
+			editTerrain = terrain;
+			break;
+		}
+	}
+
+	VoxelTerrain* editVoxelTerrain = nullptr;
+	//for (const auto& voxelTerrain : voxelTerrainArray->GetUsedComponents()) {
+	//	if (voxelTerrain) {
+	//		editVoxelTerrain = voxelTerrain;
+	//		break;
+	//	}
+	//}
+
+	/// 編集モードでなければ処理しない
+	if (!editTerrain && !editVoxelTerrain) {
 		return;
 	}
 
@@ -75,8 +97,17 @@ void PostProcessTerrainBrush::Execute(
 	}
 
 
+	float brushRadius = 0.0f;
+	if (editTerrain) {
+		brushRadius = editTerrain->GetEditorInfo().brushRadius;
+	} else if (editVoxelTerrain) {
+		brushRadius = 32.0f;
+	}
+
+
+
 	brushBuffer_.SetMappedData(
-		Brush{ mousePos, editTerrain->GetEditorInfo().brushRadius }
+		Brush{ mousePos, brushRadius }
 	);
 
 	/// texture index

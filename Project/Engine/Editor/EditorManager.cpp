@@ -14,7 +14,7 @@
 #include "EditorCompute/TerrainEditor/RiverTerrainAbjustPipeline.h"
 #include "EditorCompute/River/RiverMeshGeneratePipeline.h"
 #include "EditorCompute/Grass/GrassArrangementPipeline.h"
-
+#include "EditorCompute/VoxelTerrainEditor/VoxelTerrainEditorComputePipeline.h"
 
 EditorManager::EditorManager(EntityComponentSystem* _ecs) : pEcs_(_ecs) {}
 EditorManager::~EditorManager() = default;
@@ -33,6 +33,7 @@ void EditorManager::Initialize(DxManager* _dxm, ShaderCompiler* _sc) {
 	AddEditorCompute(_dxm, _sc, std::make_unique<RiverMeshGeneratePipeline>());
 	AddEditorCompute(_dxm, _sc, std::make_unique<RiverTerrainAbjustPipeline>());
 	AddEditorCompute(_dxm, _sc, std::make_unique<GrassArrangementPipeline>());
+	AddEditorCompute(_dxm, _sc, std::make_unique<VoxelTerrainEditorComputePipeline>());
 }
 
 void EditorManager::Update(AssetCollection* _assetCollection) {

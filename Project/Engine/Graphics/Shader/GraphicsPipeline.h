@@ -80,6 +80,7 @@ public:
 	/// @param _shaderVisibility 使用するshaderの種類(vs, ps)
 	/// @param _shaderRegister   shaderのregister(s0)の0の部分
 	void AddStaticSampler(D3D12_SHADER_VISIBILITY _shaderVisibility, uint32_t _shaderRegister);
+	void AddStaticSampler(const D3D12_STATIC_SAMPLER_DESC& _samplerDesc, D3D12_SHADER_VISIBILITY _shaderVisibility, uint32_t _shaderRegister);
 
 	/// @brief fill modeを設定する
 	/// @param _fillMode 設定するfill mode
@@ -181,4 +182,8 @@ namespace BlendMode {
 	D3D12_BLEND_DESC Multiply();
 	D3D12_BLEND_DESC Screen();
 	D3D12_BLEND_DESC None();
+}
+
+namespace StaticSampler {
+	D3D12_STATIC_SAMPLER_DESC ClampSampler();
 }

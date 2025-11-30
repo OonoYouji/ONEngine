@@ -46,6 +46,9 @@ public:
 
 	/// @brief ログのvectorを返す
 	static const std::vector<std::string>& GetLogVector();
+
+	/// @brief ログをファイルに保存して終了する
+	static void Shutdown();
 };
 
 

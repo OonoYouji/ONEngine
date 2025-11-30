@@ -21,6 +21,9 @@
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
 
+/// externals
+#include <magic_enum/magic_enum.hpp>
+
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Core/Utility/Utility.h"
@@ -54,6 +57,21 @@ void AssetLoader::Initialize() {
 	Assert(SUCCEEDED(result), "MFStartup failed");
 }
 
+bool AssetLoader::LoadTextureAuto(const std::string& _filepath) {
+	const std::string extension = Mathf::FileExtension(_filepath);
+	if (extension == ".dds") {
+		DirectX::ScratchImage scratch = LoadScratchImage3D(_filepath);
+
+		const auto& meta = scratch.GetMetadata();
+		if (meta.dimension == DirectX::TEX_DIMENSION_TEXTURE3D) {
+			return LoadTextureDDS(_filepath);
+		}
+	}
+
+	/// 3dTexture以外は通常のテクスチャ読み込み
+	return LoadTexture(_filepath);
+}
+
 bool AssetLoader::LoadTexture([[maybe_unused]] const std::string& _filepath) {
 	/// ----- テクスチャの読み込み ----- ///
 
@@ -75,6 +93,11 @@ bool AssetLoader::LoadTexture([[maybe_unused]] const std::string& _filepath) {
 	const DirectX::TexMetadata& metadata = scratchImage.GetMetadata();
 
 	texture.dxResource_ = std::move(CreateTextureResource(pDxManager_->GetDxDevice(), metadata));
+	if (!texture.dxResource_.Get()) {
+		Console::LogError("[Load Failed] [Texture] - Don't Create DxResource: \"" + _filepath + "\"");
+		return false;
+	}
+
 	DxResource intermediateResource = UploadTextureData(texture.dxResource_.Get(), scratchImage);
 
 	pDxManager_->GetDxCommand()->CommandExecuteAndWait();
@@ -113,11 +136,133 @@ bool AssetLoader::LoadTexture([[maybe_unused]] const std::string& _filepath) {
 	Vector2 textureSize = { static_cast<float>(metadata.width), static_cast<float>(metadata.height) };
 	texture.textureSize_ = textureSize;
 
+	/// テクスチャフォーマット
+	texture.srvFormat_ = metadata.format;
 
-	Console::Log("[Load] [Texture] - path:\"" + _filepath + "\"");
+
+	/// ログにテクスチャの情報を書き出す
+	Console::Log("[Texture Info] Path: \"" + _filepath + "\"");
+	Console::Log(" - Width: " + std::to_string(metadata.width));
+	Console::Log(" - Height: " + std::to_string(metadata.height));
+	Console::Log(" - MipLevels: " + std::to_string(metadata.mipLevels));
+	Console::Log(" - Format: " + std::string(magic_enum::enum_name(metadata.format)));
+	Console::Log(" - DescriptorIndex: " + std::to_string(texture.srvHandle_->descriptorIndex));
+	Console::Log(" - Dimension: Texture2D");
+
+
 	pAssetCollection_->AddAsset<Texture>(_filepath, std::move(texture));
 
 	return true;
+}
+
+
+bool AssetLoader::LoadTextureDDS(const std::string& _filepath) {
+	/// ----- DDSファイルの読み込み ----- ///
+
+	/// ファイルが存在するのかチェックする
+	if (!std::filesystem::exists(_filepath)) {
+		Console::LogError("[Load Failed] [Texture DDS] - File not found: \"" + _filepath + "\"");
+		return false;
+	}
+
+	/// すでに持っているファイルかチェック
+	if (pAssetCollection_->GetTexture(_filepath)) {
+		Console::LogWarning("[Load Skipped] [Texture DDS] - Already loaded: \"" + _filepath + "\"");
+		return true;
+	}
+
+
+	Texture texture;
+
+
+	/// スクラッチイメージを読み込み、使用可能かチェック
+	DirectX::ScratchImage scratchImage = LoadScratchImage3D(_filepath);
+	if (scratchImage.GetImageCount() == 0) {
+		Console::LogError("[Load Failed] [Texture DDS] - Failed to load DDS file: \"" + _filepath + "\"");
+		return false;
+	}
+
+
+	/// metadataは3Dテクスチャでないといけない
+	const DirectX::TexMetadata& metadata = scratchImage.GetMetadata();
+	if (metadata.dimension != DirectX::TEX_DIMENSION_TEXTURE3D) {
+		Console::LogError("[Load Failed] [Texture DDS] - Not a 3D texture: \"" + _filepath + "\"");
+		return false;
+	}
+
+
+	texture.dxResource_ = std::move(CreateTexture3DResource(pDxManager_->GetDxDevice(), metadata));
+	if (!texture.dxResource_.Get()) {
+		Console::LogError("[Load Failed] [Texture DDS] - Don't Create DxResource: \"" + _filepath + "\"");
+		return false;
+	}
+
+	DxResource intermediateResource = UploadTextureData(texture.dxResource_.Get(), scratchImage);
+
+	pDxManager_->GetDxCommand()->CommandExecuteAndWait();
+	pDxManager_->GetDxCommand()->CommandReset();
+
+	/// metadataを基に srv の設定
+	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
+	srvDesc.Format = metadata.format;
+	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE3D;
+	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	srvDesc.Texture3D.MipLevels = static_cast<UINT16>(metadata.mipLevels);
+
+
+	/// srv handleの取得
+	DxSRVHeap* dxSRVHeap = pDxManager_->GetDxSRVHeap();
+	texture.CreateEmptySRVHandle();
+	texture.srvHandle_->descriptorIndex = dxSRVHeap->AllocateTexture();
+	texture.srvHandle_->cpuHandle = dxSRVHeap->GetCPUDescriptorHandel(texture.srvHandle_->descriptorIndex);
+	texture.srvHandle_->gpuHandle = dxSRVHeap->GetGPUDescriptorHandel(texture.srvHandle_->descriptorIndex);
+
+	/// srvの生成
+	DxDevice* dxDevice = pDxManager_->GetDxDevice();
+	dxDevice->GetDevice()->CreateShaderResourceView(texture.dxResource_.Get(), &srvDesc, texture.srvHandle_->cpuHandle);
+
+
+	/// テクスチャサイズ
+	Vector2 textureSize = { static_cast<float>(metadata.width), static_cast<float>(metadata.height) };
+	texture.textureSize_ = textureSize;
+	texture.depth_ = static_cast<uint32_t>(metadata.depth);
+
+	/// テクスチャフォーマット
+	texture.srvFormat_ = metadata.format;
+
+
+	/// ログにテクスチャの情報を書き出す
+	Console::Log("[Texture DDS Info] Path: \"" + _filepath + "\"");
+	Console::Log(" - Width: " + std::to_string(metadata.width));
+	Console::Log(" - Height: " + std::to_string(metadata.height));
+	Console::Log(" - Depth: " + std::to_string(metadata.depth));
+	Console::Log(" - MipLevels: " + std::to_string(metadata.mipLevels));
+	Console::Log(" - Format: " + std::string(magic_enum::enum_name(metadata.format)));
+	Console::Log(" - DescriptorIndex: " + std::to_string(texture.srvHandle_->descriptorIndex));
+	Console::Log(" - Dimension: Texture3D");
+	
+
+
+	pAssetCollection_->AddAsset<Texture>(_filepath, std::move(texture));
+
+	return true;
+}
+
+
+bool AssetLoader::ReloadTextureAuto(const std::string& _filepath) {
+	/// ファイルの拡張子を確認して、DDSなら3Dテクスチャとしてリロード
+
+	const std::string extension = Mathf::FileExtension(_filepath);
+	if (extension == ".dds") {
+		DirectX::ScratchImage scratch = LoadScratchImage3D(_filepath);
+		const auto& meta = scratch.GetMetadata();
+		if (meta.dimension == DirectX::TEX_DIMENSION_TEXTURE3D) {
+			return ReloadTextureDDS(_filepath);
+		}
+	}
+
+	/// 3Dテクスチャ以外は通常のテクスチャリロード
+	return ReloadTexture(_filepath);
 }
 
 bool AssetLoader::ReloadTexture(const std::string& _filepath) {
@@ -170,6 +315,69 @@ bool AssetLoader::ReloadTexture(const std::string& _filepath) {
 	Console::Log("[Reload] [Texture] - path:\"" + _filepath + "\"");
 	return true;
 }
+
+bool AssetLoader::ReloadTextureDDS(const std::string& _filepath) {
+	/// ----- 3DテクスチャのDDSファイルのリロード ----- ///
+
+	/// ファイルが存在するのかチェックする
+	if (!std::filesystem::exists(_filepath)) {
+		Console::LogError("[Reload Failed] [Texture DDS] - File not found: \"" + _filepath + "\"");
+		return false;
+	}
+
+	/// まだ読み込んでいないファイルであればReloadの対象ではない、通常の読み込みを促す
+	Texture* existingTexture = pAssetCollection_->GetTexture(_filepath);
+	if (!existingTexture) {
+		Console::LogError("[Reload Failed] [Texture DDS] - Asset not found: \"" + _filepath + "\"");
+		return false;
+	}
+
+
+	/// スクラッチイメージを読み込み、使用可能かチェック
+	DirectX::ScratchImage scratchImage = LoadScratchImage3D(_filepath);
+	const DirectX::TexMetadata& metadata = scratchImage.GetMetadata();
+
+	/// 使用可能チェック
+	if (metadata.width == 0 || metadata.height == 0 || metadata.depth == 0) {
+		Console::LogError("[Reload Failed] [Texture] - Invalid texture metadata: \"" + _filepath + "\"");
+		return false;
+	}
+
+	/// 読み直し
+	existingTexture->dxResource_ = std::move(CreateTextureResource(pDxManager_->GetDxDevice(), metadata));
+	DxResource intermediateResource = UploadTextureData(existingTexture->dxResource_.Get(), scratchImage);
+
+	pDxManager_->GetDxCommand()->CommandExecuteAndWait();
+	pDxManager_->GetDxCommand()->CommandReset();
+
+	/// SRVの上書き
+	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
+	srvDesc.Format = metadata.format;
+	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE3D;
+	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	srvDesc.Texture3D.MipLevels = static_cast<UINT16>(metadata.mipLevels);
+
+	auto dxDevice = pDxManager_->GetDxDevice();
+	dxDevice->GetDevice()->CreateShaderResourceView(existingTexture->dxResource_.Get(), &srvDesc, existingTexture->srvHandle_->cpuHandle);
+
+	/// テクスチャのデータを更新
+	Vector2 textureSize = { static_cast<float>(metadata.width), static_cast<float>(metadata.height) };
+	existingTexture->textureSize_ = textureSize;
+	existingTexture->depth_ = static_cast<UINT>(metadata.depth);
+	existingTexture->srvFormat_ = metadata.format;
+
+
+	/// ログにテクスチャの情報を書き出す
+	Console::Log("[Reload] [Texture DDS] - path:\"" + _filepath + "\"");
+	Console::Log(" - Width: " + std::to_string(metadata.width));
+	Console::Log(" - Height: " + std::to_string(metadata.height));
+	Console::Log(" - Depth: " + std::to_string(metadata.depth));
+	Console::Log(" - MipLevels: " + std::to_string(metadata.mipLevels));
+	Console::Log(" - Format: " + std::string(magic_enum::enum_name(metadata.format)));
+
+	return true;
+}
+
 
 bool AssetLoader::LoadModelObj(const std::string& _filepath) {
 	/// ----- モデルの読み込み ----- ///
@@ -582,6 +790,57 @@ DirectX::ScratchImage AssetLoader::LoadScratchImage(const std::string& _filePath
 	return mipImages;
 }
 
+DirectX::ScratchImage AssetLoader::LoadScratchImage3D(const std::string& _filePath) {
+	// DDS ファイル専用
+	if (!_filePath.ends_with(".dds")) {
+		Console::LogError("LoadScratchImage3D: Only DDS files are supported for Texture3D.");
+		return DirectX::ScratchImage{};
+	}
+
+	std::wstring filePathW = ConvertString(_filePath);
+	DirectX::ScratchImage image;
+
+	HRESULT hr = DirectX::LoadFromDDSFile(
+		filePathW.c_str(),
+		DirectX::DDS_FLAGS_NONE,
+		nullptr,
+		image
+	);
+	if (FAILED(hr)) {
+		Console::LogError("[Load Failed] Texture3D DDS: \"" + _filePath + "\"");
+		return DirectX::ScratchImage{};
+	}
+
+	// Texture3D かどうかチェック
+	const DirectX::TexMetadata& meta = image.GetMetadata();
+	if (meta.dimension != DirectX::TEX_DIMENSION_TEXTURE3D) {
+		Console::LogError("[Load Failed] File is not a Texture3D DDS: \"" + _filePath + "\"");
+		return DirectX::ScratchImage{};
+	}
+
+	// mipMap生成（圧縮済みならスキップ）
+	DirectX::ScratchImage mipImages;
+	if (DirectX::IsCompressed(meta.format)) {
+		mipImages = std::move(image);
+	} else {
+		hr = DirectX::GenerateMipMaps(
+			image.GetImages(),
+			image.GetImageCount(),
+			meta,
+			DirectX::TEX_FILTER_DEFAULT, // sRGB対応の場合は TEX_FILTER_SRGB に変更
+			0,
+			mipImages
+		);
+		if (FAILED(hr)) {
+			Console::LogWarning("[GenerateMipMaps Failed] Using original image: \"" + _filePath + "\"");
+			mipImages = std::move(image);
+		}
+	}
+
+	return mipImages;
+}
+
+
 DxResource AssetLoader::CreateTextureResource(DxDevice* _dxDevice, const DirectX::TexMetadata& _metadata) {
 
 	/// --------------------------------------
@@ -613,6 +872,39 @@ DxResource AssetLoader::CreateTextureResource(DxDevice* _dxDevice, const DirectX
 	/// --------------------------------------
 	/// ↓ Resourceを生成
 	/// --------------------------------------
+
+	DxResource dxResource;
+	dxResource.CreateCommittedResource(
+		_dxDevice,
+		&heapProperties,
+		D3D12_HEAP_FLAG_NONE,
+		&desc,
+		D3D12_RESOURCE_STATE_COPY_DEST,
+		nullptr
+	);
+
+	return dxResource;
+}
+
+DxResource AssetLoader::CreateTexture3DResource(DxDevice* _dxDevice, const DirectX::TexMetadata& _metadata) {
+	if (_metadata.dimension != DirectX::TEX_DIMENSION_TEXTURE3D) {
+		Console::LogError("[CreateTexture3DResource] Metadata is not Texture3D.");
+		return DxResource{};
+	}
+
+	D3D12_RESOURCE_DESC desc{};
+	desc.Width = static_cast<UINT>(_metadata.width);
+	desc.Height = static_cast<UINT>(_metadata.height);
+	desc.DepthOrArraySize = static_cast<UINT16>(_metadata.depth); // Texture3Dの奥行き
+	desc.MipLevels = static_cast<UINT16>(_metadata.mipLevels);
+	desc.Format = _metadata.format;
+	desc.SampleDesc.Count = 1;
+	desc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
+	desc.Flags = D3D12_RESOURCE_FLAG_NONE;
+	desc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE3D;
+
+	D3D12_HEAP_PROPERTIES heapProperties{};
+	heapProperties.Type = D3D12_HEAP_TYPE_DEFAULT;
 
 	DxResource dxResource;
 	dxResource.CreateCommittedResource(

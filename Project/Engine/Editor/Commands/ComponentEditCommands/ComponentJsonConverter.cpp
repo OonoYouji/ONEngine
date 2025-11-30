@@ -9,6 +9,7 @@
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Terrain.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Grass/GrassField.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/TerrainCollider.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/VoxelTerrain/VoxelTerrain.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Collision/SphereCollider.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Collision/BoxCollider.h"
@@ -47,6 +48,7 @@ namespace {
 			Register<TerrainCollider>();
 			Register<CameraComponent>();
 			Register<ShadowCaster>();
+			Register<VoxelTerrain>();
 
 			/// renderer
 			Register<SpriteRenderer>();
@@ -146,16 +148,6 @@ void to_json(nlohmann::json& _j, const DirectionalLight& _l) {
 		{ "intensity", _l.GetIntensity() },
 		{ "direction", _l.GetDirection() },
 		{ "color", _l.GetColor() }
-	};
-}
-
-void from_json([[maybe_unused]] const nlohmann::json& _j, [[maybe_unused]] Variables& _v) {
-	
-}
-void to_json(nlohmann::json& _j, const Variables& /*_v*/) {
-	_j = nlohmann::json{
-		{ "type", "Variables" },
-		// 変数の内容はここで定義する必要があります
 	};
 }
 

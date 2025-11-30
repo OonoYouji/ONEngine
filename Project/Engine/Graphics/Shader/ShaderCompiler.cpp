@@ -47,6 +47,7 @@ ComPtr<IDxcBlob> ShaderCompiler::CompileShader(const std::wstring& _filePath, co
 	shaderSourceBuffer.Size = shaderSource->GetBufferSize();
 	shaderSourceBuffer.Encoding = DXC_CP_UTF8; /// 文字コード
 
+#ifdef _DEBUG
 	/// Compileの設定
 	LPCWSTR arguments[] = {
 		_filePath.c_str(),			/// Compile対象のhlslファイル名
@@ -56,6 +57,17 @@ ComPtr<IDxcBlob> ShaderCompiler::CompileShader(const std::wstring& _filePath, co
 		L"-Od",						/// 最適化を外す
 		L"-Zpr",					/// メモリレイアウトは行優先
 	};
+#else
+	/// Releaseモード
+	LPCWSTR arguments[] = {
+		_filePath.c_str(),			/// Compile対象のhlslファイル名
+		L"-E", _entryPoint.c_str(),	/// エントリーポイントの指定; 基本的にmain以外にはしない
+		L"-T", _profile,			/// ShaderProfileの設定
+		L"-O3",						/// 最適化レベル3
+		L"-Zpr",					/// メモリレイアウトは行優先
+	};
+
+#endif
 
 	/// 実際にCompileする
 	ComPtr<IDxcResult> shaderResult = nullptr;

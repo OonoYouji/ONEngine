@@ -7,6 +7,7 @@
 #include "Engine/Core/Config/EngineConfig.h"
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Core/Utility/Tools/Gizmo.h"
+#include "Engine/ECS/EntityComponentSystem/ECSGroup.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 
 using namespace GizmoPrimitive;
@@ -65,8 +66,13 @@ void GizmoRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManag
 	}
 }
 
-void GizmoRenderingPipeline::Draw(class ECSGroup*, [[maybe_unused]] CameraComponent* _camera, [[maybe_unused]] DxCommand* _dxCommand) {
+void GizmoRenderingPipeline::Draw(class ECSGroup* _ecsGroup, [[maybe_unused]] CameraComponent* _camera, [[maybe_unused]] DxCommand* _dxCommand) {
 #ifdef DEBUG_MODE
+
+	if (_camera->GetOwner()->GetECSGroup()->GetGroupName() != "Debug") {
+		return;
+	}
+
 	/// ---------------------------------------------------
 	/// wire描画を行う
 	/// ---------------------------------------------------

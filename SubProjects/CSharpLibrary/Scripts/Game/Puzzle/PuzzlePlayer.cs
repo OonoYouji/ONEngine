@@ -8,6 +8,7 @@ public class PuzzlePlayer : MonoBehavior {
 	public PuzzleBlockData blockData; // ブロックデータ
 	public Flag isGoaled;
 	private AudioSource audioSource_;
+	public bool isActive = false;
 
 	public override void Initialize() {
 		// 初期化処理
@@ -32,7 +33,7 @@ public class PuzzlePlayer : MonoBehavior {
 	}
 
 	public void PlayMoveSE() {
-		audioSource_.OneShotPlay(1f, 1f, "./Assets/Sounds/Game/se/blackMove.mp3");
+		//audioSource_.OneShotPlay(1f, 1f, "./Assets/Sounds/Game/se/blackMove.mp3");
 	}
 
 	public void UpdatePosition() {

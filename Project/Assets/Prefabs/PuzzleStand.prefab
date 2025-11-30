@@ -64,13 +64,23 @@
                 {
                     "enable": true,
                     "name": "PuzzleClearEffect"
+                },
+                {
+                    "enable": true,
+                    "name": "PuzzleCameraController"
                 }
             ],
             "type": "Script"
+        },
+        {
+            "enable": 1,
+            "radius": 1.7000000476837158,
+            "state": "Static",
+            "type": "SphereCollider"
         }
     ],
     "guid": {
-        "guid": "5511cd7113ee5a56820e5f843ed1e059"
+        "guid": "fdac1900ed65d2a922335ee235c1a94d"
     },
     "id": 2,
     "name": "PuzzleStand",

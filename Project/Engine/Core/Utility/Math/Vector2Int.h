@@ -1,5 +1,8 @@
 #pragma once
 
+/// externals
+#include <nlohmann/json.hpp>
+
 /// ////////////////////////////////////////////////
 /// 2次元整数ベクトル
 /// ////////////////////////////////////////////////
@@ -31,4 +34,11 @@ struct Vector2Int final {
 	static Vector2Int kLeft; ///< (-1, 0)
 	static Vector2Int kRight;///< (1, 0)
 
+
+	Vector2Int& operator= (const Vector2Int& _other);
+
 };
+
+
+void from_json(const nlohmann::json& _j, Vector2Int& _v);
+void to_json(nlohmann::json& _j, const Vector2Int& _v);

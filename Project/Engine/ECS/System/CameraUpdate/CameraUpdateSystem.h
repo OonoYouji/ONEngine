@@ -18,6 +18,8 @@ public:
 	void OutsideOfRuntimeUpdate(class ECSGroup* _ecs) override;
 	void RuntimeUpdate(class ECSGroup* _ecs) override;
 
+	void Update(class ECSGroup* _ecs);
+
 private:
 	/// ===================================================
 	/// private : objects
