@@ -69,7 +69,7 @@ void DxResource::CreateUAVResource(DxDevice* _dxDevice, class DxCommand* _dxComm
 void DxResource::CreateCommittedResource(DxDevice* _dxDevice, const D3D12_HEAP_PROPERTIES* _pHeapProperties, D3D12_HEAP_FLAGS _HeapFlags, const D3D12_RESOURCE_DESC* _pDesc, D3D12_RESOURCE_STATES _InitialResourceState, const D3D12_CLEAR_VALUE* _pOptimizedClearValue) {
 	currentState_ = _InitialResourceState;
 
-	_dxDevice->GetDevice()->CreateCommittedResource(
+	HRESULT hr = _dxDevice->GetDevice()->CreateCommittedResource(
 		_pHeapProperties,
 		_HeapFlags,
 		_pDesc,
@@ -77,6 +77,11 @@ void DxResource::CreateCommittedResource(DxDevice* _dxDevice, const D3D12_HEAP_P
 		_pOptimizedClearValue,
 		IID_PPV_ARGS(&resource_)
 	);
+
+	if (!SUCCEEDED(hr)) {
+		Console::LogError("[DxResource::CreateCommittedResource] Committed Resource creation failed.");
+		Assert(false, "Committed Resource creation failed.");
+	}
 }
 
 void DxResource::CreateRenderTextureResource(DxDevice* _dxDevice, const Vector2& _size, DXGI_FORMAT _format, const Vector4& _clearColor) {

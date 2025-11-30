@@ -74,12 +74,12 @@ void PostProcessTerrainBrush::Execute(
 	}
 
 	VoxelTerrain* editVoxelTerrain = nullptr;
-	for (const auto& voxelTerrain : voxelTerrainArray->GetUsedComponents()) {
-		if (voxelTerrain) {
-			editVoxelTerrain = voxelTerrain;
-			break;
-		}
-	}
+	//for (const auto& voxelTerrain : voxelTerrainArray->GetUsedComponents()) {
+	//	if (voxelTerrain) {
+	//		editVoxelTerrain = voxelTerrain;
+	//		break;
+	//	}
+	//}
 
 	/// 編集モードでなければ処理しない
 	if (!editTerrain && !editVoxelTerrain) {

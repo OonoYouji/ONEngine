@@ -1,14 +1,19 @@
 #include "VoxelTerrainEditorComputePipeline.h"
 
 /// engine
+#include "Engine/Asset/Collection/AssetCollection.h"
+#include "Engine/Core/Utility/Utility.h"
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
-
-
+#include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/VoxelTerrain/VoxelTerrain.h"
 
 VoxelTerrainEditorComputePipeline::VoxelTerrainEditorComputePipeline() = default;
 VoxelTerrainEditorComputePipeline::~VoxelTerrainEditorComputePipeline() = default;
 
 void VoxelTerrainEditorComputePipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {
+
+	pDxManager_ = _dxm;
 
 	{	/// Shader
 		Shader shader;
@@ -44,4 +49,96 @@ void VoxelTerrainEditorComputePipeline::Initialize(ShaderCompiler* _shaderCompil
 }
 
 void VoxelTerrainEditorComputePipeline::Execute(EntityComponentSystem* _ecs, DxCommand* _dxCommand, AssetCollection* _assetCollection) {
+
+	/// 早期リターンの条件チェック
+	ComponentArray<VoxelTerrain>* voxelTerrainArray = _ecs->GetCurrentGroup()->GetComponentArray<VoxelTerrain>();
+	if (!voxelTerrainArray || voxelTerrainArray->GetUsedComponents().empty()) {
+		Console::LogWarning("VoxelTerrainEditorComputePipeline::Execute: VoxelTerrain component array is null");
+		return;
+	}
+
+
+	/// 使用できるVoxelTerrainコンポーネントを探す
+	VoxelTerrain* voxelTerrain = nullptr;
+	for (const auto& vt : voxelTerrainArray->GetUsedComponents()) {
+		if (vt && vt->enable) {
+			voxelTerrain = vt;
+			break;
+		}
+	}
+
+	/// 見つからなかった
+	if (!voxelTerrain) {
+		return;
+	}
+
+
+	pDxManager_->HeapBindToCommandList();
+	/// --------------- バッファの生成 --------------- ///
+	if (!voxelTerrain->CheckCreatedBuffers()) {
+		voxelTerrain->SettingChunksGuid(_assetCollection);
+		voxelTerrain->CreateBuffers(pDxManager_->GetDxDevice(), pDxManager_->GetDxSRVHeap());
+	}
+
+	if (!voxelTerrain->CheckBufferCreatedForEditor()) {
+		voxelTerrain->CreateEditorBuffers(pDxManager_->GetDxDevice());
+		//voxelTerrain->CreateChunkTextureUAV(pDxManager_->GetDxDevice(), _dxCommand, pDxManager_->GetDxSRVHeap(), _assetCollection);
+	}
+
+
+
+	/// ---------------------------------------------------
+	/// ここから パイプラインの設定、実行
+	/// ---------------------------------------------------
+
+	pipeline_->SetPipelineStateForCommandList(_dxCommand);
+
+	auto cmdList = _dxCommand->GetCommandList();
+
+	GPUData::InputInfo inputInfo{};
+	inputInfo.mouseLeftButton = Input::PressMouse(Mouse::Left);
+	inputInfo.keyboardKShift = Input::PressKey(DIK_LSHIFT);
+	inputInfo.screenMousePos = Input::GetImGuiImageMousePosNormalized("Scene");
+
+	GPUData::EditInfo editInfo{};
+	editInfo.brushRadius = 10.0f;
+
+	voxelTerrain->SetupEditorBuffers(
+		cmdList,
+		{ CBV_INPUT_INFO, CBV_TERRAIN_INFO, SRV_CHUNKS },
+		inputInfo, editInfo
+	);
+
+
+	//CameraComponent* cameraComp = _ecs->GetCurrentGroup()->GetMainCamera();
+	///// cameraBufferが生成済みでないなら終了
+	//if (!cameraComp->IsMakeViewProjection()) {
+	//	Console::LogWarning("VoxelTerrainEditorComputePipeline::Execute: Camera viewProjection buffer is not created");
+	//	return;
+	//}
+
+	//cameraComp->GetViewProjectionBuffer().BindForComputeCommandList(cmdList, CBV_VIEW_PROJECTION);
+	//cameraComp->GetCameraPosBuffer().BindForComputeCommandList(cmdList, CBV_CAMERA);
+
+	///// WorldTexture
+	//const Texture* worldTexture = _assetCollection->GetTexture("./Assets/Scene/RenderTexture/debugWorldPosition");
+	//cmdList->SetComputeRootDescriptorTable(
+	//	SRV_WORLD_TEXTURE,
+	//	worldTexture->GetSRVHandle().gpuHandle
+	//);
+
+	///// UAV VoxelTextures
+	//const Texture* chunk0Texture = _assetCollection->GetTexture("./Packages/Textures/Terrain/Chunk/0.dds");
+	//cmdList->SetComputeRootDescriptorTable(
+	//	UAV_VOXEL_TEXTURES,
+	//	chunk0Texture->GetUAVGPUHandle()
+	//);
+
+
+	//const Vector2Int& voxelChunkCount = voxelTerrain->GetChunkCountXZ();
+	//cmdList->Dispatch(
+	//	Mathf::DivideAndRoundUp(voxelChunkCount.x * voxelChunkCount.y, 256),
+	//	1,
+	//	1
+	//);
 }

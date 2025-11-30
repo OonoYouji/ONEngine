@@ -85,6 +85,20 @@ namespace GPUData {
 	struct Chunk {
 		uint32_t texture3DIndex;
 	};
+
+
+	/// @brief 編集に使う入力情報
+	struct InputInfo {
+		uint32_t mouseLeftButton;
+		uint32_t keyboardKShift;
+		Vector2 screenMousePos;
+	};
+
+	/// @brief VoxelTerrainの編集用データ
+	struct EditInfo {
+		float brushRadius;
+	};
+
 }
 
 
@@ -124,6 +138,9 @@ public:
 	/// @param _rootParamIndices [0]: VoxelTerrainInfo, [1]: ChunkArray
 	void SetupGraphicBuffers(ID3D12GraphicsCommandList* _cmdList, const std::array<UINT, 3> _rootParamIndices, class AssetCollection* _assetCollection);
 
+	/// テクスチャのステートを変更する
+	void TransitionTextureStates(class DxCommand* _dxCommand, class AssetCollection* _assetCollection ,D3D12_RESOURCE_STATES _beforeState, D3D12_RESOURCE_STATES _afterState);
+
 	/// @brief 現在のチャンクの総数を取得する
 	/// @return 今あるチャンクの総数
 	UINT MaxChunkCount() const;
@@ -135,6 +152,30 @@ public:
 	/// @brief チャンクの大きさを取得する
 	/// @return チャンクの大きさ
 	const Vector3Int& GetChunkSize() const;
+
+
+	/// --------------- エディタ用 関数 --------------- ///
+
+	/// @brief エディタ用のバッファが生成されているかチェックする
+	/// @return true: 生成済み, false: 未生成
+	bool CheckBufferCreatedForEditor() const;
+
+	/// @brief エディタ用のバッファの生成を行う
+	/// @param _dxDevice DxDeviceのポインタ
+	void CreateEditorBuffers(DxDevice* _dxDevice);
+
+	/// @brief エディタ用のバッファをパイプラインに設定する
+	/// @param _cmdList CommandListのポインタ
+	/// @param _rootParamIndices 設定するルートパラメータのインデックス配列 (0: InputInfo, 1: EditInfo, 2: Chunks)
+	/// @param _inputInfo InputInfo構造体
+	/// @param _editInfo EditInfo構造体
+	void SetupEditorBuffers(ID3D12GraphicsCommandList* _cmdList, const std::array<UINT, 3> _rootParamIndices, const GPUData::InputInfo& _inputInfo, const GPUData::EditInfo& _editInfo);
+
+	/// @brief チャンク用のTexture3D UAVを作成する
+	/// @param _dxDevice DxDeviceのポインタ
+	/// @param _dxSRVHeap DxSRVHeapのポインタ
+	/// @param _assetCollection AssetCollectionのポインタ
+	void CreateChunkTextureUAV(DxDevice* _dxDevice, DxCommand* _dxCommand, DxSRVHeap* _dxSRVHeap, class AssetCollection* _assetCollection);
 
 private:
 	/// ===========================================
@@ -160,5 +201,11 @@ private:
 	UINT maxChunkCount_;
 
 	Material material_;
+
+
+	/// --------------- エディタ用 --------------- ///
+	ConstantBuffer<GPUData::InputInfo> cBufferInputInfo_;
+	ConstantBuffer<GPUData::EditInfo>  cBufferEditInfo_;
+
 };
 

@@ -31,7 +31,7 @@ void DxManager::Initialize() {
 	/// descriptor heapの初期化
 	dxDescriptorHeaps_[DescriptorHeapType_RTV] = std::make_unique<DxRTVHeap>(dxDevice_.get(), DescriptorHeapLimits::RTV);
 	dxDescriptorHeaps_[DescriptorHeapType_DSV] = std::make_unique<DxDSVHeap>(dxDevice_.get(), DescriptorHeapLimits::DSV);
-	dxDescriptorHeaps_[DescriptorHeapType_CBV_SRV_UAV] = std::make_unique<DxSRVHeap>(dxDevice_.get(), DescriptorHeapLimits::CBV_SRV_UAV + MAX_TEXTURE_COUNT, MAX_TEXTURE_COUNT);
+	dxDescriptorHeaps_[DescriptorHeapType_CBV_SRV_UAV] = std::make_unique<DxSRVHeap>(dxDevice_.get(), DescriptorHeapLimits::CBV_SRV_UAV, MAX_TEXTURE_COUNT);
 
 	for (auto& heap : dxDescriptorHeaps_) {
 		heap->Initialize();

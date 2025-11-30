@@ -1,12 +1,12 @@
 #include "VoxelTerrain.hlsli"
 
 
-/// ---------------------------------------------------
-/// Buffers
-/// ---------------------------------------------------
+///// ---------------------------------------------------
+///// Buffers
+///// ---------------------------------------------------
 
-Texture3D<float4> voxelChunkTextures[] : register(t1);
-SamplerState voxelSampler : register(s0);
+//Texture3D<float4> voxelChunkTextures[] : register(t1);
+//SamplerState voxelSampler : register(s0);
 
 
 

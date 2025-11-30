@@ -237,6 +237,8 @@ VoxelColorCluter GetVoxelColorCluster(uint3 _voxelPos, uint _chunkId, uint3 _sub
 				}
 
 				vcc.colors[x + 1][y + 1][z + 1] = voxelChunkTextures[chunks[chunkId].textureId].SampleLevel(texSampler, uvw, lodLevel);
+				//uint3 uvwInt = uint3(uvw * float3(voxelTerrainInfo.chunkSize));
+				//vcc.colors[x + 1][y + 1][z + 1] = voxelChunkTextures[chunks[chunkId].textureId].Load(uvwInt);
 			}
 		}
 	}

@@ -99,12 +99,19 @@ void VoxelTerrainRenderingPipeline::Draw(ECSGroup* _ecs, CameraComponent* _camer
 	}
 
 	voxelTerrain->SetupGraphicBuffers(cmdList, { CBV_VOXEL_TERRAIN_INFO, CBV_MATERIAL, SRV_CHUNK_ARRAY }, pAssetCollection_);
+	//voxelTerrain->TransitionTextureStates(
+	//	_dxCommand,
+	//	pAssetCollection_,
+	//	D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+	//	D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
+	//);
+
 	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(_dxCommand->GetCommandList(), CBV_VIEW_PROJECTION);
 	_camera->GetCameraPosBuffer().BindForGraphicsCommandList(_dxCommand->GetCommandList(), CBV_CAMERA_POSITION);
 
-	const Texture& frontTexture = pAssetCollection_->GetTextures().front();
+	D3D12_GPU_DESCRIPTOR_HANDLE frontSRVHandle = pDxManager_->GetDxSRVHeap()->GetSRVStartGPUHandle();
 	cmdList->SetGraphicsRootDescriptorTable(
-		SRV_VOXEL_TERRAIN_TEXTURE3D, frontTexture.GetSRVHandle().gpuHandle
+		SRV_VOXEL_TERRAIN_TEXTURE3D, frontSRVHandle
 	);
 
 	/// --------------- ディスパッチ --------------- ///
@@ -114,6 +121,13 @@ void VoxelTerrainRenderingPipeline::Draw(ECSGroup* _ecs, CameraComponent* _camer
 		voxelTerrain->GetChunkCountXZ().y
 	);
 
+	/// 元に戻す
+	//voxelTerrain->TransitionTextureStates(
+	//	_dxCommand,
+	//	pAssetCollection_,
+	//	D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+	//	D3D12_RESOURCE_STATE_UNORDERED_ACCESS
+	//);
 
 
 }

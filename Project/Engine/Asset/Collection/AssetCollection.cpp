@@ -230,7 +230,7 @@ bool AssetCollection::ReloadAsset(const std::string& _filepath) {
 	switch (type) {
 	case AssetType::Texture:
 		/// Textureのリロード
-		if (assetLoader_->ReloadTexture(_filepath)) {
+		if (assetLoader_->ReloadTextureAuto(_filepath)) {
 			return true;
 		}
 		break;

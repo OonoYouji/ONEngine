@@ -34,5 +34,7 @@ private:
 	/// private : objects
 	/// =========================================
 
+	class DxManager* pDxManager_ = nullptr;
+
 };
 

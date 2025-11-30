@@ -25,7 +25,7 @@ ConstantBuffer<EditorInfo> editorInfo : register(b4);
 
 StructuredBuffer<Chunk> chunks : register(t0);
 Texture2D<float4> worldPositionTexture : register(t1);
-RWTexture3D<float4> voxelTextures[] : register(u0);
+RWTexture3D<float4> voxelTextures[32 * 32] : register(u0);
 SamplerState textureSampler : register(s0);
 
 /// ///////////////////////////////////////////////////
@@ -65,8 +65,7 @@ float3 ScreenToWorldRay(float2 _screenPos) {
 }
 
 
-/// 現在最大チャンク数が 32*32 なので それに合わせる
-[numthreads(32, 32, 1)]
+[numthreads(256, 1, 1)]
 void main(
     uint3 DTid : SV_DispatchThreadID,
     uint groupIndex : SV_GroupIndex) {
@@ -126,9 +125,9 @@ void main(
 
 
 	/// 操作次第で色を変更
-	if(inputInfo.mouseLeftButton == 1) {
+	if (inputInfo.mouseLeftButton == 1) {
 
-		if(inputInfo.keyboardLShift == 1) {
+		if (inputInfo.keyboardLShift == 1) {
 			// ----- 押し下げ ----- //
 			voxelColor.a = 0.0f;
 		} else {

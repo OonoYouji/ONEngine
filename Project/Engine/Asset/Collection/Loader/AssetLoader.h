@@ -43,16 +43,28 @@ public:
 	/// @return true: 読み込み成功, false: 読み込み失敗
 	bool LoadTexture(const std::string& _filepath);
 
-	/// @brief テクスチャの読み直し
-	/// @param _filepath 読み込み対象のファイルパス
-	/// @return true: 読み込み成功, false: 読み込み失敗
-	bool ReloadTexture(const std::string& _filepath);
-
 	/// @brief Texture3DのDDSファイルの読み込み
 	/// @param _filepath 読み込み対象のファイルパス
 	/// @return true: 読み込み成功, false: 読み込み失敗
 	bool LoadTextureDDS(const std::string& _filepath);
 	
+
+	/// @brief テクスチャの読み直し、内部で2Dか3Dかを自動判別する
+	/// @param _filepath 読み直し対象のファイルパス
+	/// @return true: 読み込み成功, false: 読み込み失敗
+	bool ReloadTextureAuto(const std::string& _filepath);
+
+	/// @brief テクスチャの読み直し
+	/// @param _filepath 読み込み対象のファイルパス
+	/// @return true: 読み込み成功, false: 読み込み失敗
+	bool ReloadTexture(const std::string& _filepath);
+
+	/// @brief 3DテクスチャのDDSファイルの読み直し
+	/// @param _filepath 読み直し対象のファイルパス
+	/// @return true: 読み込み成功, false: 読み込み失敗
+	bool ReloadTextureDDS(const std::string& _filepath);
+
+
 
 	/// --------------- モデル --------------- ///
 

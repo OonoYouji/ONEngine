@@ -21,6 +21,9 @@
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
 
+/// externals
+#include <magic_enum/magic_enum.hpp>
+
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Core/Utility/Utility.h"
@@ -133,63 +136,25 @@ bool AssetLoader::LoadTexture([[maybe_unused]] const std::string& _filepath) {
 	Vector2 textureSize = { static_cast<float>(metadata.width), static_cast<float>(metadata.height) };
 	texture.textureSize_ = textureSize;
 
+	/// テクスチャフォーマット
+	texture.srvFormat_ = metadata.format;
 
-	Console::Log("[Load] [Texture] - path:\"" + _filepath + "\"");
+
+	/// ログにテクスチャの情報を書き出す
+	Console::Log("[Texture Info] Path: \"" + _filepath + "\"");
+	Console::Log(" - Width: " + std::to_string(metadata.width));
+	Console::Log(" - Height: " + std::to_string(metadata.height));
+	Console::Log(" - MipLevels: " + std::to_string(metadata.mipLevels));
+	Console::Log(" - Format: " + std::string(magic_enum::enum_name(metadata.format)));
+	Console::Log(" - DescriptorIndex: " + std::to_string(texture.srvHandle_->descriptorIndex));
+	Console::Log(" - Dimension: Texture2D");
+
+
 	pAssetCollection_->AddAsset<Texture>(_filepath, std::move(texture));
 
 	return true;
 }
 
-bool AssetLoader::ReloadTexture(const std::string& _filepath) {
-	/// ----- テクスチャのリロード ----- ///
-
-	/// ファイルが存在するのかチェックする
-	if (!std::filesystem::exists(_filepath)) {
-		Console::LogError("[Reload Failed] [Texture] - File not found: \"" + _filepath + "\"");
-		return false;
-	}
-
-	Texture* existingTexture = pAssetCollection_->GetTexture(_filepath);
-	if (!existingTexture) {
-		Console::LogError("[Reload Failed] [Texture] - Asset not found: \"" + _filepath + "\"");
-		return false;
-	}
-
-	DirectX::ScratchImage       scratchImage = LoadScratchImage(_filepath);
-	const DirectX::TexMetadata& metadata = scratchImage.GetMetadata();
-
-	/// metadataを確認して、サイズが0などの場合であればリロード失敗
-	if (metadata.width == 0 || metadata.height == 0) {
-		Console::LogError("[Reload Failed] [Texture] - Invalid texture metadata: \"" + _filepath + "\"");
-		return false;
-	}
-
-
-	existingTexture->dxResource_ = std::move(CreateTextureResource(pDxManager_->GetDxDevice(), metadata));
-	DxResource intermediateResource = UploadTextureData(existingTexture->dxResource_.Get(), scratchImage);
-
-	pDxManager_->GetDxCommand()->CommandExecuteAndWait();
-	pDxManager_->GetDxCommand()->CommandReset();
-
-
-	/// SRVの上書き
-	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
-	srvDesc.Format = metadata.format;
-	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-	srvDesc.Texture2D.MipLevels = static_cast<UINT>(metadata.mipLevels);
-
-	auto dxDevice = pDxManager_->GetDxDevice();
-	dxDevice->GetDevice()->CreateShaderResourceView(existingTexture->dxResource_.Get(), &srvDesc, existingTexture->srvHandle_->cpuHandle);
-
-	/// texture size
-	Vector2 textureSize = { static_cast<float>(metadata.width), static_cast<float>(metadata.height) };
-	existingTexture->textureSize_ = textureSize;
-
-
-	Console::Log("[Reload] [Texture] - path:\"" + _filepath + "\"");
-	return true;
-}
 
 bool AssetLoader::LoadTextureDDS(const std::string& _filepath) {
 	/// ----- DDSファイルの読み込み ----- ///
@@ -257,34 +222,162 @@ bool AssetLoader::LoadTextureDDS(const std::string& _filepath) {
 	dxDevice->GetDevice()->CreateShaderResourceView(texture.dxResource_.Get(), &srvDesc, texture.srvHandle_->cpuHandle);
 
 
-	/// uav desc の設定
-	//D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc{};
-	//uavDesc.Format = metadata.format;
-	//uavDesc.ViewDimension = D3D12_UAV_DIMENSION_TEXTURE3D;
-	//uavDesc.Texture3D.MipSlice = 0;
-	//uavDesc.Texture3D.FirstWSlice = 0;
-	//uavDesc.Texture3D.WSize = static_cast<UINT>(metadata.depth);
-
-	///// uav handleの取得
-	//texture.CreateEmptyUAVHandle();
-	//texture.uavHandle_->descriptorIndex = dxSRVHeap->AllocateTexture();
-	//texture.uavHandle_->cpuHandle = dxSRVHeap->GetCPUDescriptorHandel(texture.uavHandle_->descriptorIndex);
-	//texture.uavHandle_->gpuHandle = dxSRVHeap->GetGPUDescriptorHandel(texture.uavHandle_->descriptorIndex);
-
-	///// uavの生成
-	//dxDevice->GetDevice()->CreateUnorderedAccessView(texture.dxResource_.Get(), nullptr, &uavDesc, texture.uavHandle_->cpuHandle);
-
-
-	/// texture size
+	/// テクスチャサイズ
 	Vector2 textureSize = { static_cast<float>(metadata.width), static_cast<float>(metadata.height) };
 	texture.textureSize_ = textureSize;
+	texture.depth_ = static_cast<uint32_t>(metadata.depth);
+
+	/// テクスチャフォーマット
+	texture.srvFormat_ = metadata.format;
 
 
-	Console::Log("[Load] [Texture DDS] - path:\"" + _filepath + "\"");
+	/// ログにテクスチャの情報を書き出す
+	Console::Log("[Texture DDS Info] Path: \"" + _filepath + "\"");
+	Console::Log(" - Width: " + std::to_string(metadata.width));
+	Console::Log(" - Height: " + std::to_string(metadata.height));
+	Console::Log(" - Depth: " + std::to_string(metadata.depth));
+	Console::Log(" - MipLevels: " + std::to_string(metadata.mipLevels));
+	Console::Log(" - Format: " + std::string(magic_enum::enum_name(metadata.format)));
+	Console::Log(" - DescriptorIndex: " + std::to_string(texture.srvHandle_->descriptorIndex));
+	Console::Log(" - Dimension: Texture3D");
+	
+
+
 	pAssetCollection_->AddAsset<Texture>(_filepath, std::move(texture));
 
 	return true;
 }
+
+
+bool AssetLoader::ReloadTextureAuto(const std::string& _filepath) {
+	/// ファイルの拡張子を確認して、DDSなら3Dテクスチャとしてリロード
+
+	const std::string extension = Mathf::FileExtension(_filepath);
+	if (extension == ".dds") {
+		DirectX::ScratchImage scratch = LoadScratchImage3D(_filepath);
+		const auto& meta = scratch.GetMetadata();
+		if (meta.dimension == DirectX::TEX_DIMENSION_TEXTURE3D) {
+			return ReloadTextureDDS(_filepath);
+		}
+	}
+
+	/// 3Dテクスチャ以外は通常のテクスチャリロード
+	return ReloadTexture(_filepath);
+}
+
+bool AssetLoader::ReloadTexture(const std::string& _filepath) {
+	/// ----- テクスチャのリロード ----- ///
+
+	/// ファイルが存在するのかチェックする
+	if (!std::filesystem::exists(_filepath)) {
+		Console::LogError("[Reload Failed] [Texture] - File not found: \"" + _filepath + "\"");
+		return false;
+	}
+
+	Texture* existingTexture = pAssetCollection_->GetTexture(_filepath);
+	if (!existingTexture) {
+		Console::LogError("[Reload Failed] [Texture] - Asset not found: \"" + _filepath + "\"");
+		return false;
+	}
+
+	DirectX::ScratchImage       scratchImage = LoadScratchImage(_filepath);
+	const DirectX::TexMetadata& metadata = scratchImage.GetMetadata();
+
+	/// metadataを確認して、サイズが0などの場合であればリロード失敗
+	if (metadata.width == 0 || metadata.height == 0) {
+		Console::LogError("[Reload Failed] [Texture] - Invalid texture metadata: \"" + _filepath + "\"");
+		return false;
+	}
+
+
+	existingTexture->dxResource_ = std::move(CreateTextureResource(pDxManager_->GetDxDevice(), metadata));
+	DxResource intermediateResource = UploadTextureData(existingTexture->dxResource_.Get(), scratchImage);
+
+	pDxManager_->GetDxCommand()->CommandExecuteAndWait();
+	pDxManager_->GetDxCommand()->CommandReset();
+
+
+	/// SRVの上書き
+	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
+	srvDesc.Format = metadata.format;
+	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.Texture2D.MipLevels = static_cast<UINT>(metadata.mipLevels);
+
+	auto dxDevice = pDxManager_->GetDxDevice();
+	dxDevice->GetDevice()->CreateShaderResourceView(existingTexture->dxResource_.Get(), &srvDesc, existingTexture->srvHandle_->cpuHandle);
+
+	/// texture size
+	Vector2 textureSize = { static_cast<float>(metadata.width), static_cast<float>(metadata.height) };
+	existingTexture->textureSize_ = textureSize;
+
+
+	Console::Log("[Reload] [Texture] - path:\"" + _filepath + "\"");
+	return true;
+}
+
+bool AssetLoader::ReloadTextureDDS(const std::string& _filepath) {
+	/// ----- 3DテクスチャのDDSファイルのリロード ----- ///
+
+	/// ファイルが存在するのかチェックする
+	if (!std::filesystem::exists(_filepath)) {
+		Console::LogError("[Reload Failed] [Texture DDS] - File not found: \"" + _filepath + "\"");
+		return false;
+	}
+
+	/// まだ読み込んでいないファイルであればReloadの対象ではない、通常の読み込みを促す
+	Texture* existingTexture = pAssetCollection_->GetTexture(_filepath);
+	if (!existingTexture) {
+		Console::LogError("[Reload Failed] [Texture DDS] - Asset not found: \"" + _filepath + "\"");
+		return false;
+	}
+
+
+	/// スクラッチイメージを読み込み、使用可能かチェック
+	DirectX::ScratchImage scratchImage = LoadScratchImage3D(_filepath);
+	const DirectX::TexMetadata& metadata = scratchImage.GetMetadata();
+
+	/// 使用可能チェック
+	if (metadata.width == 0 || metadata.height == 0 || metadata.depth == 0) {
+		Console::LogError("[Reload Failed] [Texture] - Invalid texture metadata: \"" + _filepath + "\"");
+		return false;
+	}
+
+	/// 読み直し
+	existingTexture->dxResource_ = std::move(CreateTextureResource(pDxManager_->GetDxDevice(), metadata));
+	DxResource intermediateResource = UploadTextureData(existingTexture->dxResource_.Get(), scratchImage);
+
+	pDxManager_->GetDxCommand()->CommandExecuteAndWait();
+	pDxManager_->GetDxCommand()->CommandReset();
+
+	/// SRVの上書き
+	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
+	srvDesc.Format = metadata.format;
+	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE3D;
+	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	srvDesc.Texture3D.MipLevels = static_cast<UINT16>(metadata.mipLevels);
+
+	auto dxDevice = pDxManager_->GetDxDevice();
+	dxDevice->GetDevice()->CreateShaderResourceView(existingTexture->dxResource_.Get(), &srvDesc, existingTexture->srvHandle_->cpuHandle);
+
+	/// テクスチャのデータを更新
+	Vector2 textureSize = { static_cast<float>(metadata.width), static_cast<float>(metadata.height) };
+	existingTexture->textureSize_ = textureSize;
+	existingTexture->depth_ = static_cast<UINT>(metadata.depth);
+	existingTexture->srvFormat_ = metadata.format;
+
+
+	/// ログにテクスチャの情報を書き出す
+	Console::Log("[Reload] [Texture DDS] - path:\"" + _filepath + "\"");
+	Console::Log(" - Width: " + std::to_string(metadata.width));
+	Console::Log(" - Height: " + std::to_string(metadata.height));
+	Console::Log(" - Depth: " + std::to_string(metadata.depth));
+	Console::Log(" - MipLevels: " + std::to_string(metadata.mipLevels));
+	Console::Log(" - Format: " + std::string(magic_enum::enum_name(metadata.format)));
+
+	return true;
+}
+
 
 bool AssetLoader::LoadModelObj(const std::string& _filepath) {
 	/// ----- モデルの読み込み ----- ///
