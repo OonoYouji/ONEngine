@@ -669,7 +669,7 @@ RenderingData GenerateRenderingDataPattern6() {
 		uint3(4,0,3)
 	};
 	
-	float3 normal = normalize(float3(1, 1, 1));
+	float3 normal = normalize(float3(-1, 1, 1));
 	
 	RenderingData rd;
 	for (int i = 0; i < kPatternVertexCount[6]; i++) {
@@ -892,13 +892,36 @@ RenderingData GenerateVoxelRenderingData(uint _patternIndex, uint3 _voxelPos, ui
 }
 
 
+uint3 CalcSubChunkPos(uint3 _DTid, uint3 _dispatchSize, uint3 _chunkSize) {
+	uint3 result;
+	
+	/// DTidが0~_dispatchSize*numthreads-1の範囲なので
+	float3 normalizedDTid = float3(_DTid) / float3(_dispatchSize);
+	float3 subChunkPosF = float3(_chunkSize) * normalizedDTid;
+	result = uint3(subChunkPosF);
+	
+	return result;
+}
+
+uint3 CalcVoxelPos(uint3 _DTid, uint3 _dispatchSize, float3 _subChunkMin, float3 _subChunkMax) {
+	uint3 result;
+	
+	/// DTidが0~_dispatchSize*numthreads-1の範囲なので
+	float3 normalizedDTid = float3(_DTid) / float3(_dispatchSize * uint3(2, 2, 2));
+
+	float3 voxelPosF = lerp(_subChunkMin, _subChunkMax, normalizedDTid);
+	result = uint3(voxelPosF);
+	
+	return result;
+}
+
 
 /// ---------------------------------------------------
 /// Main
 /// ---------------------------------------------------
 [shader("mesh")]
 [outputtopology("triangle")]
-[numthreads(2, 2, 2)]
+[numthreads(1, 1, 1)]
 void main(
     uint3 DTid : SV_DispatchThreadID,
 	uint gi : SV_GroupIndex,
@@ -931,18 +954,23 @@ void main(
 	uint3 subChunkFactor = asPayload.subChunkSize / uint3(2, 2, 2);
 
 	AABB aabb;
-	aabb.min = asPayload.chunkOrigin + (DTid * subChunkFactor);
+	//aabb.min = asPayload.chunkOrigin + (DTid * subChunkFactor);
+	aabb.min = CalcSubChunkPos(DTid, asPayload.dispatchSize, voxelTerrainInfo.chunkSize) + asPayload.chunkOrigin;
 	aabb.max = aabb.min + asPayload.subChunkSize;
 	
 	if (IsVisible(aabb, CreateFrustumFromMatrix(viewProjection.matVP))) {
+
+		float3 aabbDiff = aabb.max - aabb.min;
 		
 		for (int z = 0; z < 2; z++) {
 			for (int y = 0; y < 2; y++) {
 				for (int x = 0; x < 2; x++) {
-					uint3 voxelPos = uint3(x, y, z) * subChunkFactor + (DTid * subChunkFactor);
-				
+					//uint3 voxelPos = uint3(x, y, z) * subChunkFactor + (DTid * subChunkFactor);
+					float3 voxelPos = CalcVoxelPos(DTid, asPayload.dispatchSize, aabb.min, aabb.max);
+					voxelPos += float3(x, y, z);
+
 					/// ボクセルの色クラスタを取得
-					VoxelColorCluter vcc = GetVoxelColorCluster(voxelPos, asPayload.chunkIndex, subChunkFactor);
+					VoxelColorCluter vcc = GetVoxelColorCluster(uint3(voxelPos), asPayload.chunkIndex, subChunkFactor);
 					
 					if (vcc.colors[1][1][1].a != 0.0f) {
 						continue; // 自身が地ボクセルならスキップ
@@ -961,7 +989,7 @@ void main(
 					
 					/// 描画するボクセルとして登録
 					DrawInstanceInfo dii;
-					dii.voxelPos = voxelPos;
+					dii.voxelPos = uint3(voxelPos);
 					dii.rotation = rotation;
 						
 					dii.patternIndex = patternIndex;
@@ -994,7 +1022,7 @@ void main(
 	/// ---------------------------------------------------
 
 	for (uint i = 0; i < drawVoxelCount; i++) {
-		float3 worldPos = float3(diis[i].voxelPos) + asPayload.chunkOrigin + float3(0.0f, 0.0f, 0.0f);
+		float3 worldPos = float3(diis[i].voxelPos);
 		
 		RenderingData rd = GenerateVoxelRenderingData(diis[i].patternIndex, worldPos, diis[i].rotation, subChunkFactor);
 

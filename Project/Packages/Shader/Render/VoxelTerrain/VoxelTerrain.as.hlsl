@@ -26,7 +26,7 @@ void main(
 	Payload asPayload;
 		
 	/// チャンクの原点を計算
-	asPayload.chunkOrigin = float3(groupId) * voxelTerrainInfo.chunkSize;
+	asPayload.chunkOrigin = float3(groupId) * voxelTerrainInfo.chunkSize + uint3(voxelTerrainInfo.terrainOrigin);
 
 	/// カリング判定、可視ならディスパッチサイズを設定
 	AABB aabb;
@@ -57,20 +57,18 @@ void main(
 
 		} else if (lengthToCamera < 300.0f) {
 			asPayload.lodLevel = 1; // 中詳細度
-			subChunkSizeValue = 8;
+			subChunkSizeValue = 4;
 
 		} else {
 			asPayload.lodLevel = 2; // 低詳細度
-			subChunkSizeValue = 16;
+			subChunkSizeValue = 8;
 		}
-
-
 
 
 		asPayload.chunkIndex = IndexOfMeshGroup(groupId, uint3(voxelTerrainInfo.chunkCountXZ.x, 1, voxelTerrainInfo.chunkCountXZ.y));
 
 		asPayload.subChunkSize = uint3(subChunkSizeValue, subChunkSizeValue, subChunkSizeValue);
-		dispatchSize = voxelTerrainInfo.chunkSize / asPayload.subChunkSize;
+		dispatchSize = voxelTerrainInfo.textureSize / asPayload.subChunkSize;
 	
 		asPayload.dispatchSize = dispatchSize;
 
