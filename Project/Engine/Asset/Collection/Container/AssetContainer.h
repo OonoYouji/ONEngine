@@ -256,7 +256,11 @@ inline const std::unordered_map<std::string, int32_t>& AssetContainer<T>::GetInd
 
 template<typename T>
 inline const Guid& AssetContainer<T>::GetGuid(const std::string& _key) const {
-	return indexToGuidMap_.at(indexMap_.at(_key));
+	if (indexMap_.contains(_key)) {
+		return indexToGuidMap_.at(indexMap_.at(_key));
+	}
+
+	return Guid::kInvalid;
 }
 
 template<typename T>

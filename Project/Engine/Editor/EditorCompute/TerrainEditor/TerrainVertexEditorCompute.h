@@ -24,7 +24,7 @@ class TerrainVertexEditorCompute : public IEditorCompute {
 		int editTextureIndex;
 	};
 
-	enum RootParameter {
+	enum ROOT_PARAM {
 		CBV_TERRAIN_INFO,
 		CBV_INPUT_INFO,
 		UAV_VERTICES,

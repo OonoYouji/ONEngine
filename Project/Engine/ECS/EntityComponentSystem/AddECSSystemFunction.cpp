@@ -29,7 +29,6 @@ void GameECSGroupAddSystemFunction(ECSGroup* _ecs, DxManager* _dxm, AssetCollect
 	_ecs->AddSystem<GrassBufferCreateSystem>(_dxm);
 
 	/// 更新に使うsystem
-	_ecs->AddSystem<CameraUpdateSystem>(_dxm->GetDxDevice());
 	_ecs->AddSystem<SkinMeshUpdateSystem>(_dxm, _assetCollection);
 	_ecs->AddSystem<ScriptUpdateSystem>(_ecs);
 	_ecs->AddSystem<AudioPlaybackSystem>(_assetCollection);
@@ -41,10 +40,13 @@ void GameECSGroupAddSystemFunction(ECSGroup* _ecs, DxManager* _dxm, AssetCollect
 	_ecs->AddSystem<CollisionSystem>();
 	_ecs->AddSystem<TransformUpdateSystem>();
 
+	_ecs->AddSystem<CameraUpdateSystem>(_dxm->GetDxDevice());
+	_ecs->AddSystem<ShadowCasterUpdateSystem>();
+
+
 	/// 描画に使うsystem
 	_ecs->AddSystem<MeshBufferRecreate>(_dxm->GetDxDevice());
 	_ecs->AddSystem<ColliderRenderQueueSystem>();
-	_ecs->AddSystem<ShadowCasterUpdateSystem>();
 }
 
 

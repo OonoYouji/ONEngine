@@ -1,6 +1,7 @@
 #include "CameraUpdateSystem.h"
 
 /// engine
+#include "Engine/Core/Config/EngineConfig.h"
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
@@ -86,6 +87,19 @@ CameraUpdateSystem::CameraUpdateSystem(DxDevice* _dxDevice) : pDxDevice_(_dxDevi
 }
 
 void CameraUpdateSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
+	if (!DebugConfig::isDebugging) {
+		Update(_ecs);
+	}
+
+}
+
+void CameraUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
+	if(DebugConfig::isDebugging) {
+		Update(_ecs);
+	}
+}
+
+void CameraUpdateSystem::Update(ECSGroup* _ecs) {
 
 	/// カメラのComponentを集める
 	ComponentArray<CameraComponent>* cameraArray = _ecs->GetComponentArray<CameraComponent>();
@@ -140,9 +154,5 @@ void CameraUpdateSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
 	/// ecsにmain cameraを設定
 	_ecs->SetMainCamera(pMainCamera_);
 	_ecs->SetMainCamera2D(pMainCamera2D_);
-
-}
-
-void CameraUpdateSystem::RuntimeUpdate(ECSGroup*) {
 
 }

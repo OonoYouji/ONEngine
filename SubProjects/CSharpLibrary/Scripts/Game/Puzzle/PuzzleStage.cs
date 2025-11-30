@@ -127,7 +127,7 @@ public class PuzzleStage : MonoBehavior {
 			if (puzzlePlayer != null) {
 				puzzlePlayer.blockData.address = playerAddress; // プレイヤーのアドレスを設定
 				puzzlePlayer.blockData.blockSpace = blockData_.blockSpace; // プレイヤーの高さを設定
-				
+
 				if (stagePlayer.type == (int)BlockType.Black) {
 					puzzlePlayer.blockData.mapValue = (int)MAPDATA.PLAYER_BLACK;
 				} else {
@@ -220,9 +220,6 @@ public class PuzzleStage : MonoBehavior {
 		UpdatePlayer();
 		UpdateEntityPosition();
 
-		// if (Input.TriggerGamepad(Gamepad.Y)) {
-		// 	Reset();
-		// }
 	}
 
 
@@ -266,8 +263,14 @@ public class PuzzleStage : MonoBehavior {
 			}
 		}
 
+		/// nullチェック
+		if (!activePlayer_) {
+			return;
+		}
+
 		PuzzlePlayer puzzlePlayer = activePlayer_.GetScript<PuzzlePlayer>();
 		if (!puzzlePlayer) {
+			Debug.LogError("PuzzleStage UpdatePlayer: puzzlePlayer is null");
 			return;
 		}
 
@@ -308,7 +311,7 @@ public class PuzzleStage : MonoBehavior {
 		/// 移動方向が範囲外なら false
 		Vector2Int newAddress = _currentAddress + _moveDir;
 		if (newAddress.x < 0 || newAddress.x >= mapData_[0].Count || newAddress.y < 0
-		    || newAddress.y >= mapData_.Count) {
+			|| newAddress.y >= mapData_.Count) {
 			return false;
 		}
 
@@ -408,11 +411,11 @@ public class PuzzleStage : MonoBehavior {
 		for (int i = 0; i < blocks_.Count; i++) {
 			blocks_[i].Destroy();
 		}
-		
+
 		mapData_.Clear();
 		Mapchip mapchipScript = mapchip_.GetScript<Mapchip>();
 		mapData_ = mapchipScript.GetStartMapData();
-		
+
 		BlockDeploy();
 		PlayerDeploy();
 	}

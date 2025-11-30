@@ -69,6 +69,7 @@ private:
 	/// ===================================================
 
 	ConstantBuffer<ViewProjection> viewProjection_;
+	ConstantBuffer<Vector4> cameraPosBuffer_;
 
 	float fovY_;
 	float nearClip_;
@@ -100,6 +101,8 @@ public:
 
 	const ViewProjection& GetViewProjection() const;
 	ConstantBuffer<ViewProjection>& GetViewProjectionBuffer();
+
+	ConstantBuffer<Vector4>& GetCameraPosBuffer();
 
 	const Matrix4x4& GetViewMatrix() const;
 	const Matrix4x4& GetProjectionMatrix() const;

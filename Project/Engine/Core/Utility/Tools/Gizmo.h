@@ -8,6 +8,7 @@
 /// ///////////////////////////////////////////////////
 class Gizmo final {
 	friend class GizmoRenderingPipeline;
+	friend class RenderingFramework;
 public:
 	/// ====================================
 	/// private : sub class 

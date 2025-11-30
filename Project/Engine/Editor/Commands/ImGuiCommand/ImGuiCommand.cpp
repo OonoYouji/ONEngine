@@ -18,7 +18,43 @@ bool ImMathf::DragInt(const std::string& _label, int* _pv, int _step, int _min, 
 	/// 操作を終えた
 	if (ImGui::IsItemDeactivatedAfterEdit()) {
 		int endValue = *_pv;
-		EditCommand::Execute<ImGuiCommand::TCommand<int>>(_pv, startValue, endValue);
+		EditCommand::Execute<ImGuiCommand::ModifyValueCommand<int>>(_pv, startValue, endValue);
+	}
+
+	return edit;
+}
+
+bool ImMathf::DragInt2(const std::string& _label, Vector2Int* _pv, int _step, int _min, int _max) {
+	static Vector2Int startValue{};
+
+	bool edit = ImGui::DragInt2(_label.c_str(), &_pv->x, static_cast<float>(_step), _min, _max);
+	/// 操作を始めた
+	if (ImGui::IsItemActivated()) {
+		startValue = *_pv;
+	}
+
+	/// 操作を終えた
+	if (ImGui::IsItemDeactivatedAfterEdit()) {
+		Vector2Int endValue = *_pv;
+		EditCommand::Execute<ImGuiCommand::ModifyValueCommand<Vector2Int>>(_pv, startValue, endValue);
+	}
+
+	return edit;
+}
+
+bool ImMathf::DragInt3(const std::string& _label, Vector3Int* _pv, int _step, int _min, int _max) {
+	static Vector3Int startValue{};
+
+	bool edit = ImGui::DragInt3(_label.c_str(), &_pv->x, static_cast<float>(_step), _min, _max);
+	/// 操作を始めた
+	if (ImGui::IsItemActivated()) {
+		startValue = *_pv;
+	}
+
+	/// 操作を終えた
+	if (ImGui::IsItemDeactivatedAfterEdit()) {
+		Vector3Int endValue = *_pv;
+		EditCommand::Execute<ImGuiCommand::ModifyValueCommand<Vector3Int>>(_pv, startValue, endValue);
 	}
 
 	return edit;
@@ -36,7 +72,7 @@ bool ImMathf::DragFloat(const std::string& _label, float* _pv, float _step, floa
 	/// 操作を終えた
 	if (ImGui::IsItemDeactivatedAfterEdit()) {
 		float endValue = *_pv;
-		EditCommand::Execute<ImGuiCommand::TCommand<float>>(_pv, startValue, endValue);
+		EditCommand::Execute<ImGuiCommand::ModifyValueCommand<float>>(_pv, startValue, endValue);
 	}
 
 	return edit;
@@ -54,7 +90,7 @@ bool ImMathf::DragFloat2(const std::string& _label, Vector2* _pv, float _step, f
 	/// 操作を終えた
 	if (ImGui::IsItemDeactivatedAfterEdit()) {
 		Vector2 endValue = *_pv;
-		EditCommand::Execute<ImGuiCommand::TCommand<Vector2>>(_pv, startValue, endValue);
+		EditCommand::Execute<ImGuiCommand::ModifyValueCommand<Vector2>>(_pv, startValue, endValue);
 	}
 
 	return edit;
@@ -74,7 +110,7 @@ bool ImMathf::DragFloat3(const std::string& _label, Vector3* _pv, float _step, f
 	/// 操作を終えた
 	if (ImGui::IsItemDeactivatedAfterEdit()) {
 		Vector3 endValue = *_pv;
-		EditCommand::Execute<ImGuiCommand::TCommand<Vector3>>(_pv, startValue, endValue);
+		EditCommand::Execute<ImGuiCommand::ModifyValueCommand<Vector3>>(_pv, startValue, endValue);
 	}
 
 	return edit;
@@ -93,7 +129,7 @@ bool ImMathf::DragFloat4(const std::string& _label, Vector4* _pv, float _step, f
 	/// 操作を終えた
 	if (ImGui::IsItemDeactivatedAfterEdit()) {
 		Vector4 endValue = *_pv;
-		EditCommand::Execute<ImGuiCommand::TCommand<Vector4>>(_pv, startValue, endValue);
+		EditCommand::Execute<ImGuiCommand::ModifyValueCommand<Vector4>>(_pv, startValue, endValue);
 	}
 
 	return edit;
@@ -117,9 +153,24 @@ bool ImMathf::DragQuaternion(const std::string& _label, Quaternion* _pq, float _
 	/// 操作を終えた
 	if (ImGui::IsItemDeactivatedAfterEdit()) {
 		Quaternion endValue = *_pq;
-		EditCommand::Execute<ImGuiCommand::TCommand<Quaternion>>(_pq, startValue, endValue);
+		EditCommand::Execute<ImGuiCommand::ModifyValueCommand<Quaternion>>(_pq, startValue, endValue);
 	}
 
 	return false;
+}
+
+bool ImMathf::Checkbox(const std::string& _label, bool* _pv) {
+
+	static bool startValue{};
+
+	startValue = *_pv;
+	bool edit = ImGui::Checkbox(_label.c_str(), _pv);
+	if (edit) {
+		bool endValue = *_pv;
+		EditCommand::Execute<ImGuiCommand::ModifyValueCommand<bool>>(_pv, startValue, endValue);
+	}
+
+
+	return edit;
 }
 

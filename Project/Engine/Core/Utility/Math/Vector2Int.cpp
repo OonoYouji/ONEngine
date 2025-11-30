@@ -15,3 +15,21 @@ Vector2Int Vector2Int::kUp = Vector2Int(0, 1);    ///< (0, 1)
 Vector2Int Vector2Int::kDown = Vector2Int(0, -1); ///< (0, -1)
 Vector2Int Vector2Int::kLeft = Vector2Int(-1, 0); ///< (-1, 0)
 Vector2Int Vector2Int::kRight = Vector2Int(1, 0); ///< (1, 0)
+
+Vector2Int& Vector2Int::operator=(const Vector2Int& _other) {
+	this->x = _other.x;
+	this->y = _other.y;
+	return *this;
+}
+
+void from_json(const nlohmann::json& _j, Vector2Int& _v) {
+	_v.x = _j.value("x", 0);
+	_v.y = _j.value("y", 0);
+}
+
+void to_json(nlohmann::json& _j, const Vector2Int& _v) {
+	_j = {
+		{ "x", _v.x },
+		{ "y", _v.y },
+	};
+}

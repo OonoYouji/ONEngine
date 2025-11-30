@@ -20,7 +20,7 @@ template <typename T>
 concept IsAssetExist = std::is_base_of_v<IAsset, T>;
 
 
-static const uint32_t MAX_TEXTURE_COUNT   = 256; ///< 最大テクスチャ数
+static const uint32_t MAX_TEXTURE_COUNT   = 2048; ///< 最大テクスチャ数
 static const uint32_t MAX_MODEL_COUNT     = 128; ///< 最大モデル数
 static const uint32_t MAX_AUDIOCLIP_COUNT = 128; ///< 最大オーディオクリップ数
 static const uint32_t MAX_MATERIAL_COUNT  = 128; ///< 最大マテリアル数
@@ -145,4 +145,3 @@ public:
 	AudioClip* GetAudioClip(const std::string& _filepath);
 
 };
-

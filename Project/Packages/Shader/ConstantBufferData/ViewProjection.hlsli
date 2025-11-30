@@ -9,12 +9,12 @@ struct Camera {
 };
 
 struct Plane {
-	float4 plane; 
+	float4 plane;
 	// xyz = normal, w = -distance
 };
 
 struct Frustum {
-	Plane planes[6]; 
+	Plane planes[6];
 	/// 0: Left
 	/// 1: Right
 	/// 2: Bottom
@@ -28,50 +28,67 @@ struct AABB {
 	float3 max;
 };
 
-//Frustum CreateFrustumFromMatrix(float4x4 matVP) {
-//	Frustum f;
-
-//	f.planes[0].plane = matVP[3] + matVP[0]; // Left
-//	f.planes[1].plane = matVP[3] - matVP[0]; // Right
-//	f.planes[2].plane = matVP[3] + matVP[1]; // Bottom
-//	f.planes[3].plane = matVP[3] - matVP[1]; // Top
-//	f.planes[4].plane = matVP[2];            // Near
-//	f.planes[5].plane = matVP[3] - matVP[2]; // Far
-
-//	for (int i = 0; i < 6; ++i) {
-//		float3 n = f.planes[i].plane.xyz;
-//		float len = length(n);
-//		f.planes[i].plane /= len;
-//	}
-
-//	return f;
-//}
 // LH座標系、World空間でのAABBと直接比較可能
 Frustum CreateFrustumFromMatrix(float4x4 matVP) {
-	Frustum f;
+	Frustum frustum;
 
     // Left plane
-	f.planes[0].plane = matVP[3] + matVP[0];
-    // Right plane
-	f.planes[1].plane = matVP[3] - matVP[0];
-    // Bottom plane
-	f.planes[2].plane = matVP[3] + matVP[1];
-    // Top plane
-	f.planes[3].plane = matVP[3] - matVP[1];
-    // Near plane
-	f.planes[4].plane = matVP[3] + matVP[2];
-    // Far plane
-	f.planes[5].plane = matVP[3] - matVP[2];
+	frustum.planes[0].plane = float4(
+        matVP[0][3] + matVP[0][0],
+        matVP[1][3] + matVP[1][0],
+        matVP[2][3] + matVP[2][0],
+        matVP[3][3] + matVP[3][0]
+    );
 
-    // 法線と距離を正規化
+    // Right plane
+	frustum.planes[1].plane = float4(
+        matVP[0][3] - matVP[0][0],
+        matVP[1][3] - matVP[1][0],
+        matVP[2][3] - matVP[2][0],
+        matVP[3][3] - matVP[3][0]
+    );
+
+    // Bottom plane
+	frustum.planes[2].plane = float4(
+        matVP[0][3] + matVP[0][1],
+        matVP[1][3] + matVP[1][1],
+        matVP[2][3] + matVP[2][1],
+        matVP[3][3] + matVP[3][1]
+    );
+
+    // Top plane
+	frustum.planes[3].plane = float4(
+        matVP[0][3] - matVP[0][1],
+        matVP[1][3] - matVP[1][1],
+        matVP[2][3] - matVP[2][1],
+        matVP[3][3] - matVP[3][1]
+    );
+
+    // Near plane
+	frustum.planes[4].plane = float4(
+        matVP[0][2],
+        matVP[1][2],
+        matVP[2][2],
+        matVP[3][2]
+    );
+
+    // Far plane
+	frustum.planes[5].plane = float4(
+        matVP[0][3] - matVP[0][2],
+        matVP[1][3] - matVP[1][2],
+        matVP[2][3] - matVP[2][2],
+        matVP[3][3] - matVP[3][2]
+    );
+
+    // Normalize the planes
     [unroll]
 	for (int i = 0; i < 6; ++i) {
-		float3 n = f.planes[i].plane.xyz;
-		float len = length(n);
-		f.planes[i].plane /= len; // xyz と w を同じ比率で割る
+		float3 normal = frustum.planes[i].plane.xyz;
+		float len = length(normal);
+		frustum.planes[i].plane /= len; // Normalize xyz and w
 	}
 
-	return f;
+	return frustum;
 }
 
 bool IsVisible(AABB box, Frustum frustum) {
@@ -97,8 +114,9 @@ bool IsVisible(AABB box, Frustum frustum) {
 				break;
 			}
 		}
-		if (allOutside)
+		if (allOutside) {
 			return false;
+		}
 	}
 	return true;
 }

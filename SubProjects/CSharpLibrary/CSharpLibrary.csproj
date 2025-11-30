@@ -97,6 +97,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Scripts\Game\Puzzle\PuzzleBlockData.cs" />
+    <Compile Include="Scripts\Game\Puzzle\PuzzleCameraController.cs" />
     <Compile Include="Scripts\Game\Puzzle\PuzzleClearChecker.cs">
       <SubType>Component</SubType>
     </Compile>

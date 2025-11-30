@@ -46,6 +46,15 @@ public:
 	/// @param _dxgiFormat DXGI_FORMAT
 	void CreateUAVTexture(UINT _width, UINT _height, class DxDevice* _dxDevice, class DxSRVHeap* _dxSRVHeap, DXGI_FORMAT _dxgiFormat = DXGI_FORMAT_R32G32B32A32_FLOAT);
 
+	/// @brief UAVTexture3Dとして作成する
+	/// @param _width テクスチャの幅
+	/// @param _height テクスチャの高さ
+	/// @param _depth テクスチャの奥行き
+	/// @param _dxDevice DxDeviceへのポインタ
+	/// @param _dxSRVHeap DxSRVHeapへのポインタ
+	/// @param _dxgiFormat DXGI_FORMAT
+	void CreateUAVTexture3D(UINT _width, UINT _height, UINT _depth, class DxDevice* _dxDevice, class DxCommand* _dxCommand, class DxSRVHeap* _dxSRVHeap, DXGI_FORMAT _dxgiFormat = DXGI_FORMAT_R32G32B32A32_FLOAT);
+
 	/// @brief テクスチャをファイルに出力する
 	/// @param _filename ファイル名(パス、拡張子込み)
 	/// @param _dxDevice DxDeviceへのポインタ
@@ -66,6 +75,11 @@ private:
 	std::optional<Handle> uavHandle_;
 
 	Vector2 textureSize_;
+	UINT depth_; // 3Dテクスチャ用
+
+	/// テクスチャのフォーマット、UAVを作成する際に必要
+	DXGI_FORMAT srvFormat_;
+	DXGI_FORMAT uavFormat_;
 
 public:
 	/// ===================================================
@@ -122,3 +136,6 @@ public:
 /// @param _height テクスチャの高さ
 /// @param _overwrite 上書き保存するかどうか
 void SaveTextureToPNG(const std::wstring& _filename, size_t _width, size_t _height, bool _overwrite);
+
+
+void SaveTextureToDDS(const std::wstring& _filename, size_t _width, size_t _height, size_t _depth, bool _overwrite);

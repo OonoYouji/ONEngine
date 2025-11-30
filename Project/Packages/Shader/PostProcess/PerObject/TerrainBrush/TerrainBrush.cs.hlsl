@@ -5,6 +5,10 @@ struct Brush {
 };
 
 
+static const float2 kTextureSize = float2(1920.0f, 1080.0f);
+static const float2 kScreenSize  = float2(1280.0f, 720.0f);
+static const float4 kBrushColor  = float4(0, 0, 0, 1);
+
 /// constant buffer
 ConstantBuffer<Brush> brush : register(b0);
 
@@ -19,7 +23,7 @@ SamplerState textureSampler   : register(s0);
 void main(uint3 DTid : SV_DispatchThreadID) {
     
     /// 必要なデータのサンプリング
-    float2 texCoord = float2(DTid.xy + 0.5f) / float2(1920.0f, 1080.0f);
+	float2 texCoord = float2(DTid.xy + 0.5f) / kTextureSize;
     float4 flags    = flagsTex.Sample(textureSampler, texCoord);
     float4 color    = colorTex.Sample(textureSampler, texCoord);
 
@@ -31,12 +35,11 @@ void main(uint3 DTid : SV_DispatchThreadID) {
 
     float4 position = positionTex.Sample(textureSampler, texCoord);
     /// マウス位置のサンプリング
-    float4 mousePos = positionTex.Sample(textureSampler, brush.position / float2(1280.0f, 720.0f));
+	float4 mousePos = positionTex.Sample(textureSampler, brush.position / kScreenSize);
     /// ブラシの影響範囲内かどうか
     float  dist     = distance(position.xyz, mousePos.xyz);
     if (dist < brush.radius) {
-        outputTex[DTid.xy] = color * float4(1.0f, 0.6f, 0.6f, 1.0f); /// 赤色で塗りつぶす
-        // outputTex[DTid.xy] = float4(1,0,0,1); 
+		outputTex[DTid.xy] = color * kBrushColor;
     } else {
         outputTex[DTid.xy] = color; /// 元の色をそのまま出力
     }
