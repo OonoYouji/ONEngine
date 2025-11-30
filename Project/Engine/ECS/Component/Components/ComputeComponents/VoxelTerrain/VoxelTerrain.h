@@ -75,8 +75,10 @@ namespace GPUData {
 	struct VoxelTerrainInfo {
 		Vector3 terrainOrigin;
 		float pad0;
-		Vector3Int chunkSize;
+		Vector3Int textureSize;
 		float pad1;
+		Vector3Int chunkSize;
+		float pad2;
 		Vector2Int chunkCountXZ; /// XZ平面でのチャンク数
 		uint32_t maxChunkCount;
 	};
@@ -197,6 +199,7 @@ private:
 	ConstantBuffer<GPUMaterial> cBufferMaterial_;
 
 	Vector3Int chunkSize_;
+	Vector3Int textureSize_;
 	Vector2Int chunkCountXZ_;
 	UINT maxChunkCount_;
 

@@ -19,24 +19,25 @@ void COMP_DEBUG::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain) {
 
 	/// チャンクのデバッグ表示
 	ImMathf::DragInt2("Chunk Count XZ", &_voxelTerrain->chunkCountXZ_, 1, 1, 32);
-	//ImMathf::DragInt3("Chunk Size", &_voxelTerrain->chunkSize_, 1, 1, 1024);
+	ImMathf::DragInt3("Chunk Size", &_voxelTerrain->chunkSize_, 1, 1, 1024);
+	ImMathf::DragInt3("Texture Size", &_voxelTerrain->textureSize_, 1, 1, 256);
 
 	ImMathf::MaterialEdit("Material", &_voxelTerrain->material_, nullptr, false);
 
 
 	/// 仮
-	//if (ImGui::Button("Create Texture3D (all chunks)")) {
-	//	for (size_t i = 0; i < _voxelTerrain->maxChunkCount_; i++) {
-	//		const std::wstring filename = L"./Packages/Textures/Terrain/Chunk/" + std::to_wstring(i) + L".dds";
-	//		SaveTextureToDDS(
-	//			filename,
-	//			_voxelTerrain->chunkSize_.x,
-	//			_voxelTerrain->chunkSize_.y,
-	//			_voxelTerrain->chunkSize_.z,
-	//			true
-	//		);
-	//	}
-	//}
+	if (ImGui::Button("Create Texture3D (all chunks)")) {
+		for (size_t i = 0; i < _voxelTerrain->maxChunkCount_; i++) {
+			const std::wstring filename = L"./Packages/Textures/Terrain/Chunk/" + std::to_wstring(i) + L".dds";
+			SaveTextureToDDS(
+				filename,
+				_voxelTerrain->textureSize_.x,
+				_voxelTerrain->textureSize_.y,
+				_voxelTerrain->textureSize_.z,
+				true
+			);
+		}
+	}
 
 
 	/// ----- Gizmoでチャンクの枠線を描画 ----- ///
@@ -76,6 +77,7 @@ void from_json(const nlohmann::json& _j, VoxelTerrain& _voxelTerrain) {
 	_voxelTerrain.maxChunkCount_ = _j.value("maxChunkCount", 400);
 	_voxelTerrain.chunkCountXZ_ = _j.value("chunkCountXZ", Vector2Int{ 2, 2 });
 	_voxelTerrain.chunkSize_ = _j.value("chunkSize", Vector3Int{ 16, 128, 16 });
+	_voxelTerrain.textureSize_ = _j.value("textureSize", Vector3Int{ 32, 32, 32 });
 
 	_voxelTerrain.material_ = _j.value("material", Material{});
 }
@@ -87,6 +89,7 @@ void to_json(nlohmann::json& _j, const VoxelTerrain& _voxelTerrain) {
 		{ "enable", _voxelTerrain.enable },
 		{ "maxChunkCount", _voxelTerrain.maxChunkCount_ },
 		{ "chunkSize", _voxelTerrain.chunkSize_ },
+		{ "textureSize", _voxelTerrain.textureSize_ },
 		{ "chunkCountXZ", _voxelTerrain.chunkCountXZ_ },
 		{ "material", _voxelTerrain.material_ },
 	};
@@ -146,7 +149,7 @@ void VoxelTerrain::SetupGraphicBuffers(ID3D12GraphicsCommandList* _cmdList, cons
 
 	/// VoxelTerrainInfoの設定
 	Vector3 terrainOrigin = GetOwner()->GetTransform()->GetPosition();
-	cBufferTerrainInfo_.SetMappedData(GPUData::VoxelTerrainInfo{ terrainOrigin, 0, chunkSize_, 0.0f, chunkCountXZ_, maxChunkCount_ });
+	cBufferTerrainInfo_.SetMappedData(GPUData::VoxelTerrainInfo{ terrainOrigin, 0, textureSize_, 0, chunkSize_, 0, chunkCountXZ_, maxChunkCount_ });
 	cBufferTerrainInfo_.BindForGraphicsCommandList(_cmdList, _rootParamIndices[0]);
 
 	/// Materialの設定
