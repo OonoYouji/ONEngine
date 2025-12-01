@@ -881,11 +881,14 @@ RenderingData GenerateVoxelRenderingData(uint _patternIndex, uint3 _voxelPos, ui
     [unroll]
 	for (int i = 0; i < 8; i++) {
 		float3 wp = rd.verts[i].worldPosition.xyz + float3(_voxelPos);
+
+		/// heightで色を変化させる
+		rd.verts[i].color.rgb = lerp(0.5f, 1, rd.verts[i].worldPosition.y / voxelTerrainInfo.chunkSize.y);
+		rd.verts[i].color.a = 1.0f;
 		rd.verts[i].worldPosition.xyz = wp;
 
-		rd.verts[i].color = kPatternColor[_patternIndex];
+		//rd.verts[i].color = kPatternColor[_patternIndex];
 		rd.verts[i].position = mul(rd.verts[i].worldPosition, viewProjection.matVP);
-
 	}
 
 	return rd;
@@ -921,7 +924,7 @@ uint3 CalcVoxelPos(uint3 _DTid, uint3 _dispatchSize, float3 _subChunkMin, float3
 /// ---------------------------------------------------
 [shader("mesh")]
 [outputtopology("triangle")]
-[numthreads(1, 1, 1)]
+[numthreads(2, 2, 2)]
 void main(
     uint3 DTid : SV_DispatchThreadID,
 	uint gi : SV_GroupIndex,
@@ -954,8 +957,8 @@ void main(
 	uint3 subChunkFactor = asPayload.subChunkSize / uint3(2, 2, 2);
 
 	AABB aabb;
-	//aabb.min = asPayload.chunkOrigin + (DTid * subChunkFactor);
-	aabb.min = CalcSubChunkPos(DTid, asPayload.dispatchSize, voxelTerrainInfo.chunkSize) + asPayload.chunkOrigin;
+	aabb.min = asPayload.chunkOrigin + (DTid * subChunkFactor);
+	//aabb.min = CalcSubChunkPos(DTid, asPayload.dispatchSize, voxelTerrainInfo.chunkSize) + asPayload.chunkOrigin;
 	aabb.max = aabb.min + asPayload.subChunkSize;
 	
 	if (IsVisible(aabb, CreateFrustumFromMatrix(viewProjection.matVP))) {
@@ -965,9 +968,9 @@ void main(
 		for (int z = 0; z < 2; z++) {
 			for (int y = 0; y < 2; y++) {
 				for (int x = 0; x < 2; x++) {
-					//uint3 voxelPos = uint3(x, y, z) * subChunkFactor + (DTid * subChunkFactor);
-					float3 voxelPos = CalcVoxelPos(DTid, asPayload.dispatchSize, aabb.min, aabb.max);
-					voxelPos += float3(x, y, z);
+					uint3 voxelPos = uint3(x, y, z) * subChunkFactor + (DTid * subChunkFactor);
+					//float3 voxelPos = CalcVoxelPos(DTid, asPayload.dispatchSize, aabb.min, aabb.max);
+					//voxelPos += float3(x, y, z);
 
 					/// ボクセルの色クラスタを取得
 					VoxelColorCluter vcc = GetVoxelColorCluster(uint3(voxelPos), asPayload.chunkIndex, subChunkFactor);
@@ -1022,7 +1025,7 @@ void main(
 	/// ---------------------------------------------------
 
 	for (uint i = 0; i < drawVoxelCount; i++) {
-		float3 worldPos = float3(diis[i].voxelPos);
+		float3 worldPos = float3(diis[i].voxelPos) + asPayload.chunkOrigin;
 		
 		RenderingData rd = GenerateVoxelRenderingData(diis[i].patternIndex, worldPos, diis[i].rotation, subChunkFactor);
 
