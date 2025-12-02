@@ -18,7 +18,7 @@ public class PuzzleStage : MonoBehavior {
 	private Entity mapchip_;
 	[SerializeField] private string stageFilepath_ = "stage1.json";
 
-	PuzzleCommandStacker puzzleCommandStacker_;
+	//PuzzleCommandStacker puzzleCommandStacker_;
 
 	int initCallCount_ = 0; // 初期化の呼び出し回数
 
@@ -215,14 +215,15 @@ public class PuzzleStage : MonoBehavior {
 			blockParent_.transform.position = blockPosOffset_;
 		}
 
-		/* パズルを行っているときの更新 */
-		UpdatePlayer();
-		UpdateEntityPosition();
-
 		/// パズルのリセット処理
 		if (Input.TriggerGamepad(Gamepad.B)) {
 			Reset();
 		}
+
+		/* パズルを行っているときの更新 */
+		UpdatePlayer();
+		UpdateEntityPosition();
+	
 
 	}
 

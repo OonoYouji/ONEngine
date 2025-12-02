@@ -16,7 +16,7 @@ public class Block : MonoBehavior {
 	private float clearAnimationTime_;
 	private int clearEffectMode_;
 	private bool isEndClearAnimation_;
-	[SerializeField] private float sinValue_;
+	//[SerializeField] private float sinValue_;
 
 	private enum Mode : int {
 		Up, Down
