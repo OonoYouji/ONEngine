@@ -116,7 +116,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>call "$(ProjectDir)RenameDll.bat"
-call "$(ProjectDir)KeepLatest.bat"</PostBuildEvent>
+    <PostBuildEvent>call "$(SolutionDir)RenameDll.bat"
+call "$(SolutionDir)KeepLatest.bat"</PostBuildEvent>
   </PropertyGroup>
 </Project>

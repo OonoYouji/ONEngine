@@ -131,7 +131,7 @@ void SpriteRenderingPipeline::Draw(class ECSGroup* _ecsGroup, CameraComponent* _
 	/// bufferにデータをセット
 	size_t transformIndex = 0;
 	for (auto& sr : spriteRendererArray->GetUsedComponents()) {
-		if (!sr->enable) {
+		if (!CheckComponentEnable(sr)) {
 			continue;
 		}
 

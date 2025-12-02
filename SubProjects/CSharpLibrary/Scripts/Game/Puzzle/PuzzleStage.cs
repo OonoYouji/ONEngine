@@ -16,7 +16,7 @@ public class PuzzleStage : MonoBehavior {
 	private Vector3 blockPosOffset_; // ブロックの位置オフセット
 	private Entity activePlayer_; // 
 	private Entity mapchip_;
-	[SerializeField] private string stageFilepath_ = "stage18.json";
+	[SerializeField] private string stageFilepath_ = "stage1.json";
 
 	PuzzleCommandStacker puzzleCommandStacker_;
 
@@ -32,15 +32,14 @@ public class PuzzleStage : MonoBehavior {
 		Debug.Log("====================================================================");
 		Debug.Log("PuzzleStage Initialize called. Call count: " + initCallCount_);
 
-		puzzleCommandStacker_ = new PuzzleCommandStacker();
+		//puzzleCommandStacker_ = new PuzzleCommandStacker();
 
 		mapchip_ = ecsGroup.CreateEntity("Mapchip");
 		if (mapchip_ != null) {
 			mapchip_.parent = entity;
 			Mapchip mapchipScript = mapchip_.GetScript<Mapchip>();
 			if (mapchipScript != null) {
-				//mapchipScript.LoadMap("./Assets/Game/StageData/", stageFilepath_);
-				mapchipScript.LoadMap("./Assets/Game/StageData/", "stage18.json");
+				mapchipScript.LoadMap("./Assets/Game/StageData/", stageFilepath_);
 			}
 
 			mapData_ = mapchipScript.GetStartMapData();
@@ -220,11 +219,27 @@ public class PuzzleStage : MonoBehavior {
 		UpdatePlayer();
 		UpdateEntityPosition();
 
+		/// パズルのリセット処理
+		if (Input.TriggerGamepad(Gamepad.B)) {
+			Reset();
+		}
+
 	}
 
 
 	private void UpdatePlayer() {
 		/* ----- プレイヤーの更新 ----- */
+
+		/* ----- プレイヤーの状態で色を変える ----- */
+
+		for (int i = 0; i < players_.Count; ++i) {
+			Entity player = players_[i];
+			PuzzlePlayer pp = player.GetScript<PuzzlePlayer>();
+			if (pp) {
+				pp.isActive = player == activePlayer_;
+			}
+		}
+
 
 		if (activePlayer_ == null) {
 			return;
@@ -232,11 +247,14 @@ public class PuzzleStage : MonoBehavior {
 
 		/* ----- プレイヤーの移動を行う ----- */
 
-		PuzzlePlayer player = activePlayer_.GetScript<PuzzlePlayer>();
-		if (player) {
-			if (player.blockData.type == (int)BlockType.Black) {
-				moveDir_ = Vector2Int.zero;
-			}
+		PuzzlePlayer puzzlePlayer = activePlayer_.GetScript<PuzzlePlayer>();
+		if (!puzzlePlayer) {
+			Debug.LogError("PuzzleStage UpdatePlayer: puzzlePlayer is null");
+			return;
+		}
+
+		if (puzzlePlayer.blockData.type == (int)BlockType.Black) {
+			moveDir_ = Vector2Int.zero;
 		}
 
 		if (moveDir_ == Vector2Int.zero) {
@@ -261,17 +279,6 @@ public class PuzzleStage : MonoBehavior {
 			if (Input.TriggerGamepad(Gamepad.DPadRight)) {
 				moveDir_ = Vector2Int.right;
 			}
-		}
-
-		/// nullチェック
-		if (!activePlayer_) {
-			return;
-		}
-
-		PuzzlePlayer puzzlePlayer = activePlayer_.GetScript<PuzzlePlayer>();
-		if (!puzzlePlayer) {
-			Debug.LogError("PuzzleStage UpdatePlayer: puzzlePlayer is null");
-			return;
 		}
 
 
@@ -407,10 +414,12 @@ public class PuzzleStage : MonoBehavior {
 		for (int i = 0; i < players_.Count; ++i) {
 			players_[i].Destroy();
 		}
+		players_.Clear();
 
 		for (int i = 0; i < blocks_.Count; i++) {
 			blocks_[i].Destroy();
 		}
+		blocks_.Clear();
 
 		mapData_.Clear();
 		Mapchip mapchipScript = mapchip_.GetScript<Mapchip>();

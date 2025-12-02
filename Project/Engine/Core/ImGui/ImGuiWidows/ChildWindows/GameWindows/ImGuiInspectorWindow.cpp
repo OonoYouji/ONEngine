@@ -14,7 +14,7 @@
 #include "Engine/Editor/EditorManager.h"
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentEditCommands.h"
 #include "Engine/Editor/Commands/WorldEditorCommands/WorldEditorCommands.h"
-
+#include "Engine/Editor/Commands/ImGuiCommand/ImGuiCommand.h"
 
 /// compute
 #include "Engine/ECS/Component/Components/ComputeComponents/Light/Light.h"
@@ -77,7 +77,7 @@ ImGuiInspectorWindow::ImGuiInspectorWindow(const std::string& _windowName, Entit
 	RegisterComponent<BoxCollider>([&](IComponent* _comp) { COMP_DEBUG::BoxColliderDebug(static_cast<BoxCollider*>(_comp)); });
 
 
-	
+
 	/// ---------------------------------------------------
 	/// 関数を登録(SelectionTypeの順番に)
 	/// ---------------------------------------------------
@@ -122,7 +122,7 @@ void ImGuiInspectorWindow::EntityInspector() {
 	}
 
 	GameEntity* selectedEntity = nullptr;
-	for(auto& group : pEcs_->GetECSGroups()) {
+	for (auto& group : pEcs_->GetECSGroups()) {
 		selectedEntity = group.second->GetEntityFromGuid(selectionGuid);
 		if (selectedEntity) {
 			break;
@@ -163,6 +163,10 @@ void ImGuiInspectorWindow::EntityInspector() {
 		ImGui::EndMenuBar();
 	}
 
+	/// ----------------------------
+	/// entityの基本情報表示
+	/// ----------------------------
+
 	if (!selectedEntity->GetPrefabName().empty()) {
 		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.75f, 0, 0, 1));
 		ImGuiInputTextReadOnly("entity prefab name", selectedEntity->GetPrefabName());
@@ -171,6 +175,7 @@ void ImGuiInspectorWindow::EntityInspector() {
 
 	ImGuiInputTextReadOnly("entity name", selectedEntity->GetName());
 	ImGuiInputTextReadOnly("entity id", "Entity ID: " + std::to_string(selectedEntity->GetId()));
+	ImMathf::Checkbox("entity active", &selectedEntity->active);
 
 	ImGui::Separator();
 	/// ----------------------------

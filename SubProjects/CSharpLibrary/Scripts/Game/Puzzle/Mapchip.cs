@@ -1,9 +1,10 @@
-using System;
-using System.Runtime.CompilerServices;
-using System.Collections.Generic;
-using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Runtime.CompilerServices;
 
 public enum MAPDATA : int {
 	BLOCK_WHTIE = 10,
@@ -83,7 +84,10 @@ public class Mapchip : MonoBehavior {
 	}
 
 	public List<List<int>> GetStartMapData() {
-		return new List<List<int>>(root_.map.tiles);
+		//return new List<List<int>>(root_.map.tiles);
+		return root_.map.tiles
+			.Select(inner => new List<int>(inner))
+			.ToList();
 	}
 
 	public Stage.Player GetPlayer() {

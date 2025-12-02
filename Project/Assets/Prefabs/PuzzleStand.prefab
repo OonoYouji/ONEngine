@@ -1,4 +1,98 @@
 {
+    "children": [
+        {
+            "children": [
+                {
+                    "components": [
+                        {
+                            "enable": 1,
+                            "position": {
+                                "x": 0.0,
+                                "y": 0.0,
+                                "z": 0.0
+                            },
+                            "rotate": {
+                                "w": 1.0,
+                                "x": 0.0,
+                                "y": 0.0,
+                                "z": 0.0
+                            },
+                            "scale": {
+                                "x": 32.0,
+                                "y": 32.0,
+                                "z": 1.0
+                            },
+                            "type": "Transform"
+                        },
+                        {
+                            "type": "Variables"
+                        },
+                        {
+                            "enable": 1,
+                            "material": {
+                                "baseColor": {
+                                    "w": 1.0,
+                                    "x": 1.0,
+                                    "y": 1.0,
+                                    "z": 1.0
+                                },
+                                "baseTextureGuid": {
+                                    "guid": "1e74e8929d2675b2290d02fa5788f1cc"
+                                },
+                                "guid": {
+                                    "guid": "00000000000000000000000000000000"
+                                },
+                                "normalTextureGuid": {
+                                    "guid": "00000000000000000000000000000000"
+                                },
+                                "postEffectFlags": 0
+                            },
+                            "type": "SpriteRenderer"
+                        }
+                    ],
+                    "guid": {
+                        "guid": "3f48a59bc5b965ff2c8f96e3e3ffe54f"
+                    },
+                    "id": 4,
+                    "name": "MoveUI",
+                    "parent": 3,
+                    "prefabName": ""
+                }
+            ],
+            "components": [
+                {
+                    "enable": 1,
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "rotate": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    },
+                    "type": "Transform"
+                },
+                {
+                    "type": "Variables"
+                }
+            ],
+            "guid": {
+                "guid": "9af40bba63e49b5832db491417d5373c"
+            },
+            "id": 3,
+            "name": "PuzzleUI",
+            "parent": 2,
+            "prefabName": ""
+        }
+    ],
     "components": [
         {
             "enable": 1,
@@ -80,7 +174,7 @@
         }
     ],
     "guid": {
-        "guid": "fdac1900ed65d2a922335ee235c1a94d"
+        "guid": "5e1995c566d132148d1762cc9361d5ed"
     },
     "id": 2,
     "name": "PuzzleStand",

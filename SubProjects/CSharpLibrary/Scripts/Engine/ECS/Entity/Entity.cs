@@ -90,6 +90,15 @@ public class Entity {
 		}
 	}
 
+	public bool enable {
+		get {
+			return InternalGetEnable(entityId_, ecsGroupName_);
+		}
+		set {
+			InternalSetEnable(entityId_, value, ecsGroupName_);
+		}
+	}
+
 
 	/// =========================================
 	/// methods
@@ -287,4 +296,11 @@ public class Entity {
 
 	[MethodImpl(MethodImplOptions.InternalCall)]
 	static extern bool InternalGetScript(int _entityId, string _scriptName, string _groupName);
+
+	[MethodImpl(MethodImplOptions.InternalCall)]
+	static extern bool InternalGetEnable(int _entityId, string _groupName);
+
+	[MethodImpl(MethodImplOptions.InternalCall)]
+	static extern void InternalSetEnable(int _entityId, bool _enable, string _groupName);
+
 }

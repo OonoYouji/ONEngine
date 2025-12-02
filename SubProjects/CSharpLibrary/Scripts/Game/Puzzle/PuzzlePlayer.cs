@@ -52,6 +52,10 @@ public class PuzzlePlayer : MonoBehavior {
 				color = new Vector4(value, value, value, 1);
 			}
 
+			/// アクティブであるなら赤色にする
+			if (isActive) {
+				color = Vector4.Lerp(color, Vector4.red, 0.5f);
+			}
 			mr.color = color;
 		}
 	}
