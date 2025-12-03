@@ -82,7 +82,12 @@ void VoxelTerrainEditorComputePipeline::Execute(EntityComponentSystem* _ecs, DxC
 
 	if (!voxelTerrain->CheckBufferCreatedForEditor()) {
 		voxelTerrain->CreateEditorBuffers(pDxManager_->GetDxDevice());
-		//voxelTerrain->CreateChunkTextureUAV(pDxManager_->GetDxDevice(), _dxCommand, pDxManager_->GetDxSRVHeap(), _assetCollection);
+		voxelTerrain->CreateChunkTextureUAV(pDxManager_->GetDxDevice(), _dxCommand, pDxManager_->GetDxSRVHeap(), _assetCollection);
+		//voxelTerrain->TransitionTextureStates(
+		//	_dxCommand, _assetCollection,
+		//	D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+		//	D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
+		//);
 	}
 
 
@@ -110,35 +115,36 @@ void VoxelTerrainEditorComputePipeline::Execute(EntityComponentSystem* _ecs, DxC
 	);
 
 
-	//CameraComponent* cameraComp = _ecs->GetCurrentGroup()->GetMainCamera();
-	///// cameraBufferが生成済みでないなら終了
-	//if (!cameraComp->IsMakeViewProjection()) {
-	//	Console::LogWarning("VoxelTerrainEditorComputePipeline::Execute: Camera viewProjection buffer is not created");
-	//	return;
-	//}
+	CameraComponent* cameraComp = _ecs->GetCurrentGroup()->GetMainCamera();
+	/// cameraBufferが生成済みでないなら終了
+	if (!cameraComp->IsMakeViewProjection()) {
+		Console::LogWarning("VoxelTerrainEditorComputePipeline::Execute: Camera viewProjection buffer is not created");
+		return;
+	}
 
-	//cameraComp->GetViewProjectionBuffer().BindForComputeCommandList(cmdList, CBV_VIEW_PROJECTION);
-	//cameraComp->GetCameraPosBuffer().BindForComputeCommandList(cmdList, CBV_CAMERA);
+	cameraComp->GetViewProjectionBuffer().BindForComputeCommandList(cmdList, CBV_VIEW_PROJECTION);
+	cameraComp->GetCameraPosBuffer().BindForComputeCommandList(cmdList, CBV_CAMERA);
 
-	///// WorldTexture
-	//const Texture* worldTexture = _assetCollection->GetTexture("./Assets/Scene/RenderTexture/debugWorldPosition");
-	//cmdList->SetComputeRootDescriptorTable(
-	//	SRV_WORLD_TEXTURE,
-	//	worldTexture->GetSRVHandle().gpuHandle
-	//);
+	/// WorldTexture
+	const Texture* worldTexture = _assetCollection->GetTexture("./Assets/Scene/RenderTexture/debugWorldPosition");
+	cmdList->SetComputeRootDescriptorTable(
+		SRV_WORLD_TEXTURE,
+		worldTexture->GetSRVHandle().gpuHandle
+	);
 
-	///// UAV VoxelTextures
-	//const Texture* chunk0Texture = _assetCollection->GetTexture("./Packages/Textures/Terrain/Chunk/0.dds");
-	//cmdList->SetComputeRootDescriptorTable(
-	//	UAV_VOXEL_TEXTURES,
-	//	chunk0Texture->GetUAVGPUHandle()
-	//);
+	/// UAV VoxelTextures
+	const Texture* chunk0Texture = _assetCollection->GetTexture("./Packages/Textures/Terrain/Chunk/0.dds");
+	cmdList->SetComputeRootDescriptorTable(
+		UAV_VOXEL_TEXTURES,
+		chunk0Texture->GetUAVGPUHandle()
+	);
 
 
-	//const Vector2Int& voxelChunkCount = voxelTerrain->GetChunkCountXZ();
-	//cmdList->Dispatch(
-	//	Mathf::DivideAndRoundUp(voxelChunkCount.x * voxelChunkCount.y, 256),
-	//	1,
-	//	1
-	//);
+	const UINT TGSize = 256;;
+	const Vector2Int& voxelChunkCount = voxelTerrain->GetChunkCountXZ();
+	cmdList->Dispatch(
+		Mathf::DivideAndRoundUp(voxelChunkCount.x * voxelChunkCount.y, 256),
+		1,
+		1
+	);
 }

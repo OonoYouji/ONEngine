@@ -14,7 +14,7 @@ struct EditorInfo {
 
 
 /// ///////////////////////////////////////////////////
-/// 
+/// buffers
 /// ///////////////////////////////////////////////////
 
 ConstantBuffer<VoxelTerrainInfo> voxelTerrainInfo : register(b0);
@@ -136,5 +136,8 @@ void main(
 		}
 	}
 	
+	
+	///// とりあえず触った場所をすべて緑色にする
+	//voxelTextures[chunk.textureId] = float4(0, 1, 0, 1);
 
 }

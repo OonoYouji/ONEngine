@@ -107,6 +107,8 @@ bool AssetLoader::LoadTexture([[maybe_unused]] const std::string& _filepath) {
 		return false;
 	}
 
+	texture.dxResource_.Get()->SetName(ConvertString(_filepath).c_str());
+
 	DxResource intermediateResource = UploadTextureData(texture.dxResource_.Get(), scratchImage);
 
 	pDxManager_->GetDxCommand()->CommandExecuteAndWait();
@@ -205,6 +207,8 @@ bool AssetLoader::LoadTextureDDS(const std::string& _filepath) {
 		Console::LogError("[Load Failed] [Texture DDS] - Don't Create DxResource: \"" + _filepath + "\"");
 		return false;
 	}
+
+	texture.dxResource_.Get()->SetName(ConvertString(_filepath).c_str());
 
 	DxResource intermediateResource = UploadTextureData(texture.dxResource_.Get(), scratchImage);
 
@@ -909,7 +913,7 @@ DxResource AssetLoader::CreateTexture3DResource(DxDevice* _dxDevice, const Direc
 	desc.Format = _metadata.format;
 	desc.SampleDesc.Count = 1;
 	desc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
-	desc.Flags = D3D12_RESOURCE_FLAG_NONE;
+	desc.Flags = D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
 	desc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE3D;
 
 	D3D12_HEAP_PROPERTIES heapProperties{};

@@ -38,7 +38,7 @@ void VoxelTerrainRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, 
 		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 3); // Material
 
 		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // Chunk array
-		pipeline_->AddDescriptorRange(1, MAX_TEXTURE_COUNT, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // VoxelTerrain Texture3D
+		pipeline_->AddDescriptorRange(1, MAX_TEXTURE_COUNT*2, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // VoxelTerrain Texture3D
 
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 0); // Chunk array
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 1); // VoxelTerrain Texture3D
@@ -103,7 +103,7 @@ void VoxelTerrainRenderingPipeline::Draw(ECSGroup* _ecs, CameraComponent* _camer
 	//	_dxCommand,
 	//	pAssetCollection_,
 	//	D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
-	//	D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
+	//	D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE | D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE
 	//);
 
 	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(_dxCommand->GetCommandList(), CBV_VIEW_PROJECTION);
@@ -125,7 +125,7 @@ void VoxelTerrainRenderingPipeline::Draw(ECSGroup* _ecs, CameraComponent* _camer
 	//voxelTerrain->TransitionTextureStates(
 	//	_dxCommand,
 	//	pAssetCollection_,
-	//	D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+	//	D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE | D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE,
 	//	D3D12_RESOURCE_STATE_UNORDERED_ACCESS
 	//);
 
