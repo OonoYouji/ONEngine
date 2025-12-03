@@ -114,9 +114,7 @@ void Texture::CreateUAVTexture3D(
 	ID3D12Device* device = _dxDevice->GetDevice();
 	uavFormat_ = _uavFormat;
 
-	//
 	// 1. UAV 用の Resource を作成（SRV 用 Resource は別に保持している）
-	//
 	D3D12_RESOURCE_DESC desc = {};
 	desc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE3D;
 	desc.Alignment = 0;
@@ -124,14 +122,14 @@ void Texture::CreateUAVTexture3D(
 	desc.Height = _height;
 	desc.DepthOrArraySize = _depth;
 	desc.MipLevels = 1;
-	desc.Format = _uavFormat;                // UAV 可能フォーマット
+	desc.Format = _uavFormat;
 	desc.SampleDesc.Count = 1;
 	desc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
 	desc.Flags = D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
 
 	CD3DX12_HEAP_PROPERTIES heapProps(D3D12_HEAP_TYPE_DEFAULT);
 
-	// UAV 用リソースを作り直す
+	/// --------------- UAV用リソースを作る --------------- ///
 	dxResource_.CreateCommittedResource(
 		_dxDevice,
 		&heapProps,
@@ -141,9 +139,7 @@ void Texture::CreateUAVTexture3D(
 		nullptr
 	);
 
-	//
-	// 2. UAV Descriptor 設定
-	//
+	/// --------------- UAV Descriptor 設定 --------------- ///
 	D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc = {};
 	uavDesc.Format = srvFormat_;
 	uavDesc.ViewDimension = D3D12_UAV_DIMENSION_TEXTURE3D;
@@ -151,28 +147,22 @@ void Texture::CreateUAVTexture3D(
 	uavDesc.Texture3D.FirstWSlice = 0;
 	uavDesc.Texture3D.WSize = _depth;
 
-	//
-	// 3. SRV + UAV 共通のディスクリプタ index を取得
-	//
 	uint32_t descriptorIndex;
-
 	if (!uavHandle_.has_value()) {
-		// 初回は新規割り当て
+		/// 新規作成
 		CreateEmptyUAVHandle();
 		descriptorIndex = _dxSRVHeap->AllocateUAVTexture();
 		D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle = _dxSRVHeap->GetCPUDescriptorHandel(descriptorIndex);
 		D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle = _dxSRVHeap->GetGPUDescriptorHandel(descriptorIndex);
 		SetUAVHandle(descriptorIndex, cpuHandle, gpuHandle);
 	} else {
-		// 2回目以降は同じ index を再利用する
+		/// 既存のハンドルを使用
 		descriptorIndex = uavHandle_->descriptorIndex;
 	}
 
 	D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle = _dxSRVHeap->GetCPUDescriptorHandel(descriptorIndex);
 
-	//
-	// 4. UAV 再生成
-	//
+	/// --------------- UAV生成 --------------- ///
 	device->CreateUnorderedAccessView(
 		dxResource_.Get(),
 		nullptr,
@@ -180,11 +170,9 @@ void Texture::CreateUAVTexture3D(
 		cpuHandle
 	);
 
-	//
-	// 5. SRV 再生成：Texture がもともと持っていた SRV 用情報を使う
-	//
+	/// --------------- SRVを作成、テクスチャがすでに持っている情報を使う --------------- ///
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
-	srvDesc.Format = srvFormat_;      // テクスチャ読み込み時のフォーマットを保存しておく
+	srvDesc.Format = srvFormat_;
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE3D;
 	srvDesc.Texture3D.MipLevels = 1;
@@ -197,9 +185,7 @@ void Texture::CreateUAVTexture3D(
 	);
 
 
-	//
-	// 6. ログ
-	//
+	/// --------------- ログ --------------- ///
 	Console::Log("[Create UAV Texture3D]");
 	Console::Log(" - Width: " + std::to_string(_width));
 	Console::Log(" - Height: " + std::to_string(_height));

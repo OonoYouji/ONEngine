@@ -59,7 +59,7 @@ void main(
 			asPayload.lodLevel = 1; // 中詳細度
 			subChunkSizeValue = 4;
 
-		} else if (lengthToCamera < 300.0f)  {
+		} else if (lengthToCamera < 300.0f) {
 			asPayload.lodLevel = 2; // 低詳細度
 			subChunkSizeValue = 8;
 		} else {
@@ -68,7 +68,7 @@ void main(
 		}
 
 
-			asPayload.chunkIndex = IndexOfMeshGroup(groupId, uint3(voxelTerrainInfo.chunkCountXZ.x, 1, voxelTerrainInfo.chunkCountXZ.y));
+		asPayload.chunkIndex = IndexOfMeshGroup(groupId, uint3(voxelTerrainInfo.chunkCountXZ.x, 1, voxelTerrainInfo.chunkCountXZ.y));
 
 		asPayload.subChunkSize = uint3(subChunkSizeValue, subChunkSizeValue, subChunkSizeValue);
 		dispatchSize = voxelTerrainInfo.textureSize / asPayload.subChunkSize;
