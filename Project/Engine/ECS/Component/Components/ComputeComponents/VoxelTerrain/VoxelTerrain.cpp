@@ -225,7 +225,7 @@ void VoxelTerrain::SetupEditorBuffers(ID3D12GraphicsCommandList* _cmdList, const
 
 void VoxelTerrain::CreateChunkTextureUAV(DxDevice* _dxDevice, DxCommand* _dxCommand, DxSRVHeap* _dxSRVHeap, AssetCollection* _assetCollection) {
 
-	for (size_t i = 0; i < maxChunkCount_; i++) {
+	for (size_t i = 0; i < 32*32; i++) {
 		const std::string filepath = "./Packages/Textures/Terrain/Chunk/" + std::to_string(i) + ".dds";
 
 		/// 存在するテクスチャのみUAVを作成

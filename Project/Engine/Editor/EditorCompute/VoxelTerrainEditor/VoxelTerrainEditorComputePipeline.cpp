@@ -83,6 +83,11 @@ void VoxelTerrainEditorComputePipeline::Execute(EntityComponentSystem* _ecs, DxC
 	if (!voxelTerrain->CheckBufferCreatedForEditor()) {
 		voxelTerrain->CreateEditorBuffers(pDxManager_->GetDxDevice());
 		voxelTerrain->CreateChunkTextureUAV(pDxManager_->GetDxDevice(), _dxCommand, pDxManager_->GetDxSRVHeap(), _assetCollection);
+		//voxelTerrain->TransitionTextureStates(
+		//	_dxCommand, _assetCollection,
+		//	D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+		//	D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
+		//);
 	}
 
 
@@ -91,54 +96,55 @@ void VoxelTerrainEditorComputePipeline::Execute(EntityComponentSystem* _ecs, DxC
 	/// ここから パイプラインの設定、実行
 	/// ---------------------------------------------------
 
-	//pipeline_->SetPipelineStateForCommandList(_dxCommand);
+	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 
-	//auto cmdList = _dxCommand->GetCommandList();
+	auto cmdList = _dxCommand->GetCommandList();
 
-	//GPUData::InputInfo inputInfo{};
-	//inputInfo.mouseLeftButton = Input::PressMouse(Mouse::Left);
-	//inputInfo.keyboardKShift = Input::PressKey(DIK_LSHIFT);
-	//inputInfo.screenMousePos = Input::GetImGuiImageMousePosNormalized("Scene");
+	GPUData::InputInfo inputInfo{};
+	inputInfo.mouseLeftButton = Input::PressMouse(Mouse::Left);
+	inputInfo.keyboardKShift = Input::PressKey(DIK_LSHIFT);
+	inputInfo.screenMousePos = Input::GetImGuiImageMousePosNormalized("Scene");
 
-	//GPUData::EditInfo editInfo{};
-	//editInfo.brushRadius = 10.0f;
+	GPUData::EditInfo editInfo{};
+	editInfo.brushRadius = 10.0f;
 
-	//voxelTerrain->SetupEditorBuffers(
-	//	cmdList,
-	//	{ CBV_INPUT_INFO, CBV_TERRAIN_INFO, SRV_CHUNKS },
-	//	inputInfo, editInfo
-	//);
-
-
-	//CameraComponent* cameraComp = _ecs->GetCurrentGroup()->GetMainCamera();
-	///// cameraBufferが生成済みでないなら終了
-	//if (!cameraComp->IsMakeViewProjection()) {
-	//	Console::LogWarning("VoxelTerrainEditorComputePipeline::Execute: Camera viewProjection buffer is not created");
-	//	return;
-	//}
-
-	//cameraComp->GetViewProjectionBuffer().BindForComputeCommandList(cmdList, CBV_VIEW_PROJECTION);
-	//cameraComp->GetCameraPosBuffer().BindForComputeCommandList(cmdList, CBV_CAMERA);
-
-	///// WorldTexture
-	//const Texture* worldTexture = _assetCollection->GetTexture("./Assets/Scene/RenderTexture/debugWorldPosition");
-	//cmdList->SetComputeRootDescriptorTable(
-	//	SRV_WORLD_TEXTURE,
-	//	worldTexture->GetSRVHandle().gpuHandle
-	//);
-
-	///// UAV VoxelTextures
-	//const Texture* chunk0Texture = _assetCollection->GetTexture("./Packages/Textures/Terrain/Chunk/0.dds");
-	//cmdList->SetComputeRootDescriptorTable(
-	//	UAV_VOXEL_TEXTURES,
-	//	chunk0Texture->GetUAVGPUHandle()
-	//);
+	voxelTerrain->SetupEditorBuffers(
+		cmdList,
+		{ CBV_INPUT_INFO, CBV_TERRAIN_INFO, SRV_CHUNKS },
+		inputInfo, editInfo
+	);
 
 
-	//const Vector2Int& voxelChunkCount = voxelTerrain->GetChunkCountXZ();
-	//cmdList->Dispatch(
-	//	Mathf::DivideAndRoundUp(voxelChunkCount.x * voxelChunkCount.y, 256),
-	//	1,
-	//	1
-	//);
+	CameraComponent* cameraComp = _ecs->GetCurrentGroup()->GetMainCamera();
+	/// cameraBufferが生成済みでないなら終了
+	if (!cameraComp->IsMakeViewProjection()) {
+		Console::LogWarning("VoxelTerrainEditorComputePipeline::Execute: Camera viewProjection buffer is not created");
+		return;
+	}
+
+	cameraComp->GetViewProjectionBuffer().BindForComputeCommandList(cmdList, CBV_VIEW_PROJECTION);
+	cameraComp->GetCameraPosBuffer().BindForComputeCommandList(cmdList, CBV_CAMERA);
+
+	/// WorldTexture
+	const Texture* worldTexture = _assetCollection->GetTexture("./Assets/Scene/RenderTexture/debugWorldPosition");
+	cmdList->SetComputeRootDescriptorTable(
+		SRV_WORLD_TEXTURE,
+		worldTexture->GetSRVHandle().gpuHandle
+	);
+
+	/// UAV VoxelTextures
+	const Texture* chunk0Texture = _assetCollection->GetTexture("./Packages/Textures/Terrain/Chunk/0.dds");
+	cmdList->SetComputeRootDescriptorTable(
+		UAV_VOXEL_TEXTURES,
+		chunk0Texture->GetUAVGPUHandle()
+	);
+
+
+	const UINT TGSize = 256;;
+	const Vector2Int& voxelChunkCount = voxelTerrain->GetChunkCountXZ();
+	cmdList->Dispatch(
+		Mathf::DivideAndRoundUp(voxelChunkCount.x * voxelChunkCount.y, 256),
+		1,
+		1
+	);
 }

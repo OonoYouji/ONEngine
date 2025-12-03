@@ -114,31 +114,6 @@ void Texture::CreateUAVTexture3D(
 	ID3D12Device* device = _dxDevice->GetDevice();
 	uavFormat_ = _uavFormat;
 
-	// 1. UAV 用の Resource を作成（SRV 用 Resource は別に保持している）
-	D3D12_RESOURCE_DESC desc = {};
-	desc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE3D;
-	desc.Alignment = 0;
-	desc.Width = _width;
-	desc.Height = _height;
-	desc.DepthOrArraySize = _depth;
-	desc.MipLevels = 1;
-	desc.Format = _uavFormat;
-	desc.SampleDesc.Count = 1;
-	desc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
-	desc.Flags = D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
-
-	CD3DX12_HEAP_PROPERTIES heapProps(D3D12_HEAP_TYPE_DEFAULT);
-
-	/// --------------- UAV用リソースを作る --------------- ///
-	dxResource_.CreateCommittedResource(
-		_dxDevice,
-		&heapProps,
-		D3D12_HEAP_FLAG_NONE,
-		&desc,
-		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
-		nullptr
-	);
-
 	/// --------------- UAV Descriptor 設定 --------------- ///
 	D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc = {};
 	uavDesc.Format = srvFormat_;
@@ -169,21 +144,6 @@ void Texture::CreateUAVTexture3D(
 		&uavDesc,
 		cpuHandle
 	);
-
-	/// --------------- SRVを作成、テクスチャがすでに持っている情報を使う --------------- ///
-	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
-	srvDesc.Format = srvFormat_;
-	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE3D;
-	srvDesc.Texture3D.MipLevels = 1;
-	srvDesc.Texture3D.MostDetailedMip = 0;
-
-	device->CreateShaderResourceView(
-		dxResource_.Get(),
-		&srvDesc,
-		cpuHandle
-	);
-
 
 	/// --------------- ログ --------------- ///
 	Console::Log("[Create UAV Texture3D]");

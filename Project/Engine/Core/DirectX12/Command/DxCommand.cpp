@@ -60,6 +60,9 @@ void DxCommand::Initialize(DxDevice* _dxDevice) {
 	Assert(SUCCEEDED(result), "Failed to create fence.");
 
 
+	/// コマンドリストに名前を付ける
+	commandList_->SetName(L"DxCommand CommandList");
+
 	Console::Log("dx command create success!!");
 }
 
