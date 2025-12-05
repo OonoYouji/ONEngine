@@ -70,6 +70,32 @@ void COMP_DEBUG::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain) {
 }
 
 
+void from_json(const nlohmann::json& _j, std::vector<Chunk>& _chunks) {
+	nlohmann::json jChunks = _j["chunks"];
+	
+	_chunks.resize(jChunks.size());
+
+	std::string key;
+	for (size_t i = 0; i < jChunks.size(); i++) {
+		key = std::to_string(i);
+		if (jChunks.contains(key)) {
+			_chunks[i] = Chunk{ jChunks[key], nullptr };
+		}
+	}
+}
+
+void to_json(nlohmann::json& _j, const std::vector<Chunk>& _chunks) {
+	nlohmann::json jChunks;
+
+	for (size_t i = 0; i < _chunks.size(); i++) {
+		jChunks[std::to_string(i)] = _chunks[i].texture3DId;
+	}
+
+	_j = {
+		{ "chunks", jChunks }
+	};
+}
+
 void from_json(const nlohmann::json& _j, VoxelTerrain& _voxelTerrain) {
 	/// Json -> VoxelTerrain
 	_voxelTerrain.enable = _j.value("enable", 1);
@@ -80,6 +106,7 @@ void from_json(const nlohmann::json& _j, VoxelTerrain& _voxelTerrain) {
 	_voxelTerrain.textureSize_ = _j.value("textureSize", Vector3Int{ 32, 32, 32 });
 
 	_voxelTerrain.material_ = _j.value("material", Material{});
+	_voxelTerrain.chunks_ = _j.value("chunks", std::vector<Chunk>{});
 }
 
 void to_json(nlohmann::json& _j, const VoxelTerrain& _voxelTerrain) {
@@ -92,6 +119,7 @@ void to_json(nlohmann::json& _j, const VoxelTerrain& _voxelTerrain) {
 		{ "textureSize", _voxelTerrain.textureSize_ },
 		{ "chunkCountXZ", _voxelTerrain.chunkCountXZ_ },
 		{ "material", _voxelTerrain.material_ },
+		{ "chunks", _voxelTerrain.chunks_ }
 	};
 }
 
@@ -122,6 +150,9 @@ void VoxelTerrain::SettingChunksGuid(AssetCollection* _assetCollection) {
 		/// AssetCollectionからGuidを取得して設定
 		const Guid& texture3DGuid = _assetCollection->GetAssetGuidFromPath(filepath);
 		chunks_[i].texture3DId = texture3DGuid;
+
+		Texture* texture = _assetCollection->GetTextureFromGuid(texture3DGuid);
+		chunks_[i].pTexture = texture;
 	}
 }
 
@@ -136,7 +167,6 @@ bool VoxelTerrain::CheckCreatedBuffers() const {
 }
 
 void VoxelTerrain::CreateBuffers(DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap) {
-	//maxChunkCount_ = static_cast<UINT>(chunkCountXZ_.x * chunkCountXZ_.y);
 	UINT chunkCount = static_cast<UINT>(32 * 32);
 
 	cBufferTerrainInfo_.Create(_dxDevice);
@@ -162,14 +192,13 @@ void VoxelTerrain::SetupGraphicBuffers(ID3D12GraphicsCommandList* _cmdList, cons
 
 	/// ChunkArrayの設定
 	for (size_t i = 0; i < maxChunkCount_; i++) {
-		int32_t textureIndex = _assetCollection->GetTextureIndexFromGuid(chunks_[i].texture3DId);
-
-		/// 0番は必ず存在する想定なので、見つからなかったら0番を設定する
-		if (textureIndex == -1) {
-			textureIndex = _assetCollection->GetTextureIndexFromGuid(chunks_[0].texture3DId);
+		const Texture* texture = _assetCollection->GetTextureFromGuid(chunks_[i].texture3DId);
+		if (texture) {
+			sBufferChunks_.SetMappedData(i, GPUData::Chunk{ static_cast<uint32_t>(texture->GetSRVDescriptorIndex()) });
+		} else {
+			const Texture* frontTex = _assetCollection->GetTextureFromGuid(chunks_[0].texture3DId);
+			sBufferChunks_.SetMappedData(i, GPUData::Chunk{ static_cast<uint32_t>(frontTex->GetSRVDescriptorIndex()) });
 		}
-
-		sBufferChunks_.SetMappedData(i, GPUData::Chunk{ static_cast<uint32_t>(textureIndex) });
 	}
 
 	sBufferChunks_.SRVBindForGraphicsCommandList(_cmdList, _rootParamIndices[2]);
@@ -177,13 +206,15 @@ void VoxelTerrain::SetupGraphicBuffers(ID3D12GraphicsCommandList* _cmdList, cons
 
 void VoxelTerrain::TransitionTextureStates(DxCommand* _dxCommand, AssetCollection* _assetCollection, D3D12_RESOURCE_STATES _beforeState, D3D12_RESOURCE_STATES _afterState) {
 	/// チャンク用テクスチャの状態遷移
+	std::vector<DxResource> resources;
+	resources.reserve(maxChunkCount_);
 	for (size_t i = 0; i < maxChunkCount_; i++) {
-		const std::string filepath = "./Packages/Textures/Terrain/Chunk/" + std::to_string(i) + ".dds";
-
-		if(Texture* texture = _assetCollection->GetTexture(filepath)) {
-			texture->GetDxResource().CreateBarrier(_beforeState, _afterState, _dxCommand);
+		if(chunks_[i].pTexture){
+			resources.push_back(chunks_[i].pTexture->GetDxResource());
 		}
 	}
+
+	CreateBarriers(resources, _beforeState, _afterState, _dxCommand);
 }
 
 UINT VoxelTerrain::MaxChunkCount() const {
@@ -207,43 +238,61 @@ bool VoxelTerrain::CheckBufferCreatedForEditor() const {
 	return result;
 }
 
-void VoxelTerrain::CreateEditorBuffers(DxDevice* _dxDevice) {
+void VoxelTerrain::CreateEditorBuffers(DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap) {
+	UINT chunkCount = static_cast<UINT>(32 * 32);
+
 	cBufferInputInfo_.Create(_dxDevice);
 	cBufferEditInfo_.Create(_dxDevice);
+	sBufferEditorChunks_.Create(chunkCount, _dxDevice, _dxSRVHeap);
 }
 
-void VoxelTerrain::SetupEditorBuffers(ID3D12GraphicsCommandList* _cmdList, const std::array<UINT, 3> _rootParamIndices, const GPUData::InputInfo& _inputInfo, const GPUData::EditInfo& _editInfo) {
+void VoxelTerrain::SetupEditorBuffers(ID3D12GraphicsCommandList* _cmdList, const std::array<UINT, 4> _rootParamIndices, AssetCollection* _assetCollection, const GPUData::InputInfo& _inputInfo, const GPUData::EditInfo& _editInfo) {
 	/// InputInfoの設定
 	cBufferInputInfo_.SetMappedData(_inputInfo);
 	cBufferInputInfo_.BindForComputeCommandList(_cmdList, _rootParamIndices[0]);
+	/// TerrainInfoの設定
+	cBufferTerrainInfo_.SetMappedData(GPUData::VoxelTerrainInfo{
+		.terrainOrigin = GetOwner()->GetTransform()->GetPosition(),
+		.textureSize = textureSize_, .chunkSize = chunkSize_,
+		.chunkCountXZ = chunkCountXZ_, .maxChunkCount = maxChunkCount_
+		});
+	cBufferTerrainInfo_.BindForComputeCommandList(_cmdList, _rootParamIndices[1]);
 	/// EditInfoの設定
 	cBufferEditInfo_.SetMappedData(_editInfo);
-	cBufferEditInfo_.BindForComputeCommandList(_cmdList, _rootParamIndices[1]);
+	cBufferEditInfo_.BindForComputeCommandList(_cmdList, _rootParamIndices[2]);
+
+	/// ChunkArrayの設定
+	for (size_t i = 0; i < maxChunkCount_; i++) {
+		const Texture* texture = _assetCollection->GetTextureFromGuid(chunks_[i].texture3DId);
+		if (texture) {
+			sBufferEditorChunks_.SetMappedData(i, GPUData::Chunk{ static_cast<uint32_t>(texture->GetUAVDescriptorIndex()) });
+		} else {
+			const Texture* frontTex = _assetCollection->GetTextureFromGuid(chunks_[0].texture3DId);
+			sBufferEditorChunks_.SetMappedData(i, GPUData::Chunk{ static_cast<uint32_t>(frontTex->GetUAVDescriptorIndex()) });
+		}
+	}
 	/// Chunk
-	sBufferChunks_.SRVBindForComputeCommandList(_cmdList, _rootParamIndices[2]);
+	sBufferEditorChunks_.SRVBindForComputeCommandList(_cmdList, _rootParamIndices[3]);
 }
 
-void VoxelTerrain::CreateChunkTextureUAV(DxDevice* _dxDevice, DxCommand* _dxCommand, DxSRVHeap* _dxSRVHeap, AssetCollection* _assetCollection) {
+void VoxelTerrain::CreateChunkTextureUAV(DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap, AssetCollection* _assetCollection) {
 
-	for (size_t i = 0; i < 32*32; i++) {
+	for (size_t i = 0; i < 32 * 32; i++) {
 		const std::string filepath = "./Packages/Textures/Terrain/Chunk/" + std::to_string(i) + ".dds";
 
 		/// 存在するテクスチャのみUAVを作成
-		if(Texture* texture = _assetCollection->GetTexture(filepath)) {
-
+		if (Texture* texture = _assetCollection->GetTexture(filepath)) {
 			const Vector2& texSize = texture->GetTextureSize();
+			UINT depth = texture->GetTextureDepth();
 
 			texture->CreateUAVTexture3D(
 				static_cast<UINT>(texSize.x),
 				static_cast<UINT>(texSize.y),
-				static_cast<UINT>(texSize.x),
-				_dxDevice,
-				_dxCommand,
-				_dxSRVHeap,
+				depth,
+				_dxDevice, _dxSRVHeap,
 				DXGI_FORMAT_R8G8B8A8_TYPELESS
 			);
 		}
-
 	}
 
 }

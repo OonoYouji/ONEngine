@@ -25,7 +25,7 @@ ConstantBuffer<EditorInfo> editorInfo : register(b4);
 
 StructuredBuffer<Chunk> chunks : register(t0);
 Texture2D<float4> worldPositionTexture : register(t1);
-RWTexture3D<float4> voxelTextures[32 * 32] : register(u0);
+RWTexture3D<float4> voxelTextures[] : register(u0);
 SamplerState textureSampler : register(s0);
 
 /// ///////////////////////////////////////////////////
@@ -71,7 +71,7 @@ void main(
     uint groupIndex : SV_GroupIndex) {
 
     /// 超過していたら抜ける
-	uint chunkIndex = groupIndex;
+	uint chunkIndex = DTid.x;
 	if (voxelTerrainInfo.maxChunkCount <= chunkIndex) {
 		return;
 	}
@@ -89,10 +89,17 @@ void main(
 		return;
 	}
 
+	/// チャンクの原点を計算
+	float3 chunkOrigin = float3(
+		(chunkIndex % voxelTerrainInfo.chunkCountXZ.x) * voxelTerrainInfo.chunkSize.x,
+		0,
+		(chunkIndex / voxelTerrainInfo.chunkCountXZ.x) * voxelTerrainInfo.chunkSize.z
+	);
+
 	/// マウス位置 + 半径 での球とチャンクの当たり判定
 	if (!CheckSphereAABB(
 		terrainLocalMousePos, editorInfo.brushRadius,
-		float3(0, 0, 0), voxelTerrainInfo.chunkSize)) {
+		chunkOrigin, voxelTerrainInfo.chunkSize)) {
 		return;
 	}
 
@@ -103,21 +110,16 @@ void main(
 	/// 対応するチャンクの情報
 	Chunk chunk = chunks[chunkIndex];
 
-
-	/// とりあえずはマウスが指している位置にあるボクセルのみを編集する
-	
-	/// チャンクの原点を計算
-	float3 chunkOrigin = float3(
-		(chunkIndex % voxelTerrainInfo.chunkCountXZ.x) * voxelTerrainInfo.chunkSize.x,
-		0,
-		(chunkIndex / voxelTerrainInfo.chunkCountXZ.x) * voxelTerrainInfo.chunkSize.z);
-	
 	/// マウスのチャンク内でのローカル位置
 	float3 chunkLocalMousePos = terrainLocalMousePos - chunkOrigin;
+	if (!CheckInside(chunkLocalMousePos, float3(0, 0, 0), voxelTerrainInfo.chunkSize)) {
+		return;
+	}
+	
 
 	/// ローカル位置をカメラ方向に -1 して１つ前のボクセル位置にする
 	float3 toCameraDire = normalize(camera.position.xyz - mouseWorldPos.xyz);
-	chunkLocalMousePos -= toCameraDire;
+	//chunkLocalMousePos -= toCameraDire;
 	
 	/// ボクセル位置の色を取得
 	uint3 voxelPos = uint3(chunkLocalMousePos);
@@ -134,10 +136,9 @@ void main(
 			// ----- 押し上げ ----- //
 			voxelColor.a = 1.0f;
 		}
+	
+		voxelTextures[chunk.textureId][voxelPos] = voxelColor;
 	}
-	
-	
-	///// とりあえず触った場所をすべて緑色にする
-	//voxelTextures[chunk.textureId] = float4(0, 1, 0, 1);
 
+	voxelTextures[chunk.textureId][voxelPos] = float4(0, 1, 0, 1);
 }

@@ -46,14 +46,13 @@
 /// ボクセル地形におけるチャンク
 /// ///////////////////////////////////////////////////
 struct Chunk {
-	/*
-	*  [ 必要なデータ ]
-	* このチャンクを表現するTexture3D (.dds形式)
-	* チャンクのId (座標から計算可能)
-	*/
-
 	Guid texture3DId; ///< このチャンクを表現するTexture3DのId
+	class Texture* pTexture;
 };
+
+void from_json(const nlohmann::json& _j, std::vector<Chunk>& _chunk);
+void to_json(nlohmann::json& _j, const std::vector<Chunk>& _chunk);
+
 
 /// @brief デバッグ関数用に前方宣言をする
 class VoxelTerrain;
@@ -141,7 +140,7 @@ public:
 	void SetupGraphicBuffers(ID3D12GraphicsCommandList* _cmdList, const std::array<UINT, 3> _rootParamIndices, class AssetCollection* _assetCollection);
 
 	/// テクスチャのステートを変更する
-	void TransitionTextureStates(class DxCommand* _dxCommand, class AssetCollection* _assetCollection ,D3D12_RESOURCE_STATES _beforeState, D3D12_RESOURCE_STATES _afterState);
+	void TransitionTextureStates(class DxCommand* _dxCommand, class AssetCollection* _assetCollection, D3D12_RESOURCE_STATES _beforeState, D3D12_RESOURCE_STATES _afterState);
 
 	/// @brief 現在のチャンクの総数を取得する
 	/// @return 今あるチャンクの総数
@@ -164,20 +163,20 @@ public:
 
 	/// @brief エディタ用のバッファの生成を行う
 	/// @param _dxDevice DxDeviceのポインタ
-	void CreateEditorBuffers(DxDevice* _dxDevice);
+	void CreateEditorBuffers(DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap);
 
 	/// @brief エディタ用のバッファをパイプラインに設定する
 	/// @param _cmdList CommandListのポインタ
-	/// @param _rootParamIndices 設定するルートパラメータのインデックス配列 (0: InputInfo, 1: EditInfo, 2: Chunks)
+	/// @param _rootParamIndices 設定するルートパラメータのインデックス配列 (0:InputInfo, 1:TerrainInfo, 2:EditInfo, 3:Chunks)
 	/// @param _inputInfo InputInfo構造体
 	/// @param _editInfo EditInfo構造体
-	void SetupEditorBuffers(ID3D12GraphicsCommandList* _cmdList, const std::array<UINT, 3> _rootParamIndices, const GPUData::InputInfo& _inputInfo, const GPUData::EditInfo& _editInfo);
+	void SetupEditorBuffers(ID3D12GraphicsCommandList* _cmdList, const std::array<UINT, 4> _rootParamIndices, class AssetCollection* _assetCollection, const GPUData::InputInfo& _inputInfo, const GPUData::EditInfo& _editInfo);
 
 	/// @brief チャンク用のTexture3D UAVを作成する
 	/// @param _dxDevice DxDeviceのポインタ
 	/// @param _dxSRVHeap DxSRVHeapのポインタ
 	/// @param _assetCollection AssetCollectionのポインタ
-	void CreateChunkTextureUAV(DxDevice* _dxDevice, DxCommand* _dxCommand, DxSRVHeap* _dxSRVHeap, class AssetCollection* _assetCollection);
+	void CreateChunkTextureUAV(DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap, class AssetCollection* _assetCollection);
 
 private:
 	/// ===========================================
@@ -196,6 +195,7 @@ private:
 	/// --------------- Buffer --------------- ///
 	ConstantBuffer<GPUData::VoxelTerrainInfo> cBufferTerrainInfo_;
 	StructuredBuffer<GPUData::Chunk> sBufferChunks_;
+	StructuredBuffer<GPUData::Chunk> sBufferEditorChunks_;
 	ConstantBuffer<GPUMaterial> cBufferMaterial_;
 
 	Vector3Int chunkSize_;

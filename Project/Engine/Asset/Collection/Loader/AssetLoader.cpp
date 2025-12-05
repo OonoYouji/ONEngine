@@ -108,6 +108,7 @@ bool AssetLoader::LoadTexture([[maybe_unused]] const std::string& _filepath) {
 	}
 
 	texture.dxResource_.Get()->SetName(ConvertString(_filepath).c_str());
+	texture.name_ = _filepath;
 
 	DxResource intermediateResource = UploadTextureData(texture.dxResource_.Get(), scratchImage);
 
@@ -209,6 +210,7 @@ bool AssetLoader::LoadTextureDDS(const std::string& _filepath) {
 	}
 
 	texture.dxResource_.Get()->SetName(ConvertString(_filepath).c_str());
+	texture.name_ = _filepath;
 
 	DxResource intermediateResource = UploadTextureData(texture.dxResource_.Get(), scratchImage);
 

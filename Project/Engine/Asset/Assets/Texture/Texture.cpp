@@ -107,7 +107,6 @@ void Texture::CreateUAVTexture(UINT _width, UINT _height, DxDevice* _dxDevice, D
 void Texture::CreateUAVTexture3D(
 	UINT _width, UINT _height, UINT _depth,
 	DxDevice* _dxDevice,
-	DxCommand* _dxCommand,
 	DxSRVHeap* _dxSRVHeap,
 	DXGI_FORMAT _uavFormat) {
 
@@ -130,6 +129,8 @@ void Texture::CreateUAVTexture3D(
 		D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle = _dxSRVHeap->GetCPUDescriptorHandel(descriptorIndex);
 		D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle = _dxSRVHeap->GetGPUDescriptorHandel(descriptorIndex);
 		SetUAVHandle(descriptorIndex, cpuHandle, gpuHandle);
+
+		Assert(descriptorIndex != 1029 + 2048);
 	} else {
 		/// 既存のハンドルを使用
 		descriptorIndex = uavHandle_->descriptorIndex;
@@ -147,6 +148,7 @@ void Texture::CreateUAVTexture3D(
 
 	/// --------------- ログ --------------- ///
 	Console::Log("[Create UAV Texture3D]");
+	Console::Log(" - Texture Name: " + name_);
 	Console::Log(" - Width: " + std::to_string(_width));
 	Console::Log(" - Height: " + std::to_string(_height));
 	Console::Log(" - Depth: " + std::to_string(_depth));
@@ -319,6 +321,10 @@ DxResource& Texture::GetDxResource() {
 
 const Vector2& Texture::GetTextureSize() const {
 	return textureSize_;
+}
+
+UINT Texture::GetTextureDepth() const {
+	return depth_;
 }
 
 

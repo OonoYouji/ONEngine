@@ -22,6 +22,8 @@ struct DrawInstanceInfo {
 	
 	uint vertexStartIndex;
 	uint indexStartIndex;
+	
+	float4 color;
 };
 
 /// ---------------------------------------------------
@@ -1000,6 +1002,16 @@ void main(
 
 					dii.vertexStartIndex = numVertices;
 					dii.indexStartIndex = numPrimitives;
+					
+					float3 rgb = float3(0, 0, 0);
+					for (int i = 0; i < 27; i++) {
+						int xi = i % 3;
+						int yi = (i / 3) % 3;
+						int zi = i / 9;
+						rgb += vcc.colors[xi][yi][zi].rgb;
+					}
+					dii.color = float4(rgb / 27.0f, 1.0f);
+
 
 					diis[drawVoxelCount] = dii;
 					drawVoxelCount++;
@@ -1034,6 +1046,7 @@ void main(
 		
 		for (int j = 0; j < kPatternVertexCount[diis[i].patternIndex]; j++) {
 			verts[vIndex + j] = rd.verts[j];
+			verts[vIndex + j].color = diis[i].color;
 		}
 		
 		for (int j = 0; j < kPatternPrimitiveCount[diis[i].patternIndex]; ++j) {
