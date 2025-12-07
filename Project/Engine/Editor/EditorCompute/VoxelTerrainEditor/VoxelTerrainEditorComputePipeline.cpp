@@ -118,7 +118,7 @@ void VoxelTerrainEditorComputePipeline::Execute(EntityComponentSystem* _ecs, DxC
 	);
 
 
-	CameraComponent* cameraComp = _ecs->GetCurrentGroup()->GetMainCamera();
+	CameraComponent* cameraComp = _ecs->GetECSGroup("Debug")->GetMainCamera();
 	/// cameraBufferが生成済みでないなら終了
 	if (!cameraComp->IsMakeViewProjection()) {
 		Console::LogWarning("VoxelTerrainEditorComputePipeline::Execute: Camera viewProjection buffer is not created");

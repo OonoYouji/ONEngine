@@ -90,9 +90,9 @@ namespace GPUData {
 
 	/// @brief 編集に使う入力情報
 	struct InputInfo {
+		Vector2 screenMousePos;
 		uint32_t mouseLeftButton;
 		uint32_t keyboardKShift;
-		Vector2 screenMousePos;
 	};
 
 	/// @brief VoxelTerrainの編集用データ
