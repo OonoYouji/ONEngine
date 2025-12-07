@@ -84,12 +84,6 @@ void VoxelTerrainEditorComputePipeline::Execute(EntityComponentSystem* _ecs, DxC
 	if (!voxelTerrain->CheckBufferCreatedForEditor()) {
 		voxelTerrain->CreateEditorBuffers(pDxManager_->GetDxDevice(), pDxManager_->GetDxSRVHeap());
 		voxelTerrain->CreateChunkTextureUAV(pDxManager_->GetDxDevice(), pDxManager_->GetDxSRVHeap(), _assetCollection);
-		voxelTerrain->TransitionTextureStates(
-			_dxCommand,
-			_assetCollection,
-			D3D12_RESOURCE_STATE_GENERIC_READ,
-			D3D12_RESOURCE_STATE_UNORDERED_ACCESS
-		);
 		return;
 	}
 

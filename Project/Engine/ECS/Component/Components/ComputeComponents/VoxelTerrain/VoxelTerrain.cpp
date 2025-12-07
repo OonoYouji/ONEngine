@@ -41,13 +41,13 @@ void COMP_DEBUG::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _dxMa
 	}
 
 	/// 出力用
-	if(ImGui::Button("Output Chunk Textures Info")) {
+	if (ImGui::Button("Output Chunk Textures Info")) {
 		std::wstring filepath = L"";
 		for (size_t i = 0; i < _voxelTerrain->chunks_.size(); i++) {
 			filepath = L"./Packages/Textures/Terrain/Chunk/" + std::to_wstring(i) + L".dds";
 
 			const Chunk& chunk = _voxelTerrain->chunks_[i];
-			chunk.pTexture->OutputTexture(filepath, _dxManager->GetDxDevice(), _dxManager->GetDxCommand());
+			chunk.pTexture->OutputTexture3D(filepath, _dxManager->GetDxDevice(), _dxManager->GetDxCommand());
 			Console::Log("Chunk " + std::to_string(i) + ": Texture3D GUID = " + chunk.texture3DId.ToString());
 		}
 	}
@@ -85,7 +85,7 @@ void COMP_DEBUG::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _dxMa
 
 void from_json(const nlohmann::json& _j, std::vector<Chunk>& _chunks) {
 	nlohmann::json jChunks = _j["chunks"];
-	
+
 	_chunks.resize(jChunks.size());
 
 	std::string key;
@@ -217,17 +217,17 @@ void VoxelTerrain::SetupGraphicBuffers(ID3D12GraphicsCommandList* _cmdList, cons
 	sBufferChunks_.SRVBindForGraphicsCommandList(_cmdList, _rootParamIndices[2]);
 }
 
-void VoxelTerrain::TransitionTextureStates(DxCommand* _dxCommand, AssetCollection* _assetCollection, D3D12_RESOURCE_STATES _beforeState, D3D12_RESOURCE_STATES _afterState) {
+void VoxelTerrain::TransitionTextureStates(DxCommand* _dxCommand, AssetCollection* _assetCollection, D3D12_RESOURCE_STATES _afterState) {
 	/// チャンク用テクスチャの状態遷移
-	std::vector<DxResource> resources;
+	std::vector<DxResource*> resources;
 	resources.reserve(maxChunkCount_);
 	for (size_t i = 0; i < maxChunkCount_; i++) {
-		if(chunks_[i].pTexture){
-			resources.push_back(chunks_[i].pTexture->GetDxResource());
+		if (chunks_[i].pTexture) {
+			resources.push_back(&chunks_[i].pTexture->GetDxResource());
 		}
 	}
 
-	CreateBarriers(resources, _beforeState, _afterState, _dxCommand);
+	CreateBarriers(resources,_afterState, _dxCommand);
 }
 
 UINT VoxelTerrain::MaxChunkCount() const {

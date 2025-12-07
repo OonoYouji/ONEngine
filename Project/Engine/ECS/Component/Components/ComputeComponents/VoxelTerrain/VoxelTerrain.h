@@ -59,7 +59,7 @@ class VoxelTerrain;
 class DxManager;
 
 namespace COMP_DEBUG {
-	void VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _dxManager);
+void VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _dxManager);
 }
 
 void from_json(const nlohmann::json& _j, VoxelTerrain& _voxelTerrain);
@@ -71,35 +71,35 @@ void to_json(nlohmann::json& _j, const VoxelTerrain& _voxelTerrain);
 /// ///////////////////////////////////////////////////
 namespace GPUData {
 
-	/// @brief 地形のデータ
-	struct VoxelTerrainInfo {
-		Vector3 terrainOrigin;
-		float pad0;
-		Vector3Int textureSize;
-		float pad1;
-		Vector3Int chunkSize;
-		float pad2;
-		Vector2Int chunkCountXZ; /// XZ平面でのチャンク数
-		uint32_t maxChunkCount;
-	};
+/// @brief 地形のデータ
+struct VoxelTerrainInfo {
+	Vector3 terrainOrigin;
+	float pad0;
+	Vector3Int textureSize;
+	float pad1;
+	Vector3Int chunkSize;
+	float pad2;
+	Vector2Int chunkCountXZ; /// XZ平面でのチャンク数
+	uint32_t maxChunkCount;
+};
 
-	/// @brief チャンクごとのGPU用データ
-	struct Chunk {
-		uint32_t texture3DIndex;
-	};
+/// @brief チャンクごとのGPU用データ
+struct Chunk {
+	uint32_t texture3DIndex;
+};
 
 
-	/// @brief 編集に使う入力情報
-	struct InputInfo {
-		Vector2 screenMousePos;
-		uint32_t mouseLeftButton;
-		uint32_t keyboardKShift;
-	};
+/// @brief 編集に使う入力情報
+struct InputInfo {
+	Vector2 screenMousePos;
+	uint32_t mouseLeftButton;
+	uint32_t keyboardKShift;
+};
 
-	/// @brief VoxelTerrainの編集用データ
-	struct EditInfo {
-		float brushRadius;
-	};
+/// @brief VoxelTerrainの編集用データ
+struct EditInfo {
+	float brushRadius;
+};
 
 }
 
@@ -141,7 +141,7 @@ public:
 	void SetupGraphicBuffers(ID3D12GraphicsCommandList* _cmdList, const std::array<UINT, 3> _rootParamIndices, class AssetCollection* _assetCollection);
 
 	/// テクスチャのステートを変更する
-	void TransitionTextureStates(class DxCommand* _dxCommand, class AssetCollection* _assetCollection, D3D12_RESOURCE_STATES _beforeState, D3D12_RESOURCE_STATES _afterState);
+	void TransitionTextureStates(class DxCommand* _dxCommand, class AssetCollection* _assetCollection, D3D12_RESOURCE_STATES _afterState);
 
 	/// @brief 現在のチャンクの総数を取得する
 	/// @return 今あるチャンクの総数

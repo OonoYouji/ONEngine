@@ -60,6 +60,7 @@ public:
 	/// @param _dxDevice DxDeviceへのポインタ
 	/// @param _dxCommand DxCommandへのポインタ
 	void OutputTexture(const std::wstring& _filename, class DxDevice* _dxDevice, class DxCommand* _dxCommand);
+	void OutputTexture3D(const std::wstring& _filename, class DxDevice* _dxDevice, class DxCommand* _dxCommand);
 
 private:
 	/// ===================================================

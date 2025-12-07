@@ -101,7 +101,6 @@ void VoxelTerrainRenderingPipeline::Draw(ECSGroup* _ecs, CameraComponent* _camer
 
 	voxelTerrain->TransitionTextureStates(
 		_dxCommand, pAssetCollection_,
-		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
 		D3D12_RESOURCE_STATE_GENERIC_READ
 	);
 
@@ -125,7 +124,6 @@ void VoxelTerrainRenderingPipeline::Draw(ECSGroup* _ecs, CameraComponent* _camer
 
 	voxelTerrain->TransitionTextureStates(
 		_dxCommand, pAssetCollection_,
-		D3D12_RESOURCE_STATE_GENERIC_READ,
 		D3D12_RESOURCE_STATE_UNORDERED_ACCESS
 	);
 

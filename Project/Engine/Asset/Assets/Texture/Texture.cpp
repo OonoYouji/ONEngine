@@ -146,6 +146,8 @@ void Texture::CreateUAVTexture3D(
 		cpuHandle
 	);
 
+	dxResource_.SetCurrentState(D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+
 	/// --------------- ログ --------------- ///
 	Console::Log("[Create UAV Texture3D]");
 	Console::Log(" - Texture Name: " + name_);
@@ -222,6 +224,99 @@ void Texture::OutputTexture(const std::wstring& _filename, DxDevice* _dxDevice, 
 
 	readbackTexture_.Get()->Unmap(0, nullptr);
 }
+
+void Texture::OutputTexture3D(const std::wstring& _filename, DxDevice* _dxDevice, DxCommand* _dxCommand) {
+	auto desc = dxResource_.Get()->GetDesc();
+	if (desc.Dimension != D3D12_RESOURCE_DIMENSION_TEXTURE3D) {
+		Assert(false, "Not a 3D texture.");
+	}
+
+	// Readback用バッファサイズを取得
+	D3D12_PLACED_SUBRESOURCE_FOOTPRINT footprint{};
+	UINT numRows = 0;
+	UINT64 rowPitch = 0;
+	UINT64 totalBytes = 0;
+	_dxDevice->GetDevice()->GetCopyableFootprints(
+		&desc,
+		0,      // FirstSubresource
+		1,      // NumSubresources = 1 for 3D texture
+		0,
+		&footprint,
+		&numRows,
+		&rowPitch,
+		&totalBytes
+	);
+
+	// Readbackバッファを作成
+	CD3DX12_RESOURCE_DESC rbDesc = CD3DX12_RESOURCE_DESC::Buffer(totalBytes);
+	D3D12_HEAP_PROPERTIES heapProps = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_READBACK);
+
+	DxResource readback;
+	readback.CreateCommittedResource(
+		_dxDevice,
+		&heapProps,
+		D3D12_HEAP_FLAG_NONE,
+		&rbDesc,
+		D3D12_RESOURCE_STATE_COPY_DEST,
+		nullptr
+	);
+
+	// コピー前にリソース状態を変更
+	dxResource_.CreateBarrier(D3D12_RESOURCE_STATE_COPY_SOURCE, _dxCommand);
+
+	D3D12_TEXTURE_COPY_LOCATION src = {};
+	src.pResource = dxResource_.Get();
+	src.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
+	src.SubresourceIndex = 0;
+
+	D3D12_TEXTURE_COPY_LOCATION dst = {};
+	dst.pResource = readback.Get();
+	dst.Type = D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT;
+	dst.PlacedFootprint = footprint;
+
+	// コピー
+	_dxCommand->GetCommandList()->CopyTextureRegion(&dst, 0, 0, 0, &src, nullptr);
+
+	// コピー後、UAVに戻す場合
+	dxResource_.CreateBarrier(D3D12_RESOURCE_STATE_ALL_SHADER_RESOURCE, _dxCommand);
+
+	_dxCommand->CommandExecuteAndWait();
+	_dxCommand->CommandReset();
+
+	// ReadbackしてDirectXTexに詰め替え
+	D3D12_RANGE range{ 0, static_cast<SIZE_T>(totalBytes) };
+	void* mapped = nullptr;
+	readback.Get()->Map(0, &range, &mapped);
+
+	DirectX::ScratchImage volumeScratch;
+	volumeScratch.Initialize3D(desc.Format, desc.Width, desc.Height, desc.DepthOrArraySize, desc.MipLevels);
+
+	for (UINT z = 0; z < desc.DepthOrArraySize; z++) {
+		size_t sliceOffset = footprint.Offset + z * footprint.Footprint.RowPitch * footprint.Footprint.Height;
+
+		DirectX::Image img = {};
+		img.format = desc.Format;
+		img.width = static_cast<size_t>(desc.Width);
+		img.height = static_cast<size_t>(desc.Height);
+		img.rowPitch = footprint.Footprint.RowPitch;
+		img.slicePitch = footprint.Footprint.RowPitch * desc.Height;
+		img.pixels = reinterpret_cast<uint8_t*>(mapped) + sliceOffset;
+
+		memcpy(volumeScratch.GetImage(0, 0, z)->pixels, img.pixels, img.slicePitch);
+	}
+
+	DirectX::SaveToDDSFile(
+		volumeScratch.GetImages(),
+		volumeScratch.GetImageCount(),
+		volumeScratch.GetMetadata(),
+		DirectX::DDS_FLAGS_NONE,
+		_filename.c_str()
+	);
+
+	readback.Get()->Unmap(0, nullptr);
+}
+
+
 
 void Texture::SetName(const std::string& _name) {
 	name_ = _name;
