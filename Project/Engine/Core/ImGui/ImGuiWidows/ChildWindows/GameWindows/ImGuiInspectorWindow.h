@@ -18,7 +18,13 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	ImGuiInspectorWindow(const std::string& _windowName, class EntityComponentSystem* _ecs, class AssetCollection* _assetCollection, class EditorManager* _editorManager);
+	ImGuiInspectorWindow(
+		const std::string& _windowName, 
+		class DxManager* _dxManager,
+		class EntityComponentSystem* _ecs, 
+		class AssetCollection* _assetCollection, 
+		class EditorManager* _editorManager
+	);
 	~ImGuiInspectorWindow() {}
 
 	/// @brief imgui windowの描画処理
@@ -49,6 +55,7 @@ private:
 	class EntityComponentSystem* pEcs_;
 	class EditorManager* pEditorManager_;
 	class AssetCollection* pAssetCollection_;
+	class DxManager* pDxManager_;
 
 	std::string windowName_;
 	class IComponent* selectedComponent_ = nullptr;

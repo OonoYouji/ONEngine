@@ -40,8 +40,8 @@
 #include "Engine/ECS/Component/Components/RendererComponents/ScreenPostEffectTag/ScreenPostEffectTag.h"
 
 
-ImGuiInspectorWindow::ImGuiInspectorWindow(const std::string& _windowName, EntityComponentSystem* _ecs, AssetCollection* _assetCollection, EditorManager* _editorManager)
-	: pEcs_(_ecs), pAssetCollection_(_assetCollection), pEditorManager_(_editorManager) {
+ImGuiInspectorWindow::ImGuiInspectorWindow(const std::string& _windowName, DxManager* _dxManager, EntityComponentSystem* _ecs, AssetCollection* _assetCollection, EditorManager* _editorManager)
+	: pEcs_(_ecs), pDxManager_(_dxManager), pAssetCollection_(_assetCollection), pEditorManager_(_editorManager) {
 	windowName_ = _windowName;
 
 	/// ---------------------------------------------------
@@ -60,7 +60,7 @@ ImGuiInspectorWindow::ImGuiInspectorWindow(const std::string& _windowName, Entit
 	RegisterComponent<GrassField>([&](IComponent* _comp) { COMP_DEBUG::GrassFieldDebug(static_cast<GrassField*>(_comp), pAssetCollection_); });
 	RegisterComponent<CameraComponent>([&](IComponent* _comp) { COMP_DEBUG::CameraDebug(static_cast<CameraComponent*>(_comp)); });
 	RegisterComponent<ShadowCaster>([&](IComponent* _comp) { COMP_DEBUG::ShadowCasterDebug(static_cast<ShadowCaster*>(_comp)); });
-	RegisterComponent<VoxelTerrain>([&](IComponent* _comp) { COMP_DEBUG::VoxelTerrainDebug(static_cast<VoxelTerrain*>(_comp)); });
+	RegisterComponent<VoxelTerrain>([&](IComponent* _comp) { COMP_DEBUG::VoxelTerrainDebug(static_cast<VoxelTerrain*>(_comp), pDxManager_); });
 
 	/// renderer
 	RegisterComponent<MeshRenderer>([&](IComponent* _comp) { COMP_DEBUG::MeshRendererDebug(static_cast<MeshRenderer*>(_comp), pAssetCollection_); });

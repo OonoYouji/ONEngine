@@ -15,7 +15,8 @@
 /// ImGuiWindowCollection
 /// ///////////////////////////////////////////////////
 ImGuiWindowCollection::ImGuiWindowCollection(
-	EntityComponentSystem* _pEntityComponentSystem,
+	DxManager* _dxManager,
+	EntityComponentSystem* _ecs,
 	AssetCollection* _assetCollection,
 	ImGuiManager* _imGuiManager,
 	EditorManager* _editorManager,
@@ -24,8 +25,8 @@ ImGuiWindowCollection::ImGuiWindowCollection(
 
 	/// ここでwindowを生成する
 	AddParentWindow("File", std::make_unique<ImGuiFileWindow>());
-	AddParentWindow("Game", std::make_unique<ImGuiGameWindow>(_pEntityComponentSystem, _assetCollection, _editorManager, _sceneManager));
-	AddParentWindow("Prefab", std::make_unique<ImGuiEditorWindow>(_pEntityComponentSystem, _assetCollection, _editorManager, _sceneManager));
+	AddParentWindow("Game", std::make_unique<ImGuiGameWindow>(_dxManager, _ecs, _assetCollection, _editorManager, _sceneManager));
+	AddParentWindow("Prefab", std::make_unique<ImGuiEditorWindow>(_dxManager, _ecs, _assetCollection, _editorManager, _sceneManager));
 
 	// game windowで開始
 	selectedMenuIndex_ = 1;
@@ -60,7 +61,7 @@ void ImGuiWindowCollection::MainMenuUpdate() {
 		return;
 	}
 
-	for (int i = 0; auto & name : parentWindowNames_) {
+	for (int i = 0; auto& name : parentWindowNames_) {
 		int save = selectedMenuIndex_;
 
 		if (i == save) {

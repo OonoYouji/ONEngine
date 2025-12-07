@@ -8,10 +8,11 @@
 #include "Engine/Asset/Assets/Texture/Texture.h"
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/Core/ImGui/Math/AssetDebugger.h"
+#include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Editor/Commands/ImGuiCommand/ImGuiCommand.h"
 #include "Engine/ECS/Entity/GameEntity/GameEntity.h"
 
-void COMP_DEBUG::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain) {
+void COMP_DEBUG::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _dxManager) {
 	if (!_voxelTerrain) {
 		Console::LogError("VoxelTerrainDebug: _voxelTerrain is nullptr");
 		return;
@@ -36,6 +37,18 @@ void COMP_DEBUG::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain) {
 				_voxelTerrain->textureSize_.z,
 				true
 			);
+		}
+	}
+
+	/// 出力用
+	if(ImGui::Button("Output Chunk Textures Info")) {
+		std::wstring filepath = L"";
+		for (size_t i = 0; i < _voxelTerrain->chunks_.size(); i++) {
+			filepath = L"./Packages/Textures/Terrain/Chunk/" + std::to_wstring(i) + L".dds";
+
+			const Chunk& chunk = _voxelTerrain->chunks_[i];
+			chunk.pTexture->OutputTexture(filepath, _dxManager->GetDxDevice(), _dxManager->GetDxCommand());
+			Console::Log("Chunk " + std::to_string(i) + ": Texture3D GUID = " + chunk.texture3DId.ToString());
 		}
 	}
 

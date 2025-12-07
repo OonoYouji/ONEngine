@@ -16,6 +16,7 @@ public:
 	/// ===================================================
 
 	ImGuiWindowCollection(
+		class DxManager* _dxManager,
 		class EntityComponentSystem* _ecs,
 		class AssetCollection* _assetCollection,
 		class ImGuiManager* _imGuiManager,

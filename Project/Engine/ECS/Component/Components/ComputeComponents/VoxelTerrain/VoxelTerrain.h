@@ -56,9 +56,10 @@ void to_json(nlohmann::json& _j, const std::vector<Chunk>& _chunk);
 
 /// @brief デバッグ関数用に前方宣言をする
 class VoxelTerrain;
+class DxManager;
 
 namespace COMP_DEBUG {
-	void VoxelTerrainDebug(VoxelTerrain* _voxelTerrain);
+	void VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _dxManager);
 }
 
 void from_json(const nlohmann::json& _j, VoxelTerrain& _voxelTerrain);
@@ -108,7 +109,7 @@ namespace GPUData {
 /// ///////////////////////////////////////////////////
 class VoxelTerrain : public IComponent {
 	/// --------------- friend function --------------- ///
-	friend void COMP_DEBUG::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain);
+	friend void COMP_DEBUG::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _dxManager);
 	friend void from_json(const nlohmann::json& _j, VoxelTerrain& _voxelTerrain);
 	friend void to_json(nlohmann::json& _j, const VoxelTerrain& _voxelTerrain);
 
