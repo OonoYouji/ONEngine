@@ -159,7 +159,7 @@ void RenderingFramework::DrawPrefab() {
 
 	renderTex->CreateBarrierRenderTarget(pDxManager_->GetDxCommand());
 	renderTex->SetRenderTarget(pDxManager_->GetDxCommand(), pDxManager_->GetDxDSVHeap());
-	renderingPipelineCollection_->DrawSelectedPrefab(camera, pEntityComponentSystem_->GetECSGroup("Debug")->GetMainCamera2D());
+	renderingPipelineCollection_->DrawSelectedPrefab(camera, pEntityComponentSystem_->GetCurrentGroup()->GetMainCamera2D());
 	renderTex->CreateBarrierPixelShaderResource(pDxManager_->GetDxCommand());
 
 	renderingPipelineCollection_->ExecutePostProcess(renderTex->GetName());

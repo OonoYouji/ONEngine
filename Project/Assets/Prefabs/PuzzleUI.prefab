@@ -6,8 +6,8 @@
                     "enable": 1,
                     "matrixCalcFlags": 7,
                     "position": {
-                        "x": -855.5,
-                        "y": 446.79998779296875,
+                        "x": 0.0,
+                        "y": 0.0,
                         "z": 0.0
                     },
                     "rotate": {
@@ -17,8 +17,8 @@
                         "z": 0.0
                     },
                     "scale": {
-                        "x": 128.0,
-                        "y": 128.0,
+                        "x": 80.0,
+                        "y": 80.0,
                         "z": 1.0
                     },
                     "type": "Transform"
@@ -50,11 +50,11 @@
                 }
             ],
             "guid": {
-                "guid": "21ae0c7a3487b01b08f3f3e9a27e40d1"
+                "guid": "0e19bdc6125d21eec198ce8de016cd69"
             },
-            "id": 3,
+            "id": 4,
             "name": "MoveUI",
-            "parent": 2,
+            "parent": 3,
             "prefabName": ""
         },
         {
@@ -63,8 +63,8 @@
                     "enable": 1,
                     "matrixCalcFlags": 7,
                     "position": {
-                        "x": -855.5,
-                        "y": 316.0,
+                        "x": 0.0,
+                        "y": -80.0,
                         "z": 0.0
                     },
                     "rotate": {
@@ -74,8 +74,8 @@
                         "z": 0.0
                     },
                     "scale": {
-                        "x": 128.0,
-                        "y": 128.0,
+                        "x": 80.0,
+                        "y": 80.0,
                         "z": 1.0
                     },
                     "type": "Transform"
@@ -107,11 +107,11 @@
                 }
             ],
             "guid": {
-                "guid": "0d259a207e9fea9af4baa33b3ee26be4"
+                "guid": "b7f04681ef5b809b5e4defceb8bf3bed"
             },
-            "id": 4,
+            "id": 5,
             "name": "ChangeUI",
-            "parent": 2,
+            "parent": 3,
             "prefabName": ""
         },
         {
@@ -120,8 +120,8 @@
                     "enable": 1,
                     "matrixCalcFlags": 7,
                     "position": {
-                        "x": -650.0,
-                        "y": 446.79998779296875,
+                        "x": 128.0,
+                        "y": 0.0,
                         "z": 0.0
                     },
                     "rotate": {
@@ -131,8 +131,8 @@
                         "z": 0.0
                     },
                     "scale": {
-                        "x": 256.0,
-                        "y": 128.0,
+                        "x": 128.0,
+                        "y": 64.0,
                         "z": 1.0
                     },
                     "type": "Transform"
@@ -164,11 +164,11 @@
                 }
             ],
             "guid": {
-                "guid": "f2137c5f7df2dea5c16363c729d32632"
+                "guid": "92cbaf9f2822b6fde2afd511f1f6e078"
             },
-            "id": 5,
+            "id": 6,
             "name": "MoveUIText",
-            "parent": 2,
+            "parent": 3,
             "prefabName": ""
         },
         {
@@ -177,8 +177,8 @@
                     "enable": 1,
                     "matrixCalcFlags": 7,
                     "position": {
-                        "x": -522.0,
-                        "y": 316.0,
+                        "x": 192.0,
+                        "y": -80.0,
                         "z": 0.0
                     },
                     "rotate": {
@@ -188,8 +188,8 @@
                         "z": 0.0
                     },
                     "scale": {
-                        "x": 512.0,
-                        "y": 128.0,
+                        "x": 256.0,
+                        "y": 64.0,
                         "z": 1.0
                     },
                     "type": "Transform"
@@ -221,11 +221,11 @@
                 }
             ],
             "guid": {
-                "guid": "98d10ea00a156765a069efe886532551"
+                "guid": "2aa2fcc3301c96f83b10b531d7e5a539"
             },
-            "id": 6,
+            "id": 2,
             "name": "ChangeUIText",
-            "parent": 2,
+            "parent": 3,
             "prefabName": ""
         }
     ],
@@ -234,8 +234,8 @@
             "enable": 1,
             "matrixCalcFlags": 0,
             "position": {
-                "x": 0.0,
-                "y": 0.0,
+                "x": -858.4000244140625,
+                "y": 442.20001220703125,
                 "z": 0.0
             },
             "rotate": {
@@ -256,9 +256,9 @@
         }
     ],
     "guid": {
-        "guid": "cd939abc26bb1095ed2856497adf67ff"
+        "guid": "aff83119701180e21db654e201c2f712"
     },
-    "id": 2,
+    "id": 3,
     "name": "PuzzleUI",
     "parent": null,
     "prefabName": "PuzzleUI"

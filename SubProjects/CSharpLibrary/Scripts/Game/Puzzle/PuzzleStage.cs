@@ -18,7 +18,7 @@ public class PuzzleStage : MonoBehavior {
 	private Entity mapchip_;
 	[SerializeField] private string stageFilepath_ = "stage1.json";
 
-	//PuzzleCommandStacker puzzleCommandStacker_;
+	PuzzleCommandStacker commandStacker_;
 
 	int initCallCount_ = 0; // 初期化の呼び出し回数
 
@@ -32,7 +32,7 @@ public class PuzzleStage : MonoBehavior {
 		Debug.Log("====================================================================");
 		Debug.Log("PuzzleStage Initialize called. Call count: " + initCallCount_);
 
-		//puzzleCommandStacker_ = new PuzzleCommandStacker();
+		commandStacker_ = new PuzzleCommandStacker();
 
 		mapchip_ = ecsGroup.CreateEntity("Mapchip");
 		if (mapchip_ != null) {
@@ -221,18 +221,16 @@ public class PuzzleStage : MonoBehavior {
 		}
 
 		/* パズルを行っているときの更新 */
+		commandStacker_?.Update();
 		UpdatePlayer();
 		UpdateEntityPosition();
-	
 
 	}
 
 
 	private void UpdatePlayer() {
 		/* ----- プレイヤーの更新 ----- */
-
 		/* ----- プレイヤーの状態で色を変える ----- */
-
 		for (int i = 0; i < players_.Count; ++i) {
 			Entity player = players_[i];
 			PuzzlePlayer pp = player.GetScript<PuzzlePlayer>();
@@ -241,64 +239,50 @@ public class PuzzleStage : MonoBehavior {
 			}
 		}
 
-
 		if (activePlayer_ == null) {
 			return;
 		}
 
 		/* ----- プレイヤーの移動を行う ----- */
-
 		PuzzlePlayer puzzlePlayer = activePlayer_.GetScript<PuzzlePlayer>();
 		if (!puzzlePlayer) {
 			Debug.LogError("PuzzleStage UpdatePlayer: puzzlePlayer is null");
 			return;
 		}
 
-		if (puzzlePlayer.blockData.type == (int)BlockType.Black) {
-			moveDir_ = Vector2Int.zero;
+		/// 操作対象の切り替え
+		if (Input.TriggerGamepad(Gamepad.Y)) {
+			if (commandStacker_ != null) {
+				PuzzleCommands.SwitchActivePlayerCommand command = commandStacker_.ExecutionCommand<PuzzleCommands.SwitchActivePlayerCommand>();
+				if (command != null) {
+					command.Awake(this.entity);
+				}
+			}
 		}
+
+		/// 移動方向の決定
+		moveDir_ = InputAxis();
 
 		if (moveDir_ == Vector2Int.zero) {
-			/// 操作対象の切り替え
-			if (Input.TriggerGamepad(Gamepad.Y)) {
-				ActivePlayerChange();
-			}
-
-			/// 移動方向の決定
-			if (Input.TriggerGamepad(Gamepad.DPadUp)) {
-				moveDir_ = Vector2Int.up;
-			}
-
-			if (Input.TriggerGamepad(Gamepad.DPadDown)) {
-				moveDir_ = Vector2Int.down;
-			}
-
-			if (Input.TriggerGamepad(Gamepad.DPadLeft)) {
-				moveDir_ = Vector2Int.left;
-			}
-
-			if (Input.TriggerGamepad(Gamepad.DPadRight)) {
-				moveDir_ = Vector2Int.right;
-			}
+			return; //!< 移動しないなら処理を行わない
 		}
 
-
-		Vector2Int beforeAddress = puzzlePlayer.blockData.address;
-		/// 新しいアドレスが移動出来る場所か確認
-		if (moveDir_ != Vector2Int.zero) {
-			Debug.Log("-----: puzzle player move direction .x" + moveDir_.x + ": .y" + moveDir_.y);
-		}
-
-		if (CheckPlayerMoving(puzzlePlayer.blockData.address, moveDir_)) {
-			/* ----- プレイヤーの移動を行う ----- */
-			puzzlePlayer.blockData.address = puzzlePlayer.blockData.address + moveDir_;
-			Moved(beforeAddress, puzzlePlayer.blockData.address);
-
-			puzzlePlayer.UpdateRotateY(moveDir_);
-			puzzlePlayer.PlayMoveSE();
-		} else {
-			/// 移動できない場合の処理を追加
-			moveDir_ = Vector2Int.zero;
+		/// プレイヤーの移動処理を実行
+		if (commandStacker_ != null) {
+			PuzzlePlayer pp = activePlayer_.GetScript<PuzzlePlayer>();
+			int type = pp.blockData.type;
+			/// 黒、白でコマンドを分ける
+			if (type == (int)BlockType.White) {
+				PuzzleCommands.MoveWhiteBlockCommand command = commandStacker_.ExecutionCommand<PuzzleCommands.MoveWhiteBlockCommand>();
+				if (command != null) {
+					command.Awake(this.entity, activePlayer_, moveDir_);
+				}
+			} else if (type == (int)BlockType.Black) {
+				PuzzleCommands.MoveBlackBlockCommand command = commandStacker_.ExecutionCommand<PuzzleCommands.MoveBlackBlockCommand>();
+				if (command != null) {
+					command.Awake(this.entity, activePlayer_, moveDir_);
+				}
+			}
 		}
 	}
 
@@ -359,9 +343,9 @@ public class PuzzleStage : MonoBehavior {
 		} else if (_currentAddress.y != _movedAddress.y) {
 			/// y軸に移動した
 			int xAddress = _currentAddress.x;
-			int subLenght = Mathf.Abs(_movedAddress.y - _currentAddress.y);
+			int subLength = Mathf.Abs(_movedAddress.y - _currentAddress.y);
 
-			for (int i = 0; i < subLenght; i++) {
+			for (int i = 0; i < subLength; i++) {
 				int value = mapData_[_currentAddress.y + i][xAddress];
 				if (value == (int)MAPDATA.BLOCK_BLACK) {
 					mapData_[_currentAddress.y + i][xAddress] = (int)MAPDATA.BLOCK_WHTIE;
@@ -372,28 +356,8 @@ public class PuzzleStage : MonoBehavior {
 		}
 	}
 
-	private bool CheckIsBlock(int _mapValue) {
-		if (_mapValue == (int)MAPDATA.BLOCK_BLACK || _mapValue == (int)MAPDATA.BLOCK_WHTIE) {
-			return true;
-		}
 
-		return false;
-	}
 
-	private bool CheckIsConstantBlock(int _mapValue) {
-		if (_mapValue == (int)MAPDATA.CONSTANT_BLOCK_BLACK || _mapValue == (int)MAPDATA.CONSTANT_BLOCK_WHITE) {
-			return true;
-		}
-		return false;
-	}
-
-	private bool CheckIsGoal(int _mapValue) {
-		if (_mapValue == (int)MAPDATA.GOAL_BLACK || _mapValue == (int)MAPDATA.GOAL_WHITE) {
-			return true;
-		}
-
-		return false;
-	}
 
 	private bool CheckIsGoaled(PuzzlePlayer _puzzlePlayer) {
 		/// プレイヤーのアドレスを確認
@@ -460,7 +424,7 @@ public class PuzzleStage : MonoBehavior {
 	}
 
 
-	private void ActivePlayerChange() {
+	public void SwicthActivePlayer() {
 		/// ====================================================
 		/// 操作対象のプレイヤーを切り替える
 		/// ====================================================
@@ -471,6 +435,29 @@ public class PuzzleStage : MonoBehavior {
 				break;
 			}
 		}
+	}
+
+	private Vector2Int InputAxis() {
+		Vector2Int dir = Vector2Int.zero;
+
+		/// 十字キー入力
+		if (Input.TriggerGamepad(Gamepad.DPadUp)) {
+			dir = Vector2Int.up;
+		}
+
+		if (Input.TriggerGamepad(Gamepad.DPadDown)) {
+			dir = Vector2Int.down;
+		}
+
+		if (Input.TriggerGamepad(Gamepad.DPadLeft)) {
+			dir = Vector2Int.left;
+		}
+
+		if (Input.TriggerGamepad(Gamepad.DPadRight)) {
+			dir = Vector2Int.right;
+		}
+
+		return dir;
 	}
 
 
@@ -492,4 +479,48 @@ public class PuzzleStage : MonoBehavior {
 	public List<Entity> GetBlocks() {
 		return blocks_;
 	}
+
+	public bool CheckIsBlock(int _mapValue) {
+		if (_mapValue == (int)MAPDATA.BLOCK_BLACK || _mapValue == (int)MAPDATA.BLOCK_WHTIE) {
+			return true;
+		}
+		return false;
+	}
+
+	public bool CheckIsConstantBlock(int _mapValue) {
+		if (_mapValue == (int)MAPDATA.CONSTANT_BLOCK_BLACK || _mapValue == (int)MAPDATA.CONSTANT_BLOCK_WHITE) {
+			return true;
+		}
+		return false;
+	}
+
+	public bool CheckIsGoal(int _mapValue) {
+		if (_mapValue == (int)MAPDATA.GOAL_BLACK || _mapValue == (int)MAPDATA.GOAL_WHITE) {
+			return true;
+		}
+
+		return false;
+	}
+
+	public int GetMapValue(Vector2Int _address) {
+		if (_address.y < 0 || _address.y >= mapData_.Count || _address.x < 0 || _address.x >= mapData_[0].Count) {
+			return -1;
+		}
+		return mapData_[_address.y][_address.x];
+	}
+
+	public void SetMapValue(Vector2Int _address, int _mapValue) {
+		if (_address.y < 0 || _address.y >= mapData_.Count || _address.x < 0 || _address.x >= mapData_[0].Count) {
+			return;
+		}
+		mapData_[_address.y][_address.x] = _mapValue;
+	}
+
+	public bool IsExecutingCommand() {
+		if (commandStacker_ != null) {
+			return commandStacker_.IsRunning();
+		}
+		return false;
+	}
+
 }

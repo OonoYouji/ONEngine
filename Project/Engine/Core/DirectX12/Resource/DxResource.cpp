@@ -153,38 +153,38 @@ void DxResource::CreateBarrier(D3D12_RESOURCE_STATES _before, D3D12_RESOURCE_STA
 	currentState_ = _after;
 
 	/// ログ出力 (リソース名、Before、After)
-	{
-		Console::Log("[DxResource::CreateBarrier]");
-		Console::Log(L" - Name: " + GetD3D12Name(resource_.Get()));
-		Console::Log(" - Before State: "
-			+ std::to_string(static_cast<int>(_before)) + " : "
-			+ std::string(magic_enum::enum_name<D3D12_RESOURCE_STATES>(_before))
-		);
+	//{
+	//	Console::Log("[DxResource::CreateBarrier]");
+	//	Console::Log(L" - Name: " + GetD3D12Name(resource_.Get()));
+	//	Console::Log(" - Before State: "
+	//		+ std::to_string(static_cast<int>(_before)) + " : "
+	//		+ std::string(magic_enum::enum_name<D3D12_RESOURCE_STATES>(_before))
+	//	);
 
-		Console::Log(" - After State: "
-			+ std::to_string(static_cast<int>(_after)) + " : "
-			+ std::string(magic_enum::enum_name<D3D12_RESOURCE_STATES>(_after))
-		);
-	}
+	//	Console::Log(" - After State: "
+	//		+ std::to_string(static_cast<int>(_after)) + " : "
+	//		+ std::string(magic_enum::enum_name<D3D12_RESOURCE_STATES>(_after))
+	//	);
+	//}
 }
 
 void DxResource::CreateBarrier(D3D12_RESOURCE_STATES _after, DxCommand* _dxCommand) {
 	::CreateBarrier(resource_.Get(), currentState_, _after, _dxCommand);
 
 	/// ログ出力 (リソース名、Before、After)
-	{
-		Console::Log("[DxResource::CreateBarrier]");
-		Console::Log(L" - Name: " + GetD3D12Name(resource_.Get()));
-		Console::Log(" - Before State: "
-			+ std::to_string(static_cast<int>(currentState_)) + " : "
-			+ std::string(magic_enum::enum_name<D3D12_RESOURCE_STATES>(currentState_))
-		);
+	//{
+	//	Console::Log("[DxResource::CreateBarrier]");
+	//	Console::Log(L" - Name: " + GetD3D12Name(resource_.Get()));
+	//	Console::Log(" - Before State: "
+	//		+ std::to_string(static_cast<int>(currentState_)) + " : "
+	//		+ std::string(magic_enum::enum_name<D3D12_RESOURCE_STATES>(currentState_))
+	//	);
 
-		Console::Log(" - After State: "
-			+ std::to_string(static_cast<int>(_after)) + " : "
-			+ std::string(magic_enum::enum_name<D3D12_RESOURCE_STATES>(_after))
-		);
-	}
+	//	Console::Log(" - After State: "
+	//		+ std::to_string(static_cast<int>(_after)) + " : "
+	//		+ std::string(magic_enum::enum_name<D3D12_RESOURCE_STATES>(_after))
+	//	);
+	//}
 
 	currentState_ = _after;
 }

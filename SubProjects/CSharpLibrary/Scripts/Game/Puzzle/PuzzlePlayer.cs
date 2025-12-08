@@ -30,6 +30,13 @@ public class PuzzlePlayer : MonoBehavior {
 
 	public void Move(Vector2Int _moveDir) {
 		blockData.address += _moveDir;
+		UpdateRotateY(_moveDir);
+		PlayMoveSE();
+	}
+
+	public void SetPosition(Vector2Int _address) {
+		blockData.address = _address;
+		UpdatePosition();
 	}
 
 	public void PlayMoveSE() {

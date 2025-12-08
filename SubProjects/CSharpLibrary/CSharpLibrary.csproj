@@ -92,7 +92,6 @@
     <Compile Include="Scripts\Game\PrefabTest.cs" />
     <Compile Include="Scripts\Game\Puzzle\Block.cs" />
     <Compile Include="Scripts\Game\Puzzle\Command\PuzzleCommand.cs" />
-    <Compile Include="Scripts\Game\Puzzle\Command\PuzzlePlayerCommands.cs" />
     <Compile Include="Scripts\Game\Puzzle\Mapchip.cs">
       <SubType>Component</SubType>
     </Compile>
