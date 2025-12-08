@@ -2,6 +2,7 @@
     "components": [
         {
             "enable": 1,
+            "matrixCalcFlags": 7,
             "position": {
                 "x": 229.0957794189453,
                 "y": 1.9371049404144287,
@@ -25,29 +26,6 @@
         },
         {
             "enable": 1,
-            "material": {
-                "baseColor": {
-                    "w": 1.0,
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "baseTextureGuid": {
-                    "guid": "00000000000000000000000000000000"
-                },
-                "guid": {
-                    "guid": "00000000000000000000000000000000"
-                },
-                "normalTextureGuid": {
-                    "guid": "00000000000000000000000000000000"
-                },
-                "postEffectFlags": 1
-            },
-            "meshPath": "./Assets/Models/Entity/Animal/Wolf.obj",
-            "type": "MeshRenderer"
-        },
-        {
-            "enable": 1,
             "scripts": [
                 {
                     "enable": true,
@@ -64,9 +42,9 @@
         }
     ],
     "guid": {
-        "guid": "df274d3ee52318428b3869cddb073790"
+        "guid": "c34fccb85b2475af02868b5d03472498"
     },
-    "id": 7,
+    "id": 2,
     "name": "Player",
     "parent": null,
     "prefabName": "Player.prefab"

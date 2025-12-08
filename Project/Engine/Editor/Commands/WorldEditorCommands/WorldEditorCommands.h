@@ -130,7 +130,7 @@ private:
 /// ///////////////////////////////////////////////////
 class PasteEntityCommand : public IEditorCommand {
 public:
-	PasteEntityCommand(class ECSGroup* _ecs);
+	PasteEntityCommand(class ECSGroup* _ecs, class GameEntity* _selectedEntity);
 	~PasteEntityCommand() = default;
 
 	EDITOR_STATE Execute() override;
@@ -138,6 +138,7 @@ public:
 
 private:
 	class ECSGroup* pEcsGroup_;
+	class GameEntity* pSelectedEntity_ = nullptr;
 	class GameEntity* pastedEntity_ = nullptr;
 };
 

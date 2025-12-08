@@ -2,6 +2,7 @@
     "components": [
         {
             "enable": 1,
+            "matrixCalcFlags": 7,
             "position": {
                 "x": 0.0,
                 "y": 0.0,
@@ -58,7 +59,7 @@
         }
     ],
     "guid": {
-        "guid": "2b61bb614485da81f5a1a6840c6e48c0"
+        "guid": "de0dc10c02487c93ab1293214a98548e"
     },
     "id": 2,
     "name": "Goal",

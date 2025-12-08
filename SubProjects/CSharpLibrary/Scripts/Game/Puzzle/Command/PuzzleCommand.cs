@@ -423,7 +423,7 @@ namespace PuzzleCommands {
 		public override CommandState Execution() {
 			/// アクティブブロックの切り替え処理
 			PuzzleStage puzzleStage = puzzle_.GetScript<PuzzleStage>();
-			puzzleStage.SwicthActivePlayer();
+			puzzleStage.SwitchActivePlayer();
 			return CommandState.Finished;
 		}
 

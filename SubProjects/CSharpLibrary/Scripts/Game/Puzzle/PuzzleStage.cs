@@ -414,7 +414,7 @@ public class PuzzleStage : MonoBehavior {
 	}
 
 
-	public void SwicthActivePlayer() {
+	public void SwitchActivePlayer() {
 		/// ====================================================
 		/// 操作対象のプレイヤーを切り替える
 		/// ====================================================
@@ -456,7 +456,7 @@ public class PuzzleStage : MonoBehavior {
 			int height = mapData_.Count;
 			float space = blockData_.blockSpace;
 			blockPosOffset_ = new Vector3(width / 2f, 0f, height / 2f) * space;
-			blockPosOffset_ += new Vector3(space / 2f, 0f, space / 2f);
+			blockPosOffset_ -= new Vector3(space / 2f, 0f, space / 2f);
 			blockPosOffset_ *= -1.0f;
 			blockPosOffset_.y = 2f;
 
