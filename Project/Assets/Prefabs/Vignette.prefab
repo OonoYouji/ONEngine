@@ -2,7 +2,7 @@
     "components": [
         {
             "enable": 1,
-            "matrixCalcFlags": 7,
+            "matrixCalcFlags": 0,
             "position": {
                 "x": 0.0,
                 "y": 0.0,
@@ -15,9 +15,9 @@
                 "z": 0.0
             },
             "scale": {
-                "x": 0.10000000149011612,
-                "y": 0.10000000149011612,
-                "z": 0.10000000149011612
+                "x": 1980.0,
+                "y": 1080.0,
+                "z": 1.0
             },
             "type": "Transform"
         },
@@ -26,25 +26,15 @@
         },
         {
             "enable": 1,
-            "scripts": [
-                {
-                    "enable": true,
-                    "name": "Block"
-                }
-            ],
-            "type": "Script"
-        },
-        {
-            "enable": 1,
             "material": {
                 "baseColor": {
                     "w": 1.0,
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
+                    "x": 0.2800000011920929,
+                    "y": 0.2800000011920929,
+                    "z": 0.2800000011920929
                 },
                 "baseTextureGuid": {
-                    "guid": "14196fa931d9b8c11196cdd7eca20cf6"
+                    "guid": "7ce590dfa912a3c74535c2ec46cc5e8d"
                 },
                 "guid": {
                     "guid": "00000000000000000000000000000000"
@@ -52,17 +42,16 @@
                 "normalTextureGuid": {
                     "guid": "00000000000000000000000000000000"
                 },
-                "postEffectFlags": 1
+                "postEffectFlags": 0
             },
-            "meshPath": "./Packages/Models/primitive/cube.obj",
-            "type": "MeshRenderer"
+            "type": "SpriteRenderer"
         }
     ],
     "guid": {
-        "guid": "6e7e7792fe208da9bb7185979c35e010"
+        "guid": "257c4e44223fce742a570badc0a9b573"
     },
     "id": 2,
-    "name": "Block",
+    "name": "Vignette",
     "parent": null,
-    "prefabName": "Block"
+    "prefabName": "Vignette"
 }

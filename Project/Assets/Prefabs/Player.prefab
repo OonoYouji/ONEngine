@@ -39,10 +39,33 @@
             "radius": 1.0,
             "state": "Dynamic",
             "type": "SphereCollider"
+        },
+        {
+            "enable": 1,
+            "material": {
+                "baseColor": {
+                    "w": 1.0,
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "baseTextureGuid": {
+                    "guid": "00000000000000000000000000000000"
+                },
+                "guid": {
+                    "guid": "00000000000000000000000000000000"
+                },
+                "normalTextureGuid": {
+                    "guid": "00000000000000000000000000000000"
+                },
+                "postEffectFlags": 1
+            },
+            "meshPath": "./Assets/Models/Entity/Animal/Wolf.obj",
+            "type": "MeshRenderer"
         }
     ],
     "guid": {
-        "guid": "c34fccb85b2475af02868b5d03472498"
+        "guid": "825478230c46398c7c8a5aec2f1bdca8"
     },
     "id": 2,
     "name": "Player",

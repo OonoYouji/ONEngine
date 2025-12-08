@@ -12,11 +12,14 @@ public class PuzzleStage : MonoBehavior {
 	private Entity blockParent_;
 	private List<Entity> blocks_;
 	private List<Entity> players_;
+	private Entity magatama_; /// 勾玉エンティティ(アクティブプレイヤーの周囲を周る)
+	private float magatamaRotateValue_ = 0.0f;
+	private float magatamaHeight_ = 0.15f;
 
 	private Vector3 blockPosOffset_; // ブロックの位置オフセット
 	private Entity activePlayer_; // 
-	private Entity mapchip_;
-	[SerializeField] private string stageFilepath_ = "stage1.json";
+	private Entity mapChip_;
+	[SerializeField] private string stageFilePath_ = "stage1.json";
 
 	PuzzleCommandStacker commandStacker_;
 
@@ -34,12 +37,12 @@ public class PuzzleStage : MonoBehavior {
 
 		commandStacker_ = new PuzzleCommandStacker();
 
-		mapchip_ = ecsGroup.CreateEntity("Mapchip");
-		if (mapchip_ != null) {
-			mapchip_.parent = entity;
-			Mapchip mapchipScript = mapchip_.GetScript<Mapchip>();
+		mapChip_ = ecsGroup.CreateEntity("Mapchip");
+		if (mapChip_ != null) {
+			mapChip_.parent = entity;
+			Mapchip mapchipScript = mapChip_.GetScript<Mapchip>();
 			if (mapchipScript != null) {
-				mapchipScript.LoadMap("./Assets/Game/StageData/", stageFilepath_);
+				mapchipScript.LoadMap("./Assets/Game/StageData/", stageFilePath_);
 			}
 
 			mapData_ = mapchipScript.GetStartMapData();
@@ -51,6 +54,7 @@ public class PuzzleStage : MonoBehavior {
 		CreateBlockParent();
 		BlockDeploy(); // ブロック配置
 		PlayerDeploy(); // プレイヤー配置
+		DeployMagatama(); /// 勾玉配置
 		UpdateEntityPosition();
 		Debug.Log("====================================================================");
 	}
@@ -85,7 +89,7 @@ public class PuzzleStage : MonoBehavior {
 		Debug.Log("----- PlayerDeploy. -----");
 		/* ----- プレイヤーの配置 ----- */
 
-		Mapchip mapchipScript = mapchip_.GetScript<Mapchip>();
+		Mapchip mapchipScript = mapChip_.GetScript<Mapchip>();
 		if (!mapchipScript) {
 			return;
 		}
@@ -199,6 +203,17 @@ public class PuzzleStage : MonoBehavior {
 	}
 
 
+	void DeployMagatama() {
+		/* ----- 勾玉の配置 ----- */
+		magatama_ = ecsGroup.CreateEntity("Magatama");
+		if (magatama_ != null) {
+			magatama_.parent = blockParent_;
+		}
+
+		magatama_.transform.position = activePlayer_.transform.position + new Vector3(0f, 0.1f, 0f);
+	}
+
+
 	/// ///////////////////////////////////////////////////////////////////////////////////////////
 	/// 更新に使用する関数
 	/// ///////////////////////////////////////////////////////////////////////////////////////////
@@ -241,7 +256,7 @@ public class PuzzleStage : MonoBehavior {
 		}
 
 		/// 操作対象の切り替え
-		if (Input.TriggerGamepad(Gamepad.Y)) {
+		if (Input.TriggerGamepad(Gamepad.RightShoulder) || Input.TriggerGamepad(Gamepad.LeftShoulder)) {
 			if (commandStacker_ != null) {
 				PuzzleCommands.SwitchActivePlayerCommand command = commandStacker_.ExecutionCommand<PuzzleCommands.SwitchActivePlayerCommand>();
 				if (command != null) {
@@ -377,7 +392,7 @@ public class PuzzleStage : MonoBehavior {
 		blocks_.Clear();
 
 		mapData_.Clear();
-		Mapchip mapchipScript = mapchip_.GetScript<Mapchip>();
+		Mapchip mapchipScript = mapChip_.GetScript<Mapchip>();
 		mapData_ = mapchipScript.GetStartMapData();
 
 		BlockDeploy();
@@ -411,6 +426,13 @@ public class PuzzleStage : MonoBehavior {
 				blockScript.UpdatePosition(activePlayer.blockData.type);
 			}
 		}
+
+		/// 勾玉の位置の更新
+		magatamaRotateValue_ += 1.0f / 12.0f;
+		Vector3 magatamaPos = activePlayer_.transform.position + new Vector3(0f, magatamaHeight_, 0f);
+		magatama_.transform.position = Vector3.Lerp(magatama_.transform.position, magatamaPos, 0.6f);
+		magatama_.transform.rotate = Quaternion.MakeFromAxis(Vector3.up, magatamaRotateValue_);
+
 	}
 
 

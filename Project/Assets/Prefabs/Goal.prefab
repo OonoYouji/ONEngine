@@ -1,4 +1,74 @@
 {
+    "children": [
+        {
+            "components": [
+                {
+                    "enable": 1,
+                    "matrixCalcFlags": 7,
+                    "position": {
+                        "x": 0.0,
+                        "y": 1.0,
+                        "z": 0.0
+                    },
+                    "rotate": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 7.0,
+                        "y": 7.0,
+                        "z": 7.0
+                    },
+                    "type": "Transform"
+                },
+                {
+                    "type": "Variables"
+                },
+                {
+                    "enable": 1,
+                    "material": {
+                        "baseColor": {
+                            "w": 1.0,
+                            "x": 0.9400216937065125,
+                            "y": 0.9463087320327759,
+                            "z": 0.009526589885354042
+                        },
+                        "baseTextureGuid": {
+                            "guid": "14196fa931d9b8c11196cdd7eca20cf6"
+                        },
+                        "guid": {
+                            "guid": "00000000000000000000000000000000"
+                        },
+                        "normalTextureGuid": {
+                            "guid": "00000000000000000000000000000000"
+                        },
+                        "postEffectFlags": 1
+                    },
+                    "meshPath": "./Assets/Models/Entity/Puzzle/PuzzlePlayer.obj",
+                    "type": "MeshRenderer"
+                },
+                {
+                    "enable": 1,
+                    "scripts": [
+                        {
+                            "enable": true,
+                            "name": "GoalAlphaObject"
+                        }
+                    ],
+                    "type": "Script"
+                }
+            ],
+            "guid": {
+                "guid": "8ba0e4619972c25fcb64f0af303bc5d7"
+            },
+            "id": 3,
+            "name": "Landmark",
+            "parent": 2,
+            "prefabName": ""
+        }
+    ],
     "components": [
         {
             "enable": 1,
@@ -59,7 +129,7 @@
         }
     ],
     "guid": {
-        "guid": "de0dc10c02487c93ab1293214a98548e"
+        "guid": "aee6f732d80825274a9ca8fedba640ad"
     },
     "id": 2,
     "name": "Goal",

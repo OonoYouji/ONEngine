@@ -134,7 +134,6 @@ public class PuzzleStartController : MonoBehavior {
 
 		/// パズル用のUIを表示する
 		puzzleUI_.enable = true;
-
 	}
 
 

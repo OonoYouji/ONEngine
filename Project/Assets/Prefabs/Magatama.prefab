@@ -15,9 +15,9 @@
                 "z": 0.0
             },
             "scale": {
-                "x": 0.10000000149011612,
-                "y": 0.10000000149011612,
-                "z": 0.10000000149011612
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
             },
             "type": "Transform"
         },
@@ -26,22 +26,12 @@
         },
         {
             "enable": 1,
-            "scripts": [
-                {
-                    "enable": true,
-                    "name": "Block"
-                }
-            ],
-            "type": "Script"
-        },
-        {
-            "enable": 1,
             "material": {
                 "baseColor": {
                     "w": 1.0,
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
+                    "x": 0.5033557415008545,
+                    "y": 0.47083228826522827,
+                    "z": 0.09459032863378525
                 },
                 "baseTextureGuid": {
                     "guid": "14196fa931d9b8c11196cdd7eca20cf6"
@@ -54,15 +44,15 @@
                 },
                 "postEffectFlags": 1
             },
-            "meshPath": "./Packages/Models/primitive/cube.obj",
+            "meshPath": "./Assets/Models/Entity/Puzzle/Magatama.obj",
             "type": "MeshRenderer"
         }
     ],
     "guid": {
-        "guid": "6e7e7792fe208da9bb7185979c35e010"
+        "guid": "15fc1638dc423a1b3dcacd55615d0106"
     },
     "id": 2,
-    "name": "Block",
+    "name": "Magatama",
     "parent": null,
-    "prefabName": "Block"
+    "prefabName": "Magatama"
 }
