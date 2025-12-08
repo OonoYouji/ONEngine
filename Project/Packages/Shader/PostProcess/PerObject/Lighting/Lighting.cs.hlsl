@@ -69,5 +69,5 @@ void main(uint3 DTid : SV_DispatchThreadID) {
 		outputColor += EnvironmentReflection(position.xyz, normal.xyz);
 	}
 	
-	outputTex[dispatchId.xy] = float4(outputColor, 1.0f);
+	outputTex[DTid.xy] = float4(outputColor, 1.0f);
 }
