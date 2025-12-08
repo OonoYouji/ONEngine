@@ -79,6 +79,13 @@ void VoxelTerrainRenderingPipeline::Draw(ECSGroup* _ecs, CameraComponent* _camer
 		return;
 	}
 
+	auto cmdList = _dxCommand->GetCommandList();
+	if (!voxelTerrain->CheckCreatedBuffers()) {
+		voxelTerrain->SettingChunksGuid(pAssetCollection_);
+		voxelTerrain->CreateBuffers(pDxManager_->GetDxDevice(), pDxManager_->GetDxSRVHeap());
+		return;
+	}
+
 
 	/// ---------------------------------------------------
 	/// 描画
@@ -90,15 +97,6 @@ void VoxelTerrainRenderingPipeline::Draw(ECSGroup* _ecs, CameraComponent* _camer
 
 
 	/// --------------- バッファの設定 --------------- ///
-
-	auto cmdList = _dxCommand->GetCommandList();
-
-	if (!voxelTerrain->CheckCreatedBuffers()) {
-		voxelTerrain->SettingChunksGuid(pAssetCollection_);
-		voxelTerrain->CreateBuffers(pDxManager_->GetDxDevice(), pDxManager_->GetDxSRVHeap());
-		return;
-	}
-
 	voxelTerrain->TransitionTextureStates(
 		_dxCommand, pAssetCollection_,
 		D3D12_RESOURCE_STATE_GENERIC_READ
@@ -114,13 +112,13 @@ void VoxelTerrainRenderingPipeline::Draw(ECSGroup* _ecs, CameraComponent* _camer
 		SRV_VOXEL_TERRAIN_TEXTURE3D, frontSRVHandle
 	);
 
+
 	/// --------------- ディスパッチ --------------- ///
 	cmdList->DispatchMesh(
 		voxelTerrain->GetChunkCountXZ().x,
 		1,
 		voxelTerrain->GetChunkCountXZ().y
 	);
-
 
 	voxelTerrain->TransitionTextureStates(
 		_dxCommand, pAssetCollection_,
