@@ -19,6 +19,8 @@ TextureCube<float4> environmentTexture : register(t4); /// 環境マップ
 RWTexture2D<float4> outputTex : register(u0);
 SamplerState textureSampler : register(s0);
 
+static const float2 kTextureSize = float2(1920.0f, 1080.0f);
+
  
 float3 HalfLambertReflectance(float3 _color, float3 _normal) {
 	float3 resultColor = float3(1, 1, 1);
@@ -38,9 +40,9 @@ float3 EnvironmentReflection(float3 _position, float3 _normal) {
 
 
 [numthreads(16, 16, 1)]
-void main(uint3 dispatchId : SV_DispatchThreadID) {
+void main(uint3 DTid : SV_DispatchThreadID) {
 
-	float2 texCoord = float2(dispatchId.xy + 0.5f) / float2(1920.0f, 1080.0f);
+	float2 texCoord = float2(DTid.xy + 0.5f) / kTextureSize;
 	float4 color = colorTex.Sample(textureSampler, texCoord);
 	float4 position = positionTex.Sample(textureSampler, texCoord);
 	float4 normal = normalTex.Sample(textureSampler, texCoord);
@@ -54,22 +56,18 @@ void main(uint3 dispatchId : SV_DispatchThreadID) {
 			outputColor += EnvironmentReflection(position.xyz, normal.xyz);
 		}
 
-		outputTex[dispatchId.xy] = float4(outputColor, 1.0f);
+		outputTex[DTid.xy] = float4(outputColor, 1.0f);
 		return;
 	}
 	
 	/// lighting
 	float3 outputColor = float3(1, 1, 1);
-	
 	outputColor = HalfLambertReflectance(color.rgb, normal.xyz);
 	
-
 	/// 天球の環境反射を適用する
 	if (IsPostEffectEnabled((int) flags.x, PostEffectFlags_EnvironmentReflection)) {
 		outputColor += EnvironmentReflection(position.xyz, normal.xyz);
 	}
 	
 	outputTex[dispatchId.xy] = float4(outputColor, 1.0f);
-	
-	
 }
