@@ -15,6 +15,7 @@ public class PuzzleStartController : MonoBehavior {
 	private bool isStartedPuzzle_ = false; /// パズルが開始しているか
 	private Entity startUI_;
 	private Entity puzzleUI_;
+	private bool isFirstUpdate_ = true;
 
 	public override void Initialize() {
 
@@ -72,12 +73,17 @@ public class PuzzleStartController : MonoBehavior {
 
 	public override void Update() {
 
+		/// 初期化で行うとまだ生成されていなStageの情報が取れないので更新の最初に一回だけ行う
+		if (isFirstUpdate_) {
+			SetupPuzzleStage();
+			isFirstUpdate_ = false;
+		}
+
 		/// プレイヤーとパズルの距離を計算
 		toPlayerDistance_ = Vector3.Distance(transform.position, player_.transform.position);
 
 		/// パズルの開始用UIを更新
 		UpdateStartUI();
-
 
 		/// 開始出来る状態かチェック
 		if (startPuzzleDistance_ > toPlayerDistance_) {
@@ -180,5 +186,17 @@ public class PuzzleStartController : MonoBehavior {
 			mr.color = new Vector4(1, 1, 1, 0);
 		}
 	}
+
+	/// <summary>
+	/// パズルのブロックを設置する
+	/// </summary>
+	private void SetupPuzzleStage() {
+		PuzzleStage puzzleStage = entity.GetScript<PuzzleStage>();
+		if (puzzleStage) {
+			puzzleStage.UpdateBlockParentPosition();
+			puzzleStage.UpdateEntityPosition();
+		}
+	} 
+
 
 }

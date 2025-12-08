@@ -203,17 +203,7 @@ public class PuzzleStage : MonoBehavior {
 	/// 更新に使用する関数
 	/// ///////////////////////////////////////////////////////////////////////////////////////////
 	void Game() {
-		if (mapData_ != null) {
-			int width = mapData_[0].Count;
-			int height = mapData_.Count;
-			float space = blockData_.blockSpace;
-			blockPosOffset_ = new Vector3(width / 2f, 0f, height / 2f) * space;
-			blockPosOffset_ += new Vector3(space / 2f, 0f, space / 2f);
-			blockPosOffset_ *= -1.0f;
-			blockPosOffset_.y = 2f;
-
-			blockParent_.transform.position = blockPosOffset_;
-		}
+		UpdateBlockParentPosition();
 
 		/// パズルのリセット処理
 		if (Input.TriggerGamepad(Gamepad.B)) {
@@ -394,7 +384,7 @@ public class PuzzleStage : MonoBehavior {
 		PlayerDeploy();
 	}
 
-	private void UpdateEntityPosition() {
+	public void UpdateEntityPosition() {
 		/// ====================================================
 		/// このパズルのエンティティの座標を更新する
 		/// ====================================================
@@ -458,6 +448,20 @@ public class PuzzleStage : MonoBehavior {
 		}
 
 		return dir;
+	}
+
+	public void UpdateBlockParentPosition() {
+		if (mapData_ != null) {
+			int width = mapData_[0].Count;
+			int height = mapData_.Count;
+			float space = blockData_.blockSpace;
+			blockPosOffset_ = new Vector3(width / 2f, 0f, height / 2f) * space;
+			blockPosOffset_ += new Vector3(space / 2f, 0f, space / 2f);
+			blockPosOffset_ *= -1.0f;
+			blockPosOffset_.y = 2f;
+
+			blockParent_.transform.position = blockPosOffset_;
+		}
 	}
 
 
