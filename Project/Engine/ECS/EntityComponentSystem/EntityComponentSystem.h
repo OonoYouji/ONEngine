@@ -137,6 +137,12 @@ namespace MONO_INTERNAL_METHOD {
 	/// @return 見つかった子エンティティのID
 	int32_t InternalGetChildId(int32_t _entityId, uint32_t _childIndex, MonoString* _groupName);
 
+	/// @brief 子エンティティの数を取得する
+	/// @param _entityId 親エンティティID
+	/// @param _groupName ECSGroupの名前
+	/// @return 見つかった子エンティティの数
+	int32_t InternalGetChildrenCount(int32_t _entityId, MonoString* _groupName);
+
 	/// @brief エンティティの親のIDを取得
 	/// @param _entityId 対象のエンティティID
 	/// @param _groupName ECSGroupの名前

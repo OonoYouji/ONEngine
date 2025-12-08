@@ -305,6 +305,17 @@ int32_t MONO_INTERNAL_METHOD::InternalGetChildId(int32_t _entityId, uint32_t _ch
 	return child->GetId();
 }
 
+int32_t MONO_INTERNAL_METHOD::InternalGetChildrenCount(int32_t _entityId, MonoString* _groupName) {
+	std::string groupName = mono_string_to_utf8(_groupName);
+	GameEntity* entity = GetEntityById(_entityId, groupName);
+	if (!entity) {
+		return 0;
+	}
+
+	const auto& children = entity->GetChildren();
+	return static_cast<int32_t>(children.size());
+}
+
 int32_t MONO_INTERNAL_METHOD::InternalGetParentId(int32_t _entityId, MonoString* _groupName) {
 	std::string groupName = mono_string_to_utf8(_groupName);
 	GameEntity* entity = GetEntityById(_entityId, groupName);

@@ -57,7 +57,7 @@ public class PuzzleCommandStacker {
 
 		if (state_ == StackerState.WaitingInput) {
 			/// Undoの入力を受け付ける
-			if (Input.TriggerGamepad(Gamepad.X)) {
+			if (Input.TriggerGamepad(Gamepad.B)) {
 				Undo();
 			}
 		}
@@ -70,16 +70,12 @@ public class PuzzleCommandStacker {
 	/// <typeparam name="T"></typeparam>
 	public T ExecutionCommand<T>() where T : PuzzleCommand {
 		if (state_ != StackerState.WaitingInput) {
-			Debug.Log("===== Stacker is not waiting input.");
 			return null;
 		}
-
-		Debug.Log("===== Execute Command: " + typeof(T).ToString());
 
 		// 引数付きでインスタンスを生成
 		T t = (T)Activator.CreateInstance(typeof(T));
 		if (t == null) {
-			Debug.LogError("===== Failed to create command instance: " + typeof(T).ToString());
 			return null;
 		}
 
@@ -104,15 +100,6 @@ public class PuzzleCommandStacker {
 		return state_ == StackerState.Running;
 	}
 }
-
-
-/// ↓ 以下パズルのコマンド群 ↓ ///
-/*
- * 移動
- *	白 上下左右
- *	黒 上下左右
- * 切り替え
- */
 
 
 namespace PuzzleCommands {

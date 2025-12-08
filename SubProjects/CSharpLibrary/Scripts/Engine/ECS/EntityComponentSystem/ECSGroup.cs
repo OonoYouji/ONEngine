@@ -121,6 +121,10 @@ public class ECSGroup {
 		}
 
 		foreach (Entity entity in entities_.Values) {
+			if (!CheckEnable(entity)) {
+				continue;
+			}
+
 			foreach (MonoBehavior script in entity.GetScripts()) {
 				if (script.enable) {
 					script.Update();
@@ -255,6 +259,24 @@ public class ECSGroup {
 		Debug.LogError("Entity not found with name: " + _name);
 #endif
 		return null;
+	}
+
+
+	bool CheckEnable(Entity _entity) {
+		if (!_entity) {
+			return false;
+		}
+
+		if (!_entity.enable) {
+			return false;
+		}
+
+		Entity parent = _entity.parent;
+		if (parent) {
+			return CheckEnable(parent);
+		}
+
+		return true;
 	}
 
 

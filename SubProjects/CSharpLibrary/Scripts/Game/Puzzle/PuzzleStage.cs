@@ -19,7 +19,7 @@ public class PuzzleStage : MonoBehavior {
 	private Vector3 blockPosOffset_; // ブロックの位置オフセット
 	private Entity activePlayer_; // 
 	private Entity mapChip_;
-	[SerializeField] private string stageFilePath_ = "stage1.json";
+	[SerializeField] private string stageFilePath_ = "stage2.json";
 
 	PuzzleCommandStacker commandStacker_;
 
@@ -221,7 +221,7 @@ public class PuzzleStage : MonoBehavior {
 		UpdateBlockParentPosition();
 
 		/// パズルのリセット処理
-		if (Input.TriggerGamepad(Gamepad.B)) {
+		if (Input.TriggerGamepad(Gamepad.X)) {
 			Reset();
 		}
 

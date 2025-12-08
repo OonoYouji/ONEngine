@@ -102,6 +102,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Scripts\Game\Puzzle\PuzzleClearEffect.cs" />
+    <Compile Include="Scripts\Game\Puzzle\PuzzleManager.cs" />
     <Compile Include="Scripts\Game\Puzzle\PuzzlePlayer.cs" />
     <Compile Include="Scripts\Game\Puzzle\PuzzleStage.cs" />
     <Compile Include="Scripts\Game\Puzzle\PuzzleStartController.cs" />

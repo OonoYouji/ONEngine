@@ -45,8 +45,11 @@ public class PuzzlePlayer : MonoBehavior {
 
 	public void UpdatePosition() {
 		/// 座標更新
-		Vector3 newPos = new Vector3(blockData.address.x * blockData.blockSpace, 0f,
-			blockData.address.y * blockData.blockSpace);
+		Vector3 newPos = new Vector3(
+			blockData.address.x * blockData.blockSpace,
+			0f,
+			blockData.address.y * blockData.blockSpace
+		);
 		transform.position = newPos;
 	}
 

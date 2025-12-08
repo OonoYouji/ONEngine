@@ -198,4 +198,10 @@ public class PuzzleStartController : MonoBehavior {
 	} 
 
 
+
+	public bool IsStartedPuzzle() {
+		return isStartedPuzzle_;
+	}
+
+
 }
