@@ -33,7 +33,7 @@ void VoxelTerrainEditorComputePipeline::Initialize(ShaderCompiler* _shaderCompil
 		/// Descriptor Range
 		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // SRV_CHUNKS
 		pipeline_->AddDescriptorRange(1, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // SRV_WORLD_TEXTURE
-		pipeline_->AddDescriptorRange(0, MAX_TEXTURE_COUNT*2, D3D12_DESCRIPTOR_RANGE_TYPE_UAV); // UAV_VOXEL_TEXTURES
+		pipeline_->AddDescriptorRange(0, MAX_TEXTURE_COUNT * 2, D3D12_DESCRIPTOR_RANGE_TYPE_UAV); // UAV_VOXEL_TEXTURES
 
 		/// SRV
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 0); // SRV_CHUNKS
@@ -83,7 +83,7 @@ void VoxelTerrainEditorComputePipeline::Execute(EntityComponentSystem* _ecs, DxC
 
 	if (!voxelTerrain->CheckBufferCreatedForEditor()) {
 		voxelTerrain->CreateEditorBuffers(pDxManager_->GetDxDevice(), pDxManager_->GetDxSRVHeap());
-		voxelTerrain->CreateChunkTextureUAV(pDxManager_->GetDxDevice(), pDxManager_->GetDxSRVHeap(), _assetCollection);
+		voxelTerrain->CreateChunkTextureUAV(_dxCommand, pDxManager_->GetDxDevice(), pDxManager_->GetDxSRVHeap(), _assetCollection);
 		return;
 	}
 
@@ -102,9 +102,20 @@ void VoxelTerrainEditorComputePipeline::Execute(EntityComponentSystem* _ecs, DxC
 	inputInfo.keyboardKShift = Input::PressKey(DIK_LSHIFT);
 	inputInfo.screenMousePos = Input::GetImGuiImageMousePosNormalized("Scene");
 
+	/// 入力が無ければ終了
+	if (!inputInfo.mouseLeftButton) {
+		return;
+	}
+
+	/// マウスがウィンドウ外なら終了
+	if (inputInfo.screenMousePos.x < 0.0f || inputInfo.screenMousePos.x > 1280.0f ||
+		inputInfo.screenMousePos.y < 0.0f || inputInfo.screenMousePos.y > 720.0f) {
+		return;
+	}
+
+
 	GPUData::EditInfo editInfo{};
 	editInfo.brushRadius = 10.0f;
-
 	voxelTerrain->SetupEditorBuffers(
 		cmdList,
 		{ CBV_INPUT_INFO, CBV_TERRAIN_INFO, CBV_EDITOR_INFO, SRV_CHUNKS },
@@ -141,4 +152,8 @@ void VoxelTerrainEditorComputePipeline::Execute(EntityComponentSystem* _ecs, DxC
 		Mathf::DivideAndRoundUp(voxelChunkCount.x * voxelChunkCount.y, TGSize),
 		1, 1
 	);
+
+	/// 編集したのであればSRVに対してコピーを行う
+	voxelTerrain->CopyEditorTextureToChunkTexture(_dxCommand);
+
 }

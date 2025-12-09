@@ -19,25 +19,25 @@
 #include "Engine/Core/DirectX12/Command/DxCommand.h"
 
 namespace {
-	/// printf 互換のフォーマットログ
-	template <class... Args>
-	void Printf(const char* _fmt, Args... _args) {
-		// 出力サイズ計算
-		int size = std::snprintf(nullptr, 0, _fmt, _args...);
-		if (size <= 0) {
-			Console::Log("Format error");
-			return;
-		}
-
-		// サイズ分の文字列を生成
-		std::string msg(size, '\0');
-
-		// 実際にフォーマット文字列を埋め込む
-		std::snprintf(&msg[0], size + 1, _fmt, _args...);
-
-		// Console::Log に渡す
-		Console::Log(msg);
+/// printf 互換のフォーマットログ
+template <class... Args>
+void Printf(const char* _fmt, Args... _args) {
+	// 出力サイズ計算
+	int size = std::snprintf(nullptr, 0, _fmt, _args...);
+	if (size <= 0) {
+		Console::Log("Format error");
+		return;
 	}
+
+	// サイズ分の文字列を生成
+	std::string msg(size, '\0');
+
+	// 実際にフォーマット文字列を埋め込む
+	std::snprintf(&msg[0], size + 1, _fmt, _args...);
+
+	// Console::Log に渡す
+	Console::Log(msg);
+}
 }
 
 
@@ -104,7 +104,7 @@ void Texture::CreateUAVTexture(UINT _width, UINT _height, DxDevice* _dxDevice, D
 }
 
 
-void Texture::CreateUAVTexture3D(
+void Texture::CreateUAVTexture3DWithUAV(
 	UINT _width, UINT _height, UINT _depth,
 	DxDevice* _dxDevice,
 	DxSRVHeap* _dxSRVHeap,
@@ -159,6 +159,56 @@ void Texture::CreateUAVTexture3D(
 	Console::Log(" - DescriptorIndex: " + std::to_string(descriptorIndex));
 }
 
+
+void Texture::CreateUAVTexture3D(UINT _width, UINT _height, UINT _depth, DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap, DXGI_FORMAT _dxgiFormat) {
+	// テクスチャディスクリプション
+	D3D12_RESOURCE_DESC texDesc = {};
+	texDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE3D;
+	texDesc.Alignment = 0;
+	texDesc.Width = _width;
+	texDesc.Height = _height;
+	texDesc.DepthOrArraySize = _depth;
+	texDesc.MipLevels = 1;
+	texDesc.Format = _dxgiFormat;
+	texDesc.SampleDesc.Count = 1;
+	texDesc.SampleDesc.Quality = 0;
+	texDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
+	texDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
+
+	// リソース作成
+	D3D12_HEAP_PROPERTIES heapProperties = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
+	dxResource_.CreateCommittedResource(
+		_dxDevice, &heapProperties, D3D12_HEAP_FLAG_NONE,
+		&texDesc, D3D12_RESOURCE_STATE_UNORDERED_ACCESS, nullptr
+	);
+
+	D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc = {};
+	uavDesc.Format = _dxgiFormat;
+	uavDesc.ViewDimension = D3D12_UAV_DIMENSION_TEXTURE3D;
+	uavDesc.Texture3D.MipSlice = 0;
+	uavDesc.Texture3D.FirstWSlice = 0;
+	uavDesc.Texture3D.WSize = _depth;
+
+	uint32_t index = _dxSRVHeap->AllocateUAVTexture();
+	CreateEmptyUAVHandle();
+	SetUAVDescriptorIndex(index);
+	SetUAVCPUHandle(_dxSRVHeap->GetCPUDescriptorHandel(index));
+	SetUAVGPUHandle(_dxSRVHeap->GetGPUDescriptorHandel(index));
+
+	_dxDevice->GetDevice()->CreateUnorderedAccessView(dxResource_.Get(), nullptr, &uavDesc, uavHandle_->cpuHandle);
+
+
+
+	/// ログに今回行った操作を出力
+	Console::Log("[Create UAV Texture3D]");
+	Console::Log(" - Texture Name: " + name_);
+	Console::Log(" - Width: " + std::to_string(_width));
+	Console::Log(" - Height: " + std::to_string(_height));
+	Console::Log(" - Depth: " + std::to_string(_depth));
+	Console::Log(" - UAV Format: " + std::string(magic_enum::enum_name(uavFormat_)));
+	Console::Log(" - SRV Format: " + std::string(magic_enum::enum_name(srvFormat_)));
+	Console::Log(" - DescriptorIndex: " + std::to_string(index));
+}
 
 void Texture::OutputTexture(const std::wstring& _filename, DxDevice* _dxDevice, DxCommand* _dxCommand) {
 	/// Readbackリソースを作成（1行ごとのAlignmentに注意）
@@ -237,10 +287,7 @@ void Texture::OutputTexture3D(const std::wstring& _filename, DxDevice* _dxDevice
 	UINT64 rowPitch = 0;
 	UINT64 totalBytes = 0;
 	_dxDevice->GetDevice()->GetCopyableFootprints(
-		&desc,
-		0,      // FirstSubresource
-		1,      // NumSubresources = 1 for 3D texture
-		0,
+		&desc, 0, 1, 0,
 		&footprint,
 		&numRows,
 		&rowPitch,
@@ -254,10 +301,8 @@ void Texture::OutputTexture3D(const std::wstring& _filename, DxDevice* _dxDevice
 	DxResource readback;
 	readback.CreateCommittedResource(
 		_dxDevice,
-		&heapProps,
-		D3D12_HEAP_FLAG_NONE,
-		&rbDesc,
-		D3D12_RESOURCE_STATE_COPY_DEST,
+		&heapProps, D3D12_HEAP_FLAG_NONE,
+		&rbDesc, D3D12_RESOURCE_STATE_COPY_DEST,
 		nullptr
 	);
 
