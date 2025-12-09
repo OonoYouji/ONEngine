@@ -12,6 +12,8 @@
 /// //////////////////////////////////////////////////
 /// 3次元ベクトル
 /// //////////////////////////////////////////////////
+namespace ONEngine {
+
 struct Vector3 final {
 	Vector3();
 	Vector3(float _x, float _y, float _z);
@@ -232,3 +234,6 @@ inline Vector3 Vector3::operator+() const {
 /// json 変換
 void from_json(const nlohmann::json& _j, Vector3& _v);
 void to_json(nlohmann::json& _j, const Vector3& _v);
+
+
+} /// ONEngine

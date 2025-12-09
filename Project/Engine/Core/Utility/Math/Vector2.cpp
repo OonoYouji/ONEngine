@@ -1,5 +1,7 @@
 #include "Vector2.h"
 
+using namespace ONEngine;
+
 #include <cmath>
 
 /// ===================================================
@@ -46,11 +48,11 @@ Vector2 Vector2::Lerp(const Vector2& _v1, const Vector2& _v2, float _t) {
 	);
 }
 
-void from_json(const nlohmann::json& _j, Vector2& _v) {
+void ONEngine::from_json(const nlohmann::json& _j, Vector2& _v) {
 	_v.x = _j.at("x").get<float>();
 	_v.y = _j.at("y").get<float>();
 }
 
-void to_json(nlohmann::json& _j, const Vector2& _v) {
+void ONEngine::to_json(nlohmann::json& _j, const Vector2& _v) {
 	_j = nlohmann::json{ { "x", _v.x }, { "y", _v.y } };
 }

@@ -1,5 +1,6 @@
 #include "Transform.h"
 
+
 /// externals
 #include <imgui.h>
 
@@ -8,6 +9,8 @@
 #include "Engine/Script/MonoScriptEngine.h"
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentJsonConverter.h"
 #include "Engine/Editor/Commands/ImGuiCommand/ImGuiCommand.h"
+
+using namespace ONEngine;
 
 Transform::Transform() {
 	position = Vector3::kZero;
@@ -65,13 +68,13 @@ const Matrix4x4& Transform::GetMatWorld() const {
 /// mono からのTransform取得用関数
 /// ===================================================
 
-void UpdateTransform(Transform* _transform) {
+void ONEngine::UpdateTransform(Transform* _transform) {
 	if (GameEntity* entity = _transform->GetOwner()) {
 		entity->UpdateTransform();
 	}
 }
 
-void InternalGetPosition(uint64_t _nativeHandle, float* _x, float* _y, float* _z) {
+void ONEngine::InternalGetPosition(uint64_t _nativeHandle, float* _x, float* _y, float* _z) {
 	Transform* transform = reinterpret_cast<Transform*>(_nativeHandle);
 	if (!transform) {
 		Console::LogError("Transform pointer is null");
@@ -86,7 +89,7 @@ void InternalGetPosition(uint64_t _nativeHandle, float* _x, float* _y, float* _z
 	if (_z) { *_z = position.z; }
 }
 
-void InternalGetLocalPosition(uint64_t _nativeHandle, float* _x, float* _y, float* _z) {
+void ONEngine::InternalGetLocalPosition(uint64_t _nativeHandle, float* _x, float* _y, float* _z) {
 	Transform* transform = reinterpret_cast<Transform*>(_nativeHandle);
 	if (!transform) {
 		Console::LogError("Transform pointer is null");
@@ -98,7 +101,7 @@ void InternalGetLocalPosition(uint64_t _nativeHandle, float* _x, float* _y, floa
 	if (_z) { *_z = transform->position.z; }
 }
 
-void InternalGetRotate(uint64_t _nativeHandle, float* _x, float* _y, float* _z, float* _w) {
+void ONEngine::InternalGetRotate(uint64_t _nativeHandle, float* _x, float* _y, float* _z, float* _w) {
 	Transform* transform = reinterpret_cast<Transform*>(_nativeHandle);
 	if (!transform) {
 		Console::LogError("Transform pointer is null");
@@ -111,7 +114,7 @@ void InternalGetRotate(uint64_t _nativeHandle, float* _x, float* _y, float* _z, 
 	if (_w) { *_w = transform->rotate.w; }
 }
 
-void InternalGetScale(uint64_t _nativeHandle, float* _x, float* _y, float* _z) {
+void ONEngine::InternalGetScale(uint64_t _nativeHandle, float* _x, float* _y, float* _z) {
 	Transform* transform = reinterpret_cast<Transform*>(_nativeHandle);
 	if (!transform) {
 		Console::LogError("Transform pointer is null");
@@ -123,7 +126,7 @@ void InternalGetScale(uint64_t _nativeHandle, float* _x, float* _y, float* _z) {
 	if (_z) { *_z = transform->scale.z; }
 }
 
-void InternalSetPosition(uint64_t _nativeHandle, float _x, float _y, float _z) {
+void ONEngine::InternalSetPosition(uint64_t _nativeHandle, float _x, float _y, float _z) {
 	Transform* transform = reinterpret_cast<Transform*>(_nativeHandle);
 	if (!transform) {
 		Console::LogError("Transform pointer is null");
@@ -136,7 +139,7 @@ void InternalSetPosition(uint64_t _nativeHandle, float _x, float _y, float _z) {
 	UpdateTransform(transform); // 更新を呼び出す
 }
 
-void InternalSetLocalPosition(uint64_t _nativeHandle, float _x, float _y, float _z) {
+void ONEngine::InternalSetLocalPosition(uint64_t _nativeHandle, float _x, float _y, float _z) {
 	Transform* transform = reinterpret_cast<Transform*>(_nativeHandle);
 	if (!transform) {
 		Console::LogError("Transform pointer is null");
@@ -149,7 +152,7 @@ void InternalSetLocalPosition(uint64_t _nativeHandle, float _x, float _y, float 
 	UpdateTransform(transform); // 更新を呼び出す
 }
 
-void InternalSetRotate(uint64_t _nativeHandle, float _x, float _y, float _z, float _w) {
+void ONEngine::InternalSetRotate(uint64_t _nativeHandle, float _x, float _y, float _z, float _w) {
 	Transform* transform = reinterpret_cast<Transform*>(_nativeHandle);
 	if (!transform) {
 		Console::LogError("Transform pointer is null");
@@ -163,7 +166,7 @@ void InternalSetRotate(uint64_t _nativeHandle, float _x, float _y, float _z, flo
 	UpdateTransform(transform); // 更新を呼び出す
 }
 
-void InternalSetScale(uint64_t _nativeHandle, float _x, float _y, float _z) {
+void ONEngine::InternalSetScale(uint64_t _nativeHandle, float _x, float _y, float _z) {
 	Transform* transform = reinterpret_cast<Transform*>(_nativeHandle);
 	if (!transform) {
 		Console::LogError("Transform pointer is null");
@@ -207,7 +210,7 @@ void COMP_DEBUG::TransformDebug(Transform* _transform) {
 }
 
 
-void from_json(const nlohmann::json& _j, Transform& _t) {
+void ONEngine::from_json(const nlohmann::json& _j, Transform& _t) {
 	_t.enable = _j.at("enable").get<int>();
 	_t.position = _j.at("position").get<Vector3>();
 	_t.rotate = _j.at("rotate").get<Quaternion>();
@@ -216,7 +219,7 @@ void from_json(const nlohmann::json& _j, Transform& _t) {
 	_t.Update(); // 初期化時に更新を呼び出す
 }
 
-void to_json(nlohmann::json& _j, const Transform& _t) {
+void ONEngine::to_json(nlohmann::json& _j, const Transform& _t) {
 	_j = nlohmann::json{
 		{ "type", "Transform" },
 		{ "enable", _t.enable },

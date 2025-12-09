@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// std
 #include <unordered_map>
@@ -10,6 +10,8 @@
 /// ///////////////////////////////////////////////////
 /// ECSのシステムを管理するクラス
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class SystemCollection final {
 public:
 	/// ===================================================
@@ -37,3 +39,5 @@ private:
 
 };
 
+
+} /// ONEngine

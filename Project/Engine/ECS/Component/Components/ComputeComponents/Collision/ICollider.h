@@ -7,6 +7,7 @@
 #include "../../Interface/IComponent.h"
 #include "Engine/Core/Utility/Math/Vector3.h"
 
+namespace ONEngine {
 
 /// ///////////////////////////////////////////////////
 /// 衝突状態の列挙型
@@ -50,3 +51,5 @@ protected:
 
 };
 
+
+} /// ONEngine

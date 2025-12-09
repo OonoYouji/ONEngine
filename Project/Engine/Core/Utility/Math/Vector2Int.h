@@ -6,6 +6,8 @@
 /// ////////////////////////////////////////////////
 /// 2次元整数ベクトル
 /// ////////////////////////////////////////////////
+namespace ONEngine {
+
 struct Vector2Int final {
 	/// ===================================================
 	/// public : methods
@@ -42,3 +44,5 @@ struct Vector2Int final {
 
 void from_json(const nlohmann::json& _j, Vector2Int& _v);
 void to_json(nlohmann::json& _j, const Vector2Int& _v);
+
+} /// ONEngine

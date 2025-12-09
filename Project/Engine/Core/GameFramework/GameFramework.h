@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// std
 #include <memory>
@@ -18,6 +18,8 @@
 /// ///////////////////////////////////////////////////
 /// game framework class
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class GameFramework final {
 public:
 	/// ===================================================
@@ -54,3 +56,5 @@ private:
 
 };
 
+
+} /// ONEngine

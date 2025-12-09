@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// std
 #include <string>
@@ -10,6 +10,8 @@
 /// ///////////////////////////////////////////////////
 /// ImGuiHierarchyWindow
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class ImGuiHierarchyWindow : public IImGuiChildWindow {
 public:
 	/// ===================================================
@@ -119,3 +121,5 @@ private:
 
 	class EntityComponentSystem* pEcs_ = nullptr;
 };
+
+} /// ONEngine

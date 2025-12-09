@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// engine
 #include "../../Collection/ImGuiWindowCollection.h"
@@ -8,6 +8,8 @@
 /// //////////////////////////////////////////////////////
 /// PrefabFileを表示するためのImGuiWindow
 /// //////////////////////////////////////////////////////
+namespace ONEngine {
+
 class ImGuiPrefabFileWindow : public IImGuiChildWindow {
 public:
 	/// =====================================================
@@ -59,3 +61,5 @@ private:
 
 };
 
+
+} /// ONEngine

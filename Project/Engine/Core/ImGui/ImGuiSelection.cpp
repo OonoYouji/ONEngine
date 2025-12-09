@@ -3,6 +3,8 @@
 /// engine
 #include "Engine/Asset/Collection/AssetCollection.h"
 
+using namespace ONEngine;
+
 namespace {
 
 	/// ----- ImGuiSelection ----- ///

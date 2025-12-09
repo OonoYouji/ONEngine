@@ -1,4 +1,6 @@
-#include "GizmoRenderingPipeline.h"
+﻿#include "GizmoRenderingPipeline.h"
+
+using namespace ONEngine;
 
 /// std
 #include <numbers>

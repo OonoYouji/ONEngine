@@ -36,6 +36,9 @@
 #pragma comment(lib, "mfuuid.lib")
 
 
+using namespace ONEngine;
+
+
 AssetLoader::AssetLoader(DxManager* _dxm, AssetCollection* _collection)
 	: pDxManager_(_dxm), pAssetCollection_(_collection) {
 }
@@ -210,6 +213,7 @@ bool AssetLoader::LoadTextureDDS(const std::string& _filepath) {
 	}
 
 	texture.dxResource_.Get()->SetName(ConvertString(_filepath).c_str());
+	texture.dxResource_.SetCurrentState(D3D12_RESOURCE_STATE_GENERIC_READ);
 	texture.name_ = _filepath;
 
 	DxResource intermediateResource = UploadTextureData(texture.dxResource_.Get(), scratchImage);

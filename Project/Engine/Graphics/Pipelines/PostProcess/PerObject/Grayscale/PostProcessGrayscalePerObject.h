@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// std
 #include <array>
@@ -9,6 +9,8 @@
 /// ///////////////////////////////////////////////////
 /// オブジェクト単位でのグレースケール処理
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class PostProcessGrayscalePerObject : public PerObjectPostProcess {
 public:
 	/// ===================================================
@@ -32,3 +34,5 @@ private:
 	std::array<size_t, 3> textureIndices_;
 };
 
+
+} /// ONEngine

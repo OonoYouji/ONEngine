@@ -27,10 +27,11 @@
 #include "Engine/ECS/Component/Components/RendererComponents/ScreenPostEffectTag/ScreenPostEffectTag.h"
 
 
+using namespace ONEngine;
 using namespace MONO_INTERNAL_METHOD;
 using namespace InternalSpriteMethods;
 
-void AddComponentInternalCalls() {
+void ONEngine::AddComponentInternalCalls() {
 
 	/// transform
 	mono_add_internal_call("Transform::InternalGetPosition", (void*)InternalGetPosition);
@@ -75,7 +76,7 @@ void AddComponentInternalCalls() {
 
 }
 
-void AddEntityInternalCalls() {
+void ONEngine::AddEntityInternalCalls() {
 	/// entity
 	mono_add_internal_call("Entity::InternalAddComponent", (void*)InternalAddComponent);
 	mono_add_internal_call("Entity::InternalGetComponent", (void*)InternalGetComponent);
@@ -95,7 +96,7 @@ void AddEntityInternalCalls() {
 
 }
 
-void AddInputInternalCalls() {
+void ONEngine::AddInputInternalCalls() {
 	mono_add_internal_call("Input::InternalTriggerKey", (void*)Input::TriggerKey);
 	mono_add_internal_call("Input::InternalPressKey", (void*)Input::PressKey);
 	mono_add_internal_call("Input::InternalReleaseKey", (void*)Input::ReleaseKey);
@@ -112,6 +113,6 @@ void AddInputInternalCalls() {
 	mono_add_internal_call("Input::InternalGetMouseVelocity", (void*)InternalGetMouseVelocity);
 }
 
-void AddSceneInternalCalls() {
+void ONEngine::AddSceneInternalCalls() {
 	mono_add_internal_call("SceneManager::InternalLoadScene", (void*)InternalLoadScene);
 }

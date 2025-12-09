@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// std
 #include <string>
@@ -9,6 +9,8 @@
 #include "../../Collection/ImGuiWindowCollection.h"
 #include "Engine/Core/ImGui/Math/FileWatcher/FileWatcher.h"
 
+
+namespace ONEngine {
 
 class ImGuiProjectWindow : public IImGuiChildWindow {
 public:
@@ -100,3 +102,5 @@ private:
 	FileWatcher fileWatcher_;
 
 };
+
+} /// ONEngine

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// std
 #include <array>
@@ -11,6 +11,8 @@
 /// ///////////////////////////////////////////////////
 /// 地形エディタのブラシを表示するポストプロセス
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class PostProcessTerrainBrush : public PerObjectPostProcess {
 
 	enum ROOT_PARAM {
@@ -52,3 +54,5 @@ private:
 	std::array<size_t, 4> textureIndices_;
 	ConstantBuffer<Brush> brushBuffer_;
 };
+
+} /// ONEngine

@@ -9,10 +9,12 @@
 #include <nlohmann/json.hpp>
 
 
-struct Guid;
-void from_json(const nlohmann::json& _j, struct Guid& _guid);
-void to_json(nlohmann::json& _j, const struct Guid& _guid);
 
+namespace ONEngine {
+struct Guid;
+
+void from_json(const nlohmann::json& _j, Guid& _guid);
+void to_json(nlohmann::json& _j, const Guid& _guid);
 
 /// ////////////////////////////////////////////////////
 /// GUID 構造体
@@ -71,16 +73,19 @@ bool operator!=(const Guid& a, const Guid& b);
 /// @brief 新しいGuidを生成する
 Guid GenerateGuid();
 
+} /// ONEngine
+
 
 /// @brief unordered_mapでGuidをキーとして使うためのハッシュ関数の特殊化
 namespace std {
-	template<>
-	struct hash<Guid> {
-		std::size_t operator()(const Guid& g) const noexcept {
-			// 64bit × 2 → 1つのハッシュ値に圧縮
-			// ここではXOR＋ビットシフトを利用（軽量で十分衝突率が低い）
-			uint64_t h = g.high ^ (g.low + 0x9e3779b97f4a7c15ULL + (g.high << 6) + (g.high >> 2));
-			return static_cast<std::size_t>(h);
-		}
-	};
+template<>
+struct hash<ONEngine::Guid> {
+	std::size_t operator()(const ONEngine::Guid& g) const noexcept {
+		// 64bit × 2 → 1つのハッシュ値に圧縮
+		// ここではXOR＋ビットシフトを利用（軽量で十分衝突率が低い）
+		uint64_t h = g.high ^ (g.low + 0x9e3779b97f4a7c15ULL + (g.high << 6) + (g.high >> 2));
+		return static_cast<std::size_t>(h);
+	}
+};
 }
+

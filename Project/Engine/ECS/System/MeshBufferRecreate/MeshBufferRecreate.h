@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// engine
 #include "../Interface/ECSISystem.h"
@@ -6,6 +6,8 @@
 /// /////////////////////////////////////////////////
 /// カスタムメッシュのバッファを再作成するシステム
 /// /////////////////////////////////////////////////
+namespace ONEngine {
+
 class MeshBufferRecreate final : public ECSISystem {
 public:
 	/// ===================================================
@@ -25,3 +27,5 @@ private:
 	class DxDevice* pDxDevice_ = nullptr;
 };
 
+
+} /// ONEngine

@@ -11,6 +11,7 @@
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentJsonConverter.h"
 #include "Engine/Asset/Collection/AssetCollection.h"
 
+using namespace ONEngine;
 
 /// /////////////////////////////////////////////////////////////
 /// デバッグ用のSpriteRenderer
@@ -30,7 +31,7 @@ void COMP_DEBUG::SpriteDebug(SpriteRenderer* _sr, AssetCollection* _assetCollect
 }
 
 
-void to_json(nlohmann::json& _j, const SpriteRenderer& _sr) {
+void ONEngine::to_json(nlohmann::json& _j, const SpriteRenderer& _sr) {
 	_j = nlohmann::json{
 		{ "type", "SpriteRenderer" },
 		{ "enable", _sr.enable },
@@ -38,7 +39,7 @@ void to_json(nlohmann::json& _j, const SpriteRenderer& _sr) {
 	};
 }
 
-void from_json(const nlohmann::json& _j, SpriteRenderer& _sr) {
+void ONEngine::from_json(const nlohmann::json& _j, SpriteRenderer& _sr) {
 	_sr.enable = _j.value("enable", static_cast<int>(true));
 	_sr.material_ = _j.value("material", Material{});
 }

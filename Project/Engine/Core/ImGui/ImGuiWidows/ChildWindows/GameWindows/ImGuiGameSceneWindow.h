@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// engine
 #include "../../Collection/ImGuiWindowCollection.h"
@@ -6,6 +6,8 @@
 /// ///////////////////////////////////////////////////
 /// GameSceneTextureを表示するためのImGuiWindow
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class ImGuiGameSceneWindow : public IImGuiChildWindow {
 public:
 	/// ===================================================
@@ -26,3 +28,5 @@ private:
 
 };
 
+
+} /// ONEngine

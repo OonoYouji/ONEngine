@@ -16,6 +16,8 @@
 #include "EditorCompute/Grass/GrassArrangementPipeline.h"
 #include "EditorCompute/VoxelTerrainEditor/VoxelTerrainEditorComputePipeline.h"
 
+using namespace ONEngine;
+
 EditorManager::EditorManager(EntityComponentSystem* _ecs) : pEcs_(_ecs) {}
 EditorManager::~EditorManager() = default;
 

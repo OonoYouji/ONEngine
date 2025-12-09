@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// engine
 #include "Engine/Core/Utility/Utility.h"
@@ -9,6 +9,8 @@
 /// ///////////////////////////////////////////////////
 /// 影を適用するためのポストプロセス
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class PostProcessShadowApply : public ScreenPostProcess {
 
 	enum ROOT_PARAM {
@@ -50,3 +52,5 @@ private:
 
 };
 
+
+} /// ONEngine

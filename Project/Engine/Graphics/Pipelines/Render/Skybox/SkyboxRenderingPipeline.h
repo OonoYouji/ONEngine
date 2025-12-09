@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// engine
 #include "../../Interface/IRenderingPipeline.h"
@@ -11,6 +11,8 @@
 /// /////////////////////////////////////////////////
 /// 天球のレンダリングパイプライン
 /// /////////////////////////////////////////////////
+namespace ONEngine {
+
 class SkyboxRenderingPipeline : public IRenderingPipeline {
 public:
 
@@ -58,3 +60,5 @@ private:
 
 };
 
+
+} /// ONEngine

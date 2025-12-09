@@ -14,17 +14,18 @@
 
 
 /// ----- 前方宣言 ----- ///
+namespace ONEngine {
+
 class AssetCollection;
 class SpriteRenderer;
 
 namespace COMP_DEBUG {
-	void SpriteDebug(SpriteRenderer* _sr, AssetCollection* _assetCollection);
+void SpriteDebug(SpriteRenderer* _sr, AssetCollection* _assetCollection);
 }
 
 /// json serialize
 void to_json(nlohmann::json& _j, const SpriteRenderer& _sr);
 void from_json(const nlohmann::json& _j, SpriteRenderer& _sr);
-
 
 /// ///////////////////////////////////////////////////
 /// sprite描画クラス
@@ -82,3 +83,5 @@ namespace InternalSpriteMethods {
 	Vector4 InternalGetColor(uint64_t _nativeHandle);
 	void InternalSetColor(uint64_t _nativeHandle, Vector4 _color);
 }
+
+} /// ONEngine

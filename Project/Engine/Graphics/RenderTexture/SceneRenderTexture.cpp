@@ -1,4 +1,6 @@
-#include "SceneRenderTexture.h"
+﻿#include "SceneRenderTexture.h"
+
+using namespace ONEngine;
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"

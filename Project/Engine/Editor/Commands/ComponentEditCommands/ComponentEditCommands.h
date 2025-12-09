@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// std
 #include <typeindex>
@@ -12,6 +12,8 @@
 /// ///////////////////////////////////////////////
 /// エンティティのデータ出力コマンド
 /// ///////////////////////////////////////////////
+namespace ONEngine {
+
 class EntityDataOutputCommand : public IEditorCommand {
 public:
 	EntityDataOutputCommand(class GameEntity* _entity);
@@ -101,3 +103,5 @@ private:
 	class ECSGroup* pEcsGroup_ = nullptr;
 	class SceneManager* pSceneManager_ = nullptr;
 };
+
+} /// ONEngine

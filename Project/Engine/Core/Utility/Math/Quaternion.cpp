@@ -1,4 +1,6 @@
-#include "Quaternion.h"
+﻿#include "Quaternion.h"
+
+using namespace ONEngine;
 
 #include <DirectXMath.h>
 

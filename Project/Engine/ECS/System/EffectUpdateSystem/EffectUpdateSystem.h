@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// engine
 #include "../Interface/ECSISystem.h"
@@ -7,6 +7,8 @@
 /// /////////////////////////////////////////////////
 /// EffectUpdateSystem(エフェクトの更新システム)
 /// /////////////////////////////////////////////////
+namespace ONEngine {
+
 class EffectUpdateSystem : public ECSISystem {
 public:
 	/// ===================================================
@@ -37,3 +39,5 @@ private:
 
 };
 
+
+} /// ONEngine

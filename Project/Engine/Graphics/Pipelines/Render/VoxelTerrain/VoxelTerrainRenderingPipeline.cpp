@@ -1,5 +1,7 @@
 #include "VoxelTerrainRenderingPipeline.h"
 
+using namespace ONEngine;
+
 /// engine
 #include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
@@ -95,13 +97,7 @@ void VoxelTerrainRenderingPipeline::Draw(ECSGroup* _ecs, CameraComponent* _camer
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 	pDxManager_->HeapBindToCommandList();
 
-
 	/// --------------- バッファの設定 --------------- ///
-	voxelTerrain->TransitionTextureStates(
-		_dxCommand, pAssetCollection_,
-		D3D12_RESOURCE_STATE_GENERIC_READ
-	);
-
 	voxelTerrain->SetupGraphicBuffers(cmdList, { CBV_VOXEL_TERRAIN_INFO, CBV_MATERIAL, SRV_CHUNK_ARRAY }, pAssetCollection_);
 
 	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(_dxCommand->GetCommandList(), CBV_VIEW_PROJECTION);
@@ -112,17 +108,10 @@ void VoxelTerrainRenderingPipeline::Draw(ECSGroup* _ecs, CameraComponent* _camer
 		SRV_VOXEL_TERRAIN_TEXTURE3D, frontSRVHandle
 	);
 
-
 	/// --------------- ディスパッチ --------------- ///
 	cmdList->DispatchMesh(
 		voxelTerrain->GetChunkCountXZ().x,
 		1,
 		voxelTerrain->GetChunkCountXZ().y
 	);
-
-	voxelTerrain->TransitionTextureStates(
-		_dxCommand, pAssetCollection_,
-		D3D12_RESOURCE_STATE_UNORDERED_ACCESS
-	);
-
 }

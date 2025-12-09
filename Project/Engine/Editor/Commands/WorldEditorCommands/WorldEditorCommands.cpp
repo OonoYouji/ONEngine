@@ -1,4 +1,6 @@
-#include "WorldEditorCommands.h"
+﻿#include "WorldEditorCommands.h"
+
+using namespace ONEngine;
 
 /// std
 #include <iostream>

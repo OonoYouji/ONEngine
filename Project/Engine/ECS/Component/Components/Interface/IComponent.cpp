@@ -1,4 +1,6 @@
-#include "IComponent.h"
+﻿#include "IComponent.h"
+
+using namespace ONEngine;
 
 void IComponent::Reset() {}
 

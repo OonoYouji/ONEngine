@@ -1,4 +1,6 @@
-#include "ECSGroup.h"
+﻿#include "ECSGroup.h"
+
+using namespace ONEngine;
 
 /// engine
 #include "AddECSComponentFactoryFunction.h"

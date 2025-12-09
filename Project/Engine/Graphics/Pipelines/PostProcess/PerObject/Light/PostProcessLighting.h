@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 ///std
 #include <array>
@@ -12,6 +12,8 @@
 /// ///////////////////////////////////////////////////
 /// PostProcessLighting
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class PostProcessLighting : public PerObjectPostProcess {
 private:
 	/// ===================================================
@@ -61,3 +63,5 @@ private:
 
 };
 
+
+} /// ONEngine

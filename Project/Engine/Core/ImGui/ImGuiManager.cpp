@@ -1,4 +1,6 @@
-#include "ImGuiManager.h"
+﻿#include "ImGuiManager.h"
+
+using namespace ONEngine;
 
 /// external
 #include <imgui_impl_dx12.h>

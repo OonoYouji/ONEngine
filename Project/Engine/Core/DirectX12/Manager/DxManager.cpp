@@ -1,4 +1,6 @@
-#include "DxManager.h"
+﻿#include "DxManager.h"
+
+using namespace ONEngine;
 
 /// engine
 #include "Engine/Asset/Collection/AssetCollection.h"

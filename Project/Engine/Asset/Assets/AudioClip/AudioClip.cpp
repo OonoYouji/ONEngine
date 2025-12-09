@@ -1,5 +1,7 @@
 #include "AudioClip.h"
 
+using namespace ONEngine;
+
 /// engine
 #include "Engine/Core/Utility/Utility.h"
 
@@ -20,7 +22,7 @@ const AudioStructs::SoundData& AudioClip::GetSoundData() {
 	return soundData_;
 }
 
-void SoundDataUnload(AudioStructs::SoundData* _soundData) {
+void ONEngine::SoundDataUnload(AudioStructs::SoundData* _soundData) {
 	/// 音データの解放をする
 	_soundData->buffer.clear();
 	_soundData->wfex = {};

@@ -18,6 +18,8 @@
 #include "Engine/Core/Utility/Math/Quaternion.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Transform/Transform.h"
 
+namespace ONEngine {
+
 /// @brief アニメーションのジョイント情報
 struct Joint {
 	Transform transform;
@@ -140,3 +142,5 @@ namespace ANIME_MATH {
 	SkinCluster CreateSkinCluster(const Skeleton& _skeleton, Model* _model, DxManager* _dxm);
 }
 
+
+} /// ONEngine

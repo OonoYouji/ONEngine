@@ -1,4 +1,6 @@
-#include "PostProcessLighting.h"
+﻿#include "PostProcessLighting.h"
+
+using namespace ONEngine;
 
 /// std
 #include <list>

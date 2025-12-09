@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <Windows.h>
 
@@ -19,6 +19,8 @@
 /// ///////////////////////////////////////////////////
 /// ImGuiManager
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class ImGuiManager final {
 public:
 	/// ===================================================
@@ -100,3 +102,5 @@ public:
 };
 
 
+
+} /// ONEngine

@@ -1,4 +1,6 @@
-#include "CopyImageRenderingPipeline.h"
+﻿#include "CopyImageRenderingPipeline.h"
+
+using namespace ONEngine;
 
 /// engine
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"

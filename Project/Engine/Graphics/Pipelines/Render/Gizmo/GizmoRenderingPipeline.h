@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// std
 #include <unordered_map>
@@ -12,6 +12,8 @@
 /// ///////////////////////////////////////////////////
 /// gizmoの表示pipeline
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class GizmoRenderingPipeline : public IRenderingPipeline {
 private:
 
@@ -48,3 +50,5 @@ private:
 
 };
 
+
+} /// ONEngine

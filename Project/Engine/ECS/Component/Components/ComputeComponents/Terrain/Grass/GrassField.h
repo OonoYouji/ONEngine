@@ -19,6 +19,8 @@
 /// ////////////////////////////////////////////////////////
 /// 草のインスタンス情報 (シェーダーで利用)
 /// ////////////////////////////////////////////////////////
+namespace ONEngine {
+
 struct GrassInstance {
 	Vector3 position;
 	Vector3 tangent;
@@ -32,19 +34,17 @@ class GrassField;
 class AssetCollection;
 
 /// ////////////////////////////////////////////////////////
-/// json変換
-/// ////////////////////////////////////////////////////////
-void to_json(nlohmann::json& _j, const GrassField& _p);
-void from_json(const nlohmann::json& _j, GrassField& _p);
-
-
-/// ////////////////////////////////////////////////////////
 /// Editor
 /// ////////////////////////////////////////////////////////
 namespace COMP_DEBUG {
 	void GrassFieldDebug(GrassField* _grassField, AssetCollection* _assetCollection);
 }
 
+/// ////////////////////////////////////////////////////////
+/// json変換
+/// ////////////////////////////////////////////////////////
+void to_json(nlohmann::json& _j, const GrassField& _p);
+void from_json(const nlohmann::json& _j, GrassField& _p);
 
 /// ////////////////////////////////////////////////////////
 /// Terrainに生やすための草の群クラス
@@ -54,9 +54,9 @@ class GrassField : public IComponent {
 	friend class GrassArrangementPipeline;
 
 	/// privateメンバ変数の参照のためにフレンド宣言
+	friend void COMP_DEBUG::GrassFieldDebug(GrassField* _grassField, AssetCollection* _assetCollection);
 	friend void to_json(nlohmann::json& _j, const GrassField& _p);
 	friend void from_json(const nlohmann::json& _j, GrassField& _p);
-	friend void COMP_DEBUG::GrassFieldDebug(GrassField* _grassField, AssetCollection* _assetCollection);
 public:
 	/// ===================================================
 	/// public : methods
@@ -118,3 +118,5 @@ public:
 
 
 
+
+} /// ONEngine

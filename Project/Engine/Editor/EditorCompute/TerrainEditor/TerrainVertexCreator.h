@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// engine
 #include "../Interface/IEditorCompute.h"
@@ -8,6 +8,8 @@
 /// /////////////////////////////////////////////////
 /// 地形の頂点を生成するためのコンピュートシェーダー
 /// /////////////////////////////////////////////////
+namespace ONEngine {
+
 class TerrainVertexCreator : public IEditorCompute {
 
 	enum {
@@ -39,3 +41,5 @@ private:
 
 };
 
+
+} /// ONEngine

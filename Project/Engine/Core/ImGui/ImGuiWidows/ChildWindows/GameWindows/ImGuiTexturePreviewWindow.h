@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// std
 #include <string>
@@ -10,6 +10,8 @@
 /// ///////////////////////////////////////////////////
 /// TextureのPreviewを行う 主にシーンのテクスチャを確認するためのウィンドウ
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class ImGuiTexturePreviewWindow : public IImGuiChildWindow {
 public:
 	/// ===================================================
@@ -31,3 +33,5 @@ private:
 
 };
 
+
+} /// ONEngine

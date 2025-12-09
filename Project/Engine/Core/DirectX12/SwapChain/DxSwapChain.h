@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// directX
 #include <d3d12.h>
@@ -13,6 +13,8 @@
 /// /////////////////////////////////////////////////
 /// dx12のスワップチェインを管理するクラス
 /// /////////////////////////////////////////////////
+namespace ONEngine {
+
 class DxSwapChain {
 public:
 
@@ -68,3 +70,5 @@ private:
 
 };
 
+
+} /// ONEngine

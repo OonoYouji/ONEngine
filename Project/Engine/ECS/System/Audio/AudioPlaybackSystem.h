@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// std
 #include <list>
@@ -14,6 +14,8 @@
 /// ////////////////////////////////////////////////////////////
 /// 音の再生を行うクラス
 /// ////////////////////////////////////////////////////////////
+namespace ONEngine {
+
 class AudioPlaybackSystem : public ECSISystem {
 public:
 	/// ===================================================
@@ -61,3 +63,5 @@ private:
 
 };
 
+
+} /// ONEngine

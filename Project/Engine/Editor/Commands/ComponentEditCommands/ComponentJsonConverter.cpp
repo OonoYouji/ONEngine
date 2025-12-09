@@ -26,6 +26,9 @@
 #include "Engine/ECS/Component/Components/RendererComponents/ScreenPostEffectTag/ScreenPostEffectTag.h"
 
 
+using namespace ONEngine;
+
+
 /// //////////////////////////////////////////////////
 /// ComponentJsonConverter
 /// //////////////////////////////////////////////////
@@ -68,6 +71,10 @@ namespace {
 		template <typename T>
 		void Register() {
 			std::string typeName = typeid(T).name();
+			/// namespace ONEngineが付与されている場合は削除する
+			if (typeName.find("class ONEngine::") != std::string::npos) {
+				typeName = typeName.substr(strlen("class ONEngine::"));
+			}
 
 			converters_[typeName] = [](const IComponent* _component) {
 				return *static_cast<const T*>(_component);
@@ -92,6 +99,10 @@ namespace {
 
 nlohmann::json ComponentJsonConverter::ToJson(const IComponent* _component) {
 	std::string name = typeid(*_component).name();
+	if(name.find("class ONEngine::") != std::string::npos) {
+		name = name.substr(strlen("class ONEngine::"));
+	}
+
 	auto it = jsonConverter.converters_.find(name);
 	if (it == jsonConverter.converters_.end()) {
 		return nlohmann::json{};
@@ -101,7 +112,11 @@ nlohmann::json ComponentJsonConverter::ToJson(const IComponent* _component) {
 }
 
 void ComponentJsonConverter::FromJson(const nlohmann::json& _j, IComponent* _component) {
-	const std::string& name = typeid(*_component).name();
+	std::string name = typeid(*_component).name();
+	if (name.find("class ONEngine::") != std::string::npos) {
+		name = name.substr(strlen("class ONEngine::"));
+	}
+
 	auto it = jsonConverter.fromJsonConverters_.find(name);
 
 	if (it == jsonConverter.fromJsonConverters_.end()) {
@@ -112,36 +127,36 @@ void ComponentJsonConverter::FromJson(const nlohmann::json& _j, IComponent* _com
 	it->second(_component, _j);
 }
 
-void from_json(const nlohmann::json& _j, Quaternion& _q) {
+void ONEngine::from_json(const nlohmann::json& _j, Quaternion& _q) {
 	_q.x = _j.at("x").get<float>();
 	_q.y = _j.at("y").get<float>();
 	_q.z = _j.at("z").get<float>();
 	_q.w = _j.at("w").get<float>();
 }
 
-void to_json(nlohmann::json& _j, const Quaternion& _q) {
+void ONEngine::to_json(nlohmann::json& _j, const Quaternion& _q) {
 	_j = nlohmann::json{ { "x", _q.x }, { "y", _q.y }, { "z", _q.z }, { "w", _q.w } };
 }
 
-void from_json(const nlohmann::json& _j, Color& _c) {
+void ONEngine::from_json(const nlohmann::json& _j, Color& _c) {
 	_c.r = _j.at("r").get<float>();
 	_c.g = _j.at("g").get<float>();
 	_c.b = _j.at("b").get<float>();
 	_c.a = _j.at("a").get<float>();
 }
 
-void to_json(nlohmann::json& _j, const Color& _c) {
+void ONEngine::to_json(nlohmann::json& _j, const Color& _c) {
 	_j = nlohmann::json{ { "r", _c.r }, { "g", _c.g }, { "b", _c.b }, { "a", _c.a } };
 }
 
 
-void from_json(const nlohmann::json& _j, DirectionalLight& _l) {
+void ONEngine::from_json(const nlohmann::json& _j, DirectionalLight& _l) {
 	_l.SetIntensity(_j.at("intensity").get<float>());
 	_l.SetDirection(_j.at("direction").get<Vector3>());
 	_l.SetColor(_j.at("color").get<Vector4>());
 }
 
-void to_json(nlohmann::json& _j, const DirectionalLight& _l) {
+void ONEngine::to_json(nlohmann::json& _j, const DirectionalLight& _l) {
 	_j = nlohmann::json{
 		{ "type", "DirectionalLight" },
 		{ "enable", _l.enable },
@@ -151,7 +166,7 @@ void to_json(nlohmann::json& _j, const DirectionalLight& _l) {
 	};
 }
 
-void from_json(const nlohmann::json& _j, Effect& _e) {
+void ONEngine::from_json(const nlohmann::json& _j, Effect& _e) {
 	_e.enable = _j.at("enable").get<int>();
 	_e.SetIsCreateParticle(_j.at("isCreateParticle").get<bool>());
 	_e.SetMeshPath(_j.at("meshPath").get<std::string>());
@@ -166,7 +181,7 @@ void from_json(const nlohmann::json& _j, Effect& _e) {
 	_e.SetBlendMode(static_cast<Effect::BlendMode>(_j.at("blendMode").get<int>()));
 }
 
-void to_json(nlohmann::json& _j, const Effect& _e) {
+void ONEngine::to_json(nlohmann::json& _j, const Effect& _e) {
 	_j = nlohmann::json{
 		{ "type", "Effect" },
 		{ "enable", _e.enable },
@@ -184,31 +199,31 @@ void to_json(nlohmann::json& _j, const Effect& _e) {
 	};
 }
 
-void from_json(const nlohmann::json& _j, Effect::DistanceEmitData& _e) {
+void ONEngine::from_json(const nlohmann::json& _j, Effect::DistanceEmitData& _e) {
 	_e.emitDistance = _j.at("emitDistance").get<float>();
 	_e.emitInterval = _j.at("emitInterval").get<float>();
 }
 
-void to_json(nlohmann::json& _j, const Effect::DistanceEmitData& _e) {
+void ONEngine::to_json(nlohmann::json& _j, const Effect::DistanceEmitData& _e) {
 	_j = nlohmann::json{
 		{ "emitDistance", _e.emitDistance },
 		{ "emitInterval", _e.emitInterval }
 	};
 }
 
-void from_json(const nlohmann::json& _j, Effect::TimeEmitData& _e) {
+void ONEngine::from_json(const nlohmann::json& _j, Effect::TimeEmitData& _e) {
 	_e.emitTime = _j.at("emitTime").get<float>();
 	_e.emitInterval = _j.at("emitInterval").get<float>();
 }
 
-void to_json(nlohmann::json& _j, const Effect::TimeEmitData& _e) {
+void ONEngine::to_json(nlohmann::json& _j, const Effect::TimeEmitData& _e) {
 	_j = nlohmann::json{
 		{ "emitTime", _e.emitTime },
 		{ "emitInterval", _e.emitInterval }
 	};
 }
 
-void from_json(const nlohmann::json& _j, EffectMainModule& _e) {
+void ONEngine::from_json(const nlohmann::json& _j, EffectMainModule& _e) {
 	_e.SetLifeLeftTime(_j.at("lifeLeftTime").get<float>());
 	_e.SetSpeedStartData(_j.at("startSpeed").get<std::pair<float, float>>());
 	_e.SetSizeStartData(_j.at("startSize").get<std::pair<Vector3, Vector3>>());
@@ -217,7 +232,7 @@ void from_json(const nlohmann::json& _j, EffectMainModule& _e) {
 	_e.SetGravityModifier(_j.at("gravityModifier").get<float>());
 }
 
-void to_json(nlohmann::json& _j, const EffectMainModule& _e) {
+void ONEngine::to_json(nlohmann::json& _j, const EffectMainModule& _e) {
 	_j = nlohmann::json{
 		{ "lifeLeftTime", _e.GetLifeLeftTime() },
 		{ "startSpeed", _e.GetSpeedStartData() },
@@ -228,7 +243,7 @@ void to_json(nlohmann::json& _j, const EffectMainModule& _e) {
 	};
 }
 
-void from_json(const nlohmann::json& _j, EffectEmitShape& _e) {
+void ONEngine::from_json(const nlohmann::json& _j, EffectEmitShape& _e) {
 	int type = _j.at("type").get<int>();
 	switch (type) {
 	case static_cast<int>(EffectEmitShape::ShapeType::Sphere):
@@ -245,7 +260,7 @@ void from_json(const nlohmann::json& _j, EffectEmitShape& _e) {
 	}
 }
 
-void to_json(nlohmann::json& _j, const EffectEmitShape& _e) {
+void ONEngine::to_json(nlohmann::json& _j, const EffectEmitShape& _e) {
 	_j = nlohmann::json{
 		{ "type", static_cast<int>(_e.GetType()) },
 		{ "sphere", _e.GetSphere() },
@@ -254,35 +269,35 @@ void to_json(nlohmann::json& _j, const EffectEmitShape& _e) {
 	};
 }
 
-void from_json(const nlohmann::json& _j, EffectEmitShape::Sphere& _e) {
+void ONEngine::from_json(const nlohmann::json& _j, EffectEmitShape::Sphere& _e) {
 	_e.center = _j.at("center").get<Vector3>();
 	_e.radius = _j.at("radius").get<float>();
 }
-void to_json(nlohmann::json& _j, const EffectEmitShape::Sphere& _e) {
+void ONEngine::to_json(nlohmann::json& _j, const EffectEmitShape::Sphere& _e) {
 	_j = nlohmann::json{
 		{ "center", _e.center },
 		{ "radius", _e.radius }
 	};
 }
 
-void from_json(const nlohmann::json& _j, EffectEmitShape::Cube& _e) {
+void ONEngine::from_json(const nlohmann::json& _j, EffectEmitShape::Cube& _e) {
 	_e.center = _j.at("center").get<Vector3>();
 	_e.size = _j.at("size").get<Vector3>();
 }
-void to_json(nlohmann::json& _j, const EffectEmitShape::Cube& _e) {
+void ONEngine::to_json(nlohmann::json& _j, const EffectEmitShape::Cube& _e) {
 	_j = nlohmann::json{
 		{ "center", _e.center },
 		{ "size", _e.size }
 	};
 }
 
-void from_json(const nlohmann::json& _j, EffectEmitShape::Cone& _e) {
+void ONEngine::from_json(const nlohmann::json& _j, EffectEmitShape::Cone& _e) {
 	_e.center = _j.at("center").get<Vector3>();
 	_e.angle = _j.at("angle").get<float>();
 	_e.radius = _j.at("radius").get<float>();
 	_e.height = _j.at("height").get<float>();
 }
-void to_json(nlohmann::json& _j, const EffectEmitShape::Cone& _e) {
+void ONEngine::to_json(nlohmann::json& _j, const EffectEmitShape::Cone& _e) {
 	_j = nlohmann::json{
 		{ "center", _e.center },
 		{ "angle", _e.angle },
@@ -293,12 +308,12 @@ void to_json(nlohmann::json& _j, const EffectEmitShape::Cone& _e) {
 
 
 
-void from_json(const nlohmann::json& _j, CustomMeshRenderer& _m) {
+void ONEngine::from_json(const nlohmann::json& _j, CustomMeshRenderer& _m) {
 	_m.enable = _j.at("enable").get<int>();
 	_m.SetTexturePath(_j.at("texturePath").get<std::string>());
 	_m.SetColor(_j.at("color").get<Color>());
 }
-void to_json(nlohmann::json& _j, const CustomMeshRenderer& _m) {
+void ONEngine::to_json(nlohmann::json& _j, const CustomMeshRenderer& _m) {
 	_j = nlohmann::json{
 		{ "type", "CustomMeshRenderer" },
 		{ "enable", _m.enable },
@@ -307,24 +322,24 @@ void to_json(nlohmann::json& _j, const CustomMeshRenderer& _m) {
 	};
 }
 
-void from_json(const nlohmann::json& _j, Line2DRenderer& _l) {
+void ONEngine::from_json(const nlohmann::json& _j, Line2DRenderer& _l) {
 	_l.enable = _j.at("enable").get<int>();
 }
 
-void to_json(nlohmann::json& _j, const Line2DRenderer& _l) {
+void ONEngine::to_json(nlohmann::json& _j, const Line2DRenderer& _l) {
 	_j = nlohmann::json{
 		{ "type", "Line2DRenderer" },
 		{ "enable", _l.enable }
 	};
 }
 
-void from_json(const nlohmann::json& _j, Line3DRenderer& _l) {
+void ONEngine::from_json(const nlohmann::json& _j, Line3DRenderer& _l) {
 	if (!_j.contains("enable")) {
 		_l.enable = _j.at("enable").get<int>();
 	}
 }
 
-void to_json(nlohmann::json& _j, const Line3DRenderer& _l) {
+void ONEngine::to_json(nlohmann::json& _j, const Line3DRenderer& _l) {
 	_j = nlohmann::json{
 		{ "type", "Line3DRenderer" },
 		{ "enable", _l.enable }

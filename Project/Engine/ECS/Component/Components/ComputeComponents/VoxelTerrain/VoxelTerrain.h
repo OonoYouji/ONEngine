@@ -6,6 +6,7 @@
 /// engine
 #include "../../Interface/IComponent.h"
 #include "Engine/Asset/Guid/Guid.h"
+#include "Engine/Asset/Assets/Texture/Texture.h"
 #include "Engine/Asset/Assets/Mateiral/Material.h"
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/Core/Utility/Math/Vector3Int.h"
@@ -41,18 +42,16 @@
 */
 
 
+namespace ONEngine {
 
 /// ///////////////////////////////////////////////////
 /// ボクセル地形におけるチャンク
 /// ///////////////////////////////////////////////////
 struct Chunk {
 	Guid texture3DId; ///< このチャンクを表現するTexture3DのId
-	class Texture* pTexture;
+	Texture* pTexture;
+	Texture uavTexture; ///< エディタ用UAVテクスチャ
 };
-
-void from_json(const nlohmann::json& _j, std::vector<Chunk>& _chunk);
-void to_json(nlohmann::json& _j, const std::vector<Chunk>& _chunk);
-
 
 /// @brief デバッグ関数用に前方宣言をする
 class VoxelTerrain;
@@ -62,9 +61,12 @@ namespace COMP_DEBUG {
 void VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _dxManager);
 }
 
+void from_json(const nlohmann::json& _j, std::vector<Chunk>& _chunk);
+void to_json(nlohmann::json& _j, const std::vector<Chunk>& _chunk);
+
+
 void from_json(const nlohmann::json& _j, VoxelTerrain& _voxelTerrain);
 void to_json(nlohmann::json& _j, const VoxelTerrain& _voxelTerrain);
-
 
 /// ///////////////////////////////////////////////////
 /// GPU用のデータ構造体
@@ -177,7 +179,13 @@ public:
 	/// @param _dxDevice DxDeviceのポインタ
 	/// @param _dxSRVHeap DxSRVHeapのポインタ
 	/// @param _assetCollection AssetCollectionのポインタ
-	void CreateChunkTextureUAV(DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap, class AssetCollection* _assetCollection);
+	void CreateChunkTextureUAV(DxCommand* _dxCommand, DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap, class AssetCollection* _assetCollection);
+
+	/// @brief 編集したエディタ用テクスチャをチャンク用テクスチャにコピーする
+	/// @param _dxCommand DxCommandのポインタ
+	/// @param _dxDevice DxDeviceのポインタ
+	/// @param _assetCollection 
+	void CopyEditorTextureToChunkTexture(DxCommand* _dxCommand);
 
 private:
 	/// ===========================================
@@ -213,3 +221,5 @@ private:
 
 };
 
+
+} /// ONEngine

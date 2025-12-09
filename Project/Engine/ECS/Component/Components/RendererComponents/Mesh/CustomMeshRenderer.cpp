@@ -3,6 +3,8 @@
 /// engine
 #include "Engine/Asset/Collection/AssetCollection.h"
 
+using namespace ONEngine;
+
 CustomMeshRenderer::CustomMeshRenderer() {
 	gpuMaterial_.baseColor = Vector4::kWhite;
 	gpuMaterial_.postEffectFlags = PostEffectFlags_Lighting;

@@ -1,4 +1,6 @@
-#include "MeshRenderingPipeline.h"
+﻿#include "MeshRenderingPipeline.h"
+
+using namespace ONEngine;
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"

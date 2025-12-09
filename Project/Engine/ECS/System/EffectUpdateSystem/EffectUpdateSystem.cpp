@@ -1,4 +1,6 @@
-#include "EffectUpdateSystem.h"
+﻿#include "EffectUpdateSystem.h"
+
+using namespace ONEngine;
 
 /// std
 #include <list>

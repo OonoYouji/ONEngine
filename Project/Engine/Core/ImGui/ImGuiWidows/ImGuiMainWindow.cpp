@@ -1,4 +1,6 @@
-#include "ImGuiMainWindow.h"
+﻿#include "ImGuiMainWindow.h"
+
+using namespace ONEngine;
 
 /// external
 #include <imgui.h>

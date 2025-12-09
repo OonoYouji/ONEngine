@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// std
 #include <memory>
@@ -11,6 +11,8 @@
 /// ///////////////////////////////////////////////////
 /// PostProcessのinterfaceクラス
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class IPostProcessPipeline {
 public:
 	/// ===================================================
@@ -54,3 +56,5 @@ using ScreenPostProcess = IPostProcessPipeline;
 /// @param _dst コピー元のリソース
 /// @param _cmdList CommandListのポインタ
 void CopyResource(ID3D12Resource* _src, ID3D12Resource* _dst, ID3D12GraphicsCommandList6* _cmdList);
+
+} /// ONEngine

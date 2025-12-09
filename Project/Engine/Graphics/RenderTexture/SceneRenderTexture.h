@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// std
 #include <vector>
@@ -19,6 +19,8 @@ enum SCENE_RTV {
 /// ///////////////////////////////////////////////////
 /// シーンのレンダリングテクスチャ
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class SceneRenderTexture final {
 public:
 	/// ===================================================
@@ -55,3 +57,5 @@ private:
 
 };
 
+
+} /// ONEngine

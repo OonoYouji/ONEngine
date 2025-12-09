@@ -1,5 +1,7 @@
 #include "DxResource.h"
 
+using namespace ONEngine;
+
 /// externals
 #include <magic_enum/magic_enum.hpp>
 #include <magic_enum/magic_enum_flags.hpp>
@@ -206,7 +208,7 @@ void DxResource::SetCurrentState(D3D12_RESOURCE_STATES _state) {
 }
 
 
-std::wstring GetD3D12Name(ID3D12Object* _object) {
+std::wstring ONEngine::GetD3D12Name(ID3D12Object* _object) {
 	UINT size = 0;
 
 	/// まずサイズを調べる
@@ -230,7 +232,7 @@ std::wstring GetD3D12Name(ID3D12Object* _object) {
 	return name;
 }
 
-void CreateBarrier(ID3D12Resource* _resource, D3D12_RESOURCE_STATES _before, D3D12_RESOURCE_STATES _after, DxCommand* _dxCommand) {
+void ONEngine::CreateBarrier(ID3D12Resource* _resource, D3D12_RESOURCE_STATES _before, D3D12_RESOURCE_STATES _after, DxCommand* _dxCommand) {
 	/// ----- リソースバリアーの作成 ----- ///
 
 	if (_before == _after) {
@@ -248,7 +250,7 @@ void CreateBarrier(ID3D12Resource* _resource, D3D12_RESOURCE_STATES _before, D3D
 	_dxCommand->GetCommandList()->ResourceBarrier(1, &barrier);
 }
 
-void CreateBarriers(std::vector<DxResource*>& _resources, D3D12_RESOURCE_STATES _before, D3D12_RESOURCE_STATES _after, DxCommand* _dxCommand) {
+void ONEngine::CreateBarriers(std::vector<DxResource*>& _resources, D3D12_RESOURCE_STATES _before, D3D12_RESOURCE_STATES _after, DxCommand* _dxCommand) {
 	/// ----- 複数リソースのバリアー作成 ----- ///
 
 	std::vector<D3D12_RESOURCE_BARRIER> barriers;
@@ -281,7 +283,7 @@ void CreateBarriers(std::vector<DxResource*>& _resources, D3D12_RESOURCE_STATES 
 	}
 }
 
-void CreateBarriers(std::vector<DxResource*>& _resources, D3D12_RESOURCE_STATES _after, DxCommand* _dxCommand) {
+void ONEngine::CreateBarriers(std::vector<DxResource*>& _resources, D3D12_RESOURCE_STATES _after, DxCommand* _dxCommand) {
 
 	/// ----- 複数リソースのバリアー作成 ----- ///
 

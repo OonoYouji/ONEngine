@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// std
 #include <memory>
@@ -17,6 +17,8 @@
 /// /////////////////////////////////////////////////
 /// sprite描画のパイプライン
 /// /////////////////////////////////////////////////
+namespace ONEngine {
+
 class SpriteRenderingPipeline final : public IRenderingPipeline {
 public:
 	/// ===================================================
@@ -78,3 +80,5 @@ private:
 
 };
 
+
+} /// ONEngine

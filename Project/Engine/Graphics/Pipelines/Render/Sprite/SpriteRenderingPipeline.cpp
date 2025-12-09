@@ -1,4 +1,6 @@
-#include "SpriteRenderingPipeline.h"
+﻿#include "SpriteRenderingPipeline.h"
+
+using namespace ONEngine;
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"

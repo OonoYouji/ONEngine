@@ -1,4 +1,6 @@
-#include "GrassBufferCreateSystem.h"
+﻿#include "GrassBufferCreateSystem.h"
+
+using namespace ONEngine;
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"

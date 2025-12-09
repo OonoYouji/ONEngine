@@ -1,4 +1,6 @@
-#include "PostProcessRadialBlur.h"
+﻿#include "PostProcessRadialBlur.h"
+
+using namespace ONEngine;
 
 /// engine
 #include "Engine/Core/Config/EngineConfig.h"

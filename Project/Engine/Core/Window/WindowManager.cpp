@@ -1,4 +1,6 @@
-#include "WindowManager.h"
+﻿#include "WindowManager.h"
+
+using namespace ONEngine;
 
 /// external
 #include <imgui.h>

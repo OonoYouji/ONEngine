@@ -7,12 +7,15 @@
 #include "Engine/Core/Utility/Utility.h"
 
 
+namespace ONEngine {
+
 /// @brief Gizmo用のプリミティブ頂点データ
 namespace GizmoPrimitive {
-	struct VertexData {
-		Vector4 position;
-		Vector4 color;
-	};
+
+struct VertexData {
+	Vector4 position;
+	Vector4 color;
+};
 }
 
 /// @brief Sphereの頂点データを取得する
@@ -36,3 +39,5 @@ std::vector<GizmoPrimitive::VertexData> GetCubeVertices(const Vector3& _center, 
 /// @param _rectSize 矩形の大きさ
 /// @return 矩形の頂点データ
 std::vector<GizmoPrimitive::VertexData> GetRectVertices(const Matrix4x4& _matWorld, const Vector4& _color, const Vector2& _rectSize = Vector2::kOne);
+
+} /// ONEngine

@@ -9,6 +9,8 @@
 #include "Engine/Core/Utility/Tools/Log.h"
 #include "Engine/Core/ImGui/Math/ImGuiMath.h"
 
+using namespace ONEngine;
+
 AudioSource::AudioSource()
 	: volume_(1.0f),
 	pitch_(1.0f),
@@ -131,26 +133,6 @@ void COMP_DEBUG::AudioSourceDebug(AudioSource* _as) {
 
 }
 
-
-
-/// json serialize
-void from_json(const nlohmann::json& _j, AudioSource& _a) {
-	_a.enable = _j.value("enable", 1);
-	_a.SetVolume(_j.value("volume", 1.0f));
-	_a.SetPitch(_j.value("pitch", 1.0f));
-	_a.SetAudioPath(_j.value("path", std::string("")));
-}
-
-void to_json(nlohmann::json& _j, const AudioSource& _a) {
-	_j = nlohmann::json{
-		{ "type", "AudioSource" },
-		{ "enable", _a.enable },
-		{ "volume", _a.GetVolume() },
-		{ "pitch", _a.GetPitch() },
-		{ "path", _a.GetAudioPath() }
-	};
-}
-
 void MONO_INTERNAL_METHOD::InternalGetParams(uint64_t _nativeHandle, float* _volume, float* _pitch) {
 	AudioSource* audioSource = reinterpret_cast<AudioSource*>(_nativeHandle);
 	if (!audioSource) {
@@ -188,4 +170,23 @@ void MONO_INTERNAL_METHOD::InternalPlayOneShot(uint64_t _nativeHandle, float _vo
 	audioSource->PlayOneShot(_volume, _pitch, std::string(path));
 
 	mono_free(path);
+}
+
+
+/// json serialize
+void ONEngine::from_json(const nlohmann::json& _j, AudioSource& _a) {
+	_a.enable = _j.value("enable", 1);
+	_a.SetVolume(_j.value("volume", 1.0f));
+	_a.SetPitch(_j.value("pitch", 1.0f));
+	_a.SetAudioPath(_j.value("path", std::string("")));
+}
+
+void ONEngine::to_json(nlohmann::json& _j, const AudioSource& _a) {
+	_j = nlohmann::json{
+		{ "type", "AudioSource" },
+		{ "enable", _a.enable },
+		{ "volume", _a.GetVolume() },
+		{ "pitch", _a.GetPitch() },
+		{ "path", _a.GetAudioPath() }
+	};
 }

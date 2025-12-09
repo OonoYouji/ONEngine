@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// engine
 #include "Engine/ECS/System/Interface/ECSISystem.h"
@@ -6,6 +6,8 @@
 /// /////////////////////////////////////////////////////
 /// 草のBufferを生成するシステム
 /// /////////////////////////////////////////////////////
+namespace ONEngine {
+
 class GrassBufferCreateSystem : public ECSISystem {
 public:
 	/// ==================================================
@@ -26,3 +28,5 @@ private:
 	class DxManager* pDxManager_;
 
 };
+
+} /// ONEngine

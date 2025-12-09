@@ -1,4 +1,6 @@
-#include "DxDevice.h"
+﻿#include "DxDevice.h"
+
+using namespace ONEngine;
 
 /// lib
 #include "Engine/Core/Utility/Tools/Log.h"

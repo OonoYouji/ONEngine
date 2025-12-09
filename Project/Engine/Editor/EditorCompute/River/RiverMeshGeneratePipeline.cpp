@@ -1,4 +1,6 @@
-#include "RiverMeshGeneratePipeline.h"
+﻿#include "RiverMeshGeneratePipeline.h"
+
+using namespace ONEngine;
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"

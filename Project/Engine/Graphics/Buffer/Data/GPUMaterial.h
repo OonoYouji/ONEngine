@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// std
 #include <cstdint>
@@ -25,6 +25,8 @@ enum PostEffectFlags_ {
 /// /////////////////////////////////////////////////
 /// @brief GPUで利用するマテリアルデータ構造体
 /// /////////////////////////////////////////////////
+namespace ONEngine {
+
 struct GPUMaterial {
 	UVTransform uvTransform;     /// UV変形
 	Vector4     baseColor;       /// 色
@@ -38,3 +40,5 @@ struct GPUMaterial {
 /// material
 void to_json(nlohmann::json& _j, const GPUMaterial& _material);
 void from_json(const nlohmann::json& _j, GPUMaterial& _material);
+
+} /// ONEngine

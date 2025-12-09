@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// std
 #include <variant>
@@ -9,6 +9,8 @@
 /// //////////////////////////////////////////////////
 /// Effectのmainモジュール
 /// //////////////////////////////////////////////////
+namespace ONEngine {
+
 class EffectMainModule final {
 	friend class Effect;
 	friend class EffectUpdateSystem;
@@ -139,3 +141,5 @@ public:
 
 
 };
+
+} /// ONEngine

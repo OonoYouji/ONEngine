@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// engine
 #include "../Interface/IEditorCompute.h"
@@ -6,6 +6,8 @@
 /// /////////////////////////////////////////////////
 /// ボクセル地形を編集するためのパイプラインを起動するクラス
 /// /////////////////////////////////////////////////
+namespace ONEngine {
+
 class VoxelTerrainEditorComputePipeline : public IEditorCompute {
 
 	enum ROOT_PARAM {
@@ -39,3 +41,5 @@ private:
 
 };
 
+
+} /// ONEngine

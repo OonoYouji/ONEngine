@@ -1,4 +1,6 @@
-#include "RenderingFramework.h"
+﻿#include "RenderingFramework.h"
+
+using namespace ONEngine;
 
 /// engine
 #include "Engine/Core/DirectX12/Device/DxDevice.h"

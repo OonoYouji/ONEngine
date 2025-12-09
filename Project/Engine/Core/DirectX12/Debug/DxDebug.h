@@ -7,6 +7,7 @@
 #include "../ComPtr/ComPtr.h"
 #include "Engine/Core/Config/EngineConfig.h"
 
+namespace ONEngine {
 
 /// /////////////////////////////////////////////////
 /// dx12のDebugの設定
@@ -53,3 +54,4 @@ private:
 	DxDebug& operator=(DxDebug&&)      = delete;
 };
 
+} /// ONEngine

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// std
 #include <vector>
@@ -15,6 +15,8 @@
 /// ///////////////////////////////////////////////////
 /// 川のコントロールポイント
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 struct RiverControlPoint {
 	Vector3 position;
 	float width;
@@ -157,3 +159,5 @@ public:
 	UINT GetTotalIndices() const;
 	UINT GetTotalVertices() const;
 };
+
+} /// ONEngine

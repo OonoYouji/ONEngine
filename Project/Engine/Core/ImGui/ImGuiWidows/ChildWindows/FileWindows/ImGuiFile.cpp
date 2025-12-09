@@ -1,4 +1,6 @@
-#include "ImGuiFile.h"
+﻿#include "ImGuiFile.h"
+
+using namespace ONEngine;
 
 /// std
 #include <filesystem>

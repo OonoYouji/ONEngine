@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// std
 #include <vector>
@@ -7,6 +7,8 @@
 /// engine
 #include "../Interface/IRenderingPipeline.h"
 #include "../Interface/IPostProcessPipeline.h"
+
+namespace ONEngine {
 
 template <typename T>
 concept IsRenderingPipeline = std::is_base_of_v<IRenderingPipeline, T>;
@@ -113,3 +115,5 @@ inline void RenderingPipelineCollection::GeneratePostProcessPipeline(Args&&... _
 	postProcess->Initialize(pShaderCompiler_, pDxManager_);
 	postProcesses_.push_back(std::move(postProcess));
 }
+
+} /// ONEngine

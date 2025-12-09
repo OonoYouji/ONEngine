@@ -1,5 +1,7 @@
 #include "EntityComponentSystem.h"
 
+using namespace ONEngine;
+
 /// std
 #include <numbers>
 
@@ -20,16 +22,16 @@ namespace {
 	EntityComponentSystem* gECS = nullptr;
 }
 
-void SetEntityComponentSystemPtr(ECSGroup* _gameGroup, ECSGroup* _debugGroup) {
+void ONEngine::SetEntityComponentSystemPtr(ECSGroup* _gameGroup, ECSGroup* _debugGroup) {
 	gGameGroup = _gameGroup;
 	gDebugGroup = _debugGroup;
 }
 
-ECSGroup* GetEntityComponentSystemPtr() {
+ECSGroup* ONEngine::GetEntityComponentSystemPtr() {
 	return gGameGroup;
 }
 
-bool CheckParentEntityEnable(GameEntity* _entity) {
+bool ONEngine::CheckParentEntityEnable(GameEntity* _entity) {
 	/*
 	* 確認事項
 	* - 自身が有効なポインタであるか
@@ -53,7 +55,7 @@ bool CheckParentEntityEnable(GameEntity* _entity) {
 	return _entity->active;
 }
 
-bool CheckComponentEnable(IComponent* _component) {
+bool ONEngine::CheckComponentEnable(IComponent* _component) {
 	/*
 	* 確認事項
 	* - componentがnullptrでないこと

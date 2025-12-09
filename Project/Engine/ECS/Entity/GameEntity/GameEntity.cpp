@@ -1,5 +1,7 @@
 #include "GameEntity.h"
 
+using namespace ONEngine;
+
 /// engine
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Collection/ComponentCollection.h"
@@ -13,7 +15,7 @@ GameEntity::~GameEntity() {}
 
 void GameEntity::Awake() {
 	name_ = typeid(*this).name();
-	name_.erase(0, 6);
+	name_.erase(0, 10);
 	prefabName_ = "";
 
 	pEcsGroup_->LoadComponent(this);
@@ -276,7 +278,7 @@ ECSGroup* GameEntity::GetECSGroup() const {
 
 
 
-void to_json(nlohmann::json& _j, const GameEntity& _entity) {
+void ONEngine::to_json(nlohmann::json& _j, const GameEntity& _entity) {
 	/// ----- GameEntityからJsonを生成 ----- ///
 
 	nlohmann::json entityJson = nlohmann::json::object();
@@ -305,7 +307,7 @@ void to_json(nlohmann::json& _j, const GameEntity& _entity) {
 	};
 }
 
-void from_json(const nlohmann::json& /*_j*/, GameEntity& /*_entity*/) {
+void ONEngine::from_json(const nlohmann::json& /*_j*/, GameEntity& /*_entity*/) {
 	/// ----- JsonからGameEntityを生成 ----- ///
 
 }

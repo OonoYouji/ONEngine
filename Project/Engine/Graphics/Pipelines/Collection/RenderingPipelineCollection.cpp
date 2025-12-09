@@ -1,4 +1,6 @@
-#include "RenderingPipelineCollection.h"
+﻿#include "RenderingPipelineCollection.h"
+
+using namespace ONEngine;
 
 /// engine
 #include "Engine/Core/Config/EngineConfig.h"

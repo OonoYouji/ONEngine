@@ -10,6 +10,7 @@
 #include "Engine/ECS/Component/Components/ComputeComponents/Light/Light.h"
 #include "Engine/Editor/Commands/ImGuiCommand/ImGuiCommand.h"
 
+using namespace ONEngine;
 
 namespace {
 
@@ -77,7 +78,7 @@ void COMP_DEBUG::ShadowCasterDebug(ShadowCaster* _shadowCaster) {
 
 }
 
-void from_json(const nlohmann::json& _j, ShadowCaster& _c) {
+void ONEngine::from_json(const nlohmann::json& _j, ShadowCaster& _c) {
 	_c.enable = _j.value("enable", static_cast<int>(true));
 
 	_c.orthographicSize_ = _j.value("orthographicSize", EngineConfig::kWindowSize);
@@ -91,7 +92,7 @@ void from_json(const nlohmann::json& _j, ShadowCaster& _c) {
 
 }
 
-void to_json(nlohmann::json& _j, const ShadowCaster& _c) {
+void ONEngine::to_json(nlohmann::json& _j, const ShadowCaster& _c) {
 	_j = {
 		{ "type", "ShadowCaster" },
 		{ "enable", _c.enable },

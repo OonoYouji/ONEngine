@@ -12,11 +12,14 @@
 #include "Engine/ECS/Entity/GameEntity/GameEntity.h"
 #include "Engine/Asset/Collection/AssetCollection.h"
 
+
+using namespace ONEngine;
+
 /// ////////////////////////////////////////////////////////
 /// Json Serialization
 /// ////////////////////////////////////////////////////////
 
-void to_json(nlohmann::json& _j, const GrassField& _p) {
+void ONEngine::to_json(nlohmann::json& _j, const GrassField& _p) {
 	/// GrassField -> Json
 	_j = {
 		{ "type", "GrassField" },
@@ -26,7 +29,7 @@ void to_json(nlohmann::json& _j, const GrassField& _p) {
 	};
 }
 
-void from_json(const nlohmann::json& _j, GrassField& _p) {
+void ONEngine::from_json(const nlohmann::json& _j, GrassField& _p) {
 	/// Json -> GrassField
 	_p.maxGrassCount_ = _j.value("maxGrassCount", 128);
 	_p.distributionTexturePath_ = _j.value("distributionTexturePath", "");

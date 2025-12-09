@@ -14,6 +14,8 @@
 #include "Engine/Core/Utility/Math/Vector2.h"
 
 
+namespace ONEngine {
+
 /// ///////////////////////////////////////////////////
 /// graphics resource の mesh data
 /// ///////////////////////////////////////////////////
@@ -96,3 +98,5 @@ public:
 	const D3D12_INDEX_BUFFER_VIEW& GetIBV() const;
 
 };
+
+} /// ONEngine

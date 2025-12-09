@@ -1,4 +1,6 @@
-#include "TerrainVertexEditorCompute.h"
+﻿#include "TerrainVertexEditorCompute.h"
+
+using namespace ONEngine;
 
 /// engine
 #include "Engine/Core/Config/EngineConfig.h"

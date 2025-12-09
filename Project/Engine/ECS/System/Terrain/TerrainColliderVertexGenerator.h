@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// engine
 #include "../Interface/ECSISystem.h"
@@ -6,6 +6,8 @@
 /// ///////////////////////////////////////////////////
 /// 地形コライダーの頂点生成システム
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class TerrainColliderVertexGenerator : public ECSISystem {
 public:
 	/// ========================================
@@ -27,3 +29,5 @@ private:
 
 };
 
+
+} /// ONEngine

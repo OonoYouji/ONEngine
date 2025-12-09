@@ -26,6 +26,8 @@
 #include "Engine/ECS/Component/Components/RendererComponents/Primitive/Line3DRenderer.h"
 #include "Engine/ECS/Component/Components/RendererComponents/ScreenPostEffectTag/ScreenPostEffectTag.h"
 
+namespace ONEngine {
+
 inline void AddComponentFactoryFunction(ComponentCollection* _compCollection) {
 	/// compute
 	_compCollection->RegisterComponentFactory<Transform>();
@@ -54,3 +56,5 @@ inline void AddComponentFactoryFunction(ComponentCollection* _compCollection) {
 	_compCollection->RegisterComponentFactory<SphereCollider>();
 	_compCollection->RegisterComponentFactory<BoxCollider>();
 }
+
+} /// namespace ONEngine

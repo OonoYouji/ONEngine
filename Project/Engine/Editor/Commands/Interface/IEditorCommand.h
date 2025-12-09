@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// std
 #include <memory>
@@ -16,6 +16,8 @@ enum EDITOR_STATE {
 /// ///////////////////////////////////////////////////
 /// Editorのコマンドのインターフェース
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class IEditorCommand {
 public:
 	/// ==========================================
@@ -35,3 +37,5 @@ public:
 
 };
 
+
+} /// ONEngine

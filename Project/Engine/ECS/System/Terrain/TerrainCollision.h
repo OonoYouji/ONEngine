@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// engine
 #include "../Interface/ECSISystem.h"
@@ -7,6 +7,8 @@
 /// ///////////////////////////////////////////////////
 /// 地形との衝突判定、押し戻しのシステム
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class TerrainCollision : public ECSISystem {
 public:
 	/// ========================================
@@ -32,3 +34,5 @@ private:
 
 };
 
+
+} /// ONEngine

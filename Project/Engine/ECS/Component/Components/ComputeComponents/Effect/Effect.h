@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// std
 #include <vector>
@@ -17,6 +17,8 @@
 /// ///////////////////////////////////////////////////
 /// Effectクラス
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class Effect : public IComponent {
 	friend class EffectUpdateSystem; ///< @brief EffectUpdateSystemからアクセスを許可  
 public:
@@ -231,3 +233,5 @@ namespace COMP_DEBUG {
 	/// @param _effect デバッグするEffect
 	void EffectDebug(Effect* _effect);
 } 
+
+} /// ONEngine

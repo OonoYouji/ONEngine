@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// windows
 #include <Windows.h>
@@ -16,6 +16,8 @@
 /// ///////////////////////////////////////////////////
 /// windowクラス
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class Window {
 	friend class WindowManager;
 public:
@@ -100,3 +102,5 @@ private:
 	Window& operator= (Window&&) = delete;
 };
 
+
+} /// ONEngine

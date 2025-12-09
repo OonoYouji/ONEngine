@@ -17,6 +17,8 @@
 
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentEditCommands.h"
 
+namespace ONEngine {
+
 class CameraComponent;
 
 void SetEntityComponentSystemPtr(ECSGroup* _gameGroup, ECSGroup* _debugGroup);
@@ -193,3 +195,5 @@ namespace MONO_INTERNAL_METHOD {
 	void InternalSetEnable(int32_t _entityId, bool _enable, MonoString* _ecsGroupName);
 
 } // namespace MONO_INTERNAL_METHOD
+
+} /// ONEngine

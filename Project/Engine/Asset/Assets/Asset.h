@@ -3,6 +3,8 @@
 /// engine
 #include "Engine/Asset/Guid/Guid.h"
 
+namespace ONEngine {
+
 /// ///////////////////////////////////////////////////
 /// Assetを共通化するためのインターフェース
 /// ///////////////////////////////////////////////////
@@ -21,3 +23,5 @@ public:
 
 	Guid guid;
 };
+
+} /// ONEngine

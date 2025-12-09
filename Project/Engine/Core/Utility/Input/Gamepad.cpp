@@ -1,4 +1,6 @@
-#include "Gamepad.h"
+﻿#include "Gamepad.h"
+
+using namespace ONEngine;
 
 /// comment
 #pragma comment(lib, "xinput.lib")

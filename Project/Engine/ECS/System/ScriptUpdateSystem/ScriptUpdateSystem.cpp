@@ -1,4 +1,6 @@
-#include "ScriptUpdateSystem.h"
+﻿#include "ScriptUpdateSystem.h"
+
+using namespace ONEngine;
 
 /// std
 #include <list>

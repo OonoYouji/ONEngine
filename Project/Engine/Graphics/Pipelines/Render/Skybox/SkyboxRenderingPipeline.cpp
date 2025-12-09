@@ -1,4 +1,6 @@
-#include "SkyboxRenderingPipeline.h"
+﻿#include "SkyboxRenderingPipeline.h"
+
+using namespace ONEngine;
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"

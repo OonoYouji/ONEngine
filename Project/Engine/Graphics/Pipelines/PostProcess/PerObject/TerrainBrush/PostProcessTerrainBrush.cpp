@@ -1,4 +1,6 @@
-#include "PostProcessTerrainBrush.h"
+﻿#include "PostProcessTerrainBrush.h"
+
+using namespace ONEngine;
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"

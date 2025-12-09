@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// engine
 #include "../Entity/Collection/EntityCollection.h"
@@ -6,6 +6,8 @@
 #include "../System/SystemCollection/SystemCollection.h"
 
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentEditCommands.h"
+
+namespace ONEngine {
 
 template<typename T>
 concept SystemType = std::is_base_of_v<ECSISystem, T>;
@@ -160,3 +162,5 @@ template<SystemType Sys, typename ...Args>
 inline void ECSGroup::AddSystem(Args ..._args) {
 	systemCollection_->AddSystem(std::make_unique<Sys>(_args...));
 }
+
+} /// ONEngine

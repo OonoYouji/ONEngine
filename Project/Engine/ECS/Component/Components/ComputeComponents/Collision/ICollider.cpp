@@ -3,6 +3,9 @@
 /// engine
 #include "Engine/ECS/Entity/GameEntity/GameEntity.h"
 
+using namespace ONEngine;
+
+
 void ICollider::UpdatePrevPosition() {
 	/// 前フレームの座標を更新する
 	if (GameEntity* owner = GetOwner()) {

@@ -1,4 +1,6 @@
-#include "SkinMeshUpdateSystem.h"
+﻿#include "SkinMeshUpdateSystem.h"
+
+using namespace ONEngine;
 
 /// engine
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"

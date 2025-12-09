@@ -1,4 +1,6 @@
-#include "PostProcessGaussianBlurPerObject.h"
+﻿#include "PostProcessGaussianBlurPerObject.h"
+
+using namespace ONEngine;
 
 /// engine
 #include "Engine/Core/Config/EngineConfig.h"

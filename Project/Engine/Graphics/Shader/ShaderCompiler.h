@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// windows
 #include <Windows.h>
@@ -17,6 +17,8 @@
 /// ///////////////////////////////////////////////////
 /// hlslシェーダーコンパイラー
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class ShaderCompiler final {
 public:
 
@@ -49,3 +51,5 @@ private:
 
 };
 
+
+} /// ONEngine

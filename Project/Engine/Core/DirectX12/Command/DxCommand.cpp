@@ -7,6 +7,7 @@
 #include "Engine/Core/Utility/Tools/Assert.h"
 #include "Engine/Core/Utility/Tools/Log.h"
 
+using namespace ONEngine;
 
 DxCommand::DxCommand()
 	: commandQueue_(nullptr),

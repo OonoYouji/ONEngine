@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// std
 #include <array>
@@ -9,6 +9,8 @@
 /// ///////////////////////////////////////////////////
 /// ラジアルブラー処理
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class PostProcessRadialBlur : public ScreenPostProcess {
 public:
 	/// ===================================================
@@ -36,3 +38,5 @@ private:
 	std::array<size_t, 3> textureIndices_; ///< テクスチャのインデックス
 };
 
+
+} /// ONEngine

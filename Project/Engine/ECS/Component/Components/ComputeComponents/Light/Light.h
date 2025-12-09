@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// engine
 #include "../../Interface/IComponent.h"
@@ -8,6 +8,8 @@
 /// ////////////////////////////////////////////////////////////
 /// DirectionalLight
 /// ////////////////////////////////////////////////////////////
+namespace ONEngine {
+
 class DirectionalLight : public IComponent {
 public:
 
@@ -58,3 +60,5 @@ public:
 	const Vector4& GetColor() const { return color_; }
 };
 
+
+} /// ONEngine

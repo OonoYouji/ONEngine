@@ -1,4 +1,6 @@
-#include "TerrainCollision.h"
+﻿#include "TerrainCollision.h"
+
+using namespace ONEngine;
 
 /// engine
 #include "Engine/Core/Config/EngineConfig.h"

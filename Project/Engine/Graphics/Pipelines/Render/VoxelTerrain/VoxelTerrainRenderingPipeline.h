@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// engine
 #include "../../Interface/IRenderingPipeline.h"
@@ -13,6 +13,8 @@
 /// /////////////////////////////////////////////////
 /// Terrainの描画pipeline
 /// /////////////////////////////////////////////////
+namespace ONEngine {
+
 class VoxelTerrainRenderingPipeline : public IRenderingPipeline {
 
 
@@ -53,3 +55,5 @@ private:
 
 };
 
+
+} /// ONEngine

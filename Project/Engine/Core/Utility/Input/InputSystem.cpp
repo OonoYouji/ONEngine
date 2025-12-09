@@ -1,4 +1,6 @@
-#include "InputSystem.h"
+﻿#include "InputSystem.h"
+
+using namespace ONEngine;
 
 /// externals
 #include <mono/jit/jit.h>

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// directX
 #include <d3d12.h>
@@ -9,6 +9,8 @@
 /// /////////////////////////////////////////////////
 /// dx12のデバイスを管理するクラス
 /// /////////////////////////////////////////////////
+namespace ONEngine {
+
 class DxDevice {
 public:
 	/// ===================================================
@@ -49,3 +51,5 @@ public:
 	ID3D12Device10* GetDevice10() const;
 };
 
+
+} /// ONEngine

@@ -1,4 +1,6 @@
-#include "ImGuiHierarchyWindow.h"
+﻿#include "ImGuiHierarchyWindow.h"
+
+using namespace ONEngine;
 
 /// external
 #include <imgui.h>

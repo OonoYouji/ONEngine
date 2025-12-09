@@ -1,4 +1,6 @@
-#include "PostProcessShadowApply.h"
+﻿#include "PostProcessShadowApply.h"
+
+using namespace ONEngine;
 
 /// engine
 #include "Engine/Asset/Collection/AssetCollection.h"

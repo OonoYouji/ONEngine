@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// engine
 #include "Keyboard.h"
@@ -8,6 +8,8 @@
 /// //////////////////////////////////////////////////
 /// 入力処理クラス
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class Input final {
 	friend class GameFramework;
 	friend class MonoScriptEngine;
@@ -111,3 +113,5 @@ public:
 
 };
 
+
+} /// ONEngine

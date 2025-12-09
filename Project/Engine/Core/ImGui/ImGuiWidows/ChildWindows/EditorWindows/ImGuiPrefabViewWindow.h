@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "../../Collection/ImGuiWindowCollection.h"
 
@@ -6,6 +6,8 @@
 /// //////////////////////////////////////////////////////
 /// Prefab編集用のimgui window
 /// //////////////////////////////////////////////////////
+namespace ONEngine {
+
 class ImGuiPrefabViewWindow : public IImGuiChildWindow {
 public:
 	/// =====================================================
@@ -31,3 +33,5 @@ private:
 
 };
 
+
+} /// ONEngine

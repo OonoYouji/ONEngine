@@ -6,6 +6,8 @@
 #include "Engine/ECS/Component/Components/ComputeComponents/Variables/Variables.h"
 #include "Engine/ECS/Component/Collection/ComponentHash.h"
 
+namespace ONEngine {
+
 template <typename T>
 concept ComponentType = std::is_base_of_v<IComponent, T>;
 
@@ -243,8 +245,8 @@ private:
 template<ComponentType Comp>
 inline Comp* GameEntity::AddComponent() {
 	std::string name = typeid(Comp).name();
-	if (name.find("class ") == 0) {
-		name = name.substr(6);
+	if (name.find("class ONEngine::") == 0) {
+		name = name.substr(strlen("class ONEngine::"));
 	}
 	return static_cast<Comp*>(AddComponent(name));
 }
@@ -261,8 +263,8 @@ inline Comp* GameEntity::GetComponent() const {
 template<ComponentType Comp>
 inline void GameEntity::RemoveComponent() {
 	std::string name = typeid(Comp).name();
-	if (name.find("class ") == 0) {
-		name = name.substr(6);
+	if (name.find("class ONEngine") == 0) {
+		name = name.substr(strlen("class ONEngine"));
 	}
 
 	RemoveComponent(name);
@@ -271,3 +273,5 @@ inline void GameEntity::RemoveComponent() {
 /// json 変換
 void to_json(nlohmann::json& _j, const GameEntity& _entity);
 void from_json(const nlohmann::json& _j, GameEntity& _entity);
+
+} /// ONEngine

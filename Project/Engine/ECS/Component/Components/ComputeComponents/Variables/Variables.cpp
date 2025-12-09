@@ -17,6 +17,7 @@
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentJsonConverter.h"
 #include "Engine/Script/MonoScriptEngine.h"
 
+using namespace ONEngine;
 using json = nlohmann::json;
 
 namespace {
@@ -41,10 +42,10 @@ namespace {
 
 
 
-void from_json([[maybe_unused]] const nlohmann::json& _j, [[maybe_unused]] Variables& _v) {
+void ONEngine::from_json([[maybe_unused]] const nlohmann::json& _j, [[maybe_unused]] Variables& _v) {
 
 }
-void to_json(nlohmann::json& _j, [[maybe_unused]] const Variables& _v) {
+void ONEngine::to_json(nlohmann::json& _j, [[maybe_unused]] const Variables& _v) {
 	_j = nlohmann::json{
 		{ "type", "Variables" }
 	};

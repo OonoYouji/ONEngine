@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// std
 #include <algorithm>
@@ -8,6 +8,8 @@
 #include "Engine/Asset/Guid/Guid.h"
 
 /// @brief Assetのペイロード (string + Guid)
+namespace ONEngine {
+
 struct AssetPayload {
 	std::string filePath;
 	Guid        guid;
@@ -18,3 +20,5 @@ struct AssetPayload {
 	}
 
 };
+
+} /// ONEngine
