@@ -106,7 +106,7 @@ void Texture::CreateUAVTexture(UINT _width, UINT _height, DxDevice* _dxDevice, D
 }
 
 
-void Texture::CreateUAVTexture3D(
+void Texture::CreateUAVTexture3DWithUAV(
 	UINT _width, UINT _height, UINT _depth,
 	DxDevice* _dxDevice,
 	DxSRVHeap* _dxSRVHeap,
@@ -161,6 +161,54 @@ void Texture::CreateUAVTexture3D(
 	Console::Log(" - DescriptorIndex: " + std::to_string(descriptorIndex));
 }
 
+
+void Texture::CreateUAVTexture3D(UINT _width, UINT _height, UINT _depth, DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap, DXGI_FORMAT _dxgiFormat) {
+	// テクスチャディスクリプション
+	D3D12_RESOURCE_DESC texDesc = {};
+	texDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE3D;
+	texDesc.Alignment = 0;
+	texDesc.Width = _width;
+	texDesc.Height = _height;
+	texDesc.DepthOrArraySize = _depth;
+	texDesc.MipLevels = 1;
+	texDesc.Format = _dxgiFormat;
+	texDesc.SampleDesc.Count = 1;
+	texDesc.SampleDesc.Quality = 0;
+	texDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
+	texDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
+
+	// リソース作成
+	D3D12_HEAP_PROPERTIES heapProperties = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
+	dxResource_.CreateCommittedResource(
+		_dxDevice, &heapProperties, D3D12_HEAP_FLAG_NONE,
+		&texDesc, D3D12_RESOURCE_STATE_UNORDERED_ACCESS, nullptr
+	);
+
+	D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc = {};
+	uavDesc.Format = _dxgiFormat;
+	uavDesc.ViewDimension = D3D12_UAV_DIMENSION_TEXTURE3D;
+	uavDesc.Texture3D.MipSlice = 0;
+	uavDesc.Texture3D.FirstWSlice = 0;
+	uavDesc.Texture3D.WSize = _depth;
+
+	uint32_t index = _dxSRVHeap->AllocateUAVTexture();
+	CreateEmptyUAVHandle();
+	SetUAVDescriptorIndex(index);
+	SetUAVCPUHandle(_dxSRVHeap->GetCPUDescriptorHandel(index));
+	SetUAVGPUHandle(_dxSRVHeap->GetGPUDescriptorHandel(index));
+
+	_dxDevice->GetDevice()->CreateUnorderedAccessView(dxResource_.Get(), nullptr, &uavDesc, uavHandle_->cpuHandle);
+
+	/// ログに今回行った操作を出力
+	Console::Log("[Create UAV Texture3D]");
+	Console::Log(" - Texture Name: " + name_);
+	Console::Log(" - Width: " + std::to_string(_width));
+	Console::Log(" - Height: " + std::to_string(_height));
+	Console::Log(" - Depth: " + std::to_string(_depth));
+	Console::Log(" - UAV Format: " + std::string(magic_enum::enum_name(uavFormat_)));
+	Console::Log(" - SRV Format: " + std::string(magic_enum::enum_name(srvFormat_)));
+	Console::Log(" - DescriptorIndex: " + std::to_string(index));
+}
 
 void Texture::OutputTexture(const std::wstring& _filename, DxDevice* _dxDevice, DxCommand* _dxCommand) {
 	/// Readbackリソースを作成（1行ごとのAlignmentに注意）

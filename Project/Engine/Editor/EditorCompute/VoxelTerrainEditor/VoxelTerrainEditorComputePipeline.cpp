@@ -1,4 +1,4 @@
-﻿#include "VoxelTerrainEditorComputePipeline.h"
+#include "VoxelTerrainEditorComputePipeline.h"
 
 using namespace ONEngine;
 
@@ -85,7 +85,7 @@ void VoxelTerrainEditorComputePipeline::Execute(EntityComponentSystem* _ecs, DxC
 
 	if (!voxelTerrain->CheckBufferCreatedForEditor()) {
 		voxelTerrain->CreateEditorBuffers(pDxManager_->GetDxDevice(), pDxManager_->GetDxSRVHeap());
-		voxelTerrain->CreateChunkTextureUAV(pDxManager_->GetDxDevice(), pDxManager_->GetDxSRVHeap(), _assetCollection);
+		voxelTerrain->CreateChunkTextureUAV(_dxCommand, pDxManager_->GetDxDevice(), pDxManager_->GetDxSRVHeap(), _assetCollection);
 		return;
 	}
 
@@ -109,6 +109,17 @@ void VoxelTerrainEditorComputePipeline::Execute(EntityComponentSystem* _ecs, DxC
 		inputInfo.screenMousePos.y < 0.0f || inputInfo.screenMousePos.y > 720.0f) {
 		return;
 	}
+
+	///// 入力が無ければ終了
+	//if (!inputInfo.mouseLeftButton) {
+	//	return;
+	//}
+
+	///// マウスがウィンドウ外なら終了
+	//if (inputInfo.screenMousePos.x < 0.0f || inputInfo.screenMousePos.x > 1280.0f ||
+	//	inputInfo.screenMousePos.y < 0.0f || inputInfo.screenMousePos.y > 720.0f) {
+	//	return;
+	//}
 
 
 	GPUData::EditInfo editInfo{};
@@ -149,4 +160,8 @@ void VoxelTerrainEditorComputePipeline::Execute(EntityComponentSystem* _ecs, DxC
 		Mathf::DivideAndRoundUp(voxelChunkCount.x * voxelChunkCount.y, TGSize),
 		1, 1
 	);
+
+	/// 編集したのであればSRVに対してコピーを行う
+	voxelTerrain->CopyEditorTextureToChunkTexture(_dxCommand);
+
 }
