@@ -1,5 +1,7 @@
 ﻿#include "MonoScriptEngine.h"
 
+using namespace ONEngine;
+
 /// std
 #include <regex>
 

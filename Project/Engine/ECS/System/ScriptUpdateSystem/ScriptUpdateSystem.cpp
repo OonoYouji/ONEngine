@@ -1,5 +1,7 @@
 ﻿#include "ScriptUpdateSystem.h"
 
+using namespace ONEngine;
+
 /// std
 #include <list>
 #include <chrono>

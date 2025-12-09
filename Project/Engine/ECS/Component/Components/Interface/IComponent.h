@@ -7,6 +7,8 @@
 /// ///////////////////////////////////////////////////
 /// 全てのコンポーネントの基底クラス
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class IComponent {
 	friend class ComponentCollection;
 public:
@@ -47,3 +49,5 @@ public:
 
 };
 
+
+} /// ONEngine

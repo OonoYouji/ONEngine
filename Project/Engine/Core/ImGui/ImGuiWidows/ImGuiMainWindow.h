@@ -6,6 +6,8 @@
 /// ///////////////////////////////////////////////////
 /// ImGuiMainWindow
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class ImGuiMainWindow : public IImGuiParentWindow {
 public:
 	/// ===================================================
@@ -35,3 +37,5 @@ private:
 
 };
 
+
+} /// ONEngine

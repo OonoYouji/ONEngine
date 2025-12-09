@@ -13,6 +13,8 @@
 /// /////////////////////////////////////////////////
 /// Terrainの描画pipeline
 /// /////////////////////////////////////////////////
+namespace ONEngine {
+
 class VoxelTerrainRenderingPipeline : public IRenderingPipeline {
 
 
@@ -53,3 +55,5 @@ private:
 
 };
 
+
+} /// ONEngine

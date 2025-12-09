@@ -1,4 +1,4 @@
-﻿#include "MeshRenderer.h"
+#include "MeshRenderer.h"
 
 /// std
 #include <format>
@@ -11,6 +11,8 @@
 #include "Engine/Core/ImGui/Math/AssetPayload.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentJsonConverter.h"
+
+using namespace ONEngine;
 
 MeshRenderer::MeshRenderer() {
 	SetMeshPath("./Packages/Models/primitive/cube.obj");
@@ -65,7 +67,7 @@ const Guid& MeshRenderer::GetTextureGuid() const {
 }
 
 
-MonoString* InternalGetMeshName(uint64_t _nativeHandle) {
+MonoString* ONEngine::InternalGetMeshName(uint64_t _nativeHandle) {
 	/// ptrから MeshRenderer を取得
 	MeshRenderer* renderer = reinterpret_cast<MeshRenderer*>(_nativeHandle);
 	if (!renderer) {
@@ -76,7 +78,7 @@ MonoString* InternalGetMeshName(uint64_t _nativeHandle) {
 	return mono_string_new(mono_domain_get(), renderer->GetMeshPath().c_str());
 }
 
-void InternalSetMeshName(uint64_t _nativeHandle, MonoString* _meshName) {
+void ONEngine::InternalSetMeshName(uint64_t _nativeHandle, MonoString* _meshName) {
 	/// ptrから MeshRenderer を取得
 	MeshRenderer* renderer = reinterpret_cast<MeshRenderer*>(_nativeHandle);
 	if (!renderer) {
@@ -91,7 +93,7 @@ void InternalSetMeshName(uint64_t _nativeHandle, MonoString* _meshName) {
 	mono_free(meshName);
 }
 
-Vector4 InternalGetMeshColor(uint64_t _nativeHandle) {
+Vector4 ONEngine::InternalGetMeshColor(uint64_t _nativeHandle) {
 	/// ptrから MeshRenderer を取得
 	MeshRenderer* renderer = reinterpret_cast<MeshRenderer*>(_nativeHandle);
 	if (!renderer) {
@@ -102,7 +104,7 @@ Vector4 InternalGetMeshColor(uint64_t _nativeHandle) {
 	return renderer->GetColor();
 }
 
-void InternalSetMeshColor(uint64_t _nativeHandle, Vector4 _color) {
+void ONEngine::InternalSetMeshColor(uint64_t _nativeHandle, Vector4 _color) {
 	/// ptrから MeshRenderer を取得
 	MeshRenderer* renderer = reinterpret_cast<MeshRenderer*>(_nativeHandle);
 	if (renderer) {
@@ -112,7 +114,7 @@ void InternalSetMeshColor(uint64_t _nativeHandle, Vector4 _color) {
 	}
 }
 
-uint32_t InternalGetPostEffectFlags(uint64_t _nativeHandle) {
+uint32_t ONEngine::InternalGetPostEffectFlags(uint64_t _nativeHandle) {
 	/// ptrから MeshRenderer を取得
 	MeshRenderer* renderer = reinterpret_cast<MeshRenderer*>(_nativeHandle);
 	if (!renderer) {
@@ -122,7 +124,7 @@ uint32_t InternalGetPostEffectFlags(uint64_t _nativeHandle) {
 	return renderer->GetPostEffectFlags();
 }
 
-void InternalSetPostEffectFlags(uint64_t _nativeHandle, uint32_t _flags) {
+void ONEngine::InternalSetPostEffectFlags(uint64_t _nativeHandle, uint32_t _flags) {
 	/// ptrから MeshRenderer を取得
 	MeshRenderer* renderer = reinterpret_cast<MeshRenderer*>(_nativeHandle);
 	if (renderer) {
@@ -244,7 +246,7 @@ void COMP_DEBUG::MeshRendererDebug(MeshRenderer* _mr, AssetCollection* _assetCol
 }
 
 
-void from_json(const nlohmann::json& _j, MeshRenderer& _m) {
+void ONEngine::from_json(const nlohmann::json& _j, MeshRenderer& _m) {
 	if (_j.contains("enable")) {
 		_m.enable = _j.at("enable").get<int>();
 	}
@@ -259,7 +261,7 @@ void from_json(const nlohmann::json& _j, MeshRenderer& _m) {
 
 }
 
-void to_json(nlohmann::json& _j, const MeshRenderer& _m) {
+void ONEngine::to_json(nlohmann::json& _j, const MeshRenderer& _m) {
 	_j = nlohmann::json{
 		{ "type", "MeshRenderer" },
 		{ "enable", _m.enable },

@@ -1,5 +1,7 @@
 ﻿#include "CopyImageRenderingPipeline.h"
 
+using namespace ONEngine;
+
 /// engine
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/Asset/Collection/AssetCollection.h"

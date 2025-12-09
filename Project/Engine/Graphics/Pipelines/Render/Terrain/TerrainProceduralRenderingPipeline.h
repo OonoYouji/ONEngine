@@ -13,6 +13,8 @@
 /// /////////////////////////////////////////////////
 /// 地形に対してのプロシージャルレンダリングパイプライン
 /// /////////////////////////////////////////////////
+namespace ONEngine {
+
 class TerrainProceduralRenderingPipeline : public IRenderingPipeline {
 
 	/// @brief 配置用Shaderのルートパラメータ
@@ -90,3 +92,5 @@ private:
 
 };
 
+
+} /// ONEngine

@@ -1,5 +1,7 @@
 ﻿#include "Gizmo.h"
 
+using namespace ONEngine;
+
 /// std
 #include <memory>
 

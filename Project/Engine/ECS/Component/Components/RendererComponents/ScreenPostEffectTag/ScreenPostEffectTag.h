@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /// external
 #include <nlohmann/json.hpp>
@@ -16,6 +16,8 @@ enum PostEffectType {
 /// ///////////////////////////////////////////////////
 /// スクリーンにかけるポストエフェクトのフラグを持つコンポーネント
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class ScreenPostEffectTag : public IComponent {
 public:
 	/// ===================================================
@@ -51,3 +53,5 @@ namespace COMP_DEBUG {
 /// Json変換
 void from_json(const nlohmann::json& _j, ScreenPostEffectTag& _c);
 void to_json(nlohmann::json& _j, const ScreenPostEffectTag& _c);
+
+} /// ONEngine

@@ -1,5 +1,7 @@
 ﻿#include "Mouse.h"
 
+using namespace ONEngine;
+
 /// engine
 #include "Engine/Core/Utility/Tools/Assert.h"
 #include "Engine/Core/ImGui/ImGuiManager.h"

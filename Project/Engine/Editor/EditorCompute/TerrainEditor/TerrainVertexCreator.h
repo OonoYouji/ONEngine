@@ -8,6 +8,8 @@
 /// /////////////////////////////////////////////////
 /// 地形の頂点を生成するためのコンピュートシェーダー
 /// /////////////////////////////////////////////////
+namespace ONEngine {
+
 class TerrainVertexCreator : public IEditorCompute {
 
 	enum {
@@ -39,3 +41,5 @@ private:
 
 };
 
+
+} /// ONEngine

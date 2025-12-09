@@ -1,5 +1,7 @@
 ﻿#include "DxManager.h"
 
+using namespace ONEngine;
+
 /// engine
 #include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/Core/DirectX12/DescriptorHeap/DescriptorHeapSize.h"

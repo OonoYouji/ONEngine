@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /// std
 #include <vector>
@@ -41,6 +41,7 @@
 */
 
 
+namespace ONEngine {
 
 /// ///////////////////////////////////////////////////
 /// ボクセル地形におけるチャンク
@@ -50,10 +51,6 @@ struct Chunk {
 	class Texture* pTexture;
 };
 
-void from_json(const nlohmann::json& _j, std::vector<Chunk>& _chunk);
-void to_json(nlohmann::json& _j, const std::vector<Chunk>& _chunk);
-
-
 /// @brief デバッグ関数用に前方宣言をする
 class VoxelTerrain;
 class DxManager;
@@ -62,9 +59,12 @@ namespace COMP_DEBUG {
 void VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _dxManager);
 }
 
+void from_json(const nlohmann::json& _j, std::vector<Chunk>& _chunk);
+void to_json(nlohmann::json& _j, const std::vector<Chunk>& _chunk);
+
+
 void from_json(const nlohmann::json& _j, VoxelTerrain& _voxelTerrain);
 void to_json(nlohmann::json& _j, const VoxelTerrain& _voxelTerrain);
-
 
 /// ///////////////////////////////////////////////////
 /// GPU用のデータ構造体
@@ -213,3 +213,5 @@ private:
 
 };
 
+
+} /// ONEngine

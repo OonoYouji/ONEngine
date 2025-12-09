@@ -1,7 +1,9 @@
-﻿#include "ImGuiSelection.h"
+#include "ImGuiSelection.h"
 
 /// engine
 #include "Engine/Asset/Collection/AssetCollection.h"
+
+using namespace ONEngine;
 
 namespace {
 

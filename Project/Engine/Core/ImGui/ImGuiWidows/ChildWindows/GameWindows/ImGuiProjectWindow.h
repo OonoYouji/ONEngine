@@ -10,6 +10,8 @@
 #include "Engine/Core/ImGui/Math/FileWatcher/FileWatcher.h"
 
 
+namespace ONEngine {
+
 class ImGuiProjectWindow : public IImGuiChildWindow {
 public:
 
@@ -100,3 +102,5 @@ private:
 	FileWatcher fileWatcher_;
 
 };
+
+} /// ONEngine

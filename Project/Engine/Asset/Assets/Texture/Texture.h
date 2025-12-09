@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /// std
 #include <optional>
@@ -7,6 +7,8 @@
 /// engine
 #include "../Asset.h"
 #include "Engine/Core/DirectX12/Resource/DxResource.h"
+
+namespace ONEngine {
 
 /// ///////////////////////////////////////////////////
 /// texture
@@ -141,3 +143,5 @@ void SaveTextureToPNG(const std::wstring& _filename, size_t _width, size_t _heig
 
 
 void SaveTextureToDDS(const std::wstring& _filename, size_t _width, size_t _height, size_t _depth, bool _overwrite);
+
+} /// ONEngine

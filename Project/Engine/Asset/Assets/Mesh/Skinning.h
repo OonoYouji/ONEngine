@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /// directX
 #include <d3d12.h>
@@ -17,6 +17,8 @@
 #include "Engine/Core/DirectX12/ComPtr/ComPtr.h"
 #include "Engine/Core/Utility/Math/Quaternion.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Transform/Transform.h"
+
+namespace ONEngine {
 
 /// @brief アニメーションのジョイント情報
 struct Joint {
@@ -140,3 +142,5 @@ namespace ANIME_MATH {
 	SkinCluster CreateSkinCluster(const Skeleton& _skeleton, Model* _model, DxManager* _dxm);
 }
 
+
+} /// ONEngine

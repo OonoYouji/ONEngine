@@ -6,6 +6,8 @@
 /// /////////////////////////////////////////////////////////////////
 /// エフェクトの発生形状を指定するクラス
 /// /////////////////////////////////////////////////////////////////
+namespace ONEngine {
+
 class EffectEmitShape final {
 public:
 	/// =================================================
@@ -111,3 +113,5 @@ inline EffectEmitShape& EffectEmitShape::operator=(const EffectEmitShape& _shape
 
 	return *this;
 }
+
+} /// ONEngine

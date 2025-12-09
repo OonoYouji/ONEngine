@@ -10,6 +10,8 @@
 /// ///////////////////////////////////////////////////
 /// ゲームパッド入力処理クラス
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class Gamepad final {
 	friend class Input;
 public:
@@ -68,3 +70,5 @@ private:
 	int stickDeadZone_ = 8000; // スティックのデッドゾーン
 };
 
+
+} /// ONEngine

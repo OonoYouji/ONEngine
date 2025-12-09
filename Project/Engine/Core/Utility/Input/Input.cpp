@@ -1,5 +1,7 @@
 ﻿#include "Input.h"
 
+using namespace ONEngine;
+
 /// engine
 #include "InputSystem.h"
 

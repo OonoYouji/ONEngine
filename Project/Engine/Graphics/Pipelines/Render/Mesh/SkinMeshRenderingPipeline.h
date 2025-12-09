@@ -14,6 +14,8 @@
 /// //////////////////////////////////////////////////////
 /// スキンアニメーションの描画パイプライン
 /// //////////////////////////////////////////////////////
+namespace ONEngine {
+
 class SkinMeshRenderingPipeline : public IRenderingPipeline {
 
 	enum {
@@ -49,3 +51,5 @@ private:
 
 };
 
+
+} /// ONEngine

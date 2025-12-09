@@ -1,4 +1,6 @@
-﻿#include "Log.h"
+#include "Log.h"
+
+using namespace ONEngine;
 
 
 #include <comdef.h>
@@ -154,7 +156,7 @@ void Console::Shutdown() {
 /// 文字列変換関数
 /// ////////////////////////////////////////////////
 
-std::string ConvertString(const std::wstring& _wstr) {
+std::string ONEngine::ConvertString(const std::wstring& _wstr) {
 
 	/// 引数が空の場合は空文字を返す
 	if (_wstr.empty()) {
@@ -173,7 +175,7 @@ std::string ConvertString(const std::wstring& _wstr) {
 	return result;
 }
 
-std::wstring ConvertString(const std::string& _str) {
+std::wstring ONEngine::ConvertString(const std::string& _str) {
 
 	/// 引数が空の場合は空文字を返す
 	if (_str.empty()) {
@@ -194,7 +196,7 @@ std::wstring ConvertString(const std::string& _str) {
 
 
 
-std::string ConvertTCHARToString(const TCHAR* tstr) {
+std::string ONEngine::ConvertTCHARToString(const TCHAR* tstr) {
 #ifdef UNICODE
 	// TCHAR == wchar_t
 	int len = WideCharToMultiByte(CP_UTF8, 0, tstr, -1, nullptr, 0, nullptr, nullptr);
@@ -208,11 +210,11 @@ std::string ConvertTCHARToString(const TCHAR* tstr) {
 #endif
 }
 
-std::string ConvertString(DWORD _dw) {
+std::string ONEngine::ConvertString(DWORD _dw) {
 	return std::to_string(_dw);
 }
 
-std::string HrToString(HRESULT _hr) {
+std::string ONEngine::HrToString(HRESULT _hr) {
 	//_com_error err(_hr);
 	//const wchar_t* wmsg = err.ErrorMessage();
 

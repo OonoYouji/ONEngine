@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /// std
 #include <string>
@@ -16,6 +16,8 @@
 /// /////////////////////////////////////////////
 /// スキニングアニメーションのRender Component
 /// /////////////////////////////////////////////
+namespace ONEngine {
+
 class SkinMeshRenderer : public IRenderComponent {
 	friend class SkinMeshUpdateSystem;
 	friend class SkinMeshRenderingPipeline;
@@ -81,9 +83,6 @@ namespace COMP_DEBUG {
 	void SkinMeshRendererDebug(SkinMeshRenderer* _smr);
 }
 
-void from_json(const nlohmann::json& _j, SkinMeshRenderer& _smr);
-void to_json(nlohmann::json& _j, const SkinMeshRenderer& _smr);
-
 
 /// ===================================================
 /// csで使用するための関数群
@@ -107,3 +106,10 @@ float InternalGetAnimationScale(uint64_t _nativeHandle);
 void InternalSetAnimationScale(uint64_t _nativeHandle, float _scale);
 
 void InternalGetJointTransform(uint64_t _nativeHandle, MonoString* _jointName, Vector3* _outScale, Quaternion* _outRotation, Vector3* _outPosition);
+
+
+
+void from_json(const nlohmann::json& _j, SkinMeshRenderer& _smr);
+void to_json(nlohmann::json& _j, const SkinMeshRenderer& _smr);
+
+} /// ONEngine

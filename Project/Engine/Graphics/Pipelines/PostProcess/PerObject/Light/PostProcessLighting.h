@@ -12,6 +12,8 @@
 /// ///////////////////////////////////////////////////
 /// PostProcessLighting
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class PostProcessLighting : public PerObjectPostProcess {
 private:
 	/// ===================================================
@@ -61,3 +63,5 @@ private:
 
 };
 
+
+} /// ONEngine

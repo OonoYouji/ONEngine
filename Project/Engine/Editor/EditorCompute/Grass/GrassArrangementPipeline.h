@@ -11,6 +11,8 @@
 /// ///////////////////////////////////////////////////// 
 /// 草の配置を行うシェーダーの起動を行うクラス
 /// ///////////////////////////////////////////////////// 
+namespace ONEngine {
+
 class GrassArrangementPipeline : public IEditorCompute {
 public:
 
@@ -45,3 +47,5 @@ private:
 	ConstantBuffer<UsedTextureIDs> usedTexIdBuffer_;
 
 };
+
+} /// ONEngine

@@ -14,6 +14,8 @@
 /// //////////////////////////////////////////////////
 /// エフェクトの描画パイプライン
 /// //////////////////////////////////////////////////
+namespace ONEngine {
+
 class EffectRenderingPipeline : public IRenderingPipeline {
 
 
@@ -60,3 +62,5 @@ private:
 
 };
 
+
+} /// ONEngine

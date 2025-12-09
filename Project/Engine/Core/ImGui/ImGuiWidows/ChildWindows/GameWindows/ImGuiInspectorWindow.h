@@ -12,6 +12,8 @@
 /// ///////////////////////////////////////////////////
 /// ImGuiInspectorWindow
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class ImGuiInspectorWindow : public IImGuiChildWindow {
 public:
 	/// ===================================================
@@ -79,3 +81,5 @@ inline void ImGuiInspectorWindow::RegisterComponent(std::function<void(class ICo
 	componentDebugFuncs_[hash] = _func;
 	componentNames_[hash] = name;
 }
+
+} /// ONEngine

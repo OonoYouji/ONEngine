@@ -1,5 +1,7 @@
 ﻿#include "SceneIO.h"
 
+using namespace ONEngine;
+
 /// std
 #include <iostream>
 #include <fstream>

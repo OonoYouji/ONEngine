@@ -1,7 +1,9 @@
-﻿#include "Line2DRenderer.h"
+#include "Line2DRenderer.h"
 
 /// engine
 #include "Engine/Graphics/Pipelines/Collection/RenderingPipelineCollection.h"
+
+using namespace ONEngine;
 
 Line2DRenderer::Line2DRenderer() {
 	renderingData_.vertices.reserve(32);

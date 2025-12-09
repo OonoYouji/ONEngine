@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /// std
 #include <string>
@@ -17,6 +17,8 @@
 /// ///////////////////////////////////////////////////
 /// スクリプトコンポーネント
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class Script : public IComponent {
 	friend class MonoScriptEngine;
 	friend class ScriptUpdateSystem;
@@ -105,8 +107,12 @@ namespace COMP_DEBUG {
 	void ScriptDebug(Script* _script);
 }
 
+
+
 /// ///////////////////////////////////////////////////
 /// json用の関数
 /// ///////////////////////////////////////////////////
 void from_json(const nlohmann::json& _j, Script& _s);
 void to_json(nlohmann::json& _j, const Script& _s);
+
+} /// ONEngine

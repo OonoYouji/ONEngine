@@ -8,6 +8,8 @@
 /// /////////////////////////////////////////////////
 /// 定数バッファクラス
 /// /////////////////////////////////////////////////
+namespace ONEngine {
+
 template <typename T>
 class ConstantBuffer final {
 public:
@@ -86,3 +88,5 @@ inline void ConstantBuffer<T>::SetMappedData(const T& _mappingData) {
 		*mappingData_ = _mappingData;
 	}
 }
+
+} /// ONEngine

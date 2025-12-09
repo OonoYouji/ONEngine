@@ -6,6 +6,8 @@
 /// ///////////////////////////////////////////////////
 /// ShadowCasterを更新するためのシステム
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class ShadowCasterUpdateSystem : public ECSISystem {
 public:
 	/// ===================================================
@@ -22,3 +24,5 @@ public:
 
 };
 
+
+} /// ONEngine

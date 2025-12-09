@@ -1,7 +1,9 @@
-﻿#pragma once
+#pragma once
 
 /// std
 #include <string>
+
+namespace ONEngine {
 
 /// ////////////////////////////////////////////////////
 /// アセットの種類
@@ -26,3 +28,5 @@ bool CheckAssetType(const std::string& _extension, AssetType _type);
 /// @param _extension 拡張子
 /// @return AssetType
 AssetType GetAssetTypeFromExtension(const std::string& _extension);
+
+} /// namespace ONEngine

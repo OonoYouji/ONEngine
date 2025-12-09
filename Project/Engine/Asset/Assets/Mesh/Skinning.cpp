@@ -1,9 +1,11 @@
-﻿#include "Skinning.h"
+#include "Skinning.h"
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Core/Utility/Utility.h"
 #include "Model.h"
+
+using namespace ONEngine;
 
 Vector3 ANIME_MATH::CalculateValue(const std::vector<KeyFrameVector3>& _keyFrames, float _time) {
 	/// ----- Vector3のキーフレーム配列を計算 ----- ///

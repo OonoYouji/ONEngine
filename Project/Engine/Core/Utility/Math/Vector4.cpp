@@ -1,8 +1,9 @@
-﻿#include "Vector4.h"
+#include "Vector4.h"
 
+/// std
 #include <cmath>
 
-//#include "Vector3.h"
+using namespace ONEngine;
 
 /// ===================================================
 /// static objects initialize
@@ -81,13 +82,13 @@ Vector3 Vector4::Convert(const Vector4& _v) {
 	);
 }
 
-void from_json(const nlohmann::json& _j, Vector4& _v) {
+void ONEngine::from_json(const nlohmann::json& _j, ONEngine::Vector4& _v) {
 	_v.x = _j.at("x").get<float>();
 	_v.y = _j.at("y").get<float>();
 	_v.z = _j.at("z").get<float>();
 	_v.w = _j.at("w").get<float>();
 }
 
-void to_json(nlohmann::json& _j, const Vector4& _v) {
+void ONEngine::to_json(nlohmann::json& _j, const ONEngine::Vector4& _v) {
 	_j = nlohmann::json{ { "x", _v.x }, { "y", _v.y }, { "z", _v.z }, { "w", _v.w } };
 }

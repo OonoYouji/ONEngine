@@ -6,6 +6,8 @@
 /// /////////////////////////////////////////////////
 /// DescriptorHeapの基底クラス
 /// /////////////////////////////////////////////////
+namespace ONEngine {
+
 class DxSRVHeap final : public IDxDescriptorHeap {
 
 	struct HeapData {
@@ -78,3 +80,5 @@ private:
 	HeapData bufferHeapData_;
 
 };
+
+} /// ONEngine

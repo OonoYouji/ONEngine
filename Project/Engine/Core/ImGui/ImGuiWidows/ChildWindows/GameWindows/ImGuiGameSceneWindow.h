@@ -6,6 +6,8 @@
 /// ///////////////////////////////////////////////////
 /// GameSceneTextureを表示するためのImGuiWindow
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class ImGuiGameSceneWindow : public IImGuiChildWindow {
 public:
 	/// ===================================================
@@ -26,3 +28,5 @@ private:
 
 };
 
+
+} /// ONEngine

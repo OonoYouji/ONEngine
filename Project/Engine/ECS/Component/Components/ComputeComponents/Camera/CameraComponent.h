@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /// externals
 #include <nlohmann/json.hpp>
@@ -10,8 +10,9 @@
 
 
 /// ----- 前方宣言 ----- ///
-class CameraComponent;
+namespace ONEngine {
 
+class CameraComponent;
 
 /// @brief カメラの種類
 enum class CameraType {
@@ -20,10 +21,9 @@ enum class CameraType {
 };
 
 
-
 /// @brief Componentのデバッグ関数
 namespace COMP_DEBUG {
-	void CameraDebug(CameraComponent* _camera);
+void CameraDebug(CameraComponent* _camera);
 }
 
 /// Json変換
@@ -114,23 +114,25 @@ public:
 /// @brief カメラ関連の数学関数群
 namespace CameraMath {
 
-	/// @brief perspective matrix の作成
-	/// @param _fovY 視野角
-	/// @param _aspectRatio アスペクト比 
-	/// @param _nearClip 最小描画距離
-	/// @param _farClip 最大描画距離
-	/// @return 作成された perspective matrix
-	Matrix4x4 MakePerspectiveFovMatrix(float _fovY, float _aspectRatio, float _nearClip, float _farClip);
+/// @brief perspective matrix の作成
+/// @param _fovY 視野角
+/// @param _aspectRatio アスペクト比 
+/// @param _nearClip 最小描画距離
+/// @param _farClip 最大描画距離
+/// @return 作成された perspective matrix
+Matrix4x4 MakePerspectiveFovMatrix(float _fovY, float _aspectRatio, float _nearClip, float _farClip);
 
-	/// @brief 平行投影行列の作成
-	/// @param _left 左
-	/// @param _right 右
-	/// @param _bottom 下
-	/// @param _top 上
-	/// @param _znear 手前
-	/// @param _zfar 奥行き
-	/// @return 平行投影行列
-	Matrix4x4 MakeOrthographicMatrix(float _left, float _right, float _bottom, float _top, float _znear, float _zfar);
+/// @brief 平行投影行列の作成
+/// @param _left 左
+/// @param _right 右
+/// @param _bottom 下
+/// @param _top 上
+/// @param _znear 手前
+/// @param _zfar 奥行き
+/// @return 平行投影行列
+Matrix4x4 MakeOrthographicMatrix(float _left, float _right, float _bottom, float _top, float _znear, float _zfar);
 
 }
 
+
+} /// ONEngine

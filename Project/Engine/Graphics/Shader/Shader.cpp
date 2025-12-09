@@ -1,5 +1,7 @@
 ﻿#include "Shader.h"
 
+using namespace ONEngine;
+
 /// std
 #include <vector>
 

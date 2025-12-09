@@ -1,4 +1,4 @@
-﻿#include "SkinMeshRenderer.h"
+#include "SkinMeshRenderer.h"
 
 /// external
 #include <imgui.h>
@@ -6,6 +6,8 @@
 /// engine
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/Core/ImGui/Math/ImGuiMath.h"
+
+using namespace ONEngine;
 
 SkinMeshRenderer::SkinMeshRenderer() {
 	SetMeshPath("./Packages/Models/Human/walk.gltf");
@@ -190,13 +192,13 @@ void COMP_DEBUG::SkinMeshRendererDebug(SkinMeshRenderer* _smr) {
 
 }
 
-void from_json(const nlohmann::json& _j, SkinMeshRenderer& _smr) {
+void ONEngine::from_json(const nlohmann::json& _j, SkinMeshRenderer& _smr) {
 	_smr.enable = _j.at("enable").get<int>();
 	_smr.SetMeshPath(_j.at("meshPath").get<std::string>());
 	_smr.SetTexturePath(_j.at("texturePath").get<std::string>());
 }
 
-void to_json(nlohmann::json& _j, const SkinMeshRenderer& _smr) {
+void ONEngine::to_json(nlohmann::json& _j, const SkinMeshRenderer& _smr) {
 	_j = nlohmann::json{
 		{ "type", "SkinMeshRenderer" },
 		{ "enable", _smr.enable },
@@ -212,11 +214,11 @@ void to_json(nlohmann::json& _j, const SkinMeshRenderer& _smr) {
 /// internal methods
 /// ====================================================
 
-SkinMeshRenderer* GetSkinMeshRenderer(uint64_t _nativeHandle) {
+SkinMeshRenderer* ONEngine::GetSkinMeshRenderer(uint64_t _nativeHandle) {
 	return reinterpret_cast<SkinMeshRenderer*>(_nativeHandle);
 }
 
-MonoString* InternalGetMeshPath(uint64_t _nativeHandle) {
+MonoString* ONEngine::InternalGetMeshPath(uint64_t _nativeHandle) {
 	SkinMeshRenderer* smr = GetSkinMeshRenderer(_nativeHandle);
 
 	const std::string& meshPath = smr->GetMeshPath();
@@ -224,7 +226,7 @@ MonoString* InternalGetMeshPath(uint64_t _nativeHandle) {
 	return monoMeshPath;
 }
 
-void InternalSetMeshPath(uint64_t _nativeHandle, MonoString* _path) {
+void ONEngine::InternalSetMeshPath(uint64_t _nativeHandle, MonoString* _path) {
 	SkinMeshRenderer* smr = GetSkinMeshRenderer(_nativeHandle);
 	/// MonoStringからstd::stringに変換
 	char* pathChars = mono_string_to_utf8(_path);
@@ -233,7 +235,7 @@ void InternalSetMeshPath(uint64_t _nativeHandle, MonoString* _path) {
 	smr->SetMeshPath(path);
 }
 
-MonoString* InternalGetTexturePath(uint64_t _nativeHandle) {
+MonoString* ONEngine::InternalGetTexturePath(uint64_t _nativeHandle) {
 	SkinMeshRenderer* smr = GetSkinMeshRenderer(_nativeHandle);
 
 	const std::string& texturePath = smr->GetTexturePath();
@@ -241,7 +243,7 @@ MonoString* InternalGetTexturePath(uint64_t _nativeHandle) {
 	return monoTexturePath;
 }
 
-void InternalSetTexturePath(uint64_t _nativeHandle, MonoString* _path) {
+void ONEngine::InternalSetTexturePath(uint64_t _nativeHandle, MonoString* _path) {
 	SkinMeshRenderer* smr = GetSkinMeshRenderer(_nativeHandle);
 	/// MonoStringからstd::stringに変換
 	char* pathChars = mono_string_to_utf8(_path);
@@ -250,37 +252,37 @@ void InternalSetTexturePath(uint64_t _nativeHandle, MonoString* _path) {
 	smr->SetTexturePath(path);
 }
 
-bool InternalGetIsPlaying(uint64_t _nativeHandle) {
+bool ONEngine::InternalGetIsPlaying(uint64_t _nativeHandle) {
 	SkinMeshRenderer* smr = GetSkinMeshRenderer(_nativeHandle);
 	return smr->GetIsPlaying();
 }
 
-void InternalSetIsPlaying(uint64_t _nativeHandle, bool _isPlaying) {
+void ONEngine::InternalSetIsPlaying(uint64_t _nativeHandle, bool _isPlaying) {
 	SkinMeshRenderer* smr = GetSkinMeshRenderer(_nativeHandle);
 	smr->SetIsPlaying(_isPlaying);
 }
 
-float InternalGetAnimationTime(uint64_t _nativeHandle) {
+float ONEngine::InternalGetAnimationTime(uint64_t _nativeHandle) {
 	SkinMeshRenderer* smr = GetSkinMeshRenderer(_nativeHandle);
 	return smr->GetAnimationTime();
 }
 
-void InternalSetAnimationTime(uint64_t _nativeHandle, float _time) {
+void ONEngine::InternalSetAnimationTime(uint64_t _nativeHandle, float _time) {
 	SkinMeshRenderer* smr = GetSkinMeshRenderer(_nativeHandle);
 	smr->SetAnimationTime(_time);
 }
 
-float InternalGetAnimationScale(uint64_t _nativeHandle) {
+float ONEngine::InternalGetAnimationScale(uint64_t _nativeHandle) {
 	SkinMeshRenderer* smr = GetSkinMeshRenderer(_nativeHandle);
 	return smr->GetAnimationScale();
 }
 
-void InternalSetAnimationScale(uint64_t _nativeHandle, float _scale) {
+void ONEngine::InternalSetAnimationScale(uint64_t _nativeHandle, float _scale) {
 	SkinMeshRenderer* smr = GetSkinMeshRenderer(_nativeHandle);
 	smr->SetAnimationScale(_scale);
 }
 
-void InternalGetJointTransform(uint64_t _nativeHandle, MonoString* _jointName, Vector3* _outScale, Quaternion* _outRotation, Vector3* _outPosition) {
+void ONEngine::InternalGetJointTransform(uint64_t _nativeHandle, MonoString* _jointName, Vector3* _outScale, Quaternion* _outRotation, Vector3* _outPosition) {
 	SkinMeshRenderer* smr = GetSkinMeshRenderer(_nativeHandle);
 	if (!smr) {
 		Console::LogError("SkinMeshRenderer::InternalGetJointTransform: SkinMeshRenderer is null.");
@@ -316,6 +318,4 @@ void InternalGetJointTransform(uint64_t _nativeHandle, MonoString* _jointName, V
 	if (_outPosition) {
 		*_outPosition = matWorld.ExtractTranslation();
 	}
-
-
 }

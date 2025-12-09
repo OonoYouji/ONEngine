@@ -4,6 +4,8 @@
 #include "Vector3.h"
 
 /// @brief 球
+namespace ONEngine {
+
 struct Sphere {
 	Vector3 center;
 	float radius;
@@ -26,3 +28,5 @@ struct Ray {
 	Vector3 origin;
 	Vector3 direction;
 };
+
+} /// ONEngine

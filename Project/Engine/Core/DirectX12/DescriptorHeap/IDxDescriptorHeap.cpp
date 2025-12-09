@@ -1,11 +1,13 @@
-﻿#include "IDxDescriptorHeap.h"
+#include "IDxDescriptorHeap.h"
+
+using namespace ONEngine;
 
 /// lib
 #include "Engine/Core/Utility/Tools/Assert.h"
 #include "Engine/Core/Utility/Tools/Log.h"
 
 
-ComPtr<ID3D12DescriptorHeap> CreateHeap(ID3D12Device* _device, D3D12_DESCRIPTOR_HEAP_TYPE _heapType, uint32_t _numDescriptors, bool _isShaderVisible) {
+ComPtr<ID3D12DescriptorHeap> ONEngine::CreateHeap(ID3D12Device* _device, D3D12_DESCRIPTOR_HEAP_TYPE _heapType, uint32_t _numDescriptors, bool _isShaderVisible) {
 	ComPtr<ID3D12DescriptorHeap> heap;
 	D3D12_DESCRIPTOR_HEAP_DESC desc{};
 	desc.Type = _heapType;

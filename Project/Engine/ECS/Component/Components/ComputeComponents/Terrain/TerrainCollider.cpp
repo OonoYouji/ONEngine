@@ -1,4 +1,4 @@
-﻿#include "TerrainCollider.h"
+#include "TerrainCollider.h"
 
 /// externals
 #include <imgui.h>
@@ -9,6 +9,7 @@
 #include "Engine/ECS/Entity/GameEntity/GameEntity.h"
 #include "Engine/Editor/Commands/ImGuiCommand/ImGuiCommand.h"
 
+using namespace ONEngine;
 
 void COMP_DEBUG::TerrainColliderDebug(TerrainCollider* _collider) {
 	if (!_collider) {
@@ -39,12 +40,12 @@ void COMP_DEBUG::TerrainColliderDebug(TerrainCollider* _collider) {
 	ImMathf::DragFloat("max slope angle", &_collider->maxSlopeAngle_, 0.1f, 0.0f, 90.0f, "%.2f rad");
 }
 
-void from_json(const nlohmann::json& _j, TerrainCollider& _c) {
+void ONEngine::from_json(const nlohmann::json& _j, TerrainCollider& _c) {
 	_c.enable = _j.value("enable", 1);
 	_c.maxSlopeAngle_ = _j.value("maxSlopeAngle", 0.0f);
 }
 
-void to_json(nlohmann::json& _j, const TerrainCollider& _c) {
+void ONEngine::to_json(nlohmann::json& _j, const TerrainCollider& _c) {
 	_j = {
 		{ "type", "TerrainCollider" },
 		{ "enable", _c.enable },

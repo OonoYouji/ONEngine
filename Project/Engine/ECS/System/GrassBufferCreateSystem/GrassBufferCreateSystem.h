@@ -6,6 +6,8 @@
 /// /////////////////////////////////////////////////////
 /// 草のBufferを生成するシステム
 /// /////////////////////////////////////////////////////
+namespace ONEngine {
+
 class GrassBufferCreateSystem : public ECSISystem {
 public:
 	/// ==================================================
@@ -26,3 +28,5 @@ private:
 	class DxManager* pDxManager_;
 
 };
+
+} /// ONEngine

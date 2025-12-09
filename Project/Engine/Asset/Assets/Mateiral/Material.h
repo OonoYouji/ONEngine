@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /// std
 #include <optional>
@@ -9,9 +9,10 @@
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/Graphics/Buffer/Data/UVTransform.h"
 
+namespace ONEngine {
+
 /// ShowGuiMaterialように前方宣言
 class Material;
-
 
 /// @brief デフォルトのマテリアルを生成
 Material GenerateMaterial();
@@ -21,11 +22,9 @@ Material GenerateMaterial();
 /// @param _material 参照するマテリアル nullptrならデフォルト値で生成
 void GenerateMaterialFile(const std::string& _filepath, Material* _material);
 
-
 /// Json変換
 void from_json(const nlohmann::json& _j, Material& _material);
 void to_json(nlohmann::json& _j, const Material& _material);
-
 
 /// ////////////////////////////////////////////////////////
 /// マテリアル
@@ -88,3 +87,5 @@ public:
 	UVTransform         uvTransform;
 };
 
+
+} /// ONEngine

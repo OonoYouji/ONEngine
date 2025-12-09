@@ -9,6 +9,8 @@
 /// /////////////////////////////////////////////////
 /// 地形の頂点を編集するためのコンピュートシェーダー
 /// /////////////////////////////////////////////////
+namespace ONEngine {
+
 class TerrainVertexEditorCompute : public IEditorCompute {
 
 	struct TerrainInfo {
@@ -53,3 +55,5 @@ private:
 
 };
 
+
+} /// ONEngine

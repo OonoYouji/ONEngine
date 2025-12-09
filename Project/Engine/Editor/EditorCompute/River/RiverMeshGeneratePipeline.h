@@ -5,6 +5,8 @@
 /// //////////////////////////////////////////
 /// 川のメッシュを作成するpipeline
 /// //////////////////////////////////////////
+namespace ONEngine {
+
 class RiverMeshGeneratePipeline : public IEditorCompute {
 
 	enum ROOT_PARAM {
@@ -33,3 +35,5 @@ private:
 	class DxManager* pDxManager_;
 
 };
+
+} /// ONEngine

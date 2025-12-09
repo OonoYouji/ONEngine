@@ -1,5 +1,7 @@
 ﻿#include "EntityCollection.h"
 
+using namespace ONEngine;
+
 /// std
 #include <fstream>
 

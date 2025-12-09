@@ -1,5 +1,7 @@
 ﻿#include "RenderingPipelineCollection.h"
 
+using namespace ONEngine;
+
 /// engine
 #include "Engine/Core/Config/EngineConfig.h"
 #include "Engine/Core/DirectX12/Manager/DxManager.h"

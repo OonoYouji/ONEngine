@@ -1,11 +1,12 @@
-﻿#include "EngineConfig.h"
+#include "EngineConfig.h"
 
-namespace DebugConfig {
+using namespace ONEngine;
+
+namespace ONEngine::DebugConfig {
 	/// @brief デバッグ中かどうか
 	bool isDebugging = false;
 	bool isShowDebugScene = true;
 	bool isShowGameScene = true;
 
 	int selectedMode_ = 0; ///< 選択中のデバッグウィンドウ
-
 }

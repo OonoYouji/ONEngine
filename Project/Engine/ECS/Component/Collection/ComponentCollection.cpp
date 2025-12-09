@@ -1,5 +1,7 @@
 ﻿#include "ComponentCollection.h"
 
+using namespace ONEngine;
+
 /// engine
 #include "Engine/ECS/Entity/GameEntity/GameEntity.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Script/Script.h"

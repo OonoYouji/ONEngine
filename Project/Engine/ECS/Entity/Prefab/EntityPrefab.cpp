@@ -1,5 +1,7 @@
 ﻿#include "EntityPrefab.h"
 
+using namespace ONEngine;
+
 /// std
 #include <filesystem>
 #include <fstream>

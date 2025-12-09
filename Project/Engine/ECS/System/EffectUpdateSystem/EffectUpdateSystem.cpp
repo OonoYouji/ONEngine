@@ -1,5 +1,7 @@
 ﻿#include "EffectUpdateSystem.h"
 
+using namespace ONEngine;
+
 /// std
 #include <list>
 #include <numbers>

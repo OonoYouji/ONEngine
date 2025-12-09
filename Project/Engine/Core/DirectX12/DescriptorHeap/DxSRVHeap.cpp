@@ -1,5 +1,7 @@
 ﻿#include "DxSRVHeap.h"
 
+using namespace ONEngine;
+
 /// engine
 #include "Engine/Core/Utility/Utility.h"
 

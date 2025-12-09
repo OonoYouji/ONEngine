@@ -6,6 +6,8 @@
 /// /////////////////////////////////////////////////
 /// RTVHeap
 /// /////////////////////////////////////////////////
+namespace ONEngine {
+
 class DxRTVHeap final : public IDxDescriptorHeap {
 public:
 	/// ===================================================
@@ -19,3 +21,5 @@ public:
 	void Initialize() override;
 };
 
+
+} /// ONEngine

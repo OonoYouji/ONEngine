@@ -20,6 +20,8 @@
 /// /////////////////////////////////////////////////
 /// mesh描画クラス
 /// /////////////////////////////////////////////////
+namespace ONEngine {
+
 class MeshRenderingPipeline final : public IRenderingPipeline {
 public:
 
@@ -80,3 +82,5 @@ private:
 
 };
 
+
+} /// ONEngine

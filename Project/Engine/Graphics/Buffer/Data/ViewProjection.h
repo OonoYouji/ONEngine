@@ -6,9 +6,13 @@
 /// /////////////////////////////////////////////////
 /// カメラのビュー行列と射影行列
 /// /////////////////////////////////////////////////
+namespace ONEngine {
+
 struct ViewProjection {
 	Matrix4x4 matVP;         ///< ビュープロジェクション行列
 	Matrix4x4 matView;       ///< ビュー行列
 	Matrix4x4 matProjection; ///< プロジェクション行列
 };
 
+
+} /// ONEngine

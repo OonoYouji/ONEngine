@@ -1,5 +1,7 @@
 ﻿#include "GameFramework.h"
 
+using namespace ONEngine;
+
 /// engine
 #include "Engine/Core/Utility/Input/Input.h"
 #include "Engine/Core/Utility/Time/Time.h"

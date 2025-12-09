@@ -1,4 +1,4 @@
-﻿#include "AssetCollection.h"
+#include "AssetCollection.h"
 
 /// std
 #include <filesystem>
@@ -8,9 +8,11 @@
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/Core/Utility/Math/Mathf.h"
 
+
+using namespace ONEngine;
+
 AssetCollection::AssetCollection() = default;
 AssetCollection::~AssetCollection() = default;
-
 
 void AssetCollection::Initialize(DxManager* _dxm) {
 	assetLoader_ = std::make_unique<AssetLoader>(_dxm, this);

@@ -1,4 +1,6 @@
-﻿#include "AssetType.h"
+#include "AssetType.h"
+
+using namespace ONEngine;
 
 /// std
 #include <unordered_map>
@@ -20,7 +22,7 @@ namespace {
 }	/// namespace
 
 
-bool CheckAssetType(const std::string& _extension, AssetType _type) {
+bool ONEngine::CheckAssetType(const std::string& _extension, AssetType _type) {
 	/// ----- 引数の拡張子がアセットの物か確認する ----- ///
 
 	if (gAssetTypeCheckMap.contains(_extension)) {
@@ -32,7 +34,7 @@ bool CheckAssetType(const std::string& _extension, AssetType _type) {
 }
 
 
-AssetType GetAssetTypeFromExtension(const std::string& _extension) {
+AssetType ONEngine::GetAssetTypeFromExtension(const std::string& _extension) {
 	/// ----- 引数がどのアセットか返す(無効な拡張子であればNoneを) ----- ///
 
 	if (gAssetTypeCheckMap.contains(_extension)) {

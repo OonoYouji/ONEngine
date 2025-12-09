@@ -1,10 +1,12 @@
-﻿#include "ImGuiCommand.h"
+#include "ImGuiCommand.h"
 
 /// externals
 #include <imgui.h>
 
 /// engine
 #include "Engine/Editor/EditCommand.h"
+
+using namespace ONEngine;
 
 bool ImMathf::DragInt(const std::string& _label, int* _pv, int _step, int _min, int _max) {
 	static int startValue{};

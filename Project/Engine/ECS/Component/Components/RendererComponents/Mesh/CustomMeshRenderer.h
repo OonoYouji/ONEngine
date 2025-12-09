@@ -12,6 +12,8 @@
 /// ///////////////////////////////////////////////////
 /// CustomMeshRenderer
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class CustomMeshRenderer final : public IRenderComponent {
 public:
 	/// ===================================================
@@ -96,3 +98,5 @@ public:
 };
 
 
+
+} /// ONEngine

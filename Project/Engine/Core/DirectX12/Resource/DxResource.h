@@ -12,6 +12,8 @@
 /// /////////////////////////////////////////////////
 /// ID3D12Resourceのラッパークラス
 /// /////////////////////////////////////////////////
+namespace ONEngine {
+
 class DxResource final {
 public:
 	/// ===================================================
@@ -111,3 +113,5 @@ void CreateBarrier(ID3D12Resource* _resource, D3D12_RESOURCE_STATES _before, D3D
 void CreateBarriers(std::vector<DxResource*>& _resources, D3D12_RESOURCE_STATES _before, D3D12_RESOURCE_STATES _after, class DxCommand* _dxCommand);
 
 void CreateBarriers(std::vector<DxResource*>& _resources, D3D12_RESOURCE_STATES _after, class DxCommand* _dxCommand);
+
+} /// ONEngine

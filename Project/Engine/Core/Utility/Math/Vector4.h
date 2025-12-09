@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /// externals
 #include <nlohmann/json.hpp>
@@ -9,6 +9,8 @@
 /// //////////////////////////////////////////////////
 /// 4次元ベクトル
 /// //////////////////////////////////////////////////
+namespace ONEngine {
+
 struct Vector4 final {
 
 	Vector4();
@@ -232,3 +234,5 @@ inline Vector4 Vector4::operator+() {
 /// json 変換
 void from_json(const nlohmann::json& _j, Vector4& _v);
 void to_json(nlohmann::json& _j, const Vector4& _v);
+
+} /// ONEngine

@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /// std
 #include <memory>
@@ -16,6 +16,8 @@
 
 
 /// @brief TがIAssetを継承しているかのコンセプト
+namespace ONEngine {
+
 template <typename T>
 concept IsAssetExist = std::is_base_of_v<IAsset, T>;
 
@@ -145,3 +147,5 @@ public:
 	AudioClip* GetAudioClip(const std::string& _filepath);
 
 };
+
+} /// ONEngine

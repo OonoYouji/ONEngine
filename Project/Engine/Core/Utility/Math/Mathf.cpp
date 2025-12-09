@@ -1,4 +1,4 @@
-﻿#include "Mathf.h"
+#include "Mathf.h"
 
 /// std
 #include <filesystem>
@@ -10,6 +10,7 @@
 /// namespaceの短縮
 namespace fs = std::filesystem;
 
+using namespace ONEngine;
 
 float Mathf::Cot(float _t) {
 	/// 逆タンジェント

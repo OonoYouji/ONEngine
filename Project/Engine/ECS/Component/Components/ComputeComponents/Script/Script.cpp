@@ -1,4 +1,5 @@
-﻿#include "Script.h"
+#include "Script.h"
+
 
 /// engine
 #include "Engine/Core/ImGui/Math/AssetPayload.h"
@@ -9,6 +10,8 @@
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/Script/MonoScriptEngine.h"
 
+
+using namespace ONEngine;
 using namespace CSGui;
 
 
@@ -313,7 +316,7 @@ void COMP_DEBUG::ScriptDebug(Script* _script) {
 
 }
 
-void from_json(const nlohmann::json& _j, Script& _s) {
+void ONEngine::from_json(const nlohmann::json& _j, Script& _s) {
 	_s.enable = _j.at("enable").get<int>();
 	if (_j.contains("scripts")) {
 		nlohmann::json scriptJsons = _j.at("scripts");
@@ -337,7 +340,7 @@ void from_json(const nlohmann::json& _j, Script& _s) {
 	}
 }
 
-void to_json(nlohmann::json& _j, const Script& _s) {
+void ONEngine::to_json(nlohmann::json& _j, const Script& _s) {
 	nlohmann::json scriptJsons;
 	for (auto& scriptData : _s.GetScriptDataList()) {
 		nlohmann::json data{

@@ -1,8 +1,10 @@
-﻿#pragma once
+#pragma once
 
 /// engine
 #include "Engine/Asset/Guid/Guid.h"
 #include "Engine/Asset/AssetType.h"
+
+namespace ONEngine {
 
 /// ////////////////////////////////////////////////////
 /// .pngなどに付随するメタファイルクラス
@@ -41,3 +43,5 @@ public:
 /// @param _refFile .pngなどの参照ファイルパス
 /// @return 生成されたMetaFileオブジェクト
 MetaFile GenerateMetaFile(const std::string& _refFile);
+
+} /// ONEngine

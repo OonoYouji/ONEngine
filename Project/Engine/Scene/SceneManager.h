@@ -15,6 +15,8 @@
 /// ///////////////////////////////////////////////////
 /// シーンの管理を行うクラス
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class SceneManager final {
 public:
 	/// ===================================================
@@ -100,3 +102,5 @@ namespace MONO_INTERNAL_METHOD {
 
 	void InternalLoadScene(MonoString* _sceneName);
 }
+
+} /// ONEngine

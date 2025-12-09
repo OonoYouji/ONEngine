@@ -1,5 +1,7 @@
 ﻿#include "VoxelTerrainEditorComputePipeline.h"
 
+using namespace ONEngine;
+
 /// engine
 #include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/Core/Utility/Utility.h"

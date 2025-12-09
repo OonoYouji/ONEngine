@@ -9,6 +9,8 @@
 /// ///////////////////////////////////////////////////
 /// グレースケール処理
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class PostProcessGrayscale : public ScreenPostProcess {
 public:
 	/// ===================================================
@@ -32,3 +34,5 @@ private:
 	std::array<size_t, 2> textureIndices_;
 };
 
+
+} /// ONEngine

@@ -8,6 +8,8 @@
 /// ///////////////////////////////////////////////////
 /// SkinMeshの骨を描画するレンダリングパイプライン
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class SkinMeshSkeletonRenderingPipeline : public IRenderingPipeline {
 public:
 	/// ===================================================
@@ -35,3 +37,5 @@ private:
 
 };
 
+
+} /// ONEngine

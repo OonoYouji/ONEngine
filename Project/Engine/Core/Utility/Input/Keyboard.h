@@ -10,6 +10,8 @@
 /// //////////////////////////////////////////////////
 /// キーボード入力処理クラス
 /// //////////////////////////////////////////////////
+namespace ONEngine {
+
 class Keyboard final {
 	friend class Input;
 public:
@@ -41,3 +43,5 @@ private:
 
 };
 
+
+} /// ONEngine

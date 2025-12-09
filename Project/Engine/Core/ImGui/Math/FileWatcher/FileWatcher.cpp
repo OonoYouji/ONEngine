@@ -1,5 +1,7 @@
 ﻿#include "FileWatcher.h"
 
+using namespace ONEngine;
+
 /// std
 #include <filesystem>
 

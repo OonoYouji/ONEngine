@@ -12,6 +12,8 @@
 /// //////////////////////////////////////////////////
 /// 入力処理クラス
 /// //////////////////////////////////////////////////
+namespace ONEngine {
+
 class InputSystem final {
 	friend class Input;
 public:
@@ -50,3 +52,5 @@ namespace MONO_INTERNAL_METHOD {
 	void InternalGetMouseVelocity(float* _x, float* _y);
 	void InternalGetMousePosition(float* _x, float* _y);
 }
+
+} /// ONEngine

@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /// std
 #include <string>
@@ -13,6 +13,7 @@
 /// engine
 #include "../../Interface/IComponent.h"
 
+namespace ONEngine {
 
 /// @brief 音の再生状態
 enum AudioState {
@@ -87,18 +88,19 @@ public:
 
 };
 
-
-
 namespace COMP_DEBUG {
 	void AudioSourceDebug(AudioSource* _as);
 }
-
-void from_json(const nlohmann::json& _j, AudioSource& _a);
-void to_json(nlohmann::json& _j, const AudioSource& _a);
-
 
 namespace MONO_INTERNAL_METHOD {
 	void InternalGetParams(uint64_t _nativeHandle, float* _volume, float* _pitch);
 	void InternalSetParams(uint64_t _nativeHandle, float _volume, float _pitch);
 	void InternalPlayOneShot(uint64_t _nativeHandle, float _volume, float _pitch, MonoString* _path);
 }
+
+
+
+void from_json(const nlohmann::json& _j, AudioSource& _a);
+void to_json(nlohmann::json& _j, const AudioSource& _a);
+
+} /// ONEngine

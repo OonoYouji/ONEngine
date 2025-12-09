@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /// std
 #include <vector>
@@ -12,17 +12,18 @@
 
 
 /// @brief  Debug関数様に前方宣言
+namespace ONEngine {
+
 class TerrainCollider;
 
 /// @brief Componentのデバッグ表示
 namespace COMP_DEBUG {
-	void TerrainColliderDebug(TerrainCollider* _collider);
+void TerrainColliderDebug(TerrainCollider* _collider);
 }
 
 /// Json変換関数
 void from_json(const nlohmann::json& _j, TerrainCollider& _c);
 void to_json(nlohmann::json& _j, const TerrainCollider& _c);
-
 
 /// ///////////////////////////////////////////////////
 /// 地形のコライダーコンポーネント
@@ -104,3 +105,5 @@ public:
 
 };
 
+
+} /// ONEngine

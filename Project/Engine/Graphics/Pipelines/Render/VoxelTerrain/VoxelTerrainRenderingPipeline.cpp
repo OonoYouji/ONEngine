@@ -1,5 +1,7 @@
 ﻿#include "VoxelTerrainRenderingPipeline.h"
 
+using namespace ONEngine;
+
 /// engine
 #include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/Core/DirectX12/Manager/DxManager.h"

@@ -10,6 +10,8 @@
 /// ///////////////////////////////////////////////////
 /// オブジェクト毎のガウスブラー処理
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class PostProcessGaussianBlurPerObject : public PerObjectPostProcess {
 public:
 	/// ===================================================
@@ -36,3 +38,5 @@ private:
 
 };
 
+
+} /// ONEngine

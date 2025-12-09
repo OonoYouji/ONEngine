@@ -1,4 +1,6 @@
 ﻿#include "ComputePipeline.h"
+
+using namespace ONEngine;
 #include <iostream>
 
 /// engine

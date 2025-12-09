@@ -16,6 +16,8 @@
 /// ///////////////////////////////////////////////////
 /// hlslシェーダー
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class Shader final {
 public:
 
@@ -77,3 +79,5 @@ public:
 	IDxcBlob* GetAS() const { return as_.Get(); }
 
 };
+
+} /// ONEngine

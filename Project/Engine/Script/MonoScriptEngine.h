@@ -18,6 +18,8 @@
 /// ///////////////////////////////////////////////////
 /// monoを使ったC#スクリプトエンジン
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class MonoScriptEngine {
 private:
 	/// ===================================================
@@ -106,3 +108,5 @@ public:
 namespace MonoScriptEngineUtils {
 	MonoMethod* FindMethodInClassOrParents(MonoClass* _class, const char* _methodName, int _paramCount);
 } // namespace MonoScriptEngineUtils
+
+} /// ONEngine

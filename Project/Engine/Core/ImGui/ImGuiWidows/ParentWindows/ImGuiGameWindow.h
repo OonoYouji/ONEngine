@@ -6,6 +6,8 @@
 /// ///////////////////////////////////////////////////
 /// GameWindow
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class ImGuiGameWindow : public IImGuiParentWindow {
 public:
 	/// ===================================================
@@ -32,3 +34,5 @@ private:
 	int imGuiFlags_ = 0;
 };
 
+
+} /// ONEngine

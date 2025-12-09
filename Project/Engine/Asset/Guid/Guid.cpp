@@ -1,4 +1,4 @@
-﻿#include "Guid.h"
+#include "Guid.h"
 
 /// std
 #include <iomanip>
@@ -7,11 +7,13 @@
 /// engine
 #include "Engine/Core/Utility/Utility.h"
 
-void from_json(const nlohmann::json& _j, Guid& _guid) {
+using namespace ONEngine;
+
+void ONEngine::from_json(const nlohmann::json& _j, Guid& _guid) {
 	_guid = Guid::FromString(_j.value("guid", ""));
 }
 
-void to_json(nlohmann::json& _j, const Guid& _guid) {
+void ONEngine::to_json(nlohmann::json& _j, const Guid& _guid) {
 	_j = nlohmann::json{
 		{ "guid", _guid.ToString() },
 	};
@@ -56,14 +58,14 @@ Guid Guid::FromString(const std::string& _str) {
 	return Guid(hi, lo);
 }
 
-bool operator==(const Guid& a, const Guid& b) {
+bool ONEngine::operator==(const Guid& a, const Guid& b) {
 	return (a.high == b.high) && (a.low == b.low);
 }
 
-bool operator!=(const Guid& a, const Guid& b) {
+bool ONEngine::operator!=(const Guid& a, const Guid& b) {
 	return !(a == b);
 }
 
-Guid GenerateGuid() {
+Guid ONEngine::GenerateGuid() {
 	return Guid(Random::UInt64(), Random::UInt64());
 }

@@ -10,6 +10,8 @@
 /// //////////////////////////////////////////////////
 /// 三次元での回転を表すクラス
 /// //////////////////////////////////////////////////
+namespace ONEngine {
+
 struct Quaternion final {
 	/// ===================================================
 	/// public : methods
@@ -164,3 +166,5 @@ inline Quaternion& Quaternion::operator*=(const Quaternion& _other) {
 	*this = *this * _other;
 	return *this;
 }
+
+} /// ONEngine

@@ -11,6 +11,8 @@
 /// /////////////////////////////////////////////////
 /// 天球のレンダリングパイプライン
 /// /////////////////////////////////////////////////
+namespace ONEngine {
+
 class SkyboxRenderingPipeline : public IRenderingPipeline {
 public:
 
@@ -58,3 +60,5 @@ private:
 
 };
 
+
+} /// ONEngine

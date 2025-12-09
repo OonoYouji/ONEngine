@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /// std
 #include <memory>
@@ -9,6 +9,8 @@
 #include "../Asset.h"
 #include "Mesh.h"
 #include "Skinning.h"
+
+namespace ONEngine {
 
 /// ///////////////////////////////////////////////////
 /// Meshの集合体、モデルデータ (アニメーションがある場合も含む)
@@ -82,3 +84,5 @@ public:
 
 
 };
+
+} /// ONEngine

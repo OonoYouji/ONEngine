@@ -10,6 +10,8 @@
 /// ///////////////////////////////////////////////////
 /// ImGuiHierarchyWindow
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class ImGuiHierarchyWindow : public IImGuiChildWindow {
 public:
 	/// ===================================================
@@ -119,3 +121,5 @@ private:
 
 	class EntityComponentSystem* pEcs_ = nullptr;
 };
+
+} /// ONEngine

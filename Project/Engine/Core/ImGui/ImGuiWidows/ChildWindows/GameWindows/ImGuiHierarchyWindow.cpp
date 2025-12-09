@@ -1,5 +1,7 @@
 ﻿#include "ImGuiHierarchyWindow.h"
 
+using namespace ONEngine;
+
 /// external
 #include <imgui.h>
 #include <dialog/ImGuiFileDialog.h>

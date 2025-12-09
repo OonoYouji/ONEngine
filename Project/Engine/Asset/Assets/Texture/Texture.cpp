@@ -1,4 +1,4 @@
-﻿#include "Texture.h"
+#include "Texture.h"
 
 /// directX12
 #include <wrl/client.h>
@@ -17,6 +17,8 @@
 #include "Engine/Core/DirectX12/Device/DxDevice.h"
 #include "Engine/Core/DirectX12/DescriptorHeap/DxSRVHeap.h"
 #include "Engine/Core/DirectX12/Command/DxCommand.h"
+
+using namespace ONEngine;
 
 namespace {
 	/// printf 互換のフォーマットログ
@@ -424,7 +426,7 @@ UINT Texture::GetTextureDepth() const {
 
 
 
-void SaveTextureToPNG(const std::wstring& _filename, size_t _width, size_t _height, bool _overwrite) {
+void ONEngine::SaveTextureToPNG(const std::wstring& _filename, size_t _width, size_t _height, bool _overwrite) {
 
 	/// _filenameの先のディレクトリが存在しない場合は作成
 	std::filesystem::path filePath(_filename);
@@ -472,7 +474,7 @@ void SaveTextureToPNG(const std::wstring& _filename, size_t _width, size_t _heig
 
 }
 
-void SaveTextureToDDS(const std::wstring& _filename, size_t _width, size_t _height, size_t _depth, bool _overwrite) {
+void ONEngine::SaveTextureToDDS(const std::wstring& _filename, size_t _width, size_t _height, size_t _depth, bool _overwrite) {
 
 	/// _filenameの先のディレクトリが存在しない場合は作成
 	std::filesystem::path filePath(_filename);

@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /// externals
 #include <nlohmann/json.hpp>
@@ -13,15 +13,16 @@
 
 
 /// @brief COMP_DEBUG名前空間ように前方宣言
+namespace ONEngine {
+
 class ShadowCaster;
 
 namespace COMP_DEBUG {
-	void ShadowCasterDebug(ShadowCaster* _shadowCaster);
+void ShadowCasterDebug(ShadowCaster* _shadowCaster);
 }
 
 void from_json(const nlohmann::json& _j, ShadowCaster& _c);
 void to_json(nlohmann::json& _j, const ShadowCaster& _c);
-
 
 /// @brief 影に関するパラメータ構造体
 struct ShadowParameter {
@@ -85,3 +86,5 @@ private:
 
 };
 
+
+} /// ONEngine

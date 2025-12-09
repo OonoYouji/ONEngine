@@ -1,5 +1,7 @@
 ﻿#include "IComponent.h"
 
+using namespace ONEngine;
+
 void IComponent::Reset() {}
 
 void IComponent::SetOwner(GameEntity* _owner) {

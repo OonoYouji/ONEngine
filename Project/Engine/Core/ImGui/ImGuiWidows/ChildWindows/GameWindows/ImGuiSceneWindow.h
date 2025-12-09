@@ -6,6 +6,8 @@
 /// ///////////////////////////////////////////////////
 /// ImGuiSceneWindow
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class ImGuiSceneWindow : public IImGuiChildWindow {
 public:
 	/// ===================================================
@@ -37,3 +39,5 @@ private:
 	int manipulateMode_;
 };
 
+
+} /// ONEngine

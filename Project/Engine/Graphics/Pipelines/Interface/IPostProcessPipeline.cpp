@@ -1,10 +1,12 @@
-﻿#include "IPostProcessPipeline.h"
+#include "IPostProcessPipeline.h"
+
+using namespace ONEngine;
 
 //
 #include <d3d12.h>
 #include <d3dx12.h>
 
-void CopyResource(ID3D12Resource* _src, ID3D12Resource* _dst, ID3D12GraphicsCommandList6* _cmdList) {
+void ONEngine::CopyResource(ID3D12Resource* _src, ID3D12Resource* _dst, ID3D12GraphicsCommandList6* _cmdList) {
 	/// ----- _srcの内容を_dstにコピーする ----- ///
 
 

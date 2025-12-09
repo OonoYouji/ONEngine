@@ -1,4 +1,4 @@
-﻿#include "VoxelTerrain.h"
+#include "VoxelTerrain.h"
 
 /// externals
 #include <imgui.h>
@@ -11,6 +11,8 @@
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Editor/Commands/ImGuiCommand/ImGuiCommand.h"
 #include "Engine/ECS/Entity/GameEntity/GameEntity.h"
+
+using namespace ONEngine;
 
 void COMP_DEBUG::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _dxManager) {
 	if (!_voxelTerrain) {
@@ -91,7 +93,7 @@ void COMP_DEBUG::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _dxMa
 }
 
 
-void from_json(const nlohmann::json& _j, std::vector<Chunk>& _chunks) {
+void ONEngine::from_json(const nlohmann::json& _j, std::vector<Chunk>& _chunks) {
 	nlohmann::json jChunks = _j["chunks"];
 
 	_chunks.resize(jChunks.size());
@@ -105,7 +107,7 @@ void from_json(const nlohmann::json& _j, std::vector<Chunk>& _chunks) {
 	}
 }
 
-void to_json(nlohmann::json& _j, const std::vector<Chunk>& _chunks) {
+void ONEngine::to_json(nlohmann::json& _j, const std::vector<Chunk>& _chunks) {
 	nlohmann::json jChunks;
 
 	for (size_t i = 0; i < _chunks.size(); i++) {
@@ -117,7 +119,7 @@ void to_json(nlohmann::json& _j, const std::vector<Chunk>& _chunks) {
 	};
 }
 
-void from_json(const nlohmann::json& _j, VoxelTerrain& _voxelTerrain) {
+void ONEngine::from_json(const nlohmann::json& _j, VoxelTerrain& _voxelTerrain) {
 	/// Json -> VoxelTerrain
 	_voxelTerrain.enable = _j.value("enable", 1);
 
@@ -130,7 +132,7 @@ void from_json(const nlohmann::json& _j, VoxelTerrain& _voxelTerrain) {
 	_voxelTerrain.chunks_ = _j.value("chunks", std::vector<Chunk>{});
 }
 
-void to_json(nlohmann::json& _j, const VoxelTerrain& _voxelTerrain) {
+void ONEngine::to_json(nlohmann::json& _j, const VoxelTerrain& _voxelTerrain) {
 	/// VoxelTerrain -> Json
 	_j = {
 		{ "type", "VoxelTerrain" },

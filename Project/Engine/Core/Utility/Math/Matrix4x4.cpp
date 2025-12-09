@@ -1,5 +1,7 @@
 ﻿#include "Matrix4x4.h"
 
+using namespace ONEngine;
+
 /// std
 #include <cmath>
 

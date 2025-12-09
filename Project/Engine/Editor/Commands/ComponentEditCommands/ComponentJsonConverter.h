@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /// externals
 #include <nlohmann/json.hpp>
@@ -13,14 +13,14 @@
 #include "Engine/ECS/Component/Components/RendererComponents/Primitive/Line3DRenderer.h"
 
 
+namespace ONEngine {
 /// /////////////////////////////////////////////////////
 /// コンポーネントをJSON形式に変換するコマンド
 /// /////////////////////////////////////////////////////
 namespace ComponentJsonConverter {
-	nlohmann::json ToJson(const IComponent* _component);
-	void FromJson(const nlohmann::json& _j, IComponent* _component);
-};
-
+nlohmann::json ToJson(const IComponent* _component);
+void FromJson(const nlohmann::json& _j, IComponent* _component);
+} /// ComponentJsonConverter
 
 
 /// //////////////////////////////////////////////////
@@ -76,3 +76,5 @@ void to_json(nlohmann::json& _j, const Line2DRenderer& _l);
 void from_json(const nlohmann::json& _j, Line3DRenderer& _l);
 void to_json(nlohmann::json& _j, const Line3DRenderer& _l);
 
+
+} /// ONEngine

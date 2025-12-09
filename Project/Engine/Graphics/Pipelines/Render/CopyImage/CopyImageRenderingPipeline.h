@@ -6,6 +6,8 @@
 /// //////////////////////////////////////////////////
 /// レンダリング結果を画面に表示するShader
 /// //////////////////////////////////////////////////
+namespace ONEngine {
+
 class CopyImageRenderingPipeline : public IRenderingPipeline {
 public:
 	/// ===================================================
@@ -26,3 +28,5 @@ private:
 	class AssetCollection* pAssetCollection_ = nullptr;
 };
 
+
+} /// ONEngine

@@ -1,15 +1,15 @@
-﻿/// engine
+/// engine
 #include "Engine/Core/GameFramework/GameFramework.h"
 #include "Engine/Core/Utility/Tools/Log.h"
 
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
-	Console console;
+	ONEngine::Console console;
 
-	std::unique_ptr<GameFramework> gameFramework = std::make_unique<GameFramework>();
-	gameFramework->Initialize(GameFrameworkConfig{
+	std::unique_ptr<ONEngine::GameFramework> gameFramework = std::make_unique<ONEngine::GameFramework>();
+	gameFramework->Initialize(ONEngine::GameFrameworkConfig{
 		.windowName = L"TwoEngine",
-		.windowSize = Vector2(1280, 720),
+		.windowSize = ONEngine::Vector2(1280, 720),
 	});
 
 	gameFramework->Run();

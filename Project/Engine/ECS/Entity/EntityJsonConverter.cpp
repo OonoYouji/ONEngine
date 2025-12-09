@@ -1,7 +1,9 @@
-﻿#include "EntityJsonConverter.h"
+#include "EntityJsonConverter.h"
 
 /// engine
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentJsonConverter.h"
+
+using namespace ONEngine;
 
 nlohmann::json EntityJsonConverter::ToJson(const GameEntity* _entity) {
 	if (!_entity) {

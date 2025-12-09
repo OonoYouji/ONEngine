@@ -13,6 +13,8 @@ using namespace DirectX;
 /// //////////////////////////////////////////////////
 /// 4x4行列クラス
 /// //////////////////////////////////////////////////
+namespace ONEngine {
+
 struct Matrix4x4 final {
 	/// ===================================================
 	/// public : constructer
@@ -224,3 +226,5 @@ inline Matrix4x4& Matrix4x4::operator*=(const Matrix4x4& _other) {
 	*this = *this * _other;
 	return *this;
 }
+
+} /// ONEngine

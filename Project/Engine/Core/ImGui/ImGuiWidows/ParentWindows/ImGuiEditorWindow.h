@@ -6,6 +6,8 @@
 /// ///////////////////////////////////////////////////
 /// エディターウィンドウ
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class ImGuiEditorWindow : public IImGuiParentWindow {
 public:
 	/// ===================================================
@@ -31,3 +33,5 @@ private:
 	int imGuiFlags_ = 0;
 };
 
+
+} /// ONEngine

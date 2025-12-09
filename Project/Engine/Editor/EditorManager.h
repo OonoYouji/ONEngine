@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /// std
 #include <memory>
@@ -17,10 +17,12 @@
 #include "Commands/Interface/IEditorCommand.h"
 #include "EditorCompute/Interface/IEditorCompute.h"
 
+/// @brief 
+namespace ONEngine {
+
 /// @brief コマンドの生成関数
 using Creator = std::function<std::unique_ptr<IEditorCommand>(const std::vector<std::any>&)>;
 
-/// @brief 
 template <typename T>
 concept IsEditorCommand = std::is_base_of_v<IEditorCommand, T>;
 
@@ -124,3 +126,5 @@ inline void EditorManager::ExecuteCommand(Args && ..._args) {
 		redoStack_.clear();
 	}
 }
+
+} /// ONEngine

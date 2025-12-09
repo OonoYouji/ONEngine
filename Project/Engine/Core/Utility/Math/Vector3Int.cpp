@@ -1,4 +1,6 @@
-﻿#include "Vector3Int.h"
+#include "Vector3Int.h"
+
+using namespace ONEngine;
 
 const Vector3Int Vector3Int::kOne = Vector3Int(1, 1, 1);
 const Vector3Int Vector3Int::kZero = Vector3Int(0, 0, 0);
@@ -66,13 +68,13 @@ Vector3Int& Vector3Int::operator*=(int32_t _scaler) {
 /// nlohmann::json 変換
 /// ===================================================
 
-void from_json(const nlohmann::json& _j, Vector3Int& _v) {
+void ONEngine::from_json(const nlohmann::json& _j, Vector3Int& _v) {
 	_v.x = _j.at("x").get<int32_t>();
 	_v.y = _j.at("y").get<int32_t>();
 	_v.z = _j.at("z").get<int32_t>();
 }
 
-void to_json(nlohmann::json& _j, const Vector3Int& _v) {
+void ONEngine::to_json(nlohmann::json& _j, const Vector3Int& _v) {
 	_j = {
 		{ "x", _v.x },
 		{ "y", _v.y },

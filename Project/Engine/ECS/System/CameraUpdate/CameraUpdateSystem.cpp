@@ -1,5 +1,7 @@
 ﻿#include "CameraUpdateSystem.h"
 
+using namespace ONEngine;
+
 /// engine
 #include "Engine/Core/Config/EngineConfig.h"
 #include "Engine/Core/Utility/Utility.h"

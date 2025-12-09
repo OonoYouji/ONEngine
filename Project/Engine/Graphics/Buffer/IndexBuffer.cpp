@@ -1,5 +1,7 @@
 ﻿#include "IndexBuffer.h"
 
+using namespace ONEngine;
+
 IndexBuffer::IndexBuffer() {}
 IndexBuffer::~IndexBuffer() {}
 

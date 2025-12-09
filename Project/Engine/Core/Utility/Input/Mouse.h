@@ -10,6 +10,8 @@
 /// /////////////////////////////////////////////
 /// Mouseの入力
 /// /////////////////////////////////////////////
+namespace ONEngine {
+
 class Mouse final {
 	friend class Input;
 public:
@@ -83,3 +85,5 @@ private:
 	Vector2 imageSize_;
 };
 
+
+} /// ONEngine

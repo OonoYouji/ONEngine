@@ -1,5 +1,7 @@
 ﻿#include "ByteAddressBuffer.h"
 
+using namespace ONEngine;
+
 /// engine
 #include "Engine/Core/Utility/Utility.h"
 

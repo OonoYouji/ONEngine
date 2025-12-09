@@ -6,6 +6,8 @@
 /// ///////////////////////////////////////////////////
 /// Transformの行列を更新するシステム
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class TransformUpdateSystem : public ECSISystem {
 public:
 	/// ===================================================
@@ -21,3 +23,5 @@ public:
 	void Update(class ECSGroup* _ecs);
 };
 
+
+} /// ONEngine

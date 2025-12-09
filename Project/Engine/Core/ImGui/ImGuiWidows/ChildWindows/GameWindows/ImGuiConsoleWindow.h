@@ -12,6 +12,8 @@
 /// ///////////////////////////////////////////////////
 /// ImGuiにGameのログを表示するWindow
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class ImGuiConsoleWindow : public IImGuiChildWindow {
 public:
 	/// ===================================================
@@ -35,3 +37,5 @@ private:
 
 };
 
+
+} /// ONEngine

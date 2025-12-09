@@ -1,5 +1,7 @@
 ﻿#include "AssetDebugger.h"
 
+using namespace ONEngine;
+
 /// externals
 #include <imgui.h>
 

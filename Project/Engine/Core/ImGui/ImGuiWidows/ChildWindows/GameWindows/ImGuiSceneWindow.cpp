@@ -1,5 +1,7 @@
 ﻿#include "ImGuiSceneWindow.h"
 
+using namespace ONEngine;
+
 /// std
 #include <array>
 

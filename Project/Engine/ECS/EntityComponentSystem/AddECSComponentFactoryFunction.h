@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include "EntityComponentSystem.h"
 #include "Engine/ECS/Component/Collection/ComponentCollection.h"
@@ -25,6 +25,8 @@
 #include "Engine/ECS/Component/Components/RendererComponents/Primitive/Line2DRenderer.h"
 #include "Engine/ECS/Component/Components/RendererComponents/Primitive/Line3DRenderer.h"
 #include "Engine/ECS/Component/Components/RendererComponents/ScreenPostEffectTag/ScreenPostEffectTag.h"
+
+namespace ONEngine {
 
 inline void AddComponentFactoryFunction(ComponentCollection* _compCollection) {
 	/// compute
@@ -54,3 +56,5 @@ inline void AddComponentFactoryFunction(ComponentCollection* _compCollection) {
 	_compCollection->RegisterComponentFactory<SphereCollider>();
 	_compCollection->RegisterComponentFactory<BoxCollider>();
 }
+
+} /// namespace ONEngine

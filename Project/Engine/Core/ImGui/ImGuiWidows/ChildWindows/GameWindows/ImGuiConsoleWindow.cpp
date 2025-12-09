@@ -1,5 +1,7 @@
 ﻿#include "ImGuiConsoleWindow.h"
 
+using namespace ONEngine;
+
 /// std
 #include <format>
 

@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /// window
 #include <windows.h> 
@@ -12,6 +12,8 @@
 #include "Log.h"
 #include "Engine/Core/Config/EngineConfig.h"
 
+
+namespace ONEngine {
 
 /// <summary>
 /// _conditionがfalseの場合、エラーメッセージを表示してデバッグを停止する
@@ -52,3 +54,5 @@ inline void Assert(bool _condition, const char* _errorMessage, const std::source
 inline void Assert(bool _condition, const std::source_location& _location = std::source_location::current()) {
 	Assert(_condition, "Assertion failed", _location); ///< デフォルトのエラーメッセージを使用
 }
+
+} /// namespace ONEngine

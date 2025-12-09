@@ -14,6 +14,8 @@
 /// /////////////////////////////////////////////////
 /// scriptの更新を行うシステム
 /// /////////////////////////////////////////////////
+namespace ONEngine {
+
 class ScriptUpdateSystem : public ECSISystem {
 public:
 	/// ===================================================
@@ -69,3 +71,5 @@ public:
 	void OutsideOfRuntimeUpdate(class ECSGroup* _ecs) override;
 	void RuntimeUpdate(class ECSGroup* _ecs) override;
 };
+
+} /// ONEngine

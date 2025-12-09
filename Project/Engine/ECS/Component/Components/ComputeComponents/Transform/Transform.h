@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /// std
 #include <memory>
@@ -18,6 +18,8 @@
 /// ///////////////////////////////////////////////////
 /// transform component
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class Transform : public IComponent {
 public:
 
@@ -87,10 +89,6 @@ namespace COMP_DEBUG {
 	void TransformDebug(Transform* _transform);
 }
 
-void from_json(const nlohmann::json& _j, Transform& _t);
-void to_json(nlohmann::json& _j, const Transform& _t);
-
-
 /// =================================================
 /// mono からのTransform取得用関数
 /// =================================================
@@ -105,3 +103,10 @@ void InternalSetPosition(uint64_t _nativeHandle, float _x, float _y, float _z);
 void InternalSetLocalPosition(uint64_t _nativeHandle, float _x, float _y, float _z);
 void InternalSetRotate(uint64_t _nativeHandle, float _x, float _y, float _z, float _w);
 void InternalSetScale(uint64_t _nativeHandle, float _x, float _y, float _z);
+
+
+
+void from_json(const nlohmann::json& _j, Transform& _t);
+void to_json(nlohmann::json& _j, const Transform& _t);
+
+} /// ONEngine

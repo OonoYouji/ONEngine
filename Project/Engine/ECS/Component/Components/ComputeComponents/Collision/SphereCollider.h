@@ -1,15 +1,17 @@
-﻿#pragma once
+#pragma once
 
 /// engine
 #include "ICollider.h"
 
 
+namespace ONEngine {
+
 class SphereCollider;
 
 namespace COMP_DEBUG {
-	/// @brief SphereColliderのデバッグ表示
-	/// @param _collider SphereColliderのポインタ
-	void SphereColliderDebug(SphereCollider* _collider);
+/// @brief SphereColliderのデバッグ表示
+/// @param _collider SphereColliderのポインタ
+void SphereColliderDebug(SphereCollider* _collider);
 }
 
 void from_json(const nlohmann::json& _j, SphereCollider& _c);
@@ -47,3 +49,5 @@ public:
 	float GetRadius() const;
 
 };
+
+} /// ONEngine

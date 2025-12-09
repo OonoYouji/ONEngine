@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /// externals
 #include <mono/jit/jit.h>
@@ -12,18 +12,19 @@
 
 
 /// 前方宣言
+namespace ONEngine {
+
 class MeshRenderer;
 class AssetCollection;
 
 namespace COMP_DEBUG {
-	/// @brief MeshRendererのデバッグ表示
-	void MeshRendererDebug(MeshRenderer* _mr, AssetCollection* _assetCollection);
+/// @brief MeshRendererのデバッグ表示
+void MeshRendererDebug(MeshRenderer* _mr, AssetCollection* _assetCollection);
 }
 
 /// Json変換
 void from_json(const nlohmann::json& _j, MeshRenderer& _mr);
 void to_json(nlohmann::json& _j, const MeshRenderer& _mr);
-
 
 
 /// ///////////////////////////////////////////////////
@@ -105,3 +106,5 @@ Vector4 InternalGetMeshColor(uint64_t _nativeHandle);
 void InternalSetMeshColor(uint64_t _nativeHandle, Vector4 _color);
 uint32_t InternalGetPostEffectFlags(uint64_t _nativeHandle);
 void InternalSetPostEffectFlags(uint64_t _nativeHandle, uint32_t _flags);
+
+} /// ONEngine

@@ -7,6 +7,8 @@
 /// /////////////////////////////////////////////
 /// スキンメッシュの更新システム
 /// /////////////////////////////////////////////
+namespace ONEngine {
+
 class SkinMeshUpdateSystem : public ECSISystem {
 public:
 
@@ -31,3 +33,5 @@ private:
 
 };
 
+
+} /// ONEngine

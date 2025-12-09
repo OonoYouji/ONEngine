@@ -14,6 +14,8 @@
 /// ///////////////////////////////////////////////////
 /// ゲームオブジェクトの作成コマンド
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class CreateGameObjectCommand : public IEditorCommand {
 public:
 	CreateGameObjectCommand(class ECSGroup* _ecs, const std::string& _name = "NewEntity", class GameEntity* _parentEntity = nullptr);
@@ -156,3 +158,5 @@ private:
 	class GameEntity* pNewParent_ = nullptr;
 	class GameEntity* pOldParent_ = nullptr;
 };
+
+} /// ONEngine

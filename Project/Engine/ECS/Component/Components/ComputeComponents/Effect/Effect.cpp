@@ -1,4 +1,4 @@
-﻿#include "Effect.h"
+#include "Effect.h"
 
 /// std
 #include <imgui.h>
@@ -6,6 +6,8 @@
 /// engine
 #include "Engine/Core/Utility/Math/Vector4.h"
 #include "Engine/Core/ImGui/Math/ImGuiMath.h"
+
+using namespace ONEngine;
 
 Effect::Effect() {
 	isCreateParticle_ = true;

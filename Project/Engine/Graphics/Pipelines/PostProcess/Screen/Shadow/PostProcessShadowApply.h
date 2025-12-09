@@ -9,6 +9,8 @@
 /// ///////////////////////////////////////////////////
 /// 影を適用するためのポストプロセス
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class PostProcessShadowApply : public ScreenPostProcess {
 
 	enum ROOT_PARAM {
@@ -50,3 +52,5 @@ private:
 
 };
 
+
+} /// ONEngine

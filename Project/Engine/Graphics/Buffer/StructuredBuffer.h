@@ -17,6 +17,8 @@
 #include "Engine/Core/DirectX12/DescriptorHeap/DxSRVHeap.h"
 #include "Engine/Core/Utility/Tools/Assert.h"
 
+namespace ONEngine {
+
 struct Handle {
 	uint32_t heapIndex;
 	D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle;
@@ -515,3 +517,5 @@ template<typename T>
 inline DxResource& StructuredBuffer<T>::GetReadbackResource() {
 	return readbackResource_;
 }
+
+} /// ONEngine

@@ -1,5 +1,7 @@
 ﻿#include "MeshBufferRecreate.h"
 
+using namespace ONEngine;
+
 /// engine
 #include "../../EntityComponentSystem/EntityComponentSystem.h"
 #include "../../Component/Components/RendererComponents/Mesh/CustomMeshRenderer.h"

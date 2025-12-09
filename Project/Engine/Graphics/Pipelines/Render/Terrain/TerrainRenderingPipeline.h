@@ -13,6 +13,8 @@
 /// /////////////////////////////////////////////////
 /// Terrainの描画pipeline
 /// /////////////////////////////////////////////////
+namespace ONEngine {
+
 class TerrainRenderingPipeline : public IRenderingPipeline {
 public:
 	/// =====================================
@@ -56,3 +58,5 @@ private:
 
 };
 
+
+} /// ONEngine

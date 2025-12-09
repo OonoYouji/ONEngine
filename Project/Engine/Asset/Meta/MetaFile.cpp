@@ -1,4 +1,4 @@
-﻿#include "MetaFile.h"
+#include "MetaFile.h"
 
 /// std
 #include <fstream>
@@ -7,6 +7,7 @@
 /// engine
 #include "Engine/Core/Utility/Utility.h"
 
+using namespace ONEngine;
 
 namespace {
 
@@ -88,7 +89,7 @@ bool MetaFile::SaveToFile(const std::string& _metaFilePath) const {
 	return true;
 }
 
-MetaFile GenerateMetaFile(const std::string& _refFile) {
+MetaFile ONEngine::GenerateMetaFile(const std::string& _refFile) {
 	/// ----- 新規の.metaファイルを作成する ----- ///
 
 	MetaFile metaFile;

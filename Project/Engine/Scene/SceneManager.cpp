@@ -1,5 +1,7 @@
 ﻿#include "SceneManager.h"
 
+using namespace ONEngine;
+
 /// std
 #include <numbers>
 #include <fstream>

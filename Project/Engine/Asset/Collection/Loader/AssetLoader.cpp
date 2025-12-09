@@ -1,4 +1,4 @@
-﻿#include "AssetLoader.h"
+#include "AssetLoader.h"
 
 /// directX
 #include <d3dx12.h>
@@ -34,6 +34,9 @@
 #pragma comment(lib, "mfplat.lib")
 #pragma comment(lib, "Mfreadwrite.lib")
 #pragma comment(lib, "mfuuid.lib")
+
+
+using namespace ONEngine;
 
 
 AssetLoader::AssetLoader(DxManager* _dxm, AssetCollection* _collection)

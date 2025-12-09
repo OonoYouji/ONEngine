@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /// std
 #include <string>
@@ -6,6 +6,8 @@
 /// engine
 #include "Engine/Core/Utility/Utility.h"
 #include "../Interface/IEditorCommand.h"
+
+namespace ONEngine {
 
 /// ///////////////////////////////////////////////////
 /// ImGui関連の編集
@@ -141,3 +143,5 @@ namespace ImGuiCommand {
 	};
 
 }
+
+} /// ONEngine

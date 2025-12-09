@@ -1,4 +1,4 @@
-﻿#include "DxDepthStencil.h"
+#include "DxDepthStencil.h"
 
 /// directX
 #include <d3dx12.h>
@@ -10,6 +10,8 @@
 #include "../DescriptorHeap/DxSRVHeap.h"
 #include "Engine/Core/Utility/Tools/Assert.h"
 #include "Engine/Core/Utility/Tools/Log.h"
+
+using namespace ONEngine;
 
 DxDepthStencil::DxDepthStencil() {}
 DxDepthStencil::~DxDepthStencil() {}

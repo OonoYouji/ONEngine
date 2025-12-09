@@ -11,6 +11,8 @@
 /// /////////////////////////////////////////////////
 /// 地形のデータを出力する
 /// /////////////////////////////////////////////////
+namespace ONEngine {
+
 class TerrainDataOutput : public IEditorCompute {
 
 	enum {
@@ -44,3 +46,5 @@ private:
 
 };
 
+
+} /// ONEngine

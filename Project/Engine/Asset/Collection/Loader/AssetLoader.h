@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /// directX
 #include <d3d12.h>
@@ -16,6 +16,9 @@
 #include "Engine/Core/DirectX12/Resource/DxResource.h"
 #include "Engine/Asset/Assets/Mesh/Skinning.h"
 
+struct aiNode;
+
+namespace ONEngine {
 
 /// ///////////////////////////////////////////////////
 /// Assetのローダー
@@ -76,7 +79,7 @@ public:
 	/// @brief アニメーションのNodeを読み込む
 	/// @param _node 読み込み対象のaiNodeポインタ
 	/// @return 読み込まれたNode構造体
-	Node ReadNode(struct aiNode* _node);
+	Node ReadNode(aiNode* _node);
 
 	/// @brief アニメーションの読み込み
 	/// @param _model 読み込み対象のModelポインタ
@@ -155,3 +158,5 @@ private:
 
 };
 
+
+} /// ONEngine

@@ -13,6 +13,8 @@
 #include "../GameEntity/GameEntity.h"
 #include "../Prefab/EntityPrefab.h"
 
+namespace ONEngine {
+
 class CameraComponent;
 
 /// ///////////////////////////////////////////////////
@@ -115,3 +117,5 @@ public:
 	const std::vector<std::unique_ptr<GameEntity>>& GetEntities() const;
 
 };
+
+} /// ONEngine

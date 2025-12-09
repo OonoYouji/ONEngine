@@ -16,6 +16,8 @@
 /// /////////////////////////////////////////////////
 /// DxObjectの管理クラス
 /// /////////////////////////////////////////////////
+namespace ONEngine {
+
 class DxManager final {
 public:
 	/// ===================================================
@@ -90,3 +92,5 @@ private:
 	DxManager& operator=(DxManager&&)      = delete;
 };
 
+
+} /// ONEngine

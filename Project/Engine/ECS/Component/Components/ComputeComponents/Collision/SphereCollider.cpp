@@ -1,4 +1,4 @@
-﻿#include "SphereCollider.h"
+#include "SphereCollider.h"
 
 #include <magic_enum/magic_enum.hpp>
 
@@ -9,6 +9,7 @@
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/Editor/Commands/ImGuiCommand/ImGuiCommand.h"
 
+using namespace ONEngine;
 
 void COMP_DEBUG::SphereColliderDebug(SphereCollider* _c) {
 	if (!_c) {
@@ -36,13 +37,13 @@ void COMP_DEBUG::SphereColliderDebug(SphereCollider* _c) {
 }
 
 
-void from_json(const nlohmann::json& _j, SphereCollider& _s) {
+void ONEngine::from_json(const nlohmann::json& _j, SphereCollider& _s) {
 	_s.enable = _j.value("enable", 1);
 	_s.radius_ = _j.value("radius", 1.0f);
 	_s.collisionState_ = magic_enum::enum_cast<CollisionState>(_j.value("state", "Dynamic")).value_or(CollisionState::Dynamic);
 }
 
-void to_json(nlohmann::json& _j, const SphereCollider& _s) {
+void ONEngine::to_json(nlohmann::json& _j, const SphereCollider& _s) {
 	_j = nlohmann::json{
 		{ "type", "SphereCollider" },
 		{ "enable", _s.enable },

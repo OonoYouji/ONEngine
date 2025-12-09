@@ -1,8 +1,10 @@
-﻿#include "GizmoPrimitiveVertices.h"
+#include "GizmoPrimitiveVertices.h"
 
+
+using namespace ONEngine;
 using namespace GizmoPrimitive;
 
-std::vector<VertexData> GetSphereVertices(const Vector3& _center, float _radius, const Vector4& _color, size_t _segment) {
+std::vector<VertexData> ONEngine::GetSphereVertices(const Vector3& _center, float _radius, const Vector4& _color, size_t _segment) {
 	/// ----- 球を構成する頂点を計算 ----- ///
 
 	const float deltaAngle = 2.0f * std::numbers::pi_v<float> / _segment;
@@ -40,7 +42,7 @@ std::vector<VertexData> GetSphereVertices(const Vector3& _center, float _radius,
 	return outVertices;
 }
 
-std::vector<VertexData> GetCubeVertices(const Vector3& _center, const Vector3& _size, const Vector4& _color) {
+std::vector<VertexData> ONEngine::GetCubeVertices(const Vector3& _center, const Vector3& _size, const Vector4& _color) {
 	/// ----- 立方体を構成する頂点を計算 ----- ///
 
 	Vector3 halfSize = _size * 0.5f;
@@ -80,7 +82,7 @@ std::vector<VertexData> GetCubeVertices(const Vector3& _center, const Vector3& _
 	return outVertices;
 }
 
-std::vector<GizmoPrimitive::VertexData> GetRectVertices(const Matrix4x4& _matWorld, const Vector4& _color, const Vector2& _rectSize) {
+std::vector<GizmoPrimitive::VertexData> ONEngine::GetRectVertices(const Matrix4x4& _matWorld, const Vector4& _color, const Vector2& _rectSize) {
 	/// ----- 2D矩形を構成する頂点を計算(_matWorld次第で回転、拡縮する) ----- ///
 
 	std::vector<GizmoPrimitive::VertexData> outVertices;

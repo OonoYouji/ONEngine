@@ -10,6 +10,8 @@
 /// ///////////////////////////////////////////////////
 /// index buffer view
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 template<typename T>
 class VertexBuffer final {
 public:
@@ -118,3 +120,5 @@ template<typename T>
 inline void VertexBuffer<T>::SetVertices(const std::vector<T>& _vertices) {
 	vertices_ = _vertices;
 }
+
+} /// ONEngine

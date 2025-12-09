@@ -11,6 +11,8 @@
 #include "Engine/Graphics/Buffer/Data/GPUMaterial.h"
 
 /// 前方宣言
+namespace ONEngine {
+
 class AssetCollection;
 
 /// ////////////////////////////////////////////////////////
@@ -69,3 +71,5 @@ void CustomMeshRendererDebug(class CustomMeshRenderer* _customMeshRenderer);
 
 void EffectDebug(class Effect* _effect);
 
+
+} /// ONEngine

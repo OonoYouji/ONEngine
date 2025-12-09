@@ -15,6 +15,8 @@
 /// ///////////////////////////////////////////////////
 /// Randomな値を生成するクラス
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class Random final {
 	Random() = default;
 	~Random() = default;
@@ -109,3 +111,5 @@ private:
 	static std::mt19937 generator_;
 
 };
+
+} /// ONEngine

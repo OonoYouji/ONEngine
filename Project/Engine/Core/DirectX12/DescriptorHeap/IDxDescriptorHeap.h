@@ -28,6 +28,8 @@ enum DescriptorHeapType {
 /// /////////////////////////////////////////////////
 /// DescriptorHeapの基底クラス
 /// /////////////////////////////////////////////////
+namespace ONEngine {
+
 class IDxDescriptorHeap {
 public:
 	/// ===================================================
@@ -117,3 +119,5 @@ private:
 /// @param _isShaderVisible shader visibleかどうか
 /// @return 生成された DescriptorHeap
 ComPtr<ID3D12DescriptorHeap> CreateHeap(ID3D12Device* _device, D3D12_DESCRIPTOR_HEAP_TYPE _type, uint32_t _numDescriptors, bool _isShaderVisible);
+
+} /// ONEngine

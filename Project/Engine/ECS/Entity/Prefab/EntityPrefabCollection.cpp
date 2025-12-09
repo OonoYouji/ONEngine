@@ -1,5 +1,7 @@
 ﻿#include "EntityPrefabCollection.h"
 
+using namespace ONEngine;
+
 #include "Engine/Core/Utility/Math/Mathf.h"
 
 void EntityPrefabCollection::LoadPrefabAll() {

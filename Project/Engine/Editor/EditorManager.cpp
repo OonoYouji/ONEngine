@@ -1,4 +1,4 @@
-﻿#include "EditorManager.h"
+#include "EditorManager.h"
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
@@ -15,6 +15,8 @@
 #include "EditorCompute/River/RiverMeshGeneratePipeline.h"
 #include "EditorCompute/Grass/GrassArrangementPipeline.h"
 #include "EditorCompute/VoxelTerrainEditor/VoxelTerrainEditorComputePipeline.h"
+
+using namespace ONEngine;
 
 EditorManager::EditorManager(EntityComponentSystem* _ecs) : pEcs_(_ecs) {}
 EditorManager::~EditorManager() = default;

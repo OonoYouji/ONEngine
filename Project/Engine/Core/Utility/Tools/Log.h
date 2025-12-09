@@ -16,6 +16,8 @@ static const size_t MAX_LOG_BUFFER_SIZE = 1000;
 /// ////////////////////////////////////////////////
 /// Console Log
 /// ////////////////////////////////////////////////
+namespace ONEngine {
+
 class Console final {
 	/// ----- friend class ----- ///
 	friend class GameFramework;
@@ -68,3 +70,5 @@ std::string ConvertString(DWORD _dw);
 
 /// @brief HRESULTを文字列に変換する
 std::string HrToString(HRESULT _hr);
+
+} /// ONEngine

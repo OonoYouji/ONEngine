@@ -6,6 +6,8 @@
 /// ///////////////////////////////////////////////////
 /// File操作用のImGuiWindow
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class ImGuiFileWindow : public IImGuiParentWindow {
 public:
 	/// ===================================================
@@ -24,3 +26,5 @@ private:
 	int imGuiFlags_ = 0;
 };
 
+
+} /// ONEngine

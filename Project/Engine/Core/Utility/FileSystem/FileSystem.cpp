@@ -1,4 +1,6 @@
-﻿#include "FileSystem.h"
+#include "FileSystem.h"
+
+using namespace ONEngine;
 
 /// std
 #include <filesystem>

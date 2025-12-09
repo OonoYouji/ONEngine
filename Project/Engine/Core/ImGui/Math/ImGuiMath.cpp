@@ -1,4 +1,6 @@
-﻿#include "ImGuiMath.h"
+#include "ImGuiMath.h"
+
+using namespace ONEngine;
 
 /// std
 #include <numbers>
@@ -262,7 +264,7 @@ ImVec2 ImMathf::CalculateAspectFitSize(const Vector2& _textureSize, const ImVec2
 }
 
 
-bool ImGuiInputText(const char* _label, std::string* _text, ImGuiInputTextFlags _flags) {
+bool ONEngine::ImGuiInputText(const char* _label, std::string* _text, ImGuiInputTextFlags _flags) {
 	if (!_text) {
 		return false; // nullptr check
 	}
@@ -288,14 +290,14 @@ bool ImGuiInputText(const char* _label, std::string* _text, ImGuiInputTextFlags 
 	);
 }
 
-void ImGuiInputTextReadOnly(const char* _label, const std::string& _text) {
+void ONEngine::ImGuiInputTextReadOnly(const char* _label, const std::string& _text) {
 	char buffer[256];
 	strncpy_s(buffer, _text.c_str(), sizeof(buffer));
 	buffer[sizeof(buffer) - 1] = '\0';
 	ImGui::InputText(_label, buffer, sizeof(buffer), ImGuiInputTextFlags_ReadOnly);
 }
 
-bool ImGuiColorEdit(const char* _label, Vector4* _color) {
+bool ONEngine::ImGuiColorEdit(const char* _label, Vector4* _color) {
 
 	bool result = false;
 	float width = 50.0f; // 各ボックスの横幅
@@ -353,7 +355,7 @@ bool ImGuiColorEdit(const char* _label, Vector4* _color) {
 	return result;
 }
 
-void DirectionalLightDebug(DirectionalLight* _light) {
+void ONEngine::DirectionalLightDebug(DirectionalLight* _light) {
 	if (!_light) {
 		return;
 	}
@@ -378,7 +380,7 @@ void DirectionalLightDebug(DirectionalLight* _light) {
 
 }
 
-void AudioSourceDebug(AudioSource* _audioSource) {
+void ONEngine::AudioSourceDebug(AudioSource* _audioSource) {
 	if (!_audioSource) {
 		return;
 	}
@@ -405,7 +407,7 @@ void AudioSourceDebug(AudioSource* _audioSource) {
 
 }
 
-void CustomMeshRendererDebug(CustomMeshRenderer* _customMeshRenderer) {
+void ONEngine::CustomMeshRendererDebug(CustomMeshRenderer* _customMeshRenderer) {
 	if (!_customMeshRenderer) {
 		return;
 	}
@@ -418,7 +420,7 @@ void CustomMeshRendererDebug(CustomMeshRenderer* _customMeshRenderer) {
 	}
 }
 
-void EffectDebug(Effect* _effect) {
+void ONEngine::EffectDebug(Effect* _effect) {
 	if (!_effect) {
 		return;
 	}

@@ -1,5 +1,7 @@
 ﻿#include "DxDSVHeap.h"
 
+using namespace ONEngine;
+
 /// engine
 #include "Engine/Core/Utility/Tools/Log.h"
 

@@ -1,13 +1,14 @@
-﻿#include "ScreenPostEffectTag.h"
+#include "ScreenPostEffectTag.h"
 
 /// std
 #include <vector>
+#include <string>
 
 /// external
 #include <imgui.h>
 
-/// std
-#include <string>
+
+using namespace ONEngine;
 
 namespace {
 
@@ -49,7 +50,7 @@ void COMP_DEBUG::ScreenPostEffectTagDebug(ScreenPostEffectTag* _component) {
 
 }
 
-void from_json(const nlohmann::json& _j, ScreenPostEffectTag& _c) {
+void ONEngine::from_json(const nlohmann::json& _j, ScreenPostEffectTag& _c) {
 	if (_j.contains("enable")) {
 		_c.enable = _j["enable"].get<int>();
 	}
@@ -66,7 +67,7 @@ void from_json(const nlohmann::json& _j, ScreenPostEffectTag& _c) {
 	}
 }
 
-void to_json(nlohmann::json& _j, const ScreenPostEffectTag& _c) {
+void ONEngine::to_json(nlohmann::json& _j, const ScreenPostEffectTag& _c) {
 	_j["type"] = "ScreenPostEffectTag";
 	_j["enable"] = _c.enable;
 	_j["id"] = _c.id;
@@ -77,5 +78,4 @@ void to_json(nlohmann::json& _j, const ScreenPostEffectTag& _c) {
 			{ "enabled", gFlags.flags[i] }
 			});
 	}
-
 }
