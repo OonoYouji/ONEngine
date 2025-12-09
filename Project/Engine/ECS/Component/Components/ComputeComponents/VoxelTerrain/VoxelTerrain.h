@@ -6,7 +6,6 @@
 /// engine
 #include "../../Interface/IComponent.h"
 #include "Engine/Asset/Guid/Guid.h"
-#include "Engine/Asset/Assets/Texture/Texture.h"
 #include "Engine/Asset/Assets/Mateiral/Material.h"
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/Core/Utility/Math/Vector3Int.h"
@@ -42,21 +41,13 @@
 */
 
 
-/*
-* チャンクのテクスチャの構成
-* - 各チャンクはTexture3Dで表現される。
-* - テクスチャのリソースはSRVで作成され描画に利用する
-* - エディタ用にUAVを別テクスチャで作成し、編集したタイミングでコピーして反映させる
-*/
-
 
 /// ///////////////////////////////////////////////////
 /// ボクセル地形におけるチャンク
 /// ///////////////////////////////////////////////////
 struct Chunk {
 	Guid texture3DId; ///< このチャンクを表現するTexture3DのId
-	Texture* pTexture;
-	Texture uavTexture; ///< エディタ用UAVテクスチャ
+	class Texture* pTexture;
 };
 
 void from_json(const nlohmann::json& _j, std::vector<Chunk>& _chunk);
@@ -186,13 +177,7 @@ public:
 	/// @param _dxDevice DxDeviceのポインタ
 	/// @param _dxSRVHeap DxSRVHeapのポインタ
 	/// @param _assetCollection AssetCollectionのポインタ
-	void CreateChunkTextureUAV(DxCommand* _dxCommand, DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap, class AssetCollection* _assetCollection);
-
-	/// @brief 編集したエディタ用テクスチャをチャンク用テクスチャにコピーする
-	/// @param _dxCommand DxCommandのポインタ
-	/// @param _dxDevice DxDeviceのポインタ
-	/// @param _assetCollection 
-	void CopyEditorTextureToChunkTexture(DxCommand* _dxCommand);
+	void CreateChunkTextureUAV(DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap, class AssetCollection* _assetCollection);
 
 private:
 	/// ===========================================
