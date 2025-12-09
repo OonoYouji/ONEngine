@@ -25,6 +25,14 @@ void COMP_DEBUG::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _dxMa
 
 	ImMathf::MaterialEdit("Material", &_voxelTerrain->material_, nullptr, false);
 
+	/// editor用
+	{
+		static float radius = 5.0f;
+		ImMathf::DragFloat("Brush Radius", &radius, 0.1f);
+		_voxelTerrain->cBufferEditInfo_.SetMappedData({ radius });
+	}
+
+
 
 	/// 仮
 	if (ImGui::Button("Create Texture3D (all chunks)")) {
@@ -271,7 +279,7 @@ void VoxelTerrain::SetupEditorBuffers(ID3D12GraphicsCommandList* _cmdList, const
 		});
 	cBufferTerrainInfo_.BindForComputeCommandList(_cmdList, _rootParamIndices[1]);
 	/// EditInfoの設定
-	cBufferEditInfo_.SetMappedData(_editInfo);
+	//cBufferEditInfo_.SetMappedData(_editInfo);
 	cBufferEditInfo_.BindForComputeCommandList(_cmdList, _rootParamIndices[2]);
 
 	/// ChunkArrayの設定

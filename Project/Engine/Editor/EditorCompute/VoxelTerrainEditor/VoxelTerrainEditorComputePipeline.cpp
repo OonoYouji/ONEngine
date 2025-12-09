@@ -102,8 +102,15 @@ void VoxelTerrainEditorComputePipeline::Execute(EntityComponentSystem* _ecs, DxC
 	inputInfo.keyboardKShift = Input::PressKey(DIK_LSHIFT);
 	inputInfo.screenMousePos = Input::GetImGuiImageMousePosNormalized("Scene");
 
+	/// マウスがウィンドウ外なら終了
+	if (inputInfo.screenMousePos.x < 0.0f || inputInfo.screenMousePos.x > 1280.0f ||
+		inputInfo.screenMousePos.y < 0.0f || inputInfo.screenMousePos.y > 720.0f) {
+		return;
+	}
+
+
 	GPUData::EditInfo editInfo{};
-	editInfo.brushRadius = 10.0f;
+	editInfo.brushRadius = 12.0f;
 
 	voxelTerrain->SetupEditorBuffers(
 		cmdList,
@@ -133,7 +140,6 @@ void VoxelTerrainEditorComputePipeline::Execute(EntityComponentSystem* _ecs, DxC
 	cmdList->SetComputeRootDescriptorTable(
 		UAV_VOXEL_TEXTURES, pDxManager_->GetDxSRVHeap()->GetSRVStartGPUHandle()
 	);
-
 
 	const UINT TGSize = 256;
 	const Vector2Int& voxelChunkCount = voxelTerrain->GetChunkCountXZ();

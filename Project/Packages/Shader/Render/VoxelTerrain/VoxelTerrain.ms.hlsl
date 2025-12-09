@@ -7,9 +7,9 @@ struct VoxelColorCluter {
 /// １つのボクセルを描画するための最大のデータ
 struct RenderingData {
 	/// 重複込みでの20頂点分の情報
-	VertexOut verts[20];
+	VertexOut verts[32];
 	/// 最大10三角形分のインデックス情報
-	uint3 indis[10];
+	uint3 indis[12];
 };
 
 /// 描画対象が持つべき情報
