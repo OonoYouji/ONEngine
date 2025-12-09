@@ -64,10 +64,18 @@ float3 ScreenToWorldRay(float2 _screenPos) {
 	return rayDir;
 }
 
+uint3 CaclVoxelPos(uint3 _center, int _value, uint _radius) {
+	int x = _value % _radius;
+	int y = (_value / _radius) % _radius;
+	int z = _value / (_radius * _radius);
+	return _center + int3(x, y, z);
+}
+
 
 [numthreads(256, 1, 1)]
 void main(
     uint3 DTid : SV_DispatchThreadID,
+	uint3 Gid : SV_GroupThreadID,
     uint groupIndex : SV_GroupIndex) {
 	
     /// 超過していたら抜ける
@@ -90,11 +98,11 @@ void main(
 	);
 
 	/// マウス位置 + 半径 での球とチャンクの当たり判定
-	//if (!CheckSphereAABB(
-	//	mouseWorldPos.xyz, editorInfo.brushRadius,
-	//	chunkOrigin, voxelTerrainInfo.chunkSize)) {
-	//	return;
-	//}
+	if (!CheckSphereAABB(
+		mouseWorldPos.xyz, editorInfo.brushRadius,
+		chunkOrigin, chunkOrigin + voxelTerrainInfo.chunkSize)) {
+		return;
+	}
 
 	/// ---------------------------------------------------
 	/// ここから実際に編集する処理
@@ -104,43 +112,62 @@ void main(
 	Chunk chunk = chunks[chunkIndex];
 	/// マウスのチャンク内でのローカル位置
 	float3 chunkLocalMousePos = terrainLocalMousePos - chunkOrigin;
-	if (!CheckInside(chunkLocalMousePos, float3(0, 0, 0), voxelTerrainInfo.chunkSize)) {
-		return;
-	}
-	
 	
 	/// ローカル位置をカメラ方向に -1 して１つ前のボクセル位置にする
 	float3 toCameraDire = normalize(camera.position.xyz - mouseWorldPos.xyz);
 	
-	float posY= chunkLocalMousePos.y / voxelTerrainInfo.textureSize.y;
+	float posY = chunkLocalMousePos.y / voxelTerrainInfo.textureSize.y;
 	posY -= 1.0f;
 	posY = abs(posY);
 	posY *= voxelTerrainInfo.textureSize.y;
-	
-	/// ボクセル位置の色を取得
-	uint3 voxelPos = uint3(chunkLocalMousePos);
-	voxelPos.y = posY;
-	
-	voxelPos -= toCameraDire;
-	
-	float4 voxelColor = voxelTextures[chunk.textureId][voxelPos];
+	chunkLocalMousePos.y = posY;
+	//if (inputInfo.keyboardLShift == 1) {
+	//	chunkLocalMousePos += toCameraDire;
+	//} else {
+	//	chunkLocalMousePos -= toCameraDire;
+	//}
 
-	if (voxelColor.a != 0.0f) {
-		voxelTextures[chunk.textureId][voxelPos] = float4(0, 1, 0, voxelColor.a);
-	}
+	
+	int radius = (int) (editorInfo.brushRadius);
+	for (int z = -radius; z < radius; ++z) {
+		for (int y = -radius; y < radius; ++y) {
+			for (int x = -radius; x < radius; ++x) {
+		
+				int3 lpos = int3(x, y, z);
+				int lengthSq = x * x + y * y + z * z;
+				if (lengthSq > radius * radius) {
+					continue;
+				}
+
+				/// ボクセル位置の色を取得
+				int3 voxelPos = chunkLocalMousePos + lpos;
+				
+				/// 範囲外チェック
+				if (!CheckInside(voxelPos, int3(0, 0, 0), int3(voxelTerrainInfo.textureSize))) {
+					continue;
+				}
+
+	
+				float4 voxelColor = voxelTextures[chunk.textureId][voxelPos];
+				if (voxelColor.a != 0.0f) {
+					voxelTextures[chunk.textureId][voxelPos] = float4(0, 1, 0, voxelColor.a);
+				}
 	
 	
-	/// 操作次第で色を変更
-	if (inputInfo.mouseLeftButton == 1) {
-		if (inputInfo.keyboardLShift == 1) {
-			// ----- 押し下げ ----- //
-			voxelColor.a = 0.0f;
-		} else {
-			// ----- 押し上げ ----- //
-			voxelColor.a = 1.0f;
+				/// 操作次第で色を変更
+				if (inputInfo.mouseLeftButton == 1) {
+					if (inputInfo.keyboardLShift == 1) {
+						// ----- 押し下げ ----- //
+						voxelColor.a = 0.0f;
+					} else {
+						// ----- 押し上げ ----- //
+						voxelColor.a = 1.0f;
+					}
+	
+					voxelTextures[chunk.textureId][voxelPos] = voxelColor;
+				}
+			}
 		}
-	
-		voxelTextures[chunk.textureId][voxelPos] = voxelColor;
 	}
 
 }
