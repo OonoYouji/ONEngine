@@ -1,4 +1,4 @@
-#include "Vector2Int.h"
+﻿#include "Vector2Int.h"
 
 Vector2Int::Vector2Int() = default;
 Vector2Int::Vector2Int(int _x, int _y) : x(_x), y(_y) {}

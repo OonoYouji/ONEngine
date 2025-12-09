@@ -1,4 +1,4 @@
-#include "Vector3Int.h"
+﻿#include "Vector3Int.h"
 
 const Vector3Int Vector3Int::kOne = Vector3Int(1, 1, 1);
 const Vector3Int Vector3Int::kZero = Vector3Int(0, 0, 0);

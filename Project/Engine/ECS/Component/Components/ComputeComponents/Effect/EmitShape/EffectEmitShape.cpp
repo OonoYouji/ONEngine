@@ -1,4 +1,4 @@
-#include "EffectEmitShape.h"
+﻿#include "EffectEmitShape.h"
 
 /// std
 #include <numbers>

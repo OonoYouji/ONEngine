@@ -1,4 +1,4 @@
-#include "EffectMainModule.h"
+﻿#include "EffectMainModule.h"
 
 EffectMainModule::EffectMainModule() {}
 EffectMainModule::~EffectMainModule() {}

@@ -1,4 +1,4 @@
-#include "WorldEditorCommands.h"
+﻿#include "WorldEditorCommands.h"
 
 /// std
 #include <iostream>

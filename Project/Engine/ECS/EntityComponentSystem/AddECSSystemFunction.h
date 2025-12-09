@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 
 /// ゲーム用のECSGroupにシステムを追加する関数

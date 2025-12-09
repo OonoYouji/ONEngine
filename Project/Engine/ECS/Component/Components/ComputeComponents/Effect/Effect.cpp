@@ -1,4 +1,4 @@
-#include "Effect.h"
+﻿#include "Effect.h"
 
 /// std
 #include <imgui.h>

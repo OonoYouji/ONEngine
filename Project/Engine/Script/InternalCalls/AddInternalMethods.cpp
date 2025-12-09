@@ -1,4 +1,4 @@
-#include "AddInternalMethods.h"
+﻿#include "AddInternalMethods.h"
 
 /// externals
 #include <mono/jit/jit.h>

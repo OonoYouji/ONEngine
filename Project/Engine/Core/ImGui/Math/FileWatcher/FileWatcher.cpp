@@ -1,4 +1,4 @@
-#include "FileWatcher.h"
+﻿#include "FileWatcher.h"
 
 /// std
 #include <filesystem>

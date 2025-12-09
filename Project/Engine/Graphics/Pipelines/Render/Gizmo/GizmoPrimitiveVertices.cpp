@@ -1,4 +1,4 @@
-#include "GizmoPrimitiveVertices.h"
+﻿#include "GizmoPrimitiveVertices.h"
 
 using namespace GizmoPrimitive;
 

@@ -1,4 +1,4 @@
-#include "ComponentEditCommands.h"
+﻿#include "ComponentEditCommands.h"
 
 /// std
 #include <fstream>

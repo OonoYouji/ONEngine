@@ -1,4 +1,4 @@
-#include "AssetCollection.h"
+﻿#include "AssetCollection.h"
 
 /// std
 #include <filesystem>

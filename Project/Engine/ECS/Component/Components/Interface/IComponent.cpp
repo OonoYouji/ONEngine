@@ -1,4 +1,4 @@
-#include "IComponent.h"
+﻿#include "IComponent.h"
 
 void IComponent::Reset() {}
 

@@ -1,4 +1,4 @@
-#include "Variables.h"
+﻿#include "Variables.h"
 
 /// std
 #include <fstream>

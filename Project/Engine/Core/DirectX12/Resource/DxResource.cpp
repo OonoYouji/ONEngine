@@ -1,4 +1,4 @@
-#include "DxResource.h"
+﻿#include "DxResource.h"
 
 /// externals
 #include <magic_enum/magic_enum.hpp>

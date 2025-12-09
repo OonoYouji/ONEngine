@@ -1,4 +1,4 @@
-#include "Log.h"
+﻿#include "Log.h"
 
 
 #include <comdef.h>

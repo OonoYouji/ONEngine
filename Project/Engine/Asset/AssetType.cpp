@@ -1,4 +1,4 @@
-#include "AssetType.h"
+﻿#include "AssetType.h"
 
 /// std
 #include <unordered_map>

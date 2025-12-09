@@ -1,4 +1,4 @@
-#include "EngineConfig.h"
+﻿#include "EngineConfig.h"
 
 namespace DebugConfig {
 	/// @brief デバッグ中かどうか

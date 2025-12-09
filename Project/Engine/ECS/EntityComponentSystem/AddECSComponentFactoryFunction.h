@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "EntityComponentSystem.h"
 #include "Engine/ECS/Component/Collection/ComponentCollection.h"

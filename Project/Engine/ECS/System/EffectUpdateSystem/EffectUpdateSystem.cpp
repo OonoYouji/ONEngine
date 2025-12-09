@@ -1,4 +1,4 @@
-#include "EffectUpdateSystem.h"
+﻿#include "EffectUpdateSystem.h"
 
 /// std
 #include <list>

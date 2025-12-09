@@ -1,4 +1,4 @@
-#include "ImGuiInspectorWindow.h"
+﻿#include "ImGuiInspectorWindow.h"
 
 /// std
 #include <format>

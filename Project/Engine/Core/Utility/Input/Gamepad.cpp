@@ -1,4 +1,4 @@
-#include "Gamepad.h"
+﻿#include "Gamepad.h"
 
 /// comment
 #pragma comment(lib, "xinput.lib")

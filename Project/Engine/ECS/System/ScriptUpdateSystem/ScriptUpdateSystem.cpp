@@ -1,4 +1,4 @@
-#include "ScriptUpdateSystem.h"
+﻿#include "ScriptUpdateSystem.h"
 
 /// std
 #include <list>

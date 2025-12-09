@@ -1,4 +1,4 @@
-#include "Guid.h"
+﻿#include "Guid.h"
 
 /// std
 #include <iomanip>

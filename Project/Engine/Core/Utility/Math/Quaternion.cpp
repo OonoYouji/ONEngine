@@ -1,4 +1,4 @@
-#include "Quaternion.h"
+﻿#include "Quaternion.h"
 
 #include <DirectXMath.h>
 

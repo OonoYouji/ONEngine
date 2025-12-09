@@ -1,4 +1,4 @@
-#include "EntityCollection.h"
+﻿#include "EntityCollection.h"
 
 /// std
 #include <fstream>

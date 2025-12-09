@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// externals
 #include <mono/jit/jit.h>

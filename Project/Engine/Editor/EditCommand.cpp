@@ -1,4 +1,4 @@
-#include "EditCommand.h"
+﻿#include "EditCommand.h"
 
 EditCommand::EditCommand() = default;
 EditCommand::~EditCommand() = default;
