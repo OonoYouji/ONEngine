@@ -29,6 +29,65 @@ ECSGroup* GetEntityComponentSystemPtr() {
 	return gGameGroup;
 }
 
+bool CheckParentEntityEnable(GameEntity* _entity) {
+	/*
+	* 確認事項
+	* - 自身が有効なポインタであるか
+	* - 親エンティティがあるか
+	* - 親の親が有効か(再帰的に)
+	*/
+
+	if (!_entity) {
+		return false;
+	}
+
+	GameEntity* parent = _entity->GetParent();
+	if (parent) {
+		if (!parent->active) {
+			return false;
+		}
+
+		return CheckParentEntityEnable(parent);
+	}
+
+	return _entity->active;
+}
+
+bool CheckComponentEnable(IComponent* _component) {
+	/*
+	* 確認事項
+	* - componentがnullptrでないこと
+	* - componentが有効であること
+	* - componentの所有者であるentityがnullptrでないこと
+	* - entityが有効であること
+	* - entityの親が有効であること
+	*/
+
+	if (!_component) {
+		return false;
+	}
+
+	if (!_component->enable) {
+		return false;
+	}
+
+	GameEntity* owner = _component->GetOwner();
+	if (!owner) {
+		return false;
+	}
+
+	if (!owner->active) {
+		return false;
+	}
+
+	if (owner->GetParent()) {
+		return CheckParentEntityEnable(owner);
+	}
+
+
+	return true;
+}
+
 
 EntityComponentSystem::EntityComponentSystem(DxManager* _pDxManager)
 	: pDxManager_(_pDxManager) {
@@ -148,7 +207,7 @@ const std::unordered_map<std::string, std::unique_ptr<ECSGroup>>& EntityComponen
 }
 
 void EntityComponentSystem::ReloadPrefab(const std::string& _prefabName) {
-	for(auto& group : ecsGroups_) {
+	for (auto& group : ecsGroups_) {
 		auto entityCollection = group.second->GetEntityCollection();
 		entityCollection->ReloadPrefab(_prefabName);
 	}
@@ -244,6 +303,17 @@ int32_t MONO_INTERNAL_METHOD::InternalGetChildId(int32_t _entityId, uint32_t _ch
 
 	GameEntity* child = children[_childIndex];
 	return child->GetId();
+}
+
+int32_t MONO_INTERNAL_METHOD::InternalGetChildrenCount(int32_t _entityId, MonoString* _groupName) {
+	std::string groupName = mono_string_to_utf8(_groupName);
+	GameEntity* entity = GetEntityById(_entityId, groupName);
+	if (!entity) {
+		return 0;
+	}
+
+	const auto& children = entity->GetChildren();
+	return static_cast<int32_t>(children.size());
 }
 
 int32_t MONO_INTERNAL_METHOD::InternalGetParentId(int32_t _entityId, MonoString* _groupName) {
@@ -372,4 +442,35 @@ void MONO_INTERNAL_METHOD::InternalDestroyEntity(MonoString* _ecsGroupName, int3
 
 
 	mono_free(cstr);
+}
+
+bool MONO_INTERNAL_METHOD::InternalGetEnable(int32_t _entityId, MonoString* _ecsGroupName) {
+	/// ECSGroupの取得
+	std::string groupName = mono_string_to_utf8(_ecsGroupName);
+	ECSGroup* group = gECS->GetECSGroup(groupName);
+
+	/// Entityの取得
+	GameEntity* entity = group->GetEntity(_entityId);
+	if (!entity) {
+		Console::LogError("Entity not found for ID: " + std::to_string(_entityId));
+		return false;
+	}
+
+	return entity->active;
+}
+
+void MONO_INTERNAL_METHOD::InternalSetEnable(int32_t _entityId, bool _enable, MonoString* _ecsGroupName) {
+	/// ECSGroupの取得
+	std::string groupName = mono_string_to_utf8(_ecsGroupName);
+	ECSGroup* group = gECS->GetECSGroup(groupName);
+
+	/// Entityの取得
+	GameEntity* entity = group->GetEntity(_entityId);
+	if (!entity) {
+		Console::LogError("Entity not found for ID: " + std::to_string(_entityId));
+		return;
+	}
+
+	/// Entityの有効化・無効化
+	entity->active = _enable;
 }

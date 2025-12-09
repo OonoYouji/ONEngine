@@ -92,11 +92,23 @@ bool AssetLoader::LoadTexture([[maybe_unused]] const std::string& _filepath) {
 	DirectX::ScratchImage       scratchImage = LoadScratchImage(_filepath);
 	const DirectX::TexMetadata& metadata = scratchImage.GetMetadata();
 
+	{	/// 読み込む前にテクスチャの情報をログに出力する
+		Console::Log("[Texture Load] Path: \"" + _filepath + "\"");
+		Console::Log(" - Width: " + std::to_string(metadata.width));
+		Console::Log(" - Height: " + std::to_string(metadata.height));
+		Console::Log(" - MipLevels: " + std::to_string(metadata.mipLevels));
+		Console::Log(" - Format: " + std::string(magic_enum::enum_name(metadata.format)));
+		Console::Log(" - Dimension: " + std::string(magic_enum::enum_name(metadata.dimension)));
+	}
+
 	texture.dxResource_ = std::move(CreateTextureResource(pDxManager_->GetDxDevice(), metadata));
 	if (!texture.dxResource_.Get()) {
 		Console::LogError("[Load Failed] [Texture] - Don't Create DxResource: \"" + _filepath + "\"");
 		return false;
 	}
+
+	texture.dxResource_.Get()->SetName(ConvertString(_filepath).c_str());
+	texture.name_ = _filepath;
 
 	DxResource intermediateResource = UploadTextureData(texture.dxResource_.Get(), scratchImage);
 
@@ -141,7 +153,7 @@ bool AssetLoader::LoadTexture([[maybe_unused]] const std::string& _filepath) {
 
 
 	/// ログにテクスチャの情報を書き出す
-	Console::Log("[Texture Info] Path: \"" + _filepath + "\"");
+	Console::Log("[Success Texture Info] Path: \"" + _filepath + "\"");
 	Console::Log(" - Width: " + std::to_string(metadata.width));
 	Console::Log(" - Height: " + std::to_string(metadata.height));
 	Console::Log(" - MipLevels: " + std::to_string(metadata.mipLevels));
@@ -196,6 +208,9 @@ bool AssetLoader::LoadTextureDDS(const std::string& _filepath) {
 		Console::LogError("[Load Failed] [Texture DDS] - Don't Create DxResource: \"" + _filepath + "\"");
 		return false;
 	}
+
+	texture.dxResource_.Get()->SetName(ConvertString(_filepath).c_str());
+	texture.name_ = _filepath;
 
 	DxResource intermediateResource = UploadTextureData(texture.dxResource_.Get(), scratchImage);
 
@@ -900,7 +915,7 @@ DxResource AssetLoader::CreateTexture3DResource(DxDevice* _dxDevice, const Direc
 	desc.Format = _metadata.format;
 	desc.SampleDesc.Count = 1;
 	desc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
-	desc.Flags = D3D12_RESOURCE_FLAG_NONE;
+	desc.Flags = D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
 	desc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE3D;
 
 	D3D12_HEAP_PROPERTIES heapProperties{};

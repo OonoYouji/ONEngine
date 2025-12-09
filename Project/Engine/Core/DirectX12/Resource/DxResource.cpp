@@ -1,5 +1,9 @@
 #include "DxResource.h"
 
+/// externals
+#include <magic_enum/magic_enum.hpp>
+#include <magic_enum/magic_enum_flags.hpp>
+
 /// engine
 #include "../Device/DxDevice.h"
 #include "../Command/DxCommand.h"
@@ -147,10 +151,41 @@ void DxResource::CreateUAVTextureResource(DxDevice* _dxDevice, const Vector2& _s
 void DxResource::CreateBarrier(D3D12_RESOURCE_STATES _before, D3D12_RESOURCE_STATES _after, DxCommand* _dxCommand) {
 	::CreateBarrier(resource_.Get(), _before, _after, _dxCommand);
 	currentState_ = _after;
+
+	/// ログ出力 (リソース名、Before、After)
+	//{
+	//	Console::Log("[DxResource::CreateBarrier]");
+	//	Console::Log(L" - Name: " + GetD3D12Name(resource_.Get()));
+	//	Console::Log(" - Before State: "
+	//		+ std::to_string(static_cast<int>(_before)) + " : "
+	//		+ std::string(magic_enum::enum_name<D3D12_RESOURCE_STATES>(_before))
+	//	);
+
+	//	Console::Log(" - After State: "
+	//		+ std::to_string(static_cast<int>(_after)) + " : "
+	//		+ std::string(magic_enum::enum_name<D3D12_RESOURCE_STATES>(_after))
+	//	);
+	//}
 }
 
 void DxResource::CreateBarrier(D3D12_RESOURCE_STATES _after, DxCommand* _dxCommand) {
 	::CreateBarrier(resource_.Get(), currentState_, _after, _dxCommand);
+
+	/// ログ出力 (リソース名、Before、After)
+	//{
+	//	Console::Log("[DxResource::CreateBarrier]");
+	//	Console::Log(L" - Name: " + GetD3D12Name(resource_.Get()));
+	//	Console::Log(" - Before State: "
+	//		+ std::to_string(static_cast<int>(currentState_)) + " : "
+	//		+ std::string(magic_enum::enum_name<D3D12_RESOURCE_STATES>(currentState_))
+	//	);
+
+	//	Console::Log(" - After State: "
+	//		+ std::to_string(static_cast<int>(_after)) + " : "
+	//		+ std::string(magic_enum::enum_name<D3D12_RESOURCE_STATES>(_after))
+	//	);
+	//}
+
 	currentState_ = _after;
 }
 
@@ -166,6 +201,34 @@ D3D12_RESOURCE_STATES DxResource::GetCurrentState() const {
 	return currentState_;
 }
 
+void DxResource::SetCurrentState(D3D12_RESOURCE_STATES _state) {
+	currentState_ = _state;
+}
+
+
+std::wstring GetD3D12Name(ID3D12Object* _object) {
+	UINT size = 0;
+
+	/// まずサイズを調べる
+	HRESULT hr = _object->GetPrivateData(WKPDID_D3DDebugObjectNameW, &size, nullptr);
+	if (FAILED(hr) || size == 0) {
+		return L""; // 名前なし
+	}
+
+	std::wstring name(size / sizeof(wchar_t), L'\0');
+
+	hr = _object->GetPrivateData(WKPDID_D3DDebugObjectNameW, &size, name.data());
+	if (FAILED(hr)) {
+		return L"";
+	}
+
+	/// 末尾の null を削る
+	if (!name.empty() && name.back() == L'\0') {
+		name.pop_back();
+	}
+
+	return name;
+}
 
 void CreateBarrier(ID3D12Resource* _resource, D3D12_RESOURCE_STATES _before, D3D12_RESOURCE_STATES _after, DxCommand* _dxCommand) {
 	/// ----- リソースバリアーの作成 ----- ///
@@ -180,7 +243,75 @@ void CreateBarrier(ID3D12Resource* _resource, D3D12_RESOURCE_STATES _before, D3D
 	barrier.Transition.pResource = _resource;
 	barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
 	barrier.Transition.StateBefore = _before;
-	barrier.Transition.StateAfter  = _after;
+	barrier.Transition.StateAfter = _after;
 
 	_dxCommand->GetCommandList()->ResourceBarrier(1, &barrier);
+}
+
+void CreateBarriers(std::vector<DxResource*>& _resources, D3D12_RESOURCE_STATES _before, D3D12_RESOURCE_STATES _after, DxCommand* _dxCommand) {
+	/// ----- 複数リソースのバリアー作成 ----- ///
+
+	std::vector<D3D12_RESOURCE_BARRIER> barriers;
+	barriers.reserve(_resources.size());
+
+	for (auto& res : _resources) {
+		if (res->GetCurrentState() != _after) {
+			D3D12_RESOURCE_BARRIER barrier{};
+			barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+			barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+			barrier.Transition.pResource = res->Get();
+			barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+			barrier.Transition.StateBefore = _before;
+			barrier.Transition.StateAfter = _after;
+			barriers.push_back(barrier);
+		}
+
+	}
+
+	if (barriers.empty()) {
+		return;
+	}
+
+	_dxCommand->GetCommandList()->ResourceBarrier(
+		static_cast<UINT>(barriers.size()), barriers.data()
+	);
+
+	for (auto& res : _resources) {
+		res->SetCurrentState(_after);
+	}
+}
+
+void CreateBarriers(std::vector<DxResource*>& _resources, D3D12_RESOURCE_STATES _after, DxCommand* _dxCommand) {
+
+	/// ----- 複数リソースのバリアー作成 ----- ///
+
+	std::vector<D3D12_RESOURCE_BARRIER> barriers;
+	barriers.reserve(_resources.size());
+
+	for (auto& res : _resources) {
+		if (res->GetCurrentState() != _after) {
+			D3D12_RESOURCE_BARRIER barrier{};
+			barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+			barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+			barrier.Transition.pResource = res->Get();
+			barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+			barrier.Transition.StateBefore = res->GetCurrentState();
+			barrier.Transition.StateAfter = _after;
+			barriers.push_back(barrier);
+		}
+
+	}
+
+	if (barriers.empty()) {
+		return;
+	}
+
+	_dxCommand->GetCommandList()->ResourceBarrier(
+		static_cast<UINT>(barriers.size()), barriers.data()
+	);
+
+	for (auto& res : _resources) {
+		res->SetCurrentState(_after);
+	}
+
 }

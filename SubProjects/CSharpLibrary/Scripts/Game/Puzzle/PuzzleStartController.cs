@@ -14,6 +14,8 @@ public class PuzzleStartController : MonoBehavior {
 
 	private bool isStartedPuzzle_ = false; /// パズルが開始しているか
 	private Entity startUI_;
+	private Entity puzzleUI_;
+	private bool isFirstUpdate_ = true;
 
 	public override void Initialize() {
 
@@ -26,6 +28,14 @@ public class PuzzleStartController : MonoBehavior {
 		if (mr) {
 			mr.enable = 0;
 		}
+
+
+		/// ----------------------------------
+		/// puzzleUIを生成
+		/// ----------------------------------
+		puzzleUI_ = ecsGroup.CreateEntity("PuzzleUI");
+		puzzleUI_.parent = entity;
+		puzzleUI_.enable = false;
 
 
 		/// playerを検索
@@ -63,12 +73,17 @@ public class PuzzleStartController : MonoBehavior {
 
 	public override void Update() {
 
+		/// 初期化で行うとまだ生成されていなStageの情報が取れないので更新の最初に一回だけ行う
+		if (isFirstUpdate_) {
+			SetupPuzzleStage();
+			isFirstUpdate_ = false;
+		}
+
 		/// プレイヤーとパズルの距離を計算
 		toPlayerDistance_ = Vector3.Distance(transform.position, player_.transform.position);
 
 		/// パズルの開始用UIを更新
 		UpdateStartUI();
-
 
 		/// 開始出来る状態かチェック
 		if (startPuzzleDistance_ > toPlayerDistance_) {
@@ -110,6 +125,15 @@ public class PuzzleStartController : MonoBehavior {
 		if (playerMR) {
 			playerMR.color = Vector4.zero;
 		}
+
+		/// 通常のプレイヤーUIを非表示にする
+		Entity playerUI = ecsGroup.FindEntity("PlayerUIs");
+		if(playerUI) {
+			playerUI.enable = false;
+		}
+
+		/// パズル用のUIを表示する
+		puzzleUI_.enable = true;
 	}
 
 
@@ -124,6 +148,17 @@ public class PuzzleStartController : MonoBehavior {
 		if (playerMR) {
 			playerMR.color = Vector4.one;
 		}
+
+
+		/// 通常のプレイヤーUIを表示して通常の状態に戻す
+		Entity playerUI = ecsGroup.FindEntity("PlayerUIs");
+		if (playerUI) {
+			playerUI.enable = true;
+		}
+
+		/// パズル用のUIを非表示にする
+		puzzleUI_.enable = false;
+
 	}
 
 	private void UpdateStartUI() {
@@ -150,5 +185,23 @@ public class PuzzleStartController : MonoBehavior {
 			mr.color = new Vector4(1, 1, 1, 0);
 		}
 	}
+
+	/// <summary>
+	/// パズルのブロックを設置する
+	/// </summary>
+	private void SetupPuzzleStage() {
+		PuzzleStage puzzleStage = entity.GetScript<PuzzleStage>();
+		if (puzzleStage) {
+			puzzleStage.UpdateBlockParentPosition();
+			puzzleStage.UpdateEntityPosition();
+		}
+	} 
+
+
+
+	public bool IsStartedPuzzle() {
+		return isStartedPuzzle_;
+	}
+
 
 }

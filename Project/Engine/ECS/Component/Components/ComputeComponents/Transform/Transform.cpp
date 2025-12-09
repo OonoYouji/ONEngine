@@ -182,12 +182,15 @@ void COMP_DEBUG::TransformDebug(Transform* _transform) {
 	}
 
 	bool isEdit = false;
-
+	static Vector3 eulerAngles = Quaternion::ToEuler(_transform->rotate);
 
 	isEdit |= ImMathf::DragFloat3("position", &_transform->position, 0.1f);
-	isEdit |= ImMathf::DragQuaternion("rotate", &_transform->rotate, Mathf::PI / 12.0f);
+	isEdit |= ImMathf::DragFloat3("rotate", &eulerAngles, Mathf::PI / 12.0f);
 	isEdit |= ImMathf::DragFloat3("scale", &_transform->scale, 0.1f);
 
+	if(isEdit) {
+		_transform->rotate = Quaternion::FromEuler(eulerAngles);
+	}
 
 	/// matrixCalcFlags 編集
 	int matrixCalcFlags = _transform->matrixCalcFlags;
@@ -209,6 +212,7 @@ void from_json(const nlohmann::json& _j, Transform& _t) {
 	_t.position = _j.at("position").get<Vector3>();
 	_t.rotate = _j.at("rotate").get<Quaternion>();
 	_t.scale = _j.at("scale").get<Vector3>();
+	_t.matrixCalcFlags = _j.value("matrixCalcFlags", Transform::kAll);
 	_t.Update(); // 初期化時に更新を呼び出す
 }
 
@@ -218,6 +222,7 @@ void to_json(nlohmann::json& _j, const Transform& _t) {
 		{ "enable", _t.enable },
 		{ "position", _t.position },
 		{ "rotate", _t.rotate },
-		{ "scale", _t.scale }
+		{ "scale", _t.scale },
+		{ "matrixCalcFlags", _t.matrixCalcFlags }
 	};
 }

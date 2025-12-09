@@ -82,10 +82,13 @@ void AddEntityInternalCalls() {
 	mono_add_internal_call("Entity::InternalGetName", (void*)InternalGetName);
 	mono_add_internal_call("Entity::InternalSetName", (void*)InternalSetName);
 	mono_add_internal_call("Entity::InternalGetChildId", (void*)InternalGetChildId);
+	mono_add_internal_call("Entity::InternalGetChildrenCount", (void*)InternalGetChildrenCount);
 	mono_add_internal_call("Entity::InternalGetParentId", (void*)InternalGetParentId);
 	mono_add_internal_call("Entity::InternalSetParent", (void*)InternalSetParent);
 	mono_add_internal_call("Entity::InternalAddScript", (void*)InternalAddScript);
 	mono_add_internal_call("Entity::InternalGetScript", (void*)InternalGetScript);
+	mono_add_internal_call("Entity::InternalGetEnable", (void*)InternalGetEnable);
+	mono_add_internal_call("Entity::InternalSetEnable", (void*)InternalSetEnable);
 
 	mono_add_internal_call("ECSGroup::InternalCreateEntity", (void*)InternalCreateEntity);
 	mono_add_internal_call("ECSGroup::InternalDestroyEntity", (void*)InternalDestroyEntity);

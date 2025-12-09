@@ -94,10 +94,20 @@ public:
 	/// @return リソース状態
 	D3D12_RESOURCE_STATES GetCurrentState() const;
 
+	/// @brief 現在のステートを変更する(UAVの作成など強制的に状態が変更される場合のみ使用する)
+	/// @param _state 変更先のステート
+	void SetCurrentState(D3D12_RESOURCE_STATES _state);
+
 };
 
+
+std::wstring GetD3D12Name(ID3D12Object* _object);
 
 /// ===================================================
 /// Barrierを作成する関数
 /// ===================================================
 void CreateBarrier(ID3D12Resource* _resource, D3D12_RESOURCE_STATES _before, D3D12_RESOURCE_STATES _after, class DxCommand* _dxCommand);
+
+void CreateBarriers(std::vector<DxResource*>& _resources, D3D12_RESOURCE_STATES _before, D3D12_RESOURCE_STATES _after, class DxCommand* _dxCommand);
+
+void CreateBarriers(std::vector<DxResource*>& _resources, D3D12_RESOURCE_STATES _after, class DxCommand* _dxCommand);

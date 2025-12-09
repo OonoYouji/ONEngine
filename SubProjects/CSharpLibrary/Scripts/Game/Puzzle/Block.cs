@@ -16,7 +16,7 @@ public class Block : MonoBehavior {
 	private float clearAnimationTime_;
 	private int clearEffectMode_;
 	private bool isEndClearAnimation_;
-	[SerializeField] private float sinValue_;
+	//[SerializeField] private float sinValue_;
 
 	private enum Mode : int {
 		Up, Down
@@ -48,13 +48,22 @@ public class Block : MonoBehavior {
 	public void UpdateColor() {
 		MeshRenderer mr = entity.GetComponent<MeshRenderer>();
 		if (mr) {
+			string meshPath = "./Assets/Models/Entity/Puzzle/WhiteBlock.obj";
 			currentColor_ = Vector4.one;
 			if (blockData.type == (int)BlockType.Black) {
+				meshPath = "./Assets/Models/Entity/Puzzle/BlackBlock.obj";
 				float value = 0.2f;
 				currentColor_ = new Vector4(value, value, value, 1);
 			}
 
+			if (blockData.mapValue == (int)MAPDATA.GOAL_WHITE ||
+				blockData.mapValue == (int)MAPDATA.GOAL_BLACK) {
+				/// ゴール用のモデルにしておく
+				meshPath = "./Assets/Models/Entity/Puzzle/GoalBlock.obj";
+			}
+
 			mr.color = currentColor_;
+			mr.meshPath = meshPath;
 		}
 	}
 

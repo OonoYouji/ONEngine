@@ -136,8 +136,8 @@ void PostProcessLighting::Execute(const std::string& _textureName, DxCommand* _d
 
 
 	command->Dispatch(
-		static_cast<UINT>(EngineConfig::kWindowSize.x) / 16,
-		static_cast<UINT>(EngineConfig::kWindowSize.y) / 16,
+		Mathf::DivideAndRoundUp(static_cast<UINT>(EngineConfig::kWindowSize.x), 16),
+		Mathf::DivideAndRoundUp(static_cast<UINT>(EngineConfig::kWindowSize.y), 16),
 		1
 	);
 

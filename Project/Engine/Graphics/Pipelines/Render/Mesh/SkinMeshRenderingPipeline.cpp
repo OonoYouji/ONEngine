@@ -117,7 +117,7 @@ void SkinMeshRenderingPipeline::Draw(class ECSGroup* _ecs, CameraComponent* _cam
 		}
 
 		GameEntity* entity = smRenderer->GetOwner();
-		if (!entity || entity->GetActive()) {
+		if (!entity || entity->active) {
 			continue; /// エンティティが無効な場合はスキップ
 		}
 

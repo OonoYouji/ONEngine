@@ -3,9 +3,9 @@
 #include "../Math/Math.hlsli"
 
 struct InputInfo {
+	float2 screenMousePos;
 	uint mouseLeftButton;
 	uint keyboardLShift;
-	float2 screenMousePos;
 };
 
 struct EditorInfo {
@@ -14,7 +14,7 @@ struct EditorInfo {
 
 
 /// ///////////////////////////////////////////////////
-/// 
+/// buffers
 /// ///////////////////////////////////////////////////
 
 ConstantBuffer<VoxelTerrainInfo> voxelTerrainInfo : register(b0);
@@ -25,7 +25,7 @@ ConstantBuffer<EditorInfo> editorInfo : register(b4);
 
 StructuredBuffer<Chunk> chunks : register(t0);
 Texture2D<float4> worldPositionTexture : register(t1);
-RWTexture3D<float4> voxelTextures[32 * 32] : register(u0);
+RWTexture3D<float4> voxelTextures[] : register(u0);
 SamplerState textureSampler : register(s0);
 
 /// ///////////////////////////////////////////////////
@@ -69,32 +69,32 @@ float3 ScreenToWorldRay(float2 _screenPos) {
 void main(
     uint3 DTid : SV_DispatchThreadID,
     uint groupIndex : SV_GroupIndex) {
-
+	
     /// 超過していたら抜ける
-	uint chunkIndex = groupIndex;
+	uint chunkIndex = DTid.x;
 	if (voxelTerrainInfo.maxChunkCount <= chunkIndex) {
 		return;
 	}
 
     /// マウスのスクリーン座標をUVに変換してワールド座標をサンプリング
 	float2 mouseUV = inputInfo.screenMousePos / kScreenSize;
-	float4 mouseWorldPos = worldPositionTexture.Sample(textureSampler, inputInfo.screenMousePos);
-
+	float4 mouseWorldPos = worldPositionTexture.Sample(textureSampler, mouseUV);
 	
 	/// 地形のローカル座標に変換
 	float3 terrainLocalMousePos = mouseWorldPos.xyz - voxelTerrainInfo.terrainOrigin;
-
-	/// 地形の内部にマウスがあるかチェック
-	if (!CheckInside(terrainLocalMousePos, float3(0, 0, 0), voxelTerrainInfo.chunkSize)) {
-		return;
-	}
+	/// チャンクの原点を計算
+	float3 chunkOrigin = float3(
+		(chunkIndex % voxelTerrainInfo.chunkCountXZ.x) * voxelTerrainInfo.chunkSize.x,
+		0,
+		(chunkIndex / voxelTerrainInfo.chunkCountXZ.x) * voxelTerrainInfo.chunkSize.z
+	);
 
 	/// マウス位置 + 半径 での球とチャンクの当たり判定
-	if (!CheckSphereAABB(
-		terrainLocalMousePos, editorInfo.brushRadius,
-		float3(0, 0, 0), voxelTerrainInfo.chunkSize)) {
-		return;
-	}
+	//if (!CheckSphereAABB(
+	//	mouseWorldPos.xyz, editorInfo.brushRadius,
+	//	chunkOrigin, voxelTerrainInfo.chunkSize)) {
+	//	return;
+	//}
 
 	/// ---------------------------------------------------
 	/// ここから実際に編集する処理
@@ -102,31 +102,36 @@ void main(
 
 	/// 対応するチャンクの情報
 	Chunk chunk = chunks[chunkIndex];
-
-
-	/// とりあえずはマウスが指している位置にあるボクセルのみを編集する
-	
-	/// チャンクの原点を計算
-	float3 chunkOrigin = float3(
-		(chunkIndex % voxelTerrainInfo.chunkCountXZ.x) * voxelTerrainInfo.chunkSize.x,
-		0,
-		(chunkIndex / voxelTerrainInfo.chunkCountXZ.x) * voxelTerrainInfo.chunkSize.z);
-	
 	/// マウスのチャンク内でのローカル位置
 	float3 chunkLocalMousePos = terrainLocalMousePos - chunkOrigin;
-
+	if (!CheckInside(chunkLocalMousePos, float3(0, 0, 0), voxelTerrainInfo.chunkSize)) {
+		return;
+	}
+	
+	
 	/// ローカル位置をカメラ方向に -1 して１つ前のボクセル位置にする
 	float3 toCameraDire = normalize(camera.position.xyz - mouseWorldPos.xyz);
-	chunkLocalMousePos -= toCameraDire;
+	
+	float posY= chunkLocalMousePos.y / voxelTerrainInfo.textureSize.y;
+	posY -= 1.0f;
+	posY = abs(posY);
+	posY *= voxelTerrainInfo.textureSize.y;
 	
 	/// ボクセル位置の色を取得
 	uint3 voxelPos = uint3(chunkLocalMousePos);
-	float4 voxelColor = voxelTextures[chunk.textureId].Load(voxelPos);
+	voxelPos.y = posY;
+	
+	voxelPos -= toCameraDire;
+	
+	float4 voxelColor = voxelTextures[chunk.textureId][voxelPos];
 
-
+	if (voxelColor.a != 0.0f) {
+		voxelTextures[chunk.textureId][voxelPos] = float4(0, 1, 0, voxelColor.a);
+	}
+	
+	
 	/// 操作次第で色を変更
 	if (inputInfo.mouseLeftButton == 1) {
-
 		if (inputInfo.keyboardLShift == 1) {
 			// ----- 押し下げ ----- //
 			voxelColor.a = 0.0f;
@@ -134,7 +139,8 @@ void main(
 			// ----- 押し上げ ----- //
 			voxelColor.a = 1.0f;
 		}
-	}
 	
+		voxelTextures[chunk.textureId][voxelPos] = voxelColor;
+	}
 
 }

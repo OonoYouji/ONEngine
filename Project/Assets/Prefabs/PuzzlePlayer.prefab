@@ -2,6 +2,7 @@
     "components": [
         {
             "enable": 1,
+            "matrixCalcFlags": 7,
             "position": {
                 "x": 0.0,
                 "y": 0.0,
@@ -14,9 +15,9 @@
                 "z": 0.0
             },
             "scale": {
-                "x": 1.0,
-                "y": 1.0,
-                "z": 1.0
+                "x": 0.8999999761581421,
+                "y": 0.8999999761581421,
+                "z": 0.8999999761581421
             },
             "type": "Transform"
         },
@@ -65,7 +66,7 @@
         }
     ],
     "guid": {
-        "guid": "36ed70d55e80fd8f7c9202f628580819"
+        "guid": "1dffea1b44f3316b09a942245bb3474e"
     },
     "id": 2,
     "name": "PuzzlePlayer",

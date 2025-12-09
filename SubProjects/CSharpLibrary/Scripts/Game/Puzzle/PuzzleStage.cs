@@ -12,13 +12,16 @@ public class PuzzleStage : MonoBehavior {
 	private Entity blockParent_;
 	private List<Entity> blocks_;
 	private List<Entity> players_;
+	private Entity magatama_; /// 勾玉エンティティ(アクティブプレイヤーの周囲を周る)
+	private float magatamaRotateValue_ = 0.0f;
+	private float magatamaHeight_ = 0.15f;
 
 	private Vector3 blockPosOffset_; // ブロックの位置オフセット
 	private Entity activePlayer_; // 
-	private Entity mapchip_;
-	[SerializeField] private string stageFilepath_ = "stage18.json";
+	private Entity mapChip_;
+	[SerializeField] private string stageFilePath_ = "stage2.json";
 
-	PuzzleCommandStacker puzzleCommandStacker_;
+	PuzzleCommandStacker commandStacker_;
 
 	int initCallCount_ = 0; // 初期化の呼び出し回数
 
@@ -32,15 +35,14 @@ public class PuzzleStage : MonoBehavior {
 		Debug.Log("====================================================================");
 		Debug.Log("PuzzleStage Initialize called. Call count: " + initCallCount_);
 
-		puzzleCommandStacker_ = new PuzzleCommandStacker();
+		commandStacker_ = new PuzzleCommandStacker();
 
-		mapchip_ = ecsGroup.CreateEntity("Mapchip");
-		if (mapchip_ != null) {
-			mapchip_.parent = entity;
-			Mapchip mapchipScript = mapchip_.GetScript<Mapchip>();
+		mapChip_ = ecsGroup.CreateEntity("Mapchip");
+		if (mapChip_ != null) {
+			mapChip_.parent = entity;
+			Mapchip mapchipScript = mapChip_.GetScript<Mapchip>();
 			if (mapchipScript != null) {
-				//mapchipScript.LoadMap("./Assets/Game/StageData/", stageFilepath_);
-				mapchipScript.LoadMap("./Assets/Game/StageData/", "stage18.json");
+				mapchipScript.LoadMap("./Assets/Game/StageData/", stageFilePath_);
 			}
 
 			mapData_ = mapchipScript.GetStartMapData();
@@ -52,6 +54,7 @@ public class PuzzleStage : MonoBehavior {
 		CreateBlockParent();
 		BlockDeploy(); // ブロック配置
 		PlayerDeploy(); // プレイヤー配置
+		DeployMagatama(); /// 勾玉配置
 		UpdateEntityPosition();
 		Debug.Log("====================================================================");
 	}
@@ -86,7 +89,7 @@ public class PuzzleStage : MonoBehavior {
 		Debug.Log("----- PlayerDeploy. -----");
 		/* ----- プレイヤーの配置 ----- */
 
-		Mapchip mapchipScript = mapchip_.GetScript<Mapchip>();
+		Mapchip mapchipScript = mapChip_.GetScript<Mapchip>();
 		if (!mapchipScript) {
 			return;
 		}
@@ -200,23 +203,30 @@ public class PuzzleStage : MonoBehavior {
 	}
 
 
+	void DeployMagatama() {
+		/* ----- 勾玉の配置 ----- */
+		magatama_ = ecsGroup.CreateEntity("Magatama");
+		if (magatama_ != null) {
+			magatama_.parent = blockParent_;
+		}
+
+		magatama_.transform.position = activePlayer_.transform.position + new Vector3(0f, 0.1f, 0f);
+	}
+
+
 	/// ///////////////////////////////////////////////////////////////////////////////////////////
 	/// 更新に使用する関数
 	/// ///////////////////////////////////////////////////////////////////////////////////////////
 	void Game() {
-		if (mapData_ != null) {
-			int width = mapData_[0].Count;
-			int height = mapData_.Count;
-			float space = blockData_.blockSpace;
-			blockPosOffset_ = new Vector3(width / 2f, 0f, height / 2f) * space;
-			blockPosOffset_ += new Vector3(space / 2f, 0f, space / 2f);
-			blockPosOffset_ *= -1.0f;
-			blockPosOffset_.y = 2f;
+		UpdateBlockParentPosition();
 
-			blockParent_.transform.position = blockPosOffset_;
+		/// パズルのリセット処理
+		if (Input.TriggerGamepad(Gamepad.X)) {
+			Reset();
 		}
 
 		/* パズルを行っているときの更新 */
+		commandStacker_?.Update();
 		UpdatePlayer();
 		UpdateEntityPosition();
 
@@ -225,72 +235,59 @@ public class PuzzleStage : MonoBehavior {
 
 	private void UpdatePlayer() {
 		/* ----- プレイヤーの更新 ----- */
+		/* ----- プレイヤーの状態で色を変える ----- */
+		for (int i = 0; i < players_.Count; ++i) {
+			Entity player = players_[i];
+			PuzzlePlayer pp = player.GetScript<PuzzlePlayer>();
+			if (pp) {
+				pp.isActive = player == activePlayer_;
+			}
+		}
 
 		if (activePlayer_ == null) {
 			return;
 		}
 
 		/* ----- プレイヤーの移動を行う ----- */
-
-		PuzzlePlayer player = activePlayer_.GetScript<PuzzlePlayer>();
-		if (player) {
-			if (player.blockData.type == (int)BlockType.Black) {
-				moveDir_ = Vector2Int.zero;
-			}
-		}
-
-		if (moveDir_ == Vector2Int.zero) {
-			/// 操作対象の切り替え
-			if (Input.TriggerGamepad(Gamepad.Y)) {
-				ActivePlayerChange();
-			}
-
-			/// 移動方向の決定
-			if (Input.TriggerGamepad(Gamepad.DPadUp)) {
-				moveDir_ = Vector2Int.up;
-			}
-
-			if (Input.TriggerGamepad(Gamepad.DPadDown)) {
-				moveDir_ = Vector2Int.down;
-			}
-
-			if (Input.TriggerGamepad(Gamepad.DPadLeft)) {
-				moveDir_ = Vector2Int.left;
-			}
-
-			if (Input.TriggerGamepad(Gamepad.DPadRight)) {
-				moveDir_ = Vector2Int.right;
-			}
-		}
-
-		/// nullチェック
-		if (!activePlayer_) {
-			return;
-		}
-
 		PuzzlePlayer puzzlePlayer = activePlayer_.GetScript<PuzzlePlayer>();
 		if (!puzzlePlayer) {
 			Debug.LogError("PuzzleStage UpdatePlayer: puzzlePlayer is null");
 			return;
 		}
 
-
-		Vector2Int beforeAddress = puzzlePlayer.blockData.address;
-		/// 新しいアドレスが移動出来る場所か確認
-		if (moveDir_ != Vector2Int.zero) {
-			Debug.Log("-----: puzzle player move direction .x" + moveDir_.x + ": .y" + moveDir_.y);
+		/// 操作対象の切り替え
+		if (Input.TriggerGamepad(Gamepad.RightShoulder) || Input.TriggerGamepad(Gamepad.LeftShoulder)) {
+			if (commandStacker_ != null) {
+				PuzzleCommands.SwitchActivePlayerCommand command = commandStacker_.ExecutionCommand<PuzzleCommands.SwitchActivePlayerCommand>();
+				if (command != null) {
+					command.Awake(this.entity);
+				}
+			}
 		}
 
-		if (CheckPlayerMoving(puzzlePlayer.blockData.address, moveDir_)) {
-			/* ----- プレイヤーの移動を行う ----- */
-			puzzlePlayer.blockData.address = puzzlePlayer.blockData.address + moveDir_;
-			Moved(beforeAddress, puzzlePlayer.blockData.address);
+		/// 移動方向の決定
+		moveDir_ = InputAxis();
 
-			puzzlePlayer.UpdateRotateY(moveDir_);
-			puzzlePlayer.PlayMoveSE();
-		} else {
-			/// 移動できない場合の処理を追加
-			moveDir_ = Vector2Int.zero;
+		if (moveDir_ == Vector2Int.zero) {
+			return; //!< 移動しないなら処理を行わない
+		}
+
+		/// プレイヤーの移動処理を実行
+		if (commandStacker_ != null) {
+			PuzzlePlayer pp = activePlayer_.GetScript<PuzzlePlayer>();
+			int type = pp.blockData.type;
+			/// 黒、白でコマンドを分ける
+			if (type == (int)BlockType.White) {
+				PuzzleCommands.MoveWhiteBlockCommand command = commandStacker_.ExecutionCommand<PuzzleCommands.MoveWhiteBlockCommand>();
+				if (command != null) {
+					command.Awake(this.entity, activePlayer_, moveDir_);
+				}
+			} else if (type == (int)BlockType.Black) {
+				PuzzleCommands.MoveBlackBlockCommand command = commandStacker_.ExecutionCommand<PuzzleCommands.MoveBlackBlockCommand>();
+				if (command != null) {
+					command.Awake(this.entity, activePlayer_, moveDir_);
+				}
+			}
 		}
 	}
 
@@ -351,9 +348,9 @@ public class PuzzleStage : MonoBehavior {
 		} else if (_currentAddress.y != _movedAddress.y) {
 			/// y軸に移動した
 			int xAddress = _currentAddress.x;
-			int subLenght = Mathf.Abs(_movedAddress.y - _currentAddress.y);
+			int subLength = Mathf.Abs(_movedAddress.y - _currentAddress.y);
 
-			for (int i = 0; i < subLenght; i++) {
+			for (int i = 0; i < subLength; i++) {
 				int value = mapData_[_currentAddress.y + i][xAddress];
 				if (value == (int)MAPDATA.BLOCK_BLACK) {
 					mapData_[_currentAddress.y + i][xAddress] = (int)MAPDATA.BLOCK_WHTIE;
@@ -364,28 +361,8 @@ public class PuzzleStage : MonoBehavior {
 		}
 	}
 
-	private bool CheckIsBlock(int _mapValue) {
-		if (_mapValue == (int)MAPDATA.BLOCK_BLACK || _mapValue == (int)MAPDATA.BLOCK_WHTIE) {
-			return true;
-		}
 
-		return false;
-	}
 
-	private bool CheckIsConstantBlock(int _mapValue) {
-		if (_mapValue == (int)MAPDATA.CONSTANT_BLOCK_BLACK || _mapValue == (int)MAPDATA.CONSTANT_BLOCK_WHITE) {
-			return true;
-		}
-		return false;
-	}
-
-	private bool CheckIsGoal(int _mapValue) {
-		if (_mapValue == (int)MAPDATA.GOAL_BLACK || _mapValue == (int)MAPDATA.GOAL_WHITE) {
-			return true;
-		}
-
-		return false;
-	}
 
 	private bool CheckIsGoaled(PuzzlePlayer _puzzlePlayer) {
 		/// プレイヤーのアドレスを確認
@@ -407,20 +384,22 @@ public class PuzzleStage : MonoBehavior {
 		for (int i = 0; i < players_.Count; ++i) {
 			players_[i].Destroy();
 		}
+		players_.Clear();
 
 		for (int i = 0; i < blocks_.Count; i++) {
 			blocks_[i].Destroy();
 		}
+		blocks_.Clear();
 
 		mapData_.Clear();
-		Mapchip mapchipScript = mapchip_.GetScript<Mapchip>();
+		Mapchip mapchipScript = mapChip_.GetScript<Mapchip>();
 		mapData_ = mapchipScript.GetStartMapData();
 
 		BlockDeploy();
 		PlayerDeploy();
 	}
 
-	private void UpdateEntityPosition() {
+	public void UpdateEntityPosition() {
 		/// ====================================================
 		/// このパズルのエンティティの座標を更新する
 		/// ====================================================
@@ -447,10 +426,17 @@ public class PuzzleStage : MonoBehavior {
 				blockScript.UpdatePosition(activePlayer.blockData.type);
 			}
 		}
+
+		/// 勾玉の位置の更新
+		magatamaRotateValue_ += 1.0f / 12.0f;
+		Vector3 magatamaPos = activePlayer_.transform.position + new Vector3(0f, magatamaHeight_, 0f);
+		magatama_.transform.position = Vector3.Lerp(magatama_.transform.position, magatamaPos, 0.6f);
+		magatama_.transform.rotate = Quaternion.MakeFromAxis(Vector3.up, magatamaRotateValue_);
+
 	}
 
 
-	private void ActivePlayerChange() {
+	public void SwitchActivePlayer() {
 		/// ====================================================
 		/// 操作対象のプレイヤーを切り替える
 		/// ====================================================
@@ -460,6 +446,43 @@ public class PuzzleStage : MonoBehavior {
 				activePlayer_ = players_[i];
 				break;
 			}
+		}
+	}
+
+	private Vector2Int InputAxis() {
+		Vector2Int dir = Vector2Int.zero;
+
+		/// 十字キー入力
+		if (Input.TriggerGamepad(Gamepad.DPadUp)) {
+			dir = Vector2Int.up;
+		}
+
+		if (Input.TriggerGamepad(Gamepad.DPadDown)) {
+			dir = Vector2Int.down;
+		}
+
+		if (Input.TriggerGamepad(Gamepad.DPadLeft)) {
+			dir = Vector2Int.left;
+		}
+
+		if (Input.TriggerGamepad(Gamepad.DPadRight)) {
+			dir = Vector2Int.right;
+		}
+
+		return dir;
+	}
+
+	public void UpdateBlockParentPosition() {
+		if (mapData_ != null) {
+			int width = mapData_[0].Count;
+			int height = mapData_.Count;
+			float space = blockData_.blockSpace;
+			blockPosOffset_ = new Vector3(width / 2f, 0f, height / 2f) * space;
+			blockPosOffset_ -= new Vector3(space / 2f, 0f, space / 2f);
+			blockPosOffset_ *= -1.0f;
+			blockPosOffset_.y = 2f;
+
+			blockParent_.transform.position = blockPosOffset_;
 		}
 	}
 
@@ -482,4 +505,48 @@ public class PuzzleStage : MonoBehavior {
 	public List<Entity> GetBlocks() {
 		return blocks_;
 	}
+
+	public bool CheckIsBlock(int _mapValue) {
+		if (_mapValue == (int)MAPDATA.BLOCK_BLACK || _mapValue == (int)MAPDATA.BLOCK_WHTIE) {
+			return true;
+		}
+		return false;
+	}
+
+	public bool CheckIsConstantBlock(int _mapValue) {
+		if (_mapValue == (int)MAPDATA.CONSTANT_BLOCK_BLACK || _mapValue == (int)MAPDATA.CONSTANT_BLOCK_WHITE) {
+			return true;
+		}
+		return false;
+	}
+
+	public bool CheckIsGoal(int _mapValue) {
+		if (_mapValue == (int)MAPDATA.GOAL_BLACK || _mapValue == (int)MAPDATA.GOAL_WHITE) {
+			return true;
+		}
+
+		return false;
+	}
+
+	public int GetMapValue(Vector2Int _address) {
+		if (_address.y < 0 || _address.y >= mapData_.Count || _address.x < 0 || _address.x >= mapData_[0].Count) {
+			return -1;
+		}
+		return mapData_[_address.y][_address.x];
+	}
+
+	public void SetMapValue(Vector2Int _address, int _mapValue) {
+		if (_address.y < 0 || _address.y >= mapData_.Count || _address.x < 0 || _address.x >= mapData_[0].Count) {
+			return;
+		}
+		mapData_[_address.y][_address.x] = _mapValue;
+	}
+
+	public bool IsExecutingCommand() {
+		if (commandStacker_ != null) {
+			return commandStacker_.IsRunning();
+		}
+		return false;
+	}
+
 }

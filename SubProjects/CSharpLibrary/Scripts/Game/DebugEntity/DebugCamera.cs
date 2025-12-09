@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 public class DebugCamera : MonoBehavior {
 	/* ----- 移動に用いる変数群 ----- */
 	[SerializeField] private bool isActive_;
-	[SerializeField] private bool isMoving_;
+	//[SerializeField] private bool isMoving_;
 	[SerializeField] private float moveSpeed_;
 	[SerializeField] private Vector3 eulerAngles_;
 	[SerializeField] private Vector3 position_;
@@ -18,7 +18,7 @@ public class DebugCamera : MonoBehavior {
 		eulerAngles_ = Vector3.zero;
 
 		isActive_ = true;
-		isMoving_ = false;
+		//isMoving_ = false;
 		moveSpeed_ = 0.05f;
 	}
 
@@ -57,14 +57,14 @@ public class DebugCamera : MonoBehavior {
 
 
 		/// 実際の移動処理
-		isMoving_ = false;
+		//isMoving_ = false;
 
 		if (transform) {
 			position_ = transform.position;
 		}
 
 		if (Input.PressMouse(Mouse.Right)) {
-			isMoving_ = true;
+			//isMoving_ = true;
 
 			float speed = moveSpeed_;
 			if (Input.PressKey(KeyCode.LeftShift)) {

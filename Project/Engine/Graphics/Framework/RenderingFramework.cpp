@@ -78,11 +78,14 @@ void RenderingFramework::Draw() {
 		break;
 	case DebugConfig::SELECTED_MODE_GAME:
 		DrawShadowMap();
-		DrawScene();
+		
+		/// GameSceneを表示するのか
+		if (DebugConfig::isShowGameScene) {
+			DrawScene();
+		}
 
-		/// Gameモード時の描画
+		/// DebugSceneを表示するのか
 		if(DebugConfig::isShowDebugScene) {
-			/// 事前処理
 			DrawDebug();
 		}
 		break;
@@ -156,7 +159,7 @@ void RenderingFramework::DrawPrefab() {
 
 	renderTex->CreateBarrierRenderTarget(pDxManager_->GetDxCommand());
 	renderTex->SetRenderTarget(pDxManager_->GetDxCommand(), pDxManager_->GetDxDSVHeap());
-	renderingPipelineCollection_->DrawSelectedPrefab(camera, pEntityComponentSystem_->GetECSGroup("Debug")->GetMainCamera2D());
+	renderingPipelineCollection_->DrawSelectedPrefab(camera, pEntityComponentSystem_->GetCurrentGroup()->GetMainCamera2D());
 	renderTex->CreateBarrierPixelShaderResource(pDxManager_->GetDxCommand());
 
 	renderingPipelineCollection_->ExecutePostProcess(renderTex->GetName());

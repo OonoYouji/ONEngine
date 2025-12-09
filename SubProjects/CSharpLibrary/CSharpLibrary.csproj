@@ -92,7 +92,7 @@
     <Compile Include="Scripts\Game\PrefabTest.cs" />
     <Compile Include="Scripts\Game\Puzzle\Block.cs" />
     <Compile Include="Scripts\Game\Puzzle\Command\PuzzleCommand.cs" />
-    <Compile Include="Scripts\Game\Puzzle\Command\PuzzlePlayerCommands.cs" />
+    <Compile Include="Scripts\Game\Puzzle\GoalAlphaObject.cs" />
     <Compile Include="Scripts\Game\Puzzle\Mapchip.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -102,6 +102,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Scripts\Game\Puzzle\PuzzleClearEffect.cs" />
+    <Compile Include="Scripts\Game\Puzzle\PuzzleManager.cs" />
     <Compile Include="Scripts\Game\Puzzle\PuzzlePlayer.cs" />
     <Compile Include="Scripts\Game\Puzzle\PuzzleStage.cs" />
     <Compile Include="Scripts\Game\Puzzle\PuzzleStartController.cs" />
@@ -116,7 +117,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>call "$(ProjectDir)RenameDll.bat"
-call "$(ProjectDir)KeepLatest.bat"</PostBuildEvent>
+    <PostBuildEvent>call "$(SolutionDir)RenameDll.bat"
+call "$(SolutionDir)KeepLatest.bat"</PostBuildEvent>
   </PropertyGroup>
 </Project>

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 public class PuzzleClearChecker : MonoBehavior {
 	private PuzzleStage puzzleStage_;
-	private List<Vector2Int> goalAddresses_ = new  List<Vector2Int>();
+	private List<Vector2Int> goalAddresses_ = new List<Vector2Int>();
 	private bool isClear_;
 
 	public override void Awake() {
@@ -43,6 +43,12 @@ public class PuzzleClearChecker : MonoBehavior {
 		if (!puzzleStage_) {
 			return;
 		}
+
+		/// コマンドを実行中であればクリアチェックはしない
+		if (puzzleStage_.IsExecutingCommand()) {
+			return;
+		}
+
 		
 		List<Entity> players = puzzleStage_.GetPlayers();
 		for (int goalIndex = 0; goalIndex < goalAddresses_.Count; goalIndex++) {
@@ -51,6 +57,7 @@ public class PuzzleClearChecker : MonoBehavior {
 			bool playerIsGoaled = false;
 			for (int playerIndex = 0; playerIndex < players.Count; playerIndex++) {
 				PuzzlePlayer pp = players[playerIndex].GetScript<PuzzlePlayer>();
+
 				Vector2Int playerAddress = pp.blockData.address;
 				if (goalAddress == playerAddress) {
 					/// ゴールしている

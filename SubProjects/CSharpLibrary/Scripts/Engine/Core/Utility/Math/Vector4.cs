@@ -48,6 +48,14 @@ public struct Vector4 {
 		return result;
 	}
 
+	static public Vector4 ColorCodeToVector4(uint _color) {
+		float r = ((_color >> 16) & 0xFF) / 255.0f;
+		float g = ((_color >> 8) & 0xFF) / 255.0f;
+		float b = (_color & 0xFF) / 255.0f;
+		float a = ((_color >> 24) & 0xFF) / 255.0f;
+		return new Vector4(r, g, b, a);
+	}
+
 	/// -----------------------------------------------
 	/// 定数
 	/// -----------------------------------------------

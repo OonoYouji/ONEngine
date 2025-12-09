@@ -74,10 +74,10 @@ public struct Quaternion {
 		);
 	}
 
-	static public Quaternion LookAt(Vector3 position, Vector3 target, Vector3 _up) {
+	static public Quaternion LookAt(Vector3 _position, Vector3 _target, Vector3 _up) {
 
 		// forward
-		Vector3 forward = Vector3.Normalize(target - position);
+		Vector3 forward = Vector3.Normalize(_target - _position);
 
 		// forward と up の平行対策
 		float dot = Vector3.Dot(forward, _up);
@@ -87,7 +87,7 @@ public struct Quaternion {
 		}
 
 		// 左手系の LookTo 行列を作る
-		Matrix4x4 view = Matrix4x4.CreateLookToLH(position, forward, _up);
+		Matrix4x4 view = Matrix4x4.CreateLookToLH(_position, forward, _up);
 
 		// カメラのワールド行列 = view の逆行列
 		Matrix4x4 world = Matrix4x4.Inverse(view);

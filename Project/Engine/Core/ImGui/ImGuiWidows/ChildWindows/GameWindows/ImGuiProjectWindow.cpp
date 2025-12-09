@@ -517,16 +517,16 @@ void ImGuiProjectWindow::UpdateDirectoryCache(const std::filesystem::path& _dir)
 }
 
 
-void ImGuiProjectWindow::UpdateFileCache(const std::filesystem::path& dir) {
+void ImGuiProjectWindow::UpdateFileCache(const std::filesystem::path& _dir) {
 	/// ----- 引数のディレクトリ内のファイルをキャッシュに保存 ----- ///
 
-	if (!std::filesystem::exists(dir)) {
-		fileCache_.erase(dir.string());
+	if (!std::filesystem::exists(_dir)) {
+		fileCache_.erase(_dir.string());
 		return;
 	}
 
 	std::vector<FileItem> files;
-	for (const auto& entry : std::filesystem::directory_iterator(dir)) {
+	for (const auto& entry : std::filesystem::directory_iterator(_dir)) {
 		FileItem item;
 		item.path = entry.path();
 
@@ -542,6 +542,6 @@ void ImGuiProjectWindow::UpdateFileCache(const std::filesystem::path& dir) {
 	}
 
 
-	fileCache_[dir.string()] = std::move(files);
+	fileCache_[_dir.string()] = std::move(files);
 }
 

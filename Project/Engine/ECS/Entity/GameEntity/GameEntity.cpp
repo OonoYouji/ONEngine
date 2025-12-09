@@ -262,10 +262,6 @@ bool GameEntity::ContainsPrefab() const {
 	return prefabName_ != "";
 }
 
-bool GameEntity::GetActive() const {
-	return active_;
-}
-
 int32_t GameEntity::GetId() const {
 	return id_;
 }
@@ -304,7 +300,7 @@ void to_json(nlohmann::json& _j, const GameEntity& _entity) {
 	_j = nlohmann::json{
 		{ "name", _entity.GetName() },
 		{ "prefabName", _entity.GetPrefabName() },
-		{ "active", _entity.GetActive() },
+		{ "active", _entity.active },
 		{ "components", nlohmann::json::array() }
 	};
 }

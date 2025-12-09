@@ -22,6 +22,8 @@ struct DrawInstanceInfo {
 	
 	uint vertexStartIndex;
 	uint indexStartIndex;
+	
+	float4 color;
 };
 
 /// ---------------------------------------------------
@@ -126,7 +128,7 @@ static const uint kPatternVertexCount[10] = {
 	10, // 0x05 パターン3 [000101]
 	8, // 0x07 パターン4 [000111]
 	16, // 0x0F パターン5 [001111]
-	12, // 0x15 パターン6 [010101]
+	6, // 0x15 パターン6 [010101]
 	16, // 0x17 パターン7 [010111]
 	20, // 0x1F パターン8 [011111]
 	0 // 0x3F (全方向は描画しないので0頂点)
@@ -171,7 +173,7 @@ VoxelColorCluter GetVoxelColorCluster(uint3 _voxelPos, uint _chunkId, uint3 _sub
 			for (int x = -1; x <= 1; x++) {
 
 				int3 samplePos = _voxelPos + uint3(x, y, z) * _subChunkFactor;
-				float3 uvw = (float3(samplePos.xyz) + kPixelOffset) / float3(voxelTerrainInfo.chunkSize);
+				float3 uvw = (float3(samplePos.xyz) + kPixelOffset) / float3(voxelTerrainInfo.textureSize);
 				uvw.y = 1.0f - uvw.y; // Y軸の反転
 				
 				/// 範囲外であれば隣のチャンクからサンプリングする
@@ -229,16 +231,7 @@ VoxelColorCluter GetVoxelColorCluster(uint3 _voxelPos, uint _chunkId, uint3 _sub
 				}
 				
 				
-				uint lodLevel = 0;
-				if(_subChunkFactor.x == 4) {
-					lodLevel = 1;
-				} else if (_subChunkFactor.x == 8) {
-					lodLevel = 2;
-				}
-
-				vcc.colors[x + 1][y + 1][z + 1] = voxelChunkTextures[chunks[chunkId].textureId].SampleLevel(texSampler, uvw, lodLevel);
-				//uint3 uvwInt = uint3(uvw * float3(voxelTerrainInfo.chunkSize));
-				//vcc.colors[x + 1][y + 1][z + 1] = voxelChunkTextures[chunks[chunkId].textureId].Load(uvwInt);
+				vcc.colors[x + 1][y + 1][z + 1] = voxelChunkTextures[chunks[chunkId].textureId].SampleLevel(texSampler, uvw, 0);
 			}
 		}
 	}
@@ -662,40 +655,28 @@ RenderingData GenerateRenderingDataPattern6() {
 	/// パターン6(3軸各1方向(8通りの回転)) デフォBit: 010101
 	/// デフォBitより 上方向、右方向、奥方向にボクセルが存在するパターン
 
-	const uint used[12] = {
-		/// 奥(三角)
-		6, 5, 7, 
-		/// 左(三角)
-		6, 2, 0,
-		/// 下(三角)
-		5, 1, 0,
-		/// 斜め(三角)
-		6, 0, 5
-	};
-	
-	float3 normals[4] = {
-		float3(0, 0, 1), // 奥面
-		float3(-1, 0, 0), // 左面
-		float3(0, -1, 0), // 下面
-		float3(-1, -1, -1) // 斜め面
+	/// 使用する頂点インデックス
+	const uint used[6] = {
+		0, 1, 2, 5, 6, 7
 	};
 	
 	const uint3 indis[4] = {
 		/// 奥(三角)
-		uint3(0, 1, 2),
+		uint3(5,4,3),
 		/// 左(三角)
-		uint3(3, 4, 5),
+		uint3(4,2,0),
 		/// 下(三角)
-		uint3(6, 7, 8),
+		uint3(3,1,1),
 		/// 斜め(三角)
-		uint3(9, 10, 11)
+		uint3(4,0,3)
 	};
 	
+	float3 normal = normalize(float3(-1, 1, 1));
 	
 	RenderingData rd;
 	for (int i = 0; i < kPatternVertexCount[6]; i++) {
 		rd.verts[i].worldPosition = kDefaultVertices[used[i]];
-		rd.verts[i].normal = normalize(normals[i / 3]);
+		rd.verts[i].normal = normal;
 	}
 	for (int i = 0; i < kPatternPrimitiveCount[6]; ++i) {
 		rd.indis[i] = indis[i];
@@ -902,16 +883,42 @@ RenderingData GenerateVoxelRenderingData(uint _patternIndex, uint3 _voxelPos, ui
     [unroll]
 	for (int i = 0; i < 8; i++) {
 		float3 wp = rd.verts[i].worldPosition.xyz + float3(_voxelPos);
+
+		/// heightで色を変化させる
+		rd.verts[i].color.rgb = lerp(0.5f, 1, rd.verts[i].worldPosition.y / voxelTerrainInfo.chunkSize.y);
+		rd.verts[i].color.a = 1.0f;
 		rd.verts[i].worldPosition.xyz = wp;
 
-		rd.verts[i].color = kPatternColor[_patternIndex];
+		//rd.verts[i].color = kPatternColor[_patternIndex];
 		rd.verts[i].position = mul(rd.verts[i].worldPosition, viewProjection.matVP);
-
 	}
 
 	return rd;
 }
 
+
+uint3 CalcSubChunkPos(uint3 _DTid, uint3 _dispatchSize, uint3 _chunkSize) {
+	uint3 result;
+	
+	/// DTidが0~_dispatchSize*numthreads-1の範囲なので
+	float3 normalizedDTid = float3(_DTid) / float3(_dispatchSize);
+	float3 subChunkPosF = float3(_chunkSize) * normalizedDTid;
+	result = uint3(subChunkPosF);
+	
+	return result;
+}
+
+uint3 CalcVoxelPos(uint3 _DTid, uint3 _dispatchSize, float3 _subChunkMin, float3 _subChunkMax) {
+	uint3 result;
+	
+	/// DTidが0~_dispatchSize*numthreads-1の範囲なので
+	float3 normalizedDTid = float3(_DTid) / float3(_dispatchSize * uint3(2, 2, 2));
+
+	float3 voxelPosF = lerp(_subChunkMin, _subChunkMax, normalizedDTid);
+	result = uint3(voxelPosF);
+	
+	return result;
+}
 
 
 /// ---------------------------------------------------
@@ -953,17 +960,22 @@ void main(
 
 	AABB aabb;
 	aabb.min = asPayload.chunkOrigin + (DTid * subChunkFactor);
+	//aabb.min = CalcSubChunkPos(DTid, asPayload.dispatchSize, voxelTerrainInfo.chunkSize) + asPayload.chunkOrigin;
 	aabb.max = aabb.min + asPayload.subChunkSize;
 	
 	if (IsVisible(aabb, CreateFrustumFromMatrix(viewProjection.matVP))) {
+
+		float3 aabbDiff = aabb.max - aabb.min;
 		
 		for (int z = 0; z < 2; z++) {
 			for (int y = 0; y < 2; y++) {
 				for (int x = 0; x < 2; x++) {
 					uint3 voxelPos = uint3(x, y, z) * subChunkFactor + (DTid * subChunkFactor);
-				
+					//float3 voxelPos = CalcVoxelPos(DTid, asPayload.dispatchSize, aabb.min, aabb.max);
+					//voxelPos += float3(x, y, z);
+
 					/// ボクセルの色クラスタを取得
-					VoxelColorCluter vcc = GetVoxelColorCluster(voxelPos, asPayload.chunkIndex, subChunkFactor);
+					VoxelColorCluter vcc = GetVoxelColorCluster(uint3(voxelPos), asPayload.chunkIndex, subChunkFactor);
 					
 					if (vcc.colors[1][1][1].a != 0.0f) {
 						continue; // 自身が地ボクセルならスキップ
@@ -982,7 +994,7 @@ void main(
 					
 					/// 描画するボクセルとして登録
 					DrawInstanceInfo dii;
-					dii.voxelPos = voxelPos;
+					dii.voxelPos = uint3(voxelPos);
 					dii.rotation = rotation;
 						
 					dii.patternIndex = patternIndex;
@@ -990,6 +1002,16 @@ void main(
 
 					dii.vertexStartIndex = numVertices;
 					dii.indexStartIndex = numPrimitives;
+					
+					float3 rgb = float3(0, 0, 0);
+					for (int i = 0; i < 27; i++) {
+						int xi = i % 3;
+						int yi = (i / 3) % 3;
+						int zi = i / 9;
+						rgb += vcc.colors[xi][yi][zi].rgb;
+					}
+					dii.color = float4(rgb / 27.0f, 1.0f);
+
 
 					diis[drawVoxelCount] = dii;
 					drawVoxelCount++;
@@ -1015,7 +1037,7 @@ void main(
 	/// ---------------------------------------------------
 
 	for (uint i = 0; i < drawVoxelCount; i++) {
-		float3 worldPos = float3(diis[i].voxelPos) + asPayload.chunkOrigin + float3(0.0f, 0.0f, 0.0f);
+		float3 worldPos = float3(diis[i].voxelPos) + asPayload.chunkOrigin;
 		
 		RenderingData rd = GenerateVoxelRenderingData(diis[i].patternIndex, worldPos, diis[i].rotation, subChunkFactor);
 
@@ -1024,6 +1046,7 @@ void main(
 		
 		for (int j = 0; j < kPatternVertexCount[diis[i].patternIndex]; j++) {
 			verts[vIndex + j] = rd.verts[j];
+			verts[vIndex + j].color = diis[i].color;
 		}
 		
 		for (int j = 0; j < kPatternPrimitiveCount[diis[i].patternIndex]; ++j) {

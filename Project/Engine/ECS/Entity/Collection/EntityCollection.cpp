@@ -173,7 +173,7 @@ int32_t EntityCollection::NewEntityID(bool _isRuntime) {
 
 
 	} else {
-		
+
 		/// Runtime起動前のID生成
 		if (initEntityIDs_.removedIds.size() > 0) {
 			resultId = initEntityIDs_.removedIds.front();
@@ -328,7 +328,7 @@ GameEntity* EntityCollection::GenerateEntityRecursive(const nlohmann::json& _jso
 	/// 名前とPrefab名を設定
 	const std::string prefabName = _json.value("prefabName", "");
 	std::string name = Mathf::FileNameWithoutExtension(prefabName);
-	if(prefabName.empty()) {
+	if (prefabName.empty()) {
 		name = _json.value("name", "New Entity");
 	}
 
