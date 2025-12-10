@@ -12,13 +12,16 @@ using namespace ONEngine;
 
 /// engine
 #include "Engine/Asset/Collection/AssetCollection.h"
-#include "Engine/Core/ImGui/Math/AssetPayload.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Light/Light.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Audio/AudioSource.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Effect/Effect.h"
 #include "Engine/ECS/Component/Components/RendererComponents/Mesh/MeshRenderer.h"
 #include "Engine/ECS/Component/Components/RendererComponents/Mesh/CustomMeshRenderer.h"
+
+/// editor
+#include "Engine/Editor/Math/AssetPayload.h"
+
 
 namespace {
 

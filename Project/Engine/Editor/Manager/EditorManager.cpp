@@ -5,16 +5,16 @@
 #include "Engine/Core/Utility/Utility.h"
 
 #include "EditCommand.h"
-#include "Commands/WorldEditorCommands/WorldEditorCommands.h"
+#include "Engine/Editor/Commands/WorldEditorCommands/WorldEditorCommands.h"
 
 /// editor compute
-#include "EditorCompute/TerrainEditor/TerrainDataOutput.h"
-#include "EditorCompute/TerrainEditor/TerrainVertexCreator.h"
-#include "EditorCompute/TerrainEditor/TerrainVertexEditorCompute.h"
-#include "EditorCompute/TerrainEditor/RiverTerrainAbjustPipeline.h"
-#include "EditorCompute/River/RiverMeshGeneratePipeline.h"
-#include "EditorCompute/Grass/GrassArrangementPipeline.h"
-#include "EditorCompute/VoxelTerrainEditor/VoxelTerrainEditorComputePipeline.h"
+#include "Engine/Editor/EditorCompute/TerrainEditor/TerrainDataOutput.h"
+#include "Engine/Editor/EditorCompute/TerrainEditor/TerrainVertexCreator.h"
+#include "Engine/Editor/EditorCompute/TerrainEditor/TerrainVertexEditorCompute.h"
+#include "Engine/Editor/EditorCompute/TerrainEditor/RiverTerrainAbjustPipeline.h"
+#include "Engine/Editor/EditorCompute/River/RiverMeshGeneratePipeline.h"
+#include "Engine/Editor/EditorCompute/Grass/GrassArrangementPipeline.h"
+#include "Engine/Editor/EditorCompute/VoxelTerrainEditor/VoxelTerrainEditorComputePipeline.h"
 
 using namespace ONEngine;
 

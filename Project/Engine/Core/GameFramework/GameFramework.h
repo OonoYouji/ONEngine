@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /// std
 #include <memory>
@@ -6,13 +6,15 @@
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Core/Window/WindowManager.h"
-#include "Engine/Core/ImGui/ImGuiManager.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/Scene/SceneManager.h"
 #include "Engine/Graphics/Framework/RenderingFramework.h"
-#include "Engine/Editor/EditorManager.h"
 #include "Engine/Script/MonoScriptEngine.h"
 #include "GameFrameworkConfig.h"
+
+/// editor
+#include "Engine/Editor/Manager/EditorManager.h"
+#include "Engine/Editor/Manager/ImGuiManager.h"
 
 
 /// ///////////////////////////////////////////////////

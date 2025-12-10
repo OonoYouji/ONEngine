@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include <Windows.h>
 
@@ -12,9 +12,12 @@
 #include <imgui.h>
 
 /// engine
-#include "ImGuiWidows/Collection/ImGuiWindowCollection.h"
-#include "Math/ImGuiSceneImageInfo.h"
 #include "Engine/Core/Utility/Math/Vector2.h"
+
+/// editor
+#include "Engine/Editor/Views/ImGuiWidows/Collection/ImGuiWindowCollection.h"
+#include "Engine/Editor/Math/ImGuiSceneImageInfo.h"
+
 
 /// ///////////////////////////////////////////////////
 /// ImGuiManager

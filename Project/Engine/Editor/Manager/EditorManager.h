@@ -10,12 +10,13 @@
 #include <functional>
 #include <any>
 
-/// editor
+/// engine
 #include "Engine/Core/Utility/Utility.h"
 
-#include "Clipboard.h"
-#include "Commands/Interface/IEditorCommand.h"
-#include "EditorCompute/Interface/IEditorCompute.h"
+/// editor
+#include "Engine/Editor/Clipboard/Clipboard.h"
+#include "Engine/Editor/Commands/Interface/IEditorCommand.h"
+#include "Engine/Editor/EditorCompute/Interface/IEditorCompute.h"
 
 /// @brief 
 namespace ONEngine {

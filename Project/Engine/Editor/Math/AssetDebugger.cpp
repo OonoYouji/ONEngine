@@ -1,4 +1,4 @@
-﻿#include "AssetDebugger.h"
+#include "AssetDebugger.h"
 
 using namespace ONEngine;
 
@@ -7,10 +7,9 @@ using namespace ONEngine;
 
 /// engine
 #include "Engine/Asset/Collection/AssetCollection.h"
-#include "Engine/Core/ImGui/Math/ImGuiMath.h"
-#include "Engine/Core/ImGui/Math/AssetPayload.h"
+#include "Engine/Editor/Math/ImGuiMath.h"
+#include "Engine/Editor/Math/AssetPayload.h"
 #include "Engine/Editor/Commands/ImGuiCommand/ImGuiCommand.h"
-
 
 
 namespace {
