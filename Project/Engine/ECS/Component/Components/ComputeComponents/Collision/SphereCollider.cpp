@@ -1,4 +1,4 @@
-#include "SphereCollider.h"
+﻿#include "SphereCollider.h"
 
 #include <magic_enum/magic_enum.hpp>
 
@@ -32,7 +32,7 @@ void COMP_DEBUG::SphereColliderDebug(SphereCollider* _c) {
 
 	/// sphere parameter
 	ImGui::SeparatorText("sphere parameter");
-	ImMathf::DragFloat("radius", &_c->radius_, 0.1f, 0.0f, 100.0f);
+	Editor::ImMathf::DragFloat("radius", &_c->radius_, 0.1f, 0.0f, 100.0f);
 
 }
 

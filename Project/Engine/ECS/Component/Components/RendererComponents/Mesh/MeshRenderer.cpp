@@ -1,4 +1,4 @@
-#include "MeshRenderer.h"
+﻿#include "MeshRenderer.h"
 
 /// std
 #include <format>
@@ -6,11 +6,13 @@
 /// engine
 #include "Engine/Asset/AssetType.h"
 #include "Engine/Asset/Collection/AssetCollection.h"
-#include "Engine/Core/ImGui/Math/ImGuiMath.h"
-#include "Engine/Core/ImGui/Math/AssetDebugger.h"
-#include "Engine/Core/ImGui/Math/AssetPayload.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentJsonConverter.h"
+
+/// editor
+#include "Engine/Editor/Math/ImGuiMath.h"
+#include "Engine/Editor/Math/AssetDebugger.h"
+#include "Engine/Editor/Math/AssetPayload.h"
 
 using namespace ONEngine;
 
@@ -145,7 +147,7 @@ void COMP_DEBUG::MeshRendererDebug(MeshRenderer* _mr, AssetCollection* _assetCol
 	//std::string& texturePath = _mr->texturePath_;
 
 	/// edit
-	if (ImGuiColorEdit("color", &color)) {
+	if (Editor::ImGuiColorEdit("color", &color)) {
 		_mr->SetColor(color);
 	}
 
@@ -159,7 +161,7 @@ void COMP_DEBUG::MeshRendererDebug(MeshRenderer* _mr, AssetCollection* _assetCol
 	if (ImGui::BeginDragDropTarget()) {
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("AssetData")) {
 			if (payload->Data) {
-				AssetPayload* assetPayload = *static_cast<AssetPayload**>(payload->Data);
+				Editor::AssetPayload* assetPayload = *static_cast<Editor::AssetPayload**>(payload->Data);
 				std::string path = assetPayload->filePath;
 				AssetType type = GetAssetTypeFromExtension(Mathf::FileExtension(path));
 
@@ -219,7 +221,7 @@ void COMP_DEBUG::MeshRendererDebug(MeshRenderer* _mr, AssetCollection* _assetCol
 
 			/// ペイロードが存在する場合
 			if (payload->Data) {
-				AssetPayload* assetPayload = *static_cast<AssetPayload**>(payload->Data);
+				Editor::AssetPayload* assetPayload = *static_cast<Editor::AssetPayload**>(payload->Data);
 				const std::string path = assetPayload->filePath;
 
 				/// テクスチャのパスが有効な形式か確認
@@ -241,7 +243,7 @@ void COMP_DEBUG::MeshRendererDebug(MeshRenderer* _mr, AssetCollection* _assetCol
 	/// ----------------------------------------------
 	/// materialの設定
 	/// ----------------------------------------------
-	ImMathf::MaterialEdit("Material##MeshRenderer", &_mr->material_, _assetCollection);
+	Editor::ImMathf::MaterialEdit("Material##MeshRenderer", &_mr->material_, _assetCollection);
 
 }
 

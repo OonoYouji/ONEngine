@@ -7,7 +7,7 @@ using namespace ONEngine;
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
-#include "Engine/Editor/EditorManager.h"
+#include "Engine/Editor/Manager/EditorManager.h"
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentEditCommands.h"
 #include "Engine/ECS/Entity/EntityJsonConverter.h"
 

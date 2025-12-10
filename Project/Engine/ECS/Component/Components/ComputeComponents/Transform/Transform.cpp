@@ -1,4 +1,4 @@
-#include "Transform.h"
+﻿#include "Transform.h"
 
 
 /// externals
@@ -187,9 +187,9 @@ void COMP_DEBUG::TransformDebug(Transform* _transform) {
 	bool isEdit = false;
 	static Vector3 eulerAngles = Quaternion::ToEuler(_transform->rotate);
 
-	isEdit |= ImMathf::DragFloat3("position", &_transform->position, 0.1f);
-	isEdit |= ImMathf::DragFloat3("rotate", &eulerAngles, Mathf::PI / 12.0f);
-	isEdit |= ImMathf::DragFloat3("scale", &_transform->scale, 0.1f);
+	isEdit |= Editor::ImMathf::DragFloat3("position", &_transform->position, 0.1f);
+	isEdit |= Editor::ImMathf::DragFloat3("rotate", &eulerAngles, Mathf::PI / 12.0f);
+	isEdit |= Editor::ImMathf::DragFloat3("scale", &_transform->scale, 0.1f);
 
 	if(isEdit) {
 		_transform->rotate = Quaternion::FromEuler(eulerAngles);

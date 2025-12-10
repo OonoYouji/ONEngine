@@ -14,6 +14,10 @@
 #include "Engine/Graphics/RenderTexture/SceneRenderTexture.h"
 #include "Engine/Graphics/Pipelines/Render/CopyImage/CopyImageRenderingPipeline.h"
 
+namespace Editor {
+class ImGuiManager;
+}
+
 
 /// ///////////////////////////////////////////////////
 /// 描画のフレームワーククラス
@@ -79,7 +83,7 @@ private:
 
 
 #ifdef DEBUG_MODE
-	class ImGuiManager* pImGuiManager_ = nullptr;
+	Editor::ImGuiManager* pImGuiManager_ = nullptr;
 #else
 	std::unique_ptr<CopyImageRenderingPipeline> copyImagePipeline_;
 	Window* releaseBuildSubWindow_;
@@ -100,7 +104,7 @@ public:
 #ifdef DEBUG_MODE
 	/// @brief ImGuiManagerへのポインタを設定
 	/// @param _imGuiManager ImGuiManagerへのポインタ
-	void SetImGuiManager(class ImGuiManager* _imGuiManager);
+	void SetImGuiManager(Editor::ImGuiManager* _imGuiManager);
 #endif // DEBUG_MODE
 
 	/// @brief ShaderCompilerの取得

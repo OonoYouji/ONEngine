@@ -1,4 +1,4 @@
-#include "Variables.h"
+﻿#include "Variables.h"
 
 /// std
 #include <fstream>
@@ -9,13 +9,15 @@
 #include <Externals/imgui/dialog/ImGuiFileDialog.h>
 
 /// engine
-#include "Engine/Core/ImGui/Math/ImGuiMath.h"
 #include "Engine/Core/Utility/Math/Mathf.h"
 #include "Engine/ECS/EntityComponentSystem/ECSGroup.h"
 #include "Engine/ECS/Entity/GameEntity/GameEntity.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Script/Script.h"
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentJsonConverter.h"
 #include "Engine/Script/MonoScriptEngine.h"
+
+/// editor 
+#include "Engine/Editor/Math/ImGuiMath.h"
 
 using namespace ONEngine;
 using json = nlohmann::json;

@@ -2,11 +2,11 @@
 
 #include "../Interface/IEditorCompute.h"
 
+namespace Editor {
+
 /// /////////////////////////////////////////////////
 /// 川に沿って地形を変形させるCSPipelineを起動させるクラス
 /// /////////////////////////////////////////////////
-namespace ONEngine {
-
 class RiverTerrainAbjustPipeline : public IEditorCompute {
 
 	enum ROOT_PARAM {
@@ -24,8 +24,8 @@ public:
 	RiverTerrainAbjustPipeline();
 	~RiverTerrainAbjustPipeline();
 
-	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxm) override;
-	void Execute(class EntityComponentSystem* _ecs, class DxCommand* _dxCommand, class AssetCollection* _assetCollection) override;
+	void Initialize(ONEngine::ShaderCompiler* _shaderCompiler, ONEngine::DxManager* _dxm) override;
+	void Execute(ONEngine::EntityComponentSystem* _ecs, ONEngine::DxCommand* _dxCommand, ONEngine::AssetCollection* _assetCollection) override;
 
 private:
 	/// =========================================
@@ -33,5 +33,4 @@ private:
 	/// =========================================
 };
 
-
-} /// ONEngine
+} /// Editor

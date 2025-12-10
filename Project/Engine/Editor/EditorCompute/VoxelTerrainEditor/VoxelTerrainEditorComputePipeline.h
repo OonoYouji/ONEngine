@@ -6,7 +6,7 @@
 /// /////////////////////////////////////////////////
 /// ボクセル地形を編集するためのパイプラインを起動するクラス
 /// /////////////////////////////////////////////////
-namespace ONEngine {
+namespace Editor {
 
 class VoxelTerrainEditorComputePipeline : public IEditorCompute {
 
@@ -29,17 +29,16 @@ public:
 	VoxelTerrainEditorComputePipeline();
 	~VoxelTerrainEditorComputePipeline() override;
 
-	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxm) override;
-	void Execute(class EntityComponentSystem* _ecs, class DxCommand* _dxCommand, class AssetCollection* _assetCollection) override;
+	void Initialize(ONEngine::ShaderCompiler* _shaderCompiler, ONEngine::DxManager* _dxm) override;
+	void Execute(ONEngine::EntityComponentSystem* _ecs, ONEngine::DxCommand* _dxCommand, ONEngine::AssetCollection* _assetCollection) override;
 
 private:
 	/// =========================================
 	/// private : objects
 	/// =========================================
 
-	class DxManager* pDxManager_ = nullptr;
+	ONEngine::DxManager* pDxManager_ = nullptr;
 
 };
 
-
-} /// ONEngine
+} /// Editor

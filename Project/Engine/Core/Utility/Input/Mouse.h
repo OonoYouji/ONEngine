@@ -7,6 +7,10 @@
 /// engine
 #include "Engine/Core/Utility/Math/Vector2.h"
 
+namespace Editor {
+class ImGuiManager;
+}
+
 /// /////////////////////////////////////////////
 /// Mouseの入力
 /// /////////////////////////////////////////////
@@ -42,7 +46,7 @@ public:
 	/// @param _directInput DirectInput8へのポインタ
 	/// @param _windowManager WindowManagerへのポインタ
 	/// @param _imGuiManager ImGuiManagerへのポインタ
-	void Initialize(IDirectInput8* _directInput, class WindowManager* _windowManager, class ImGuiManager* _imGuiManager);
+	void Initialize(IDirectInput8* _directInput, class WindowManager* _windowManager, Editor::ImGuiManager* _imGuiManager);
 
 	/// @brief 更新
 	/// @param _window 現在のウィンドウへのポインタ
@@ -69,7 +73,7 @@ private:
 	/// =========================================
 
 	/// ----- other class ----- ///
-	class ImGuiManager* pImGuiManager_; ///< ImGuiManagerへのポインタ
+	Editor::ImGuiManager* pImGuiManager_; ///< ImGuiManagerへのポインタ
 
 
 	Microsoft::WRL::ComPtr<IDirectInputDevice8> mouse_;

@@ -9,6 +9,10 @@
 #include "Mouse.h"
 #include "Gamepad.h"
 
+namespace Editor {
+class ImGuiManager;
+}
+
 /// //////////////////////////////////////////////////
 /// 入力処理クラス
 /// //////////////////////////////////////////////////
@@ -27,7 +31,7 @@ public:
 	/// @brief 初期化
 	/// @param _windowManager WindowManagerのポインタ
 	/// @param _imGuiManager  ImGuiManagerのポインタ
-	void Initialize(class WindowManager* _windowManager, class ImGuiManager* _imGuiManager);
+	void Initialize(class WindowManager* _windowManager, Editor::ImGuiManager* _imGuiManager);
 
 	/// @brief 更新処理
 	void Update();
