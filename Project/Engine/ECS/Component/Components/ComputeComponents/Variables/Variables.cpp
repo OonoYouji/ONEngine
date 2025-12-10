@@ -148,7 +148,7 @@ void Variables::SaveJson(const std::string& _path) {
 
 	for (const auto& [groupKey, value] : groupKeyMap_) {
 		json[groupKey] = nlohmann::json::object();
-		for (const auto& [varKey, varValue] : groups_[value].keyMap_) {
+		for (const auto& [varKey, varValue] : groups_[value].keyMap) {
 
 			std::visit([&json, &groupKey, &varKey](auto&& _arg) {
 				using T = std::decay_t<decltype(_arg)>;
@@ -545,9 +545,9 @@ void COMP_DEBUG::VariablesDebug(Variables* _variables) {
 }
 
 const Variables::Var& Variables::Group::Get(const std::string& _name) const {
-	return variables[keyMap_.at(_name)];
+	return variables[keyMap.at(_name)];
 }
 
 bool Variables::Group::Has(const std::string& _name) const {
-	return keyMap_.contains(_name);
+	return keyMap.contains(_name);
 }
