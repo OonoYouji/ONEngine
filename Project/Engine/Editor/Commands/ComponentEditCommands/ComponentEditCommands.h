@@ -6,7 +6,7 @@
 #include <unordered_map>
 
 /// engine
-#include "../IEditorCommand.h"
+#include "../IEditCommand.h"
 
 
 /// ///////////////////////////////////////////////
@@ -14,7 +14,7 @@
 /// ///////////////////////////////////////////////
 namespace ONEngine {
 
-class EntityDataOutputCommand : public IEditorCommand {
+class EntityDataOutputCommand : public IEditCommand {
 public:
 	EntityDataOutputCommand(class GameEntity* _entity);
 	~EntityDataOutputCommand() override = default;
@@ -31,7 +31,7 @@ private:
 /// ///////////////////////////////////////////////
 /// エンティティのデータ入力コマンド
 /// ///////////////////////////////////////////////
-class EntityDataInputCommand : public IEditorCommand {
+class EntityDataInputCommand : public IEditCommand {
 public:
 	EntityDataInputCommand() = default;
 	EntityDataInputCommand(class GameEntity* _entity);
@@ -52,7 +52,7 @@ private:
 /// ///////////////////////////////////////////////
 /// Componentの追加
 /// ///////////////////////////////////////////////
-class AddComponentCommand : public IEditorCommand {
+class AddComponentCommand : public IEditCommand {
 public:
 	AddComponentCommand(class GameEntity* _entity, const std::string& _componentName);
 	~AddComponentCommand() override = default;
@@ -69,7 +69,7 @@ private:
 /// ///////////////////////////////////////////////
 /// Componentの削除
 /// ///////////////////////////////////////////////
-class RemoveComponentCommand : public IEditorCommand {
+class RemoveComponentCommand : public IEditCommand {
 public:
 	RemoveComponentCommand(class GameEntity* _entity, const std::string& _componentName, std::unordered_map<size_t, class IComponent*>::iterator* _resultItr);
 	~RemoveComponentCommand() override = default;
@@ -88,7 +88,7 @@ private:
 /// ///////////////////////////////////////////////
 /// Scriptの再読み込み
 /// ///////////////////////////////////////////////
-class ReloadAllScriptsCommand : public IEditorCommand {
+class ReloadAllScriptsCommand : public IEditCommand {
 public:
 	ReloadAllScriptsCommand(class ECSGroup* _ecs, class SceneManager* _sceneManager);
 	~ReloadAllScriptsCommand() override = default;

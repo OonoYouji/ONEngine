@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /// std
 #include <memory>
@@ -18,14 +18,14 @@ enum EDITOR_STATE {
 /// ///////////////////////////////////////////////////
 namespace ONEngine {
 
-class IEditorCommand {
+class IEditCommand {
 public:
 	/// ==========================================
 	/// public : methods
 	/// ==========================================
 
-	IEditorCommand() = default;
-	virtual ~IEditorCommand() = default;
+	IEditCommand() = default;
+	virtual ~IEditCommand() = default;
 
 	/// @brief コマンドの実行
 	/// @return 現在の状態

@@ -7,16 +7,17 @@
 #include <nlohmann/json.hpp>
 
 /// engine
-#include "../IEditorCommand.h"
 #include "Engine/Asset/Guid/Guid.h"
 
+/// editor
+#include "../IEditCommand.h"
 
 /// ///////////////////////////////////////////////////
 /// ゲームオブジェクトの作成コマンド
 /// ///////////////////////////////////////////////////
 namespace ONEngine {
 
-class CreateGameObjectCommand : public IEditorCommand {
+class CreateGameObjectCommand : public IEditCommand {
 public:
 	CreateGameObjectCommand(class ECSGroup* _ecs, const std::string& _name = "NewEntity", class GameEntity* _parentEntity = nullptr);
 	~CreateGameObjectCommand();
@@ -36,7 +37,7 @@ private:
 /// ///////////////////////////////////////////////////
 /// シーンに配置してあるオブジェクトの名前をへんこうする 
 /// ///////////////////////////////////////////////////
-class EntityRenameCommand : public IEditorCommand {
+class EntityRenameCommand : public IEditCommand {
 public:
 	EntityRenameCommand(class GameEntity* _entity, const std::string& _newName);
 	~EntityRenameCommand() = default;
@@ -54,7 +55,7 @@ private:
 /// ///////////////////////////////////////////////////
 /// シーンにあるオブジェクトから新しいクラスを作る
 /// ///////////////////////////////////////////////////
-class CreateNewEntityClassCommand : public IEditorCommand {
+class CreateNewEntityClassCommand : public IEditCommand {
 public:
 	CreateNewEntityClassCommand(class GameEntity* _entity, const std::string& _outputFilePath);
 	~CreateNewEntityClassCommand() = default;
@@ -76,7 +77,7 @@ private:
 /// ///////////////////////////////////////////////////
 /// プレハブを作成するコマンド
 /// ///////////////////////////////////////////////////
-class CreatePrefabCommand : public IEditorCommand {
+class CreatePrefabCommand : public IEditCommand {
 public:
 	CreatePrefabCommand(class GameEntity* _entity);
 	~CreatePrefabCommand() = default;
@@ -97,7 +98,7 @@ private:
 /// ///////////////////////////////////////////////////
 /// エンティティを削除するコマンド
 /// ///////////////////////////////////////////////////
-class DeleteEntityCommand : public IEditorCommand {
+class DeleteEntityCommand : public IEditCommand {
 public:
 	DeleteEntityCommand(class ECSGroup* _ecs, class GameEntity* _entity);
 	~DeleteEntityCommand() = default;
@@ -114,7 +115,7 @@ private:
 /// ///////////////////////////////////////////////////
 /// エンティティをコピーするコマンド
 /// ///////////////////////////////////////////////////
-class CopyEntityCommand : public IEditorCommand {
+class CopyEntityCommand : public IEditCommand {
 public:
 	CopyEntityCommand(class GameEntity* _entity);
 	~CopyEntityCommand() = default;
@@ -130,7 +131,7 @@ private:
 /// ///////////////////////////////////////////////////
 /// エンティティをペーストするコマンド
 /// ///////////////////////////////////////////////////
-class PasteEntityCommand : public IEditorCommand {
+class PasteEntityCommand : public IEditCommand {
 public:
 	PasteEntityCommand(class ECSGroup* _ecs, class GameEntity* _selectedEntity);
 	~PasteEntityCommand() = default;
@@ -147,7 +148,7 @@ private:
 /// ///////////////////////////////////////////////////
 /// エンティティの親子付けを変更するコマンド
 /// ///////////////////////////////////////////////////
-class ChangeEntityParentCommand : public IEditorCommand {
+class ChangeEntityParentCommand : public IEditCommand {
 public:
 	ChangeEntityParentCommand(class GameEntity* _entity, class GameEntity* _newParent);
 	~ChangeEntityParentCommand() = default;

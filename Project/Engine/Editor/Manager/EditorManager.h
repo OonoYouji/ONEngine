@@ -15,17 +15,17 @@
 
 /// editor
 #include "Engine/Editor/Clipboard/Clipboard.h"
-#include "Engine/Editor/Commands/IEditorCommand.h"
+#include "Engine/Editor/Commands/IEditCommand.h"
 #include "Engine/Editor/EditorCompute/Interface/IEditorCompute.h"
 
 /// @brief 
 namespace ONEngine {
 
 /// @brief コマンドの生成関数
-using Creator = std::function<std::unique_ptr<IEditorCommand>(const std::vector<std::any>&)>;
+using Creator = std::function<std::unique_ptr<IEditCommand>(const std::vector<std::any>&)>;
 
 template <typename T>
-concept IsEditorCommand = std::is_base_of_v<IEditorCommand, T>;
+concept IsEditorCommand = std::is_base_of_v<IEditCommand, T>;
 
 
 /// /////////////////////////////////////////////////
@@ -78,11 +78,11 @@ private:
 	Clipboard clipboard_;
 
 	/// ----- container -----///
-	std::unordered_map<std::string, std::unique_ptr<IEditorCommand>> prototypeCommands_; ///< コマンドのコレクション
+	std::unordered_map<std::string, std::unique_ptr<IEditCommand>> prototypeCommands_; ///< コマンドのコレクション
 
-	IEditorCommand* runningCommand_; ///< 現在実行中のコマンド
-	std::deque<std::unique_ptr<IEditorCommand>> commandStack_; ///< コマンドのスタック
-	std::deque<std::unique_ptr<IEditorCommand>> redoStack_; ///< コマンドのリドゥスタック
+	IEditCommand* runningCommand_; ///< 現在実行中のコマンド
+	std::deque<std::unique_ptr<IEditCommand>> commandStack_; ///< コマンドのスタック
+	std::deque<std::unique_ptr<IEditCommand>> redoStack_; ///< コマンドのリドゥスタック
 
 
 	/// ----- editor compute ----- ///

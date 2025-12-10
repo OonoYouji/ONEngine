@@ -74,7 +74,7 @@ void EditorManager::Undo() {
 	if (commandStack_.empty()) {
 		return;
 	}
-	std::unique_ptr<IEditorCommand> command = std::move(commandStack_.back());
+	std::unique_ptr<IEditCommand> command = std::move(commandStack_.back());
 	command->Undo();
 	redoStack_.push_back(std::move(command));
 	commandStack_.pop_back();
@@ -86,7 +86,7 @@ void EditorManager::Redo() {
 	}
 
 	/// stackから実行する
-	std::unique_ptr<IEditorCommand> command = std::move(redoStack_.back());
+	std::unique_ptr<IEditCommand> command = std::move(redoStack_.back());
 	command->Execute();
 	redoStack_.pop_back();
 

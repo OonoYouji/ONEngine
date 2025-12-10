@@ -5,7 +5,7 @@
 
 /// engine
 #include "Engine/Core/Utility/Utility.h"
-#include "../IEditorCommand.h"
+#include "../IEditCommand.h"
 
 namespace ONEngine {
 
@@ -105,7 +105,7 @@ namespace ImGuiCommand {
 	/// @brief T型の値を変更するコマンド
 	/// @tparam T 変更する値の型 (T型のoperator=が定義されている必要がある)
 	template <typename T>
-	class ModifyValueCommand : public IEditorCommand {
+	class ModifyValueCommand : public IEditCommand {
 	public:
 		/// ===================================================
 		/// public : methods
