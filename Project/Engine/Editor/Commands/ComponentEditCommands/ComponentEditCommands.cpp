@@ -1,4 +1,4 @@
-﻿#include "ComponentEditCommands.h"
+﻿﻿#include "ComponentEditCommands.h"
 
 using namespace ONEngine;
 
