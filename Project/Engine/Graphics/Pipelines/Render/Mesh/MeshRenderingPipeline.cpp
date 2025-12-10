@@ -1,4 +1,4 @@
-﻿#include "MeshRenderingPipeline.h"
+#include "MeshRenderingPipeline.h"
 
 using namespace ONEngine;
 
@@ -57,12 +57,7 @@ void MeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManage
 
 
 		pipeline_->SetBlendDesc(BlendMode::Normal());
-
-		D3D12_DEPTH_STENCIL_DESC depthStencilDesc = {};
-		depthStencilDesc.DepthEnable = TRUE;
-		depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
-		depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
-		pipeline_->SetDepthStencilDesc(depthStencilDesc);
+		pipeline_->SetDepthStencilDesc(DefaultDepthStencilDesc());
 
 
 		pipeline_->CreatePipeline(_dxm->GetDxDevice());

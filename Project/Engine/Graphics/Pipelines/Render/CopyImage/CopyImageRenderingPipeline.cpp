@@ -1,4 +1,4 @@
-﻿#include "CopyImageRenderingPipeline.h"
+#include "CopyImageRenderingPipeline.h"
 
 using namespace ONEngine;
 
@@ -33,11 +33,7 @@ void CopyImageRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxM
 		pipeline_->SetTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
 		pipeline_->SetBlendDesc(BlendMode::Normal());
 
-		D3D12_DEPTH_STENCIL_DESC depthStencilDesc = {};
-		depthStencilDesc.DepthEnable = true;
-		depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
-		depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
-		pipeline_->SetDepthStencilDesc(depthStencilDesc);
+		pipeline_->SetDepthStencilDesc(DefaultDepthStencilDesc());
 
 		pipeline_->SetRTVNum(1);
 		pipeline_->SetRTVFormat(DXGI_FORMAT_R8G8B8A8_UNORM, 0);
