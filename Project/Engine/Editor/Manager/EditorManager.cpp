@@ -16,12 +16,12 @@
 #include "Engine/Editor/EditorCompute/Grass/GrassArrangementPipeline.h"
 #include "Engine/Editor/EditorCompute/VoxelTerrainEditor/VoxelTerrainEditorComputePipeline.h"
 
-using namespace ONEngine;
+using namespace Editor;
 
-EditorManager::EditorManager(EntityComponentSystem* _ecs) : pEcs_(_ecs) {}
+EditorManager::EditorManager(ONEngine::EntityComponentSystem* _ecs) : pEcs_(_ecs) {}
 EditorManager::~EditorManager() = default;
 
-void EditorManager::Initialize(DxManager* _dxm, ShaderCompiler* _sc) {
+void EditorManager::Initialize(ONEngine::DxManager* _dxm, ONEngine::ShaderCompiler* _sc) {
 	pDxManager_ = _dxm;
 	runningCommand_ = nullptr;
 
@@ -38,7 +38,7 @@ void EditorManager::Initialize(DxManager* _dxm, ShaderCompiler* _sc) {
 	AddEditorCompute(_dxm, _sc, std::make_unique<VoxelTerrainEditorComputePipeline>());
 }
 
-void EditorManager::Update(AssetCollection* _assetCollection) {
+void EditorManager::Update(ONEngine::AssetCollection* _assetCollection) {
 
 	/// エディタのコマンドを実行する
 	for (auto& compute : editorComputes_) {
@@ -50,17 +50,17 @@ void EditorManager::Update(AssetCollection* _assetCollection) {
 		if (state != EDITOR_STATE_RUNNING) {
 			runningCommand_ = nullptr;
 		} else {
-			Console::Log("editor command is running");
+			ONEngine::Console::Log("editor command is running");
 		}
 
 	} else {
 #ifdef DEBUG_MODE
 		// undo, redo を行う
-		if (Input::PressKey(DIK_LCONTROL) && Input::TriggerKey(DIK_Z)) {
+		if (ONEngine::Input::PressKey(DIK_LCONTROL) && ONEngine::Input::TriggerKey(DIK_Z)) {
 			Undo();
 		}
 
-		if (Input::PressKey(DIK_LCONTROL) && Input::TriggerKey(DIK_Y)) {
+		if (ONEngine::Input::PressKey(DIK_LCONTROL) && ONEngine::Input::TriggerKey(DIK_Y)) {
 			Redo();
 		}
 #endif // DEBUG_MODE
@@ -95,7 +95,7 @@ void EditorManager::Redo() {
 
 }
 
-void EditorManager::AddEditorCompute(DxManager* _dxm, ShaderCompiler* _shaderCompiler, std::unique_ptr<IEditorCompute> _compute) {
+void EditorManager::AddEditorCompute(ONEngine::DxManager* _dxm, ONEngine::ShaderCompiler* _shaderCompiler, std::unique_ptr<IEditorCompute> _compute) {
 	_compute->Initialize(_shaderCompiler, _dxm);
 
 	editorComputes_.push_back(std::move(_compute));

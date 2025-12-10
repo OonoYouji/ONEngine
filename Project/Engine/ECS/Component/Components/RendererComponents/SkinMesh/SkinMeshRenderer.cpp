@@ -1,11 +1,13 @@
-#include "SkinMeshRenderer.h"
+﻿#include "SkinMeshRenderer.h"
 
 /// external
 #include <imgui.h>
 
 /// engine
 #include "Engine/Core/Utility/Utility.h"
-#include "Engine/Core/ImGui/Math/ImGuiMath.h"
+
+/// editor
+#include "Engine/Editor/Math/ImGuiMath.h"
 
 using namespace ONEngine;
 
@@ -180,7 +182,7 @@ void COMP_DEBUG::SkinMeshRendererDebug(SkinMeshRenderer* _smr) {
 			const Joint& joint = _smr->GetSkeleton().joints[jointIndex.second];
 
 			std::string pointerName = joint.name;
-			ImMathf::InputText(std::string("##" + pointerName).c_str(), &pointerName, ImGuiInputTextFlags_ReadOnly);
+			Editor::ImMathf::InputText(std::string("##" + pointerName).c_str(), &pointerName, ImGuiInputTextFlags_ReadOnly);
 
 			/// 最後に次のジョイントの間隔を空ける
 			ImGui::Spacing();

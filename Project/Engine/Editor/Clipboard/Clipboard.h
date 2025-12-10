@@ -1,4 +1,4 @@
-﻿﻿#pragma once
+﻿#pragma once
 
 /// std
 #include <memory>
@@ -9,7 +9,7 @@
 /// ////////////////////////////////////////////////
 /// クリップボードにコピーするデータの基底クラス
 /// ////////////////////////////////////////////////
-namespace ONEngine {
+namespace Editor {
 
 class IClipboardData {
 public:
@@ -106,4 +106,4 @@ private:
 
 };
 
-} /// ONEngine
+} /// Editor

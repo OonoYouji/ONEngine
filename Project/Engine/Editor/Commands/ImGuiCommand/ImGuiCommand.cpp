@@ -1,12 +1,13 @@
 ﻿#include "ImGuiCommand.h"
 
+
 /// externals
 #include <imgui.h>
 
 /// engine
 #include "Engine/Editor/Manager/EditCommand.h"
 
-using namespace ONEngine;
+using namespace Editor;
 
 bool ImMathf::DragInt(const std::string& _label, int* _pv, int _step, int _min, int _max) {
 	static int startValue{};
@@ -26,8 +27,8 @@ bool ImMathf::DragInt(const std::string& _label, int* _pv, int _step, int _min, 
 	return edit;
 }
 
-bool ImMathf::DragInt2(const std::string& _label, Vector2Int* _pv, int _step, int _min, int _max) {
-	static Vector2Int startValue{};
+bool ImMathf::DragInt2(const std::string& _label, ONEngine::Vector2Int* _pv, int _step, int _min, int _max) {
+	static ONEngine::Vector2Int startValue{};
 
 	bool edit = ImGui::DragInt2(_label.c_str(), &_pv->x, static_cast<float>(_step), _min, _max);
 	/// 操作を始めた
@@ -37,15 +38,15 @@ bool ImMathf::DragInt2(const std::string& _label, Vector2Int* _pv, int _step, in
 
 	/// 操作を終えた
 	if (ImGui::IsItemDeactivatedAfterEdit()) {
-		Vector2Int endValue = *_pv;
-		EditCommand::Execute<ImGuiCommand::ModifyValueCommand<Vector2Int>>(_pv, startValue, endValue);
+		ONEngine::Vector2Int endValue = *_pv;
+		EditCommand::Execute<ImGuiCommand::ModifyValueCommand<ONEngine::Vector2Int>>(_pv, startValue, endValue);
 	}
 
 	return edit;
 }
 
-bool ImMathf::DragInt3(const std::string& _label, Vector3Int* _pv, int _step, int _min, int _max) {
-	static Vector3Int startValue{};
+bool ImMathf::DragInt3(const std::string& _label, ONEngine::Vector3Int* _pv, int _step, int _min, int _max) {
+	static ONEngine::Vector3Int startValue{};
 
 	bool edit = ImGui::DragInt3(_label.c_str(), &_pv->x, static_cast<float>(_step), _min, _max);
 	/// 操作を始めた
@@ -55,8 +56,8 @@ bool ImMathf::DragInt3(const std::string& _label, Vector3Int* _pv, int _step, in
 
 	/// 操作を終えた
 	if (ImGui::IsItemDeactivatedAfterEdit()) {
-		Vector3Int endValue = *_pv;
-		EditCommand::Execute<ImGuiCommand::ModifyValueCommand<Vector3Int>>(_pv, startValue, endValue);
+		ONEngine::Vector3Int endValue = *_pv;
+		EditCommand::Execute<ImGuiCommand::ModifyValueCommand<ONEngine::Vector3Int>>(_pv, startValue, endValue);
 	}
 
 	return edit;
@@ -80,8 +81,8 @@ bool ImMathf::DragFloat(const std::string& _label, float* _pv, float _step, floa
 	return edit;
 }
 
-bool ImMathf::DragFloat2(const std::string& _label, Vector2* _pv, float _step, float _min, float _max) {
-	static Vector2 startValue{};
+bool ImMathf::DragFloat2(const std::string& _label, ONEngine::Vector2* _pv, float _step, float _min, float _max) {
+	static ONEngine::Vector2 startValue{};
 
 	bool edit = ImGui::DragFloat2(_label.c_str(), &_pv->x, _step, _min, _max);
 	/// 操作を始めた
@@ -91,16 +92,16 @@ bool ImMathf::DragFloat2(const std::string& _label, Vector2* _pv, float _step, f
 
 	/// 操作を終えた
 	if (ImGui::IsItemDeactivatedAfterEdit()) {
-		Vector2 endValue = *_pv;
-		EditCommand::Execute<ImGuiCommand::ModifyValueCommand<Vector2>>(_pv, startValue, endValue);
+		ONEngine::Vector2 endValue = *_pv;
+		EditCommand::Execute<ImGuiCommand::ModifyValueCommand<ONEngine::Vector2>>(_pv, startValue, endValue);
 	}
 
 	return edit;
 }
 
 
-bool ImMathf::DragFloat3(const std::string& _label, Vector3* _pv, float _step, float _min, float _max) {
-	static Vector3 startValue{};
+bool ImMathf::DragFloat3(const std::string& _label, ONEngine::Vector3* _pv, float _step, float _min, float _max) {
+	static ONEngine::Vector3 startValue{};
 
 	bool edit = ImGui::DragFloat3(_label.c_str(), &_pv->x, _step, _min, _max);
 
@@ -111,15 +112,15 @@ bool ImMathf::DragFloat3(const std::string& _label, Vector3* _pv, float _step, f
 
 	/// 操作を終えた
 	if (ImGui::IsItemDeactivatedAfterEdit()) {
-		Vector3 endValue = *_pv;
-		EditCommand::Execute<ImGuiCommand::ModifyValueCommand<Vector3>>(_pv, startValue, endValue);
+		ONEngine::Vector3 endValue = *_pv;
+		EditCommand::Execute<ImGuiCommand::ModifyValueCommand<ONEngine::Vector3>>(_pv, startValue, endValue);
 	}
 
 	return edit;
 }
 
-bool ImMathf::DragFloat4(const std::string& _label, Vector4* _pv, float _step, float _min, float _max) {
-	static Vector4 startValue{};
+bool ImMathf::DragFloat4(const std::string& _label, ONEngine::Vector4* _pv, float _step, float _min, float _max) {
+	static ONEngine::Vector4 startValue{};
 
 	bool edit = ImGui::DragFloat4(_label.c_str(), &_pv->x, _step, _min, _max);
 
@@ -130,21 +131,21 @@ bool ImMathf::DragFloat4(const std::string& _label, Vector4* _pv, float _step, f
 
 	/// 操作を終えた
 	if (ImGui::IsItemDeactivatedAfterEdit()) {
-		Vector4 endValue = *_pv;
-		EditCommand::Execute<ImGuiCommand::ModifyValueCommand<Vector4>>(_pv, startValue, endValue);
+		ONEngine::Vector4 endValue = *_pv;
+		EditCommand::Execute<ImGuiCommand::ModifyValueCommand<ONEngine::Vector4>>(_pv, startValue, endValue);
 	}
 
 	return edit;
 }
 
-bool ImMathf::DragQuaternion(const std::string& _label, Quaternion* _pq, float _step, float _min, float _max) {
-	static Quaternion startValue{};
+bool ImMathf::DragQuaternion(const std::string& _label, ONEngine::Quaternion* _pq, float _step, float _min, float _max) {
+	static ONEngine::Quaternion startValue{};
 
 	/// Eulerに変換して表示
-	Vector3 euler = Quaternion::ToEuler(*_pq);
+	ONEngine::Vector3 euler = ONEngine::Quaternion::ToEuler(*_pq);
 	bool edit = ImGui::DragFloat3(_label.c_str(), &euler.x, _step, _min, _max);
 	if (edit) {
-		*_pq = Quaternion::FromEuler(euler);
+		*_pq = ONEngine::Quaternion::FromEuler(euler);
 	}
 
 	/// 操作を始めた
@@ -154,8 +155,8 @@ bool ImMathf::DragQuaternion(const std::string& _label, Quaternion* _pq, float _
 
 	/// 操作を終えた
 	if (ImGui::IsItemDeactivatedAfterEdit()) {
-		Quaternion endValue = *_pq;
-		EditCommand::Execute<ImGuiCommand::ModifyValueCommand<Quaternion>>(_pq, startValue, endValue);
+		ONEngine::Quaternion endValue = *_pq;
+		EditCommand::Execute<ImGuiCommand::ModifyValueCommand<ONEngine::Quaternion>>(_pq, startValue, endValue);
 	}
 
 	return false;

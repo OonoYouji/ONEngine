@@ -1,4 +1,4 @@
-﻿﻿#pragma once
+﻿#pragma once
 
 /// std
 #include <string>
@@ -6,10 +6,11 @@
 /// engine
 #include "Engine/Asset/Assets/Mateiral/Material.h"
 
-/// ----- 前方宣言 ----- ///
 namespace ONEngine {
-
 class AssetCollection;
+}
+
+namespace Editor {
 
 /// ////////////////////////////////////////////////////////
 /// Assets Debugger用のMath関数群
@@ -22,8 +23,8 @@ namespace ImMathf {
 	/// @param _assetCollection AssetCollectionポインタ
 	/// @param _isEditNormalTexture ノーマルマップの編集を行うかどうか
 	/// @return true: 編集が行われた, false: 編集されなかった
-	bool MaterialEdit(const std::string& _label, Material* _material, AssetCollection* _assetCollection, bool _isEditNormalTexture = true);
+	bool MaterialEdit(const std::string& _label, ONEngine::Material* _material, ONEngine::AssetCollection* _assetCollection, bool _isEditNormalTexture = true);
 
 }
 
-} /// ONEngine
+} /// Editor

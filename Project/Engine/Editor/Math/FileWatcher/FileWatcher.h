@@ -1,6 +1,10 @@
-﻿﻿#pragma once
+﻿#pragma once
 
+
+/// windows
 #include <Windows.h>
+
+/// std
 #include <string>
 #include <thread>
 #include <atomic>
@@ -11,7 +15,7 @@
 
 
 /// @brief ファイルのイベント情報
-namespace ONEngine {
+namespace Editor {
 
 struct FileEvent {
 	enum class Action {
@@ -78,4 +82,4 @@ private:
 	std::vector<std::shared_ptr<WatchTarget>> watchers_;
 };
 
-} /// ONEngine
+} /// Editor

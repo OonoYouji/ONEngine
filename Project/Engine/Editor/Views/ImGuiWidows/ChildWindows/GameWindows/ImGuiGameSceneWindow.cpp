@@ -1,14 +1,15 @@
-﻿﻿#include "ImGuiGameSceneWindow.h"
-
-using namespace ONEngine;
+﻿#include "ImGuiGameSceneWindow.h"
 
 /// external
 #include <imgui.h>
 
 /// engine
 #include "Engine/Asset/Collection/AssetCollection.h"
-#include "Engine/Core/ImGui/ImGuiManager.h"
 
+/// editor
+#include "Engine/Editor/Manager/ImGuiManager.h"
+
+using namespace Editor;
 
 void ImGuiGameSceneWindow::ShowImGui() {
 	if (!ImGui::Begin("GameScene")) {
@@ -21,8 +22,8 @@ void ImGuiGameSceneWindow::ShowImGui() {
 	/// ---------------------------------------
 
 	/// DebugConfig::
-	if (ImGui::Checkbox("show game scene", &DebugConfig::isShowGameScene)) {
-		Console::Log("ImGuiGameSceneWindow::ShowImGui -> clicked show game scene");
+	if (ImGui::Checkbox("show game scene", &ONEngine::DebugConfig::isShowGameScene)) {
+		ONEngine::Console::Log("ImGuiGameSceneWindow::ShowImGui -> clicked show game scene");
 	}
 
 	const auto& textures = pAssetCollection_->GetTextures();

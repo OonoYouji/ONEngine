@@ -1,20 +1,24 @@
-﻿﻿#pragma once
+﻿#pragma once
 
 #include "../../Collection/ImGuiWindowCollection.h"
 
+namespace ONEngine {
+class EntityComponentSystem;
+class AssetCollection;
+}
+
+namespace Editor {
 
 /// //////////////////////////////////////////////////////
 /// Prefab編集用のimgui window
 /// //////////////////////////////////////////////////////
-namespace ONEngine {
-
 class ImGuiPrefabViewWindow : public IImGuiChildWindow {
 public:
 	/// =====================================================
 	/// public : methods
 	/// =====================================================
 
-	ImGuiPrefabViewWindow(class EntityComponentSystem* _ecs, class AssetCollection* _assetCollection);
+	ImGuiPrefabViewWindow(ONEngine::EntityComponentSystem* _ecs, ONEngine::AssetCollection* _assetCollection);
 	~ImGuiPrefabViewWindow() {}
 
 	void ShowImGui() override;
@@ -27,11 +31,10 @@ private:
 	/// private : objects
 	/// =====================================================
 
-	class EntityComponentSystem* pEcs_;
-	class AssetCollection* pAssetCollection_;
+	ONEngine::EntityComponentSystem* pEcs_;
+	ONEngine::AssetCollection* pAssetCollection_;
 
 
 };
 
-
-} /// ONEngine
+} /// Editor

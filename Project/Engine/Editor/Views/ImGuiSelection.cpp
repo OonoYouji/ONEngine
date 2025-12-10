@@ -3,12 +3,12 @@
 /// engine
 #include "Engine/Asset/Collection/AssetCollection.h"
 
-using namespace ONEngine;
+using namespace Editor;
 
 namespace {
 
 	/// ----- ImGuiSelection ----- ///
-	const Guid* gSelectionObjectGuid = &Guid::kInvalid;
+	const ONEngine::Guid* gSelectionObjectGuid = &ONEngine::Guid::kInvalid;
 	SelectionType gSelectionType = SelectionType::None;
 
 	/// ----- ImGuiInfo ----- ///
@@ -17,11 +17,11 @@ namespace {
 } /// namespace
 
  
-const Guid& ImGuiSelection::GetSelectedObject() {
+const ONEngine::Guid& ImGuiSelection::GetSelectedObject() {
 	return *gSelectionObjectGuid;
 }
 
-void ImGuiSelection::SetSelectedObject(const Guid& _entityGuid, SelectionType _type) {
+void ImGuiSelection::SetSelectedObject(const ONEngine::Guid& _entityGuid, SelectionType _type) {
 	gSelectionObjectGuid = &_entityGuid;
 	gSelectionType = _type;
 }

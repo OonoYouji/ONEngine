@@ -1,19 +1,23 @@
-﻿﻿#pragma once
+﻿#pragma once
 
 /// engine
 #include "../../Collection/ImGuiWindowCollection.h"
 
+namespace ONEngine {
+class AssetCollection;
+}
+
+namespace Editor {
+
 /// ///////////////////////////////////////////////////
 /// GameSceneTextureを表示するためのImGuiWindow
 /// ///////////////////////////////////////////////////
-namespace ONEngine {
-
 class ImGuiGameSceneWindow : public IImGuiChildWindow {
 public:
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
-	ImGuiGameSceneWindow(class AssetCollection* _assetCollection) : pAssetCollection_(_assetCollection) {}
+	ImGuiGameSceneWindow(ONEngine::AssetCollection* _assetCollection) : pAssetCollection_(_assetCollection) {}
 	~ImGuiGameSceneWindow() {}
 	
 	/// @brief imgui windowの描画処理
@@ -24,9 +28,8 @@ private:
 	/// private : methods
 	/// ===================================================
 
-	class AssetCollection* pAssetCollection_ = nullptr;
+	ONEngine::AssetCollection* pAssetCollection_ = nullptr;
 
 };
 
-
-} /// ONEngine
+} /// Editor

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// std
 #include <string>
@@ -15,6 +15,10 @@
 
 /// interface
 #include "Engine/ECS/Component/Components/Interface/IComponent.h"
+
+namespace Editor {
+	class GrassArrangementPipeline;
+}
 
 /// ////////////////////////////////////////////////////////
 /// 草のインスタンス情報 (シェーダーで利用)
@@ -51,14 +55,14 @@ void from_json(const nlohmann::json& _j, GrassField& _p);
 /// ////////////////////////////////////////////////////////
 class GrassField : public IComponent {
 	/// friendクラス
-	friend class GrassArrangementPipeline;
+	friend class ::Editor::GrassArrangementPipeline;
 
 	/// privateメンバ変数の参照のためにフレンド宣言
 	friend void COMP_DEBUG::GrassFieldDebug(GrassField* _grassField, AssetCollection* _assetCollection);
 	friend void to_json(nlohmann::json& _j, const GrassField& _p);
 	friend void from_json(const nlohmann::json& _j, GrassField& _p);
 public:
-	/// ===================================================
+	/// ==================================================
 	/// public : methods
 	/// ===================================================
 

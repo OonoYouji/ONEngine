@@ -1,7 +1,5 @@
 ﻿#include "ImGuiMath.h"
 
-using namespace ONEngine;
-
 /// std
 #include <numbers>
 #include <format>
@@ -22,25 +20,26 @@ using namespace ONEngine;
 /// editor
 #include "Engine/Editor/Math/AssetPayload.h"
 
+using namespace Editor;
 
 namespace {
 
-	float rotateSpeed = std::numbers::pi_v<float> / 100.0f;
+float rotateSpeed = std::numbers::pi_v<float> / 100.0f;
 
-	std::string variableName = "";
+std::string variableName = "";
 
 }	/// unnamed namespace
 
 
-ImVec4 ImMathf::ToImVec4(const Vector4& _vec) {
+ImVec4 ImMathf::ToImVec4(const ONEngine::Vector4& _vec) {
 	return ImVec4(_vec.x, _vec.y, _vec.z, _vec.w);
 }
 
-ImVec2 ImMathf::ToImVec2(const Vector2& _vec) {
+ImVec2 ImMathf::ToImVec2(const ONEngine::Vector2& _vec) {
 	return ImVec2(_vec.x, _vec.y);
 }
 
-bool ImMathf::ColorEdit(const char* _label, Vector4* _color, ImGuiColorEditFlags _flags) {
+bool ImMathf::ColorEdit(const char* _label, ONEngine::Vector4* _color, ImGuiColorEditFlags _flags) {
 	if (!_color) {
 		return false;
 	}
@@ -80,7 +79,7 @@ bool ImMathf::InputText(const char* _label, std::string* _text, ImGuiInputTextFl
 	);
 }
 
-bool ImMathf::MaterialEdit(const char* _label, GPUMaterial* _material, AssetCollection* _assetCollection) {
+bool ImMathf::MaterialEdit(const char* _label, ONEngine::GPUMaterial* _material, ONEngine::AssetCollection* _assetCollection) {
 	/// nullptr check
 	if (!_material) {
 		return false;
@@ -135,8 +134,8 @@ bool ImMathf::MaterialEdit(const char* _label, GPUMaterial* _material, AssetColl
 						AssetPayload* assetPayload = *static_cast<AssetPayload**>(payload->Data);
 						std::string path = assetPayload->filePath;
 
-						AssetType type = GetAssetTypeFromExtension(Mathf::FileExtension(path));
-						if (type == AssetType::Texture) {
+						ONEngine::AssetType type = ONEngine::GetAssetTypeFromExtension(ONEngine::Mathf::FileExtension(path));
+						if (type == ONEngine::AssetType::Texture) {
 							size_t droppedTextureIndex = _assetCollection->GetTextureIndex(path);
 							_material->baseTextureId = static_cast<int32_t>(droppedTextureIndex);
 							isEdit = true;
@@ -148,7 +147,7 @@ bool ImMathf::MaterialEdit(const char* _label, GPUMaterial* _material, AssetColl
 
 			/// texture idが有効値じゃなければ無視
 			if (_material->baseTextureId >= 0) {
-				const Texture* baseTexture = _assetCollection->GetTexture(_assetCollection->GetTexturePath(_material->baseTextureId));
+				const ONEngine::Texture* baseTexture = _assetCollection->GetTexture(_assetCollection->GetTexturePath(_material->baseTextureId));
 				if (baseTexture) {
 					ImTextureID textureId = reinterpret_cast<ImTextureID>(baseTexture->GetSRVGPUHandle().ptr);
 					ImGui::Image(textureId, ImVec2(100, 100), ImVec2(0, 0), ImVec2(1, 1), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
@@ -180,7 +179,7 @@ bool ImMathf::MaterialEdit(const char* _label, GPUMaterial* _material, AssetColl
 
 			/// normal texture idが有効値じゃなければ無視
 			if (_material->normalTextureId >= 0) {
-				const Texture* normalTexture = _assetCollection->GetTexture(_assetCollection->GetTexturePath(_material->normalTextureId));
+				const ONEngine::Texture* normalTexture = _assetCollection->GetTexture(_assetCollection->GetTexturePath(_material->normalTextureId));
 				if (normalTexture) {
 					ImTextureID textureId = reinterpret_cast<ImTextureID>(normalTexture->GetSRVGPUHandle().ptr);
 					ImGui::Image(textureId, ImVec2(100, 100), ImVec2(0, 0), ImVec2(1, 1), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
@@ -197,7 +196,7 @@ bool ImMathf::MaterialEdit(const char* _label, GPUMaterial* _material, AssetColl
 	return isEdit;
 }
 
-bool ImMathf::UVTransformEdit(const char* _label, UVTransform* _uvTransform) {
+bool ImMathf::UVTransformEdit(const char* _label, ONEngine::UVTransform* _uvTransform) {
 	/// nullptr check
 	if (!_uvTransform) {
 		return false;
@@ -228,7 +227,7 @@ bool ImMathf::UVTransformEdit(const char* _label, UVTransform* _uvTransform) {
 	return isEdit;
 }
 
-ImVec2 ImMathf::CalculateAspectFitSize(const Vector2& _textureSize, float _maxSize) {
+ImVec2 ImMathf::CalculateAspectFitSize(const ONEngine::Vector2& _textureSize, float _maxSize) {
 	// アスペクト比を計算
 	float aspectRatio = _textureSize.x / _textureSize.y;
 
@@ -247,7 +246,7 @@ ImVec2 ImMathf::CalculateAspectFitSize(const Vector2& _textureSize, float _maxSi
 	return ImVec2(width, height);
 }
 
-ImVec2 ImMathf::CalculateAspectFitSize(const Vector2& _textureSize, const ImVec2& _maxSize) {
+ImVec2 ImMathf::CalculateAspectFitSize(const ONEngine::Vector2& _textureSize, const ImVec2& _maxSize) {
 	// アスペクト比を計算
 	float aspectRatio = _textureSize.x / _textureSize.y;
 
@@ -267,7 +266,7 @@ ImVec2 ImMathf::CalculateAspectFitSize(const Vector2& _textureSize, const ImVec2
 }
 
 
-bool ONEngine::ImGuiInputText(const char* _label, std::string* _text, ImGuiInputTextFlags _flags) {
+bool Editor::ImGuiInputText(const char* _label, std::string* _text, ImGuiInputTextFlags _flags) {
 	if (!_text) {
 		return false; // nullptr check
 	}
@@ -293,14 +292,14 @@ bool ONEngine::ImGuiInputText(const char* _label, std::string* _text, ImGuiInput
 	);
 }
 
-void ONEngine::ImGuiInputTextReadOnly(const char* _label, const std::string& _text) {
+void Editor::ImGuiInputTextReadOnly(const char* _label, const std::string& _text) {
 	char buffer[256];
 	strncpy_s(buffer, _text.c_str(), sizeof(buffer));
 	buffer[sizeof(buffer) - 1] = '\0';
 	ImGui::InputText(_label, buffer, sizeof(buffer), ImGuiInputTextFlags_ReadOnly);
 }
 
-bool ONEngine::ImGuiColorEdit(const char* _label, Vector4* _color) {
+bool Editor::ImGuiColorEdit(const char* _label, ONEngine::Vector4* _color) {
 
 	bool result = false;
 	float width = 50.0f; // 各ボックスの横幅
@@ -401,12 +400,6 @@ void ONEngine::AudioSourceDebug(AudioSource* _audioSource) {
 	if (ImGui::DragFloat("pitch", &pitch, 0.1f)) {
 		_audioSource->SetPitch(pitch);
 	}
-
-	//ImGuiInputText("path", &path);
-	//_audioSource->SetAudioPath(path);
-	////if (ImGui::InputText("path", &path)) {
-	////	_audioSource->SetAudioPath(path);
-	////}
 
 }
 

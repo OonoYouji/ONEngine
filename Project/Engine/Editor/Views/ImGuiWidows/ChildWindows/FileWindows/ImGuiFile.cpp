@@ -1,6 +1,4 @@
-﻿﻿#include "ImGuiFile.h"
-
-using namespace ONEngine;
+﻿#include "ImGuiFile.h"
 
 /// std
 #include <filesystem>
@@ -10,8 +8,9 @@ using namespace ONEngine;
 
 /// engine
 #include "Engine/Core/Utility/Utility.h"
-#include "Engine/Core/ImGui/ImGuiManager.h"
+#include "Engine/Editor/Manager/ImGuiManager.h"
 
+using namespace Editor;
 
 ImGuiFile::ImGuiFile() {}
 

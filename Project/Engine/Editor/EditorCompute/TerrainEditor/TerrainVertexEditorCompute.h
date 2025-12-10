@@ -1,15 +1,17 @@
-﻿﻿#pragma once
+﻿#pragma once
 
 /// engine
-#include "../Interface/IEditorCompute.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Terrain/TerrainVertex.h"
 #include "Engine/Graphics/Buffer/ConstantBuffer.h"
 #include "Engine/Graphics/Buffer/StructuredBuffer.h"
-#include "Engine/ECS/Component/Components/ComputeComponents/Terrain/TerrainVertex.h"
+
+/// editor
+#include "../Interface/IEditorCompute.h"
 
 /// /////////////////////////////////////////////////
 /// 地形の頂点を編集するためのコンピュートシェーダー
 /// /////////////////////////////////////////////////
-namespace ONEngine {
+namespace Editor {
 
 class TerrainVertexEditorCompute : public IEditorCompute {
 
@@ -18,9 +20,9 @@ class TerrainVertexEditorCompute : public IEditorCompute {
 	};
 
 	struct InputInfo {
-		Vector2 mousePosition; ///< マウスの位置
-		float brushSize;       ///< ブラシのサイズ
-		float brushStrength;   ///< ブラシの強さ
+		ONEngine::Vector2 mousePosition; ///< マウスの位置
+		float brushSize;                 ///< ブラシのサイズ
+		float brushStrength;             ///< ブラシの強さ
 		int pressKey;
 		int editMode;
 		int editTextureIndex;
@@ -42,18 +44,20 @@ public:
 	TerrainVertexEditorCompute();
 	~TerrainVertexEditorCompute() override;
 
-	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxm) override;
-	void Execute(class EntityComponentSystem* _ecs, class DxCommand* _dxCommand, class AssetCollection* _assetCollection) override;
+	void Initialize(ONEngine::ShaderCompiler* _shaderCompiler, ONEngine::DxManager* _dxm) override;
+	void Execute(
+		ONEngine::EntityComponentSystem* _ecs,
+		ONEngine::DxCommand* _dxCommand,
+		ONEngine::AssetCollection* _assetCollection
+	) override;
 
 private:
 	/// =========================================
 	/// private : objects
 	/// =========================================
 
-	ConstantBuffer<TerrainInfo> terrainInfo_;
-	ConstantBuffer<InputInfo> inputInfo_;
-
+	ONEngine::ConstantBuffer<TerrainInfo> terrainInfo_;
+	ONEngine::ConstantBuffer<InputInfo> inputInfo_;
 };
 
-
-} /// ONEngine
+} // namespace Editor

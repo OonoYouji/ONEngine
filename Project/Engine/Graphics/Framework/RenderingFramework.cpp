@@ -5,10 +5,12 @@ using namespace ONEngine;
 /// engine
 #include "Engine/Core/DirectX12/Device/DxDevice.h"
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
-#include "Engine/Core/ImGui/ImGuiManager.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/ShadowCaster/ShadowCaster.h"
+
+/// editor
+#include "Engine/Editor/Manager/ImGuiManager.h"
 
 RenderingFramework::RenderingFramework() {}
 RenderingFramework::~RenderingFramework() {}
@@ -223,7 +225,7 @@ AssetCollection* RenderingFramework::GetAssetCollection() const {
 }
 
 #ifdef DEBUG_MODE
-void RenderingFramework::SetImGuiManager(ImGuiManager* _imGuiManager) {
+void RenderingFramework::SetImGuiManager(Editor::ImGuiManager* _imGuiManager) {
 	pImGuiManager_ = _imGuiManager;
 }
 #endif // DEBUG_MODE

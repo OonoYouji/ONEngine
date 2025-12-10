@@ -1,7 +1,5 @@
 ﻿#include "WorldEditorCommands.h"
 
-using namespace ONEngine;
-
 /// std
 #include <iostream>
 #include <fstream>
@@ -21,14 +19,17 @@ using namespace ONEngine;
 #include "Engine/Editor/Manager/EditCommand.h"
 #include "Engine/Editor/Math/ImGuiMath.h"
 
+
+using namespace Editor;
+
 /// ///////////////////////////////////////////////////
 /// ゲームオブジェクトの作成コマンド
 /// ///////////////////////////////////////////////////
 
-CreateGameObjectCommand::CreateGameObjectCommand(ECSGroup* _ecs, const std::string& _name, GameEntity* _parentEntity)
+CreateGameObjectCommand::CreateGameObjectCommand(ONEngine::ECSGroup* _ecs, const std::string& _name, ONEngine::GameEntity* _parentEntity)
 	: entityName_(_name) {
 	pEcsGroup_ = _ecs;
-	parentGuid_ = Guid::kInvalid;
+	parentGuid_ = ONEngine::Guid::kInvalid;
 	if (_parentEntity) {
 		parentGuid_ = _parentEntity->GetGuid();
 	}
@@ -40,7 +41,7 @@ EDITOR_STATE CreateGameObjectCommand::Execute() {
 
 	/// 生成するEntityのGuidを生成
 	if (!generatedGuid_.CheckValid()) {
-		generatedGuid_ = GenerateGuid();
+		generatedGuid_ = ONEngine::GenerateGuid();
 	}
 
 	generatedEntity_ = pEcsGroup_->GenerateEntity(generatedGuid_, false);
@@ -53,7 +54,7 @@ EDITOR_STATE CreateGameObjectCommand::Execute() {
 
 		/// 親子関係の設定
 		if (parentGuid_.CheckValid()) {
-			GameEntity* entity = pEcsGroup_->GetEntityFromGuid(parentGuid_);
+			ONEngine::GameEntity* entity = pEcsGroup_->GetEntityFromGuid(parentGuid_);
 			if (entity) {
 				generatedEntity_->SetParent(entity);
 			}
@@ -65,7 +66,7 @@ EDITOR_STATE CreateGameObjectCommand::Execute() {
 
 EDITOR_STATE CreateGameObjectCommand::Undo() {
 	if (parentGuid_.CheckValid()) {
-		GameEntity* parentEntity = pEcsGroup_->GetEntityFromGuid(parentGuid_);
+		ONEngine::GameEntity* parentEntity = pEcsGroup_->GetEntityFromGuid(parentGuid_);
 		if (parentEntity && generatedEntity_) {
 			generatedEntity_->SetParent(nullptr);
 		}
@@ -81,7 +82,7 @@ EDITOR_STATE CreateGameObjectCommand::Undo() {
 /// ///////////////////////////////////////////////////
 /// オブジェクトの名前変更コマンド
 /// ///////////////////////////////////////////////////
-EntityRenameCommand::EntityRenameCommand(GameEntity* _entity, const std::string& _newName)
+EntityRenameCommand::EntityRenameCommand(ONEngine::GameEntity* _entity, const std::string& _newName)
 	: pEntity_(_entity) {
 	oldName_ = pEntity_->GetName();
 	newName_ = _newName;
@@ -90,7 +91,7 @@ EntityRenameCommand::EntityRenameCommand(GameEntity* _entity, const std::string&
 EDITOR_STATE EntityRenameCommand::Execute() {
 
 	if (pEntity_ == nullptr) {
-		Console::Log("EntityRenameCommand : Entity is nullptr");
+		ONEngine::Console::Log("EntityRenameCommand : Entity is nullptr");
 		return EDITOR_STATE_RUNNING;
 	}
 
@@ -104,7 +105,7 @@ EDITOR_STATE EntityRenameCommand::Undo() {
 	if (pEntity_) {
 		pEntity_->SetName(oldName_);
 	} else {
-		Console::Log("EntityRenameCommand : Entity is nullptr");
+		ONEngine::Console::Log("EntityRenameCommand : Entity is nullptr");
 	}
 
 	return EDITOR_STATE::EDITOR_STATE_FINISH;
@@ -115,7 +116,7 @@ EDITOR_STATE EntityRenameCommand::Undo() {
 /// シーンにあるオブジェクトから新しいクラスを作る
 /// ///////////////////////////////////////////////////
 
-CreateNewEntityClassCommand::CreateNewEntityClassCommand(GameEntity* _entity, const std::string& _outputFilePath)
+CreateNewEntityClassCommand::CreateNewEntityClassCommand(ONEngine::GameEntity* _entity, const std::string& _outputFilePath)
 	: pEntity_(_entity) {
 	pEntity_ = _entity;
 	sourceClassPath_ = "Engine/Editor/Commands/WorldEditorCommands/SourceEntity";
@@ -125,7 +126,7 @@ CreateNewEntityClassCommand::CreateNewEntityClassCommand(GameEntity* _entity, co
 
 EDITOR_STATE CreateNewEntityClassCommand::Execute() {
 	if (pEntity_->GetName().empty()) {
-		Console::LogError("CreateNewEntityClassCommand : Entity name is empty");
+		ONEngine::Console::LogError("CreateNewEntityClassCommand : Entity name is empty");
 		return EDITOR_STATE_FAILED;
 	}
 
@@ -144,7 +145,7 @@ EDITOR_STATE CreateNewEntityClassCommand::CreateNewClassFile(const std::string& 
 	// ファイルを読み込む
 	std::ifstream inputFile(_srcFilePath);
 	if (!inputFile) {
-		Console::LogError("ファイルを開けません: " + _srcFilePath);
+		ONEngine::Console::LogError("ファイルを開けません: " + _srcFilePath);
 		return EDITOR_STATE_FAILED;
 	}
 
@@ -155,12 +156,12 @@ EDITOR_STATE CreateNewEntityClassCommand::CreateNewClassFile(const std::string& 
 	inputFile.close();
 
 	// 置き換える
-	Mathf::ReplaceAll(&content, sourceClassName_, pEntity_->GetName());
+	ONEngine::Mathf::ReplaceAll(&content, sourceClassName_, pEntity_->GetName());
 
 	// 新しいファイルに書き込む
 	std::ofstream outputFile(_outputFileName + "/" + _newClassName);
 	if (!outputFile) {
-		Console::LogError("ファイルを書き込めません: " + _outputFileName);
+		ONEngine::Console::LogError("ファイルを書き込めません: " + _outputFileName);
 		return EDITOR_STATE_FAILED;
 	}
 
@@ -175,13 +176,13 @@ EDITOR_STATE CreateNewEntityClassCommand::CreateNewClassFile(const std::string& 
 /// エンティティを削除するコマンド
 /// ///////////////////////////////////////////////////
 
-DeleteEntityCommand::DeleteEntityCommand(ECSGroup* _ecs, GameEntity* _entity)
+DeleteEntityCommand::DeleteEntityCommand(ONEngine::ECSGroup* _ecs, ONEngine::GameEntity* _entity)
 	: pEcsGroup_(_ecs), pEntity_(_entity) {
 }
 
 EDITOR_STATE DeleteEntityCommand::Execute() {
 	if (!pEcsGroup_ || !pEntity_) {
-		Console::LogError("DeleteEntityCommand : ECS or Entity is nullptr");
+		ONEngine::Console::LogError("DeleteEntityCommand : ECS or Entity is nullptr");
 		return EDITOR_STATE_FAILED;
 	}
 
@@ -198,10 +199,10 @@ EDITOR_STATE DeleteEntityCommand::Undo() {
 /// ///////////////////////////////////////////////////
 /// プレハブを作成するコマンド
 /// ///////////////////////////////////////////////////
-CreatePrefabCommand::CreatePrefabCommand(GameEntity* _entity)
+CreatePrefabCommand::CreatePrefabCommand(ONEngine::GameEntity* _entity)
 	: pEntity_(_entity) {
 	if (pEntity_ == nullptr) {
-		Console::LogError("CreatePrefabCommand : Entity is nullptr");
+		ONEngine::Console::LogError("CreatePrefabCommand : Entity is nullptr");
 		return;
 	}
 
@@ -218,7 +219,7 @@ EDITOR_STATE CreatePrefabCommand::Execute() {
 
 
 	/// jsonに変換
-	nlohmann::json entityJson = EntityJsonConverter::ToJson(pEntity_);
+	nlohmann::json entityJson = ONEngine::EntityJsonConverter::ToJson(pEntity_);
 
 	/// 子の要素も入れる
 	SerializeRecursive(pEntity_, entityJson);
@@ -226,7 +227,7 @@ EDITOR_STATE CreatePrefabCommand::Execute() {
 
 	/// jsonが空ならログを残して終了
 	if (entityJson.empty()) {
-		Console::LogError("CreatePrefabCommand : EntityJson is empty");
+		ONEngine::Console::LogError("CreatePrefabCommand : EntityJson is empty");
 		return EDITOR_STATE_FAILED;
 	}
 
@@ -235,13 +236,13 @@ EDITOR_STATE CreatePrefabCommand::Execute() {
 	std::string prefabPath = "./Assets/Prefabs/" + prefabName_;
 	std::ofstream outputFile(prefabPath);
 	if (!outputFile.is_open()) {
-		Console::LogError("CreatePrefabCommand : Failed to open prefab file: " + prefabPath);
+		ONEngine::Console::LogError("CreatePrefabCommand : Failed to open prefab file: " + prefabPath);
 		return EDITOR_STATE_FAILED;
 	}
 
 	outputFile << entityJson.dump(4);
 	outputFile.close();
-	Console::Log("Prefab created: " + prefabPath);
+	ONEngine::Console::Log("Prefab created: " + prefabPath);
 
 	return EDITOR_STATE_FINISH;
 }
@@ -250,7 +251,7 @@ EDITOR_STATE CreatePrefabCommand::Undo() {
 	return EDITOR_STATE_FINISH;
 }
 
-void CreatePrefabCommand::SerializeRecursive(GameEntity* _entity, nlohmann::json& _json) {
+void CreatePrefabCommand::SerializeRecursive(ONEngine::GameEntity* _entity, nlohmann::json& _json) {
 	/// 子の要素も入れる
 	for (auto& child : _entity->GetChildren()) {
 		/// クローンオブジェクトはスキップ
@@ -258,7 +259,7 @@ void CreatePrefabCommand::SerializeRecursive(GameEntity* _entity, nlohmann::json
 			continue;
 		}
 
-		nlohmann::json childJson = EntityJsonConverter::ToJson(child);
+		nlohmann::json childJson = ONEngine::EntityJsonConverter::ToJson(child);
 		SerializeRecursive(child, childJson);
 		_json["children"].push_back(childJson);
 	}
@@ -269,11 +270,11 @@ void CreatePrefabCommand::SerializeRecursive(GameEntity* _entity, nlohmann::json
 /// エンティティをコピーするコマンド
 /// ///////////////////////////////////////////////////
 
-CopyEntityCommand::CopyEntityCommand(GameEntity* _entity) : pEntity_(_entity) {}
+CopyEntityCommand::CopyEntityCommand(ONEngine::GameEntity* _entity) : pEntity_(_entity) {}
 
 EDITOR_STATE CopyEntityCommand::Execute() {
 	/// jsonに変換
-	entityJson_ = EntityJsonConverter::ToJson(pEntity_);
+	entityJson_ = ONEngine::EntityJsonConverter::ToJson(pEntity_);
 	EditCommand::SetClipboardData(entityJson_);
 
 	/// チェック
@@ -281,7 +282,7 @@ EDITOR_STATE CopyEntityCommand::Execute() {
 	if (copiedEntity) {
 		/// stringに変換してログに出す
 		std::string jsonString = copiedEntity->dump(4);
-		Console::Log("Copied Entity JSON:\n" + jsonString);
+		ONEngine::Console::Log("Copied Entity JSON:\n" + jsonString);
 	}
 
 
@@ -293,7 +294,7 @@ EDITOR_STATE CopyEntityCommand::Undo() {
 	return EDITOR_STATE::EDITOR_STATE_FINISH;
 }
 
-PasteEntityCommand::PasteEntityCommand(ECSGroup* _ecs, GameEntity* _selectedEntity)
+PasteEntityCommand::PasteEntityCommand(ONEngine::ECSGroup* _ecs, ONEngine::GameEntity* _selectedEntity)
 	: pEcsGroup_(_ecs), pSelectedEntity_(_selectedEntity) {
 }
 
@@ -301,7 +302,7 @@ EDITOR_STATE PasteEntityCommand::Execute() {
 	/// クリップボードからデータを取得
 	nlohmann::json* copiedEntity = EditCommand::GetClipboardData<nlohmann::json>();
 	if (!copiedEntity || copiedEntity->empty()) {
-		Console::LogError("PasteEntityCommand : Clipboard is empty or invalid");
+		ONEngine::Console::LogError("PasteEntityCommand : Clipboard is empty or invalid");
 		return EDITOR_STATE_FAILED;
 	}
 
@@ -309,10 +310,10 @@ EDITOR_STATE PasteEntityCommand::Execute() {
 	std::string originalName = (*copiedEntity)["name"].get<std::string>();
 
 	uint32_t count = pEcsGroup_->CountEntity(originalName);
-	pastedEntity_ = pEcsGroup_->GenerateEntity(GenerateGuid(), DebugConfig::isDebugging);
-	EntityJsonConverter::FromJson(*copiedEntity, pastedEntity_, pEcsGroup_->GetGroupName());
+	pastedEntity_ = pEcsGroup_->GenerateEntity(ONEngine::GenerateGuid(), ONEngine::DebugConfig::isDebugging);
+	ONEngine::EntityJsonConverter::FromJson(*copiedEntity, pastedEntity_, pEcsGroup_->GetGroupName());
 	if (!pastedEntity_) {
-		Console::LogError("PasteEntityCommand : Failed to create entity from JSON");
+		ONEngine::Console::LogError("PasteEntityCommand : Failed to create entity from JSON");
 		return EDITOR_STATE_FAILED;
 	}
 
@@ -322,7 +323,7 @@ EDITOR_STATE PasteEntityCommand::Execute() {
 		newName += "_" + std::to_string(count);
 	}
 
-	if (DebugConfig::isDebugging) {
+	if (ONEngine::DebugConfig::isDebugging) {
 		newName += "(Clone)";
 	}
 
@@ -348,13 +349,13 @@ EDITOR_STATE PasteEntityCommand::Undo() {
 /// エンティティの親子関係を変更するコマンド
 /// ///////////////////////////////////////////////////
 
-ChangeEntityParentCommand::ChangeEntityParentCommand(GameEntity* _entity, GameEntity* _newParent)
+ChangeEntityParentCommand::ChangeEntityParentCommand(ONEngine::GameEntity* _entity, ONEngine::GameEntity* _newParent)
 	: pEntity_(_entity), pNewParent_(_newParent) {
 }
 
 EDITOR_STATE ChangeEntityParentCommand::Execute() {
 	if (!pEntity_) {
-		Console::LogError("ChangeEntityParentCommand : Entity is nullptr");
+		ONEngine::Console::LogError("ChangeEntityParentCommand : Entity is nullptr");
 		return EDITOR_STATE_FAILED;
 	}
 	/// 古い親を保存
@@ -366,7 +367,7 @@ EDITOR_STATE ChangeEntityParentCommand::Execute() {
 
 EDITOR_STATE ChangeEntityParentCommand::Undo() {
 	if (!pEntity_) {
-		Console::LogError("ChangeEntityParentCommand : Entity is nullptr");
+		ONEngine::Console::LogError("ChangeEntityParentCommand : Entity is nullptr");
 		return EDITOR_STATE_FAILED;
 	}
 

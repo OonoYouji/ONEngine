@@ -100,7 +100,7 @@ private:
 	std::unique_ptr<SystemCollection> systemCollection_;
 
 	/// ----- command ----- ///
-	EntityDataInputCommand componentInputCommand_;
+	Editor::EntityDataInputCommand componentInputCommand_;
 
 
 public:

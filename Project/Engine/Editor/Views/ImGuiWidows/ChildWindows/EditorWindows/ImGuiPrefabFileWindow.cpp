@@ -1,6 +1,4 @@
-﻿﻿#include "ImGuiPrefabFileWindow.h"
-
-using namespace ONEngine;
+﻿#include "ImGuiPrefabFileWindow.h"
 
 /// externals
 #include <imgui.h>
@@ -8,20 +6,21 @@ using namespace ONEngine;
 /// engine
 #include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/Core/Utility/Utility.h"
-#include "Engine/Core/ImGui/Math/ImGuiMath.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/Script/MonoScriptEngine.h"
 
-/// engine/imgui
-#include "Engine/Core/ImGui/ImGuiSelection.h"
+/// editor
+#include "Engine/Editor/Math/ImGuiMath.h"
+#include "Engine/Editor/Views/ImGuiSelection.h"
 #include "../GameWindows/ImGuiInspectorWindow.h"
 
+using namespace Editor;
 
-ImGuiPrefabFileWindow::ImGuiPrefabFileWindow(EntityComponentSystem* _ecs, AssetCollection* _assetCollection, ImGuiInspectorWindow* _inspector)
+ImGuiPrefabFileWindow::ImGuiPrefabFileWindow(ONEngine::EntityComponentSystem* _ecs, ONEngine::AssetCollection* _assetCollection, ImGuiInspectorWindow* _inspector)
 	: pEcs_(_ecs), pAssetCollection_(_assetCollection), pInspector_(_inspector) {
 
 	/// Prefabファイルの取得
-	files_ = Mathf::FindFiles("Assets/Prefabs", ".prefab");
+	files_ = ONEngine::Mathf::FindFiles("Assets/Prefabs", ".prefab");
 
 }
 
@@ -36,7 +35,7 @@ void ImGuiPrefabFileWindow::ShowImGui() {
 	/// prefabファイルの再読み込みボタン
 	/// ---------------------------------------------------
 	const auto& textures = pAssetCollection_->GetTextures();
-	const Texture& button = textures[pAssetCollection_->GetTextureIndex("./Packages/Textures/ImGui/reload.png")];
+	const ONEngine::Texture& button = textures[pAssetCollection_->GetTextureIndex("./Packages/Textures/ImGui/reload.png")];
 
 	ReloadPrefabFiles(&button);
 
@@ -76,15 +75,15 @@ void ImGuiPrefabFileWindow::ShowPrefabFileList() {
 
 		ImGui::Selectable(file.second.c_str());
 		if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
-			Console::Log("Double clicked prefab file: " + file.second);
+			ONEngine::Console::Log("Double clicked prefab file: " + file.second);
 
 			/// すでに生成されているなら削除してから再生成
-			GameEntity* selectedEntity = pEcs_->GetECSGroup("Debug")->GetEntityFromGuid(selectedPrefabGuid_);
+			ONEngine::GameEntity* selectedEntity = pEcs_->GetECSGroup("Debug")->GetEntityFromGuid(selectedPrefabGuid_);
 			if (selectedEntity) {
 				selectedEntity->Destroy();
 			}
 
-			ECSGroup* debugGroup = pEcs_->GetECSGroup("Debug");
+			ONEngine::ECSGroup* debugGroup = pEcs_->GetECSGroup("Debug");
 			selectedEntity = debugGroup->GenerateEntityFromPrefab(file.second, false);
 			selectedPrefabGuid_ = selectedEntity->GetGuid();
 			ImGuiSelection::SetSelectedObject(selectedPrefabGuid_, SelectionType::Entity);
@@ -93,7 +92,7 @@ void ImGuiPrefabFileWindow::ShowPrefabFileList() {
 	}
 }
 
-void ImGuiPrefabFileWindow::ReloadPrefabFiles(const Texture* _tex) {
+void ImGuiPrefabFileWindow::ReloadPrefabFiles(const ONEngine::Texture* _tex) {
 
 	/// Reloadボタンの表示
 	ImVec2 buttonSize = ImVec2(24.0f, 24.0f);
@@ -102,7 +101,7 @@ void ImGuiPrefabFileWindow::ReloadPrefabFiles(const Texture* _tex) {
 		ImVec2(0, 0), ImVec2(1, 1), ImVec4(1, 1, 1, 0), ImVec4(0.1f, 0.1f, 0.75f, 1))) {
 
 		/// ファイルの再読み込み
-		files_ = Mathf::FindFiles("Assets/Prefabs", ".prefab");
+		files_ = ONEngine::Mathf::FindFiles("Assets/Prefabs", ".prefab");
 
 		for (auto& file : files_) {
 			/// ファイル名の置換
@@ -145,7 +144,7 @@ bool ImGuiPrefabFileWindow::GenerateNewPrefab() {
 	/// 既に同じ名前のPrefabが存在するかチェック
 	for (const auto& file : files_) {
 		if (file.second == newPrefabName_) {
-			Console::LogWarning("Prefab with the same name already exists: " + newPrefabName_);
+			ONEngine::Console::LogWarning("Prefab with the same name already exists: " + newPrefabName_);
 			return false;
 		}
 	}
@@ -155,7 +154,7 @@ bool ImGuiPrefabFileWindow::GenerateNewPrefab() {
 
 	std::ofstream prefabFile(filename);
 	if (!prefabFile) {
-		Console::LogError("Failed to create prefab file: " + filename);
+		ONEngine::Console::LogError("Failed to create prefab file: " + filename);
 		return false;
 	}
 
@@ -165,11 +164,11 @@ bool ImGuiPrefabFileWindow::GenerateNewPrefab() {
 	prefabFile << json; // 空のJSONオブジェクトを初期内容として書き込む
 	prefabFile.close();
 
-	Console::Log("Prefab file created successfully: " + filename);
+	ONEngine::Console::Log("Prefab file created successfully: " + filename);
 
 	pEcs_->ReloadPrefab(newPrefabName_ + ".prefab");
 	/// ファイルリストを更新
-	files_ = Mathf::FindFiles("Assets/Prefabs", ".prefab");
+	files_ = ONEngine::Mathf::FindFiles("Assets/Prefabs", ".prefab");
 
 	return true;
 }

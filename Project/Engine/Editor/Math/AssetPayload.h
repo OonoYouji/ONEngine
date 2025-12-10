@@ -1,4 +1,4 @@
-﻿﻿#pragma once
+﻿#pragma once
 
 /// std
 #include <algorithm>
@@ -8,17 +8,17 @@
 #include "Engine/Asset/Guid/Guid.h"
 
 /// @brief Assetのペイロード (string + Guid)
-namespace ONEngine {
+namespace Editor {
 
 struct AssetPayload {
-	std::string filePath;
-	Guid        guid;
+	std::string    filePath;
+	ONEngine::Guid guid;
 
 	AssetPayload() = default;
-	AssetPayload(const std::string& _path, const Guid& _guid)
+	AssetPayload(const std::string& _path, const ONEngine::Guid& _guid)
 		: filePath(_path), guid(_guid) {
 	}
 
 };
 
-} /// ONEngine
+} /// Editor

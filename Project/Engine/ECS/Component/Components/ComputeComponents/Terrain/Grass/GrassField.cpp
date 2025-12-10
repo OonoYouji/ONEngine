@@ -1,17 +1,18 @@
-#include "GrassField.h"
+﻿#include "GrassField.h"
 
 /// externals
 #include <imgui.h>
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
-#include "Engine/Core/ImGui/Math/AssetDebugger.h"
-#include "Engine/Core/ImGui/Math/ImGuiMath.h"
 #include "Engine/Editor/Commands/ImGuiCommand/ImGuiCommand.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Terrain.h"
 #include "Engine/ECS/Entity/GameEntity/GameEntity.h"
 #include "Engine/Asset/Collection/AssetCollection.h"
 
+/// editor
+#include "Engine/Editor/Math/AssetDebugger.h"
+#include "Engine/Editor/Math/ImGuiMath.h"
 
 using namespace ONEngine;
 
@@ -70,7 +71,7 @@ void COMP_DEBUG::GrassFieldDebug(GrassField* _grassField, AssetCollection* _asse
 
 
 	/// material debug
-	ImMathf::MaterialEdit("material", &_grassField->material_, _assetCollection);
+	Editor::ImMathf::MaterialEdit("material", &_grassField->material_, _assetCollection);
 
 }
 

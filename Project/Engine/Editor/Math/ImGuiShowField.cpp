@@ -1,14 +1,15 @@
 ﻿#include "ImGuiShowField.h"
 
-using namespace ONEngine;
-
 /// external
 #include <mono/metadata/object.h>
 
 /// engine
 #include "Engine/Core/Utility/Utility.h"
+
+/// editor
 #include "ImGuiMath.h"
 
+using namespace Editor;
 
 namespace {
 	std::unordered_map<int, std::unique_ptr<CSGui::ImGuiShowField>> gFieldDrawers;
@@ -23,7 +24,7 @@ namespace {
 		gFieldDrawers[MONO_TYPE_VALUETYPE] = std::make_unique<CSGui::StructGui>();
 
 		// 他の型も同様に登録
-		Console::Log("Field drawers registered.");
+		ONEngine::Console::Log("Field drawers registered.");
 	}
 
 } /// namespace
@@ -35,7 +36,7 @@ void CSGui::ShowFiled(int _type, MonoObject* _obj, MonoClassField* _field, const
 	}
 
 	if (gFieldDrawers.find(_type) == gFieldDrawers.end()) {
-		Console::Log("[error] Unsupported field type: " + std::to_string(_type));
+		ONEngine::Console::Log("[error] Unsupported field type: " + std::to_string(_type));
 		return;
 	}
 
@@ -115,7 +116,7 @@ void CSGui::StructGui::Draw(MonoObject* _obj, MonoClassField* _field, [[maybe_un
 
 	auto itr = fieldDrawers.find(name);
 	if (itr == fieldDrawers.end()) {
-		Console::Log("[error] Unsupported struct type: " + std::string(name));
+		ONEngine::Console::Log("[error] Unsupported struct type: " + std::string(name));
 		return;
 	}
 
@@ -132,7 +133,7 @@ void CSGui::StructGui::Register() {
 
 
 void CSGui::Vector2Field::Draw(MonoObject* _obj, MonoClassField* _field, const char* _name) {
-	Vector2 structData;
+	ONEngine::Vector2 structData;
 	mono_field_get_value(_obj, _field, &structData);
 
 	if (ImGui::DragFloat2(_name, &structData.x)) {
@@ -142,7 +143,7 @@ void CSGui::Vector2Field::Draw(MonoObject* _obj, MonoClassField* _field, const c
 }
 
 void CSGui::Vector3Field::Draw(MonoObject* _obj, MonoClassField* _field, const char* _name) {
-	Vector3 structData;
+	ONEngine::Vector3 structData;
 	mono_field_get_value(_obj, _field, &structData);
 
 	if (ImGui::DragFloat3(_name, &structData.x)) {
@@ -152,7 +153,7 @@ void CSGui::Vector3Field::Draw(MonoObject* _obj, MonoClassField* _field, const c
 }
 
 void CSGui::Vector4Field::Draw(MonoObject* _obj, MonoClassField* _field, const char* _name) {
-	Vector4 structData;
+	ONEngine::Vector4 structData;
 	mono_field_get_value(_obj, _field, &structData);
 
 	if (ImGui::DragFloat4(_name, &structData.x)) {

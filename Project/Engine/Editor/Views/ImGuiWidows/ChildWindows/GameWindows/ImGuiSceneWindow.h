@@ -1,4 +1,4 @@
-﻿﻿#pragma once
+﻿#pragma once
 
 /// engine
 #include "../../Collection/ImGuiWindowCollection.h"
@@ -6,7 +6,7 @@
 /// ///////////////////////////////////////////////////
 /// ImGuiSceneWindow
 /// ///////////////////////////////////////////////////
-namespace ONEngine {
+namespace Editor {
 
 class ImGuiSceneWindow : public IImGuiChildWindow {
 public:
@@ -14,7 +14,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	ImGuiSceneWindow(class EntityComponentSystem* _ecs, class AssetCollection* _assetCollection, class SceneManager* _sceneManager, class ImGuiInspectorWindow* _inspector);
+	ImGuiSceneWindow(ONEngine::EntityComponentSystem* _ecs, ONEngine::AssetCollection* _assetCollection, ONEngine::SceneManager* _sceneManager, class ImGuiInspectorWindow* _inspector);
 	~ImGuiSceneWindow() {}
 
 	/// @brief imgui windowの描画処理
@@ -30,9 +30,9 @@ private:
 	/// ===================================================
 
 	/// --------------- other class pointers --------------- ///
-	class EntityComponentSystem* pEcs_;
-	class AssetCollection*       pAssetCollection_;
-	class SceneManager*          pSceneManager_;
+	ONEngine::EntityComponentSystem* pEcs_;
+	ONEngine::AssetCollection*       pAssetCollection_;
+	ONEngine::SceneManager*          pSceneManager_;
 	class ImGuiInspectorWindow*  pInspector_;
 
 	int manipulateOperation_;
@@ -40,4 +40,4 @@ private:
 };
 
 
-} /// ONEngine
+} /// Editor

@@ -18,15 +18,22 @@
 #include "Engine/Editor/Commands/IEditCommand.h"
 #include "Engine/Editor/EditorCompute/Interface/IEditorCompute.h"
 
-/// @brief 
 namespace ONEngine {
+/// 前方宣言
+class DxManager;
+class EntityComponentSystem;
+class AssetCollection;
+class ShaderCompiler;
+}
+
+
+namespace Editor {
 
 /// @brief コマンドの生成関数
 using Creator = std::function<std::unique_ptr<IEditCommand>(const std::vector<std::any>&)>;
 
 template <typename T>
 concept IsEditorCommand = std::is_base_of_v<IEditCommand, T>;
-
 
 /// /////////////////////////////////////////////////
 /// エディタの管理クラス
@@ -38,12 +45,12 @@ public:
 	/// public : methods
 	/// =========================================
 
-	EditorManager(class EntityComponentSystem* _ecs);
+	EditorManager(ONEngine::EntityComponentSystem* _ecs);
 	~EditorManager();
 
-	void Initialize(class DxManager* _dxm, class ShaderCompiler* _shaderCompiler);
+	void Initialize(ONEngine::DxManager* _dxm, ONEngine::ShaderCompiler* _shaderCompiler);
 
-	void Update(class AssetCollection* _assetCollection);
+	void Update(ONEngine::AssetCollection* _assetCollection);
 
 
 	/// ----- factory ----- ///
@@ -62,7 +69,7 @@ public:
 
 	/// ----- editor compute ----- ///
 
-	void AddEditorCompute(class DxManager* _dxm, class ShaderCompiler* _shaderCompiler, std::unique_ptr<IEditorCompute> _compute);
+	void AddEditorCompute(ONEngine::DxManager* _dxm, ONEngine::ShaderCompiler* _shaderCompiler, std::unique_ptr<IEditorCompute> _compute);
 
 
 private:
@@ -71,8 +78,8 @@ private:
 	/// ==========================================
 
 	/// ----- other class ----- ///
-	class EntityComponentSystem* pEcs_;
-	class DxManager* pDxManager_;
+	ONEngine::EntityComponentSystem* pEcs_;
+	ONEngine::DxManager* pDxManager_;
 
 	/// ----- clipboard ----- ///
 	Clipboard clipboard_;
@@ -117,9 +124,9 @@ inline void EditorManager::ExecuteCommand(Args && ..._args) {
 
 	commandStack_.push_back(std::move(command));
 	if (state == EDITOR_STATE_FINISH) {
-		Console::Log("Command Executed: " + std::string(typeid(T).name()));
+		ONEngine::Console::Log("Command Executed: " + std::string(typeid(T).name()));
 	} else {
-		Console::Log("Command Failed: " + std::string(typeid(T).name()));
+		ONEngine::Console::Log("Command Failed: " + std::string(typeid(T).name()));
 	}
 
 	/// redoスタックにコマンドがあればクリアする
@@ -128,4 +135,4 @@ inline void EditorManager::ExecuteCommand(Args && ..._args) {
 	}
 }
 
-} /// ONEngine
+} /// Editor

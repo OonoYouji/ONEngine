@@ -1,6 +1,5 @@
-﻿﻿#include "ComponentEditCommands.h"
+﻿#include "ComponentEditCommands.h"
 
-using namespace ONEngine;
 
 /// std
 #include <fstream>
@@ -16,6 +15,8 @@ using namespace ONEngine;
 #include "Engine/Script/MonoScriptEngine.h"
 #include "ComponentJsonConverter.h"
 
+using namespace ONEngine;
+using namespace Editor;
 
 /// ////////////////////////////////////////////////
 /// エンティティのデータ出力コマンド

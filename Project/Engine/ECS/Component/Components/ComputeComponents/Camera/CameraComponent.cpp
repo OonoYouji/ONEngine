@@ -1,4 +1,4 @@
-#include "CameraComponent.h"
+﻿#include "CameraComponent.h"
 
 #include <array>
 
@@ -123,9 +123,9 @@ void COMP_DEBUG::CameraDebug(CameraComponent* _camera) {
 		return;
 	}
 
-	ImMathf::DragFloat("fovY", &_camera->fovY_, 0.01f, 0.1f, 3.14f);
-	ImMathf::DragFloat("near clip", &_camera->nearClip_, 0.01f, 0.01f, 100.0f);
-	ImMathf::DragFloat("far clip", &_camera->farClip_, 0.01f, 100.0f, 10000.0f);
+	Editor::ImMathf::DragFloat("fovY", &_camera->fovY_, 0.01f, 0.1f, 3.14f);
+	Editor::ImMathf::DragFloat("near clip", &_camera->nearClip_, 0.01f, 0.01f, 100.0f);
+	Editor::ImMathf::DragFloat("far clip", &_camera->farClip_, 0.01f, 100.0f, 10000.0f);
 
 
 	ImGui::Spacing();

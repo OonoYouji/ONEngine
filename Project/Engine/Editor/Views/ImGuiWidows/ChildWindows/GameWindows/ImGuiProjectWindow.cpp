@@ -1,7 +1,5 @@
 ﻿#include "ImGuiProjectWindow.h"
 
-using namespace ONEngine;
-
 /// std
 #include <filesystem>
 #include <iostream>
@@ -22,6 +20,8 @@ using namespace ONEngine;
 #include "Engine/Editor/Manager/EditorManager.h"
 #include "Engine/Editor/Commands/WorldEditorCommands/WorldEditorCommands.h"
 
+
+using namespace Editor;
 
 namespace {
 
@@ -53,7 +53,7 @@ namespace {
 
 
 
-ImGuiProjectWindow::ImGuiProjectWindow(AssetCollection* _assetCollection, EditorManager* /*_editorManager*/)
+ImGuiProjectWindow::ImGuiProjectWindow(ONEngine::AssetCollection* _assetCollection, EditorManager* /*_editorManager*/)
 	: pAssetCollection_(_assetCollection) {
 
 	/// デフォルトのウィンドウ名
@@ -222,7 +222,7 @@ void ImGuiProjectWindow::DrawFileView(const std::filesystem::path& dir) {
 		{
 			/// filePathの絶対パスを相対パスに変換してから取得
 			key = GetRelativePath(key);
-			Mathf::ReplaceAll(&key, "\\", "/");
+			ONEngine::Mathf::ReplaceAll(&key, "\\", "/");
 		}
 
 
@@ -241,15 +241,15 @@ void ImGuiProjectWindow::DrawFileView(const std::filesystem::path& dir) {
 		/// ---------------------------------------------------
 		if (file.isDirectory) {
 			/// ----- ディレクトリなのでフォルダアイコンを表示 ----- ///
-			Texture* texture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/FileIcons/FolderIcon.png");
+			ONEngine::Texture* texture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/FileIcons/FolderIcon.png");
 			ImGui::ImageButton("##Folder", (ImTextureID)(uintptr_t)texture->GetSRVGPUHandle().ptr, { iconSize, iconSize });
 		} else {
 			/// ----- ファイルなのでファイルアイコンを表示(拡張子ごとに) ----- ///
-			Texture* texture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/FileIcons/FileIcon.png");
+			ONEngine::Texture* texture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/FileIcons/FileIcon.png");
 
-			AssetType type = GetAssetTypeFromExtension(extension);
+			ONEngine::AssetType type = ONEngine::GetAssetTypeFromExtension(extension);
 			switch (type) {
-			case AssetType::Texture:
+			case ONEngine::AssetType::Texture:
 			{
 				/// previewが出来ないのでデフォルトのアイコンを表示
 				if (extension != ".dds") {
@@ -257,7 +257,7 @@ void ImGuiProjectWindow::DrawFileView(const std::filesystem::path& dir) {
 				}
 			}
 			break;
-			case AssetType::Audio:
+			case ONEngine::AssetType::Audio:
 				texture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/FileIcons/mp3Icon.png");
 				break;
 			}
@@ -282,12 +282,12 @@ void ImGuiProjectWindow::DrawFileView(const std::filesystem::path& dir) {
 			payload.filePath = key;
 			payload.guid = pAssetCollection_->GetAssetGuidFromPath(payload.filePath);
 
-			AssetType type = pAssetCollection_->GetAssetTypeFromGuid(payload.guid);
-			if (type == AssetType::Texture) {
+			ONEngine::AssetType type = pAssetCollection_->GetAssetTypeFromGuid(payload.guid);
+			if (type == ONEngine::AssetType::Texture) {
 				/// テクスチャのpreview
-				Texture* tex = pAssetCollection_->GetTexture(payload.filePath);
+				ONEngine::Texture* tex = pAssetCollection_->GetTexture(payload.filePath);
 				if (tex) {
-					Vector2 aspectRatio = tex->GetTextureSize();
+					ONEngine::Vector2 aspectRatio = tex->GetTextureSize();
 					aspectRatio /= (std::max)(aspectRatio.x, aspectRatio.y);
 					ImTextureID texId = reinterpret_cast<ImTextureID>(tex->GetSRVGPUHandle().ptr);
 					ImGui::Image(texId, ImVec2(64.0f * aspectRatio.x, 64.0f * aspectRatio.y));
@@ -312,7 +312,7 @@ void ImGuiProjectWindow::DrawFileView(const std::filesystem::path& dir) {
 				currentPath_ = filePath;
 			} else {
 				/// インスペクターに表示する
-				const Guid& guid = pAssetCollection_->GetAssetGuidFromPath(key);
+				const ONEngine::Guid& guid = pAssetCollection_->GetAssetGuidFromPath(key);
 				ImGuiSelection::SetSelectedObject(guid, SelectionType::Asset);
 			}
 		}
@@ -380,7 +380,7 @@ void ImGuiProjectWindow::PopupContextMenu(const std::filesystem::path& _dir) {
 
 			if (ImGui::MenuItem("Material")) {
 				/// マテリアル作成の処理
-				GenerateMaterialFile(_dir.string() + "/New Material.mat", nullptr);
+				ONEngine::GenerateMaterialFile(_dir.string() + "/New Material.mat", nullptr);
 			}
 
 
@@ -438,9 +438,9 @@ void ImGuiProjectWindow::HandleFileAdded(const std::filesystem::path& _path) {
 
 		/// 新規アセットして登録
 		std::string path = GetRelativePath(_path);
-		Mathf::ReplaceAll(&path, "\\", "/");
-		AssetType type = GetAssetTypeFromExtension(Mathf::FileExtension(path));
-		if (type != AssetType::None) {
+		ONEngine::Mathf::ReplaceAll(&path, "\\", "/");
+		ONEngine::AssetType type = ONEngine::GetAssetTypeFromExtension(ONEngine::Mathf::FileExtension(path));
+		if (type != ONEngine::AssetType::None) {
 			pAssetCollection_->Load(path, type);
 		}
 
@@ -463,7 +463,7 @@ void ImGuiProjectWindow::HandleFileRemoved(const std::filesystem::path& _path) {
 
 		/// アセットコレクションからも削除
 		std::string path = GetRelativePath(_path);
-		Mathf::ReplaceAll(&path, "\\", "/");
+		ONEngine::Mathf::ReplaceAll(&path, "\\", "/");
 		pAssetCollection_->UnloadAssetByPath(path);
 	}
 
@@ -480,11 +480,11 @@ void ImGuiProjectWindow::HandleFileModified(const std::filesystem::path& _path) 
 
 	/// パスのファイルを読み直す
 	const std::string extension = _path.extension().string();
-	AssetType type = GetAssetTypeFromExtension(extension);
-	if (type != AssetType::None) {
+	ONEngine::AssetType type = ONEngine::GetAssetTypeFromExtension(extension);
+	if (type != ONEngine::AssetType::None) {
 		/// 絶対パスを相対パスに変換してから取得
 		std::string path = GetRelativePath(_path);
-		Mathf::ReplaceAll(&path, "\\", "/");
+		ONEngine::Mathf::ReplaceAll(&path, "\\", "/");
 		pAssetCollection_->ReloadAsset(path);
 	}
 

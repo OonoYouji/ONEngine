@@ -1,6 +1,6 @@
-﻿﻿#include "EditCommand.h"
+﻿#include "EditCommand.h"
 
-using namespace ONEngine;
+using namespace Editor;
 
 EditCommand::EditCommand() = default;
 EditCommand::~EditCommand() = default;

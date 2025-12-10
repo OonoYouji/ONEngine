@@ -1,15 +1,17 @@
-#include "SpriteRenderer.h"
+﻿#include "SpriteRenderer.h"
 
 /// external
 #include <imgui.h>
 
 /// engine
 #include "Engine/Core/Utility/Tools/Log.h"
-#include "Engine/Core/ImGui/Math/ImGuiMath.h"
-#include "Engine/Core/ImGui/Math/AssetDebugger.h"
 #include "Engine/ECS/Entity/GameEntity/GameEntity.h"
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentJsonConverter.h"
 #include "Engine/Asset/Collection/AssetCollection.h"
+
+/// editor
+#include "Engine/Editor/Math/ImGuiMath.h"
+#include "Engine/Editor/Math/AssetDebugger.h"
 
 using namespace ONEngine;
 
@@ -25,7 +27,7 @@ void COMP_DEBUG::SpriteDebug(SpriteRenderer* _sr, AssetCollection* _assetCollect
 	float indentValue = 1.8f;
 	ImGui::Indent(indentValue);
 
-	ImMathf::MaterialEdit("Material", &_sr->material_, _assetCollection, false);
+	Editor::ImMathf::MaterialEdit("Material", &_sr->material_, _assetCollection, false);
 
 	ImGui::Unindent(indentValue);
 }

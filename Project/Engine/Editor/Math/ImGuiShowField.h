@@ -10,7 +10,7 @@
 #include <imgui.h>
 
 
-namespace ONEngine {
+namespace Editor {
 
 /// ///////////////////////////////////////////////////////
 /// C#のフィールドをImGuiで表示するための名前空間
@@ -85,4 +85,4 @@ namespace CSGui {
 
 }
 
-} /// ONEngine
+} /// Editor

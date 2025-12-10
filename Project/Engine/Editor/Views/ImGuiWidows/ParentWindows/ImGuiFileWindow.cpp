@@ -1,6 +1,4 @@
-﻿﻿#include "ImGuiFileWindow.h"
-
-using namespace ONEngine;
+﻿#include "ImGuiFileWindow.h"
 
 /// externals
 #include <imgui.h>
@@ -8,6 +6,8 @@ using namespace ONEngine;
 /// engine
 #include "Engine/Core/Config/EngineConfig.h"
 #include "../ChildWindows/FileWindows/ImGuiFile.h"
+
+using namespace Editor;
 
 ImGuiFileWindow::ImGuiFileWindow() {
 
@@ -25,7 +25,7 @@ ImGuiFileWindow::ImGuiFileWindow() {
 void ImGuiFileWindow::ShowImGui() {
 
 	ImGui::SetNextWindowPos(ImVec2(0, 20), ImGuiCond_Appearing);
-	ImGui::SetNextWindowSize(ImVec2(EngineConfig::kWindowSize.x , EngineConfig::kWindowSize.y), ImGuiCond_Appearing);
+	ImGui::SetNextWindowSize(ImVec2(ONEngine::EngineConfig::kWindowSize.x, ONEngine::EngineConfig::kWindowSize.y), ImGuiCond_Appearing);
 	if (!ImGui::Begin("File", nullptr, imGuiFlags_)) {
 		ImGui::End();
 		return;

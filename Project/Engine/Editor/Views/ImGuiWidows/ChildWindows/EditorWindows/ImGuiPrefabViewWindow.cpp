@@ -1,18 +1,21 @@
-﻿﻿#include "ImGuiPrefabViewWindow.h"
-
-using namespace ONEngine;
+﻿#include "ImGuiPrefabViewWindow.h"
 
 /// externals
 #include <imgui.h>
 
 /// engine
-#include "Engine/Core/ImGui/ImGuiManager.h"
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 
-ImGuiPrefabViewWindow::ImGuiPrefabViewWindow(EntityComponentSystem* _ecs, AssetCollection* _assetCollection)
+/// editor
+#include "Engine/Editor/Manager/ImGuiManager.h"
+
+
+using namespace Editor;
+
+ImGuiPrefabViewWindow::ImGuiPrefabViewWindow(ONEngine::EntityComponentSystem* _ecs, ONEngine::AssetCollection* _assetCollection)
 	: pEcs_(_ecs), pAssetCollection_(_assetCollection) {}
 
 void ImGuiPrefabViewWindow::ShowImGui() {
@@ -22,19 +25,19 @@ void ImGuiPrefabViewWindow::ShowImGui() {
 	}
 
 
-	CameraComponent* debugCamera = pEcs_->GetECSGroup("Debug")->GetMainCamera();
+	ONEngine::CameraComponent* debugCamera = pEcs_->GetECSGroup("Debug")->GetMainCamera();
 
 	/// オブジェクトの正面にカメラを配置
-	if (Input::TriggerKey(DIK_F)) {
+	if (ONEngine::Input::TriggerKey(DIK_F)) {
 
-		Vector3 dir = Vector3(0.0f, 2.0f, -6.5f).Normalize();
+		ONEngine::Vector3 dir = ONEngine::Vector3(0.0f, 2.0f, -6.5f).Normalize();
 		float length = 6.0f; /// オブジェクトとカメラの距離
 
 		if (debugCamera) {
-			GameEntity* cameraEntity = debugCamera->GetOwner();
+			ONEngine::GameEntity* cameraEntity = debugCamera->GetOwner();
 			if (cameraEntity) {
 				cameraEntity->SetPosition(dir * length);
-				cameraEntity->SetRotate(Vector3(0.05f, 0.0f, 0.0f)); /// オブジェクトの正面を向く
+				cameraEntity->SetRotate(ONEngine::Vector3(0.05f, 0.0f, 0.0f)); /// オブジェクトの正面を向く
 				debugCamera->UpdateViewProjection();
 			}
 		}
@@ -52,7 +55,7 @@ void ImGuiPrefabViewWindow::RenderView() {
 	/// ----- SceneのRTVTextureを描画 ----- ///
 
 	/// 描画する画像の取得
-	const Texture* texture = pAssetCollection_->GetTexture("./Assets/Scene/RenderTexture/prefabScene");
+	const ONEngine::Texture* texture = pAssetCollection_->GetTexture("./Assets/Scene/RenderTexture/prefabScene");
 	if (!texture) {
 		return;
 	}

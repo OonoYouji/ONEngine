@@ -1,25 +1,24 @@
 ﻿#include "RiverTerrainAbjustPipeline.h"
 
-using namespace ONEngine;
-
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Array/ComponentArray.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Terrain.h"
 
+using namespace Editor;
 
 RiverTerrainAbjustPipeline::RiverTerrainAbjustPipeline() = default;
 RiverTerrainAbjustPipeline::~RiverTerrainAbjustPipeline() = default;
 
-void RiverTerrainAbjustPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {
+void RiverTerrainAbjustPipeline::Initialize(ONEngine::ShaderCompiler* _shaderCompiler, ONEngine::DxManager* _dxm) {
 
 	{	/// shader
-		Shader shader;
+		ONEngine::Shader shader;
 		shader.Initialize(_shaderCompiler);
-		shader.CompileShader(L"./Packages/Shader/Editor/RiverTerrainAbjust.cs.hlsl", L"cs_6_6", Shader::Type::cs);
+		shader.CompileShader(L"./Packages/Shader/Editor/RiverTerrainAbjust.cs.hlsl", L"cs_6_6", ONEngine::Shader::Type::cs);
 
-		pipeline_ = std::make_unique<ComputePipeline>();
+		pipeline_ = std::make_unique<ONEngine::ComputePipeline>();
 		pipeline_->SetShader(&shader);
 
 		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 0); /// UAV_PARAMS
@@ -36,12 +35,12 @@ void RiverTerrainAbjustPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxM
 	}
 }
 
-void RiverTerrainAbjustPipeline::Execute(EntityComponentSystem* _ecs, DxCommand* _dxCommand, AssetCollection* /*_assetCollection*/) {
+void RiverTerrainAbjustPipeline::Execute(ONEngine::EntityComponentSystem* _ecs, ONEngine::DxCommand* _dxCommand, ONEngine::AssetCollection* /*_assetCollection*/) {
 
 	/// ----------------------------------------------------
 	/// 早期 return条件
 	/// ----------------------------------------------------
-	ComponentArray<Terrain>* terrainArray = _ecs->GetCurrentGroup()->GetComponentArray<Terrain>();
+	ONEngine::ComponentArray<ONEngine::Terrain>* terrainArray = _ecs->GetCurrentGroup()->GetComponentArray<ONEngine::Terrain>();
 	if (!terrainArray) {
 		return;
 	}
@@ -50,13 +49,13 @@ void RiverTerrainAbjustPipeline::Execute(EntityComponentSystem* _ecs, DxCommand*
 		return;
 	}
 
-	Terrain* terrain = terrainArray->GetUsedComponents().front();
+	ONEngine::Terrain* terrain = terrainArray->GetUsedComponents().front();
 	if (!terrain) {
 		return;
 	}
 
 	/// 川の情報を取得
-	River* river = terrain->GetRiver();
+	ONEngine::River* river = terrain->GetRiver();
 	if (!river->GetIsCreatedBuffers() || !river->GetIsGenerateMeshRequest()) {
 		return;
 	}
@@ -77,7 +76,7 @@ void RiverTerrainAbjustPipeline::Execute(EntityComponentSystem* _ecs, DxCommand*
 
 	const UINT maxVertex = static_cast<UINT>(terrain->GetMaxVertexNum());
 	const UINT groupSize = 32;
-	cmdList->Dispatch(Mathf::DivideAndRoundUp(maxVertex, groupSize), 1, 1);
+	cmdList->Dispatch(ONEngine::Mathf::DivideAndRoundUp(maxVertex, groupSize), 1, 1);
 
 }
 

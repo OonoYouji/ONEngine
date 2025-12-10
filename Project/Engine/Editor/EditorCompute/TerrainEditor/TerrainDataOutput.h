@@ -1,4 +1,4 @@
-﻿﻿#pragma once
+﻿#pragma once
 
 /// engine
 #include "Engine/Graphics/Buffer/ConstantBuffer.h"
@@ -8,11 +8,11 @@
 #include "TerrainInfo.h"
 
 
+namespace Editor {
+
 /// /////////////////////////////////////////////////
 /// 地形のデータを出力する
 /// /////////////////////////////////////////////////
-namespace ONEngine {
-
 class TerrainDataOutput : public IEditorCompute {
 
 	enum {
@@ -30,21 +30,20 @@ public:
 	TerrainDataOutput();
 	~TerrainDataOutput() override;
 
-	void Initialize(class ShaderCompiler* _shaderCompiler, class DxManager* _dxm) override;
-	void Execute(class EntityComponentSystem* _ecs, class DxCommand* _dxCommand, class AssetCollection* _assetCollection) override;
+	void Initialize(ONEngine::ShaderCompiler* _shaderCompiler, ONEngine::DxManager* _dxm) override;
+	void Execute(ONEngine::EntityComponentSystem* _ecs, ONEngine::DxCommand* _dxCommand, ONEngine::AssetCollection* _assetCollection) override;
 
 private:
 	/// ==========================================
 	/// private : objects
 	/// ==========================================
 
-	class DxManager* pDxManager_;
+	ONEngine::DxManager* pDxManager_;
 
-	ConstantBuffer<TerrainSize> terrainSize_;
-	Texture outputVertexTexture_;
-	Texture outputSplatBlendTexture_;
+	ONEngine::ConstantBuffer<TerrainSize> terrainSize_;
+	ONEngine::Texture outputVertexTexture_;
+	ONEngine::Texture outputSplatBlendTexture_;
 
 };
 
-
-} /// ONEngine
+} /// Editor

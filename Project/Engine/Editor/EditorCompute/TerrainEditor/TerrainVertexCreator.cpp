@@ -1,6 +1,4 @@
-﻿﻿#include "TerrainVertexCreator.h"
-
-using namespace ONEngine;
+﻿#include "TerrainVertexCreator.h"
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
@@ -11,20 +9,22 @@ using namespace ONEngine;
 #include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/Asset/Assets/Texture/Texture.h"
 
+using namespace Editor;
+
 TerrainVertexCreator::TerrainVertexCreator() {}
 TerrainVertexCreator::~TerrainVertexCreator() {}
 
-void TerrainVertexCreator::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {
+void TerrainVertexCreator::Initialize(ONEngine::ShaderCompiler* _shaderCompiler, ONEngine::DxManager* _dxm) {
 	pDxManager_ = _dxm;
 
 
 	{	/// shader
 
-		Shader shader;
+		ONEngine::Shader shader;
 		shader.Initialize(_shaderCompiler);
-		shader.CompileShader(L"./Packages/Shader/Editor/TerrainVertexCreator.cs.hlsl", L"cs_6_6", Shader::Type::cs);
+		shader.CompileShader(L"./Packages/Shader/Editor/TerrainVertexCreator.cs.hlsl", L"cs_6_6", ONEngine::Shader::Type::cs);
 
-		pipeline_ = std::make_unique<ComputePipeline>();
+		pipeline_ = std::make_unique<ONEngine::ComputePipeline>();
 		pipeline_->SetShader(&shader);
 
 		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 0);
@@ -51,15 +51,15 @@ void TerrainVertexCreator::Initialize(ShaderCompiler* _shaderCompiler, DxManager
 
 }
 
-void TerrainVertexCreator::Execute(EntityComponentSystem* _ecs, DxCommand* _dxCommand, AssetCollection* _assetCollection) {
-	ComponentArray<Terrain>* terrainArray = _ecs->GetCurrentGroup()->GetComponentArray<Terrain>();
+void TerrainVertexCreator::Execute(ONEngine::EntityComponentSystem* _ecs, ONEngine::DxCommand* _dxCommand, ONEngine::AssetCollection* _assetCollection) {
+	ONEngine::ComponentArray<ONEngine::Terrain>* terrainArray = _ecs->GetCurrentGroup()->GetComponentArray<ONEngine::Terrain>();
 	if (!terrainArray) {
-		Console::LogError("TerrainVertexEditorCompute::Execute: Terrain component array is null");
+		ONEngine::Console::LogError("TerrainVertexEditorCompute::Execute: Terrain component array is null");
 		return;
 	}
 
 
-	Terrain* pTerrain = nullptr;
+	ONEngine::Terrain* pTerrain = nullptr;
 	for (auto& terrain : terrainArray->GetUsedComponents()) {
 		if (!terrain) {
 			continue;
@@ -70,14 +70,14 @@ void TerrainVertexCreator::Execute(EntityComponentSystem* _ecs, DxCommand* _dxCo
 
 	/// terrain がないなら終わり
 	if (!pTerrain) {
-		Console::LogError("TerrainVertexEditorCompute::Execute: Terrain component is null");
+		ONEngine::Console::LogError("TerrainVertexEditorCompute::Execute: Terrain component is null");
 		return;
 	}
 
 	/// 未生成の時だけ処理する
 	if (!pTerrain->GetIsCreated()) {
 		pTerrain->SetIsCreated(true);
-		Console::LogInfo("TerrainVertexEditorCompute::Execute: Creating terrain vertices and indices");
+		ONEngine::Console::LogInfo("TerrainVertexEditorCompute::Execute: Creating terrain vertices and indices");
 
 		/// VBVとIBVの生成
 		pTerrain->CreateVerticesAndIndicesBuffers(pDxManager_->GetDxDevice(), _dxCommand, pDxManager_->GetDxSRVHeap());
@@ -96,16 +96,16 @@ void TerrainVertexCreator::Execute(EntityComponentSystem* _ecs, DxCommand* _dxCo
 		pTerrain->GetRwVertices().UAVBindForComputeCommandList(cmdList, UAV_VERTICES);
 		pTerrain->GetRwIndices().UAVBindForComputeCommandList(cmdList, UAV_INDICES);
 
-		const Texture* vertexTexture = _assetCollection->GetTexture("./Packages/Textures/Terrain/TerrainVertex.png");
-		const Texture* blendTexture = _assetCollection->GetTexture("./Packages/Textures/Terrain/TerrainSplatBlend.png");
+		const ONEngine::Texture* vertexTexture = _assetCollection->GetTexture("./Packages/Textures/Terrain/TerrainVertex.png");
+		const ONEngine::Texture* blendTexture = _assetCollection->GetTexture("./Packages/Textures/Terrain/TerrainSplatBlend.png");
 
 		if (vertexTexture) { cmdList->SetComputeRootDescriptorTable(SRV_VERTEX_TEXTURE, vertexTexture->GetSRVGPUHandle()); }
 		if (blendTexture) { cmdList->SetComputeRootDescriptorTable(SRV_SPLAT_BLEND_TEXTURE, blendTexture->GetSRVGPUHandle()); }
 
 		const size_t TGSize = 16; // 16x16のグループサイズ
 		cmdList->Dispatch(
-			Mathf::DivideAndRoundUp(1000, TGSize), // width
-			Mathf::DivideAndRoundUp(1000, TGSize), // depth
+			ONEngine::Mathf::DivideAndRoundUp(1000, TGSize), // width
+			ONEngine::Mathf::DivideAndRoundUp(1000, TGSize), // depth
 			1
 		);
 	}

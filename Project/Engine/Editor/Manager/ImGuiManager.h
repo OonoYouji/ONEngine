@@ -18,11 +18,23 @@
 #include "Engine/Editor/Views/ImGuiWidows/Collection/ImGuiWindowCollection.h"
 #include "Engine/Editor/Math/ImGuiSceneImageInfo.h"
 
+namespace ONEngine {
+/// 前方宣言
+class AssetCollection;
+class DxManager;
+class WindowManager;
+class Window;
+class EntityComponentSystem;
+class SceneManager;
+} /// ONEngine
+
 
 /// ///////////////////////////////////////////////////
 /// ImGuiManager
 /// ///////////////////////////////////////////////////
-namespace ONEngine {
+namespace Editor {
+
+class EditorManager;
 
 class ImGuiManager final {
 public:
@@ -30,12 +42,12 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	ImGuiManager(class DxManager*, class WindowManager*, class EntityComponentSystem*, class EditorManager*, class SceneManager*);
+	ImGuiManager(ONEngine::DxManager*, ONEngine::WindowManager*, ONEngine::EntityComponentSystem*, EditorManager*, ONEngine::SceneManager*);
 	~ImGuiManager();
 
 	/// @brief 初期化
 	/// @param _assetCollection AssetCollection 
-	void Initialize(class AssetCollection* _assetCollection);
+	void Initialize(ONEngine::AssetCollection* _assetCollection);
 
 	/// @brief 終了処理
 	void Finalize();
@@ -55,7 +67,7 @@ public:
 	/// @brief ImGuiのマウス位置を更新する
 	/// @param _winHwnd ImGuiを描画しているWindowのHWND
 	/// @param _renderTargetSize RenderTargetのサイズ(px)
-	void UpdateMousePosition(HWND _winHwnd, const Vector2& _renderTargetSize);
+	void UpdateMousePosition(HWND _winHwnd, const ONEngine::Vector2& _renderTargetSize);
 
 
 	/// @brief ImGuiのスタイルを出力する
@@ -72,14 +84,14 @@ private:
 	/// ===================================================
 
 	/// ----- other class ----- ///
-	class DxManager* dxManager_;
-	class WindowManager* pWindowManager_;
-	class AssetCollection* pAssetCollection_;
-	class EntityComponentSystem* pEntityComponentSystem_;
-	class EditorManager* pEditorManager_;
-	class SceneManager* pSceneManager_;
-	class Window* pImGuiWindow_;
-	class Window* pDebugGameWindow_;
+	ONEngine::DxManager* dxManager_;
+	ONEngine::WindowManager* pWindowManager_;
+	ONEngine::AssetCollection* pAssetCollection_;
+	ONEngine::EntityComponentSystem* pEntityComponentSystem_;
+	EditorManager* pEditorManager_;
+	ONEngine::SceneManager* pSceneManager_;
+	ONEngine::Window* pImGuiWindow_;
+	ONEngine::Window* pDebugGameWindow_;
 
 	std::unique_ptr<ImGuiWindowCollection> imGuiWindowCollection_ = nullptr;
 
@@ -92,11 +104,11 @@ public:
 
 	/// @brief imgui windowを設定する
 	/// @param _window Window
-	void SetImGuiWindow(Window* _window);
+	void SetImGuiWindow(ONEngine::Window* _window);
 
 	/// @brief game debug windowを取得する
 	/// @return　Window
-	class Window* GetDebugGameWindow() const;
+	ONEngine::Window* GetDebugGameWindow() const;
 
 	/// @brief ImageInfoを取得する
 	/// @param _name ImageInfoの名前
@@ -105,5 +117,4 @@ public:
 };
 
 
-
-} /// ONEngine
+} /// Editor

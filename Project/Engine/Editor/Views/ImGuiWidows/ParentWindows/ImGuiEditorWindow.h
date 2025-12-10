@@ -1,4 +1,4 @@
-﻿﻿#pragma once
+﻿#pragma once
 
 /// engine
 #include "../Collection/ImGuiWindowCollection.h"	
@@ -6,7 +6,7 @@
 /// ///////////////////////////////////////////////////
 /// エディターウィンドウ
 /// ///////////////////////////////////////////////////
-namespace ONEngine {
+namespace Editor {
 
 class ImGuiEditorWindow : public IImGuiParentWindow {
 public:
@@ -15,11 +15,11 @@ public:
 	/// ===================================================
 
 	ImGuiEditorWindow(
-		class DxManager* _dxManager,
-		class EntityComponentSystem* _ecs, 
-		class AssetCollection* _assetCollection, 
-		class EditorManager* _editorManager, 
-		class SceneManager* _sceneManager
+		ONEngine::DxManager* _dxManager,
+		ONEngine::EntityComponentSystem* _ecs, 
+		ONEngine::AssetCollection* _assetCollection, 
+		EditorManager* _editorManager, 
+		ONEngine::SceneManager* _sceneManager
 	);
 	~ImGuiEditorWindow() {}
 
@@ -33,5 +33,4 @@ private:
 	int imGuiFlags_ = 0;
 };
 
-
-} /// ONEngine
+} /// Editor

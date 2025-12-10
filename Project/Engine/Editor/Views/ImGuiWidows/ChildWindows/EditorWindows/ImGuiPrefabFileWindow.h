@@ -1,22 +1,32 @@
-﻿﻿#pragma once
+﻿#pragma once
 
 /// engine
 #include "../../Collection/ImGuiWindowCollection.h"
 #include "Engine/Core/Utility/Math/Mathf.h"
 #include "Engine/Asset/Guid/Guid.h"
 
+namespace ONEngine {
+/// 前方宣言
+class EntityComponentSystem;
+class AssetCollection;
+class Texture;
+}
+
+
+namespace Editor {
+
+class ImGuiInspectorWindow;
+
 /// //////////////////////////////////////////////////////
 /// PrefabFileを表示するためのImGuiWindow
 /// //////////////////////////////////////////////////////
-namespace ONEngine {
-
 class ImGuiPrefabFileWindow : public IImGuiChildWindow {
 public:
 	/// =====================================================
 	/// public : methods
 	/// =====================================================
 
-	ImGuiPrefabFileWindow(class EntityComponentSystem* _ecs, class AssetCollection* _assetCollection, class ImGuiInspectorWindow* _inspector);
+	ImGuiPrefabFileWindow(ONEngine::EntityComponentSystem* _ecs, ONEngine::AssetCollection* _assetCollection, ImGuiInspectorWindow* _inspector);
 	~ImGuiPrefabFileWindow() override = default;
 
 	void ShowImGui() override;
@@ -27,7 +37,7 @@ public:
 
 	/// @brief Prefabファイルを再読み込みする
 	/// @param _tex ImageButtonに使うテクスチャ
-	void ReloadPrefabFiles(const class Texture* _tex);
+	void ReloadPrefabFiles(const ONEngine::Texture* _tex);
 
 	/// @brief 新規Prefab作成ウィンドウ
 	void AddNewPrefabWindow();
@@ -42,17 +52,17 @@ private:
 	/// =====================================================
 
 	/// --------------- other class pointers --------------- ///
-	class EntityComponentSystem* pEcs_;
-	class ImGuiInspectorWindow*  pInspector_;
-	class AssetCollection*       pAssetCollection_;
+	ONEngine::EntityComponentSystem* pEcs_;
+	ONEngine::AssetCollection*       pAssetCollection_;
+	ImGuiInspectorWindow*  pInspector_;
 
 
 	/// --------------- member objects --------------- ///
 	std::string       searchText_; ///< 検索テキスト
-	std::vector<File> files_;
+	std::vector<ONEngine::File> files_;
 
 	/// 現在選択されているPrefabのEntity
-	Guid selectedPrefabGuid_;
+	ONEngine::Guid selectedPrefabGuid_;
 
 
 	/// --------------- add prefab --------------- ///
@@ -61,5 +71,4 @@ private:
 
 };
 
-
-} /// ONEngine
+} /// Editor

@@ -1,15 +1,15 @@
-﻿﻿#include "ImGuiTexturePreviewWindow.h"
-
-using namespace ONEngine;
+﻿#include "ImGuiTexturePreviewWindow.h"
 
 /// external
 #include <imgui.h>
 
 /// engine
 #include "Engine/Asset/Collection/AssetCollection.h"
-#include "Engine/Core/ImGui/Math/ImGuiMath.h"
+#include "Engine/Editor/Math/ImGuiMath.h"
 
-ImGuiTexturePreviewWindow::ImGuiTexturePreviewWindow(AssetCollection* _assetCollection)
+using namespace Editor;
+
+ImGuiTexturePreviewWindow::ImGuiTexturePreviewWindow(ONEngine::AssetCollection* _assetCollection)
 	: pAssetCollection_(_assetCollection) {
 	searchFilter_ = "./Assets/Scene/RenderTexture/shadowMapScene";
 }
@@ -26,7 +26,7 @@ void ImGuiTexturePreviewWindow::ShowImGui() {
 
 	ImMathf::InputText("Search Filter", &searchFilter_);
 
-	Texture* texture = pAssetCollection_->GetTexture(searchFilter_);
+	ONEngine::Texture* texture = pAssetCollection_->GetTexture(searchFilter_);
 	if (texture) {
 
 		/// ウィンドウのサイズに合わせてテクスチャのサイズを調整する場合

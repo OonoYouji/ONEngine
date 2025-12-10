@@ -1,6 +1,4 @@
-﻿﻿#include "ImGuiWindowCollection.h"
-
-using namespace ONEngine;
+﻿#include "ImGuiWindowCollection.h"
 
 /// external
 #include <imgui.h>
@@ -12,17 +10,18 @@ using namespace ONEngine;
 #include "../ParentWindows/ImGuiEditorWindow.h"
 #include "../ParentWindows/ImGuiFileWindow.h"
 
+using namespace Editor;
 
 /// ///////////////////////////////////////////////////
 /// ImGuiWindowCollection
 /// ///////////////////////////////////////////////////
 ImGuiWindowCollection::ImGuiWindowCollection(
-	DxManager* _dxManager,
-	EntityComponentSystem* _ecs,
-	AssetCollection* _assetCollection,
+	ONEngine::DxManager* _dxManager,
+	ONEngine::EntityComponentSystem* _ecs,
+	ONEngine::AssetCollection* _assetCollection,
 	ImGuiManager* _imGuiManager,
 	EditorManager* _editorManager,
-	SceneManager* _sceneManager)
+	ONEngine::SceneManager* _sceneManager)
 	: pImGuiManager_(_imGuiManager) {
 
 	/// ここでwindowを生成する
@@ -42,7 +41,7 @@ void ImGuiWindowCollection::Update() {
 
 	/// 選択されたMenuの内容を表示する
 	parentWindows_[selectedMenuIndex_]->ShowImGui();
-	DebugConfig::selectedMode_ = selectedMenuIndex_;
+	ONEngine::DebugConfig::selectedMode_ = selectedMenuIndex_;
 
 }
 

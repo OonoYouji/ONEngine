@@ -11,6 +11,10 @@
 
 
 namespace ONEngine {
+class AssetCollection;
+}
+
+namespace Editor {
 
 class ImGuiProjectWindow : public IImGuiChildWindow {
 public:
@@ -25,7 +29,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	ImGuiProjectWindow(class AssetCollection* _assetCollection, class EditorManager* _editorManager);
+	ImGuiProjectWindow(ONEngine::AssetCollection* _assetCollection, class EditorManager* _editorManager);
 	~ImGuiProjectWindow();
 
 	/// @brief imgui windowの描画処理
@@ -73,7 +77,7 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	class AssetCollection* pAssetCollection_;
+	ONEngine::AssetCollection* pAssetCollection_;
 
 	/// ImGui::Beginのlabelに使う
 	std::string windowName_;
@@ -103,4 +107,4 @@ private:
 
 };
 
-} /// ONEngine
+} /// Editor

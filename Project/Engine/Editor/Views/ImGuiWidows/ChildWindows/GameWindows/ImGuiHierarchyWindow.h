@@ -1,4 +1,4 @@
-﻿﻿#pragma once
+﻿#pragma once
 
 /// std
 #include <string>
@@ -7,10 +7,16 @@
 /// engine
 #include "../../Collection/ImGuiWindowCollection.h"
 
+namespace ONEngine {
+/// 前方宣言
+class ECSGroup;
+class GameEntity;
+}
+
 /// ///////////////////////////////////////////////////
 /// ImGuiHierarchyWindow
 /// ///////////////////////////////////////////////////
-namespace ONEngine {
+namespace Editor {
 
 class ImGuiHierarchyWindow : public IImGuiChildWindow {
 public:
@@ -18,7 +24,7 @@ public:
 	/// public : methods   
 	/// ===================================================
 
-	ImGuiHierarchyWindow(const std::string& _imGuiWindowName, class ECSGroup*, class EditorManager*, class SceneManager*);
+	ImGuiHierarchyWindow(const std::string& _imGuiWindowName, ONEngine::ECSGroup*, class EditorManager*, ONEngine::SceneManager*);
 	~ImGuiHierarchyWindow() override = default;
 
 	void ShowImGui() override;
@@ -46,7 +52,7 @@ protected:
 
 	/// @brief Entityの名前変更処理
 	/// @param _entity 変更対象のEntity
-	void EntityRename(class GameEntity* _entity);
+	void EntityRename(ONEngine::GameEntity* _entity);
 
 	/// Dialogの表示
 	void DrawDialog();
@@ -56,9 +62,9 @@ protected:
 	/// ----- test methods ----- ///
 
 	///
-	void DrawEntity(class GameEntity* _entity);
+	void DrawEntity(ONEngine::GameEntity* _entity);
 
-	bool IsDescendant(class GameEntity* _ancestor, class GameEntity* _descendant);
+	bool IsDescendant(ONEngine::GameEntity* _ancestor, ONEngine::GameEntity* _descendant);
 
 	void ShowInvalidParentPopup();
 
@@ -68,17 +74,17 @@ protected:
 	/// ===================================================
 
 	/// ----- other class ----- ///
-	class ECSGroup*             pEcsGroup_        = nullptr;
+	ONEngine::ECSGroup*         pEcsGroup_        = nullptr;
 	class EditorManager*        pEditorManager_   = nullptr;
-	class SceneManager*         pSceneManager_    = nullptr;
+	ONEngine::SceneManager*     pSceneManager_    = nullptr;
 
 
 	std::string       imGuiWindowName_ = "Hierarchy";
 	std::string       entityName_      = "empty";
 	const std::string kClassPrefix     = "class ";
 
-	std::list<class GameEntity*> entityList_;
-	class GameEntity* selectedEntity_ = nullptr;
+	std::list<ONEngine::GameEntity*> entityList_;
+	ONEngine::GameEntity* selectedEntity_ = nullptr;
 
 	/// ----- hierarchy ----- ///
 	bool isNodeOpen_;
@@ -86,12 +92,11 @@ protected:
 
 	/// ----- rename ----- ///
 	std::string newName_ = "";
-	GameEntity* renameEntity_;
-
+	ONEngine::GameEntity* renameEntity_;
 
 
 	/// ----- test objects ----- ///
-	bool 	showInvalidParentPopup_ = false;
+	bool showInvalidParentPopup_ = false;
 
 };
 
@@ -106,7 +111,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	ImGuiNormalHierarchyWindow(const std::string& _imGuiWindowName, class EntityComponentSystem* _ecs, class EditorManager* _editorManager, class SceneManager* _sceneManager);
+	ImGuiNormalHierarchyWindow(const std::string& _imGuiWindowName, ONEngine::EntityComponentSystem* _ecs, class EditorManager* _editorManager, ONEngine::SceneManager* _sceneManager);
 	~ImGuiNormalHierarchyWindow() override = default;
 	
 	void ShowImGui() override;
@@ -119,7 +124,7 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	class EntityComponentSystem* pEcs_ = nullptr;
+	ONEngine::EntityComponentSystem* pEcs_ = nullptr;
 };
 
-} /// ONEngine
+} /// Editor

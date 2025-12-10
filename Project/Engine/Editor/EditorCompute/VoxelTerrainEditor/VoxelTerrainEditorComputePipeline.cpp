@@ -1,7 +1,5 @@
 ﻿#include "VoxelTerrainEditorComputePipeline.h"
 
-using namespace ONEngine;
-
 /// engine
 #include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/Core/Utility/Utility.h"
@@ -10,19 +8,21 @@ using namespace ONEngine;
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/VoxelTerrain/VoxelTerrain.h"
 
+using namespace Editor;
+
 VoxelTerrainEditorComputePipeline::VoxelTerrainEditorComputePipeline() = default;
 VoxelTerrainEditorComputePipeline::~VoxelTerrainEditorComputePipeline() = default;
 
-void VoxelTerrainEditorComputePipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {
+void VoxelTerrainEditorComputePipeline::Initialize(ONEngine::ShaderCompiler* _shaderCompiler, ONEngine::DxManager* _dxm) {
 
 	pDxManager_ = _dxm;
 
 	{	/// Shader
-		Shader shader;
+		ONEngine::Shader shader;
 		shader.Initialize(_shaderCompiler);
-		shader.CompileShader(L"./Packages/Shader/Editor/VoxelTerrainEditor.cs.hlsl", L"cs_6_6", Shader::Type::cs);
+		shader.CompileShader(L"./Packages/Shader/Editor/VoxelTerrainEditor.cs.hlsl", L"cs_6_6", ONEngine::Shader::Type::cs);
 
-		pipeline_ = std::make_unique<ComputePipeline>();
+		pipeline_ = std::make_unique<ONEngine::ComputePipeline>();
 		pipeline_->SetShader(&shader);
 
 		/// CBV
@@ -35,7 +35,7 @@ void VoxelTerrainEditorComputePipeline::Initialize(ShaderCompiler* _shaderCompil
 		/// Descriptor Range
 		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // SRV_CHUNKS
 		pipeline_->AddDescriptorRange(1, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // SRV_WORLD_TEXTURE
-		pipeline_->AddDescriptorRange(0, MAX_TEXTURE_COUNT*2, D3D12_DESCRIPTOR_RANGE_TYPE_UAV); // UAV_VOXEL_TEXTURES
+		pipeline_->AddDescriptorRange(0, ONEngine::MAX_TEXTURE_COUNT*2, D3D12_DESCRIPTOR_RANGE_TYPE_UAV); // UAV_VOXEL_TEXTURES
 
 		/// SRV
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 0); // SRV_CHUNKS
@@ -51,18 +51,18 @@ void VoxelTerrainEditorComputePipeline::Initialize(ShaderCompiler* _shaderCompil
 
 }
 
-void VoxelTerrainEditorComputePipeline::Execute(EntityComponentSystem* _ecs, DxCommand* _dxCommand, AssetCollection* _assetCollection) {
+void VoxelTerrainEditorComputePipeline::Execute(ONEngine::EntityComponentSystem* _ecs, ONEngine::DxCommand* _dxCommand, ONEngine::AssetCollection* _assetCollection) {
 
 	/// 早期リターンの条件チェック
-	ComponentArray<VoxelTerrain>* voxelTerrainArray = _ecs->GetCurrentGroup()->GetComponentArray<VoxelTerrain>();
+	ONEngine::ComponentArray<ONEngine::VoxelTerrain>* voxelTerrainArray = _ecs->GetCurrentGroup()->GetComponentArray<ONEngine::VoxelTerrain>();
 	if (!voxelTerrainArray || voxelTerrainArray->GetUsedComponents().empty()) {
-		Console::LogWarning("VoxelTerrainEditorComputePipeline::Execute: VoxelTerrain component array is null");
+		ONEngine::Console::LogWarning("VoxelTerrainEditorComputePipeline::Execute: VoxelTerrain component array is null");
 		return;
 	}
 
 
 	/// 使用できるVoxelTerrainコンポーネントを探す
-	VoxelTerrain* voxelTerrain = nullptr;
+	ONEngine::VoxelTerrain* voxelTerrain = nullptr;
 	for (const auto& vt : voxelTerrainArray->GetUsedComponents()) {
 		if (vt && vt->enable) {
 			voxelTerrain = vt;
@@ -99,10 +99,10 @@ void VoxelTerrainEditorComputePipeline::Execute(EntityComponentSystem* _ecs, DxC
 
 	auto cmdList = _dxCommand->GetCommandList();
 
-	GPUData::InputInfo inputInfo{};
-	inputInfo.mouseLeftButton = Input::PressMouse(Mouse::Left);
-	inputInfo.keyboardKShift = Input::PressKey(DIK_LSHIFT);
-	inputInfo.screenMousePos = Input::GetImGuiImageMousePosNormalized("Scene");
+	ONEngine::GPUData::InputInfo inputInfo{};
+	inputInfo.mouseLeftButton = ONEngine::Input::PressMouse(ONEngine::Mouse::Left);
+	inputInfo.keyboardKShift = ONEngine::Input::PressKey(DIK_LSHIFT);
+	inputInfo.screenMousePos = ONEngine::Input::GetImGuiImageMousePosNormalized("Scene");
 
 	/// マウスがウィンドウ外なら終了
 	if (inputInfo.screenMousePos.x < 0.0f || inputInfo.screenMousePos.x > 1280.0f ||
@@ -122,7 +122,7 @@ void VoxelTerrainEditorComputePipeline::Execute(EntityComponentSystem* _ecs, DxC
 	//}
 
 
-	GPUData::EditInfo editInfo{};
+	ONEngine::GPUData::EditInfo editInfo{};
 	editInfo.brushRadius = 12.0f;
 
 	voxelTerrain->SetupEditorBuffers(
@@ -132,10 +132,10 @@ void VoxelTerrainEditorComputePipeline::Execute(EntityComponentSystem* _ecs, DxC
 	);
 
 
-	CameraComponent* cameraComp = _ecs->GetECSGroup("Debug")->GetMainCamera();
+	ONEngine::CameraComponent* cameraComp = _ecs->GetECSGroup("Debug")->GetMainCamera();
 	/// cameraBufferが生成済みでないなら終了
 	if (!cameraComp->IsMakeViewProjection()) {
-		Console::LogWarning("VoxelTerrainEditorComputePipeline::Execute: Camera viewProjection buffer is not created");
+		ONEngine::Console::LogWarning("VoxelTerrainEditorComputePipeline::Execute: Camera viewProjection buffer is not created");
 		return;
 	}
 
@@ -143,7 +143,7 @@ void VoxelTerrainEditorComputePipeline::Execute(EntityComponentSystem* _ecs, DxC
 	cameraComp->GetCameraPosBuffer().BindForComputeCommandList(cmdList, CBV_CAMERA);
 
 	/// WorldTexture
-	const Texture* worldTexture = _assetCollection->GetTexture("./Assets/Scene/RenderTexture/debugWorldPosition");
+	const ONEngine::Texture* worldTexture = _assetCollection->GetTexture("./Assets/Scene/RenderTexture/debugWorldPosition");
 	cmdList->SetComputeRootDescriptorTable(
 		SRV_WORLD_TEXTURE,
 		worldTexture->GetSRVHandle().gpuHandle
@@ -155,9 +155,9 @@ void VoxelTerrainEditorComputePipeline::Execute(EntityComponentSystem* _ecs, DxC
 	);
 
 	const UINT TGSize = 256;
-	const Vector2Int& voxelChunkCount = voxelTerrain->GetChunkCountXZ();
+	const ONEngine::Vector2Int& voxelChunkCount = voxelTerrain->GetChunkCountXZ();
 	cmdList->Dispatch(
-		Mathf::DivideAndRoundUp(voxelChunkCount.x * voxelChunkCount.y, TGSize),
+		ONEngine::Mathf::DivideAndRoundUp(voxelChunkCount.x * voxelChunkCount.y, TGSize),
 		1, 1
 	);
 

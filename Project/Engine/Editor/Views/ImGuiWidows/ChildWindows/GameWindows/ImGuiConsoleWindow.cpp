@@ -1,6 +1,4 @@
-﻿﻿#include "ImGuiConsoleWindow.h"
-
-using namespace ONEngine;
+﻿#include "ImGuiConsoleWindow.h"
 
 /// std
 #include <format>
@@ -12,6 +10,8 @@ using namespace ONEngine;
 #include "Engine/Core/Utility/Time/Time.h"
 #include "Engine/Core/Utility/Tools/Log.h"
 
+using namespace Editor;
+
 void ImGuiConsoleWindow::ShowImGui() {
 	if (!ImGui::Begin("Console")) {
 		ImGui::End();
@@ -19,7 +19,7 @@ void ImGuiConsoleWindow::ShowImGui() {
 	}
 
 	/// エンジン側のfpsとデルタタイムを表示
-	std::string&& text = std::format("fps: {:.3f} / delta time: {:.3f}", 1.0f / Time::DeltaTime(), Time::DeltaTime());
+	std::string&& text = std::format("fps: {:.3f} / delta time: {:.3f}", 1.0f / ONEngine::Time::DeltaTime(), ONEngine::Time::DeltaTime());
 	ImGui::Text(text.c_str());
 
 	ImGui::SameLine();
@@ -41,7 +41,7 @@ void ImGuiConsoleWindow::ShowImGui() {
 		ImGui::Separator();
 
 		logCounts_.clear();
-		for (const auto& message : Console::GetLogVector()) {
+		for (const auto& message : ONEngine::Console::GetLogVector()) {
 			if (indices_.contains(message)) {
 				logCounts_[message]++;
 			} else {

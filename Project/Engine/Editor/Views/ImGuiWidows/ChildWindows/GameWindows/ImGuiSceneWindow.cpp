@@ -1,6 +1,4 @@
-﻿﻿#include "ImGuiSceneWindow.h"
-
-using namespace ONEngine;
+﻿#include "ImGuiSceneWindow.h"
 
 /// std
 #include <array>
@@ -13,18 +11,20 @@ using namespace ONEngine;
 #include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/Core/Config/EngineConfig.h"
 #include "Engine/Core/Utility/Utility.h"
-#include "Engine/Core/ImGui/ImGuiManager.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Entity/GameEntity/GameEntity.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 #include "Engine/Scene/SceneManager.h"
 #include "Engine/Script/MonoScriptEngine.h"
 
-/// engine/imgui
-#include "Engine/Core/ImGui/ImGuiSelection.h"
+/// editor
+#include "Engine/Editor/Manager/ImGuiManager.h"
+#include "Engine/Editor/Views/ImGuiSelection.h"
 #include "ImGuiInspectorWindow.h"
 
-ImGuiSceneWindow::ImGuiSceneWindow(EntityComponentSystem* _ecs, AssetCollection* _assetCollection, SceneManager* _sceneManager, ImGuiInspectorWindow* _inspector)
+using namespace Editor;
+
+ImGuiSceneWindow::ImGuiSceneWindow(ONEngine::EntityComponentSystem* _ecs, ONEngine::AssetCollection* _assetCollection, ONEngine::SceneManager* _sceneManager, ImGuiInspectorWindow* _inspector)
 	: pEcs_(_ecs), pAssetCollection_(_assetCollection), pSceneManager_(_sceneManager), pInspector_(_inspector) {
 
 	manipulateOperation_ = ImGuizmo::OPERATION::TRANSLATE; // 初期操作モードは移動
@@ -39,25 +39,25 @@ void ImGuiSceneWindow::ShowImGui() {
 	}
 
 	const auto& textures = pAssetCollection_->GetTextures();
-	const Texture* texture = &textures[pAssetCollection_->GetTextureIndex("./Assets/Scene/RenderTexture/debugScene")];
+	const ONEngine::Texture* texture = &textures[pAssetCollection_->GetTextureIndex("./Assets/Scene/RenderTexture/debugScene")];
 
 	/// ----------------------------------------
 	/// ゲームの開始、停止、ポーズボタンの描画
 	/// ----------------------------------------
 
-	std::array<const Texture*, 2> buttons = {
+	std::array<const ONEngine::Texture*, 2> buttons = {
 		&textures[pAssetCollection_->GetTextureIndex("./Packages/Textures/ImGui/play.png")],
 		&textures[pAssetCollection_->GetTextureIndex("./Packages/Textures/ImGui/pause.png")]
 	};
 
 	ImVec2 buttonSize = ImVec2(12.0f, 12.0f);
-	bool isGameDebug = DebugConfig::isDebugging;
+	bool isGameDebug = ONEngine::DebugConfig::isDebugging;
 
 	if (isGameDebug) {
 		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.125f, 0.263f, 0.388f, 1.0f));
 	}
 
-	MonoScriptEngine::GetInstance().SetIsHotReloadRequest(false);
+	ONEngine::MonoScriptEngine::GetInstance().SetIsHotReloadRequest(false);
 	if (ImGui::ImageButton("##play", ImTextureID(buttons[0]->GetSRVGPUHandle().ptr), buttonSize)) {
 		SetGamePlay(!isGameDebug); // ゲームプレイの開始/停止
 	}
@@ -70,14 +70,14 @@ void ImGuiSceneWindow::ShowImGui() {
 	/// 一時停止ボタン
 	if (ImGui::ImageButton("##pause", ImTextureID(buttons[1]->GetSRVGPUHandle().ptr), buttonSize)) {
 		// デバッグモードを停止
-		DebugConfig::isDebugging = false;
+		ONEngine::DebugConfig::isDebugging = false;
 	}
 
 	ImGui::SameLine();
 
 	/// DebugConfig::
-	if (ImGui::Checkbox("show debug scene", &DebugConfig::isShowDebugScene)) {
-		Console::Log("ImGuiSceneWindow::ShowImGui -> clicked show debug scene");
+	if (ImGui::Checkbox("show debug scene", &ONEngine::DebugConfig::isShowDebugScene)) {
+		ONEngine::Console::Log("ImGuiSceneWindow::ShowImGui -> clicked show debug scene");
 	}
 
 	/// ----------------------------------------
@@ -135,8 +135,8 @@ void ImGuiSceneWindow::ShowImGui() {
 	/// ----------------------------------------
 
 	/// Guidを元に操作対象のエンティティを取得する、
-	const Guid& selectedGuid = ImGuiSelection::GetSelectedObject();
-	if (GameEntity* entity = pEcs_->GetCurrentGroup()->GetEntityFromGuid(selectedGuid)) {
+	const ONEngine::Guid& selectedGuid = ImGuiSelection::GetSelectedObject();
+	if (ONEngine::GameEntity* entity = pEcs_->GetCurrentGroup()->GetEntityFromGuid(selectedGuid)) {
 
 		ImGuizmo::SetOrthographic(false); // 透視投影
 		ImGuizmo::SetDrawlist();          // ImGuiの現在のDrawListに出力
@@ -145,31 +145,31 @@ void ImGuiSceneWindow::ShowImGui() {
 		ImGuizmo::SetRect(imagePos.x, imagePos.y, imageSize.x, imageSize.y);
 
 		/// 操作モードの選択
-		if (Input::TriggerKey(DIK_W)) {
+		if (ONEngine::Input::TriggerKey(DIK_W)) {
 			manipulateOperation_ = ImGuizmo::OPERATION::TRANSLATE; // 移動
-		} else if (Input::TriggerKey(DIK_E)) {
+		} else if (ONEngine::Input::TriggerKey(DIK_E)) {
 			manipulateOperation_ = ImGuizmo::OPERATION::ROTATE; // 回転
-		} else if (Input::TriggerKey(DIK_R)) {
+		} else if (ONEngine::Input::TriggerKey(DIK_R)) {
 			manipulateOperation_ = ImGuizmo::OPERATION::SCALE; // 拡縮
-		} else if (Input::TriggerKey(DIK_Q)) {
+		} else if (ONEngine::Input::TriggerKey(DIK_Q)) {
 			manipulateOperation_ = 0; // 操作なし
 		}
 
 		/// モードの選択
-		if (Input::TriggerKey(DIK_1)) {
+		if (ONEngine::Input::TriggerKey(DIK_1)) {
 			manipulateMode_ = ImGuizmo::MODE::WORLD; // ワールド座標
-		} else if (Input::TriggerKey(DIK_2)) {
+		} else if (ONEngine::Input::TriggerKey(DIK_2)) {
 			manipulateMode_ = ImGuizmo::MODE::LOCAL; // ローカル座標
 		}
 
 		if (manipulateOperation_ != 0) {
 
-			Transform* transform = entity->GetTransform();
+			ONEngine::Transform* transform = entity->GetTransform();
 			/// 操作対象の行列
-			Matrix4x4 entityMatrix = transform->matWorld;
+			ONEngine::Matrix4x4 entityMatrix = transform->matWorld;
 
 			/// カメラの取得
-			CameraComponent* camera = pEcs_->GetECSGroup("Debug")->GetMainCamera();
+			ONEngine::CameraComponent* camera = pEcs_->GetECSGroup("Debug")->GetMainCamera();
 			if (camera) {
 				ImGuizmo::Manipulate(
 					&camera->GetViewMatrix().m[0][0],
@@ -184,17 +184,17 @@ void ImGuiSceneWindow::ShowImGui() {
 					float translation[3], rotation[3], scale[3];
 					ImGuizmo::DecomposeMatrixToComponents(&entityMatrix.m[0][0], translation, rotation, scale);
 
-					Vector3 translationV = Vector3(translation[0], translation[1], translation[2]);
-					if (GameEntity* owner = transform->GetOwner()) {
-						if (GameEntity* parent = owner->GetParent()) {
-							translationV = Matrix4x4::Transform(translationV, parent->GetTransform()->GetMatWorld().Inverse());
+					ONEngine::Vector3 translationV = ONEngine::Vector3(translation[0], translation[1], translation[2]);
+					if (ONEngine::GameEntity* owner = transform->GetOwner()) {
+						if (ONEngine::GameEntity* parent = owner->GetParent()) {
+							translationV = ONEngine::Matrix4x4::Transform(translationV, parent->GetTransform()->GetMatWorld().Inverse());
 						}
 					}
 					transform->SetPosition(translationV);
 
-					Vector3 eulerRotation = Vector3(rotation[0] * Mathf::Deg2Rad, rotation[1] * Mathf::Deg2Rad, rotation[2] * Mathf::Deg2Rad);
+					ONEngine::Vector3 eulerRotation = ONEngine::Vector3(rotation[0] * ONEngine::Mathf::Deg2Rad, rotation[1] * ONEngine::Mathf::Deg2Rad, rotation[2] * ONEngine::Mathf::Deg2Rad);
 					transform->SetRotate(eulerRotation);
-					transform->SetScale(Vector3(scale[0], scale[1], scale[2]));
+					transform->SetScale(ONEngine::Vector3(scale[0], scale[1], scale[2]));
 
 					transform->Update();
 				}
@@ -210,24 +210,17 @@ void ImGuiSceneWindow::ShowImGui() {
 }
 
 void ImGuiSceneWindow::SetGamePlay(bool _isGamePlay) {
-	DebugConfig::isDebugging = _isGamePlay;
+	ONEngine::DebugConfig::isDebugging = _isGamePlay;
 
-	if (DebugConfig::isDebugging) {
-		//!< ゲームの開始処理
+	/// 共通の処理（ゲーム開始、停止時に行う処理）
+	pSceneManager_->ReloadScene(true);
+	ImGuiSelection::SetSelectedObject(ONEngine::Guid::kInvalid, SelectionType::None);
+
+	/// ゲームの開始処理
+	if (ONEngine::DebugConfig::isDebugging) {
 		pSceneManager_->SaveCurrentSceneTemporary();
-
-		pSceneManager_->ReloadScene(true);
-		ImGuiSelection::SetSelectedObject(Guid::kInvalid, SelectionType::None);
-
 		/// Monoスクリプトエンジンのホットリロードでスクリプトの初期化を行う
-		MonoScriptEngine::GetInstance().HotReload();
-
-	} else {
-		//!< 更新処理を停止した場合の処理
-		pSceneManager_->ReloadScene(true);
-		ImGuiSelection::SetSelectedObject(Guid::kInvalid, SelectionType::None);
-
+		ONEngine::MonoScriptEngine::GetInstance().HotReload();
 	}
-
 }
 

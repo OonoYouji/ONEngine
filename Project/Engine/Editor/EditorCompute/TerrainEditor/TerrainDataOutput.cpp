@@ -1,6 +1,4 @@
-﻿﻿#include "TerrainDataOutput.h"
-
-using namespace ONEngine;
+﻿#include "TerrainDataOutput.h"
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
@@ -9,19 +7,21 @@ using namespace ONEngine;
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Terrain.h"
 
+using namespace Editor;
+
 TerrainDataOutput::TerrainDataOutput() {}
 TerrainDataOutput::~TerrainDataOutput() {}
 
-void TerrainDataOutput::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {
+void TerrainDataOutput::Initialize(ONEngine::ShaderCompiler* _shaderCompiler, ONEngine::DxManager* _dxm) {
 
 	pDxManager_ = _dxm;
 
 	{	/// shader
-		Shader shader;
+		ONEngine::Shader shader;
 		shader.Initialize(_shaderCompiler);
-		shader.CompileShader(L"./Packages/Shader/Editor/TerrainDataOutput.cs.hlsl", L"cs_6_6", Shader::Type::cs);
+		shader.CompileShader(L"./Packages/Shader/Editor/TerrainDataOutput.cs.hlsl", L"cs_6_6", ONEngine::Shader::Type::cs);
 
-		pipeline_ = std::make_unique<ComputePipeline>();
+		pipeline_ = std::make_unique<ONEngine::ComputePipeline>();
 		pipeline_->SetShader(&shader);
 
 		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 0);	/// CBV_TERRAIN_SIZE
@@ -45,19 +45,19 @@ void TerrainDataOutput::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _
 
 }
 
-void TerrainDataOutput::Execute(EntityComponentSystem* _ecs, DxCommand* _dxCommand, AssetCollection* /*_assetCollection*/) {
+void TerrainDataOutput::Execute(ONEngine::EntityComponentSystem* _ecs, ONEngine::DxCommand* _dxCommand, ONEngine::AssetCollection* /*_assetCollection*/) {
 	/// 出力をするときしか処理しない
-	if (!(Input::PressKey(DIK_LCONTROL) && Input::TriggerKey(DIK_O))) {
+	if (!(ONEngine::Input::PressKey(DIK_LCONTROL) && ONEngine::Input::TriggerKey(DIK_O))) {
 		return;
 	}
 
 	/// 地形の component があるのかチェック
-	ComponentArray<Terrain>* terrainArray = _ecs->GetCurrentGroup()->GetComponentArray<Terrain>();
+	ONEngine::ComponentArray<ONEngine::Terrain>* terrainArray = _ecs->GetCurrentGroup()->GetComponentArray<ONEngine::Terrain>();
 	if (!terrainArray) {
 		return;
 	}
 
-	Terrain* pTerrain = nullptr;
+	ONEngine::Terrain* pTerrain = nullptr;
 	for (auto& terrain : terrainArray->GetUsedComponents()) {
 		if (!terrain) {
 			continue;
@@ -87,8 +87,8 @@ void TerrainDataOutput::Execute(EntityComponentSystem* _ecs, DxCommand* _dxComma
 
 	const size_t threadGroupSize = 16;
 	cmdList->Dispatch(
-		Mathf::DivideAndRoundUp(width, threadGroupSize),
-		Mathf::DivideAndRoundUp(height, threadGroupSize),
+		ONEngine::Mathf::DivideAndRoundUp(width, threadGroupSize),
+		ONEngine::Mathf::DivideAndRoundUp(height, threadGroupSize),
 		1
 	);
 

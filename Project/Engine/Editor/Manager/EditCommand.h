@@ -1,4 +1,4 @@
-﻿﻿#pragma once
+﻿#pragma once
 
 /// engine
 #include "EditorManager.h"
@@ -7,7 +7,7 @@
 /// エディタのコマンドを実行するシングルトンクラス
 /// EditorManagerの関数を呼び出すだけ
 /// /////////////////////////////////////////////////
-namespace ONEngine {
+namespace Editor {
 
 class EditCommand final {
 	friend class EditorManager;
@@ -58,5 +58,4 @@ inline void EditCommand::Execute(Args&& ..._args) {
 	pEditorManager_->ExecuteCommand<T>(_args...);
 }
 
-
-} /// ONEngine
+} /// Editor

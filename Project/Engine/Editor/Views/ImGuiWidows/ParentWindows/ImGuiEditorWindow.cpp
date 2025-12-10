@@ -1,6 +1,4 @@
-﻿﻿#include "ImGuiEditorWindow.h"
-
-using namespace ONEngine;
+﻿#include "ImGuiEditorWindow.h"
 
 /// external
 #include <imgui.h>
@@ -14,8 +12,10 @@ using namespace ONEngine;
 #include "../ChildWindows/GameWindows/ImGuiProjectWindow.h"
 #include "../ChildWindows/GameWindows/ImGuiHierarchyWindow.h"
 
+using namespace Editor;
+
 ImGuiEditorWindow::ImGuiEditorWindow(
-	DxManager* _dxManager, EntityComponentSystem* _ecs, AssetCollection* _assetCollection, EditorManager* _editorManager, SceneManager* _sceneManager) {
+	ONEngine::DxManager* _dxManager, ONEngine::EntityComponentSystem* _ecs, ONEngine::AssetCollection* _assetCollection, EditorManager* _editorManager, ONEngine::SceneManager* _sceneManager) {
 	imGuiFlags_ |= ImGuiWindowFlags_NoMove;
 	imGuiFlags_ |= ImGuiWindowFlags_NoResize;
 	imGuiFlags_ |= ImGuiWindowFlags_NoTitleBar;
@@ -38,7 +38,7 @@ ImGuiEditorWindow::ImGuiEditorWindow(
 void ImGuiEditorWindow::ShowImGui() {
 
 	ImGui::SetNextWindowPos(ImVec2(0, 20), ImGuiCond_Appearing);
-	ImGui::SetNextWindowSize(ImVec2(EngineConfig::kWindowSize.x, EngineConfig::kWindowSize.y), ImGuiCond_Appearing);
+	ImGui::SetNextWindowSize(ImVec2(ONEngine::EngineConfig::kWindowSize.x, ONEngine::EngineConfig::kWindowSize.y), ImGuiCond_Appearing);
 	if (!ImGui::Begin("Prefab", nullptr, imGuiFlags_)) {
 		ImGui::End();
 		return;

@@ -1,13 +1,13 @@
-﻿﻿#pragma once
+﻿#pragma once
 
 /// engine
 #include "Collection/ImGuiWindowCollection.h"
 
+namespace Editor {
+
 /// ///////////////////////////////////////////////////
 /// ImGuiMainWindow
 /// ///////////////////////////////////////////////////
-namespace ONEngine {
-
 class ImGuiMainWindow : public IImGuiParentWindow {
 public:
 	/// ===================================================
@@ -38,4 +38,4 @@ private:
 };
 
 
-} /// ONEngine
+} /// Editor

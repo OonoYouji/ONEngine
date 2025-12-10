@@ -1,4 +1,4 @@
-﻿﻿#pragma once
+﻿#pragma once
 
 /// std
 #include <vector>
@@ -12,7 +12,7 @@
 /// ///////////////////////////////////////////////////
 /// ImGuiにGameのログを表示するWindow
 /// ///////////////////////////////////////////////////
-namespace ONEngine {
+namespace Editor {
 
 class ImGuiConsoleWindow : public IImGuiChildWindow {
 public:
@@ -37,5 +37,4 @@ private:
 
 };
 
-
-} /// ONEngine
+} /// Editor

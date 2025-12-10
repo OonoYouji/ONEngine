@@ -1,6 +1,5 @@
 ﻿#include "AssetDebugger.h"
 
-using namespace ONEngine;
 
 /// externals
 #include <imgui.h>
@@ -11,6 +10,7 @@ using namespace ONEngine;
 #include "Engine/Editor/Math/AssetPayload.h"
 #include "Engine/Editor/Commands/ImGuiCommand/ImGuiCommand.h"
 
+using namespace Editor;
 
 namespace {
 
@@ -31,11 +31,11 @@ namespace {
 
 
 	/// テクスチャのプレビュー表示
-	void DrawTexturePreview(const Texture* _texture) {
+	void DrawTexturePreview(const ONEngine::Texture* _texture) {
 		if (!_texture) {
 			return;
 		}
-		Vector2 aspectRatio = _texture->GetTextureSize();
+		ONEngine::Vector2 aspectRatio = _texture->GetTextureSize();
 		aspectRatio /= (std::max)(aspectRatio.x, aspectRatio.y);
 		ImTextureID texId = reinterpret_cast<ImTextureID>(_texture->GetSRVGPUHandle().ptr);
 		ImGui::Image(texId, ImVec2(64.0f * aspectRatio.x, 64.0f * aspectRatio.y));
@@ -43,16 +43,16 @@ namespace {
 
 
 	/// テクスチャのドロップ処理
-	bool HandleTextureDrop(Material* _material) {
+	bool HandleTextureDrop(ONEngine::Material* _material) {
 		bool edit = false;
 		if (ImGui::BeginDragDropTarget()) {
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("AssetData")) {
 				if (payload->Data) {
 					AssetPayload* assetPayload = *static_cast<AssetPayload**>(payload->Data);
 					std::string path = assetPayload->filePath;
-					AssetType type = GetAssetTypeFromExtension(Mathf::FileExtension(path));
-					if (type == AssetType::Texture) {
-						const Guid& guid = assetPayload->guid;
+					ONEngine::AssetType type = ONEngine::GetAssetTypeFromExtension(ONEngine::Mathf::FileExtension(path));
+					if (type == ONEngine::AssetType::Texture) {
+						const ONEngine::Guid& guid = assetPayload->guid;
 						_material->SetBaseTextureGuid(guid);
 						edit = true;
 					}
@@ -65,16 +65,16 @@ namespace {
 
 
 	/// 法線テクスチャのドロップ処理
-	bool HandleNormalTextureDrop(Material* _material) {
+	bool HandleNormalTextureDrop(ONEngine::Material* _material) {
 		bool edit = false;
 		if (ImGui::BeginDragDropTarget()) {
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("AssetData")) {
 				if (payload->Data) {
 					AssetPayload* assetPayload = *static_cast<AssetPayload**>(payload->Data);
 					std::string path = assetPayload->filePath;
-					AssetType type = GetAssetTypeFromExtension(Mathf::FileExtension(path));
-					if (type == AssetType::Texture) {
-						const Guid& guid = assetPayload->guid;
+					ONEngine::AssetType type = ONEngine::GetAssetTypeFromExtension(ONEngine::Mathf::FileExtension(path));
+					if (type == ONEngine::AssetType::Texture) {
+						const ONEngine::Guid& guid = assetPayload->guid;
 						_material->SetNormalTextureGuid(guid);
 						edit = true;
 					}
@@ -90,7 +90,7 @@ namespace {
 
 
 
-bool ImMathf::MaterialEdit(const std::string& _label, Material* _material, AssetCollection* _assetCollection, bool _isEditNormalTexture) {
+bool ImMathf::MaterialEdit(const std::string& _label, ONEngine::Material* _material, ONEngine::AssetCollection* _assetCollection, bool _isEditNormalTexture) {
 
 	/// nullptr check
 	if (!_material) {

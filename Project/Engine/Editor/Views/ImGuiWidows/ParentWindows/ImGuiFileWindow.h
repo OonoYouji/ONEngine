@@ -1,4 +1,4 @@
-﻿﻿#pragma once
+﻿#pragma once
 
 /// engine
 #include "../Collection/ImGuiWindowCollection.h"
@@ -6,7 +6,7 @@
 /// ///////////////////////////////////////////////////
 /// File操作用のImGuiWindow
 /// ///////////////////////////////////////////////////
-namespace ONEngine {
+namespace Editor {
 
 class ImGuiFileWindow : public IImGuiParentWindow {
 public:
@@ -26,5 +26,4 @@ private:
 	int imGuiFlags_ = 0;
 };
 
-
-} /// ONEngine
+} /// Editor

@@ -1,6 +1,5 @@
 ﻿#include "ImGuiInspectorWindow.h"
 
-using namespace ONEngine;
 
 /// std
 #include <format>
@@ -10,13 +9,15 @@ using namespace ONEngine;
 
 /// engine
 #include "Engine/Asset/Collection/AssetCollection.h"
-#include "../../../Math/ImGuiMath.h"
-#include "Engine/Core/ImGui/ImGuiSelection.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
-#include "Engine/Editor/EditorManager.h"
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentEditCommands.h"
 #include "Engine/Editor/Commands/WorldEditorCommands/WorldEditorCommands.h"
 #include "Engine/Editor/Commands/ImGuiCommand/ImGuiCommand.h"
+
+/// editor
+#include "Engine/Editor/Math/ImGuiMath.h"
+#include "Engine/Editor/Manager/EditorManager.h"
+#include "Engine/Editor/Views/ImGuiSelection.h"
 
 /// compute
 #include "Engine/ECS/Component/Components/ComputeComponents/Light/Light.h"
@@ -41,6 +42,9 @@ using namespace ONEngine;
 #include "Engine/ECS/Component/Components/RendererComponents/Primitive/Line3DRenderer.h"
 #include "Engine/ECS/Component/Components/RendererComponents/ScreenPostEffectTag/ScreenPostEffectTag.h"
 
+
+using namespace Editor;
+using namespace ONEngine;
 
 ImGuiInspectorWindow::ImGuiInspectorWindow(const std::string& _windowName, DxManager* _dxManager, EntityComponentSystem* _ecs, AssetCollection* _assetCollection, EditorManager* _editorManager)
 	: pEcs_(_ecs), pDxManager_(_dxManager), pAssetCollection_(_assetCollection), pEditorManager_(_editorManager) {

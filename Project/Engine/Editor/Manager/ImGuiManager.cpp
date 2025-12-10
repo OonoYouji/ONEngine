@@ -1,6 +1,5 @@
 ﻿#include "ImGuiManager.h"
 
-using namespace ONEngine;
 
 /// external
 #include <imgui_impl_dx12.h>
@@ -15,6 +14,8 @@ using namespace ONEngine;
 #include "Engine/Core/Config/EngineConfig.h"
 #include "Engine/Core/Utility/Time/Time.h"
 #include "Engine/Core/Utility/Input/Input.h"
+
+using namespace Editor;
 
 #pragma region glyphRangesJapanease
 namespace {
@@ -542,7 +543,7 @@ const ImWchar gGlyphRangesJapanese[] = {
 #pragma endregion
 
 
-ImGuiManager::ImGuiManager(DxManager* _dxm, WindowManager* _windowManager, EntityComponentSystem* _pEntityComponentSystem, EditorManager* _editorManager, SceneManager* _sceneManager)
+ImGuiManager::ImGuiManager(ONEngine::DxManager* _dxm, ONEngine::WindowManager* _windowManager, ONEngine::EntityComponentSystem* _pEntityComponentSystem, EditorManager* _editorManager, ONEngine::SceneManager* _sceneManager)
 	: dxManager_(_dxm), pWindowManager_(_windowManager), pEntityComponentSystem_(_pEntityComponentSystem),
 	pEditorManager_(_editorManager), pSceneManager_(_sceneManager) {
 }
@@ -557,11 +558,11 @@ ImGuiManager::~ImGuiManager() {
 
 
 
-void ImGuiManager::Initialize(AssetCollection* _assetCollection) {
+void ImGuiManager::Initialize(ONEngine::AssetCollection* _assetCollection) {
 
 	pAssetCollection_ = _assetCollection;
 
-	DxSRVHeap* dxSRVHeap = dxManager_->GetDxSRVHeap();
+	ONEngine::DxSRVHeap* dxSRVHeap = dxManager_->GetDxSRVHeap();
 	uint32_t   srvDescriptorIndex = dxSRVHeap->AllocateBuffer();
 
 
@@ -592,10 +593,10 @@ void ImGuiManager::Initialize(AssetCollection* _assetCollection) {
 	ImGui_ImplWin32_NewFrame();
 
 	imGuiIO.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
-	imGuiIO.DisplaySize = ImVec2(EngineConfig::kWindowSize.x, EngineConfig::kWindowSize.y);
+	imGuiIO.DisplaySize = ImVec2(ONEngine::EngineConfig::kWindowSize.x, ONEngine::EngineConfig::kWindowSize.y);
 
 	/// debug windowの生成
-	pDebugGameWindow_ = pWindowManager_->GenerateWindow(L"game", EngineConfig::kWindowSize, WindowManager::WindowType::Sub);
+	pDebugGameWindow_ = pWindowManager_->GenerateWindow(L"game", ONEngine::EngineConfig::kWindowSize, ONEngine::WindowManager::WindowType::Sub);
 	pWindowManager_->HideGameWindow(pDebugGameWindow_);
 
 	LONG style = GetWindowLong(pDebugGameWindow_->GetHwnd(), GWL_STYLE);
@@ -614,7 +615,7 @@ void ImGuiManager::Finalize() {
 void ImGuiManager::Update() {
 	UpdateMousePosition(
 		pWindowManager_->GetMainWindow()->GetHwnd(),
-		EngineConfig::kWindowSize
+		ONEngine::EngineConfig::kWindowSize
 	);
 
 	ImGui::NewFrame();
@@ -622,8 +623,8 @@ void ImGuiManager::Update() {
 
 	ImGuiIO& io = ImGui::GetIO();
 	io.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
-	io.DisplaySize = ImVec2(EngineConfig::kWindowSize.x, EngineConfig::kWindowSize.y);
-	io.DeltaTime = Time::UnscaledDeltaTime();
+	io.DisplaySize = ImVec2(ONEngine::EngineConfig::kWindowSize.x, ONEngine::EngineConfig::kWindowSize.y);
+	io.DeltaTime = ONEngine::Time::UnscaledDeltaTime();
 
 	imGuiWindowCollection_->Update();
 }
@@ -640,7 +641,7 @@ void ImGuiManager::AddSceneImageInfo(const std::string& _name, const ImGuiSceneI
 	sceneImageInfos_[_name] = _info;
 }
 
-void ImGuiManager::UpdateMousePosition(HWND _winHwnd, const Vector2& _renderTargetSize) {
+void ImGuiManager::UpdateMousePosition(HWND _winHwnd, const ONEngine::Vector2& _renderTargetSize) {
 	POINT point;
 	GetCursorPos(&point);
 
@@ -649,14 +650,14 @@ void ImGuiManager::UpdateMousePosition(HWND _winHwnd, const Vector2& _renderTarg
 	RECT clientRect;
 	GetClientRect(_winHwnd, &clientRect);
 
-	Vector2 clientSize = {
+	ONEngine::Vector2 clientSize = {
 		static_cast<float>(clientRect.right - clientRect.left),
 		static_cast<float>(clientRect.bottom - clientRect.top)
 	};
 
 	/// 補正
-	Vector2 scale = _renderTargetSize / clientSize;
-	Vector2 corrected = {
+	ONEngine::Vector2 scale = _renderTargetSize / clientSize;
+	ONEngine::Vector2 corrected = {
 		point.x * scale.x,
 		point.y * scale.y
 	};
@@ -699,11 +700,11 @@ void ImGuiManager::InputImGuiStyle(const std::string& _fileName) const {
 	file.close();
 }
 
-void ImGuiManager::SetImGuiWindow(Window* _window) {
+void ImGuiManager::SetImGuiWindow(ONEngine::Window* _window) {
 	pImGuiWindow_ = _window;
 }
 
-Window* ImGuiManager::GetDebugGameWindow() const {
+ONEngine::Window* ImGuiManager::GetDebugGameWindow() const {
 	return pDebugGameWindow_;
 }
 

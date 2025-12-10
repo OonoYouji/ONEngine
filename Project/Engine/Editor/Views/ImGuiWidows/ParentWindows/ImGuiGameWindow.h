@@ -1,26 +1,35 @@
-﻿﻿#pragma once
+﻿#pragma once
 
-/// engine
+/// editor
 #include "../Collection/ImGuiWindowCollection.h"
+
+namespace ONEngine {
+/// 前方宣言
+class DxManager;
+class EntityComponentSystem;
+class AssetCollection;
+class SceneManager;
+} // namespace ONEngine
+
+namespace Editor {
+
+/// 前方宣言
+class EditorManager;
 
 /// ///////////////////////////////////////////////////
 /// GameWindow
 /// ///////////////////////////////////////////////////
-namespace ONEngine {
-
 class ImGuiGameWindow : public IImGuiParentWindow {
 public:
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
 
-	ImGuiGameWindow(
-		class DxManager*,
-		class EntityComponentSystem*, 
-		class AssetCollection*,
-		class EditorManager*, 
-		class SceneManager*
-	);
+	ImGuiGameWindow(ONEngine::DxManager* _dxm,
+		ONEngine::EntityComponentSystem* _ecs,
+		ONEngine::AssetCollection* _assetCollection,
+		EditorManager* _editorManager,
+		ONEngine::SceneManager* _sceneManager);
 	~ImGuiGameWindow() {}
 
 	/// @brief imgui windowの描画処理
@@ -34,5 +43,4 @@ private:
 	int imGuiFlags_ = 0;
 };
 
-
-} /// ONEngine
+} // namespace Editor

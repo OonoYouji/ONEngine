@@ -3,7 +3,7 @@
 /// engine
 #include "Engine/Asset/Guid/Guid.h"
 
-namespace ONEngine {
+namespace Editor {
 
 /// @brief 選択しているオブジェクトの種類
 enum class SelectionType {
@@ -19,11 +19,11 @@ namespace ImGuiSelection {
 
 /// @brief 選択しているオブジェクトのGuidを返す
 /// @return オブジェクトのGuid
-const Guid& GetSelectedObject();
+const ONEngine::Guid& GetSelectedObject();
 
 /// @brief 選択したオブジェクトのGuidを設定する
 /// @param _entityGuid オブジェクトのGuid
-void SetSelectedObject(const Guid& _entityGuid, SelectionType _type);
+void SetSelectedObject(const ONEngine::Guid& _entityGuid, SelectionType _type);
 
 /// @brief 選択しているオブジェクトの種類を返す
 /// @return オブジェクトの種類
@@ -45,4 +45,5 @@ void SetInfo(const std::string& _info);
 
 }
 
-} /// namespace ONEngine
+} /// namespace Editor
+

@@ -6,14 +6,23 @@
 #include <map>
 
 /// engine
-#include "../../Collection/ImGuiWindowCollection.h"
 #include "Engine/ECS/Entity/GameEntity/GameEntity.h"
 #include "Engine/ECS/Component/Collection/ComponentHash.h"
+
+/// editor
+#include "../../Collection/ImGuiWindowCollection.h"
+
+namespace ONEngine {
+/// 前方宣言
+class IComponent;
+class Texture;
+}
+
 
 /// ///////////////////////////////////////////////////
 /// ImGuiInspectorWindow
 /// ///////////////////////////////////////////////////
-namespace ONEngine {
+namespace Editor {
 
 class ImGuiInspectorWindow : public IImGuiChildWindow {
 public:
@@ -23,10 +32,10 @@ public:
 
 	ImGuiInspectorWindow(
 		const std::string& _windowName, 
-		class DxManager* _dxManager,
-		class EntityComponentSystem* _ecs, 
-		class AssetCollection* _assetCollection, 
-		class EditorManager* _editorManager
+		ONEngine::DxManager* _dxManager,
+		ONEngine::EntityComponentSystem* _ecs, 
+		ONEngine::AssetCollection* _assetCollection, 
+		EditorManager* _editorManager
 	);
 	~ImGuiInspectorWindow() {}
 
@@ -37,7 +46,7 @@ public:
 	/// @tparam T Componentの型
 	/// @param _func Componentのデバッグ関数
 	template<typename T>
-	void RegisterComponent(std::function<void(class IComponent*)> _func);
+	void RegisterComponent(std::function<void(ONEngine::IComponent*)> _func);
 
 	/// @brief EntityのInspector表示処理
 	void EntityInspector();
@@ -47,7 +56,7 @@ public:
 
 	/// @brief テクスチャのInspector表示
 	/// @param _texture 
-	void TextureAssetInspector(class Texture* _texture);
+	void TextureAssetInspector(ONEngine::Texture* _texture);
 
 private:
 	/// ===================================================
@@ -55,15 +64,15 @@ private:
 	/// ===================================================
 
 	/// ----- other class ----- ///
-	class EntityComponentSystem* pEcs_;
-	class EditorManager* pEditorManager_;
-	class AssetCollection* pAssetCollection_;
-	class DxManager* pDxManager_;
+	ONEngine::EntityComponentSystem* pEcs_;
+	EditorManager* pEditorManager_;
+	ONEngine::AssetCollection* pAssetCollection_;
+	ONEngine::DxManager* pDxManager_;
 
 	std::string windowName_;
-	class IComponent* selectedComponent_ = nullptr;
+	ONEngine::IComponent* selectedComponent_ = nullptr;
 	std::vector<std::function<void()>> inspectorFunctions_;
-	std::unordered_map<size_t, std::function<void(class IComponent*)>> componentDebugFuncs_;
+	std::unordered_map<size_t, std::function<void(ONEngine::IComponent*)>> componentDebugFuncs_;
 
 	/* ----- add component ----- */
 	std::map<size_t, std::string> componentNames_;
@@ -71,10 +80,11 @@ private:
 };
 
 template<typename T>
-inline void ImGuiInspectorWindow::RegisterComponent(std::function<void(class IComponent*)> _func) {
+inline void ImGuiInspectorWindow::RegisterComponent(std::function<void(ONEngine::IComponent*)> _func) {
 	size_t hash = GetComponentHash<T>();
 	componentDebugFuncs_[hash] = _func;
 	componentNames_[hash] = GetComponentTypeName<T>();
 }
 
-} /// ONEngine
+
+} /// Editor

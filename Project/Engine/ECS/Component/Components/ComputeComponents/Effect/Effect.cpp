@@ -1,11 +1,13 @@
-#include "Effect.h"
+﻿#include "Effect.h"
 
 /// std
 #include <imgui.h>
 
 /// engine
 #include "Engine/Core/Utility/Math/Vector4.h"
-#include "Engine/Core/ImGui/Math/ImGuiMath.h"
+
+/// editor
+#include "Engine/Editor/Math/ImGuiMath.h"
 
 using namespace ONEngine;
 
@@ -251,7 +253,7 @@ void COMP_DEBUG::EffectDebug(Effect* _effect) {
 		std::string meshPath = _effect->GetMeshPath();
 
 		ImGui::Text("mesh path");
-		ImMathf::InputText("##mesh path", &meshPath, ImGuiInputTextFlags_EnterReturnsTrue);
+		Editor::ImMathf::InputText("##mesh path", &meshPath, ImGuiInputTextFlags_EnterReturnsTrue);
 		if (ImGui::BeginDragDropTarget()) {
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("AssetData")) {
 
@@ -276,7 +278,7 @@ void COMP_DEBUG::EffectDebug(Effect* _effect) {
 
 		/// texture path
 		ImGui::Text("texture path");
-		ImMathf::InputText("##texture path", &texturePath, ImGuiInputTextFlags_EnterReturnsTrue);
+		Editor::ImMathf::InputText("##texture path", &texturePath, ImGuiInputTextFlags_EnterReturnsTrue);
 		if (ImGui::BeginDragDropTarget()) {
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("AssetData")) {
 

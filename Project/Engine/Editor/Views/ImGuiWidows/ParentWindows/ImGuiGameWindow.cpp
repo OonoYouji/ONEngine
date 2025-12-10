@@ -1,6 +1,5 @@
-﻿﻿#include "ImGuiGameWindow.h"
+﻿#include "ImGuiGameWindow.h"
 
-using namespace ONEngine;
 
 /// external
 #include <imgui.h>
@@ -15,6 +14,9 @@ using namespace ONEngine;
 #include "../ChildWindows/GameWindows/ImGuiHierarchyWindow.h"
 #include "../ChildWindows/GameWindows/ImGuiConsoleWindow.h"
 #include "../ChildWindows/GameWindows/ImGuiTexturePreviewWindow.h"
+
+using namespace ONEngine;
+using namespace Editor;
 
 ImGuiGameWindow::ImGuiGameWindow(
 	DxManager* _dxManager,
