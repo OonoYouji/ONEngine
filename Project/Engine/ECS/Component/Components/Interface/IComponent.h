@@ -1,7 +1,8 @@
-﻿#pragma once
+#pragma once
 
 /// std
 #include <cstdint>
+#include <type_traits>
 
 
 /// ///////////////////////////////////////////////////
@@ -49,5 +50,9 @@ public:
 
 };
 
+
+/// @brief TypeがComponentの型であることを示すコンセプト
+template <typename T>
+concept ComponentType = std::is_base_of_v<IComponent, T>;
 
 } /// ONEngine

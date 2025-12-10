@@ -185,11 +185,7 @@ void ImGuiInspectorWindow::EntityInspector() {
 	/// ----------------------------
 	for (auto itr = selectedEntity->GetComponents().begin(); itr != selectedEntity->GetComponents().end(); ) {
 		std::pair<size_t, IComponent*> component = *itr;
-		std::string componentName = typeid(*component.second).name();
-		if (componentName.find("class ONEngine::") == 0) {
-			componentName = componentName.substr(strlen("class ONEngine::"));
-		}
-
+		std::string componentName = GetComponentTypeName(component.second);
 		std::string label = componentName + "##" + std::to_string(reinterpret_cast<uintptr_t>(component.second));
 
 		/// Idの追加(string)
