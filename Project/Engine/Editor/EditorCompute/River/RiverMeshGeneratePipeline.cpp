@@ -1,4 +1,4 @@
-﻿#include "RiverMeshGeneratePipeline.h"
+#include "RiverMeshGeneratePipeline.h"
 
 using namespace ONEngine;
 
@@ -88,8 +88,8 @@ void RiverMeshGeneratePipeline::Execute(EntityComponentSystem* _ecs, DxCommand* 
 	river->GetRwIndices().UAVBindForComputeCommandList(cmdList, UAV_INDICES);
 
 	/// 起動
-	UINT totalVertices = river->GetSamplePerSegment() * (river->GetNumControlPoint() - 3) * 2;
-	UINT threadsPerGroup = 16;
+	const UINT totalVertices = river->GetSamplePerSegment() * (river->GetNumControlPoint() - 3) * 2;
+	const UINT threadsPerGroup = 16;
 	cmdList->Dispatch(
 		Mathf::DivideAndRoundUp(totalVertices, threadsPerGroup),
 		1, 1

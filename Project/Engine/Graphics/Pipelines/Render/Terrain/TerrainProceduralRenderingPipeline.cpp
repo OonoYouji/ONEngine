@@ -1,4 +1,4 @@
-﻿#include "TerrainProceduralRenderingPipeline.h"
+#include "TerrainProceduralRenderingPipeline.h"
 
 using namespace ONEngine;
 
@@ -166,7 +166,7 @@ void TerrainProceduralRenderingPipeline::PreDraw(ECSGroup* _ecs, CameraComponent
 		cmdList->SetComputeRootDescriptorTable(ARR_SRV_TREE_ARRANGEMENT_TEXTURE, arrangementTexture->GetSRVGPUHandle());
 
 		/// numthreadsに合わせてDispatchする
-		UINT size = static_cast<UINT>(dataBuffer_.GetMappingData());
+		const uint32_t size = static_cast<uint32_t>(dataBuffer_.GetMappingData());
 		const uint32_t threadGroupSize = 32;
 		cmdList->Dispatch(
 			Mathf::DivideAndRoundUp(size, threadGroupSize),
