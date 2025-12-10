@@ -78,9 +78,10 @@ bool StartsWith(const std::string& _str, const std::string& _prefix);
 /// @brief 分子を分母で割り、余りがある場合は切り上げた商を返します。分母が0の場合の動作は未定義です。
 /// @param _numerator 割られる値（分子）。
 /// @param _denominator 割る値（分母）。0を渡してはなりません。
-/// @return 切り上げた商をUINT型で返します（余りがあれば上方向に丸められる）。
+/// @return 切り上げた商をuint32_t型で返します（余りがあれば上方向に丸められる）。
 uint32_t DivideAndRoundUp(uint32_t _numerator, uint32_t _denominator);
-}
 
+
+} /// namespace Mathf
 
 } /// namespace ONEngine

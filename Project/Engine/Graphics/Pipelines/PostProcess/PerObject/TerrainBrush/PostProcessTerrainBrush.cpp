@@ -1,4 +1,4 @@
-﻿#include "PostProcessTerrainBrush.h"
+#include "PostProcessTerrainBrush.h"
 
 using namespace ONEngine;
 
@@ -130,8 +130,8 @@ void PostProcessTerrainBrush::Execute(
 
 
 	cmdList->Dispatch(
-		static_cast<UINT>(EngineConfig::kWindowSize.x) / 16,
-		static_cast<UINT>(EngineConfig::kWindowSize.y) / 16,
+		Mathf::DivideAndRoundUp(static_cast<uint32_t>(EngineConfig::kWindowSize.x), 16),
+		Mathf::DivideAndRoundUp(static_cast<uint32_t>(EngineConfig::kWindowSize.y), 16),
 		1
 	);
 

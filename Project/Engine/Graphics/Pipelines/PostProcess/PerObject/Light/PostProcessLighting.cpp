@@ -1,4 +1,4 @@
-﻿#include "PostProcessLighting.h"
+#include "PostProcessLighting.h"
 
 using namespace ONEngine;
 
@@ -138,8 +138,8 @@ void PostProcessLighting::Execute(const std::string& _textureName, DxCommand* _d
 
 
 	command->Dispatch(
-		Mathf::DivideAndRoundUp(static_cast<UINT>(EngineConfig::kWindowSize.x), 16),
-		Mathf::DivideAndRoundUp(static_cast<UINT>(EngineConfig::kWindowSize.y), 16),
+		Mathf::DivideAndRoundUp(static_cast<uint32_t>(EngineConfig::kWindowSize.x), 16),
+		Mathf::DivideAndRoundUp(static_cast<uint32_t>(EngineConfig::kWindowSize.y), 16),
 		1
 	);
 
