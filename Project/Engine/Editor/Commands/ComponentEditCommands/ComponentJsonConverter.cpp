@@ -5,6 +5,8 @@
 #include <typeindex>
 #include <functional>
 
+#include "Engine/ECS/Component/Collection/ComponentHash.h"
+
 /// engine/compute
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Terrain.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Grass/GrassField.h"
@@ -70,11 +72,7 @@ namespace {
 
 		template <typename T>
 		void Register() {
-			std::string typeName = typeid(T).name();
-			/// namespace ONEngineが付与されている場合は削除する
-			if (typeName.find("class ONEngine::") != std::string::npos) {
-				typeName = typeName.substr(strlen("class ONEngine::"));
-			}
+			std::string typeName = GetComponentTypeName<T>();
 
 			converters_[typeName] = [](const IComponent* _component) {
 				return *static_cast<const T*>(_component);
@@ -98,33 +96,26 @@ namespace {
 }
 
 nlohmann::json ComponentJsonConverter::ToJson(const IComponent* _component) {
-	std::string name = typeid(*_component).name();
-	if(name.find("class ONEngine::") != std::string::npos) {
-		name = name.substr(strlen("class ONEngine::"));
-	}
+	std::string name = GetComponentTypeName(_component);
 
-	auto it = jsonConverter.converters_.find(name);
-	if (it == jsonConverter.converters_.end()) {
+	auto itr = jsonConverter.converters_.find(name);
+	if (itr == jsonConverter.converters_.end()) {
 		return nlohmann::json{};
 	}
 
-	return it->second(_component);
+	return itr->second(_component);
 }
 
 void ComponentJsonConverter::FromJson(const nlohmann::json& _j, IComponent* _component) {
-	std::string name = typeid(*_component).name();
-	if (name.find("class ONEngine::") != std::string::npos) {
-		name = name.substr(strlen("class ONEngine::"));
-	}
+	std::string name = GetComponentTypeName(_component);
 
-	auto it = jsonConverter.fromJsonConverters_.find(name);
-
-	if (it == jsonConverter.fromJsonConverters_.end()) {
+	auto itr = jsonConverter.fromJsonConverters_.find(name);
+	if (itr == jsonConverter.fromJsonConverters_.end()) {
 		Console::Log("ComponentJsonConverter: " + name + "の変換関数が登録されていません。");
 		return;
 	}
 
-	it->second(_component, _j);
+	itr->second(_component, _j);
 }
 
 void ONEngine::from_json(const nlohmann::json& _j, Quaternion& _q) {

@@ -1,4 +1,4 @@
-﻿#include "PostProcessRadialBlur.h"
+#include "PostProcessRadialBlur.h"
 
 using namespace ONEngine;
 
@@ -66,8 +66,8 @@ void PostProcessRadialBlur::Execute(const std::string& _textureName, DxCommand* 
 	command->SetComputeRootDescriptorTable(1, textures[textureIndices_[1]].GetUAVGPUHandle());
 
 	command->Dispatch(
-		static_cast<UINT>(EngineConfig::kWindowSize.x) / 16,
-		static_cast<UINT>(EngineConfig::kWindowSize.y) / 16,
+		Mathf::DivideAndRoundUp(static_cast<uint32_t>(EngineConfig::kWindowSize.x), 16),
+		Mathf::DivideAndRoundUp(static_cast<uint32_t>(EngineConfig::kWindowSize.y), 16),
 		1
 	);
 

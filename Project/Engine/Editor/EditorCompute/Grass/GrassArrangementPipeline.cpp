@@ -1,4 +1,4 @@
-﻿#include "GrassArrangementPipeline.h"
+#include "GrassArrangementPipeline.h"
 
 using namespace ONEngine;
 
@@ -94,14 +94,12 @@ void GrassArrangementPipeline::Execute(EntityComponentSystem* _ecs, DxCommand* _
 			UINT remainingInstances = maxInstanceNum - startIndex;
 			UINT currentInstanceCount = (std::min)(remainingInstances, maxDispatchCount * threadGroupSize);
 
-			UINT dispatchSizeX = (currentInstanceCount + threadGroupSize - 1) / threadGroupSize;
-
 			// startIndexとcurrentInstanceCountをシェーダーに渡す
 			UINT constants[2] = { startIndex, currentInstanceCount };
 			cmdList->SetComputeRoot32BitConstants(C32BIT_CONSTANTS, 2, constants, 0);
 
 			// Dispatchを実行
-			cmdList->Dispatch(dispatchSizeX, 1, 1);
+			cmdList->Dispatch(Mathf::DivideAndRoundUp(currentInstanceCount, threadGroupSize), 1, 1);
 		}
 
 	}

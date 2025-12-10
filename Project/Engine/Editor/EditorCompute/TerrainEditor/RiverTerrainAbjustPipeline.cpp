@@ -1,4 +1,4 @@
-﻿#include "RiverTerrainAbjustPipeline.h"
+#include "RiverTerrainAbjustPipeline.h"
 
 using namespace ONEngine;
 
@@ -75,8 +75,8 @@ void RiverTerrainAbjustPipeline::Execute(EntityComponentSystem* _ecs, DxCommand*
 	river->GetRwVertices().UAVBindForComputeCommandList(cmdList, SRV_RIVER_VERTICES);
 	river->GetRwIndices().UAVBindForComputeCommandList(cmdList, SRV_RIVER_INDICES);
 
-	UINT maxVertex = static_cast<UINT>(terrain->GetMaxVertexNum());
-	UINT groupSize = 32;
+	const UINT maxVertex = static_cast<UINT>(terrain->GetMaxVertexNum());
+	const UINT groupSize = 32;
 	cmdList->Dispatch(Mathf::DivideAndRoundUp(maxVertex, groupSize), 1, 1);
 
 }

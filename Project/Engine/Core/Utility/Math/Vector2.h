@@ -91,14 +91,12 @@ inline Vector2 operator+(const Vector2& _v1, const Vector2& _v2) {
 	};
 }
 
-
 inline Vector2 operator-(const Vector2& _v1, const Vector2& _v2) {
 	return {
 		_v1.x - _v2.x,
 		_v1.y - _v2.y
 	};
 }
-
 
 inline Vector2 operator/(const Vector2& _v1, const Vector2& _v2) {
 	return {
@@ -107,14 +105,12 @@ inline Vector2 operator/(const Vector2& _v1, const Vector2& _v2) {
 	};
 }
 
-
 inline Vector2 operator/(const Vector2& _v, float _scaler) {
 	return {
 		_v.x / _scaler,
 		_v.y / _scaler
 	};
 }
-
 
 inline Vector2 operator*(const Vector2& _v1, const Vector2& _v2) {
 	return {
@@ -123,7 +119,6 @@ inline Vector2 operator*(const Vector2& _v1, const Vector2& _v2) {
 	};
 }
 
-
 inline Vector2 operator*(const Vector2& _v, float _scaler) {
 	return {
 		_v.x * _scaler,
@@ -131,16 +126,13 @@ inline Vector2 operator*(const Vector2& _v, float _scaler) {
 	};
 }
 
-
 inline Vector2 operator*(float _scaler, const Vector2& _v) {
 	return _v * _scaler;
 }
 
-
 inline bool operator!=(const Vector2& _v1, const Vector2& _v2) {
 	return _v1.x != _v2.x || _v1.y != _v2.y;
 }
-
 
 inline bool operator==(const Vector2& _v1, const Vector2& _v2) {
 	return  _v1.x == _v2.x && _v1.y == _v2.y;
@@ -150,54 +142,45 @@ inline bool operator==(const Vector2& _v1, const Vector2& _v2) {
 /// ===================================================
 /// Vector2 : operator overload
 /// ===================================================
-
 inline Vector2& Vector2::operator=(const Vector2& _other) {
 	this->x = _other.x;
 	this->y = _other.y;
 	return *this;
 }
 
-
 inline Vector2& Vector2::operator+=(const Vector2& _other) {
 	(*this) = (*this) + _other;
 	return *this;
 }
-
 
 inline Vector2& Vector2::operator-=(const Vector2& _other) {
 	(*this) = (*this) - _other;
 	return *this;
 }
 
-
 inline Vector2& Vector2::operator/=(const Vector2& _other) {
 	(*this) = (*this) / _other;
 	return *this;
 }
-
 
 inline Vector2& Vector2::operator*=(const Vector2& _other) {
 	(*this) = (*this) * _other;
 	return *this;
 }
 
-
 inline Vector2& Vector2::operator/=(float _scale) {
 	(*this) = (*this) / _scale;
 	return *this;
 }
-
 
 inline Vector2& Vector2::operator*=(float _scale) {
 	(*this) = (*this) * _scale;
 	return *this;
 }
 
-
 inline Vector2 Vector2::operator-() {
 	return (*this) * -1.0f;
 }
-
 
 inline Vector2 Vector2::operator+() {
 	return (*this);
@@ -205,23 +188,21 @@ inline Vector2 Vector2::operator+() {
 
 #pragma endregion
 
-
 /// json 変換
 void from_json(const nlohmann::json& _j, Vector2& _v);
 void to_json(nlohmann::json& _j, const Vector2& _v);
 
 } /// ONEngine
 
-
 template <>
 struct std::formatter<ONEngine::Vector2> {
-	constexpr auto parse(format_parse_context& ctx) {
-		return ctx.begin();  // フォーマットの詳細設定は今回は無視
+	constexpr auto parse(format_parse_context& _ctx) {
+		return _ctx.begin();  // フォーマットの詳細設定は今回は無視
 	}
 
 	template <typename FormatContext>
-	auto format(const ONEngine::Vector2& vec, FormatContext& ctx) const {
-		return std::format_to(ctx.out(), "({}, {})", vec.x, vec.y);
+	auto format(const ONEngine::Vector2& _vec, FormatContext& _ctx) const {
+		return std::format_to(_ctx.out(), "({}, {})", _vec.x, _vec.y);
 	}
 };
 

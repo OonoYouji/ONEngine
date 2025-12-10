@@ -1,4 +1,4 @@
-﻿#include "GizmoRenderingPipeline.h"
+#include "GizmoRenderingPipeline.h"
 
 using namespace ONEngine;
 
@@ -41,11 +41,7 @@ void GizmoRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManag
 
 		pipeline->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 0); ///< view projection
 
-		D3D12_DEPTH_STENCIL_DESC depthStencilDesc = {};
-		depthStencilDesc.DepthEnable = TRUE;
-		depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
-		depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
-		pipeline->SetDepthStencilDesc(depthStencilDesc);
+		pipeline->SetDepthStencilDesc(DefaultDepthStencilDesc());
 
 		/// create pipeline
 		pipeline->CreatePipeline(_dxm->GetDxDevice());

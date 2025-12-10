@@ -8,9 +8,6 @@
 
 namespace ONEngine {
 
-template <typename T>
-concept ComponentType = std::is_base_of_v<IComponent, T>;
-
 /// ////////////////////////////////////////////////////
 /// エンティティインターフェース
 /// ////////////////////////////////////////////////////
@@ -244,10 +241,7 @@ private:
 
 template<ComponentType Comp>
 inline Comp* GameEntity::AddComponent() {
-	std::string name = typeid(Comp).name();
-	if (name.find("class ONEngine::") == 0) {
-		name = name.substr(strlen("class ONEngine::"));
-	}
+	const std::string name = GetComponentTypeName<Comp>();
 	return static_cast<Comp*>(AddComponent(name));
 }
 

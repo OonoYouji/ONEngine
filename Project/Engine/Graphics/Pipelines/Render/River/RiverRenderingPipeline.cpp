@@ -1,4 +1,4 @@
-﻿#include "RiverRenderingPipeline.h"
+#include "RiverRenderingPipeline.h"
 
 using namespace ONEngine;
 
@@ -45,12 +45,7 @@ void RiverRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManag
 		pipeline_->SetCullMode(D3D12_CULL_MODE_BACK);
 		pipeline_->SetFillMode(D3D12_FILL_MODE_SOLID);
 		pipeline_->SetTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
-
-		D3D12_DEPTH_STENCIL_DESC depthStencilDesc = {};
-		depthStencilDesc.DepthEnable = TRUE;
-		depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
-		depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
-		pipeline_->SetDepthStencilDesc(depthStencilDesc);
+		pipeline_->SetDepthStencilDesc(DefaultDepthStencilDesc());
 
 		pipeline_->CreatePipeline(_dxm->GetDxDevice());
 	}
