@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /// std
 #include <typeindex>
@@ -6,7 +6,7 @@
 #include <unordered_map>
 
 /// engine
-#include "../Interface/IEditorCommand.h"
+#include "../IEditorCommand.h"
 
 
 /// ///////////////////////////////////////////////

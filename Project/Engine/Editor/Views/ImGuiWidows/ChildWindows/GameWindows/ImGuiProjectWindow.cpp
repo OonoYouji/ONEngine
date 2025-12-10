@@ -1,4 +1,4 @@
-﻿#include "ImGuiProjectWindow.h"
+#include "ImGuiProjectWindow.h"
 
 using namespace ONEngine;
 
@@ -13,11 +13,13 @@ using namespace ONEngine;
 
 /// engine
 #include "Engine/Asset/Collection/AssetCollection.h"
-#include "Engine/Core/ImGui/Math/AssetPayload.h"
-#include "Engine/Core/ImGui/Math/ImGuiMath.h"
-#include "Engine/Core/ImGui/ImGuiSelection.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
-#include "Engine/Editor/EditorManager.h"
+
+/// editor
+#include "Engine/Editor/Math/AssetPayload.h"
+#include "Engine/Editor/Math/ImGuiMath.h"
+#include "Engine/Editor/Views/ImGuiSelection.h"
+#include "Engine/Editor/Manager/EditorManager.h"
 #include "Engine/Editor/Commands/WorldEditorCommands/WorldEditorCommands.h"
 
 

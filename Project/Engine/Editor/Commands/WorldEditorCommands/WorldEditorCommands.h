@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /// std
 #include <string>
@@ -7,7 +7,7 @@
 #include <nlohmann/json.hpp>
 
 /// engine
-#include "../Interface/IEditorCommand.h"
+#include "../IEditorCommand.h"
 #include "Engine/Asset/Guid/Guid.h"
 
 

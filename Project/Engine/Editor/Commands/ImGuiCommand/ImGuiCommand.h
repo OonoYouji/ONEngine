@@ -5,7 +5,7 @@
 
 /// engine
 #include "Engine/Core/Utility/Utility.h"
-#include "../Interface/IEditorCommand.h"
+#include "../IEditorCommand.h"
 
 namespace ONEngine {
 

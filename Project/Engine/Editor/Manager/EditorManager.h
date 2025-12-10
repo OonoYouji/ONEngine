@@ -15,7 +15,7 @@
 
 /// editor
 #include "Engine/Editor/Clipboard/Clipboard.h"
-#include "Engine/Editor/Commands/Interface/IEditorCommand.h"
+#include "Engine/Editor/Commands/IEditorCommand.h"
 #include "Engine/Editor/EditorCompute/Interface/IEditorCompute.h"
 
 /// @brief 
