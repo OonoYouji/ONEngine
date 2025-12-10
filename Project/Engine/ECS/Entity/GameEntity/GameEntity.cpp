@@ -1,5 +1,7 @@
 #include "GameEntity.h"
 
+using namespace ONEngine;
+
 /// engine
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Collection/ComponentCollection.h"
@@ -13,7 +15,7 @@ GameEntity::~GameEntity() {}
 
 void GameEntity::Awake() {
 	name_ = typeid(*this).name();
-	name_.erase(0, 6);
+	name_.erase(0, 10);
 	prefabName_ = "";
 
 	pEcsGroup_->LoadComponent(this);
@@ -262,10 +264,6 @@ bool GameEntity::ContainsPrefab() const {
 	return prefabName_ != "";
 }
 
-bool GameEntity::GetActive() const {
-	return active_;
-}
-
 int32_t GameEntity::GetId() const {
 	return id_;
 }
@@ -280,7 +278,7 @@ ECSGroup* GameEntity::GetECSGroup() const {
 
 
 
-void to_json(nlohmann::json& _j, const GameEntity& _entity) {
+void ONEngine::to_json(nlohmann::json& _j, const GameEntity& _entity) {
 	/// ----- GameEntityからJsonを生成 ----- ///
 
 	nlohmann::json entityJson = nlohmann::json::object();
@@ -304,12 +302,12 @@ void to_json(nlohmann::json& _j, const GameEntity& _entity) {
 	_j = nlohmann::json{
 		{ "name", _entity.GetName() },
 		{ "prefabName", _entity.GetPrefabName() },
-		{ "active", _entity.GetActive() },
+		{ "active", _entity.active },
 		{ "components", nlohmann::json::array() }
 	};
 }
 
-void from_json(const nlohmann::json& /*_j*/, GameEntity& /*_entity*/) {
+void ONEngine::from_json(const nlohmann::json& /*_j*/, GameEntity& /*_entity*/) {
 	/// ----- JsonからGameEntityを生成 ----- ///
 
 }

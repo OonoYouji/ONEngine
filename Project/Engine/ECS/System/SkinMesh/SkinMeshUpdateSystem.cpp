@@ -1,4 +1,6 @@
-#include "SkinMeshUpdateSystem.h"
+﻿#include "SkinMeshUpdateSystem.h"
+
+using namespace ONEngine;
 
 /// engine
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
@@ -19,7 +21,7 @@ void SkinMeshUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
 
 	for (auto& skinMesh : skinMeshArray->GetUsedComponents()) {
 		/// 以降の処理を無視する条件
-		if (!skinMesh || skinMesh->enable || !skinMesh->GetOwner()->GetActive()) {
+		if (!skinMesh || skinMesh->enable || !skinMesh->GetOwner()->active) {
 			continue;
 		}
 

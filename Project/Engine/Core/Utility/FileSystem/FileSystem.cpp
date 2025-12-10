@@ -1,5 +1,7 @@
 #include "FileSystem.h"
 
+using namespace ONEngine;
+
 /// std
 #include <filesystem>
 #include <fstream>

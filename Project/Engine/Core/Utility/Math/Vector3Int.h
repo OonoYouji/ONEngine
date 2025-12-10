@@ -10,6 +10,8 @@
 /// ///////////////////////////////////////////////////
 /// Vector3の整数型
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 struct Vector3Int {
 
 	Vector3Int();
@@ -96,3 +98,5 @@ inline Vector3Int operator* (int32_t _scaler, const Vector3Int& _v) {
 
 void from_json(const nlohmann::json& _j, Vector3Int& _v);
 void to_json(nlohmann::json& _j, const Vector3Int& _v);
+
+} /// ONEngine

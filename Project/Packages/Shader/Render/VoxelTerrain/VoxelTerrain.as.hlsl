@@ -26,7 +26,7 @@ void main(
 	Payload asPayload;
 		
 	/// チャンクの原点を計算
-	asPayload.chunkOrigin = float3(groupId) * voxelTerrainInfo.chunkSize;
+	asPayload.chunkOrigin = float3(groupId) * voxelTerrainInfo.chunkSize + uint3(voxelTerrainInfo.terrainOrigin);
 
 	/// カリング判定、可視ならディスパッチサイズを設定
 	AABB aabb;
@@ -51,26 +51,27 @@ void main(
 		uint subChunkSizeValue;
 
 		/// LOD レベルを ndc.z の値に基づいて設定
-		if (lengthToCamera < 100.0f) {
+		if (lengthToCamera < 50.0f) {
 			asPayload.lodLevel = 0; // 高詳細度
 			subChunkSizeValue = 2;
 
-		} else if (lengthToCamera < 300.0f) {
+		} else if (lengthToCamera < 150.0f) {
 			asPayload.lodLevel = 1; // 中詳細度
-			subChunkSizeValue = 8;
+			subChunkSizeValue = 4;
 
-		} else {
+		} else if (lengthToCamera < 300.0f) {
 			asPayload.lodLevel = 2; // 低詳細度
+			subChunkSizeValue = 8;
+		} else {
+			asPayload.lodLevel = 3; // 低詳細度
 			subChunkSizeValue = 16;
 		}
-
-
 
 
 		asPayload.chunkIndex = IndexOfMeshGroup(groupId, uint3(voxelTerrainInfo.chunkCountXZ.x, 1, voxelTerrainInfo.chunkCountXZ.y));
 
 		asPayload.subChunkSize = uint3(subChunkSizeValue, subChunkSizeValue, subChunkSizeValue);
-		dispatchSize = voxelTerrainInfo.chunkSize / asPayload.subChunkSize;
+		dispatchSize = voxelTerrainInfo.textureSize / asPayload.subChunkSize;
 	
 		asPayload.dispatchSize = dispatchSize;
 

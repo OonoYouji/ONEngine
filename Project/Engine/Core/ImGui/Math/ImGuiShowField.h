@@ -10,6 +10,8 @@
 #include <imgui.h>
 
 
+namespace ONEngine {
+
 /// ///////////////////////////////////////////////////////
 /// C#のフィールドをImGuiで表示するための名前空間
 /// ///////////////////////////////////////////////////////
@@ -22,7 +24,6 @@ namespace CSGui {
 	/// @param _field 表示するフィールド
 	/// @param _name ImGuiで表示する変数名
 	void ShowFiled(int _type, MonoObject* _obj, MonoClassField* _field, const char* _name);
-
 
 
 	/// @brief ImGuiでCSのフィールドを表示するための構造体
@@ -83,3 +84,5 @@ namespace CSGui {
 	};
 
 }
+
+} /// ONEngine

@@ -1,4 +1,6 @@
-#include "TerrainColliderVertexGenerator.h"
+﻿#include "TerrainColliderVertexGenerator.h"
+
+using namespace ONEngine;
 
 
 /// engine

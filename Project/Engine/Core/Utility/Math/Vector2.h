@@ -9,6 +9,8 @@
 /// //////////////////////////////////////////////////
 /// 2次元ベクトル
 /// //////////////////////////////////////////////////
+namespace ONEngine {
+
 struct Vector2 final {
 	Vector2();
 	Vector2(float _x, float _y);
@@ -204,20 +206,25 @@ inline Vector2 Vector2::operator+() {
 #pragma endregion
 
 
+/// json 変換
+void from_json(const nlohmann::json& _j, Vector2& _v);
+void to_json(nlohmann::json& _j, const Vector2& _v);
+
+} /// ONEngine
+
+
 template <>
-struct std::formatter<Vector2> {
+struct std::formatter<ONEngine::Vector2> {
 	constexpr auto parse(format_parse_context& ctx) {
 		return ctx.begin();  // フォーマットの詳細設定は今回は無視
 	}
 
 	template <typename FormatContext>
-	auto format(const Vector2& vec, FormatContext& ctx) const {
+	auto format(const ONEngine::Vector2& vec, FormatContext& ctx) const {
 		return std::format_to(ctx.out(), "({}, {})", vec.x, vec.y);
 	}
 };
 
 
 
-/// json 変換
-void from_json(const nlohmann::json& _j, Vector2& _v);
-void to_json(nlohmann::json& _j, const Vector2& _v);
+

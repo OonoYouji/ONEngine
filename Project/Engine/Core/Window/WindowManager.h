@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// std
 #include <memory>
@@ -10,6 +10,8 @@
 /// ///////////////////////////////////////////////////
 /// windowの管理クラス
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class WindowManager final {
 public:
 	/// ===================================================
@@ -145,3 +147,5 @@ private:
 	WindowManager& operator=(WindowManager&&)      = delete;
 };
 
+
+} /// ONEngine

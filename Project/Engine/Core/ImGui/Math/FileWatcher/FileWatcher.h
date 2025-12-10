@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <Windows.h>
 #include <string>
@@ -11,6 +11,8 @@
 
 
 /// @brief ファイルのイベント情報
+namespace ONEngine {
+
 struct FileEvent {
 	enum class Action {
 		Added,
@@ -75,3 +77,5 @@ private:
 
 	std::vector<std::shared_ptr<WatchTarget>> watchers_;
 };
+
+} /// ONEngine

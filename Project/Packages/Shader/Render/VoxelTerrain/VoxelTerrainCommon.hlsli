@@ -10,6 +10,7 @@ struct Chunk {
 
 struct VoxelTerrainInfo {
 	float3 terrainOrigin;
+	uint3 textureSize;
 	uint3 chunkSize;
 	uint2 chunkCountXZ;
 	uint maxChunkCount;

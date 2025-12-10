@@ -1,4 +1,6 @@
-#include "WorldEditorCommands.h"
+﻿#include "WorldEditorCommands.h"
+
+using namespace ONEngine;
 
 /// std
 #include <iostream>
@@ -289,7 +291,9 @@ EDITOR_STATE CopyEntityCommand::Undo() {
 	return EDITOR_STATE::EDITOR_STATE_FINISH;
 }
 
-PasteEntityCommand::PasteEntityCommand(ECSGroup* _ecs) : pEcsGroup_(_ecs) {}
+PasteEntityCommand::PasteEntityCommand(ECSGroup* _ecs, GameEntity* _selectedEntity)
+	: pEcsGroup_(_ecs), pSelectedEntity_(_selectedEntity) {
+}
 
 EDITOR_STATE PasteEntityCommand::Execute() {
 	/// クリップボードからデータを取得
@@ -321,6 +325,9 @@ EDITOR_STATE PasteEntityCommand::Execute() {
 	}
 
 	pastedEntity_->SetName(newName);
+	if (pSelectedEntity_) {
+		pastedEntity_->SetParent(pSelectedEntity_);
+	}
 
 	return EDITOR_STATE_FINISH;
 }

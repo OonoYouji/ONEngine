@@ -37,16 +37,7 @@ public class Entity {
 		ecsGroup_ = _ecsGroup;
 		ecsGroupName_ = ecsGroup_.groupName;
 		transform = AddComponent<Transform>();
-		// Debug.Log("Entity created: [" + name + "] (ID: " + entityId_ + ")");
-
-
-		/// transformがnullじゃないかチェック
-		if (!transform) {
-			// Debug.LogError("Entity.Entity - Transform component is null for Entity ID: " + entityId_);
-			return;
-		}
 	}
-
 
 	public int Id {
 		get {
@@ -69,7 +60,6 @@ public class Entity {
 		}
 	}
 
-
 	public Entity parent {
 		get {
 			int parentId = InternalGetParentId(entityId_, ecsGroupName_);
@@ -78,15 +68,22 @@ public class Entity {
 				return parentEntity;
 			}
 
-			// Debug.LogError("Entity.parent - ECSGroup not found for Entity ID: " + entityId_ + " Name: " + name);
 			return null;
 		}
 		set {
 			if (value == null) {
-				// Debug.Log("Entity.parent - Cannot set parent to null. Entity ID: " + Id);
 				return;
 			}
 			InternalSetParent(Id, value.Id, ecsGroupName_);
+		}
+	}
+
+	public bool enable {
+		get {
+			return InternalGetEnable(entityId_, ecsGroupName_);
+		}
+		set {
+			InternalSetEnable(entityId_, value, ecsGroupName_);
 		}
 	}
 
@@ -95,22 +92,32 @@ public class Entity {
 	/// methods
 	/// =========================================
 
-
 	public Entity GetChild(uint _index) {
 		int childId = InternalGetChildId(entityId_, _index, ecsGroupName_);
 		ECSGroup ecsGroup = EntityComponentSystem.GetECSGroup(ecsGroupName_);
 		if (ecsGroup == null) {
-			// Debug.LogError("Entity.GetChild - ECSGroup not found for Entity ID: " + entityId_);
 			return null;
 		}
 
 		return ecsGroup.GetEntity(childId);
 	}
 
+	public uint GetChildCount() {
+		return (uint)InternalGetChildrenCount(entityId_, ecsGroupName_);
+	}
+
 
 	public void Destroy() {
+		/// 子の情報もクリア
+		for (uint i = 0; i < GetChildCount(); i++) {
+			Entity child = GetChild(i);
+			if (child) {
+				Debug.LogInfo("Entity.Destroy - Destroying child entity ID: " + child.Id + " of parent entity ID: " + entityId_);
+				child.Destroy();
+			}
+		}
+
 		/// Entityを削除
-		// Debug.Log("Destroying Entity: " + name + " (ID: " + entityId_ + ")");
 		ecsGroup_.DestroyEntity(entityId_);
 		entityId_ = 0; // IDを無効化
 		transform = null;
@@ -135,8 +142,6 @@ public class Entity {
 
 		if (comp == null) {
 			Debug.LogError("Failed to create component: " + typeName + " (Entity ID: " + entityId_ + ")");
-		} else {
-			// Debug.Log(name + "(" + Id + ")" + "->AddComponent<" + typeName + ">(): pointer:" + nativeHandle);
 		}
 
 		return comp;
@@ -148,7 +153,6 @@ public class Entity {
 		ulong nativeHandle = InternalGetComponent<T>(entityId_, typeName, ecsGroupName_);
 
 		if (nativeHandle == 0) {
-			// Debug.LogError("Component not found: " + typeName + " (Entity ID: " + entityId_ + ")");
 			return null;
 		}
 
@@ -168,37 +172,22 @@ public class Entity {
 	}
 
 	public T GetScript<T>() where T : MonoBehavior {
-		// Debug.LogInfo("GetScript<" + typeof(T).Name + ">() called for Entity ID: " + entityId_);
-
 		/// スクリプトを得る
 		string typeName = typeof(T).Name;
 		if (scripts_.ContainsKey(typeName)) {
-			/// あったので返す
 			return (T)scripts_[typeName];
 		}
-
 		if (InternalGetScript(entityId_, typeName, ecsGroupName_)) {
-			// Debug.LogInfo("Entity.GetScript<T> - [Entity: " + entityId_ + "] Script " + typeName + " found in C++ — adding to C# side.");
 			return AddScript<T>();
 		}
-
-		// Debug.LogWarning("Entity.GetScript<T> - GetScript<" + typeof(T).Name + ">(); did not exist.");
-		/// なかったのでnullを返す
 		return null;
 	}
 
 	public MonoBehavior GetScript(string _scriptName) {
-		// Debug.LogInfo("Entity.GetScript - GetScript(" + _scriptName + ") called for Entity ID: " + entityId_);
-		// Debug.LogInfo("Entity.GetScript - Current scripts count: " + scripts_.Count);
 		/// スクリプトを得る
 		if (scripts_.ContainsKey(_scriptName)) {
-			/// あったので返す
 			return scripts_[_scriptName];
 		}
-
-		// Debug.LogWarning("Entity.GetScript - GetScript(" + _scriptName + ") did not exist.");
-
-		/// なかったのでnullを返す
 		return null;
 	}
 
@@ -207,7 +196,6 @@ public class Entity {
 		foreach (var keyValuePair in scripts_) {
 			result.Add(keyValuePair.Value);
 		}
-
 		return result;
 	}
 
@@ -237,18 +225,13 @@ public class Entity {
 
 		/// スクリプトを得る
 		if (scripts_.ContainsKey(scriptName)) {
-			// Debug.Log("MonoBehavior.AddScript - Script already exists: " + scriptName + " (Entity ID: " + entityId_ + ")");
-			/// あったので返す
 			return scripts_[scriptName];
 		}
 
 		/// なかったので新しく作る
 		scripts_[scriptName] = mb;
-		// Debug.Log("MonoBehavior.AddScript - Adding script: \"" + scriptName + "\" to Entity ID: " + entityId_);
-
 		/// c++側でもスクリプトを追加
 		InternalAddScript(entityId_, scriptName, ecsGroupName_);
-
 		return mb;
 	}
 
@@ -277,6 +260,9 @@ public class Entity {
 	static extern int InternalGetChildId(int _entityId, uint _childIndex, string _groupName);
 
 	[MethodImpl(MethodImplOptions.InternalCall)]
+	static extern int InternalGetChildrenCount(int _entityId, string _groupName);
+
+	[MethodImpl(MethodImplOptions.InternalCall)]
 	static extern int InternalGetParentId(int _entityId, string _groupName);
 
 	[MethodImpl(MethodImplOptions.InternalCall)]
@@ -287,4 +273,11 @@ public class Entity {
 
 	[MethodImpl(MethodImplOptions.InternalCall)]
 	static extern bool InternalGetScript(int _entityId, string _scriptName, string _groupName);
+
+	[MethodImpl(MethodImplOptions.InternalCall)]
+	static extern bool InternalGetEnable(int _entityId, string _groupName);
+
+	[MethodImpl(MethodImplOptions.InternalCall)]
+	static extern void InternalSetEnable(int _entityId, bool _enable, string _groupName);
+
 }

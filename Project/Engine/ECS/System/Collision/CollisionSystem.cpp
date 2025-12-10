@@ -1,4 +1,6 @@
-#include "CollisionSystem.h"
+﻿#include "CollisionSystem.h"
+
+using namespace ONEngine;
 
 /// std
 #include <unordered_map>

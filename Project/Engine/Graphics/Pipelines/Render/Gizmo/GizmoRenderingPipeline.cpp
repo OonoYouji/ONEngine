@@ -1,4 +1,6 @@
-#include "GizmoRenderingPipeline.h"
+﻿#include "GizmoRenderingPipeline.h"
+
+using namespace ONEngine;
 
 /// std
 #include <numbers>
@@ -66,7 +68,7 @@ void GizmoRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManag
 	}
 }
 
-void GizmoRenderingPipeline::Draw(class ECSGroup* _ecsGroup, [[maybe_unused]] CameraComponent* _camera, [[maybe_unused]] DxCommand* _dxCommand) {
+void GizmoRenderingPipeline::Draw(class ECSGroup* /*_ecsGroup*/, [[maybe_unused]] CameraComponent* _camera, [[maybe_unused]] DxCommand* _dxCommand) {
 #ifdef DEBUG_MODE
 
 	if (_camera->GetOwner()->GetECSGroup()->GetGroupName() != "Debug") {

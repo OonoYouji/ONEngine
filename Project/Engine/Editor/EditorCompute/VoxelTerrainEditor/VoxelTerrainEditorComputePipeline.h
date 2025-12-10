@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// engine
 #include "../Interface/IEditorCompute.h"
@@ -6,6 +6,8 @@
 /// /////////////////////////////////////////////////
 /// ボクセル地形を編集するためのパイプラインを起動するクラス
 /// /////////////////////////////////////////////////
+namespace ONEngine {
+
 class VoxelTerrainEditorComputePipeline : public IEditorCompute {
 
 	enum ROOT_PARAM {
@@ -13,6 +15,7 @@ class VoxelTerrainEditorComputePipeline : public IEditorCompute {
 		CBV_VIEW_PROJECTION,
 		CBV_CAMERA,
 		CBV_INPUT_INFO,
+		CBV_EDITOR_INFO,
 		SRV_CHUNKS,
 		SRV_WORLD_TEXTURE,
 		UAV_VOXEL_TEXTURES
@@ -38,3 +41,5 @@ private:
 
 };
 
+
+} /// ONEngine

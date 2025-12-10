@@ -16,6 +16,7 @@
 #include "Engine/Core/ImGui/Math/AssetDebugger.h"
 #include "Engine/ECS/Entity/GameEntity/GameEntity.h"
 
+using namespace ONEngine;
 
 /// ///////////////////////////////////////////////////
 /// 地形のComponentのデバッグ用関数
@@ -234,7 +235,7 @@ bool COMP_DEBUG::TerrainTextureEditModeDebug(std::array<std::string, 4>* _textur
 }
 
 
-void from_json(const nlohmann::json& _j, Terrain& _t) {
+void ONEngine::from_json(const nlohmann::json& _j, Terrain& _t) {
 	_t.enable = _j.value("enable", 1);
 	_t.editorInfo_.brushRadius = _j.value("brushRadius", 10.0f);
 	_t.editorInfo_.brushStrength = _j.value("brushStrength", 1.0f);
@@ -248,7 +249,7 @@ void from_json(const nlohmann::json& _j, Terrain& _t) {
 	_t.material_.postEffectFlags = PostEffectFlags_Lighting | PostEffectFlags_Shadow;
 }
 
-void to_json(nlohmann::json& _j, const Terrain& _t) {
+void ONEngine::to_json(nlohmann::json& _j, const Terrain& _t) {
 	_j = nlohmann::json{
 		{ "type", "Terrain" },
 		{ "enable", _t.enable },

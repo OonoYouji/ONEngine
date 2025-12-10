@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// engine
 #include "IDxDescriptorHeap.h"
@@ -6,6 +6,8 @@
 /// /////////////////////////////////////////////////
 /// DSVHeap
 /// /////////////////////////////////////////////////
+namespace ONEngine {
+
 class DxDSVHeap final : public IDxDescriptorHeap {
 public:
 	/// ===================================================
@@ -19,3 +21,5 @@ public:
 	void Initialize() override;
 };
 
+
+} /// ONEngine

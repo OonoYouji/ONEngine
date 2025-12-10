@@ -1,4 +1,6 @@
-#include "RiverRenderingPipeline.h"
+﻿#include "RiverRenderingPipeline.h"
+
+using namespace ONEngine;
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"

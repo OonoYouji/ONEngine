@@ -2,6 +2,7 @@
     "components": [
         {
             "enable": 1,
+            "matrixCalcFlags": 7,
             "position": {
                 "x": 0.0,
                 "y": 0.0,
@@ -43,7 +44,7 @@
                     "z": 1.0
                 },
                 "baseTextureGuid": {
-                    "guid": "00000000000000000000000000000000"
+                    "guid": "14196fa931d9b8c11196cdd7eca20cf6"
                 },
                 "guid": {
                     "guid": "00000000000000000000000000000000"
@@ -58,7 +59,7 @@
         }
     ],
     "guid": {
-        "guid": "5d8d692623266f417d498601600f2f9a"
+        "guid": "6e7e7792fe208da9bb7185979c35e010"
     },
     "id": 2,
     "name": "Block",

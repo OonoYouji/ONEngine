@@ -1,4 +1,6 @@
-#include "ImGuiGameSceneWindow.h"
+﻿#include "ImGuiGameSceneWindow.h"
+
+using namespace ONEngine;
 
 /// external
 #include <imgui.h>
@@ -17,6 +19,11 @@ void ImGuiGameSceneWindow::ShowImGui() {
 	/// ---------------------------------------
 	/// Sceneを描画する
 	/// ---------------------------------------
+
+	/// DebugConfig::
+	if (ImGui::Checkbox("show game scene", &DebugConfig::isShowGameScene)) {
+		Console::Log("ImGuiGameSceneWindow::ShowImGui -> clicked show game scene");
+	}
 
 	const auto& textures = pAssetCollection_->GetTextures();
 	auto& texture = textures[pAssetCollection_->GetTextureIndex("./Assets/Scene/RenderTexture/sceneScene")];

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// engine
 #include "../../Interface/IComponent.h"
@@ -9,6 +9,8 @@
 /// ///////////////////////////////////////////////////
 /// 2Dライン描画コンポーネント
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class Line2DRenderer final : public IRenderComponent {
 public:
 	/// ===================================================
@@ -43,3 +45,5 @@ public:
 
 };
 
+
+} /// ONEngine

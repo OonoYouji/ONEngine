@@ -2,6 +2,8 @@
 
 #include "../Device/DxDevice.h"
 
+using namespace ONEngine;
+
 DxDebug::DxDebug() = default;
 DxDebug::~DxDebug() = default;
 

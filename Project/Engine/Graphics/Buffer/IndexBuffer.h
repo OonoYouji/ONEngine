@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// std
 #include <vector>
@@ -10,6 +10,8 @@
 /// ///////////////////////////////////////////////////
 /// index buffer view
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class IndexBuffer final {
 public:
 	/// ===================================================
@@ -63,3 +65,5 @@ public:
 
 };
 
+
+} /// ONEngine

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// directx
 #include <d3d12.h>
@@ -33,6 +33,8 @@ enum class RTVIndex {
 /// ///////////////////////////////////////////////////
 /// グラフィクス用	pipeline
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class GraphicsPipeline {
 public:
 	/// ===================================================
@@ -187,3 +189,5 @@ namespace BlendMode {
 namespace StaticSampler {
 	D3D12_STATIC_SAMPLER_DESC ClampSampler();
 }
+
+} /// ONEngine

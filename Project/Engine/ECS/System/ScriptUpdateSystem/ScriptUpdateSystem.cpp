@@ -1,4 +1,6 @@
-#include "ScriptUpdateSystem.h"
+﻿#include "ScriptUpdateSystem.h"
+
+using namespace ONEngine;
 
 /// std
 #include <list>
@@ -83,9 +85,9 @@ void ScriptUpdateSystem::AddAllEntitiesAndComponents(ECSGroup* _ecsGroup) {
 
 bool ScriptUpdateSystem::AddEntityToScript(GameEntity* _entity) {
 	/// runtime中に生成したオブジェクトは無視
-	if (_entity->GetId() < 0) {
-		return false;
-	}
+	//if (_entity->GetId() < 0) {
+	//	return false;
+	//}
 
 	/// スクリプトが有効でない場合はスキップ
 	MonoObject* ecsGroupObj = mono_gchandle_get_target(gcHandle_);

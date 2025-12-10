@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// engine
 #include "../Interface/ECSISystem.h"
@@ -6,6 +6,8 @@
 /// ///////////////////////////////////////////////////
 /// カメラ更新システム
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class CameraUpdateSystem : public ECSISystem {
 public:
 	/// ===================================================
@@ -31,3 +33,5 @@ private:
 
 };
 
+
+} /// ONEngine

@@ -1,4 +1,6 @@
-#include "EntityPrefabCollection.h"
+﻿#include "EntityPrefabCollection.h"
+
+using namespace ONEngine;
 
 #include "Engine/Core/Utility/Math/Mathf.h"
 

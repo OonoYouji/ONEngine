@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// std
 #include <memory>
@@ -13,6 +13,8 @@
 /// ///////////////////////////////////////////////////
 /// 描画の interface クラス
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class IRenderingPipeline {
 public:
 	/// ===================================================
@@ -45,3 +47,5 @@ protected:
 };
 
 
+
+} /// ONEngine

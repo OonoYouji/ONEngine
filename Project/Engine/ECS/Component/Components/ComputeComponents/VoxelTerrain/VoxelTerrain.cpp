@@ -8,10 +8,13 @@
 #include "Engine/Asset/Assets/Texture/Texture.h"
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/Core/ImGui/Math/AssetDebugger.h"
+#include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Editor/Commands/ImGuiCommand/ImGuiCommand.h"
 #include "Engine/ECS/Entity/GameEntity/GameEntity.h"
 
-void COMP_DEBUG::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain) {
+using namespace ONEngine;
+
+void COMP_DEBUG::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _dxManager) {
 	if (!_voxelTerrain) {
 		Console::LogError("VoxelTerrainDebug: _voxelTerrain is nullptr");
 		return;
@@ -19,24 +22,45 @@ void COMP_DEBUG::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain) {
 
 	/// チャンクのデバッグ表示
 	ImMathf::DragInt2("Chunk Count XZ", &_voxelTerrain->chunkCountXZ_, 1, 1, 32);
-	//ImMathf::DragInt3("Chunk Size", &_voxelTerrain->chunkSize_, 1, 1, 1024);
+	ImMathf::DragInt3("Chunk Size", &_voxelTerrain->chunkSize_, 1, 1, 1024);
+	ImMathf::DragInt3("Texture Size", &_voxelTerrain->textureSize_, 1, 1, 256);
 
 	ImMathf::MaterialEdit("Material", &_voxelTerrain->material_, nullptr, false);
 
+	/// editor用
+	{
+		static float radius = 5.0f;
+		ImMathf::DragFloat("Brush Radius", &radius, 0.1f);
+		_voxelTerrain->cBufferEditInfo_.SetMappedData({ radius });
+	}
+
+
 
 	/// 仮
-	//if (ImGui::Button("Create Texture3D (all chunks)")) {
-	//	for (size_t i = 0; i < _voxelTerrain->maxChunkCount_; i++) {
-	//		const std::wstring filename = L"./Packages/Textures/Terrain/Chunk/" + std::to_wstring(i) + L".dds";
-	//		SaveTextureToDDS(
-	//			filename,
-	//			_voxelTerrain->chunkSize_.x,
-	//			_voxelTerrain->chunkSize_.y,
-	//			_voxelTerrain->chunkSize_.z,
-	//			true
-	//		);
-	//	}
-	//}
+	if (ImGui::Button("Create Texture3D (all chunks)")) {
+		for (size_t i = 0; i < _voxelTerrain->maxChunkCount_; i++) {
+			const std::wstring filename = L"./Packages/Textures/Terrain/Chunk/" + std::to_wstring(i) + L".dds";
+			SaveTextureToDDS(
+				filename,
+				_voxelTerrain->textureSize_.x,
+				_voxelTerrain->textureSize_.y,
+				_voxelTerrain->textureSize_.z,
+				true
+			);
+		}
+	}
+
+	/// 出力用
+	if (ImGui::Button("Output Chunk Textures Info")) {
+		std::wstring filepath = L"";
+		for (size_t i = 0; i < _voxelTerrain->chunks_.size(); i++) {
+			filepath = L"./Packages/Textures/Terrain/Chunk/" + std::to_wstring(i) + L".dds";
+
+			const Chunk& chunk = _voxelTerrain->chunks_[i];
+			chunk.pTexture->OutputTexture3D(filepath, _dxManager->GetDxDevice(), _dxManager->GetDxCommand());
+			Console::Log("Chunk " + std::to_string(i) + ": Texture3D GUID = " + chunk.texture3DId.ToString());
+		}
+	}
 
 
 	/// ----- Gizmoでチャンクの枠線を描画 ----- ///
@@ -69,26 +93,56 @@ void COMP_DEBUG::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain) {
 }
 
 
-void from_json(const nlohmann::json& _j, VoxelTerrain& _voxelTerrain) {
+void ONEngine::from_json(const nlohmann::json& _j, std::vector<Chunk>& _chunks) {
+	nlohmann::json jChunks = _j["chunks"];
+
+	_chunks.resize(jChunks.size());
+
+	std::string key;
+	for (size_t i = 0; i < jChunks.size(); i++) {
+		key = std::to_string(i);
+		if (jChunks.contains(key)) {
+			_chunks[i] = Chunk{ jChunks[key], nullptr };
+		}
+	}
+}
+
+void ONEngine::to_json(nlohmann::json& _j, const std::vector<Chunk>& _chunks) {
+	nlohmann::json jChunks;
+
+	for (size_t i = 0; i < _chunks.size(); i++) {
+		jChunks[std::to_string(i)] = _chunks[i].texture3DId;
+	}
+
+	_j = {
+		{ "chunks", jChunks }
+	};
+}
+
+void ONEngine::from_json(const nlohmann::json& _j, VoxelTerrain& _voxelTerrain) {
 	/// Json -> VoxelTerrain
 	_voxelTerrain.enable = _j.value("enable", 1);
 
 	_voxelTerrain.maxChunkCount_ = _j.value("maxChunkCount", 400);
 	_voxelTerrain.chunkCountXZ_ = _j.value("chunkCountXZ", Vector2Int{ 2, 2 });
 	_voxelTerrain.chunkSize_ = _j.value("chunkSize", Vector3Int{ 16, 128, 16 });
+	_voxelTerrain.textureSize_ = _j.value("textureSize", Vector3Int{ 32, 32, 32 });
 
 	_voxelTerrain.material_ = _j.value("material", Material{});
+	_voxelTerrain.chunks_ = _j.value("chunks", std::vector<Chunk>{});
 }
 
-void to_json(nlohmann::json& _j, const VoxelTerrain& _voxelTerrain) {
+void ONEngine::to_json(nlohmann::json& _j, const VoxelTerrain& _voxelTerrain) {
 	/// VoxelTerrain -> Json
 	_j = {
 		{ "type", "VoxelTerrain" },
 		{ "enable", _voxelTerrain.enable },
 		{ "maxChunkCount", _voxelTerrain.maxChunkCount_ },
 		{ "chunkSize", _voxelTerrain.chunkSize_ },
+		{ "textureSize", _voxelTerrain.textureSize_ },
 		{ "chunkCountXZ", _voxelTerrain.chunkCountXZ_ },
 		{ "material", _voxelTerrain.material_ },
+		{ "chunks", _voxelTerrain.chunks_ }
 	};
 }
 
@@ -119,6 +173,9 @@ void VoxelTerrain::SettingChunksGuid(AssetCollection* _assetCollection) {
 		/// AssetCollectionからGuidを取得して設定
 		const Guid& texture3DGuid = _assetCollection->GetAssetGuidFromPath(filepath);
 		chunks_[i].texture3DId = texture3DGuid;
+
+		Texture* texture = _assetCollection->GetTextureFromGuid(texture3DGuid);
+		chunks_[i].pTexture = texture;
 	}
 }
 
@@ -133,7 +190,6 @@ bool VoxelTerrain::CheckCreatedBuffers() const {
 }
 
 void VoxelTerrain::CreateBuffers(DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap) {
-	//maxChunkCount_ = static_cast<UINT>(chunkCountXZ_.x * chunkCountXZ_.y);
 	UINT chunkCount = static_cast<UINT>(32 * 32);
 
 	cBufferTerrainInfo_.Create(_dxDevice);
@@ -146,7 +202,7 @@ void VoxelTerrain::SetupGraphicBuffers(ID3D12GraphicsCommandList* _cmdList, cons
 
 	/// VoxelTerrainInfoの設定
 	Vector3 terrainOrigin = GetOwner()->GetTransform()->GetPosition();
-	cBufferTerrainInfo_.SetMappedData(GPUData::VoxelTerrainInfo{ terrainOrigin, 0, chunkSize_, 0.0f, chunkCountXZ_, maxChunkCount_ });
+	cBufferTerrainInfo_.SetMappedData(GPUData::VoxelTerrainInfo{ terrainOrigin, 0, textureSize_, 0, chunkSize_, 0, chunkCountXZ_, maxChunkCount_ });
 	cBufferTerrainInfo_.BindForGraphicsCommandList(_cmdList, _rootParamIndices[0]);
 
 	/// Materialの設定
@@ -159,28 +215,29 @@ void VoxelTerrain::SetupGraphicBuffers(ID3D12GraphicsCommandList* _cmdList, cons
 
 	/// ChunkArrayの設定
 	for (size_t i = 0; i < maxChunkCount_; i++) {
-		int32_t textureIndex = _assetCollection->GetTextureIndexFromGuid(chunks_[i].texture3DId);
-
-		/// 0番は必ず存在する想定なので、見つからなかったら0番を設定する
-		if (textureIndex == -1) {
-			textureIndex = _assetCollection->GetTextureIndexFromGuid(chunks_[0].texture3DId);
+		const Texture* texture = _assetCollection->GetTextureFromGuid(chunks_[i].texture3DId);
+		if (texture) {
+			sBufferChunks_.SetMappedData(i, GPUData::Chunk{ static_cast<uint32_t>(texture->GetSRVDescriptorIndex()) });
+		} else {
+			const Texture* frontTex = _assetCollection->GetTextureFromGuid(chunks_[0].texture3DId);
+			sBufferChunks_.SetMappedData(i, GPUData::Chunk{ static_cast<uint32_t>(frontTex->GetSRVDescriptorIndex()) });
 		}
-
-		sBufferChunks_.SetMappedData(i, GPUData::Chunk{ static_cast<uint32_t>(textureIndex) });
 	}
 
 	sBufferChunks_.SRVBindForGraphicsCommandList(_cmdList, _rootParamIndices[2]);
 }
 
-void VoxelTerrain::TransitionTextureStates(DxCommand* _dxCommand, AssetCollection* _assetCollection, D3D12_RESOURCE_STATES _beforeState, D3D12_RESOURCE_STATES _afterState) {
+void VoxelTerrain::TransitionTextureStates(DxCommand* _dxCommand, AssetCollection* _assetCollection, D3D12_RESOURCE_STATES _afterState) {
 	/// チャンク用テクスチャの状態遷移
+	std::vector<DxResource*> resources;
+	resources.reserve(maxChunkCount_);
 	for (size_t i = 0; i < maxChunkCount_; i++) {
-		const std::string filepath = "./Packages/Textures/Terrain/Chunk/" + std::to_string(i) + ".dds";
-
-		if(Texture* texture = _assetCollection->GetTexture(filepath)) {
-			texture->GetDxResource().CreateBarrier(_beforeState, _afterState, _dxCommand);
+		if (chunks_[i].pTexture) {
+			resources.push_back(&chunks_[i].pTexture->GetDxResource());
 		}
 	}
+
+	CreateBarriers(resources, _afterState, _dxCommand);
 }
 
 UINT VoxelTerrain::MaxChunkCount() const {
@@ -204,43 +261,96 @@ bool VoxelTerrain::CheckBufferCreatedForEditor() const {
 	return result;
 }
 
-void VoxelTerrain::CreateEditorBuffers(DxDevice* _dxDevice) {
+void VoxelTerrain::CreateEditorBuffers(DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap) {
+	UINT chunkCount = static_cast<UINT>(32 * 32);
+
 	cBufferInputInfo_.Create(_dxDevice);
 	cBufferEditInfo_.Create(_dxDevice);
+	sBufferEditorChunks_.Create(chunkCount, _dxDevice, _dxSRVHeap);
 }
 
-void VoxelTerrain::SetupEditorBuffers(ID3D12GraphicsCommandList* _cmdList, const std::array<UINT, 3> _rootParamIndices, const GPUData::InputInfo& _inputInfo, const GPUData::EditInfo& _editInfo) {
+void VoxelTerrain::SetupEditorBuffers(ID3D12GraphicsCommandList* _cmdList, const std::array<UINT, 4> _rootParamIndices, AssetCollection* _assetCollection, const GPUData::InputInfo& _inputInfo, const GPUData::EditInfo& _editInfo) {
 	/// InputInfoの設定
 	cBufferInputInfo_.SetMappedData(_inputInfo);
 	cBufferInputInfo_.BindForComputeCommandList(_cmdList, _rootParamIndices[0]);
+	/// TerrainInfoの設定
+	cBufferTerrainInfo_.SetMappedData(GPUData::VoxelTerrainInfo{
+		.terrainOrigin = GetOwner()->GetTransform()->GetPosition(),
+		.textureSize = textureSize_, .chunkSize = chunkSize_,
+		.chunkCountXZ = chunkCountXZ_, .maxChunkCount = maxChunkCount_
+		});
+	cBufferTerrainInfo_.BindForComputeCommandList(_cmdList, _rootParamIndices[1]);
 	/// EditInfoの設定
-	cBufferEditInfo_.SetMappedData(_editInfo);
-	cBufferEditInfo_.BindForComputeCommandList(_cmdList, _rootParamIndices[1]);
+	//cBufferEditInfo_.SetMappedData(_editInfo);
+	cBufferEditInfo_.BindForComputeCommandList(_cmdList, _rootParamIndices[2]);
+
+	/// ChunkArrayの設定
+	for (size_t i = 0; i < maxChunkCount_; i++) {
+		sBufferEditorChunks_.SetMappedData(i, GPUData::Chunk{ static_cast<uint32_t>(chunks_[i].uavTexture.GetUAVDescriptorIndex())});
+	}
 	/// Chunk
-	sBufferChunks_.SRVBindForComputeCommandList(_cmdList, _rootParamIndices[2]);
+	sBufferEditorChunks_.SRVBindForComputeCommandList(_cmdList, _rootParamIndices[3]);
 }
 
-void VoxelTerrain::CreateChunkTextureUAV(DxDevice* _dxDevice, DxCommand* _dxCommand, DxSRVHeap* _dxSRVHeap, AssetCollection* _assetCollection) {
+void VoxelTerrain::CreateChunkTextureUAV(DxCommand* _dxCommand, DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap, AssetCollection* _assetCollection) {
 
-	for (size_t i = 0; i < maxChunkCount_; i++) {
-		const std::string filepath = "./Packages/Textures/Terrain/Chunk/" + std::to_string(i) + ".dds";
-
-		/// 存在するテクスチャのみUAVを作成
-		if(Texture* texture = _assetCollection->GetTexture(filepath)) {
-
-			const Vector2& texSize = texture->GetTextureSize();
-
-			texture->CreateUAVTexture3D(
-				static_cast<UINT>(texSize.x),
-				static_cast<UINT>(texSize.y),
-				static_cast<UINT>(texSize.x),
-				_dxDevice,
-				_dxCommand,
-				_dxSRVHeap,
-				DXGI_FORMAT_R8G8B8A8_TYPELESS
-			);
-		}
-
+	for (auto& chunk : chunks_) {
+		chunk.uavTexture.CreateUAVTexture3D(
+			static_cast<UINT>(textureSize_.x),
+			static_cast<UINT>(textureSize_.y),
+			static_cast<UINT>(textureSize_.z),
+			_dxDevice, _dxSRVHeap,
+			DXGI_FORMAT_R8G8B8A8_UNORM
+		);
 	}
 
+	D3D12_RESOURCE_STATES srvTextureBefore = chunks_[0].pTexture->GetDxResource().GetCurrentState();
+	D3D12_RESOURCE_STATES uavTextureBefore = chunks_[0].uavTexture.GetDxResource().GetCurrentState();
+
+	auto cmdList = _dxCommand->GetCommandList();
+	/// テクスチャの状態遷移
+	for (auto& chunk : chunks_) {
+		chunk.pTexture->GetDxResource().CreateBarrier(D3D12_RESOURCE_STATE_COPY_SOURCE, _dxCommand);
+		chunk.uavTexture.GetDxResource().CreateBarrier(D3D12_RESOURCE_STATE_COPY_DEST, _dxCommand);
+	}
+
+	/// 実際に使用するSRVをUAVテクスチャにコピーする
+	for (auto& chunk : chunks_) {
+		cmdList->CopyResource(
+			chunk.uavTexture.GetDxResource().Get(),
+			chunk.pTexture->GetDxResource().Get()
+		);
+	}
+
+	/// テクスチャの状態遷移
+	for (auto& chunk : chunks_) {
+		chunk.pTexture->GetDxResource().CreateBarrier(srvTextureBefore, _dxCommand);
+		chunk.uavTexture.GetDxResource().CreateBarrier(uavTextureBefore, _dxCommand);
+	}
+}
+
+void VoxelTerrain::CopyEditorTextureToChunkTexture(DxCommand* _dxCommand) {
+	D3D12_RESOURCE_STATES srvTextureBefore = chunks_[0].pTexture->GetDxResource().GetCurrentState();
+	D3D12_RESOURCE_STATES uavTextureBefore = chunks_[0].uavTexture.GetDxResource().GetCurrentState();
+
+	auto cmdList = _dxCommand->GetCommandList();
+	/// テクスチャの状態遷移
+	for (auto& chunk : chunks_) {
+		chunk.uavTexture.GetDxResource().CreateBarrier(D3D12_RESOURCE_STATE_COPY_SOURCE, _dxCommand);
+		chunk.pTexture->GetDxResource().CreateBarrier(D3D12_RESOURCE_STATE_COPY_DEST, _dxCommand);
+	}
+
+	/// 実際に使用するSRVをUAVテクスチャにコピーする
+	for (auto& chunk : chunks_) {
+		cmdList->CopyResource(
+			chunk.pTexture->GetDxResource().Get(),
+			chunk.uavTexture.GetDxResource().Get()
+		);
+	}
+
+	/// テクスチャの状態遷移
+	for (auto& chunk : chunks_) {
+		chunk.uavTexture.GetDxResource().CreateBarrier(uavTextureBefore, _dxCommand);
+		chunk.pTexture->GetDxResource().CreateBarrier(srvTextureBefore, _dxCommand);
+	}
 }

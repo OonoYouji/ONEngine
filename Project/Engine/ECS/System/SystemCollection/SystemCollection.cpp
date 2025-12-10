@@ -1,4 +1,6 @@
-#include "SystemCollection.h"
+﻿#include "SystemCollection.h"
+
+using namespace ONEngine;
 
 #include "Engine/ECS/EntityComponentSystem/ECSGroup.h"
 

@@ -1,11 +1,10 @@
 #define NOMINMAX
 #include "CollisionCheck.h"
 
+using namespace ONEngine;
 
 bool CollisionCheck::LineVsSphere(const Vector3& _lineStart, const Vector3& _lineEnd, const Vector3& /*_sphereCenter*/, float /*_sphereRadius*/) {
-
 	Vector3 lineDiff = _lineEnd - _lineStart;
-
 
 	return false;
 }

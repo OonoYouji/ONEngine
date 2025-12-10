@@ -1,4 +1,6 @@
-#include "Line3DRenderer.h"
+﻿#include "Line3DRenderer.h"
+
+using namespace ONEngine;
 
 Line3DRenderer::Line3DRenderer() {
 	refCount_ = 0;

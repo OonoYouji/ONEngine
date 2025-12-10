@@ -6,6 +6,8 @@
 /// engine
 #include "Engine/Core/ImGui/Math/ImGuiMath.h"
 
+using namespace ONEngine;
+
 Skybox::Skybox() {
 	SetDDSTexturePath("./Packages/Textures/kloofendal_48d_partly_cloudy_puresky_2k.dds");
 }
@@ -33,7 +35,7 @@ void COMP_DEBUG::SkyboxDebug(const Skybox* _skybox) {
 }
 
 
-void from_json(const nlohmann::json& _j, Skybox& _s) {
+void ONEngine::from_json(const nlohmann::json& _j, Skybox& _s) {
 	if (_j.contains("enable")) {
 		_s.enable = _j.at("enable").get<int>();
 	}
@@ -45,7 +47,7 @@ void from_json(const nlohmann::json& _j, Skybox& _s) {
 	}
 }
 
-void to_json(nlohmann::json& _j, const Skybox& _s) {
+void ONEngine::to_json(nlohmann::json& _j, const Skybox& _s) {
 	_j = nlohmann::json{
 		{ "type", "Skybox" },
 		{ "enable", _s.enable },

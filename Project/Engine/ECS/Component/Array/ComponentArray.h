@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// std
 #include <vector>
@@ -11,6 +11,8 @@
 /// ///////////////////////////////////////////////////
 /// Componentの配列のinterfaceクラス
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class IComponentArray {
 	friend class ComponentCollection;
 public:
@@ -155,3 +157,5 @@ template<typename Comp> requires std::is_base_of_v<IComponent, Comp>
 inline std::vector<Comp*>& ComponentArray<Comp>::GetUsedComponents() {
 	return usedComponents_;
 }
+
+} /// ONEngine

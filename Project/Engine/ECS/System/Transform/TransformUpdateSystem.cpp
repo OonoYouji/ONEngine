@@ -1,4 +1,6 @@
-#include "TransformUpdateSystem.h"
+﻿#include "TransformUpdateSystem.h"
+
+using namespace ONEngine;
 
 /// engine
 #include "Engine/Core/Config/EngineConfig.h"

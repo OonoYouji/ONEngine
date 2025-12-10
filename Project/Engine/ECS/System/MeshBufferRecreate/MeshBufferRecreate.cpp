@@ -1,4 +1,6 @@
-#include "MeshBufferRecreate.h"
+﻿#include "MeshBufferRecreate.h"
+
+using namespace ONEngine;
 
 /// engine
 #include "../../EntityComponentSystem/EntityComponentSystem.h"

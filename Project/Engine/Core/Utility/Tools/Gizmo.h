@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "Engine/Core/Utility/Math/Vector3.h"
 #include "Engine/Core/Utility/Math/Color.h"
@@ -6,6 +6,8 @@
 /// ///////////////////////////////////////////////////
 /// gizmoのクラス
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class Gizmo final {
 	friend class GizmoRenderingPipeline;
 	friend class RenderingFramework;
@@ -97,3 +99,5 @@ public:
 
 };
 
+
+} /// ONEngine

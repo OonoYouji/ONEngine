@@ -9,6 +9,7 @@
 /// engine
 #include "../ComPtr/ComPtr.h"
 
+namespace ONEngine {
 
 /// /////////////////////////////////////////////////
 /// dx12のコマンドを管理するクラス
@@ -74,3 +75,5 @@ private:
 	DxCommand& operator=(const DxCommand&) = delete;
 	DxCommand& operator=(DxCommand&&) = delete;
 };
+
+} /// ONEngine

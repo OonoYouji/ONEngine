@@ -1,4 +1,6 @@
-#include "ColliderRenderQueueSystem.h"
+﻿#include "ColliderRenderQueueSystem.h"
+
+using namespace ONEngine;
 
 /// engine
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"

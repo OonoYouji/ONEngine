@@ -1,4 +1,6 @@
-#include "DxRTVHeap.h"
+﻿#include "DxRTVHeap.h"
+
+using namespace ONEngine;
 
 /// engine
 #include "Engine/Core/Utility/Tools/Log.h"

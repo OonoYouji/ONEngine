@@ -16,6 +16,9 @@
 #include "Engine/Core/Utility/Math/Vector2.h"
 #include "Engine/Core/Utility/Tools/Log.h"
 
+namespace ONEngine {
+class Variables;
+
 /// Json変換
 void from_json(const nlohmann::json& _j, class Variables& _g);
 void to_json(nlohmann::json& _j, const class Variables& _g);
@@ -153,3 +156,5 @@ namespace COMP_DEBUG {
 	/// @param _variables 対象のポインタ
 	void VariablesDebug(Variables* _variables);
 }
+
+} /// ONEngine

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// engine
 #include "Engine/ECS/System/Interface/ECSISystem.h"
@@ -6,6 +6,8 @@
 /// ///////////////////////////////////////////////////
 /// ShadowCasterを更新するためのシステム
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class ShadowCasterUpdateSystem : public ECSISystem {
 public:
 	/// ===================================================
@@ -22,3 +24,5 @@ public:
 
 };
 
+
+} /// ONEngine

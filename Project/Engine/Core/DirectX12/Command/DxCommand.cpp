@@ -7,6 +7,7 @@
 #include "Engine/Core/Utility/Tools/Assert.h"
 #include "Engine/Core/Utility/Tools/Log.h"
 
+using namespace ONEngine;
 
 DxCommand::DxCommand()
 	: commandQueue_(nullptr),
@@ -59,6 +60,9 @@ void DxCommand::Initialize(DxDevice* _dxDevice) {
 	result = device->CreateFence(fenceValue_, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence_));
 	Assert(SUCCEEDED(result), "Failed to create fence.");
 
+
+	/// コマンドリストに名前を付ける
+	commandList_->SetName(L"DxCommand CommandList");
 
 	Console::Log("dx command create success!!");
 }

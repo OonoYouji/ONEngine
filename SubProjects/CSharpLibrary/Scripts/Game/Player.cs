@@ -37,6 +37,8 @@ public class Player : MonoBehavior {
 
 	Matrix4x4 matCameraRotateY;
 
+	/// 新しいカメラの動き方のための変数
+	Vector3 cameraDirection = Vector3.forward;
 
 	public override void Initialize() {
 		camera = ecsGroup.FindEntity("Camera"); // カメラエンティティを取得
@@ -53,6 +55,7 @@ public class Player : MonoBehavior {
 		//Jump();
 
 		CameraFollow();
+		//NewCameraUpdate();
 
 		float fallSpeed = 1.0f;
 		Vector3 pos = transform.position;
@@ -151,6 +154,29 @@ public class Player : MonoBehavior {
 		cT.rotate = Quaternion.FromEuler(cRot);
 	}
 
+
+	void NewCameraUpdate() {
+		if (!camera) {
+			return;
+		}
+
+		Vector2 gamepadAxis = Input.GamepadThumb(GamepadAxis.RightThumb);
+		/// 軸反転を行うことでカメラの上下の回転を自分の好みに合わせる
+		gamepadAxis.y *= -1f;
+
+		/// カメラの向きを更新
+		//cameraDirection = new Vector3(
+		//	gamepadAxis.y * 0.75f * Time.deltaTime,
+		//	gamepadAxis.x * Time.deltaTime,
+		//	0f
+		//);
+		cameraDirection = new Vector3(gamepadAxis.y, gamepadAxis.x, 0.0f);
+		cameraDirection = cameraDirection.Normalized();
+
+		Transform cT = camera.transform;
+		cT.position = transform.position;
+		cT.rotate = Quaternion.LookAt(Vector3.zero, cameraDirection, Vector3.up);
+	}
 
 	public override void OnCollisionEnter(Entity collision) {
 

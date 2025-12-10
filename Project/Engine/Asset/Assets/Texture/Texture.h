@@ -8,6 +8,8 @@
 #include "../Asset.h"
 #include "Engine/Core/DirectX12/Resource/DxResource.h"
 
+namespace ONEngine {
+
 /// ///////////////////////////////////////////////////
 /// texture
 /// ///////////////////////////////////////////////////
@@ -53,13 +55,24 @@ public:
 	/// @param _dxDevice DxDeviceへのポインタ
 	/// @param _dxSRVHeap DxSRVHeapへのポインタ
 	/// @param _dxgiFormat DXGI_FORMAT
-	void CreateUAVTexture3D(UINT _width, UINT _height, UINT _depth, class DxDevice* _dxDevice, class DxCommand* _dxCommand, class DxSRVHeap* _dxSRVHeap, DXGI_FORMAT _dxgiFormat = DXGI_FORMAT_R32G32B32A32_FLOAT);
+	void CreateUAVTexture3DWithUAV(UINT _width, UINT _height, UINT _depth, class DxDevice* _dxDevice, class DxSRVHeap* _dxSRVHeap, DXGI_FORMAT _dxgiFormat = DXGI_FORMAT_R32G32B32A32_FLOAT);
+
+	/// @brief 3Dテクスチャに対してUAVの状態を追加する
+	/// @param _width テクスチャの幅
+	/// @param _height テクスチャの高さ
+	/// @param _depth テクスチャの奥行き
+	/// @param _dxDevice DxDeviceへのポインタ
+	/// @param _dxSRVHeap DxSRVHeapへのポインタ
+	/// @param _dxgiFormat DXGI_FORMAT
+	void CreateUAVTexture3D(UINT _width, UINT _height, UINT _depth, class DxDevice* _dxDevice, class DxSRVHeap* _dxSRVHeap, DXGI_FORMAT _dxgiFormat = DXGI_FORMAT_R32G32B32A32_FLOAT);
+
 
 	/// @brief テクスチャをファイルに出力する
 	/// @param _filename ファイル名(パス、拡張子込み)
 	/// @param _dxDevice DxDeviceへのポインタ
 	/// @param _dxCommand DxCommandへのポインタ
 	void OutputTexture(const std::wstring& _filename, class DxDevice* _dxDevice, class DxCommand* _dxCommand);
+	void OutputTexture3D(const std::wstring& _filename, class DxDevice* _dxDevice, class DxCommand* _dxCommand);
 
 private:
 	/// ===================================================
@@ -126,6 +139,7 @@ public:
 	DxResource& GetDxResource();
 
 	const Vector2& GetTextureSize() const;
+	UINT GetTextureDepth() const;
 
 };
 
@@ -139,3 +153,5 @@ void SaveTextureToPNG(const std::wstring& _filename, size_t _width, size_t _heig
 
 
 void SaveTextureToDDS(const std::wstring& _filename, size_t _width, size_t _height, size_t _depth, bool _overwrite);
+
+} /// ONEngine

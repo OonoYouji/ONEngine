@@ -1,4 +1,6 @@
-#include "EffectUpdateSystem.h"
+﻿#include "EffectUpdateSystem.h"
+
+using namespace ONEngine;
 
 /// std
 #include <list>
@@ -43,7 +45,7 @@ void EffectUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
 
 		/// オブジェクトのアクティブ状態を確認
 		/// アクティブじゃなければ新規生成しない
-		if (!effect->GetOwner()->GetActive()) {
+		if (!effect->GetOwner()->active) {
 			continue;
 		}
 

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <wrl/client.h>
 /// ===================================================
 /// ComPtrをusingして簡略化

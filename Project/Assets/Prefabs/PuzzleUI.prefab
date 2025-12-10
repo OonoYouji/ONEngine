@@ -1,0 +1,550 @@
+{
+    "children": [
+        {
+            "components": [
+                {
+                    "enable": 1,
+                    "matrixCalcFlags": 7,
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "rotate": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 80.0,
+                        "y": 80.0,
+                        "z": 1.0
+                    },
+                    "type": "Transform"
+                },
+                {
+                    "type": "Variables"
+                },
+                {
+                    "enable": 1,
+                    "material": {
+                        "baseColor": {
+                            "w": 1.0,
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "baseTextureGuid": {
+                            "guid": "5539216b126ff682b389a17bc28c0a67"
+                        },
+                        "guid": {
+                            "guid": "00000000000000000000000000000000"
+                        },
+                        "normalTextureGuid": {
+                            "guid": "00000000000000000000000000000000"
+                        },
+                        "postEffectFlags": 0
+                    },
+                    "type": "SpriteRenderer"
+                }
+            ],
+            "guid": {
+                "guid": "ca16b02c985c261e98c1c33aab539fc9"
+            },
+            "id": 3,
+            "name": "MoveUI",
+            "parent": 2,
+            "prefabName": ""
+        },
+        {
+            "components": [
+                {
+                    "enable": 1,
+                    "matrixCalcFlags": 7,
+                    "position": {
+                        "x": 150.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "rotate": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 128.0,
+                        "y": 64.0,
+                        "z": 1.0
+                    },
+                    "type": "Transform"
+                },
+                {
+                    "type": "Variables"
+                },
+                {
+                    "enable": 1,
+                    "material": {
+                        "baseColor": {
+                            "w": 1.0,
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "baseTextureGuid": {
+                            "guid": "0d8f243c87f4ef8999156336c87d7653"
+                        },
+                        "guid": {
+                            "guid": "00000000000000000000000000000000"
+                        },
+                        "normalTextureGuid": {
+                            "guid": "00000000000000000000000000000000"
+                        },
+                        "postEffectFlags": 0
+                    },
+                    "type": "SpriteRenderer"
+                }
+            ],
+            "guid": {
+                "guid": "47025a50915864cef4eee6c367f64a01"
+            },
+            "id": 4,
+            "name": "MoveUIText",
+            "parent": 2,
+            "prefabName": ""
+        },
+        {
+            "components": [
+                {
+                    "enable": 1,
+                    "matrixCalcFlags": 7,
+                    "position": {
+                        "x": 214.0,
+                        "y": -80.0,
+                        "z": 0.0
+                    },
+                    "rotate": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 256.0,
+                        "y": 64.0,
+                        "z": 1.0
+                    },
+                    "type": "Transform"
+                },
+                {
+                    "type": "Variables"
+                },
+                {
+                    "enable": 1,
+                    "material": {
+                        "baseColor": {
+                            "w": 1.0,
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "baseTextureGuid": {
+                            "guid": "7215861d001111ff67d9c8a515e59b6d"
+                        },
+                        "guid": {
+                            "guid": "00000000000000000000000000000000"
+                        },
+                        "normalTextureGuid": {
+                            "guid": "00000000000000000000000000000000"
+                        },
+                        "postEffectFlags": 0
+                    },
+                    "type": "SpriteRenderer"
+                }
+            ],
+            "guid": {
+                "guid": "c0277551266bdde8f71b85ab3fa00e1b"
+            },
+            "id": 5,
+            "name": "ChangeUIText",
+            "parent": 2,
+            "prefabName": ""
+        },
+        {
+            "components": [
+                {
+                    "enable": 1,
+                    "matrixCalcFlags": 7,
+                    "position": {
+                        "x": 32.0,
+                        "y": -80.0,
+                        "z": 0.0
+                    },
+                    "rotate": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 80.0,
+                        "y": 80.0,
+                        "z": 1.0
+                    },
+                    "type": "Transform"
+                },
+                {
+                    "type": "Variables"
+                },
+                {
+                    "enable": 1,
+                    "material": {
+                        "baseColor": {
+                            "w": 1.0,
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "baseTextureGuid": {
+                            "guid": "f95554b1d602472b820fb5b4c7a22ae1"
+                        },
+                        "guid": {
+                            "guid": "00000000000000000000000000000000"
+                        },
+                        "normalTextureGuid": {
+                            "guid": "00000000000000000000000000000000"
+                        },
+                        "postEffectFlags": 0
+                    },
+                    "type": "SpriteRenderer"
+                }
+            ],
+            "guid": {
+                "guid": "056912bcfd6d1942f76afcea8935388a"
+            },
+            "id": 6,
+            "name": "ChangeUI2",
+            "parent": 2,
+            "prefabName": ""
+        },
+        {
+            "components": [
+                {
+                    "enable": 1,
+                    "matrixCalcFlags": 7,
+                    "position": {
+                        "x": -32.0,
+                        "y": -80.0,
+                        "z": 0.0
+                    },
+                    "rotate": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 80.0,
+                        "y": 80.0,
+                        "z": 80.0
+                    },
+                    "type": "Transform"
+                },
+                {
+                    "type": "Variables"
+                },
+                {
+                    "enable": 1,
+                    "material": {
+                        "baseColor": {
+                            "w": 1.0,
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "baseTextureGuid": {
+                            "guid": "409bb4674998abbec4785c0a538f1859"
+                        },
+                        "guid": {
+                            "guid": "00000000000000000000000000000000"
+                        },
+                        "normalTextureGuid": {
+                            "guid": "00000000000000000000000000000000"
+                        },
+                        "postEffectFlags": 0
+                    },
+                    "type": "SpriteRenderer"
+                }
+            ],
+            "guid": {
+                "guid": "4f6f39ce1d72f7ac4e5906ac45530985"
+            },
+            "id": 7,
+            "name": "ChangeUI",
+            "parent": 2,
+            "prefabName": ""
+        },
+        {
+            "components": [
+                {
+                    "enable": 1,
+                    "matrixCalcFlags": 7,
+                    "position": {
+                        "x": 0.0,
+                        "y": -160.0,
+                        "z": 0.0
+                    },
+                    "rotate": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 80.0,
+                        "y": 80.0,
+                        "z": 1.0
+                    },
+                    "type": "Transform"
+                },
+                {
+                    "type": "Variables"
+                },
+                {
+                    "enable": 1,
+                    "material": {
+                        "baseColor": {
+                            "w": 1.0,
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "baseTextureGuid": {
+                            "guid": "dc3b233d916dbb0ce2af907f23d1a547"
+                        },
+                        "guid": {
+                            "guid": "00000000000000000000000000000000"
+                        },
+                        "normalTextureGuid": {
+                            "guid": "00000000000000000000000000000000"
+                        },
+                        "postEffectFlags": 0
+                    },
+                    "type": "SpriteRenderer"
+                }
+            ],
+            "guid": {
+                "guid": "16ac4b59e030e8cf5bf6cce61752a300"
+            },
+            "id": 8,
+            "name": "ResetUI",
+            "parent": 2,
+            "prefabName": ""
+        },
+        {
+            "components": [
+                {
+                    "enable": 1,
+                    "matrixCalcFlags": 7,
+                    "position": {
+                        "x": 216.0,
+                        "y": -160.0,
+                        "z": 0.0
+                    },
+                    "rotate": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 256.0,
+                        "y": 64.0,
+                        "z": 1.0
+                    },
+                    "type": "Transform"
+                },
+                {
+                    "type": "Variables"
+                },
+                {
+                    "enable": 1,
+                    "material": {
+                        "baseColor": {
+                            "w": 1.0,
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "baseTextureGuid": {
+                            "guid": "442f506a8cc364cf900cef1ed6eecb1d"
+                        },
+                        "guid": {
+                            "guid": "00000000000000000000000000000000"
+                        },
+                        "normalTextureGuid": {
+                            "guid": "00000000000000000000000000000000"
+                        },
+                        "postEffectFlags": 0
+                    },
+                    "type": "SpriteRenderer"
+                }
+            ],
+            "guid": {
+                "guid": "0fb4d4d3e505d23d9fb1050ae86e28da"
+            },
+            "id": 9,
+            "name": "ResetText",
+            "parent": 2,
+            "prefabName": ""
+        },
+        {
+            "components": [
+                {
+                    "enable": 1,
+                    "matrixCalcFlags": 7,
+                    "position": {
+                        "x": 0.0,
+                        "y": -240.0,
+                        "z": 0.0
+                    },
+                    "rotate": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 80.0,
+                        "y": 80.0,
+                        "z": 80.0
+                    },
+                    "type": "Transform"
+                },
+                {
+                    "type": "Variables"
+                },
+                {
+                    "enable": 1,
+                    "material": {
+                        "baseColor": {
+                            "w": 1.0,
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "baseTextureGuid": {
+                            "guid": "901e7072d51783de3d453290610fb31f"
+                        },
+                        "guid": {
+                            "guid": "00000000000000000000000000000000"
+                        },
+                        "normalTextureGuid": {
+                            "guid": "00000000000000000000000000000000"
+                        },
+                        "postEffectFlags": 0
+                    },
+                    "type": "SpriteRenderer"
+                }
+            ],
+            "guid": {
+                "guid": "5b278f4cc763fb2ddf8faa2b99537972"
+            },
+            "id": 10,
+            "name": "UndoUI",
+            "parent": 2,
+            "prefabName": ""
+        },
+        {
+            "components": [
+                {
+                    "enable": 1,
+                    "matrixCalcFlags": 7,
+                    "position": {
+                        "x": 216.0,
+                        "y": -240.0,
+                        "z": 0.0
+                    },
+                    "rotate": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 256.0,
+                        "y": 64.0,
+                        "z": 1.0
+                    },
+                    "type": "Transform"
+                },
+                {
+                    "type": "Variables"
+                },
+                {
+                    "enable": 1,
+                    "material": {
+                        "baseColor": {
+                            "w": 1.0,
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "baseTextureGuid": {
+                            "guid": "f5413f53252881f54a0f3a1ff25d6594"
+                        },
+                        "guid": {
+                            "guid": "00000000000000000000000000000000"
+                        },
+                        "normalTextureGuid": {
+                            "guid": "00000000000000000000000000000000"
+                        },
+                        "postEffectFlags": 0
+                    },
+                    "type": "SpriteRenderer"
+                }
+            ],
+            "guid": {
+                "guid": "e2c5fab8369b83009efa318f83c86779"
+            },
+            "id": 11,
+            "name": "UndoText",
+            "parent": 2,
+            "prefabName": ""
+        }
+    ],
+    "components": [
+        {
+            "enable": 1,
+            "matrixCalcFlags": 0,
+            "position": {
+                "x": -858.4000244140625,
+                "y": 442.20001220703125,
+                "z": 0.0
+            },
+            "rotate": {
+                "w": 1.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "type": "Transform"
+        },
+        {
+            "type": "Variables"
+        }
+    ],
+    "guid": {
+        "guid": "5f1cef69cb23417ca7e4843e117ea227"
+    },
+    "id": 2,
+    "name": "PuzzleUI",
+    "parent": null,
+    "prefabName": "PuzzleUI"
+}

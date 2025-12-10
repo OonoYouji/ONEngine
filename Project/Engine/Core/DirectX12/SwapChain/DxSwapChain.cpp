@@ -1,4 +1,6 @@
-#include "DxSwapChain.h"
+﻿#include "DxSwapChain.h"
+
+using namespace ONEngine;
 
 #include <comdef.h>
 

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// std
 #include <cstdint>
@@ -9,6 +9,8 @@
 /// ///////////////////////////////////////////////////
 /// Colorクラス
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 struct Color final {
 	/// ===================================================  
 	/// public : static methods, objects
@@ -83,3 +85,5 @@ inline Color& Color::operator=(const Color& _color) {
 	a = _color.a;
 	return *this;
 }
+
+} /// ONEngine

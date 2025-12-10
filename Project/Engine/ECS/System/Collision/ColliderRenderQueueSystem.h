@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// engine
 #include "../Interface/ECSISystem.h"
@@ -9,6 +9,8 @@
 /// ///////////////////////////////////////////////////////
 /// コライダーの可視化を行うシステム
 /// ///////////////////////////////////////////////////////
+namespace ONEngine {
+
 class ColliderRenderQueueSystem : public ECSISystem {
 public:
 	/// =========================================================
@@ -29,3 +31,5 @@ public:
 
 };
 
+
+} /// ONEngine

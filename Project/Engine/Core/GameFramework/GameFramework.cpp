@@ -1,4 +1,6 @@
-#include "GameFramework.h"
+﻿#include "GameFramework.h"
+
+using namespace ONEngine;
 
 /// engine
 #include "Engine/Core/Utility/Input/Input.h"

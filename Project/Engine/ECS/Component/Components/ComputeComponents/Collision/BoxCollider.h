@@ -5,19 +5,19 @@
 #include "Engine/Core/Utility/Math/Vector3.h"
 
 
+namespace ONEngine {
+
 class BoxCollider;
 
 namespace COMP_DEBUG {
-	/// @brief BoxColliderのデバッグ表示
-	/// @param _boxCollider 
-	void BoxColliderDebug(BoxCollider* _boxCollider);
+/// @brief BoxColliderのデバッグ表示
+/// @param _boxCollider 
+void BoxColliderDebug(BoxCollider* _boxCollider);
 
 }	/// namespace COMP_DEBUG
 
-
 void from_json(const nlohmann::json& _j, BoxCollider& _b);
 void to_json(nlohmann::json& _j, const BoxCollider& _b);
-
 
 /// //////////////////////////////////////
 /// BoxCollider
@@ -51,3 +51,5 @@ public:
 	const Vector3& GetSize() const;
 
 };
+
+} /// ONEngine

@@ -1,4 +1,6 @@
-#include "SceneIO.h"
+﻿#include "SceneIO.h"
+
+using namespace ONEngine;
 
 /// std
 #include <iostream>

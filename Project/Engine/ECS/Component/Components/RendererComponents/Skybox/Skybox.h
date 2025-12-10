@@ -12,6 +12,8 @@
 /// ///////////////////////////////////////////////////
 /// Skyboxのコンポーネントクラス
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class Skybox : public IRenderComponent {
 public:
 	/// ===================================================
@@ -46,3 +48,5 @@ namespace COMP_DEBUG {
 /// Json変換
 void from_json(const nlohmann::json& _j, Skybox& _s);
 void to_json(nlohmann::json& _j, const Skybox& _s);
+
+} /// ONEngine

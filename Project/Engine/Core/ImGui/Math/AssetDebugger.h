@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// std
 #include <string>
@@ -7,6 +7,8 @@
 #include "Engine/Asset/Assets/Mateiral/Material.h"
 
 /// ----- 前方宣言 ----- ///
+namespace ONEngine {
+
 class AssetCollection;
 
 /// ////////////////////////////////////////////////////////
@@ -23,3 +25,5 @@ namespace ImMathf {
 	bool MaterialEdit(const std::string& _label, Material* _material, AssetCollection* _assetCollection, bool _isEditNormalTexture = true);
 
 }
+
+} /// ONEngine

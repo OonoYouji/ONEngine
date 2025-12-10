@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// std
 #include <vector>
@@ -13,6 +13,8 @@
 /// //////////////////////////////////////////////////////
 /// ByteAddressBuffer
 /// //////////////////////////////////////////////////////
+namespace ONEngine {
+
 class ByteAddressBuffer final {
 public:
 	/// ==================================================
@@ -59,3 +61,5 @@ private:
 
 
 };
+
+} /// ONEngine

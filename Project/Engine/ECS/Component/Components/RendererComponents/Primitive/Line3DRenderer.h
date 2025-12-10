@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// engine
 #include "../../Interface/IComponent.h"
@@ -9,6 +9,8 @@
 /// ///////////////////////////////////////////////////
 /// 3Dライン描画クラス
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class Line3DRenderer final : public IComponent {
 public:
 	/// ===================================================
@@ -42,3 +44,5 @@ public:
 
 };
 
+
+} /// ONEngine

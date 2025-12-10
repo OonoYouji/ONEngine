@@ -1,9 +1,11 @@
-#pragma once
+﻿#pragma once
 
 
 /// /////////////////////////////////////////////////////////////
 /// Time
 /// /////////////////////////////////////////////////////////////
+namespace ONEngine {
+
 class Time {
 	friend class GameFramework;
 private:
@@ -40,3 +42,5 @@ public:
 };
 
 
+
+} /// ONEngine

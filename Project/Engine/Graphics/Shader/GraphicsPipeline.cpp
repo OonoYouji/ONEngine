@@ -1,5 +1,7 @@
 #include "GraphicsPipeline.h"
 
+using namespace ONEngine;
+
 /// directx
 #include <DirectX-Headers/include/directx/d3dx12_pipeline_state_stream.h>
 #include <comdef.h>
@@ -458,7 +460,7 @@ D3D12_BLEND_DESC BlendMode::None() {
 	return blendDesc;
 }
 
-D3D12_DEPTH_STENCIL_DESC DefaultDepthStencilDesc() {
+D3D12_DEPTH_STENCIL_DESC ONEngine::DefaultDepthStencilDesc() {
 	D3D12_DEPTH_STENCIL_DESC depthStencilDesc = {};
 	depthStencilDesc.DepthEnable = TRUE;
 	depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;

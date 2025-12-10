@@ -6,6 +6,8 @@
 #include "Engine/ECS/Component/Components/ComputeComponents/Variables/Variables.h"
 #include "Engine/ECS/Component/Collection/ComponentHash.h"
 
+namespace ONEngine {
+
 template <typename T>
 concept ComponentType = std::is_base_of_v<IComponent, T>;
 
@@ -192,10 +194,6 @@ public:
 	bool ContainsPrefab() const;
 
 
-	/// @brief エンティティのアクティブ状態の設定
-	/// @return true: アクティブ, false: 非アクティブ
-	bool GetActive() const;
-
 	/// @brief エンティティのidの取得
 	/// @return id > 0 なら runtime外で生成された、 id < 0 なら runtime中に生成された
 	int32_t GetId() const;
@@ -217,6 +215,14 @@ public:
 	void Destroy();
 
 
+public:
+	/// ===================================================
+	/// public : objects
+	/// ===================================================
+
+	bool active = true; ///< true のときは更新する
+
+
 private:
 	/// ===================================================
 	/// private : objects
@@ -225,7 +231,6 @@ private:
 	Transform* transform_;
 	class ECSGroup* pEcsGroup_;
 
-	bool active_ = true; ///< true のときは更新する
 	int32_t id_ = 0; ///< entityのID
 	Guid guid_; ///< entityのGUID
 
@@ -240,8 +245,8 @@ private:
 template<ComponentType Comp>
 inline Comp* GameEntity::AddComponent() {
 	std::string name = typeid(Comp).name();
-	if (name.find("class ") == 0) {
-		name = name.substr(6);
+	if (name.find("class ONEngine::") == 0) {
+		name = name.substr(strlen("class ONEngine::"));
 	}
 	return static_cast<Comp*>(AddComponent(name));
 }
@@ -258,8 +263,8 @@ inline Comp* GameEntity::GetComponent() const {
 template<ComponentType Comp>
 inline void GameEntity::RemoveComponent() {
 	std::string name = typeid(Comp).name();
-	if (name.find("class ") == 0) {
-		name = name.substr(6);
+	if (name.find("class ONEngine") == 0) {
+		name = name.substr(strlen("class ONEngine"));
 	}
 
 	RemoveComponent(name);
@@ -268,3 +273,5 @@ inline void GameEntity::RemoveComponent() {
 /// json 変換
 void to_json(nlohmann::json& _j, const GameEntity& _entity);
 void from_json(const nlohmann::json& _j, GameEntity& _entity);
+
+} /// ONEngine

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// engine
 #include "Engine/Asset/Assets/Texture/Texture.h"
@@ -8,6 +8,8 @@
 /// ///////////////////////////////////////////////////
 /// render texture
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class RenderTexture {
 private:
 	/// ===================================================
@@ -107,3 +109,5 @@ private:
 	Texture* texture_ = nullptr;
 
 };
+
+} /// ONEngine

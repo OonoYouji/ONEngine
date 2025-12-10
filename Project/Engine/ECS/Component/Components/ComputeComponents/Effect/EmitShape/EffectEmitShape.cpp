@@ -1,4 +1,6 @@
-#include "EffectEmitShape.h"
+﻿#include "EffectEmitShape.h"
+
+using namespace ONEngine;
 
 /// std
 #include <numbers>

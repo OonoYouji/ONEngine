@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// directX12
 #include <d3d12.h>
@@ -16,6 +16,8 @@
 #include "Engine/Core/DirectX12/Device/DxDevice.h"
 #include "Engine/Core/DirectX12/DescriptorHeap/DxSRVHeap.h"
 #include "Engine/Core/Utility/Tools/Assert.h"
+
+namespace ONEngine {
 
 struct Handle {
 	uint32_t heapIndex;
@@ -515,3 +517,5 @@ template<typename T>
 inline DxResource& StructuredBuffer<T>::GetReadbackResource() {
 	return readbackResource_;
 }
+
+} /// ONEngine

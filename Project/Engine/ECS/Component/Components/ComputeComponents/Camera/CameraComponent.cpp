@@ -1,5 +1,7 @@
 #include "CameraComponent.h"
 
+#include <array>
+
 /// externals
 #include <imgui.h>
 
@@ -9,6 +11,7 @@
 #include "Engine/Editor/Commands/ImGuiCommand/ImGuiCommand.h"
 #include "Engine/ECS/Entity/GameEntity/GameEntity.h"
 
+using namespace ONEngine;
 
 namespace {
 
@@ -181,7 +184,7 @@ void COMP_DEBUG::CameraDebug(CameraComponent* _camera) {
 
 }
 
-void from_json(const nlohmann::json& _j, CameraComponent& _c) {
+void ONEngine::from_json(const nlohmann::json& _j, CameraComponent& _c) {
 	_c.isMainCameraRequest_ = _j.value("isMainCamera", true);
 	_c.fovY_ = _j.value("fovY", 0.7f);
 	_c.nearClip_ = _j.value("nearClip", 0.1f);
@@ -190,7 +193,7 @@ void from_json(const nlohmann::json& _j, CameraComponent& _c) {
 	_c.isDrawFrustum_ = _j.value("isDrawFrustum", false);
 }
 
-void to_json(nlohmann::json& _j, const CameraComponent& _c) {
+void ONEngine::to_json(nlohmann::json& _j, const CameraComponent& _c) {
 	_j = nlohmann::json{
 		{ "type", "CameraComponent" },
 		{ "enable", _c.enable },

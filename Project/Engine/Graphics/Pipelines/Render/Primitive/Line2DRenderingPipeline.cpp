@@ -1,4 +1,6 @@
-#include "Line2DRenderingPipeline.h"
+﻿#include "Line2DRenderingPipeline.h"
+
+using namespace ONEngine;
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"

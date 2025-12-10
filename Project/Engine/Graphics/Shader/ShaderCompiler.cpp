@@ -1,4 +1,6 @@
-#include "ShaderCompiler.h"
+﻿#include "ShaderCompiler.h"
+
+using namespace ONEngine;
 
 /// std
 #include <iostream>

@@ -30,6 +30,13 @@ public class PuzzlePlayer : MonoBehavior {
 
 	public void Move(Vector2Int _moveDir) {
 		blockData.address += _moveDir;
+		UpdateRotateY(_moveDir);
+		PlayMoveSE();
+	}
+
+	public void SetPosition(Vector2Int _address) {
+		blockData.address = _address;
+		UpdatePosition();
 	}
 
 	public void PlayMoveSE() {
@@ -38,8 +45,11 @@ public class PuzzlePlayer : MonoBehavior {
 
 	public void UpdatePosition() {
 		/// 座標更新
-		Vector3 newPos = new Vector3(blockData.address.x * blockData.blockSpace, 0f,
-			blockData.address.y * blockData.blockSpace);
+		Vector3 newPos = new Vector3(
+			blockData.address.x * blockData.blockSpace,
+			0f,
+			blockData.address.y * blockData.blockSpace
+		);
 		transform.position = newPos;
 	}
 
@@ -52,6 +62,10 @@ public class PuzzlePlayer : MonoBehavior {
 				color = new Vector4(value, value, value, 1);
 			}
 
+			/// 非アクティブは少し暗くする
+			if (!isActive) {
+				color = Vector4.Lerp(color, new Vector4(0, 0, 0, 1), 0.5f);
+			}
 			mr.color = color;
 		}
 	}

@@ -18,6 +18,8 @@
 #include "Engine/Core/DirectX12/DescriptorHeap/DxSRVHeap.h"
 #include "Engine/Core/DirectX12/Command/DxCommand.h"
 
+using namespace ONEngine;
+
 namespace {
 	/// printf 互換のフォーマットログ
 	template <class... Args>
@@ -104,46 +106,16 @@ void Texture::CreateUAVTexture(UINT _width, UINT _height, DxDevice* _dxDevice, D
 }
 
 
-void Texture::CreateUAVTexture3D(
+void Texture::CreateUAVTexture3DWithUAV(
 	UINT _width, UINT _height, UINT _depth,
 	DxDevice* _dxDevice,
-	DxCommand* _dxCommand,
 	DxSRVHeap* _dxSRVHeap,
 	DXGI_FORMAT _uavFormat) {
 
 	ID3D12Device* device = _dxDevice->GetDevice();
 	uavFormat_ = _uavFormat;
 
-	//
-	// 1. UAV 用の Resource を作成（SRV 用 Resource は別に保持している）
-	//
-	D3D12_RESOURCE_DESC desc = {};
-	desc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE3D;
-	desc.Alignment = 0;
-	desc.Width = _width;
-	desc.Height = _height;
-	desc.DepthOrArraySize = _depth;
-	desc.MipLevels = 1;
-	desc.Format = _uavFormat;                // UAV 可能フォーマット
-	desc.SampleDesc.Count = 1;
-	desc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
-	desc.Flags = D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
-
-	CD3DX12_HEAP_PROPERTIES heapProps(D3D12_HEAP_TYPE_DEFAULT);
-
-	// UAV 用リソースを作り直す
-	dxResource_.CreateCommittedResource(
-		_dxDevice,
-		&heapProps,
-		D3D12_HEAP_FLAG_NONE,
-		&desc,
-		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
-		nullptr
-	);
-
-	//
-	// 2. UAV Descriptor 設定
-	//
+	/// --------------- UAV Descriptor 設定 --------------- ///
 	D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc = {};
 	uavDesc.Format = srvFormat_;
 	uavDesc.ViewDimension = D3D12_UAV_DIMENSION_TEXTURE3D;
@@ -151,28 +123,24 @@ void Texture::CreateUAVTexture3D(
 	uavDesc.Texture3D.FirstWSlice = 0;
 	uavDesc.Texture3D.WSize = _depth;
 
-	//
-	// 3. SRV + UAV 共通のディスクリプタ index を取得
-	//
 	uint32_t descriptorIndex;
-
 	if (!uavHandle_.has_value()) {
-		// 初回は新規割り当て
+		/// 新規作成
 		CreateEmptyUAVHandle();
 		descriptorIndex = _dxSRVHeap->AllocateUAVTexture();
 		D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle = _dxSRVHeap->GetCPUDescriptorHandel(descriptorIndex);
 		D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle = _dxSRVHeap->GetGPUDescriptorHandel(descriptorIndex);
 		SetUAVHandle(descriptorIndex, cpuHandle, gpuHandle);
+
+		Assert(descriptorIndex != 1029 + 2048);
 	} else {
-		// 2回目以降は同じ index を再利用する
+		/// 既存のハンドルを使用
 		descriptorIndex = uavHandle_->descriptorIndex;
 	}
 
 	D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle = _dxSRVHeap->GetCPUDescriptorHandel(descriptorIndex);
 
-	//
-	// 4. UAV 再生成
-	//
+	/// --------------- UAV生成 --------------- ///
 	device->CreateUnorderedAccessView(
 		dxResource_.Get(),
 		nullptr,
@@ -180,27 +148,11 @@ void Texture::CreateUAVTexture3D(
 		cpuHandle
 	);
 
-	//
-	// 5. SRV 再生成：Texture がもともと持っていた SRV 用情報を使う
-	//
-	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
-	srvDesc.Format = srvFormat_;      // テクスチャ読み込み時のフォーマットを保存しておく
-	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE3D;
-	srvDesc.Texture3D.MipLevels = 1;
-	srvDesc.Texture3D.MostDetailedMip = 0;
+	dxResource_.SetCurrentState(D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
 
-	device->CreateShaderResourceView(
-		dxResource_.Get(),
-		&srvDesc,
-		cpuHandle
-	);
-
-
-	//
-	// 6. ログ
-	//
+	/// --------------- ログ --------------- ///
 	Console::Log("[Create UAV Texture3D]");
+	Console::Log(" - Texture Name: " + name_);
 	Console::Log(" - Width: " + std::to_string(_width));
 	Console::Log(" - Height: " + std::to_string(_height));
 	Console::Log(" - Depth: " + std::to_string(_depth));
@@ -209,6 +161,54 @@ void Texture::CreateUAVTexture3D(
 	Console::Log(" - DescriptorIndex: " + std::to_string(descriptorIndex));
 }
 
+
+void Texture::CreateUAVTexture3D(UINT _width, UINT _height, UINT _depth, DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap, DXGI_FORMAT _dxgiFormat) {
+	// テクスチャディスクリプション
+	D3D12_RESOURCE_DESC texDesc = {};
+	texDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE3D;
+	texDesc.Alignment = 0;
+	texDesc.Width = _width;
+	texDesc.Height = _height;
+	texDesc.DepthOrArraySize = _depth;
+	texDesc.MipLevels = 1;
+	texDesc.Format = _dxgiFormat;
+	texDesc.SampleDesc.Count = 1;
+	texDesc.SampleDesc.Quality = 0;
+	texDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
+	texDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
+
+	// リソース作成
+	D3D12_HEAP_PROPERTIES heapProperties = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
+	dxResource_.CreateCommittedResource(
+		_dxDevice, &heapProperties, D3D12_HEAP_FLAG_NONE,
+		&texDesc, D3D12_RESOURCE_STATE_UNORDERED_ACCESS, nullptr
+	);
+
+	D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc = {};
+	uavDesc.Format = _dxgiFormat;
+	uavDesc.ViewDimension = D3D12_UAV_DIMENSION_TEXTURE3D;
+	uavDesc.Texture3D.MipSlice = 0;
+	uavDesc.Texture3D.FirstWSlice = 0;
+	uavDesc.Texture3D.WSize = _depth;
+
+	uint32_t index = _dxSRVHeap->AllocateUAVTexture();
+	CreateEmptyUAVHandle();
+	SetUAVDescriptorIndex(index);
+	SetUAVCPUHandle(_dxSRVHeap->GetCPUDescriptorHandel(index));
+	SetUAVGPUHandle(_dxSRVHeap->GetGPUDescriptorHandel(index));
+
+	_dxDevice->GetDevice()->CreateUnorderedAccessView(dxResource_.Get(), nullptr, &uavDesc, uavHandle_->cpuHandle);
+
+	/// ログに今回行った操作を出力
+	Console::Log("[Create UAV Texture3D]");
+	Console::Log(" - Texture Name: " + name_);
+	Console::Log(" - Width: " + std::to_string(_width));
+	Console::Log(" - Height: " + std::to_string(_height));
+	Console::Log(" - Depth: " + std::to_string(_depth));
+	Console::Log(" - UAV Format: " + std::string(magic_enum::enum_name(uavFormat_)));
+	Console::Log(" - SRV Format: " + std::string(magic_enum::enum_name(srvFormat_)));
+	Console::Log(" - DescriptorIndex: " + std::to_string(index));
+}
 
 void Texture::OutputTexture(const std::wstring& _filename, DxDevice* _dxDevice, DxCommand* _dxCommand) {
 	/// Readbackリソースを作成（1行ごとのAlignmentに注意）
@@ -274,6 +274,99 @@ void Texture::OutputTexture(const std::wstring& _filename, DxDevice* _dxDevice, 
 
 	readbackTexture_.Get()->Unmap(0, nullptr);
 }
+
+void Texture::OutputTexture3D(const std::wstring& _filename, DxDevice* _dxDevice, DxCommand* _dxCommand) {
+	auto desc = dxResource_.Get()->GetDesc();
+	if (desc.Dimension != D3D12_RESOURCE_DIMENSION_TEXTURE3D) {
+		Assert(false, "Not a 3D texture.");
+	}
+
+	// Readback用バッファサイズを取得
+	D3D12_PLACED_SUBRESOURCE_FOOTPRINT footprint{};
+	UINT numRows = 0;
+	UINT64 rowPitch = 0;
+	UINT64 totalBytes = 0;
+	_dxDevice->GetDevice()->GetCopyableFootprints(
+		&desc,
+		0,      // FirstSubresource
+		1,      // NumSubresources = 1 for 3D texture
+		0,
+		&footprint,
+		&numRows,
+		&rowPitch,
+		&totalBytes
+	);
+
+	// Readbackバッファを作成
+	CD3DX12_RESOURCE_DESC rbDesc = CD3DX12_RESOURCE_DESC::Buffer(totalBytes);
+	D3D12_HEAP_PROPERTIES heapProps = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_READBACK);
+
+	DxResource readback;
+	readback.CreateCommittedResource(
+		_dxDevice,
+		&heapProps,
+		D3D12_HEAP_FLAG_NONE,
+		&rbDesc,
+		D3D12_RESOURCE_STATE_COPY_DEST,
+		nullptr
+	);
+
+	// コピー前にリソース状態を変更
+	dxResource_.CreateBarrier(D3D12_RESOURCE_STATE_COPY_SOURCE, _dxCommand);
+
+	D3D12_TEXTURE_COPY_LOCATION src = {};
+	src.pResource = dxResource_.Get();
+	src.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
+	src.SubresourceIndex = 0;
+
+	D3D12_TEXTURE_COPY_LOCATION dst = {};
+	dst.pResource = readback.Get();
+	dst.Type = D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT;
+	dst.PlacedFootprint = footprint;
+
+	// コピー
+	_dxCommand->GetCommandList()->CopyTextureRegion(&dst, 0, 0, 0, &src, nullptr);
+
+	// コピー後、UAVに戻す場合
+	dxResource_.CreateBarrier(D3D12_RESOURCE_STATE_ALL_SHADER_RESOURCE, _dxCommand);
+
+	_dxCommand->CommandExecuteAndWait();
+	_dxCommand->CommandReset();
+
+	// ReadbackしてDirectXTexに詰め替え
+	D3D12_RANGE range{ 0, static_cast<SIZE_T>(totalBytes) };
+	void* mapped = nullptr;
+	readback.Get()->Map(0, &range, &mapped);
+
+	DirectX::ScratchImage volumeScratch;
+	volumeScratch.Initialize3D(desc.Format, desc.Width, desc.Height, desc.DepthOrArraySize, desc.MipLevels);
+
+	for (UINT z = 0; z < desc.DepthOrArraySize; z++) {
+		size_t sliceOffset = footprint.Offset + z * footprint.Footprint.RowPitch * footprint.Footprint.Height;
+
+		DirectX::Image img = {};
+		img.format = desc.Format;
+		img.width = static_cast<size_t>(desc.Width);
+		img.height = static_cast<size_t>(desc.Height);
+		img.rowPitch = footprint.Footprint.RowPitch;
+		img.slicePitch = footprint.Footprint.RowPitch * desc.Height;
+		img.pixels = reinterpret_cast<uint8_t*>(mapped) + sliceOffset;
+
+		memcpy(volumeScratch.GetImage(0, 0, z)->pixels, img.pixels, img.slicePitch);
+	}
+
+	DirectX::SaveToDDSFile(
+		volumeScratch.GetImages(),
+		volumeScratch.GetImageCount(),
+		volumeScratch.GetMetadata(),
+		DirectX::DDS_FLAGS_NONE,
+		_filename.c_str()
+	);
+
+	readback.Get()->Unmap(0, nullptr);
+}
+
+
 
 void Texture::SetName(const std::string& _name) {
 	name_ = _name;
@@ -375,9 +468,13 @@ const Vector2& Texture::GetTextureSize() const {
 	return textureSize_;
 }
 
+UINT Texture::GetTextureDepth() const {
+	return depth_;
+}
 
 
-void SaveTextureToPNG(const std::wstring& _filename, size_t _width, size_t _height, bool _overwrite) {
+
+void ONEngine::SaveTextureToPNG(const std::wstring& _filename, size_t _width, size_t _height, bool _overwrite) {
 
 	/// _filenameの先のディレクトリが存在しない場合は作成
 	std::filesystem::path filePath(_filename);
@@ -425,7 +522,7 @@ void SaveTextureToPNG(const std::wstring& _filename, size_t _width, size_t _heig
 
 }
 
-void SaveTextureToDDS(const std::wstring& _filename, size_t _width, size_t _height, size_t _depth, bool _overwrite) {
+void ONEngine::SaveTextureToDDS(const std::wstring& _filename, size_t _width, size_t _height, size_t _depth, bool _overwrite) {
 
 	/// _filenameの先のディレクトリが存在しない場合は作成
 	std::filesystem::path filePath(_filename);

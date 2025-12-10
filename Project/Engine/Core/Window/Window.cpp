@@ -1,4 +1,6 @@
-#include "Window.h"
+﻿#include "Window.h"
+
+using namespace ONEngine;
 
 /// windows
 #include <windowsx.h>

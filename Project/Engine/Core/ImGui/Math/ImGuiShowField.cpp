@@ -1,5 +1,7 @@
 #include "ImGuiShowField.h"
 
+using namespace ONEngine;
+
 /// external
 #include <mono/metadata/object.h>
 

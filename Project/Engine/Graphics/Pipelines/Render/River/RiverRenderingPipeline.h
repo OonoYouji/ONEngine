@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// engine
 #include "../../Interface/IRenderingPipeline.h"
@@ -6,6 +6,8 @@
 /// /////////////////////////////////////////////////
 /// 川の描画pipeline
 /// /////////////////////////////////////////////////
+namespace ONEngine {
+
 class RiverRenderingPipeline : public IRenderingPipeline {
 
 	enum ROOT_PARAM {
@@ -32,3 +34,5 @@ private:
 
 	AssetCollection* pAssetCollection_ = nullptr;
 };
+
+} /// ONEngine

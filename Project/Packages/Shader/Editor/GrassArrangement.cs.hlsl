@@ -96,7 +96,7 @@ void main(uint3 DTid : SV_DispatchThreadID) {
     /// 草の向きをランダムに決定
 	float angle = Random(uv); // 0~1の値を0~2πに変換
 	newInstance.tangent = float3(cos(angle), 0, sin(angle));
-	newInstance.scale = (0.5 + Random(uv)) /** luminance*/;
+	newInstance.scale = (0.2f + Random(uv)) /** luminance*/;
 	newInstance.random01 = texColor.w; // 0~1のランダム値を保存
 
 	bladeInstances.Append(newInstance);

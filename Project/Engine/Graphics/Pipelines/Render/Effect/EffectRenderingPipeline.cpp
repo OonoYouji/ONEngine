@@ -1,4 +1,6 @@
-#include "EffectRenderingPipeline.h"
+﻿#include "EffectRenderingPipeline.h"
+
+using namespace ONEngine;
 
 /// std
 #include <unordered_map>

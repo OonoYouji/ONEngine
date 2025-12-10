@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// std
 #include <deque>
@@ -14,6 +14,8 @@
 /// ///////////////////////////////////////////////////
 /// 衝突判定を計算したときの情報を格納する構造体
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 struct CollisionInfo {
 	Vector3 normal;       /// 衝突法線 (この方向に押し戻す)
 	float penetration;    /// めり込み
@@ -87,3 +89,5 @@ namespace CheckMethod {
 	bool CollisionCheckBoxVsSphere(BoxCollider* _b, SphereCollider* _s, CollisionInfo* _info);
 	bool CollisionCheckBoxVsBox(BoxCollider* _b1, BoxCollider* _b2, CollisionInfo* _info);
 }
+
+} /// ONEngine

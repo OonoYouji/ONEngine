@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// std
 #include <unordered_map>
@@ -10,6 +10,8 @@
 /// //////////////////////////////////////////////
 /// Componentのコレクションクラス
 /// //////////////////////////////////////////////
+namespace ONEngine {
+
 class ComponentCollection {
 public:
 	/// ===================================================
@@ -134,3 +136,5 @@ inline ComponentArray<Comp>* ComponentCollection::GetComponentArray() requires s
 	}
 	return nullptr;
 }
+
+} /// ONEngine

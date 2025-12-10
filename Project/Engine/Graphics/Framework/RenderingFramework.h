@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// std
 #include <vector>
@@ -18,6 +18,8 @@
 /// ///////////////////////////////////////////////////
 /// 描画のフレームワーククラス
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class RenderingFramework final {
 
 	enum RENDER_TEXTURE_TYPE {
@@ -105,3 +107,5 @@ public:
 	ShaderCompiler* GetShaderCompiler() const;
 };
 
+
+} /// ONEngine

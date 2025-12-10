@@ -1,10 +1,12 @@
-#pragma once
+﻿#pragma once
 
 #include "../Interface/IEditorCompute.h"
 
 /// /////////////////////////////////////////////////
 /// 川に沿って地形を変形させるCSPipelineを起動させるクラス
 /// /////////////////////////////////////////////////
+namespace ONEngine {
+
 class RiverTerrainAbjustPipeline : public IEditorCompute {
 
 	enum ROOT_PARAM {
@@ -31,3 +33,5 @@ private:
 	/// =========================================
 };
 
+
+} /// ONEngine

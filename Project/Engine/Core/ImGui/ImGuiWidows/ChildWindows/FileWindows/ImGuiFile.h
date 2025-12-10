@@ -1,10 +1,12 @@
-#pragma once
+﻿#pragma once
 
 #include "../../Collection/ImGuiWindowCollection.h"
 
 /// //////////////////////////////////////////////////////
 /// ImGuiのスタイル操作Window
 /// //////////////////////////////////////////////////////
+namespace ONEngine {
+
 class ImGuiFile : public IImGuiChildWindow {
 public:
 	/// ====================================================
@@ -18,3 +20,5 @@ public:
 
 };
 
+
+} /// ONEngine

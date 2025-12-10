@@ -1,4 +1,6 @@
-#include "ImGuiHierarchyWindow.h"
+﻿#include "ImGuiHierarchyWindow.h"
+
+using namespace ONEngine;
 
 /// external
 #include <imgui.h>
@@ -463,7 +465,7 @@ void ImGuiNormalHierarchyWindow::ShowImGui() {
 		/// エンティティのペーストコマンドの実行
 		if (Input::PressKey(DIK_LCONTROL) || Input::PressKey(DIK_RCONTROL)) {
 			if (Input::TriggerKey(DIK_V)) {
-				EditCommand::Execute<PasteEntityCommand>(pEcsGroup_);
+				EditCommand::Execute<PasteEntityCommand>(pEcsGroup_, selectedEntity_);
 			}
 		}
 	}

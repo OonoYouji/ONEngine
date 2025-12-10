@@ -10,8 +10,9 @@
 /// engine
 #include "Engine/Editor/Commands/ImGuiCommand/ImGuiCommand.h"
 
+using namespace ONEngine;
 
-Material GenerateMaterial() {
+Material ONEngine::GenerateMaterial() {
 	/// ----- 新規のMaterialを作成して返す ----- ///
 	Material material;
 
@@ -22,7 +23,7 @@ Material GenerateMaterial() {
 	return material;
 }
 
-void GenerateMaterialFile(const std::string& _filepath, Material* _material) {
+void ONEngine::GenerateMaterialFile(const std::string& _filepath, Material* _material) {
 	/// _filepathにマテリアル情報を書き込む
 
 	/// _filepathがないなら生成する
@@ -60,8 +61,10 @@ void GenerateMaterialFile(const std::string& _filepath, Material* _material) {
 /// Json変換
 /// ---------------------------------------------------
 
-void from_json(const nlohmann::json& _j, Material& _material) {
+void ONEngine::from_json(const nlohmann::json& _j, Material& _material) {
 	/// ----- JsonデータをMaterialに変換する ----- ///
+
+	_j.at("baseColor").get<ONEngine::Vector4>();
 
 	_material.guid = _j.value("guid", Guid{});
 	_material.baseColor = _j.value("baseColor", Vector4::kWhite);
@@ -81,7 +84,7 @@ void from_json(const nlohmann::json& _j, Material& _material) {
 	}
 }
 
-void to_json(nlohmann::json& _j, const Material& _material) {
+void ONEngine::to_json(nlohmann::json& _j, const Material& _material) {
 	/// ----- MaterialデータをJsonに変換する ----- ///
 	_j = {
 		{ "guid", _material.guid },

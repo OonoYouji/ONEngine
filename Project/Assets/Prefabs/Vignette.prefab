@@ -1,0 +1,57 @@
+{
+    "components": [
+        {
+            "enable": 1,
+            "matrixCalcFlags": 0,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "rotate": {
+                "w": 1.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "scale": {
+                "x": 1980.0,
+                "y": 1080.0,
+                "z": 1.0
+            },
+            "type": "Transform"
+        },
+        {
+            "type": "Variables"
+        },
+        {
+            "enable": 1,
+            "material": {
+                "baseColor": {
+                    "w": 1.0,
+                    "x": 0.2800000011920929,
+                    "y": 0.2800000011920929,
+                    "z": 0.2800000011920929
+                },
+                "baseTextureGuid": {
+                    "guid": "7ce590dfa912a3c74535c2ec46cc5e8d"
+                },
+                "guid": {
+                    "guid": "00000000000000000000000000000000"
+                },
+                "normalTextureGuid": {
+                    "guid": "00000000000000000000000000000000"
+                },
+                "postEffectFlags": 0
+            },
+            "type": "SpriteRenderer"
+        }
+    ],
+    "guid": {
+        "guid": "257c4e44223fce742a570badc0a9b573"
+    },
+    "id": 2,
+    "name": "Vignette",
+    "parent": null,
+    "prefabName": "Vignette"
+}

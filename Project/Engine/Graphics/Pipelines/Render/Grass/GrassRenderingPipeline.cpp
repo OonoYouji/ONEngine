@@ -1,4 +1,6 @@
-#include "GrassRenderingPipeline.h"
+﻿#include "GrassRenderingPipeline.h"
+
+using namespace ONEngine;
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"

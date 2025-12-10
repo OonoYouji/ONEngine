@@ -9,6 +9,7 @@
 /// engine
 #include "../ComPtr/ComPtr.h"
 
+namespace ONEngine {
 
 /// /////////////////////////////////////////////////
 /// depth stencil class
@@ -58,3 +59,5 @@ private:
 
 };
 
+
+} /// ONEngine

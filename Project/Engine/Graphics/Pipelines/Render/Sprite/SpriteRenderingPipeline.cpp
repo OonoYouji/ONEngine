@@ -1,4 +1,6 @@
-#include "SpriteRenderingPipeline.h"
+﻿#include "SpriteRenderingPipeline.h"
+
+using namespace ONEngine;
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
@@ -131,7 +133,7 @@ void SpriteRenderingPipeline::Draw(class ECSGroup* _ecsGroup, CameraComponent* _
 	/// bufferにデータをセット
 	size_t transformIndex = 0;
 	for (auto& sr : spriteRendererArray->GetUsedComponents()) {
-		if (!sr->enable) {
+		if (!CheckComponentEnable(sr)) {
 			continue;
 		}
 

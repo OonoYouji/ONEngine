@@ -8,6 +8,8 @@
 #include "Vector2.h"
 
 
+using namespace ONEngine;
+
 /// ===================================================
 /// static objects initialize
 /// ===================================================
@@ -145,12 +147,12 @@ Vector3 Vector3::MinDotVector(const Vector3& _direction, const std::vector<Vecto
 	return minVertex;
 }
 
-void from_json(const nlohmann::json& _j, Vector3& _v) {
+void ONEngine::from_json(const nlohmann::json& _j, Vector3& _v) {
 	_v.x = _j.at("x").get<float>();
 	_v.y = _j.at("y").get<float>();
 	_v.z = _j.at("z").get<float>();
 }
 
-void to_json(nlohmann::json& _j, const Vector3& _v) {
+void ONEngine::to_json(nlohmann::json& _j, const Vector3& _v) {
 	_j = nlohmann::json{ { "x", _v.x }, { "y", _v.y }, { "z", _v.z } };
 }

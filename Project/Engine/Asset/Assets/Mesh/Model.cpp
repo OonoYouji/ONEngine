@@ -1,4 +1,6 @@
-#include "Model.h"
+﻿#include "Model.h"
+
+using namespace ONEngine;
 
 Model::Model() = default;
 Model::~Model() = default;

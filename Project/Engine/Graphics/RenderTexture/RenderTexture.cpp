@@ -1,4 +1,6 @@
-#include "RenderTexture.h"
+﻿#include "RenderTexture.h"
+
+using namespace ONEngine;
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"

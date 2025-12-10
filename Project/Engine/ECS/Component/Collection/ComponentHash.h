@@ -15,8 +15,8 @@ inline size_t GetComponentHash(const std::string& _name) {
 template <typename T>
 inline size_t GetComponentHash() {
 	std::string name = typeid(T).name();
-	if (name.find("class ") == 0) {
-		name = name.substr(6);
+	if (name.find("class ONEngine::") == 0) {
+		name = name.substr(strlen("class ONEngine::"));
 	}
 
 	return GetComponentHash(name);

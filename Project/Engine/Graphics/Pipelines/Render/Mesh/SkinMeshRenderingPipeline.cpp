@@ -1,4 +1,6 @@
-#include "SkinMeshRenderingPipeline.h"
+﻿#include "SkinMeshRenderingPipeline.h"
+
+using namespace ONEngine;
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
@@ -117,7 +119,7 @@ void SkinMeshRenderingPipeline::Draw(class ECSGroup* _ecs, CameraComponent* _cam
 		}
 
 		GameEntity* entity = smRenderer->GetOwner();
-		if (!entity || entity->GetActive()) {
+		if (!entity || entity->active) {
 			continue; /// エンティティが無効な場合はスキップ
 		}
 

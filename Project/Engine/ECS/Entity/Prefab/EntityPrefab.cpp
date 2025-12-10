@@ -1,4 +1,6 @@
-#include "EntityPrefab.h"
+﻿#include "EntityPrefab.h"
+
+using namespace ONEngine;
 
 /// std
 #include <filesystem>

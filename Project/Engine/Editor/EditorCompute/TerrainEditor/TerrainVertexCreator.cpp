@@ -1,4 +1,6 @@
-#include "TerrainVertexCreator.h"
+﻿#include "TerrainVertexCreator.h"
+
+using namespace ONEngine;
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"

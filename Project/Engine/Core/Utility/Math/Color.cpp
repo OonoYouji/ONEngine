@@ -1,4 +1,6 @@
-#include "Color.h"
+﻿#include "Color.h"
+
+using namespace ONEngine;
 
 /// std
 #include <cmath> 

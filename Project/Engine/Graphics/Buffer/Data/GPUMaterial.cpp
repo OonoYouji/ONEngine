@@ -1,5 +1,7 @@
 #include "GPUMaterial.h"
 
+using namespace ONEngine;
+
 /// engine
 #include "Engine/ECS/Entity/GameEntity/GameEntity.h"
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentJsonConverter.h"
@@ -11,7 +13,7 @@
 /// GPUMaterial Json変換
 /// ------------------------------------------------
 
-void to_json(nlohmann::json& _j, const GPUMaterial& _material) {
+void ONEngine::to_json(nlohmann::json& _j, const GPUMaterial& _material) {
 	_j = nlohmann::json{
 		{ "uvTransform", _material.uvTransform },
 		{ "baseColor", _material.baseColor },
@@ -22,7 +24,7 @@ void to_json(nlohmann::json& _j, const GPUMaterial& _material) {
 	};
 }
 
-void from_json(const nlohmann::json& _j, GPUMaterial& _material) {
+void ONEngine::from_json(const nlohmann::json& _j, GPUMaterial& _material) {
 	_material.uvTransform     = _j.value("uvTransform", UVTransform{});
 	_material.baseColor       = _j.value("baseColor", Vector4::kWhite);
 	_material.postEffectFlags = _j.value("postEffectFlags", PostEffectFlags_None);

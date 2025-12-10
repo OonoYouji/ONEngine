@@ -1,0 +1,58 @@
+{
+    "components": [
+        {
+            "enable": 1,
+            "matrixCalcFlags": 7,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "rotate": {
+                "w": 1.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "type": "Transform"
+        },
+        {
+            "type": "Variables"
+        },
+        {
+            "enable": 1,
+            "material": {
+                "baseColor": {
+                    "w": 1.0,
+                    "x": 0.5033557415008545,
+                    "y": 0.47083228826522827,
+                    "z": 0.09459032863378525
+                },
+                "baseTextureGuid": {
+                    "guid": "14196fa931d9b8c11196cdd7eca20cf6"
+                },
+                "guid": {
+                    "guid": "00000000000000000000000000000000"
+                },
+                "normalTextureGuid": {
+                    "guid": "00000000000000000000000000000000"
+                },
+                "postEffectFlags": 1
+            },
+            "meshPath": "./Assets/Models/Entity/Puzzle/Magatama.obj",
+            "type": "MeshRenderer"
+        }
+    ],
+    "guid": {
+        "guid": "15fc1638dc423a1b3dcacd55615d0106"
+    },
+    "id": 2,
+    "name": "Magatama",
+    "parent": null,
+    "prefabName": "Magatama"
+}

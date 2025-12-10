@@ -1,4 +1,6 @@
-#include "ShadowCasterUpdateSystem.h"
+﻿#include "ShadowCasterUpdateSystem.h"
+
+using namespace ONEngine;
 
 /// engine
 #include "Engine/Core/Config/EngineConfig.h"

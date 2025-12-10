@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// std
 #include <vector>
@@ -9,6 +9,8 @@
 /// ///////////////////////////////////////////////////
 /// 他のImGuiWindowを持ち、表示するためのクラス
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class ImGuiWindowCollection {
 public:
 	/// ===================================================
@@ -16,6 +18,7 @@ public:
 	/// ===================================================
 
 	ImGuiWindowCollection(
+		class DxManager* _dxManager,
 		class EntityComponentSystem* _ecs,
 		class AssetCollection* _assetCollection,
 		class ImGuiManager* _imGuiManager,
@@ -105,3 +108,5 @@ protected:
 	/// ===================================================
 	class ImGuiManager* pImGuiManager_;
 };
+
+} /// ONEngine

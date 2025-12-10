@@ -1,4 +1,6 @@
-#include "AudioPlaybackSystem.h"
+﻿#include "AudioPlaybackSystem.h"
+
+using namespace ONEngine;
 
 /// engine
 #include "Engine/ECS/EntityComponentSystem/ECSGroup.h"

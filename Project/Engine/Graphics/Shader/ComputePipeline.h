@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// directX
 #include <d3d12.h>
@@ -14,6 +14,8 @@
 /// ///////////////////////////////////////////////////
 /// ComputePipeline
 /// ///////////////////////////////////////////////////
+namespace ONEngine {
+
 class ComputePipeline {
 public:
 	/// ===================================================
@@ -113,3 +115,5 @@ private:
 	std::vector<D3D12_DESCRIPTOR_RANGE>     descriptorRanges_;
 };
 
+
+} /// ONEngine

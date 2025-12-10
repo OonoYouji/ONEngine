@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// std
 #include <list>
@@ -12,6 +12,8 @@
 /// /////////////////////////////////////////////////
 /// 3Dライン描画クラス
 /// /////////////////////////////////////////////////
+namespace ONEngine {
+
 class Line3DRenderingPipeline : public IRenderingPipeline {
 public:
 
@@ -58,3 +60,5 @@ private:
 	std::list<RenderingData*>   renderingDataList_;
 };
 
+
+} /// ONEngine
