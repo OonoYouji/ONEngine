@@ -1,6 +1,10 @@
 #pragma once
 
+/// std
 #include <string>
+
+
+namespace ONEngine {
 
 /// @brief Componentの名前からハッシュ値を取得する
 /// @param _name Componentの名前
@@ -21,3 +25,17 @@ inline size_t GetComponentHash() {
 
 	return GetComponentHash(name);
 }
+
+/// @brief Componentの型から名前を取得する
+/// @tparam T Componentの型
+/// @return クラス名
+template <typename T>
+inline std::string GetComponentTypeName() {
+	std::string name = typeid(T).name();
+	if (name.find("class ONEngine::") == 0) {
+		name = name.substr(strlen("class ONEngine::"));
+	}
+	return name;
+}
+
+} /// ONEngine

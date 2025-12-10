@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /// std
 #include <vector>
@@ -8,6 +8,7 @@
 /// engine
 #include "../../Collection/ImGuiWindowCollection.h"
 #include "Engine/ECS/Entity/GameEntity/GameEntity.h"
+#include "Engine/ECS/Component/Collection/ComponentHash.h"
 
 /// ///////////////////////////////////////////////////
 /// ImGuiInspectorWindow
@@ -71,15 +72,9 @@ private:
 
 template<typename T>
 inline void ImGuiInspectorWindow::RegisterComponent(std::function<void(class IComponent*)> _func) {
-	/// hash計算
-	std::string name = typeid(T).name();
-	if (name.find("class ") == 0) {
-		name = name.substr(6);
-	}
-	size_t hash = std::hash<std::string>()(name);
-
+	size_t hash = GetComponentHash<T>();
 	componentDebugFuncs_[hash] = _func;
-	componentNames_[hash] = name;
+	componentNames_[hash] = GetComponentTypeName<T>();
 }
 
 } /// ONEngine
