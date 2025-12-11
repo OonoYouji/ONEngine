@@ -32,7 +32,7 @@ void COMP_DEBUG::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _dxMa
 	/// editor用
 	{
 		static float radius = 5.0f;
-		Editor::ImMathf::DragFloat("Brush Radius", &radius, 0.1f);
+		Editor::ImMathf::DragFloat("Brush Radius", &radius, 0.1f, 1.0f, 100.0f);
 		_voxelTerrain->cBufferEditInfo_.SetMappedData({ radius });
 	}
 

@@ -1,4 +1,4 @@
-#include "VoxelTerrain.hlsli"
+﻿#include "VoxelTerrain.hlsli"
 
 struct VoxelColorCluter {
 	float4 colors[3][3][3];
@@ -211,7 +211,7 @@ VoxelColorCluter GetVoxelColorCluster(uint3 _voxelPos, uint _chunkId, uint3 _sub
 					/// 手前のチャンクからサンプリング
 					int frontChunkId = chunkId - int(voxelTerrainInfo.chunkCountXZ.x);
 					if (frontChunkId >= 0) {
-						uvw.z -= 1.0f;
+						uvw.z += 1.0f;
 						chunkId = frontChunkId;
 					} else {
 						vcc.colors[x + 1][y + 1][z + 1] = noDrawColor;
@@ -222,7 +222,7 @@ VoxelColorCluter GetVoxelColorCluster(uint3 _voxelPos, uint _chunkId, uint3 _sub
 					/// 奥のチャンクからサンプリング
 					int backChunkId = int(chunkId) + int(voxelTerrainInfo.chunkCountXZ.x);
 					if (backChunkId < voxelTerrainInfo.maxChunkCount) {
-						uvw.z += 1.0f;
+						uvw.z -= 1.0f;
 						chunkId = backChunkId;
 					} else {
 						vcc.colors[x + 1][y + 1][z + 1] = noDrawColor;
@@ -520,7 +520,7 @@ RenderingData GenerateRenderingDataPattern3() {
 		/// 前面
 		2, 3, 1,
 		/// 奥面
-		6, 5, 7,
+		6, 5, 7
 	};
 
 
@@ -534,7 +534,7 @@ RenderingData GenerateRenderingDataPattern3() {
 		uint3(7, 8, 9)
 	};
 	
-	float3 normals[3] = {
+	float3 normals[] = {
 		normalize(float3(-1, -1, 0)), // 斜め面
 		float3(0, 0, 1), // 奥面
 		float3(0, 0, -1) // 前面
