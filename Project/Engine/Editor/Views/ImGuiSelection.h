@@ -11,6 +11,7 @@ enum class SelectionType {
 	Entity,   /// シーン内のエンティティ
 	Asset,    /// Projectビュー内のアセット
 	Script,   /// スクリプト
+	Count     /// SelectionTypeのカウント
 };
 
 

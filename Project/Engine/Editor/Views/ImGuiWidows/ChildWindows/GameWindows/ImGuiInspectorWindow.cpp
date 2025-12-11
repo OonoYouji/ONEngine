@@ -88,14 +88,9 @@ ImGuiInspectorWindow::ImGuiInspectorWindow(const std::string& _windowName, DxMan
 	/// 関数を登録(SelectionTypeの順番に)
 	/// ---------------------------------------------------
 
-	/// SelectionType::None
-	inspectorFunctions_.emplace_back([]() {});
-	/// SelectionType::Entity
-	inspectorFunctions_.emplace_back([this]() { EntityInspector(); });
-	/// SelectionType::Asset
-	inspectorFunctions_.emplace_back([this]() {  AssetInspector();  });
-	/// SelectionType::Script
-	inspectorFunctions_.emplace_back([]() {});
+	inspectorFunctions_.resize(static_cast<size_t>(SelectionType::Count));
+	inspectorFunctions_[static_cast<size_t>(SelectionType::Entity)] = ([this]() { EntityInspector(); });
+	inspectorFunctions_[static_cast<size_t>(SelectionType::Asset)] = ([this]() { AssetInspector(); });
 
 }
 
