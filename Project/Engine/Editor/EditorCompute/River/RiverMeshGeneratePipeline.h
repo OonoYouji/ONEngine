@@ -5,7 +5,7 @@
 /// //////////////////////////////////////////
 /// 川のメッシュを作成するpipeline
 /// //////////////////////////////////////////
-namespace ONEngine {
+namespace Editor {
 
 class RiverMeshGeneratePipeline : public IEditorCompute {
 
@@ -24,16 +24,16 @@ public:
 	RiverMeshGeneratePipeline();
 	~RiverMeshGeneratePipeline();
 
-	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxm) override;
-	void Execute(class EntityComponentSystem* _ecs, class DxCommand* _dxCommand, class AssetCollection* _assetCollection) override;
+	void Initialize(ONEngine::ShaderCompiler* _shaderCompiler, ONEngine::DxManager* _dxm) override;
+	void Execute(ONEngine::EntityComponentSystem* _ecs, ONEngine::DxCommand* _dxCommand, ONEngine::AssetCollection* _assetCollection) override;
 
 private:
 	/// =========================================
 	/// private : objects
 	/// =========================================
 
-	class DxManager* pDxManager_;
+	ONEngine::DxManager* pDxManager_;
 
 };
 
-} /// ONEngine
+} /// Editor

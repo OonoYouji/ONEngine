@@ -1,0 +1,15 @@
+﻿#pragma once
+
+#include <imgui.h>
+
+namespace Editor {
+
+/// ////////////////////////////////////////////////////
+/// ImGuiで表示しているSceneImageの情報
+/// ////////////////////////////////////////////////////
+struct ImGuiSceneImageInfo {
+	ImVec2 position;
+	ImVec2 size;
+};
+
+} /// Editor

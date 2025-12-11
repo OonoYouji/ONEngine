@@ -1,18 +1,19 @@
-#include "Script.h"
+﻿#include "Script.h"
 
 
 /// engine
-#include "Engine/Core/ImGui/Math/AssetPayload.h"
 #include "Engine/Core/Utility/Utility.h"
-#include "Engine/Core/ImGui/Math/ImGuiShowField.h"
 #include "Engine/ECS/Entity/GameEntity/GameEntity.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Variables/Variables.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/Script/MonoScriptEngine.h"
 
+/// editor
+#include "Engine/Editor/Math/AssetPayload.h"
+#include "Engine/Editor/Math/ImGuiShowField.h"
 
 using namespace ONEngine;
-using namespace CSGui;
+using namespace Editor::CSGui;
 
 
 bool Script::ScriptData::GetEnable(GameEntity* _entity) {
@@ -287,7 +288,7 @@ void COMP_DEBUG::ScriptDebug(Script* _script) {
 	ImGui::InvisibleButton("##DropTarget", ImVec2(windowSize.x, 32.0f));
 	if (ImGui::BeginDragDropTarget()) {
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("AssetData")) {
-			AssetPayload* assetPayload = *static_cast<AssetPayload**>(payload->Data);
+			Editor::AssetPayload* assetPayload = *static_cast<Editor::AssetPayload**>(payload->Data);
 			std::string name = assetPayload->filePath;
 
 			if (name.find(".cs") != std::string::npos) {

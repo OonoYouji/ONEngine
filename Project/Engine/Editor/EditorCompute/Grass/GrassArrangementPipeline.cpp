@@ -1,6 +1,4 @@
-#include "GrassArrangementPipeline.h"
-
-using namespace ONEngine;
+﻿#include "GrassArrangementPipeline.h"
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
@@ -9,25 +7,27 @@ using namespace ONEngine;
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Grass/GrassField.h"
 #include "Engine/Asset/Collection/AssetCollection.h"
 
+using namespace Editor;
+
 GrassArrangementPipeline::GrassArrangementPipeline() = default;
 GrassArrangementPipeline::~GrassArrangementPipeline() = default;
 
-void GrassArrangementPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {
+void GrassArrangementPipeline::Initialize(ONEngine::ShaderCompiler* _shaderCompiler, ONEngine::DxManager* _dxm) {
 
 	{	/// shader
-		Shader shader;
+		ONEngine::Shader shader;
 		shader.Initialize(_shaderCompiler);
-		shader.CompileShader(L"./Packages/Shader/Editor/GrassArrangement.cs.hlsl", L"cs_6_6", Shader::Type::cs);
+		shader.CompileShader(L"./Packages/Shader/Editor/GrassArrangement.cs.hlsl", L"cs_6_6", ONEngine::Shader::Type::cs);
 
 		/// pipeline
-		pipeline_ = std::make_unique<ComputePipeline>();
+		pipeline_ = std::make_unique<ONEngine::ComputePipeline>();
 		pipeline_->SetShader(&shader);
 
 		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 0); // CBV_PARAMS
 		pipeline_->Add32BitConstant(D3D12_SHADER_VISIBILITY_ALL, 1, 2); // ROOT_PARAM_START_INDEX
 
 		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_UAV); // UAV_VERTICES
-		pipeline_->AddDescriptorRange(0, MAX_TEXTURE_COUNT, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // SRV_CONTROL_POINTS
+		pipeline_->AddDescriptorRange(0, ONEngine::MAX_TEXTURE_COUNT, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // SRV_CONTROL_POINTS
 
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 0); // ROOT_PARAM_CBV_PARAMS
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 1); // ROOT_PARAM_UAV_VERTICES
@@ -44,12 +44,12 @@ void GrassArrangementPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMan
 
 }
 
-void GrassArrangementPipeline::Execute(EntityComponentSystem* _ecs, DxCommand* _dxCommand, AssetCollection* _assetCollection) {
+void GrassArrangementPipeline::Execute(ONEngine::EntityComponentSystem* _ecs, ONEngine::DxCommand* _dxCommand, ONEngine::AssetCollection* _assetCollection) {
 
 	/// ==================================================
 	/// 早期リターン条件のチェック
 	/// ==================================================
-	ComponentArray<GrassField>* grassArray = _ecs->GetCurrentGroup()->GetComponentArray<GrassField>();
+	ONEngine::ComponentArray<ONEngine::GrassField>* grassArray = _ecs->GetCurrentGroup()->GetComponentArray<ONEngine::GrassField>();
 	if (!grassArray || grassArray->GetUsedComponents().empty()) {
 		return;
 	}
@@ -99,7 +99,7 @@ void GrassArrangementPipeline::Execute(EntityComponentSystem* _ecs, DxCommand* _
 			cmdList->SetComputeRoot32BitConstants(C32BIT_CONSTANTS, 2, constants, 0);
 
 			// Dispatchを実行
-			cmdList->Dispatch(Mathf::DivideAndRoundUp(currentInstanceCount, threadGroupSize), 1, 1);
+			cmdList->Dispatch(ONEngine::Mathf::DivideAndRoundUp(currentInstanceCount, threadGroupSize), 1, 1);
 		}
 
 	}

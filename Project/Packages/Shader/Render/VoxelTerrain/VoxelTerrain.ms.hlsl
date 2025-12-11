@@ -1,4 +1,4 @@
-#include "VoxelTerrain.hlsli"
+﻿#include "VoxelTerrain.hlsli"
 
 struct VoxelColorCluter {
 	float4 colors[3][3][3];
@@ -92,18 +92,18 @@ static const uint kUniquePatterns[10] = {
 
 /// 各代表パターンが表現する配置の数
 /// 合計: 1+6+3+12+24+6+8+24+6+1 = 91通り（実際は64通りなので一部重複あり）
-static const uint kPatternMultiplicity[10] = {
-	1, // 0x00: 1通り
-	6, // 0x01: 6通り（6方向）
-	3, // 0x03: 3通り（3軸）
-	12, // 0x05: 12通り
-	24, // 0x07: 24通り
-	6, // 0x0F: 6通り
-	8, // 0x15: 8通り
-	24, // 0x17: 24通り
-	6, // 0x1F: 6通り
-	1 // 0x3F: 1通り
-};
+//static const uint kPatternMultiplicity[10] = {
+//	1, // 0x00: 1通り
+//	6, // 0x01: 6通り（6方向）
+//	3, // 0x03: 3通り（3軸）
+//	12, // 0x05: 12通り
+//	24, // 0x07: 24通り
+//	6, // 0x0F: 6通り
+//	8, // 0x15: 8通り
+//	24, // 0x17: 24通り
+//	6, // 0x1F: 6通り
+//	1 // 0x3F: 1通り
+//};
 
 
 /// 各代表パターンが三角形を何個持つか
@@ -125,7 +125,7 @@ static const uint kPatternVertexCount[10] = {
 	0, // 0x00 パターン0
 	4, // 0x01 パターン1 [000001]
 	8, // 0x03 パターン2 [000011]
-	10, // 0x05 パターン3 [000101]
+	6, // 0x05 パターン3 [000101]
 	8, // 0x07 パターン4 [000111]
 	16, // 0x0F パターン5 [001111]
 	6, // 0x15 パターン6 [010101]
@@ -211,7 +211,7 @@ VoxelColorCluter GetVoxelColorCluster(uint3 _voxelPos, uint _chunkId, uint3 _sub
 					/// 手前のチャンクからサンプリング
 					int frontChunkId = chunkId - int(voxelTerrainInfo.chunkCountXZ.x);
 					if (frontChunkId >= 0) {
-						uvw.z -= 1.0f;
+						uvw.z += 1.0f;
 						chunkId = frontChunkId;
 					} else {
 						vcc.colors[x + 1][y + 1][z + 1] = noDrawColor;
@@ -222,7 +222,7 @@ VoxelColorCluter GetVoxelColorCluster(uint3 _voxelPos, uint _chunkId, uint3 _sub
 					/// 奥のチャンクからサンプリング
 					int backChunkId = int(chunkId) + int(voxelTerrainInfo.chunkCountXZ.x);
 					if (backChunkId < voxelTerrainInfo.maxChunkCount) {
-						uvw.z += 1.0f;
+						uvw.z -= 1.0f;
 						chunkId = backChunkId;
 					} else {
 						vcc.colors[x + 1][y + 1][z + 1] = noDrawColor;
@@ -514,27 +514,42 @@ RenderingData GenerateRenderingDataPattern3() {
 	/// パターン3(垂直な2方向(12通りの回転)) デフォBit: 000101
 	/// デフォBitより 上方向、右方向にボクセルが存在するパターン
 
-	const uint used[10] = {
-		/// 斜め面
-		5, 1, 6, 2,
-		/// 前面
-		2, 3, 1,
-		/// 奥面
-		6, 5, 7,
+	//const uint used[10] = {
+	//	/// 斜め面
+	//	5, 1, 6, 2,
+	//	/// 奥面
+	//	6, 5, 7,
+	//	/// 前面
+	//	2, 3, 1,
+	//};
+	
+	const uint used[6] = {
+		1, 2, 5, 6,
+		3, 7
 	};
 
 
+	//const uint3 indis[4] = {
+	//	/// 斜め面
+	//	uint3(2, 1, 0),
+	//	uint3(2, 3, 1),
+	//	/// 奥面
+	//	uint3(4, 5, 6),
+	//	/// 前面
+	//	uint3(7, 8, 9),
+	//};
+	
 	const uint3 indis[4] = {
 		/// 斜め面
-		uint3(2, 1, 0),
+		uint3(1, 0, 2),
 		uint3(2, 3, 1),
 		/// 奥面
-		uint3(4, 5, 6),
+		uint3(5, 3, 2),
 		/// 前面
-		uint3(7, 8, 9)
+		uint3(1, 4, 0),
 	};
 	
-	float3 normals[3] = {
+	float3 normals[] = {
 		normalize(float3(-1, -1, 0)), // 斜め面
 		float3(0, 0, 1), // 奥面
 		float3(0, 0, -1) // 前面
@@ -567,27 +582,27 @@ RenderingData GenerateRenderingDataPattern4() {
 	/// デフォBitより 上下方向、右方向にボクセルが存在するパターン
 	
 	const uint used[8] = {
-		6,7,2,3,
-		4,5,0,1
+		6, 7, 2, 3,
+		4, 5, 0, 1
 	};
 
 	const uint3 indis[6] = {
 		/// 上面
-		uint3(0,2,1),
-		uint3(1,2,3),
+		uint3(0, 2, 1),
+		uint3(1, 2, 3),
 		/// 下面
-		uint3(4,5,6),
-		uint3(5,7,6),
+		uint3(4, 5, 6),
+		uint3(5, 7, 6),
 		/// 右面
-		uint3(1,3,5),
-		uint3(5,3,7)
+		uint3(1, 3, 5),
+		uint3(5, 3, 7)
 	};
 
 	
 	RenderingData rd;
 	for (int i = 0; i < kPatternVertexCount[4]; i++) {
 		rd.verts[i].worldPosition = kDefaultVertices[used[i]];
-		rd.verts[i].normal = float3(0, 1, 0); 
+		rd.verts[i].normal = float3(0, 1, 0);
 	}
 	
 	for (int i = 0; i < kPatternPrimitiveCount[4]; i++) {
@@ -653,22 +668,21 @@ RenderingData GenerateRenderingDataPattern5() {
 /// パターン6の頂点、インデックスを生成 [010101]
 RenderingData GenerateRenderingDataPattern6() {
 	/// パターン6(3軸各1方向(8通りの回転)) デフォBit: 010101
-	/// デフォBitより 上方向、右方向、奥方向にボクセルが存在するパターン
+	/// デフォBitより 上方向、右方向、手前方向にボクセルが存在するパターン
 
-	/// 使用する頂点インデックス
 	const uint used[6] = {
-		0, 1, 2, 5, 6, 7
+		7, 6, 2, 5, 0, 1
 	};
 	
 	const uint3 indis[4] = {
 		/// 奥(三角)
-		uint3(5,4,3),
+		uint3(0, 1, 3),
 		/// 左(三角)
-		uint3(4,2,0),
+		uint3(1, 2, 4),
 		/// 下(三角)
-		uint3(3,1,1),
+		uint3(3, 4, 5),
 		/// 斜め(三角)
-		uint3(4,0,3)
+		uint3(1, 4, 3),
 	};
 	
 	float3 normal = normalize(float3(-1, 1, 1));
@@ -688,7 +702,7 @@ RenderingData GenerateRenderingDataPattern6() {
 /// パターン7の頂点、インデックスを生成 [010111]
 RenderingData GenerateRenderingDataPattern7() {
 	/// パターン7(L字+対向(24通りの回転)) デフォBit: 010111
-	/// デフォBitより 上下方向、右方向、前方向にボクセルが存在するパターン
+	/// デフォBitより 上下方向、右方向、手前方向にボクセルが存在するパターン
 
 	const uint used[16] = {
 		/// 上面
@@ -711,17 +725,17 @@ RenderingData GenerateRenderingDataPattern7() {
 	/// 8頂点なのでデフォルト頂点をそのまま使用
 	const uint3 indis[8] = {
 		/// 上面
-		uint3(6, 3, 2),
-		uint3(6, 7, 3),
+		uint3(3, 2, 0),
+		uint3(2, 1, 0),
 		/// 下面
-		uint3(4, 1, 0),
-		uint3(4, 5, 1),
+		uint3(4, 5, 7),
+		uint3(5, 6, 7),
 		/// 右面
-		uint3(7, 3, 5),
-		uint3(5, 3, 1),
+		uint3(8, 11, 9),
+		uint3(11, 10, 9),
 		/// 前面
-		uint3(3, 2, 1),
-		uint3(1, 2, 0)
+		uint3(12, 13, 14),
+		uint3(12, 14, 15)
 	};
 	
 	
@@ -1017,8 +1031,8 @@ void main(
 					drawVoxelCount++;
 
 					/// パターンごとに頂点数、プリミティブ数を加算
-					numPrimitives += kPatternPrimitiveCount[patternIndex];
 					numVertices += kPatternVertexCount[patternIndex];
+					numPrimitives += kPatternPrimitiveCount[patternIndex];
 				}
 			}
 		}
@@ -1044,7 +1058,9 @@ void main(
 		uint vIndex = diis[i].vertexStartIndex;
 		uint iIndex = diis[i].indexStartIndex;
 		
-		for (int j = 0; j < kPatternVertexCount[diis[i].patternIndex]; j++) {
+		float4 color = kPatternColor[diis[i].patternIndex];
+		
+		for (int j = 0; j < kPatternVertexCount[diis[i].patternIndex]; ++j) {
 			verts[vIndex + j] = rd.verts[j];
 			verts[vIndex + j].color = diis[i].color;
 		}

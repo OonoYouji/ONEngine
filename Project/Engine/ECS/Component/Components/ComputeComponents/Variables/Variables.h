@@ -52,27 +52,27 @@ public:
 	/// @brief 変数のグループ、スクリプトごとに使用する予定
 	struct Group {
 		std::string name; ///< グループ名
-		std::map<std::string, size_t> keyMap_;
+		std::map<std::string, size_t> keyMap;
 		std::vector<Var> variables; ///< グループに属する変数
 
 		template <typename T = Var>
 		void Add(const std::string& _name, const T& _value) {
-			if (keyMap_.contains(_name)) {
-				variables[keyMap_[_name]] = _value;
+			if (keyMap.contains(_name)) {
+				variables[keyMap[_name]] = _value;
 			}
 
-			keyMap_[_name] = variables.size();
+			keyMap[_name] = variables.size();
 			variables.emplace_back(_value);
 		}
 
 		template <typename T>
 		T& Get(const std::string& _name) {
-			return std::get<T>(variables[keyMap_.at(_name)]);
+			return std::get<T>(variables[keyMap.at(_name)]);
 		}
 
 		template <typename T>
 		const T& Get(const std::string& _name) const {
-			return std::get<T>(variables[keyMap_.at(_name)]);
+			return std::get<T>(variables[keyMap.at(_name)]);
 		}
 
 		const Var& Get(const std::string& _name) const;

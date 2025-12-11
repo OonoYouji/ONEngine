@@ -5,11 +5,11 @@
 #include "Engine/Graphics/Buffer/ConstantBuffer.h"
 #include "TerrainInfo.h"
 
+namespace Editor {
+
 /// /////////////////////////////////////////////////
 /// 地形の頂点を生成するためのコンピュートシェーダー
 /// /////////////////////////////////////////////////
-namespace ONEngine {
-
 class TerrainVertexCreator : public IEditorCompute {
 
 	enum {
@@ -28,18 +28,18 @@ public:
 	TerrainVertexCreator();
 	~TerrainVertexCreator() override;
 
-	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxm) override;
-	void Execute(class EntityComponentSystem* _ecs, class DxCommand* _dxCommand, class AssetCollection* _assetCollection) override;
+	void Initialize(ONEngine::ShaderCompiler* _shaderCompiler, ONEngine::DxManager* _dxm) override;
+	void Execute(ONEngine::EntityComponentSystem* _ecs, ONEngine::DxCommand* _dxCommand, ONEngine::AssetCollection* _assetCollection) override;
 
 private:
 	/// =========================================
 	/// private : objects
 	/// =========================================
 	
-	class DxManager* pDxManager_;
-	ConstantBuffer<TerrainSize> terrainSize_;
+	ONEngine::DxManager* pDxManager_;
+	ONEngine::ConstantBuffer<TerrainSize> terrainSize_;
 
 };
 
 
-} /// ONEngine
+} /// Editor

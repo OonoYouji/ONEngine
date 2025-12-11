@@ -9,7 +9,7 @@ namespace {
 	std::unique_ptr<InputSystem> gInputSystem_;
 } /// namespace
 
-void Input::Initialize(WindowManager* _windowManager, ImGuiManager* _imguiManager) {
+void Input::Initialize(WindowManager* _windowManager, Editor::ImGuiManager* _imguiManager) {
 	gInputSystem_ = std::make_unique<InputSystem>();
 	gInputSystem_->Initialize(_windowManager, _imguiManager);
 }

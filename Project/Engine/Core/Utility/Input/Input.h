@@ -5,6 +5,10 @@
 #include "Mouse.h"
 #include "Gamepad.h"
 
+namespace Editor {
+	class ImGuiManager;
+} /// Editor
+
 /// //////////////////////////////////////////////////
 /// 入力処理クラス
 /// ///////////////////////////////////////////////////
@@ -14,7 +18,7 @@ class Input final {
 	friend class GameFramework;
 	friend class MonoScriptEngine;
 
-	static void Initialize(class WindowManager* _windowManager, class ImGuiManager* _imguiManager);
+	static void Initialize(class WindowManager* _windowManager, Editor::ImGuiManager* _imguiManager);
 	static void Update();
 	static void Finalize();
 

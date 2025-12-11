@@ -1,4 +1,4 @@
-#include "VoxelTerrain.h"
+﻿#include "VoxelTerrain.h"
 
 /// externals
 #include <imgui.h>
@@ -7,10 +7,12 @@
 #include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/Asset/Assets/Texture/Texture.h"
 #include "Engine/Core/Utility/Utility.h"
-#include "Engine/Core/ImGui/Math/AssetDebugger.h"
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Editor/Commands/ImGuiCommand/ImGuiCommand.h"
 #include "Engine/ECS/Entity/GameEntity/GameEntity.h"
+
+/// editor
+#include "Engine/Editor/Math/AssetDebugger.h"
 
 using namespace ONEngine;
 
@@ -21,16 +23,16 @@ void COMP_DEBUG::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _dxMa
 	}
 
 	/// チャンクのデバッグ表示
-	ImMathf::DragInt2("Chunk Count XZ", &_voxelTerrain->chunkCountXZ_, 1, 1, 32);
-	ImMathf::DragInt3("Chunk Size", &_voxelTerrain->chunkSize_, 1, 1, 1024);
-	ImMathf::DragInt3("Texture Size", &_voxelTerrain->textureSize_, 1, 1, 256);
+	Editor::ImMathf::DragInt2("Chunk Count XZ", &_voxelTerrain->chunkCountXZ_, 1, 1, 32);
+	Editor::ImMathf::DragInt3("Chunk Size", &_voxelTerrain->chunkSize_, 1, 1, 1024);
+	Editor::ImMathf::DragInt3("Texture Size", &_voxelTerrain->textureSize_, 1, 1, 256);
 
-	ImMathf::MaterialEdit("Material", &_voxelTerrain->material_, nullptr, false);
+	Editor::ImMathf::MaterialEdit("Material", &_voxelTerrain->material_, nullptr, false);
 
 	/// editor用
 	{
 		static float radius = 5.0f;
-		ImMathf::DragFloat("Brush Radius", &radius, 0.1f);
+		Editor::ImMathf::DragFloat("Brush Radius", &radius, 0.1f, 1.0f, 100.0f);
 		_voxelTerrain->cBufferEditInfo_.SetMappedData({ radius });
 	}
 
@@ -65,7 +67,7 @@ void COMP_DEBUG::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _dxMa
 
 	/// ----- Gizmoでチャンクの枠線を描画 ----- ///
 	static bool showChunkBounds = false;
-	ImMathf::Checkbox("Show Chunk Bounds", &showChunkBounds);
+	Editor::ImMathf::Checkbox("Show Chunk Bounds", &showChunkBounds);
 	if (showChunkBounds) {
 		const Vector3Int& chunkSizeInt = _voxelTerrain->GetChunkSize();
 		const Vector2Int& chunkCount = _voxelTerrain->GetChunkCountXZ();

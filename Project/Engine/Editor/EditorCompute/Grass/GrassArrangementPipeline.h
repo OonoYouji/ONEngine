@@ -8,11 +8,11 @@
 #include "../Interface/IEditorCompute.h"
 
 
+namespace Editor {
+
 /// ///////////////////////////////////////////////////// 
 /// 草の配置を行うシェーダーの起動を行うクラス
 /// ///////////////////////////////////////////////////// 
-namespace ONEngine {
-
 class GrassArrangementPipeline : public IEditorCompute {
 public:
 
@@ -36,16 +36,16 @@ public:
 	GrassArrangementPipeline();
 	~GrassArrangementPipeline();
 
-	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxm) override;
-	void Execute(class EntityComponentSystem* _ecs, class DxCommand* _dxCommand, class AssetCollection* _assetCollection) override;
+	void Initialize(ONEngine::ShaderCompiler* _shaderCompiler, ONEngine::DxManager* _dxm) override;
+	void Execute(ONEngine::EntityComponentSystem* _ecs, ONEngine::DxCommand* _dxCommand, ONEngine::AssetCollection* _assetCollection) override;
 
 private:
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
 
-	ConstantBuffer<UsedTextureIDs> usedTexIdBuffer_;
+	ONEngine::ConstantBuffer<UsedTextureIDs> usedTexIdBuffer_;
 
 };
 
-} /// ONEngine
+} /// Editor

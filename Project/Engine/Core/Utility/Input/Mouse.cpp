@@ -4,8 +4,10 @@ using namespace ONEngine;
 
 /// engine
 #include "Engine/Core/Utility/Tools/Assert.h"
-#include "Engine/Core/ImGui/ImGuiManager.h"
 #include "Engine/Core/Window/WindowManager.h"
+
+/// editor
+#include "Engine/Editor/Manager/ImGuiManager.h"
 
 Mouse::Mouse() 
 	: state_{}
@@ -20,7 +22,7 @@ Mouse::Mouse()
 Mouse::~Mouse() = default;
 
 
-void Mouse::Initialize(IDirectInput8* _directInput, WindowManager* _windowManager, ImGuiManager* _imGuiManager) {
+void Mouse::Initialize(IDirectInput8* _directInput, WindowManager* _windowManager, Editor::ImGuiManager* _imGuiManager) {
 	pImGuiManager_ = _imGuiManager;
 	Assert(pImGuiManager_ != nullptr, "pImGuiManager_ == nullptr");
 
@@ -76,7 +78,7 @@ void Mouse::Update(Window* _window) {
 }
 
 const Vector2& Mouse::GetImGuiImageMousePosNormalized(const std::string& _name) {
-	const ImGuiSceneImageInfo* imageInfo = pImGuiManager_->GetSceneImageInfo(_name);
+	const Editor::ImGuiSceneImageInfo* imageInfo = pImGuiManager_->GetSceneImageInfo(_name);
 	/// imageInfoが見つからない場合は、デフォルトの位置を返す
 	if (!imageInfo) {
 		static Vector2 defaultPosition(0.0f, 0.0f);
@@ -107,7 +109,7 @@ const Vector2& Mouse::GetImGuiImageMousePosNormalized(const std::string& _name) 
 }
 
 const Vector2& Mouse::GetImGuiImagePos(const std::string& _name) {
-	const ImGuiSceneImageInfo* imageInfo = pImGuiManager_->GetSceneImageInfo(_name);
+	const Editor::ImGuiSceneImageInfo* imageInfo = pImGuiManager_->GetSceneImageInfo(_name);
 	/// imageInfoが見つからない場合は、デフォルトの位置を返す
 	if (!imageInfo) {
 		static Vector2 defaultPosition(0.0f, 0.0f);
@@ -121,7 +123,7 @@ const Vector2& Mouse::GetImGuiImagePos(const std::string& _name) {
 }
 
 const Vector2& Mouse::GetImGuiImageSize(const std::string& _name) {
-	const ImGuiSceneImageInfo* imageInfo = pImGuiManager_->GetSceneImageInfo(_name);
+	const Editor::ImGuiSceneImageInfo* imageInfo = pImGuiManager_->GetSceneImageInfo(_name);
 	/// imageInfoが見つからない場合は、デフォルトのサイズを返す
 	if (!imageInfo) {
 		static Vector2 defaultSize(0.0f, 0.0f);

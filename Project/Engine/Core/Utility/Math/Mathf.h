@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// std
 #include <numbers>
@@ -26,6 +26,11 @@ static const float PI = std::numbers::pi_v<float>;
 /// @param _t 
 /// @return 
 float Cot(float _t);
+
+/*
+* 8ing
+* ファイル操作系の関数がここにあるのはおかしい、namespace FileSystem に作るべし
+*/
 
 /// ----- ファイル ----- ///
 

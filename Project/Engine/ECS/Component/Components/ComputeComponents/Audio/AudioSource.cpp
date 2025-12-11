@@ -1,4 +1,4 @@
-#include "AudioSource.h"
+﻿#include "AudioSource.h"
 
 /// external
 #include <imgui.h>
@@ -7,7 +7,9 @@
 #include "Engine/Asset/Assets/AudioClip/AudioClip.h"
 #include "Engine/Core/Utility/Math/Mathf.h"
 #include "Engine/Core/Utility/Tools/Log.h"
-#include "Engine/Core/ImGui/Math/ImGuiMath.h"
+
+/// editor
+#include "Engine/Editor/Math/ImGuiMath.h"
 
 using namespace ONEngine;
 
@@ -80,7 +82,7 @@ void COMP_DEBUG::AudioSourceDebug(AudioSource* _as) {
 
 	/// audio clipの編集
 	ImGui::Text("Audio Source");
-	ImMathf::InputText("Audio Path", &audioPath, ImGuiInputTextFlags_ReadOnly);
+	Editor::ImMathf::InputText("Audio Path", &audioPath, ImGuiInputTextFlags_ReadOnly);
 	if (ImGui::BeginDragDropTarget()) {
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("AssetData")) {
 			if (payload->Data) {

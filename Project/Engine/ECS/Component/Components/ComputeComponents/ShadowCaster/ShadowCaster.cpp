@@ -1,4 +1,4 @@
-#include "ShadowCaster.h"
+﻿#include "ShadowCaster.h"
 
 /// external
 #include <imgui.h>
@@ -59,22 +59,22 @@ void COMP_DEBUG::ShadowCasterDebug(ShadowCaster* _shadowCaster) {
 
 	ImGui::SeparatorText("light parameter");
 
-	ImMathf::DragFloat3("base light pos", &_shadowCaster->baseLightPos_, 1.0f, -10000.0f, 10000.0f);
-	ImMathf::DragFloat("light length", &_shadowCaster->lightLength_, 1.0f, 0.0f, 10000.0f);
+	Editor::ImMathf::DragFloat3("base light pos", &_shadowCaster->baseLightPos_, 1.0f, -10000.0f, 10000.0f);
+	Editor::ImMathf::DragFloat("light length", &_shadowCaster->lightLength_, 1.0f, 0.0f, 10000.0f);
 
 
 	ImGui::SeparatorText("shadow caster parameters");
 
-	ImMathf::DragFloat2("window size", &_shadowCaster->orthographicSize_, 1.0f, 0.0f, 0.0f);
-	ImMathf::DragFloat("scale factor", &_shadowCaster->scaleFactor_, 0.01f, 0.0f, 10.0f);
+	Editor::ImMathf::DragFloat2("window size", &_shadowCaster->orthographicSize_, 1.0f, 0.0f, 0.0f);
+	Editor::ImMathf::DragFloat("scale factor", &_shadowCaster->scaleFactor_, 0.01f, 0.0f, 10.0f);
 
 
 	ImGui::Spacing();
 
-	ImMathf::DragFloat2("texel size", &_shadowCaster->texelSizeShadow_, 0.01f, 0.0f, 0.0f);
-	ImMathf::DragFloat("shadow bias", &_shadowCaster->shadowBias_, 0.001f, 0.0f, 1.0f);
-	ImMathf::DragFloat("shadow darkness", &_shadowCaster->shadowDarkness_, 0.01f, 0.0f, 1.0f);
-	ImMathf::DragInt("pcf radius", &_shadowCaster->pcfRadius_, 1, 0, 10);
+	Editor::ImMathf::DragFloat2("texel size", &_shadowCaster->texelSizeShadow_, 0.01f, 0.0f, 0.0f);
+	Editor::ImMathf::DragFloat("shadow bias", &_shadowCaster->shadowBias_, 0.001f, 0.0f, 1.0f);
+	Editor::ImMathf::DragFloat("shadow darkness", &_shadowCaster->shadowDarkness_, 0.01f, 0.0f, 1.0f);
+	Editor::ImMathf::DragInt("pcf radius", &_shadowCaster->pcfRadius_, 1, 0, 10);
 
 }
 

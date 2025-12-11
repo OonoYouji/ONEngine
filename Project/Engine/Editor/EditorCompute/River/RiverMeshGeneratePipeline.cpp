@@ -1,6 +1,4 @@
-#include "RiverMeshGeneratePipeline.h"
-
-using namespace ONEngine;
+﻿#include "RiverMeshGeneratePipeline.h"
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
@@ -8,19 +6,21 @@ using namespace ONEngine;
 #include "Engine/ECS/Component/Array/ComponentArray.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Terrain.h"
 
+using namespace Editor;
+
 RiverMeshGeneratePipeline::RiverMeshGeneratePipeline() = default;
 RiverMeshGeneratePipeline::~RiverMeshGeneratePipeline() = default;
 
-void RiverMeshGeneratePipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {
+void RiverMeshGeneratePipeline::Initialize(ONEngine::ShaderCompiler* _shaderCompiler, ONEngine::DxManager* _dxm) {
 
 	pDxManager_ = _dxm;
 
 	{	/// shader
-		Shader shader;
+		ONEngine::Shader shader;
 		shader.Initialize(_shaderCompiler);
-		shader.CompileShader(L"./Packages/Shader/Editor/RiverMeshGenerator.cs.hlsl", L"cs_6_6", Shader::Type::cs);
+		shader.CompileShader(L"./Packages/Shader/Editor/RiverMeshGenerator.cs.hlsl", L"cs_6_6", ONEngine::Shader::Type::cs);
 
-		pipeline_ = std::make_unique<ComputePipeline>();
+		pipeline_ = std::make_unique<ONEngine::ComputePipeline>();
 		pipeline_->SetShader(&shader);
 
 		/// buffer
@@ -39,26 +39,26 @@ void RiverMeshGeneratePipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMa
 
 }
 
-void RiverMeshGeneratePipeline::Execute(EntityComponentSystem* _ecs, DxCommand* _dxCommand, AssetCollection* /*_assetCollection*/) {
+void RiverMeshGeneratePipeline::Execute(ONEngine::EntityComponentSystem* _ecs, ONEngine::DxCommand* _dxCommand, ONEngine::AssetCollection* /*_assetCollection*/) {
 	/// --------------------------------------------------------------------
 	/// 早期リターンチェック
 	/// --------------------------------------------------------------------
 
-	ECSGroup* ecsGroup = _ecs->GetCurrentGroup();
+	ONEngine::ECSGroup* ecsGroup = _ecs->GetCurrentGroup();
 	if (!ecsGroup) {
-		Console::LogError("RiverMeshGeneratePipeline::Execute: ECSGroup is null");
+		ONEngine::Console::LogError("RiverMeshGeneratePipeline::Execute: ECSGroup is null");
 		return;
 	}
 
-	ComponentArray<Terrain>* terrainArray = ecsGroup->GetComponentArray<Terrain>();
+	ONEngine::ComponentArray<ONEngine::Terrain>* terrainArray = ecsGroup->GetComponentArray<ONEngine::Terrain>();
 	if (!terrainArray || terrainArray->GetUsedComponents().empty()) {
-		Console::LogError("RiverMeshGeneratePipeline::Execute: Terrain component array is null");
+		ONEngine::Console::LogError("RiverMeshGeneratePipeline::Execute: Terrain component array is null");
 		return;
 	}
 
-	Terrain* terrain = terrainArray->GetUsedComponents().front();
+	ONEngine::Terrain* terrain = terrainArray->GetUsedComponents().front();
 	if (!terrain) {
-		Console::LogError("RiverMeshGeneratePipeline::Execute: Terrain component is null");
+		ONEngine::Console::LogError("RiverMeshGeneratePipeline::Execute: Terrain component is null");
 		return;
 	}
 
@@ -68,7 +68,7 @@ void RiverMeshGeneratePipeline::Execute(EntityComponentSystem* _ecs, DxCommand* 
 	/// --------------------------------------------------------------------
 
 	/// 川の取得
-	River* river = terrain->GetRiver();
+	ONEngine::River* river = terrain->GetRiver();
 	if (!river->GetIsGenerateMeshRequest()) {
 		return;
 	}
@@ -91,7 +91,7 @@ void RiverMeshGeneratePipeline::Execute(EntityComponentSystem* _ecs, DxCommand* 
 	const UINT totalVertices = river->GetSamplePerSegment() * (river->GetNumControlPoint() - 3) * 2;
 	const UINT threadsPerGroup = 16;
 	cmdList->Dispatch(
-		Mathf::DivideAndRoundUp(totalVertices, threadsPerGroup),
+		ONEngine::Mathf::DivideAndRoundUp(totalVertices, threadsPerGroup),
 		1, 1
 	);
 }

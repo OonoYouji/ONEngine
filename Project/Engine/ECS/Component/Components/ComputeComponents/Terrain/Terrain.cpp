@@ -1,4 +1,4 @@
-#include "Terrain.h"
+﻿#include "Terrain.h"
 
 /// std
 #include <array>
@@ -11,10 +11,12 @@
 #include "Engine/Asset/Assets/Texture/Texture.h"
 #include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/Core/Utility/Input/Input.h"
-#include "Engine/Core/ImGui/ImGuiSelection.h"
-#include "Engine/Core/ImGui/Math/AssetPayload.h"
-#include "Engine/Core/ImGui/Math/AssetDebugger.h"
 #include "Engine/ECS/Entity/GameEntity/GameEntity.h"
+
+/// editor
+#include "Engine/Editor/Math/AssetPayload.h"
+#include "Engine/Editor/Math/AssetDebugger.h"
+#include "Engine/Editor/Views/ImGuiSelection.h"
 
 using namespace ONEngine;
 
@@ -123,7 +125,7 @@ void COMP_DEBUG::TerrainDebug(Terrain* _terrain, EntityComponentSystem* _ecs, As
 			info += "   :   used texture index: " + std::to_string(_terrain->editorInfo_.usedTextureIndex);
 		}
 
-		ImGuiInfo::SetInfo(info);
+		Editor::ImGuiInfo::SetInfo(info);
 	}
 
 
@@ -142,7 +144,7 @@ void COMP_DEBUG::TerrainDebug(Terrain* _terrain, EntityComponentSystem* _ecs, As
 	ImGui::Checkbox("is rendering procedural", &_terrain->isRenderingProcedural_);
 
 	/// material
-	ImMathf::MaterialEdit("Material", &_terrain->material_, _assetCollection, false);
+	Editor::ImMathf::MaterialEdit("Material", &_terrain->material_, _assetCollection, false);
 
 
 	/// river
@@ -183,7 +185,7 @@ bool COMP_DEBUG::TerrainTextureEditModeDebug(std::array<std::string, 4>* _textur
 			if (ImGui::BeginDragDropTarget()) {
 				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("AssetData")) {
 					if (payload->Data) {
-						AssetPayload* assetPayload = *static_cast<AssetPayload**>(payload->Data);
+						Editor::AssetPayload* assetPayload = *static_cast<Editor::AssetPayload**>(payload->Data);
 						const std::string path = assetPayload->filePath;
 
 						/// パスの拡張子をチェック

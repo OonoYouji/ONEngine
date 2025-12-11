@@ -1,4 +1,4 @@
-#include "../Render/VoxelTerrain/VoxelTerrainCommon.hlsli"
+﻿#include "../Render/VoxelTerrain/VoxelTerrainCommon.hlsli"
 #include "../ConstantBufferData/ViewProjection.hlsli"
 #include "../Math/Math.hlsli"
 
@@ -143,7 +143,7 @@ void main(
 				int3 voxelPos = chunkLocalMousePos + lpos;
 				
 				/// 範囲外チェック
-				if (!CheckInside(voxelPos, int3(0, 0, 0), int3(voxelTerrainInfo.textureSize))) {
+				if (!CheckInside(voxelPos, int3(0, 1, 0), int3(voxelTerrainInfo.textureSize) - int3(0, 1, 0))) {
 					continue;
 				}
 

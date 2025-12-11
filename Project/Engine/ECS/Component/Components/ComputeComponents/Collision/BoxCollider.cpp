@@ -1,4 +1,4 @@
-#include "BoxCollider.h"
+﻿#include "BoxCollider.h"
 
 #include <magic_enum/magic_enum.hpp>
 
@@ -30,7 +30,7 @@ void COMP_DEBUG::BoxColliderDebug(BoxCollider* _bc) {
 
 	/// box parameter
 	ImGui::SeparatorText("box parameter");
-	ImMathf::DragFloat3("size", &_bc->size_, 0.1f, 0.0f, 100.0f);
+	Editor::ImMathf::DragFloat3("size", &_bc->size_, 0.1f, 0.0f, 100.0f);
 
 }
 

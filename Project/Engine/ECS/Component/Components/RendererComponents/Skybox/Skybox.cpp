@@ -1,10 +1,10 @@
-#include "Skybox.h"
+﻿#include "Skybox.h"
 
 /// externals
 #include <imgui.h>
 
-/// engine
-#include "Engine/Core/ImGui/Math/ImGuiMath.h"
+/// editor
+#include "Engine/Editor/Math/ImGuiMath.h"
 
 using namespace ONEngine;
 
@@ -30,7 +30,7 @@ void COMP_DEBUG::SkyboxDebug(const Skybox* _skybox) {
 	}
 
 	std::string texturePath = _skybox->GetDDSTexturePath();
-	ImMathf::InputText("Skybox Texture Path", &texturePath, ImGuiInputTextFlags_ReadOnly);
+	Editor::ImMathf::InputText("Skybox Texture Path", &texturePath, ImGuiInputTextFlags_ReadOnly);
 
 }
 

@@ -1,4 +1,4 @@
-#include "Variables.h"
+﻿#include "Variables.h"
 
 /// std
 #include <fstream>
@@ -9,13 +9,15 @@
 #include <Externals/imgui/dialog/ImGuiFileDialog.h>
 
 /// engine
-#include "Engine/Core/ImGui/Math/ImGuiMath.h"
 #include "Engine/Core/Utility/Math/Mathf.h"
 #include "Engine/ECS/EntityComponentSystem/ECSGroup.h"
 #include "Engine/ECS/Entity/GameEntity/GameEntity.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Script/Script.h"
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentJsonConverter.h"
 #include "Engine/Script/MonoScriptEngine.h"
+
+/// editor 
+#include "Engine/Editor/Math/ImGuiMath.h"
 
 using namespace ONEngine;
 using json = nlohmann::json;
@@ -148,7 +150,7 @@ void Variables::SaveJson(const std::string& _path) {
 
 	for (const auto& [groupKey, value] : groupKeyMap_) {
 		json[groupKey] = nlohmann::json::object();
-		for (const auto& [varKey, varValue] : groups_[value].keyMap_) {
+		for (const auto& [varKey, varValue] : groups_[value].keyMap) {
 
 			std::visit([&json, &groupKey, &varKey](auto&& _arg) {
 				using T = std::decay_t<decltype(_arg)>;
@@ -545,9 +547,9 @@ void COMP_DEBUG::VariablesDebug(Variables* _variables) {
 }
 
 const Variables::Var& Variables::Group::Get(const std::string& _name) const {
-	return variables[keyMap_.at(_name)];
+	return variables[keyMap.at(_name)];
 }
 
 bool Variables::Group::Has(const std::string& _name) const {
-	return keyMap_.contains(_name);
+	return keyMap.contains(_name);
 }

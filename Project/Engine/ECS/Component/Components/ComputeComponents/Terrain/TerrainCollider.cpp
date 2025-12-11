@@ -1,4 +1,4 @@
-#include "TerrainCollider.h"
+﻿#include "TerrainCollider.h"
 
 /// externals
 #include <imgui.h>
@@ -37,7 +37,7 @@ void COMP_DEBUG::TerrainColliderDebug(TerrainCollider* _collider) {
 	/// ---------------------------------------------------
 
 	/// 最大傾斜角
-	ImMathf::DragFloat("max slope angle", &_collider->maxSlopeAngle_, 0.1f, 0.0f, 90.0f, "%.2f rad");
+	Editor::ImMathf::DragFloat("max slope angle", &_collider->maxSlopeAngle_, 0.1f, 0.0f, 90.0f, "%.2f rad");
 }
 
 void ONEngine::from_json(const nlohmann::json& _j, TerrainCollider& _c) {

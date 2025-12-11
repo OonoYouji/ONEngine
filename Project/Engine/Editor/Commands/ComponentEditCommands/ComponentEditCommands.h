@@ -6,17 +6,27 @@
 #include <unordered_map>
 
 /// engine
-#include "../Interface/IEditorCommand.h"
+#include "../IEditCommand.h"
+
+
+namespace ONEngine {
+/// 前方宣言
+class GameEntity;
+class ECSGroup;
+class SceneManager;
+class IComponent;
+}
+
 
 
 /// ///////////////////////////////////////////////
 /// エンティティのデータ出力コマンド
 /// ///////////////////////////////////////////////
-namespace ONEngine {
+namespace Editor {
 
-class EntityDataOutputCommand : public IEditorCommand {
+class EntityDataOutputCommand : public IEditCommand {
 public:
-	EntityDataOutputCommand(class GameEntity* _entity);
+	EntityDataOutputCommand(ONEngine::GameEntity* _entity);
 	~EntityDataOutputCommand() override = default;
 
 	/// @brief コマンドの実行
@@ -24,27 +34,27 @@ public:
 	EDITOR_STATE Undo() override;
 
 private:
-	class GameEntity* pEntity_ = nullptr;
+	ONEngine::GameEntity* pEntity_ = nullptr;
 	std::string outputFilePath_;
 };
 
 /// ///////////////////////////////////////////////
 /// エンティティのデータ入力コマンド
 /// ///////////////////////////////////////////////
-class EntityDataInputCommand : public IEditorCommand {
+class EntityDataInputCommand : public IEditCommand {
 public:
 	EntityDataInputCommand() = default;
-	EntityDataInputCommand(class GameEntity* _entity);
+	EntityDataInputCommand(ONEngine::GameEntity* _entity);
 	~EntityDataInputCommand() override = default;
-	
+
 	/// @brief コマンドの実行
 	EDITOR_STATE Execute() override;
 	EDITOR_STATE Undo() override;
 
-	void SetEntity(GameEntity* _entity);
+	void SetEntity(ONEngine::GameEntity* _entity);
 
 private:
-	class GameEntity* pEntity_ = nullptr;
+	ONEngine::GameEntity* pEntity_ = nullptr;
 	std::string inputFilePath_;
 };
 
@@ -52,16 +62,16 @@ private:
 /// ///////////////////////////////////////////////
 /// Componentの追加
 /// ///////////////////////////////////////////////
-class AddComponentCommand : public IEditorCommand {
+class AddComponentCommand : public IEditCommand {
 public:
-	AddComponentCommand(class GameEntity* _entity, const std::string& _componentName);
+	AddComponentCommand(ONEngine::GameEntity* _entity, const std::string& _componentName);
 	~AddComponentCommand() override = default;
 	/// @brief コマンドの実行
 	EDITOR_STATE Execute() override;
 	EDITOR_STATE Undo() override;
 
 private:
-	class GameEntity* pEntity_ = nullptr;
+	ONEngine::GameEntity* pEntity_ = nullptr;
 	std::string componentName_;
 };
 
@@ -69,9 +79,9 @@ private:
 /// ///////////////////////////////////////////////
 /// Componentの削除
 /// ///////////////////////////////////////////////
-class RemoveComponentCommand : public IEditorCommand {
+class RemoveComponentCommand : public IEditCommand {
 public:
-	RemoveComponentCommand(class GameEntity* _entity, const std::string& _componentName, std::unordered_map<size_t, class IComponent*>::iterator* _resultItr);
+	RemoveComponentCommand(ONEngine::GameEntity* _entity, const std::string& _componentName, std::unordered_map<size_t, ONEngine::IComponent*>::iterator* _resultItr);
 	~RemoveComponentCommand() override = default;
 
 	/// @brief コマンドの実行
@@ -79,8 +89,8 @@ public:
 	EDITOR_STATE Undo() override;
 
 private:
-	std::unordered_map<size_t, class IComponent*>::iterator* pIterator_;
-	class GameEntity* pEntity_ = nullptr;
+	std::unordered_map<size_t, ONEngine::IComponent*>::iterator* pIterator_;
+	ONEngine::GameEntity* pEntity_ = nullptr;
 	std::string componentName_;
 };
 
@@ -88,9 +98,9 @@ private:
 /// ///////////////////////////////////////////////
 /// Scriptの再読み込み
 /// ///////////////////////////////////////////////
-class ReloadAllScriptsCommand : public IEditorCommand {
+class ReloadAllScriptsCommand : public IEditCommand {
 public:
-	ReloadAllScriptsCommand(class ECSGroup* _ecs, class SceneManager* _sceneManager);
+	ReloadAllScriptsCommand(ONEngine::ECSGroup* _ecs, ONEngine::SceneManager* _sceneManager);
 	~ReloadAllScriptsCommand() override = default;
 	/// @brief コマンドの実行
 	EDITOR_STATE Execute() override;
@@ -100,8 +110,9 @@ private:
 	/// ================================================
 	/// private : objects
 	/// ================================================
-	class ECSGroup* pEcsGroup_ = nullptr;
-	class SceneManager* pSceneManager_ = nullptr;
+	ONEngine::ECSGroup* pEcsGroup_ = nullptr;
+	ONEngine::SceneManager* pSceneManager_ = nullptr;
 };
 
-} /// ONEngine
+
+} /// Editor

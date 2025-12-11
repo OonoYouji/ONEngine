@@ -7,15 +7,16 @@ using namespace ONEngine;
 
 /// engine
 #include "Engine/Core/Window/WindowManager.h"
-#include "Engine/Core/ImGui/ImGuiManager.h"
 #include "Engine/Core/Utility/Tools/Assert.h"
 #include "Input.h"
 
+/// editor
+#include "Engine/Editor/Manager/ImGuiManager.h"
 
 InputSystem::InputSystem() = default;
 InputSystem::~InputSystem() = default;
 
-void InputSystem::Initialize(WindowManager* _windowManager, ImGuiManager* _imGuiManager) {
+void InputSystem::Initialize(WindowManager* _windowManager, Editor::ImGuiManager* _imGuiManager) {
 	pWindowManager_ = _windowManager;
 
 
