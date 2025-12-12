@@ -1,4 +1,4 @@
-#include "ScreenPostEffectTag.h"
+﻿#include "ScreenPostEffectTag.h"
 
 /// std
 #include <vector>
@@ -35,7 +35,7 @@ bool ScreenPostEffectTag::GetPostEffectEnable(PostEffectType _type) const {
 
 
 
-void COMP_DEBUG::ScreenPostEffectTagDebug(ScreenPostEffectTag* _component) {
+void ComponentDebug::ScreenPostEffectTagDebug(ScreenPostEffectTag* _component) {
 	if (!_component) {
 		return;
 	}

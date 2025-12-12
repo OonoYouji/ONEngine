@@ -73,7 +73,7 @@ int AudioSource::GetState() const {
 
 /// 
 
-void COMP_DEBUG::AudioSourceDebug(AudioSource* _as) {
+void ComponentDebug::AudioSourceDebug(AudioSource* _as) {
 	if (!_as) {
 		return;
 	}
@@ -135,7 +135,7 @@ void COMP_DEBUG::AudioSourceDebug(AudioSource* _as) {
 
 }
 
-void MONO_INTERNAL_METHOD::InternalGetParams(uint64_t _nativeHandle, float* _volume, float* _pitch) {
+void MonoInternalMethods::InternalGetParams(uint64_t _nativeHandle, float* _volume, float* _pitch) {
 	AudioSource* audioSource = reinterpret_cast<AudioSource*>(_nativeHandle);
 	if (!audioSource) {
 		Console::LogError("AudioSource pointer is null");
@@ -147,7 +147,7 @@ void MONO_INTERNAL_METHOD::InternalGetParams(uint64_t _nativeHandle, float* _vol
 
 }
 
-void MONO_INTERNAL_METHOD::InternalSetParams(uint64_t _nativeHandle, float _volume, float _pitch) {
+void MonoInternalMethods::InternalSetParams(uint64_t _nativeHandle, float _volume, float _pitch) {
 	AudioSource* audioSource = reinterpret_cast<AudioSource*>(_nativeHandle);
 	if (!audioSource) {
 		Console::LogError("AudioSource pointer is null");
@@ -158,7 +158,7 @@ void MONO_INTERNAL_METHOD::InternalSetParams(uint64_t _nativeHandle, float _volu
 	audioSource->SetPitch(_pitch);
 }
 
-void MONO_INTERNAL_METHOD::InternalPlayOneShot(uint64_t _nativeHandle, float _volume, float _pitch, MonoString* _path) {
+void MonoInternalMethods::InternalPlayOneShot(uint64_t _nativeHandle, float _volume, float _pitch, MonoString* _path) {
 	/// 音の再生
 	AudioSource* audioSource = reinterpret_cast<AudioSource*>(_nativeHandle);
 	if (!audioSource) {

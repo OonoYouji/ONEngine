@@ -32,7 +32,7 @@ namespace {
 }
 
 
-void COMP_DEBUG::ShadowCasterDebug(ShadowCaster* _shadowCaster) {
+void ComponentDebug::ShadowCasterDebug(ShadowCaster* _shadowCaster) {
 	if (!_shadowCaster) {
 		return;
 	}

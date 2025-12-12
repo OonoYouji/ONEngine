@@ -42,7 +42,7 @@ void ONEngine::from_json(const nlohmann::json& _j, GrassField& _p) {
 /// ImGuiデバッグ関数
 /// ////////////////////////////////////////////////////////
 
-void COMP_DEBUG::GrassFieldDebug(GrassField* _grassField, AssetCollection* _assetCollection) {
+void ComponentDebug::GrassFieldDebug(GrassField* _grassField, AssetCollection* _assetCollection) {
 
 	/// 草の最大本数
 	ImGui::Text("Max Blade Count : %d", _grassField->GetMaxGrassCount());

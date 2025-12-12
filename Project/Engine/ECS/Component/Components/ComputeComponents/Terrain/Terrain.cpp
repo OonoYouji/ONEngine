@@ -24,7 +24,7 @@ using namespace ONEngine;
 /// 地形のComponentのデバッグ用関数
 /// ///////////////////////////////////////////////////
 
-void COMP_DEBUG::TerrainDebug(Terrain* _terrain, EntityComponentSystem* _ecs, AssetCollection* _assetCollection) {
+void ComponentDebug::TerrainDebug(Terrain* _terrain, EntityComponentSystem* _ecs, AssetCollection* _assetCollection) {
 	if (!_terrain) {
 		return;
 	}
@@ -151,7 +151,7 @@ void COMP_DEBUG::TerrainDebug(Terrain* _terrain, EntityComponentSystem* _ecs, As
 	_terrain->river_.Edit(_ecs);
 }
 
-bool COMP_DEBUG::TerrainTextureEditModeDebug(std::array<std::string, 4>* _texturePaths, int32_t* _usedTextureIndex, AssetCollection* _assetCollection) {
+bool ComponentDebug::TerrainTextureEditModeDebug(std::array<std::string, 4>* _texturePaths, int32_t* _usedTextureIndex, AssetCollection* _assetCollection) {
 	/// ----- テクスチャのパスを変更する処理 ----- ///
 
 	const std::vector<std::string> shortcutKeys = {

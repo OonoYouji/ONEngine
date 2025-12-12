@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// std
 #include <unordered_map>
@@ -101,7 +101,7 @@ bool CheckComponentEnable(IComponent* _component);
 /// monoを使ったC#スクリプトエンジンのコンポーネント
 /// =============================================
 
-namespace MONO_INTERNAL_METHOD {
+namespace MonoInternalMethods {
 
 	/// エンティティのidからEntityを取得
 	GameEntity* GetEntityById(int32_t _entityId, const std::string& _groupName);
@@ -194,6 +194,6 @@ namespace MONO_INTERNAL_METHOD {
 	/// @param _ecsGroupName ECSGroupの名前
 	void InternalSetEnable(int32_t _entityId, bool _enable, MonoString* _ecsGroupName);
 
-} // namespace MONO_INTERNAL_METHOD
+} // namespace MonoInternalMethods
 
 } /// ONEngine

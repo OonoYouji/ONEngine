@@ -118,7 +118,7 @@ namespace {
 }	/// namespace
 
 
-void COMP_DEBUG::CameraDebug(CameraComponent* _camera) {
+void ComponentDebug::CameraDebug(CameraComponent* _camera) {
 	if (!_camera) {
 		return;
 	}

@@ -169,7 +169,7 @@ const std::string& SceneManager::GetCurrentSceneName() const {
 
 
 
-void MONO_INTERNAL_METHOD::InternalLoadScene(MonoString* _sceneName) {
+void MonoInternalMethods::InternalLoadScene(MonoString* _sceneName) {
 	char* cstr = mono_string_to_utf8(_sceneName);
 	if (gSceneManager) {
 		gSceneManager->LoadScene(cstr);

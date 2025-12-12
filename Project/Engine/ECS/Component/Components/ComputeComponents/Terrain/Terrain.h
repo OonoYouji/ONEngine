@@ -22,7 +22,7 @@ namespace Editor {
 	class TerrainVertexEditorCompute;
 }
 
-/// COMP_DEBUGで使用するための前方宣言
+/// ComponentDebugで使用するための前方宣言
 namespace ONEngine {
 
 /// 前方宣言
@@ -32,12 +32,12 @@ class AssetCollection;
 
 static const uint32_t kMaxTerrainTextureNum = 4u;
 
-namespace COMP_DEBUG {
+namespace ComponentDebug {
 void TerrainDebug(Terrain* _terrain, EntityComponentSystem* _ecs, AssetCollection* _assetCollection);
 
 /// テクスチャモードの編集
 bool TerrainTextureEditModeDebug(std::array<std::string, kMaxTerrainTextureNum>* _texturePaths, int32_t* _usedTextureIndex, AssetCollection* _assetCollection);
-} // namespace COMP_DEBUG
+} // namespace ComponentDebug
 
 /// Json変換
 void from_json(const nlohmann::json& _j, Terrain& _t);
@@ -61,7 +61,7 @@ struct TerrainEditorInfo {
 class Terrain : public IComponent {
 	friend class ::Editor::TerrainVertexEditorCompute;
 
-	friend void COMP_DEBUG::TerrainDebug(Terrain* _terrain, EntityComponentSystem* _ecs, AssetCollection* _assetCollection);
+	friend void ComponentDebug::TerrainDebug(Terrain* _terrain, EntityComponentSystem* _ecs, AssetCollection* _assetCollection);
 	friend void from_json(const nlohmann::json& _j, Terrain& _t);
 	friend void to_json(nlohmann::json& _j, const Terrain& _t);
 public:

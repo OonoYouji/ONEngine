@@ -136,7 +136,7 @@ void ONEngine::InternalSetPostEffectFlags(uint64_t _nativeHandle, uint32_t _flag
 	}
 }
 
-void COMP_DEBUG::MeshRendererDebug(MeshRenderer* _mr, AssetCollection* _assetCollection) {
+void ComponentDebug::MeshRendererDebug(MeshRenderer* _mr, AssetCollection* _assetCollection) {
 	if (!_mr) {
 		return;
 	}

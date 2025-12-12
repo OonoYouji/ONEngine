@@ -179,7 +179,7 @@ void ONEngine::InternalSetScale(uint64_t _nativeHandle, float _x, float _y, floa
 	UpdateTransform(transform); // 更新を呼び出す
 }
 
-void COMP_DEBUG::TransformDebug(Transform* _transform) {
+void ComponentDebug::TransformDebug(Transform* _transform) {
 	if (!_transform) {
 		return;
 	}

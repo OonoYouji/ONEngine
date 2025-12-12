@@ -10,7 +10,7 @@
 
 using namespace ONEngine;
 
-void COMP_DEBUG::BoxColliderDebug(BoxCollider* _bc) {
+void ComponentDebug::BoxColliderDebug(BoxCollider* _bc) {
 	if (!_bc) {
 		return;
 	}

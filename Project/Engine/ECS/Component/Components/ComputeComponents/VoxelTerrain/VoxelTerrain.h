@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// std
 #include <vector>
@@ -57,7 +57,7 @@ struct Chunk {
 class VoxelTerrain;
 class DxManager;
 
-namespace COMP_DEBUG {
+namespace ComponentDebug {
 void VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _dxManager);
 }
 
@@ -111,7 +111,7 @@ struct EditInfo {
 /// ///////////////////////////////////////////////////
 class VoxelTerrain : public IComponent {
 	/// --------------- friend function --------------- ///
-	friend void COMP_DEBUG::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _dxManager);
+	friend void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _dxManager);
 	friend void from_json(const nlohmann::json& _j, VoxelTerrain& _voxelTerrain);
 	friend void to_json(nlohmann::json& _j, const VoxelTerrain& _voxelTerrain);
 

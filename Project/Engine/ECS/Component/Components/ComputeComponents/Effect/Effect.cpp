@@ -236,7 +236,7 @@ size_t Effect::GetEmitInstanceCount() const {
 	return emitInstanceCount_;
 }
 
-void COMP_DEBUG::EffectDebug(Effect* _effect) {
+void ComponentDebug::EffectDebug(Effect* _effect) {
 	if (!_effect) {
 		return;
 	}

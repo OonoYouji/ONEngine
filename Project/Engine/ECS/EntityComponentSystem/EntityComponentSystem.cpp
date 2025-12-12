@@ -1,4 +1,4 @@
-#include "EntityComponentSystem.h"
+﻿#include "EntityComponentSystem.h"
 
 using namespace ONEngine;
 
@@ -220,7 +220,7 @@ void EntityComponentSystem::ReloadPrefab(const std::string& _prefabName) {
 /// internal methods
 /// ====================================================
 
-GameEntity* MONO_INTERNAL_METHOD::GetEntityById(int32_t _entityId, const std::string& _groupName) {
+GameEntity* MonoInternalMethods::GetEntityById(int32_t _entityId, const std::string& _groupName) {
 	ECSGroup* ecsGroup = gECS->GetECSGroup(_groupName);
 	if (ecsGroup) {
 		return ecsGroup->GetEntity(_entityId);
@@ -229,7 +229,7 @@ GameEntity* MONO_INTERNAL_METHOD::GetEntityById(int32_t _entityId, const std::st
 	return nullptr;
 }
 
-uint64_t MONO_INTERNAL_METHOD::InternalAddComponent(int32_t _entityId, MonoString* _monoTypeName, MonoString* _groupName) {
+uint64_t MonoInternalMethods::InternalAddComponent(int32_t _entityId, MonoString* _monoTypeName, MonoString* _groupName) {
 	std::string groupName = mono_string_to_utf8(_groupName);
 
 	std::string typeName = mono_string_to_utf8(_monoTypeName);
@@ -248,7 +248,7 @@ uint64_t MONO_INTERNAL_METHOD::InternalAddComponent(int32_t _entityId, MonoStrin
 	return reinterpret_cast<uint64_t>(component);
 }
 
-uint64_t MONO_INTERNAL_METHOD::InternalGetComponent(int32_t _entityId, MonoString* _monoTypeName, MonoString* _groupName) {
+uint64_t MonoInternalMethods::InternalGetComponent(int32_t _entityId, MonoString* _monoTypeName, MonoString* _groupName) {
 	std::string groupName = mono_string_to_utf8(_groupName);
 
 	/// idからentityを取得
@@ -265,7 +265,7 @@ uint64_t MONO_INTERNAL_METHOD::InternalGetComponent(int32_t _entityId, MonoStrin
 	return reinterpret_cast<uint64_t>(component);
 }
 
-const char* MONO_INTERNAL_METHOD::InternalGetName(int32_t _entityId, MonoString* _groupName) {
+const char* MonoInternalMethods::InternalGetName(int32_t _entityId, MonoString* _groupName) {
 	std::string groupName = mono_string_to_utf8(_groupName);
 	GameEntity* entity = GetEntityById(_entityId, groupName);
 	if (!entity) {
@@ -276,7 +276,7 @@ const char* MONO_INTERNAL_METHOD::InternalGetName(int32_t _entityId, MonoString*
 	return entity->GetName().c_str();
 }
 
-void MONO_INTERNAL_METHOD::InternalSetName(int32_t _entityId, MonoString* _name, MonoString* _groupName) {
+void MonoInternalMethods::InternalSetName(int32_t _entityId, MonoString* _name, MonoString* _groupName) {
 	std::string groupName = mono_string_to_utf8(_groupName);
 	std::string name = mono_string_to_utf8(_name);
 	GameEntity* entity = GetEntityById(_entityId, groupName);
@@ -289,7 +289,7 @@ void MONO_INTERNAL_METHOD::InternalSetName(int32_t _entityId, MonoString* _name,
 	entity->SetName(name);
 }
 
-int32_t MONO_INTERNAL_METHOD::InternalGetChildId(int32_t _entityId, uint32_t _childIndex, MonoString* _groupName) {
+int32_t MonoInternalMethods::InternalGetChildId(int32_t _entityId, uint32_t _childIndex, MonoString* _groupName) {
 	std::string groupName = mono_string_to_utf8(_groupName);
 	GameEntity* entity = GetEntityById(_entityId, groupName);
 	if (!entity) {
@@ -307,7 +307,7 @@ int32_t MONO_INTERNAL_METHOD::InternalGetChildId(int32_t _entityId, uint32_t _ch
 	return child->GetId();
 }
 
-int32_t MONO_INTERNAL_METHOD::InternalGetChildrenCount(int32_t _entityId, MonoString* _groupName) {
+int32_t MonoInternalMethods::InternalGetChildrenCount(int32_t _entityId, MonoString* _groupName) {
 	std::string groupName = mono_string_to_utf8(_groupName);
 	GameEntity* entity = GetEntityById(_entityId, groupName);
 	if (!entity) {
@@ -318,7 +318,7 @@ int32_t MONO_INTERNAL_METHOD::InternalGetChildrenCount(int32_t _entityId, MonoSt
 	return static_cast<int32_t>(children.size());
 }
 
-int32_t MONO_INTERNAL_METHOD::InternalGetParentId(int32_t _entityId, MonoString* _groupName) {
+int32_t MonoInternalMethods::InternalGetParentId(int32_t _entityId, MonoString* _groupName) {
 	std::string groupName = mono_string_to_utf8(_groupName);
 	GameEntity* entity = GetEntityById(_entityId, groupName);
 	if (!entity) {
@@ -334,7 +334,7 @@ int32_t MONO_INTERNAL_METHOD::InternalGetParentId(int32_t _entityId, MonoString*
 	return 0;
 }
 
-void MONO_INTERNAL_METHOD::InternalSetParent(int32_t _entityId, int32_t _parentId, MonoString* _groupName) {
+void MonoInternalMethods::InternalSetParent(int32_t _entityId, int32_t _parentId, MonoString* _groupName) {
 	const std::string groupName = mono_string_to_utf8(_groupName);
 	GameEntity* entity = GetEntityById(_entityId, groupName);
 	GameEntity* parent = GetEntityById(_parentId, groupName);
@@ -360,7 +360,7 @@ void MONO_INTERNAL_METHOD::InternalSetParent(int32_t _entityId, int32_t _parentI
 	entity->SetParent(parent);
 }
 
-void MONO_INTERNAL_METHOD::InternalAddScript(int32_t _entityId, MonoString* _scriptName, MonoString* _groupName) {
+void MonoInternalMethods::InternalAddScript(int32_t _entityId, MonoString* _scriptName, MonoString* _groupName) {
 	std::string groupName = mono_string_to_utf8(_groupName);
 	std::string scriptName = mono_string_to_utf8(_scriptName);
 	GameEntity* entity = GetEntityById(_entityId, groupName);
@@ -380,7 +380,7 @@ void MONO_INTERNAL_METHOD::InternalAddScript(int32_t _entityId, MonoString* _scr
 	}
 }
 
-bool MONO_INTERNAL_METHOD::InternalGetScript(int32_t _entityId, MonoString* _scriptName, MonoString* _groupName) {
+bool MonoInternalMethods::InternalGetScript(int32_t _entityId, MonoString* _scriptName, MonoString* _groupName) {
 	std::string groupName = mono_string_to_utf8(_groupName);
 	GameEntity* entity = GetEntityById(_entityId, groupName);
 	if (!entity) {
@@ -406,7 +406,7 @@ bool MONO_INTERNAL_METHOD::InternalGetScript(int32_t _entityId, MonoString* _scr
 	return false;
 }
 
-void MONO_INTERNAL_METHOD::InternalCreateEntity(int32_t* _entityId, MonoString* _prefabName, MonoString* _groupName) {
+void MonoInternalMethods::InternalCreateEntity(int32_t* _entityId, MonoString* _prefabName, MonoString* _groupName) {
 	std::string groupName = mono_string_to_utf8(_groupName);
 	ECSGroup* group = gECS->GetECSGroup(groupName);
 
@@ -430,7 +430,7 @@ void MONO_INTERNAL_METHOD::InternalCreateEntity(int32_t* _entityId, MonoString* 
 	}
 }
 
-void MONO_INTERNAL_METHOD::InternalDestroyEntity(MonoString* _ecsGroupName, int32_t _entityId) {
+void MonoInternalMethods::InternalDestroyEntity(MonoString* _ecsGroupName, int32_t _entityId) {
 	char* cstr = mono_string_to_utf8(_ecsGroupName);
 	ECSGroup* group = gECS->GetECSGroup(cstr);
 
@@ -446,7 +446,7 @@ void MONO_INTERNAL_METHOD::InternalDestroyEntity(MonoString* _ecsGroupName, int3
 	mono_free(cstr);
 }
 
-bool MONO_INTERNAL_METHOD::InternalGetEnable(int32_t _entityId, MonoString* _ecsGroupName) {
+bool MonoInternalMethods::InternalGetEnable(int32_t _entityId, MonoString* _ecsGroupName) {
 	/// ECSGroupの取得
 	std::string groupName = mono_string_to_utf8(_ecsGroupName);
 	ECSGroup* group = gECS->GetECSGroup(groupName);
@@ -461,7 +461,7 @@ bool MONO_INTERNAL_METHOD::InternalGetEnable(int32_t _entityId, MonoString* _ecs
 	return entity->active;
 }
 
-void MONO_INTERNAL_METHOD::InternalSetEnable(int32_t _entityId, bool _enable, MonoString* _ecsGroupName) {
+void MonoInternalMethods::InternalSetEnable(int32_t _entityId, bool _enable, MonoString* _ecsGroupName) {
 	/// ECSGroupの取得
 	std::string groupName = mono_string_to_utf8(_ecsGroupName);
 	ECSGroup* group = gECS->GetECSGroup(groupName);

@@ -40,7 +40,7 @@ class AssetCollection;
 /// ////////////////////////////////////////////////////////
 /// Editor
 /// ////////////////////////////////////////////////////////
-namespace COMP_DEBUG {
+namespace ComponentDebug {
 	void GrassFieldDebug(GrassField* _grassField, AssetCollection* _assetCollection);
 }
 
@@ -58,7 +58,7 @@ class GrassField : public IComponent {
 	friend class ::Editor::GrassArrangementPipeline;
 
 	/// privateメンバ変数の参照のためにフレンド宣言
-	friend void COMP_DEBUG::GrassFieldDebug(GrassField* _grassField, AssetCollection* _assetCollection);
+	friend void ComponentDebug::GrassFieldDebug(GrassField* _grassField, AssetCollection* _assetCollection);
 	friend void to_json(nlohmann::json& _j, const GrassField& _p);
 	friend void from_json(const nlohmann::json& _j, GrassField& _p);
 public:

@@ -11,7 +11,7 @@
 
 using namespace ONEngine;
 
-void COMP_DEBUG::SphereColliderDebug(SphereCollider* _c) {
+void ComponentDebug::SphereColliderDebug(SphereCollider* _c) {
 	if (!_c) {
 		return;
 	}

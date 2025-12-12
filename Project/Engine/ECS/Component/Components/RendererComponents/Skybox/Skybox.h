@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// std
 #include <string>
@@ -41,7 +41,7 @@ private:
 };
 
 
-namespace COMP_DEBUG {
+namespace ComponentDebug {
 	void SkyboxDebug(const Skybox* _skybox);
 }
 

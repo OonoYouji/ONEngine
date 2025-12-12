@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// std
 #include <vector>
@@ -17,7 +17,7 @@ namespace ONEngine {
 class TerrainCollider;
 
 /// @brief Componentのデバッグ表示
-namespace COMP_DEBUG {
+namespace ComponentDebug {
 void TerrainColliderDebug(TerrainCollider* _collider);
 }
 
@@ -33,7 +33,7 @@ class TerrainCollider : public IComponent {
 	friend class TerrainColliderVertexGenerator;
 
 	/// ----- friend functions ----- ///
-	friend void COMP_DEBUG::TerrainColliderDebug(TerrainCollider* _collider);
+	friend void ComponentDebug::TerrainColliderDebug(TerrainCollider* _collider);
 	friend void from_json(const nlohmann::json& _j, TerrainCollider& _c);
 	friend void to_json(nlohmann::json& _j, const TerrainCollider& _c);
 

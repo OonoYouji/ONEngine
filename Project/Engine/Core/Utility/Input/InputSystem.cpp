@@ -50,7 +50,7 @@ void InputSystem::Update() {
 	gamepad_->Update(pWindowManager_->GetActiveWindow());
 }
 
-void MONO_INTERNAL_METHOD::InternalGetGamepadThumb(int _axisIndex, float* _x, float* _y) {
+void MonoInternalMethods::InternalGetGamepadThumb(int _axisIndex, float* _x, float* _y) {
 	Vector2 v = {};
 	switch (_axisIndex) {
 	case Gamepad::Axis::Left: // Left
@@ -65,13 +65,13 @@ void MONO_INTERNAL_METHOD::InternalGetGamepadThumb(int _axisIndex, float* _x, fl
 	*_y = v.y;
 }
 
-void MONO_INTERNAL_METHOD::InternalGetMouseVelocity(float* _x, float* _y) {
+void MonoInternalMethods::InternalGetMouseVelocity(float* _x, float* _y) {
 	const Vector2& velocity = Input::GetMouseVelocity();
 	*_x = velocity.x;
 	*_y = velocity.y;
 }
 
-void MONO_INTERNAL_METHOD::InternalGetMousePosition(float* _x, float* _y) {
+void MonoInternalMethods::InternalGetMousePosition(float* _x, float* _y) {
 	const Vector2& position = Input::GetMousePosition();
 	*_x = position.x;
 	*_y = position.y;

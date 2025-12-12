@@ -16,7 +16,7 @@
 
 using namespace ONEngine;
 
-void COMP_DEBUG::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _dxManager) {
+void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _dxManager) {
 	if (!_voxelTerrain) {
 		Console::LogError("VoxelTerrainDebug: _voxelTerrain is nullptr");
 		return;

@@ -89,7 +89,7 @@ const Vector4& SkinMeshRenderer::GetColor() const {
 
 
 
-void COMP_DEBUG::SkinMeshRendererDebug(SkinMeshRenderer* _smr) {
+void ComponentDebug::SkinMeshRendererDebug(SkinMeshRenderer* _smr) {
 	if (_smr == nullptr) {
 		return;
 	}

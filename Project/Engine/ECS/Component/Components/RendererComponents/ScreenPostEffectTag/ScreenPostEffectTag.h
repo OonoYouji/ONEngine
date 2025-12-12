@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// external
 #include <nlohmann/json.hpp>
@@ -45,7 +45,7 @@ private:
 };
 
 
-namespace COMP_DEBUG {
+namespace ComponentDebug {
 	void ScreenPostEffectTagDebug(ScreenPostEffectTag* _component);
 }
 
