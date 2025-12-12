@@ -108,8 +108,8 @@ public:
 	/// public : accessor
 	/// =========================================
 
-	void SetMainCamera(CameraComponent* _CameraComponent);
-	void SetMainCamera2D(CameraComponent* _CameraComponent);
+	void SetMainCamera(CameraComponent* _cameraComponent);
+	void SetMainCamera2D(CameraComponent* _cameraComponent);
 
 	CameraComponent* GetMainCamera();
 	CameraComponent* GetMainCamera2D();
