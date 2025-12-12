@@ -25,7 +25,7 @@ namespace Editor {
 /// ////////////////////////////////////////////////////////
 namespace ONEngine {
 
-struct GrassInstance {
+struct GrassData {
 	Vector3 position;
 	Vector3 tangent;
 	float scale;
@@ -89,7 +89,7 @@ private:
 	/// ===================================================
 
 	/// ----- buffer ----- ///
-	StructuredBuffer<GrassInstance> rwGrassInstanceBuffer_;
+	StructuredBuffer<GrassData> rwGrassInstanceBuffer_;
 	StructuredBuffer<uint32_t> startIndexBuffer_;
 	StructuredBuffer<float> timeBuffer_;
 	ConstantBuffer<GPUMaterial> materialBuffer_;
@@ -109,7 +109,7 @@ public:
 	/// ===================================================
 
 	/// 草のインスタンスバッファの取得
-	StructuredBuffer<GrassInstance>& GetRwGrassInstanceBuffer();
+	StructuredBuffer<GrassData>& GetRwGrassInstanceBuffer();
 	StructuredBuffer<uint32_t>& GetStartIndexBufferRef();
 	StructuredBuffer<float>& GetTimeBuffer();
 	ConstantBuffer<GPUMaterial>& GetMaterialBufferRef();

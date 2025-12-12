@@ -165,7 +165,7 @@ void GrassField::AppendBufferReadCounter(DxManager* _dxm, DxCommand* _dxCommand)
 
 }
 
-StructuredBuffer<GrassInstance>& GrassField::GetRwGrassInstanceBuffer() {
+StructuredBuffer<GrassData>& GrassField::GetRwGrassInstanceBuffer() {
 	return rwGrassInstanceBuffer_;
 }
 
