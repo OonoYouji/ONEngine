@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 
+/// engine
+#include "Engine/Core/Utility/Math/Vector3.h"
 
 namespace ONEngine {
 
@@ -86,6 +88,18 @@ bool StartsWith(const std::string& _str, const std::string& _prefix);
 /// @return 切り上げた商をuint32_t型で返します（余りがあれば上方向に丸められる）。
 uint32_t DivideAndRoundUp(uint32_t _numerator, uint32_t _denominator);
 
+/// @brief _tを使い p0~p3 のCatmullRom補間位置を計算する
+/// @param _p0 制御点0
+/// @param _p1 制御点1
+/// @param _p2 制御点2
+/// @param _p3 制御点3
+/// @param _t 補間パラメータ(0~1)
+/// @return p0~p3のCatmullRom補間位置
+Vector3 CatmullRomPosition(
+	const Vector3& _p0, const Vector3& _p1,
+	const Vector3& _p2, const Vector3& _p3,
+	float _t
+);
 
 } /// namespace Mathf
 

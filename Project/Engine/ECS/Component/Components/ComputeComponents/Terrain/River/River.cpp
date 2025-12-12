@@ -1,4 +1,4 @@
-#include "River.h"
+﻿#include "River.h"
 
 /// std
 #include <fstream>
@@ -16,20 +16,10 @@
 
 using namespace ONEngine;
 
-Vector3 ONEngine::CatmullRomPosition(const Vector3& _p0, const Vector3& _p1, const Vector3& _p2, const Vector3& _p3, float _t) {
-	float t2 = _t * _t;
-	float t3 = t2 * _t;
-
-	return 0.5f * (
-		(2.0f * _p1) +
-		(-_p0 + _p2) * _t +
-		(2.0f * _p0 - 5.0f * _p1 + 4.0f * _p2 - _p3) * t2 +
-		(-_p0 + 3.0f * _p1 - 3.0f * _p2 + _p3) * t3);
-}
 
 RiverControlPoint ONEngine::CatmullRom(const RiverControlPoint& _p0, const RiverControlPoint& _p1, const RiverControlPoint& _p2, const RiverControlPoint& _p3, float _t) {
 	RiverControlPoint result;
-	result.position = CatmullRomPosition(_p0.position, _p1.position, _p2.position, _p3.position, _t);
+	result.position = Mathf::CatmullRomPosition(_p0.position, _p1.position, _p2.position, _p3.position, _t);
 	result.width = _p1.width * (1.0f - _t) + _p2.width * _t;
 	return result;
 }
