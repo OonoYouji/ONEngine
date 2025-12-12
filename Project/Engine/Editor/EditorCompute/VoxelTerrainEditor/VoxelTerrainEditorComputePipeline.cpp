@@ -105,7 +105,7 @@ void VoxelTerrainEditorComputePipeline::Execute(ONEngine::EntityComponentSystem*
 	inputInfo.screenMousePos = ONEngine::Input::GetImGuiImageMousePosNormalized("Scene");
 
 	/// マウスがウィンドウ外なら終了
-	if (!ONEngine::Vector2::Inside(inputInfo.screenMousePos, ONEngine::Vector2::kZero, ONEngine::Vector2::kFullHD)) {
+	if (!ONEngine::Mathf::Inside(inputInfo.screenMousePos, ONEngine::Vector2::kZero, ONEngine::Vector2::kFullHD)) {
 		return;
 	}
 

@@ -78,7 +78,7 @@ void PostProcessTerrainBrush::Execute(
 	/// brush data
 	const Vector2 mousePos = Input::GetImGuiImageMousePosNormalized("Scene");
 	/// 範囲外なら処理しない
-	if (!Vector2::Inside(mousePos, Vector2::kZero, Vector2::kHD)) {
+	if (!Mathf::Inside(mousePos, Vector2::kZero, Vector2::kHD)) {
 		return;
 	}
 

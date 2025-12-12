@@ -168,3 +168,9 @@ Vector3 Mathf::CatmullRomPosition(const Vector3& _p0, const Vector3& _p1, const 
 		(2.0f * _p0 - 5.0f * _p1 + 4.0f * _p2 - _p3) * t2 +
 		(-_p0 + 3.0f * _p1 - 3.0f * _p2 + _p3) * t3);
 }
+
+bool ONEngine::Mathf::Inside(const Vector2& _point, const Vector2& _min, const Vector2& _max) {
+	/// 点が矩形の内側にあるか判定
+	return (_point.x >= _min.x && _point.x <= _max.x
+		&& _point.y >= _min.y && _point.y <= _max.y);
+}

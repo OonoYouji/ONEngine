@@ -102,6 +102,15 @@ Vector3 CatmullRomPosition(
 	float _t
 );
 
+
+/// @brief pointが_minと_maxの内側にあるか判定する
+/// @param _point 判定する点
+/// @param _min Rect の最小値
+/// @param _max Rect の最大値
+/// @return true: 内側にある / false: 内側にない
+bool Inside(const Vector2& _point, const Vector2& _min, const Vector2& _max);
+
+
 } /// namespace Mathf
 
 } /// namespace ONEngine
