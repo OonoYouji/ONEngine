@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include <fstream>
 #include <filesystem>
+#include <cstdint>
 
 /// engine
 #include "Engine/Asset/Assets/IAsset.h"
