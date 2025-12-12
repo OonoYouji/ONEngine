@@ -1,4 +1,4 @@
-#include "MetaFile.h"
+﻿#include "MetaFile.h"
 
 /// std
 #include <fstream>
@@ -11,8 +11,8 @@ using namespace ONEngine;
 
 namespace {
 
-	/// @brief 現在の.metaファイルのバージョン
-	static const uint32_t kCurrentMetaFileVersion = 1;
+/// @brief 現在の.metaファイルのバージョン
+constexpr uint32_t kCurrentMetaFileVersion = 1;
 
 } // namespace
 
@@ -38,7 +38,10 @@ bool MetaFile::LoadFromFile(const std::string& _metaFilePath) {
 	while (std::getline(ifs, line)) {
 		/// バージョンの読み込み
 		if (Mathf::StartsWith(line, "version: ")) {
-			std::string versionStr = line.substr(9);
+			/// "version: "の部分を削除して数値部分だけを取得
+			const size_t versionStrSize = strlen("version: ");
+			std::string versionStr = line.substr(versionStrSize);
+
 			uint32_t version = static_cast<uint32_t>(std::stoul(versionStr));
 			if (version != kCurrentMetaFileVersion) {
 				/// バージョンが異なる場合はエラー
@@ -48,8 +51,8 @@ bool MetaFile::LoadFromFile(const std::string& _metaFilePath) {
 
 		} else if (Mathf::StartsWith(line, "guid: ")) {
 			/// Guidの読み込み
-
-			std::string guidStr = line.substr(6);
+			const size_t guidStrSize = strlen("guid: ");
+			std::string guidStr = line.substr(guidStrSize);
 			guid = Guid::FromString(guidStr);
 		}
 	}
