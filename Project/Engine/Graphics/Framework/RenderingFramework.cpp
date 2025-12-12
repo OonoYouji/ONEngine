@@ -39,11 +39,12 @@ void RenderingFramework::Initialize(DxManager* _dxm, WindowManager* _windowManag
 	};
 	renderTextures_.resize(kRenderTexCount);
 
+	const Vector4 clearColor = Vector4(0.1f, 0.25f, 0.5f, 1.0f);
 	for (size_t i = 0; i < kRenderTexCount; i++) {
 		renderTextures_[i] = std::make_unique<SceneRenderTexture>();
 		renderTextures_[i]->Initialize(
 			"./Assets/Scene/RenderTexture/" + renderTexNames[i], 
-			Vector4(0.1f, 0.25f, 0.5f, 1.0f), EngineConfig::kWindowSize,
+			clearColor, EngineConfig::kWindowSize,
 			pDxManager_, assetCollection_.get()
 		);
 	}
@@ -58,7 +59,7 @@ void RenderingFramework::Initialize(DxManager* _dxm, WindowManager* _windowManag
 #else
 	copyImagePipeline_ = std::make_unique<CopyImageRenderingPipeline>(assetCollection_.get());
 	copyImagePipeline_->Initialize(shaderCompiler_.get(), pDxManager_);
-	releaseBuildSubWindow_ = pWindowManager_->GenerateWindow(L"test", Vector2(1280.0f, 720.0f), WindowManager::WindowType::Sub);
+	releaseBuildSubWindow_ = pWindowManager_->GenerateWindow(L"test", Vector2::kHD, WindowManager::WindowType::Sub);
 	pWindowManager_->HideGameWindow(releaseBuildSubWindow_);
 #endif // DEBUG_MODE
 

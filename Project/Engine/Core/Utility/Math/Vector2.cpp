@@ -35,7 +35,7 @@ float Vector2::Length() const {
 
 Vector2 Vector2::Normalize() const {
 	float len = this->Length();
-	if(len != 0.0f) {
+	if (len != 0.0f) {
 		return (*this) / len;
 	}
 	return *this;
@@ -50,6 +50,12 @@ Vector2 Vector2::Lerp(const Vector2& _v1, const Vector2& _v2, float _t) {
 		std::lerp(_v1.x, _v2.x, _t),
 		std::lerp(_v1.y, _v2.y, _t)
 	);
+}
+
+bool Vector2::Inside(const Vector2& _point, const Vector2& _min, const Vector2& _max) {
+	/// 点が矩形の内側にあるか判定
+	return (_point.x >= _min.x && _point.x <= _max.x
+		&& _point.y >= _min.y && _point.y <= _max.y);
 }
 
 void ONEngine::from_json(const nlohmann::json& _j, Vector2& _v) {

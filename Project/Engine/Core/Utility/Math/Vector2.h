@@ -61,6 +61,12 @@ struct Vector2 final {
 	/// @return _tで補完されたベクトル
 	static Vector2 Lerp(const Vector2& _v1, const Vector2& _v2, float _t);
 
+	/// @brief _pointが_minと_maxの内側にあるか判定する
+	/// @param _point チェックする点	
+	/// @param _min 最小値
+	/// @param _max 最大値
+	/// @return true: 内側にある / false: 内側にない
+	static bool Inside(const Vector2& _point, const Vector2& _min, const Vector2& _max);
 
 	/// ===================================================
 	/// public : operator overload

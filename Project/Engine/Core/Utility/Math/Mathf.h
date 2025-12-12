@@ -21,7 +21,8 @@ namespace Mathf {
 
 static const float Deg2Rad = std::numbers::pi_v<float> / 180.0f;
 static const float Rad2Deg = 180.0f / std::numbers::pi_v<float>;
-static const float PI = std::numbers::pi_v<float>;
+static const float PI      = std::numbers::pi_v<float>;
+static const float PI2     = std::numbers::pi_v<float> * 2.0f;
 
 
 /// @brief 逆タンジェント
