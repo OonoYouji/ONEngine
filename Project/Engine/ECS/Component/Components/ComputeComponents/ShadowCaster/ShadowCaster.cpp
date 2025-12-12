@@ -157,7 +157,7 @@ void ShadowCaster::CalculationLightViewMatrix(ECSGroup* _ecsGroup, DirectionalLi
 	const Vector3& dir = _directionLight->GetDirection();
 	Quaternion cameraRotation = Quaternion::LookAt(
 		{}, dir,
-		Vector3::kUp
+		Vector3::Up
 	);
 
 	/// カメラの回転を設定

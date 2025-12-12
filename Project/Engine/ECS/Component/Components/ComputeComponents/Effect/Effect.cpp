@@ -20,8 +20,8 @@ Effect::Effect() {
 	SetMaxEffectCount(1000); // 初期の最大エフェクト数を設定
 
 	SetStartColor(Color::kWhite, Color::kWhite);
-	SetStartSize(Vector3::kOne, Vector3::kOne);
-	SetStartRotate(Vector3::kZero, Vector3::kZero);
+	SetStartSize(Vector3::One, Vector3::One);
+	SetStartRotate(Vector3::Zero, Vector3::Zero);
 	SetStartSpeed(1.0f, 1.0f);
 
 }
@@ -29,20 +29,20 @@ Effect::Effect() {
 void Effect::CreateElement(const Vector3& _position, const Color& _color) {
 	Element element;
 	element.transform.position = _position;
-	element.transform.scale = Vector3::kOne;
+	element.transform.scale = Vector3::One;
 	element.transform.rotate = Quaternion::kIdentity;
 	element.transform.Update();
 
 	element.color = _color;
 	element.lifeTime = mainModule_.lifeLeftTime_;
-	element.velocity = Vector3::kZero;
+	element.velocity = Vector3::Zero;
 	elements_.push_back(element);
 }
 
 void Effect::CreateElement(const Vector3& _position, const Vector3& _velocity, const Color& _color) {
 	Element element;
 	element.transform.position = _position;
-	element.transform.scale = Vector3::kOne;
+	element.transform.scale = Vector3::One;
 	element.transform.rotate = Quaternion::kIdentity;
 	element.transform.Update();
 

@@ -77,7 +77,7 @@ void SkinMeshSkeletonRenderingPipeline::Draw(class ECSGroup* _ecs, CameraCompone
 	/// 頂点データを集める
 	for (auto& smRenderer : skinMeshRendererArray->GetUsedComponents()) {
 
-		float scale = smRenderer->GetOwner()->GetScale().Len();
+		float scale = smRenderer->GetOwner()->GetScale().Length();
 
 		for (const Joint& joint : smRenderer->GetSkeleton().joints) {
 			if (!joint.parent.has_value()) {
@@ -90,7 +90,7 @@ void SkinMeshSkeletonRenderingPipeline::Draw(class ECSGroup* _ecs, CameraCompone
 
 			/// 色と座標を取得
 			Matrix4x4&& thisWorldMatrix = joint.matSkeletonSpace * smRenderer->GetOwner()->GetTransform()->matWorld;
-			Vector3 thisPosition = Matrix4x4::Transform(Vector3::kZero, thisWorldMatrix);
+			Vector3 thisPosition = Matrix4x4::Transform(Vector3::Zero, thisWorldMatrix);
 			Vector4 thisColor = Color::kRed;
 
 			/// Sphereの頂点データを取得
@@ -108,7 +108,7 @@ void SkinMeshSkeletonRenderingPipeline::Draw(class ECSGroup* _ecs, CameraCompone
 
 			const Joint& parentJoint = smRenderer->GetSkeleton().joints[joint.parent.value()];
 			Matrix4x4&& parentWorldMatrix = parentJoint.matSkeletonSpace * smRenderer->GetOwner()->GetTransform()->matWorld;
-			Vector3 parentPosition = Matrix4x4::Transform(Vector3::kZero, parentWorldMatrix);
+			Vector3 parentPosition = Matrix4x4::Transform(Vector3::Zero, parentWorldMatrix);
 
 			/// 線の頂点データを作成
 			VertexData v0, v1;

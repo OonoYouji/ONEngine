@@ -121,7 +121,7 @@ void River::Edit(EntityComponentSystem* /*_ecs*/) {
 
 	/// imgui edit
 	if (ImGui::Button("Add")) {
-		RiverControlPoint add = { Vector3::kZero, 2.0f };
+		RiverControlPoint add = { Vector3::Zero, 2.0f };
 		controlPoints_.push_back(add);
 	}
 

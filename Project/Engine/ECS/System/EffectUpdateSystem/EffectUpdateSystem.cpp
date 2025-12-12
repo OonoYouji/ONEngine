@@ -161,7 +161,7 @@ void EffectUpdateSystem::UpdateElement(Effect* _effect, Effect::Element* _elemen
 		_effect->elementUpdateFunc_(_element);
 	}
 
-	if (_element->velocity != Vector3::kZero) {
+	if (_element->velocity != Vector3::Zero) {
 		Console::LogWarning("effect element velocity not zero");
 	}
 

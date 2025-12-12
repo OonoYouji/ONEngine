@@ -1,4 +1,4 @@
-#define NOMINMAX
+﻿#define NOMINMAX
 #include "CollisionCheck.h"
 
 using namespace ONEngine;
@@ -123,14 +123,14 @@ bool CollisionCheck::CubeVsCube(
 	/// どの軸が最も浅いめりこみかを調べる かつ 法線を設定
 	if (overlapY < penetration) {
 		penetration = overlapY;
-		normal = (delta.y > 0.0f) ? Vector3::kUp : Vector3::kDown;
+		normal = (delta.y > 0.0f) ? Vector3::Up : Vector3::Down;
 	} else {
-		normal = (delta.x > 0.0f) ? Vector3::kRight : Vector3::kLeft;
+		normal = (delta.x > 0.0f) ? Vector3::Right : Vector3::Left;
 	}
 
 	if (overlapZ < penetration) {
 		penetration = overlapZ;
-		normal = (delta.z > 0.0f) ? Vector3::kFront : Vector3::kBack;
+		normal = (delta.z > 0.0f) ? Vector3::Forward : Vector3::Back;
 	}
 
 	if (_outNormal) {

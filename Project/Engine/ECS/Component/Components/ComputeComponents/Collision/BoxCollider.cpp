@@ -36,7 +36,7 @@ void ComponentDebug::BoxColliderDebug(BoxCollider* _bc) {
 
 void ONEngine::from_json(const nlohmann::json& _j, BoxCollider& _b) {
 	_b.enable = _j.value("enable", 1);
-	_b.size_ = _j.value("size", Vector3::kOne);
+	_b.size_ = _j.value("size", Vector3::One);
 	_b.collisionState_ = magic_enum::enum_cast<CollisionState>(_j.value("state", "Dynamic")).value_or(CollisionState::Dynamic);
 }
 
@@ -52,7 +52,7 @@ void ONEngine::to_json(nlohmann::json& _j, const BoxCollider& _b) {
 
 BoxCollider::BoxCollider() {
 	// デフォルトの値をセット
-	size_ = Vector3::kOne; // サイズを1x1x1に初期化
+	size_ = Vector3::One; // サイズを1x1x1に初期化
 }
 
 void BoxCollider::SetSize(const Vector3& _size) {

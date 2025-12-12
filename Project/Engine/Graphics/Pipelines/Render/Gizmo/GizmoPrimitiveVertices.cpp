@@ -1,4 +1,4 @@
-#include "GizmoPrimitiveVertices.h"
+﻿#include "GizmoPrimitiveVertices.h"
 
 
 using namespace ONEngine;
@@ -33,11 +33,11 @@ std::vector<VertexData> ONEngine::GetSphereVertices(const Vector3& _center, floa
 		};
 
 	// XY平面
-	addCircle(Vector3::kRight, Vector3::kUp);
+	addCircle(Vector3::Right, Vector3::Up);
 	// YZ平面
-	addCircle(Vector3::kUp, Vector3::kFront);
+	addCircle(Vector3::Up, Vector3::Forward);
 	// ZX平面
-	addCircle(Vector3::kFront, Vector3::kRight);
+	addCircle(Vector3::Forward, Vector3::Right);
 
 	return outVertices;
 }

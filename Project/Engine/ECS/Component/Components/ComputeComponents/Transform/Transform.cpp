@@ -13,9 +13,9 @@
 using namespace ONEngine;
 
 Transform::Transform() {
-	position = Vector3::kZero;
+	position = Vector3::Zero;
 	rotate = Quaternion::kIdentity;
-	scale = Vector3::kOne;
+	scale = Vector3::One;
 }
 Transform::~Transform() = default;
 
@@ -25,9 +25,9 @@ void Transform::Update() {
 }
 
 void Transform::Reset() {
-	position = Vector3::kZero;
+	position = Vector3::Zero;
 	rotate = Quaternion::kIdentity;
-	scale = Vector3::kOne;
+	scale = Vector3::One;
 	matWorld = Matrix4x4::kIdentity;
 }
 
