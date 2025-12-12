@@ -8,26 +8,13 @@
 /// engine
 #include "Engine/Core/Config/EngineConfig.h"
 #include "Engine/Core/Utility/Math/Mathf.h"
+#include "Engine/Core/Utility/Math/Primitive.h"
 #include "Engine/Editor/Commands/ImGuiCommand/ImGuiCommand.h"
 #include "Engine/ECS/Entity/GameEntity/GameEntity.h"
 
 using namespace ONEngine;
 
 namespace {
-
-	/// @brief 平面
-	struct Plane {
-		/// @brief 面の法線
-		Vector3 normal;
-		/// @brief 面から原点までの距離
-		float d;
-	};
-
-
-	/// @brief 視錐台
-	struct Frustum {
-		std::array<Plane, 6> planes;
-	};
 
 
 	/// @brief ViewProjection行列から視錐台を作成する
