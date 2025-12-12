@@ -49,9 +49,8 @@ namespace {
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("AssetData")) {
 				if (payload->Data) {
 					AssetPayload* assetPayload = *static_cast<AssetPayload**>(payload->Data);
-					std::string path = assetPayload->filePath;
-					ONEngine::AssetType type = ONEngine::GetAssetTypeFromExtension(ONEngine::Mathf::FileExtension(path));
-					if (type == ONEngine::AssetType::Texture) {
+					const std::string path = assetPayload->filePath;
+					if (ONEngine::CheckAssetType(ONEngine::Mathf::FileExtension(path), ONEngine::AssetType::Texture)) {
 						const ONEngine::Guid& guid = assetPayload->guid;
 						_material->SetBaseTextureGuid(guid);
 						edit = true;
