@@ -366,7 +366,7 @@ void ComponentDebug::EffectDebug(Effect* _effect) {
 			switch (emitShape->GetType()) {
 			case EffectEmitShape::ShapeType::Sphere:
 			{
-				EffectEmitShape::Sphere sphere = emitShape->GetSphere();
+				Sphere sphere = emitShape->GetSphere();
 				ImGui::DragFloat3("center", &sphere.center.x, 0.1f);
 				ImGui::DragFloat("radius", &sphere.radius, 0.1f, 0.0f, FLT_MAX);
 				emitShape->SetSphere(sphere);
@@ -374,7 +374,7 @@ void ComponentDebug::EffectDebug(Effect* _effect) {
 			}
 			case EffectEmitShape::ShapeType::Cube:
 			{
-				EffectEmitShape::Cube cube = emitShape->GetCube();
+				Cube cube = emitShape->GetCube();
 				ImGui::DragFloat3("center", &cube.center.x, 0.1f);
 				ImGui::DragFloat3("size", &cube.size.x, 0.1f, 0.0f, FLT_MAX);
 				emitShape->SetCube(cube);
@@ -382,7 +382,7 @@ void ComponentDebug::EffectDebug(Effect* _effect) {
 			}
 			case EffectEmitShape::ShapeType::Cone:
 			{
-				EffectEmitShape::Cone cone = emitShape->GetCone();
+				Cone cone = emitShape->GetCone();
 				ImGui::DragFloat3("apex", &cone.center.x, 0.1f);
 				ImGui::DragFloat("angle", &cone.angle, 0.1f, 0.0f, 180.0f);
 				ImGui::DragFloat("radius", &cone.radius, 0.1f, 0.0f, FLT_MAX);

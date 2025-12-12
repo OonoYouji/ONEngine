@@ -238,13 +238,13 @@ void ONEngine::from_json(const nlohmann::json& _j, EffectEmitShape& _e) {
 	int type = _j.at("type").get<int>();
 	switch (type) {
 	case static_cast<int>(EffectEmitShape::ShapeType::Sphere):
-		_e.SetSphere(_j.at("sphere").get<EffectEmitShape::Sphere>());
+		_e.SetSphere(_j.at("sphere").get<Sphere>());
 		break;
 	case static_cast<int>(EffectEmitShape::ShapeType::Cube):
-		_e.SetCube(_j.at("cube").get<EffectEmitShape::Cube>());
+		_e.SetCube(_j.at("cube").get<Cube>());
 		break;
 	case static_cast<int>(EffectEmitShape::ShapeType::Cone):
-		_e.SetCone(_j.at("cone").get<EffectEmitShape::Cone>());
+		_e.SetCone(_j.at("cone").get<Cone>());
 		break;
 	default:
 		break;
@@ -259,44 +259,6 @@ void ONEngine::to_json(nlohmann::json& _j, const EffectEmitShape& _e) {
 		{ "cone", _e.GetCone() }
 	};
 }
-
-void ONEngine::from_json(const nlohmann::json& _j, EffectEmitShape::Sphere& _e) {
-	_e.center = _j.at("center").get<Vector3>();
-	_e.radius = _j.at("radius").get<float>();
-}
-void ONEngine::to_json(nlohmann::json& _j, const EffectEmitShape::Sphere& _e) {
-	_j = nlohmann::json{
-		{ "center", _e.center },
-		{ "radius", _e.radius }
-	};
-}
-
-void ONEngine::from_json(const nlohmann::json& _j, EffectEmitShape::Cube& _e) {
-	_e.center = _j.at("center").get<Vector3>();
-	_e.size = _j.at("size").get<Vector3>();
-}
-void ONEngine::to_json(nlohmann::json& _j, const EffectEmitShape::Cube& _e) {
-	_j = nlohmann::json{
-		{ "center", _e.center },
-		{ "size", _e.size }
-	};
-}
-
-void ONEngine::from_json(const nlohmann::json& _j, EffectEmitShape::Cone& _e) {
-	_e.center = _j.at("center").get<Vector3>();
-	_e.angle = _j.at("angle").get<float>();
-	_e.radius = _j.at("radius").get<float>();
-	_e.height = _j.at("height").get<float>();
-}
-void ONEngine::to_json(nlohmann::json& _j, const EffectEmitShape::Cone& _e) {
-	_j = nlohmann::json{
-		{ "center", _e.center },
-		{ "angle", _e.angle },
-		{ "radius", _e.radius },
-		{ "height", _e.height }
-	};
-}
-
 
 
 void ONEngine::from_json(const nlohmann::json& _j, CustomMeshRenderer& _m) {
