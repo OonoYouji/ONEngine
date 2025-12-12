@@ -3,25 +3,27 @@
 /// std
 #include <memory>
 #include <unordered_map>
+#include <optional>
 
 /// engine
 #include "Engine/Asset/AssetType.h"
 #include "Engine/Asset/Collection/Container/AssetContainer.h"
-#include "Engine/Asset/Collection/Loader/AssetLoader.h"
 
-#include "Engine/Asset/Assets/Mesh/Model.h"
-#include "Engine/Asset/Assets/Texture/Texture.h"
-#include "Engine/Asset/Assets/AudioClip/AudioClip.h"
-#include "Engine/Asset/Assets/Mateiral/Material.h"
+#include "Engine/Asset/Assets/Mesh/ModelLoader.h"
+#include "Engine/Asset/Assets/Texture/TextureLoader.h"
+#include "Engine/Asset/Assets/AudioClip/AudioClipLoader.h"
+#include "Engine/Asset/Assets/Mateiral/MaterialLoader.h"
+
+#include "AssetBundle.h"
 
 
 /// @brief TがIAssetを継承しているかのコンセプト
 namespace ONEngine {
 
-static const uint32_t MAX_TEXTURE_COUNT   = 2048; ///< 最大テクスチャ数
-static const uint32_t MAX_MODEL_COUNT     = 128; ///< 最大モデル数
+static const uint32_t MAX_TEXTURE_COUNT = 2048; ///< 最大テクスチャ数
+static const uint32_t MAX_MODEL_COUNT = 128; ///< 最大モデル数
 static const uint32_t MAX_AUDIOCLIP_COUNT = 128; ///< 最大オーディオクリップ数
-static const uint32_t MAX_MATERIAL_COUNT  = 128; ///< 最大マテリアル数
+static const uint32_t MAX_MATERIAL_COUNT = 128; ///< 最大マテリアル数
 
 /// ///////////////////////////////////////////////////
 /// グラフィクスリソースのコレクション
@@ -75,17 +77,30 @@ public:
 
 
 private:
+
+	template <typename T>
+	AssetBundle<T>* GetBundle(AssetType _type) const {
+		// Noneの場合は即座に無効値を返す
+		if (_type == AssetType::None) {
+			return nullptr;
+		}
+		// 範囲外チェック、または初期化されていない(nullptr)チェック
+		size_t index = static_cast<size_t>(_type);
+		if (index >= assetBundles_.size() || !assetBundles_[index]) {
+			return nullptr;
+		}
+		return static_cast<AssetBundle<T>*>(assetBundles_[index].get());
+	}
+
+	IAssetBundle* GetBaseBundle(AssetType _type) const;
+
+private:
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
 
-	std::unique_ptr<AssetLoader> assetLoader_;
+	std::vector<std::unique_ptr<IAssetBundle>> assetBundles_;
 
-	/// リソースのコンテナ
-	std::unique_ptr<AssetContainer<Model>>     modelContainer_;
-	std::unique_ptr<AssetContainer<Texture>>   textureContainer_;
-	std::unique_ptr<AssetContainer<AudioClip>> audioClipContainer_;
-	std::unique_ptr<AssetContainer<Material>>  materialContainer_;
 
 public:
 	/// ===================================================
@@ -134,7 +149,7 @@ public:
 	/// @param _guid TextureのGuid
 	/// @return Textureのポインタ、見つからなかった場合はnullptr
 	Texture* GetTextureFromGuid(const Guid& _guid) const;
-	
+
 
 
 
