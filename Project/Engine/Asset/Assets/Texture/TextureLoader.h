@@ -27,36 +27,36 @@ public:
 	/// @param _filepath 対象のファイルパス
 	/// @return 読み込んだテクスチャ
 	[[nodiscard]]
-	Texture Load(const std::string& _filepath);
+	std::optional<Texture> Load(const std::string& _filepath);
 
 	/// @brief テクスチャの再読み込みを行う
 	/// @param _filepath 対象のファイルパス
 	/// @return 読み込んだテクスチャ
-	Texture Reload(const std::string& _filepath, Texture* _src);
+	std::optional<Texture> Reload(const std::string& _filepath, Texture* _src);
 
 
 	/// @brief テクスチャ2Dの読み込みを行う
 	/// @param _filepath 対象のファイルパス
 	/// @return 読み込んだテクスチャ
-	Texture Load2DTexture(const std::string& _filepath);
+	std::optional<Texture> Load2DTexture(const std::string& _filepath);
 
 	/// @brief テクスチャ3Dの読み込みを行う
 	/// @param _filepath 対象のファイルパス
 	/// @return 読み込んだテクスチャ
-	Texture Load3DTexture(const std::string& _filepath);
+	std::optional<Texture> Load3DTexture(const std::string& _filepath);
 
 
 	/// @brief テクスチャ2Dの再読み込みを行う
 	/// @param _filepath 対象のファイルパス
 	/// @param _src 再読み込み元のテクスチャ
 	/// @return 再読み込みしたテクスチャ
-	Texture Reload2DTexture(const std::string& _filepath, Texture* _src);
+	std::optional<Texture> Reload2DTexture(const std::string& _filepath, Texture* _src);
 
 	/// @brief テクスチャ3Dの再読み込みを行う
 	/// @param _filepath 対象のファイルパス
 	/// @param _src 再読み込み元のテクスチャ
 	/// @return 再読み込みしたテクスチャ
-	Texture Reload3DTexture(const std::string& _filepath, Texture* _src);
+	std::optional<Texture> Reload3DTexture(const std::string& _filepath, Texture* _src);
 
 
 	/// @brief 2Dテクスチャ用のScratchImageを読み込む

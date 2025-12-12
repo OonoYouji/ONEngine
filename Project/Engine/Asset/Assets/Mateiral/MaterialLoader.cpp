@@ -5,12 +5,12 @@
 
 using namespace ONEngine;
 
-Material AssetLoaderT<Material>::Load(const std::string& _filepath) {
+std::optional<Material> AssetLoaderT<Material>::Load(const std::string& _filepath) {
 	/// ファイルを開く
 	std::ifstream ifs(_filepath);
 	if (!ifs) {
 		Console::LogError("[Load Failed] [Material] - File not found: \"" + _filepath + "\"");
-		return {};
+		return std::nullopt;
 	}
 
 
@@ -37,7 +37,7 @@ Material AssetLoaderT<Material>::Load(const std::string& _filepath) {
 	return std::move(material);
 }
 
-Material AssetLoaderT<Material>::Reload(const std::string& _filepath, Material* /*_src*/) {
+std::optional<Material> AssetLoaderT<Material>::Reload(const std::string& _filepath, Material* /*_src*/) {
 	/// Materialの再読み込みは新規読み込みと同じ処理を行う
 	return std::move(Load(_filepath));
 }

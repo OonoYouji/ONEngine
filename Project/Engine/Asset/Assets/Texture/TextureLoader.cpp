@@ -13,7 +13,7 @@ AssetLoaderT<Texture>::AssetLoaderT(DxManager* _dxm, AssetCollection* _ac)
 	: pDxManager_(_dxm), pAssetCollection_(_ac) {
 }
 
-Texture AssetLoaderT<Texture>::Load(const std::string& _filepath) {
+std::optional<Texture> AssetLoaderT<Texture>::Load(const std::string& _filepath) {
 	/// 3Dテクスチャか2Dテクスチャかを判別して読み込みを行う
 	/// 3Dテクスチャか判別し、3Dなら3Dテクスチャとして読み込む
 	const std::string extension = FileSystem::FileExtension(_filepath);
@@ -29,7 +29,7 @@ Texture AssetLoaderT<Texture>::Load(const std::string& _filepath) {
 	return Load2DTexture(_filepath);
 }
 
-Texture AssetLoaderT<Texture>::Reload(const std::string& _filepath, Texture* _src) {
+std::optional<Texture> AssetLoaderT<Texture>::Reload(const std::string& _filepath, Texture* _src) {
 	const std::string extension = FileSystem::FileExtension(_filepath);
 	if (extension == ".dds") {
 		DirectX::ScratchImage scratch = LoadScratchImage3D(_filepath);
@@ -44,7 +44,7 @@ Texture AssetLoaderT<Texture>::Reload(const std::string& _filepath, Texture* _sr
 }
 
 
-Texture AssetLoaderT<Texture>::Load2DTexture(const std::string& _filepath) {
+std::optional<Texture> AssetLoaderT<Texture>::Load2DTexture(const std::string& _filepath) {
 	/// ----- テクスチャの読み込み ----- ///
 
 	Texture texture;
@@ -63,7 +63,7 @@ Texture AssetLoaderT<Texture>::Load2DTexture(const std::string& _filepath) {
 	texture.dxResource_ = std::move(CreateTextureResource2D(pDxManager_->GetDxDevice(), metadata));
 	if (!texture.dxResource_.Get()) {
 		Console::LogError("[Load Failed] [Texture] - Don't Create DxResource: \"" + _filepath + "\"");
-		return {};
+		return std::nullopt;
 	}
 
 	texture.dxResource_.Get()->SetName(ConvertString(_filepath).c_str());
@@ -119,7 +119,7 @@ Texture AssetLoaderT<Texture>::Load2DTexture(const std::string& _filepath) {
 	return std::move(texture);
 }
 
-Texture AssetLoaderT<Texture>::Load3DTexture(const std::string& _filepath) {
+std::optional<Texture> AssetLoaderT<Texture>::Load3DTexture(const std::string& _filepath) {
 	/// ----- DDSファイルの読み込み ----- ///
 	Texture texture;
 
@@ -127,7 +127,7 @@ Texture AssetLoaderT<Texture>::Load3DTexture(const std::string& _filepath) {
 	DirectX::ScratchImage scratchImage = LoadScratchImage3D(_filepath);
 	if (scratchImage.GetImageCount() == 0) {
 		Console::LogError("[Load Failed] [Texture DDS] - Failed to load DDS file: \"" + _filepath + "\"");
-		return {};
+		return std::nullopt;
 	}
 
 
@@ -135,14 +135,14 @@ Texture AssetLoaderT<Texture>::Load3DTexture(const std::string& _filepath) {
 	const DirectX::TexMetadata& metadata = scratchImage.GetMetadata();
 	if (metadata.dimension != DirectX::TEX_DIMENSION_TEXTURE3D) {
 		Console::LogError("[Load Failed] [Texture DDS] - Not a 3D texture: \"" + _filepath + "\"");
-		return {};
+		return std::nullopt;
 	}
 
 
 	texture.dxResource_ = std::move(CreateTextureResource3D(pDxManager_->GetDxDevice(), metadata));
 	if (!texture.dxResource_.Get()) {
 		Console::LogError("[Load Failed] [Texture DDS] - Don't Create DxResource: \"" + _filepath + "\"");
-		return {};
+		return std::nullopt;
 	}
 
 	texture.dxResource_.Get()->SetName(ConvertString(_filepath).c_str());
@@ -198,7 +198,7 @@ Texture AssetLoaderT<Texture>::Load3DTexture(const std::string& _filepath) {
 }
 
 
-Texture AssetLoaderT<Texture>::Reload2DTexture(const std::string& _filepath, Texture* _src) {
+std::optional<Texture> AssetLoaderT<Texture>::Reload2DTexture(const std::string& _filepath, Texture* _src) {
 	/// ----- テクスチャの読み込み ----- ///
 	Texture texture = *_src; // 元のテクスチャをコピー
 	DirectX::ScratchImage       scratchImage = LoadScratchImage2D(_filepath);
@@ -207,7 +207,7 @@ Texture AssetLoaderT<Texture>::Reload2DTexture(const std::string& _filepath, Tex
 	DxResource newResource = CreateTextureResource2D(pDxManager_->GetDxDevice(), metadata);
 	if (!newResource.Get()) {
 		Console::LogError("[Reload Failed] [Texture] - Don't Create DxResource: \"" + _filepath + "\"");
-		return {};
+		return std::nullopt;
 	}
 
 	{	/// 読み込む前にテクスチャの情報をログに出力する
@@ -259,33 +259,33 @@ Texture AssetLoaderT<Texture>::Reload2DTexture(const std::string& _filepath, Tex
 }
 
 
-Texture AssetLoaderT<Texture>::Reload3DTexture(const std::string& _filepath, Texture* _src) {
+std::optional<Texture> AssetLoaderT<Texture>::Reload3DTexture(const std::string& _filepath, Texture* _src) {
 	/// ----- DDSファイルの読み込み ----- ///
 	Texture texture = *_src; // 元のテクスチャをコピー
 	/// スクラッチイメージを読み込み、使用可能かチェック
 	DirectX::ScratchImage scratchImage = LoadScratchImage3D(_filepath);
 	if (scratchImage.GetImageCount() == 0) {
 		Console::LogError("[Reload Failed] [Texture DDS] - Failed to load DDS file: \"" + _filepath + "\"");
-		return {};
+		return std::nullopt;
 	}
 	/// metadataは3Dテクスチャでないといけない
 	const DirectX::TexMetadata& metadata = scratchImage.GetMetadata();
 	if (metadata.dimension != DirectX::TEX_DIMENSION_TEXTURE3D) {
 		Console::LogError("[Reload Failed] [Texture DDS] - Not a 3D texture: \"" + _filepath + "\"");
-		return {};
+		return std::nullopt;
 	}
 
 	/// width height depthのチェック
 	if (metadata.width == 0 || metadata.height == 0 || metadata.depth == 0) {
 		Console::LogError("[Reload Failed] [Texture DDS] - Invalid dimensions: \"" + _filepath + "\"");
-		return {};
+		return std::nullopt;
 	}
 
 	/// texture resource の更新
 	DxResource newResource = CreateTextureResource3D(pDxManager_->GetDxDevice(), metadata);
 	if (!newResource.Get()) {
 		Console::LogError("[Reload Failed] [Texture DDS] - Don't Create DxResource: \"" + _filepath + "\"");
-		return {};
+		return std::nullopt;
 	}
 
 	newResource.Get()->SetName(ConvertString(_filepath).c_str());

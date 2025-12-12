@@ -16,13 +16,13 @@
 
 using namespace ONEngine;
 
-AudioClip AssetLoaderT<AudioClip>::Load(const std::string& _filepath) {
+std::optional<AudioClip> AssetLoaderT<AudioClip>::Load(const std::string& _filepath) {
 	/// ----- オーディオクリップの読み込み ----- ///
 
 	/// ファイルが存在するのかチェックする
 	if (!std::filesystem::exists(_filepath)) {
 		Console::LogError("[Load Failed] [AudioClip] - File not found: \"" + _filepath + "\"");
-		return {};
+		return std::nullopt;
 	}
 
 	/// wstringに変換
@@ -34,7 +34,7 @@ AudioClip AssetLoaderT<AudioClip>::Load(const std::string& _filepath) {
 	result = MFCreateSourceReaderFromURL(filePathW.c_str(), nullptr, &sourceReader);
 	if (!SUCCEEDED(result)) {
 		Console::LogError("[Load Failed] [AudioClip] - MFCreateSourceReaderFromURL failed: \"" + _filepath + "\"");
-		return {};
+		return std::nullopt;
 	}
 
 	/// PCM形式にフォーマットを指定する
@@ -45,7 +45,7 @@ AudioClip AssetLoaderT<AudioClip>::Load(const std::string& _filepath) {
 	result = sourceReader->SetCurrentMediaType((DWORD)MF_SOURCE_READER_FIRST_AUDIO_STREAM, nullptr, audioType.Get());
 	if (!SUCCEEDED(result)) {
 		Console::LogError("[Load Failed] [AudioClip] - SetCurrentMediaType failed: \"" + _filepath + "\"");
-		return {};
+		return std::nullopt;
 	}
 
 	/// メディアタイプの取得
@@ -110,6 +110,6 @@ AudioClip AssetLoaderT<AudioClip>::Load(const std::string& _filepath) {
 	return std::move(audioClip);
 }
 
-AudioClip AssetLoaderT<AudioClip>::Reload(const std::string& _filepath, AudioClip* /*_src*/) {
+std::optional<AudioClip> AssetLoaderT<AudioClip>::Reload(const std::string& _filepath, AudioClip* /*_src*/) {
 	return std::move(Load(_filepath));
 }

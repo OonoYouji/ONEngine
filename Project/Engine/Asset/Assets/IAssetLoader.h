@@ -2,6 +2,7 @@
 
 /// std
 #include <string>
+#include <optional>
 
 /// engine
 #include "Engine/Asset/Guid/Guid.h"
@@ -36,12 +37,12 @@ public:
 	/// @brief 読み込み用関数
 	/// @param _filepath 読み込み対象のファイルパス
 	/// @return 読み込んだアセット
-	T Load(const std::string& /*_filepath*/) {}
+	std::optional<T> Load(const std::string& /*_filepath*/) {}
 
 	/// @brief 再読み込み用関数
 	/// @param _filepath 再読み込み対象のファイルパス
 	/// @return 読み込んだアセット
-	T Reload(const std::string& /*_filepath*/, T* /*_src*/) {}
+	std::optional<T> Reload(const std::string& /*_filepath*/, T* /*_src*/) {}
 	
 };
 

@@ -15,8 +15,8 @@ public:
 	AssetLoaderT() = default;
 	~AssetLoaderT() override = default;
 
-	AudioClip Load(const std::string& _filepath);
-	AudioClip Reload(const std::string& _filepath, AudioClip* _src = nullptr);
+	std::optional<AudioClip> Load(const std::string& _filepath);
+	std::optional<AudioClip> Reload(const std::string& _filepath, AudioClip* _src = nullptr);
 
 };
 

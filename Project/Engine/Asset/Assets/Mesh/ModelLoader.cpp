@@ -14,10 +14,10 @@ using namespace ONEngine;
 
 AssetLoaderT<Model>::AssetLoaderT(DxManager* _dxm)
 	: pDxManager_(_dxm) {
-
+	assimpLoadFlags_ = aiProcess_FlipWindingOrder | aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices;
 }
 
-Model AssetLoaderT<Model>::Load(const std::string& _filepath) {
+std::optional<Model> AssetLoaderT<Model>::Load(const std::string& _filepath) {
 	/// ----- モデルの読み込み ----- ///
 	/// ファイルの拡張子を取得
 	const std::string fileExtension = FileSystem::FileExtension(_filepath);
@@ -26,11 +26,11 @@ Model AssetLoaderT<Model>::Load(const std::string& _filepath) {
 
 	/// 読み込めるモデルであるのかチェックする
 	if (!ValidateModel(scene)) {
-		return {};
+		return std::nullopt;
 	}
 
 	if (!scene) {
-		return {};
+		return std::nullopt;
 	}
 
 	Model model;
@@ -122,7 +122,7 @@ Model AssetLoaderT<Model>::Load(const std::string& _filepath) {
 	return model;
 }
 
-Model AssetLoaderT<Model>::Reload(const std::string& _filepath, Model* /*_src*/) {
+std::optional<Model> AssetLoaderT<Model>::Reload(const std::string& _filepath, Model* /*_src*/) {
 
 	/// モデルの再読み込みは特殊な操作をする必要がないのでもう一度読み込んだ内容を渡す
 	return Load(_filepath);

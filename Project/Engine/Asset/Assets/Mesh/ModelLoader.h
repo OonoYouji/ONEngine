@@ -23,14 +23,14 @@ public:
 	/// @param _filepath 対象のファイルパス
 	/// @return 読み込んだモデル
 	[[nodiscard]]
-	Model Load(const std::string& _filepath);
+	std::optional<Model> Load(const std::string& _filepath);
 
 	/// @brief モデルファイルの再読み込みを行う
 	/// @param _filepath 対象のファイルパス
 	/// @param _src 元のモデル
 	/// @return 再読み込みしたモデル
 	[[nodiscard]]
-	Model Reload(const std::string& _filepath, Model* _src = nullptr);
+	std::optional<Model> Reload(const std::string& _filepath, Model* _src = nullptr);
 
 
 	/// @brief アニメーションのNodeを読み込む

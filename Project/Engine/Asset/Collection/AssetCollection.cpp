@@ -15,14 +15,20 @@ AssetCollection::AssetCollection() = default;
 AssetCollection::~AssetCollection() = default;
 
 void AssetCollection::Initialize(DxManager* _dxm) {
-	assetLoader_ = std::make_unique<AssetLoader>(_dxm, this);
-	assetLoader_->Initialize();
+	modelLoader_ = std::make_unique<AssetLoaderT<Model>>(_dxm);
+	textureLoader_ = std::make_unique<AssetLoaderT<Texture>>(_dxm, this);
+	audioClipLoader_ = std::make_unique<AssetLoaderT<AudioClip>>();
+	materialLoader_ = std::make_unique<AssetLoaderT<Material>>();
+
+
+	//assetLoader_ = std::make_unique<AssetLoader>(_dxm, this);
+	//assetLoader_->Initialize();
 
 	/// リソースコンテナの初期化
-	modelContainer_     = std::make_unique<AssetContainer<Model>>(static_cast<size_t>(MAX_MODEL_COUNT));
-	textureContainer_   = std::make_unique<AssetContainer<Texture>>(static_cast<size_t>(MAX_TEXTURE_COUNT));
+	modelContainer_ = std::make_unique<AssetContainer<Model>>(static_cast<size_t>(MAX_MODEL_COUNT));
+	textureContainer_ = std::make_unique<AssetContainer<Texture>>(static_cast<size_t>(MAX_TEXTURE_COUNT));
 	audioClipContainer_ = std::make_unique<AssetContainer<AudioClip>>(static_cast<size_t>(MAX_AUDIOCLIP_COUNT));
-	materialContainer_  = std::make_unique<AssetContainer<Material>>(static_cast<size_t>(MAX_MATERIAL_COUNT));
+	materialContainer_ = std::make_unique<AssetContainer<Material>>(static_cast<size_t>(MAX_MATERIAL_COUNT));
 
 	/// Packages内のファイルがすべて読み込む
 	LoadResources(GetResourceFilePaths("./Packages/"));
@@ -113,19 +119,36 @@ void AssetCollection::Load(const std::string& _filepath, AssetType _type) {
 
 	switch (_type) {
 	case AssetType::Texture:
-		/// 読み込み済みかチェックし、読み込んでいない場合のみ読み込む
-		if (GetTexture(_filepath) == nullptr) {
-			assetLoader_->LoadTextureAuto(_filepath);
+		if (textureContainer_->GetIndex(_filepath) == -1) {
+			auto texture = textureLoader_->Load(_filepath);
+			if (texture.has_value()) {
+				textureContainer_->Add(_filepath, std::move(texture.value()));
+			}
 		}
 		break;
 	case AssetType::Mesh:
-		assetLoader_->LoadModelObj(_filepath);
+		if (modelContainer_->GetIndex(_filepath) == -1) {
+			auto model = modelLoader_->Load(_filepath);
+			if (model.has_value()) {
+				modelContainer_->Add(_filepath, std::move(model.value()));
+			}
+		}
 		break;
 	case AssetType::Audio:
-		assetLoader_->LoadAudioClip(_filepath);
+		if (audioClipContainer_->GetIndex(_filepath) == -1) {
+			auto audioClip = audioClipLoader_->Load(_filepath);
+			if (audioClip.has_value()) {
+				audioClipContainer_->Add(_filepath, std::move(audioClip.value()));
+			}
+		}
 		break;
 	case AssetType::Material:
-		assetLoader_->LoadMaterial(_filepath);
+		if (materialContainer_->GetIndex(_filepath) == -1) {
+			auto material = materialLoader_->Load(_filepath);
+			if (material.has_value()) {
+				materialContainer_->Add(_filepath, std::move(material.value()));
+			}
+		}
 		break;
 	}
 
@@ -228,29 +251,48 @@ bool AssetCollection::ReloadAsset(const std::string& _filepath) {
 	const std::string extension = FileSystem::FileExtension(_filepath);
 	AssetType type = GetAssetTypeFromExtension(extension);
 
+
 	/// Typeごとにリロード処理を実行
 	switch (type) {
 	case AssetType::Texture:
 		/// Textureのリロード
-		if (assetLoader_->ReloadTextureAuto(_filepath)) {
-			return true;
+		if (textureContainer_->GetIndex(_filepath) != -1) {
+			Texture* srcTexture = textureContainer_->Get(_filepath);
+			auto reloadedTexture = textureLoader_->Reload(_filepath, srcTexture);
+			if (reloadedTexture.has_value()) {
+				textureContainer_->Add(_filepath, std::move(reloadedTexture.value()));
+			}
 		}
 		break;
 	case AssetType::Mesh:
 		/// Meshのリロード
-		if (assetLoader_->LoadModelObj(_filepath)) {
-			return true;
+		if (modelContainer_->GetIndex(_filepath) != -1) {
+			Model* srcModel = modelContainer_->Get(_filepath);
+			auto reloadedModel = modelLoader_->Reload(_filepath, srcModel);
+			if (reloadedModel.has_value()) {
+				modelContainer_->Add(_filepath, std::move(reloadedModel.value()));
+			}
 		}
 		break;
 	case AssetType::Audio:
 		/// Audioのリロード
-		if (assetLoader_->LoadAudioClip(_filepath)) {
-			return true;
+		if (audioClipContainer_->GetIndex(_filepath) != -1) {
+			AudioClip* srcAudioClip = audioClipContainer_->Get(_filepath);
+			auto reloadedAudioClip = audioClipLoader_->Reload(_filepath, srcAudioClip);
+			if (reloadedAudioClip.has_value()) {
+				audioClipContainer_->Add(_filepath, std::move(reloadedAudioClip.value()));
+			}
 		}
 		break;
 	case AssetType::Material:
 		/// Materialのリロード
-		assetLoader_->LoadMaterial(_filepath);
+		if (materialContainer_->GetIndex(_filepath) != -1) {
+			Material* srcMaterial = materialContainer_->Get(_filepath);
+			auto reloadedMaterial = materialLoader_->Reload(_filepath, srcMaterial);
+			if (reloadedMaterial.has_value()) {
+				materialContainer_->Add(_filepath, std::move(reloadedMaterial.value()));
+			}
+		}
 		break;
 	}
 

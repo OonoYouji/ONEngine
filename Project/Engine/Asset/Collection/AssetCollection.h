@@ -9,10 +9,10 @@
 #include "Engine/Asset/Collection/Container/AssetContainer.h"
 #include "Engine/Asset/Collection/Loader/AssetLoader.h"
 
-#include "Engine/Asset/Assets/Mesh/Model.h"
-#include "Engine/Asset/Assets/Texture/Texture.h"
-#include "Engine/Asset/Assets/AudioClip/AudioClip.h"
-#include "Engine/Asset/Assets/Mateiral/Material.h"
+#include "Engine/Asset/Assets/Mesh/ModelLoader.h"
+#include "Engine/Asset/Assets/Texture/TextureLoader.h"
+#include "Engine/Asset/Assets/AudioClip/AudioClipLoader.h"
+#include "Engine/Asset/Assets/Mateiral/MaterialLoader.h"
 
 
 /// @brief TがIAssetを継承しているかのコンセプト
@@ -79,7 +79,13 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	std::unique_ptr<AssetLoader> assetLoader_;
+
+	//std::unique_ptr<AssetLoader> assetLoader_;
+	std::unique_ptr<AssetLoaderT<Model>> modelLoader_;
+	std::unique_ptr<AssetLoaderT<Texture>> textureLoader_;
+	std::unique_ptr<AssetLoaderT<AudioClip>> audioClipLoader_;
+	std::unique_ptr<AssetLoaderT<Material>> materialLoader_;
+
 
 	/// リソースのコンテナ
 	std::unique_ptr<AssetContainer<Model>>     modelContainer_;
