@@ -1,4 +1,4 @@
-#include "TerrainProceduralRenderingPipeline.h"
+﻿#include "TerrainProceduralRenderingPipeline.h"
 
 using namespace ONEngine;
 
@@ -169,8 +169,8 @@ void TerrainProceduralRenderingPipeline::PreDraw(ECSGroup* _ecs, CameraComponent
 		const uint32_t size = static_cast<uint32_t>(dataBuffer_.GetMappingData());
 		const uint32_t threadGroupSize = 32;
 		cmdList->Dispatch(
-			Mathf::DivideAndRoundUp(size, threadGroupSize),
-			Mathf::DivideAndRoundUp(size, threadGroupSize),
+			Math::DivideAndRoundUp(size, threadGroupSize),
+			Math::DivideAndRoundUp(size, threadGroupSize),
 			1
 		);
 
@@ -207,7 +207,7 @@ void TerrainProceduralRenderingPipeline::PreDraw(ECSGroup* _ecs, CameraComponent
 		/// numthreadsに合わせてDispatchする
 		const uint32_t threadGroupSize = 32;
 		cmdList->Dispatch(
-			Mathf::DivideAndRoundUp(instanceCount_, threadGroupSize),
+			Math::DivideAndRoundUp(instanceCount_, threadGroupSize),
 			1, 1
 		);
 		D3D12_RESOURCE_BARRIER uavBarrier = CD3DX12_RESOURCE_BARRIER::UAV(renderingInstanceAppendBuffer_.GetResource().Get());

@@ -105,7 +105,7 @@ void VoxelTerrainEditorComputePipeline::Execute(ONEngine::EntityComponentSystem*
 	inputInfo.screenMousePos = ONEngine::Input::GetImGuiImageMousePosNormalized("Scene");
 
 	/// マウスがウィンドウ外なら終了
-	if (!ONEngine::Mathf::Inside(inputInfo.screenMousePos, ONEngine::Vector2::Zero, ONEngine::Vector2::FHD)) {
+	if (!ONEngine::Math::Inside(inputInfo.screenMousePos, ONEngine::Vector2::Zero, ONEngine::Vector2::FHD)) {
 		return;
 	}
 
@@ -141,7 +141,7 @@ void VoxelTerrainEditorComputePipeline::Execute(ONEngine::EntityComponentSystem*
 	const UINT TGSize = 256;
 	const ONEngine::Vector2Int& voxelChunkCount = voxelTerrain->GetChunkCountXZ();
 	cmdList->Dispatch(
-		ONEngine::Mathf::DivideAndRoundUp(voxelChunkCount.x * voxelChunkCount.y, TGSize),
+		ONEngine::Math::DivideAndRoundUp(voxelChunkCount.x * voxelChunkCount.y, TGSize),
 		1, 1
 	);
 

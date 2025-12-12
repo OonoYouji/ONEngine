@@ -134,7 +134,7 @@ bool ImMathf::MaterialEdit(const char* _label, ONEngine::GPUMaterial* _material,
 						AssetPayload* assetPayload = *static_cast<AssetPayload**>(payload->Data);
 						std::string path = assetPayload->filePath;
 
-						ONEngine::AssetType type = ONEngine::GetAssetTypeFromExtension(ONEngine::Mathf::FileExtension(path));
+						ONEngine::AssetType type = ONEngine::GetAssetTypeFromExtension(ONEngine::FileSystem::FileExtension(path));
 						if (type == ONEngine::AssetType::Texture) {
 							size_t droppedTextureIndex = _assetCollection->GetTextureIndex(path);
 							_material->baseTextureId = static_cast<int32_t>(droppedTextureIndex);

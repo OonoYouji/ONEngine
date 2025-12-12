@@ -1,4 +1,4 @@
-#include "PostProcessGrayscalePerObject.h"
+﻿#include "PostProcessGrayscalePerObject.h"
 
 using namespace ONEngine;
 
@@ -46,8 +46,8 @@ void PostProcessGrayscalePerObject::Execute(const std::string& _textureName, DxC
 	command->SetComputeRootDescriptorTable(2, textures[textureIndices_[2]].GetUAVGPUHandle());
 
 	command->Dispatch(
-		Mathf::DivideAndRoundUp(static_cast<uint32_t>(EngineConfig::kWindowSize.x), 16),
-		Mathf::DivideAndRoundUp(static_cast<uint32_t>(EngineConfig::kWindowSize.y), 16),
+		Math::DivideAndRoundUp(static_cast<uint32_t>(EngineConfig::kWindowSize.x), 16),
+		Math::DivideAndRoundUp(static_cast<uint32_t>(EngineConfig::kWindowSize.y), 16),
 		1
 	);
 

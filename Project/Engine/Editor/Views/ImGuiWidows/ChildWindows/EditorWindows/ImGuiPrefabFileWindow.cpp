@@ -20,7 +20,7 @@ ImGuiPrefabFileWindow::ImGuiPrefabFileWindow(ONEngine::EntityComponentSystem* _e
 	: pEcs_(_ecs), pAssetCollection_(_assetCollection), pInspector_(_inspector) {
 
 	/// Prefabファイルの取得
-	files_ = ONEngine::Mathf::FindFiles("Assets/Prefabs", ".prefab");
+	files_ = ONEngine::FileSystem::GetFiles("Assets/Prefabs", ".prefab");
 
 }
 
@@ -101,7 +101,7 @@ void ImGuiPrefabFileWindow::ReloadPrefabFiles(const ONEngine::Texture* _tex) {
 		ImVec2(0, 0), ImVec2(1, 1), ImVec4(1, 1, 1, 0), ImVec4(0.1f, 0.1f, 0.75f, 1))) {
 
 		/// ファイルの再読み込み
-		files_ = ONEngine::Mathf::FindFiles("Assets/Prefabs", ".prefab");
+		files_ = ONEngine::FileSystem::GetFiles("Assets/Prefabs", ".prefab");
 
 		for (auto& file : files_) {
 			/// ファイル名の置換
@@ -168,7 +168,7 @@ bool ImGuiPrefabFileWindow::GenerateNewPrefab() {
 
 	pEcs_->ReloadPrefab(newPrefabName_ + ".prefab");
 	/// ファイルリストを更新
-	files_ = ONEngine::Mathf::FindFiles("Assets/Prefabs", ".prefab");
+	files_ = ONEngine::FileSystem::GetFiles("Assets/Prefabs", ".prefab");
 
 	return true;
 }

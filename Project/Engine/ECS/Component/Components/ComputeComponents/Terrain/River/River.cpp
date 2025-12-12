@@ -19,7 +19,7 @@ using namespace ONEngine;
 
 RiverControlPoint ONEngine::CatmullRom(const RiverControlPoint& _p0, const RiverControlPoint& _p1, const RiverControlPoint& _p2, const RiverControlPoint& _p3, float _t) {
 	RiverControlPoint result;
-	result.position = Mathf::CatmullRomPosition(_p0.position, _p1.position, _p2.position, _p3.position, _t);
+	result.position = Math::CatmullRomPosition(_p0.position, _p1.position, _p2.position, _p3.position, _t);
 	result.width = _p1.width * (1.0f - _t) + _p2.width * _t;
 	return result;
 }

@@ -104,8 +104,8 @@ void TerrainVertexCreator::Execute(ONEngine::EntityComponentSystem* _ecs, ONEngi
 
 		const size_t TGSize = 16; // 16x16のグループサイズ
 		cmdList->Dispatch(
-			ONEngine::Mathf::DivideAndRoundUp(1000, TGSize), // width
-			ONEngine::Mathf::DivideAndRoundUp(1000, TGSize), // depth
+			ONEngine::Math::DivideAndRoundUp(1000, TGSize), // width
+			ONEngine::Math::DivideAndRoundUp(1000, TGSize), // depth
 			1
 		);
 	}

@@ -163,7 +163,7 @@ void ComponentDebug::MeshRendererDebug(MeshRenderer* _mr, AssetCollection* _asse
 			if (payload->Data) {
 				Editor::AssetPayload* assetPayload = *static_cast<Editor::AssetPayload**>(payload->Data);
 				std::string path = assetPayload->filePath;
-				AssetType type = GetAssetTypeFromExtension(Mathf::FileExtension(path));
+				AssetType type = GetAssetTypeFromExtension(FileSystem::FileExtension(path));
 
 				/// メッシュのパスが有効な形式か確認
 				if (type == AssetType::Mesh) {
@@ -225,7 +225,7 @@ void ComponentDebug::MeshRendererDebug(MeshRenderer* _mr, AssetCollection* _asse
 				const std::string path = assetPayload->filePath;
 
 				/// テクスチャのパスが有効な形式か確認
-				const AssetType type = GetAssetTypeFromExtension(Mathf::FileExtension(path));
+				const AssetType type = GetAssetTypeFromExtension(FileSystem::FileExtension(path));
 				if (type == AssetType::Texture) {
 					_mr->material_.SetBaseTextureGuid(assetPayload->guid);
 

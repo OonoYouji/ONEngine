@@ -79,7 +79,7 @@ void TerrainVertexEditorCompute::Execute(ONEngine::EntityComponentSystem* _ecs, 
 
 	/// マウスが範囲外なら処理しない
 	const ONEngine::Vector2& mousePosition = ONEngine::Input::GetImGuiImageMousePosNormalized("Scene");
-	if (!ONEngine::Mathf::Inside(mousePosition, ONEngine::Vector2::Zero, ONEngine::Vector2::HD)) {
+	if (!ONEngine::Math::Inside(mousePosition, ONEngine::Vector2::Zero, ONEngine::Vector2::HD)) {
 		return;
 	}
 
@@ -131,7 +131,7 @@ void TerrainVertexEditorCompute::Execute(ONEngine::EntityComponentSystem* _ecs, 
 
 	const UINT threadGroupSize = 256;
 	cmdList->Dispatch(
-		ONEngine::Mathf::DivideAndRoundUp(pTerrain->GetMaxVertexNum(), threadGroupSize),
+		ONEngine::Math::DivideAndRoundUp(pTerrain->GetMaxVertexNum(), threadGroupSize),
 		1, 1
 	);
 }

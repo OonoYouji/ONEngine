@@ -6,8 +6,7 @@
 
 /// engine
 #include "Engine/Asset/Assets/AudioClip/AudioClip.h"
-#include "Engine/Core/Utility/Math/Mathf.h"
-#include "Engine/Core/Utility/Tools/Log.h"
+#include "Engine/Core/Utility/Utility.h"
 
 /// editor
 #include "Engine/Editor/Math/ImGuiMath.h"
@@ -89,7 +88,7 @@ void ComponentDebug::AudioSourceDebug(AudioSource* _as) {
 			if (payload->Data) {
 				const char* droppedPath = static_cast<const char*>(payload->Data);
 				const std::string&& path = std::string(droppedPath);
-				const std::string&& extension = Mathf::FileExtension(path);
+				const std::string&& extension = FileSystem::FileExtension(path);
 
 				/// Audioのパスが有効な形式か確認
 				if (extension == ".mp3" ||
@@ -131,9 +130,7 @@ void ComponentDebug::AudioSourceDebug(AudioSource* _as) {
 	/// 再生状態の表示
 	int state = _as->GetState();
 	std::string stateStr = static_cast<std::string>(magic_enum::enum_name(static_cast<AudioState>(state)));
-	ImGui::Text("State: %s", stateStr);
-
-
+	ImGui::Text("State: %s", stateStr.c_str());
 
 }
 

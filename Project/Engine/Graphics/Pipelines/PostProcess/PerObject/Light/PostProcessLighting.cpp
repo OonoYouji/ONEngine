@@ -90,7 +90,7 @@ void PostProcessLighting::Execute(const std::string& _textureName, DxCommand* _d
 		/// set light data
 		directionalLightBufferData_->SetMappedData(
 			{
-				Mathf::ConvertToVector4(directionalLights.front()->GetOwner()->GetPosition(), 1.0f),
+				Math::ConvertToVector4(directionalLights.front()->GetOwner()->GetPosition(), 1.0f),
 				directionalLights.front()->GetColor(),
 				directionalLights.front()->GetDirection(),
 				directionalLights.front()->GetIntensity()
@@ -101,7 +101,7 @@ void PostProcessLighting::Execute(const std::string& _textureName, DxCommand* _d
 		CameraComponent* camera = ecsGroup->GetMainCamera();
 		if (camera) {
 			if (GameEntity* entity = camera->GetOwner()) {
-				cameraBufferData_->SetMappedData({ Mathf::ConvertToVector4(entity->GetPosition(), 1.0f) });
+				cameraBufferData_->SetMappedData({ Math::ConvertToVector4(entity->GetPosition(), 1.0f) });
 			}
 		}
 
@@ -138,8 +138,8 @@ void PostProcessLighting::Execute(const std::string& _textureName, DxCommand* _d
 
 
 	command->Dispatch(
-		Mathf::DivideAndRoundUp(static_cast<uint32_t>(EngineConfig::kWindowSize.x), 16),
-		Mathf::DivideAndRoundUp(static_cast<uint32_t>(EngineConfig::kWindowSize.y), 16),
+		Math::DivideAndRoundUp(static_cast<uint32_t>(EngineConfig::kWindowSize.x), 16),
+		Math::DivideAndRoundUp(static_cast<uint32_t>(EngineConfig::kWindowSize.y), 16),
 		1
 	);
 

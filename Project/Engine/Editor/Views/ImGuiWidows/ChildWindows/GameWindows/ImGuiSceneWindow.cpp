@@ -192,7 +192,7 @@ void ImGuiSceneWindow::ShowImGui() {
 					}
 					transform->SetPosition(translationV);
 
-					ONEngine::Vector3 eulerRotation = ONEngine::Vector3(rotation[0] * ONEngine::Mathf::Deg2Rad, rotation[1] * ONEngine::Mathf::Deg2Rad, rotation[2] * ONEngine::Mathf::Deg2Rad);
+					ONEngine::Vector3 eulerRotation = ONEngine::Vector3(rotation[0] * ONEngine::Math::Deg2Rad, rotation[1] * ONEngine::Math::Deg2Rad, rotation[2] * ONEngine::Math::Deg2Rad);
 					transform->SetRotate(eulerRotation);
 					transform->SetScale(ONEngine::Vector3(scale[0], scale[1], scale[2]));
 

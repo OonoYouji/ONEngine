@@ -99,7 +99,7 @@ void GrassArrangementPipeline::Execute(ONEngine::EntityComponentSystem* _ecs, ON
 			cmdList->SetComputeRoot32BitConstants(C32BIT_CONSTANTS, 2, constants, 0);
 
 			// Dispatchを実行
-			cmdList->Dispatch(ONEngine::Mathf::DivideAndRoundUp(currentInstanceCount, threadGroupSize), 1, 1);
+			cmdList->Dispatch(ONEngine::Math::DivideAndRoundUp(currentInstanceCount, threadGroupSize), 1, 1);
 		}
 
 	}

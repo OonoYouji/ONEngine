@@ -112,9 +112,9 @@ void SkinMeshSkeletonRenderingPipeline::Draw(class ECSGroup* _ecs, CameraCompone
 
 			/// 線の頂点データを作成
 			VertexData v0, v1;
-			v0.position = Mathf::ConvertToVector4(thisPosition, 1.0f);
+			v0.position = Math::ConvertToVector4(thisPosition, 1.0f);
 			v0.color = thisColor;
-			v1.position = Mathf::ConvertToVector4(parentPosition, 1.0f);
+			v1.position = Math::ConvertToVector4(parentPosition, 1.0f);
 			v1.color = thisColor;
 
 			vertices_.push_back(v0);

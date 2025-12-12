@@ -222,7 +222,7 @@ void ImGuiProjectWindow::DrawFileView(const std::filesystem::path& dir) {
 		{
 			/// filePathの絶対パスを相対パスに変換してから取得
 			key = GetRelativePath(key);
-			ONEngine::Mathf::ReplaceAll(&key, "\\", "/");
+			ONEngine::FileSystem::ReplaceAll(&key, "\\", "/");
 		}
 
 
@@ -438,8 +438,8 @@ void ImGuiProjectWindow::HandleFileAdded(const std::filesystem::path& _path) {
 
 		/// 新規アセットして登録
 		std::string path = GetRelativePath(_path);
-		ONEngine::Mathf::ReplaceAll(&path, "\\", "/");
-		ONEngine::AssetType type = ONEngine::GetAssetTypeFromExtension(ONEngine::Mathf::FileExtension(path));
+		ONEngine::FileSystem::ReplaceAll(&path, "\\", "/");
+		ONEngine::AssetType type = ONEngine::GetAssetTypeFromExtension(ONEngine::FileSystem::FileExtension(path));
 		if (type != ONEngine::AssetType::None) {
 			pAssetCollection_->Load(path, type);
 		}
@@ -463,7 +463,7 @@ void ImGuiProjectWindow::HandleFileRemoved(const std::filesystem::path& _path) {
 
 		/// アセットコレクションからも削除
 		std::string path = GetRelativePath(_path);
-		ONEngine::Mathf::ReplaceAll(&path, "\\", "/");
+		ONEngine::FileSystem::ReplaceAll(&path, "\\", "/");
 		pAssetCollection_->UnloadAssetByPath(path);
 	}
 
@@ -484,7 +484,7 @@ void ImGuiProjectWindow::HandleFileModified(const std::filesystem::path& _path) 
 	if (type != ONEngine::AssetType::None) {
 		/// 絶対パスを相対パスに変換してから取得
 		std::string path = GetRelativePath(_path);
-		ONEngine::Mathf::ReplaceAll(&path, "\\", "/");
+		ONEngine::FileSystem::ReplaceAll(&path, "\\", "/");
 		pAssetCollection_->ReloadAsset(path);
 	}
 
