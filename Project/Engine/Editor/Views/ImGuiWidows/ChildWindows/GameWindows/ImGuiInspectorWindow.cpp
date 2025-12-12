@@ -117,7 +117,7 @@ void ImGuiInspectorWindow::EntityInspector() {
 	}
 
 	/// アセットなら抜ける
-	bool isAsset = pAssetCollection_->IsAssetExist(selectionGuid);
+	bool isAsset = pAssetCollection_->IsAsset(selectionGuid);
 	if (isAsset) {
 		return;
 	}

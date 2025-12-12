@@ -1,4 +1,4 @@
-#include "AssetCollection.h"
+﻿#include "AssetCollection.h"
 
 /// std
 #include <filesystem>
@@ -153,7 +153,7 @@ void AssetCollection::AddAsset<Material>(const std::string& _filepath, Material&
 }
 
 
-bool AssetCollection::IsAssetExist(const Guid& _guid) const {
+bool AssetCollection::IsAsset(const Guid& _guid) const {
 	/// ----- guidがアセットの物かチェックする ----- ///
 
 	/// 無効値ならfalseを返す

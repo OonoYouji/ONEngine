@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// engine
 #include "Engine/Asset/Guid/Guid.h"
@@ -23,5 +23,10 @@ public:
 
 	Guid guid;
 };
+
+
+/// @brief TがIAssetを継承しているかのコンセプト
+template <typename T>
+concept IsAsset = std::is_base_of_v<IAsset, T>;
 
 } /// ONEngine
