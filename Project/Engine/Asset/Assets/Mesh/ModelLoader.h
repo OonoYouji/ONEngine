@@ -30,7 +30,7 @@ public:
 	/// @param _src 元のモデル
 	/// @return 再読み込みしたモデル
 	[[nodiscard]]
-	Model Reload(const std::string& _filepath, Model* _src);
+	Model Reload(const std::string& _filepath, Model* _src = nullptr);
 
 
 	/// @brief アニメーションのNodeを読み込む
