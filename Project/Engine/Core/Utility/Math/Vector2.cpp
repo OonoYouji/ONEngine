@@ -1,4 +1,4 @@
-#include "Vector2.h"
+﻿#include "Vector2.h"
 
 using namespace ONEngine;
 
@@ -14,6 +14,10 @@ const Vector2 Vector2::kLeft = Vector2(-1, 0);	//- (-1,  0 )
 const Vector2 Vector2::kRight = Vector2(1, 0);	//- ( 1,  0 )
 const Vector2 Vector2::kOne = Vector2(1, 1);	//- ( 1,  1 )
 const Vector2 Vector2::kZero = Vector2(0, 0);	//- ( 0,  0 )
+
+const Vector2 Vector2::kHD = Vector2(1280.0f, 720.0f);
+const Vector2 Vector2::kFullHD = Vector2(1920.0f, 1080.0f);
+
 
 Vector2::Vector2() {
 	this->x = 0.0f;

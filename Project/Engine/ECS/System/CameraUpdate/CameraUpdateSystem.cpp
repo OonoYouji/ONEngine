@@ -57,8 +57,10 @@ namespace {
 			worldCorners[i] = wc;
 		}
 
+		
 		/// 12本の線分の頂点ペア
-		const std::array<std::pair<int, int>, 12> edges = { {
+		const size_t kEdgeCount = 12;
+		const std::array<std::pair<int, int>, kEdgeCount> edges = { {
 			{ 0, 1 }, { 1, 2 }, { 2, 3 }, { 3, 0 }, // near
 			{ 4, 5 }, { 5, 6 }, { 6, 7 }, { 7, 4 }, // far
 			{ 0, 4 }, { 1, 5 }, { 2, 6 }, { 3, 7 }  // side
@@ -66,7 +68,7 @@ namespace {
 
 		using Line = std::pair<Vector3, Vector3>;
 		std::vector<Line> lines;
-		lines.reserve(12);
+		lines.reserve(kEdgeCount);
 		for (const auto& edge : edges) {
 			Vector3 start = Vector3(worldCorners[edge.first].x, worldCorners[edge.first].y, worldCorners[edge.first].z);
 			Vector3 end = Vector3(worldCorners[edge.second].x, worldCorners[edge.second].y, worldCorners[edge.second].z);

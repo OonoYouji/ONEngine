@@ -139,7 +139,8 @@ void ShadowCaster::CreateShadowCaster() {
 	camera_ = GetOwner()->AddComponent<CameraComponent>();
 	camera_->SetCameraType(static_cast<int>(CameraType::Type2D));
 	camera_->SetIsMainCameraRequest(false); /// シャドウキャスター用カメラはメインカメラにしない
-	camera_->SetOrthographicSize(Vector2(1280.0f, 720.0f) * 0.01f);
+	const float factor = 0.01f;
+	camera_->SetOrthographicSize(Vector2::kHD * factor);
 }
 
 void ShadowCaster::CalculationLightViewMatrix(ECSGroup* _ecsGroup, DirectionalLight* _directionLight) {

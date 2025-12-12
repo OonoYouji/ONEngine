@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// std
 #include <format>
@@ -41,6 +41,8 @@ struct Vector2 final {
 	static const Vector2 kOne;		//- ( 1,  1 )
 	static const Vector2 kZero;		//- ( 0,  0 )
 
+	static const Vector2 kHD;
+	static const Vector2 kFullHD;
 
 	/// ===================================================
 	/// public : static methos

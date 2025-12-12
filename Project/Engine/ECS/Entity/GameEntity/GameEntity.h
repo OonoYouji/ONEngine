@@ -256,11 +256,7 @@ inline Comp* GameEntity::GetComponent() const {
 
 template<IsComponent Comp>
 inline void GameEntity::RemoveComponent() {
-	std::string name = typeid(Comp).name();
-	if (name.find("class ONEngine") == 0) {
-		name = name.substr(strlen("class ONEngine"));
-	}
-
+	const std::string name = GetComponentTypeName<Comp>();
 	RemoveComponent(name);
 }
 
