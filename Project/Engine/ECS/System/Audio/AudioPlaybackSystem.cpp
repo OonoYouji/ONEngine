@@ -48,7 +48,7 @@ void AudioPlaybackSystem::RuntimeUpdate(ECSGroup* _ecs) {
 		/// 音の再生リクエストチェック
 		if (as->isPlayingRequest_) {
 			/// 再生状態ではなければ再生する
-			if (as->state_ != AudioState_Playing) {
+			if (as->state_ != static_cast<int>(AudioState::Playing)) {
 				PlayAudio(as);
 			}
 		}
@@ -84,7 +84,7 @@ void AudioPlaybackSystem::SetAudioClip(AudioSource* _audioSource) {
 
 void AudioPlaybackSystem::PlayAudio(AudioSource* _audioSource) {
 	/// stateをPlayingに変更
-	_audioSource->state_ = AudioState_Playing;
+	_audioSource->state_ = static_cast<int>(AudioState::Playing);
 	_audioSource->isPlayingRequest_ = false;
 
 	IXAudio2SourceVoice* sourceVoice = nullptr;
@@ -131,7 +131,8 @@ void AudioPlaybackSystem::PlayOneShot(AudioClip* _audioClip, float _volume, floa
 int AudioPlaybackSystem::GetAudioState(AudioSource* _audioSource) {
 	AudioClip* clip = _audioSource->pAudioClip_;
 	if (!clip) {
-		return AudioState_Stopped; // クリップが設定されていない場合は停止状態
+		// クリップが設定されていない場合は停止状態
+		return static_cast<int>(AudioState::Stopped);
 	}
 
 
@@ -155,8 +156,9 @@ int AudioPlaybackSystem::GetAudioState(AudioSource* _audioSource) {
 
 	if(sourceVoices.size() > 0) {
 		/// 再生中の音声ソースがある場合は再生中
-		return AudioState_Playing;
+		return static_cast<int>(AudioState::Playing);
 	}
 
-	return AudioState_Stopped; // 停止中
+	/// 再生中の音声ソースがない場合は停止
+	return static_cast<int>(AudioState::Stopped);
 }

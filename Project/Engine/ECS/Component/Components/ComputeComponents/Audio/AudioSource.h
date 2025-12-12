@@ -16,10 +16,10 @@
 namespace ONEngine {
 
 /// @brief 音の再生状態
-enum AudioState {
-	AudioState_Stopped,
-	AudioState_Playing,
-	AudioState_Paused,
+enum class AudioState {
+	Stopped,
+	Playing,
+	Paused,
 };
 
 /// @brief 一度キリの再生に使う構造体

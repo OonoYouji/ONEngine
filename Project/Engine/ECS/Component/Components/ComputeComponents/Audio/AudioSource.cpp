@@ -2,6 +2,7 @@
 
 /// external
 #include <imgui.h>
+#include <magic_enum/magic_enum.hpp>
 
 /// engine
 #include "Engine/Asset/Assets/AudioClip/AudioClip.h"
@@ -17,7 +18,7 @@ AudioSource::AudioSource()
 	: volume_(1.0f),
 	pitch_(1.0f),
 	state_(0),
-	isPlayingRequest_(false){
+	isPlayingRequest_(false) {
 }
 
 AudioSource::~AudioSource() {}
@@ -129,7 +130,8 @@ void ComponentDebug::AudioSourceDebug(AudioSource* _as) {
 
 	/// 再生状態の表示
 	int state = _as->GetState();
-	ImGui::Text("State: %s", state == AudioState_Playing ? "Playing" : "Stopped");
+	std::string stateStr = static_cast<std::string>(magic_enum::enum_name(static_cast<AudioState>(state)));
+	ImGui::Text("State: %s", stateStr);
 
 
 
