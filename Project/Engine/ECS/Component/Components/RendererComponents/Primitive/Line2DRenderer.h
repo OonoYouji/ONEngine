@@ -31,7 +31,7 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	size_t refCount_;
+	size_t lineCount_;
 	Line2DRenderingPipeline::RenderingData renderingData_;
 
 
