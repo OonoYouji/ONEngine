@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// std
 #include <cstdint>
@@ -7,7 +7,7 @@
 #include <xaudio2.h>
 
 /// engine
-#include "../Asset.h"
+#include "../IAsset.h"
 
 namespace ONEngine {
 

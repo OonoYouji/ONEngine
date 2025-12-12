@@ -1,4 +1,4 @@
-#include "Texture.h"
+﻿#include "Texture.h"
 
 /// directX12
 #include <wrl/client.h>
@@ -581,38 +581,6 @@ void ONEngine::SaveTextureToDDS(const std::wstring& _filename, size_t _width, si
 			}
 		}
 	}
-
-
-	// 仮のデータで埋める（ピラミッド型のグラデーション）
-	//for (size_t z = 0; z < _depth; ++z) {
-	//	const DirectX::Image* img = volumeImage.GetImage(0, 0, z);
-	//	uint8_t* dst = img->pixels;
-
-	//	for (size_t y = 0; y < _height; ++y) {
-	//		for (size_t x = 0; x < _width; ++x) {
-	//			size_t index = y * rowPitch + x * 4;
-
-	//			// 上の数ピクセルを空白にする
-	//			if (y < 5) { // 例えば上5ピクセルを空白にする
-	//				dst[index + 0] = 0; // R
-	//				dst[index + 1] = 0; // G
-	//				dst[index + 2] = 0; // B
-	//				dst[index + 3] = 0; // A
-	//				continue;
-	//			}
-
-	//			// ピクセルの透明度を計算
-	//			uint8_t alpha = (x + y >= _width - 1) ? 255 : 0;
-
-	//			// ピクセルデータを設定
-	//			dst[index + 0] = 0;      // R
-	//			dst[index + 1] = 0;      // G
-	//			dst[index + 2] = 0;      // B
-	//			dst[index + 3] = alpha;  // A
-	//		}
-	//	}
-	//}
-
 
 	// DDS 保存
 	hr = DirectX::SaveToDDSFile(

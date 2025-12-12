@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// externals
 #include <nlohmann/json.hpp>
@@ -28,16 +28,10 @@ struct Vector4 final {
 	/// public : static objects
 	/// ===================================================
 
-	static const Vector4 k1000;
-	static const Vector4 k0100;
-	static const Vector4 k0010;
-	static const Vector4 k0001;
-
 	static const Vector4 kWhite;
 	static const Vector4 kRed;
 	static const Vector4 kGreen;
 	static const Vector4 kBlue;
-
 	static const Vector4 kZero;
 	
 	
@@ -105,7 +99,6 @@ inline Vector4 operator+ (const Vector4& _v1, const Vector4& _v2) {
 	};
 }
 
-
 inline Vector4 operator- (const Vector4& _v1, const Vector4& _v2) {
 	return {
 		_v1.x - _v2.x,
@@ -114,7 +107,6 @@ inline Vector4 operator- (const Vector4& _v1, const Vector4& _v2) {
 		_v1.w - _v2.w
 	};
 }
-
 
 inline Vector4 operator/ (const Vector4& _v1, const Vector4& _v2) {
 	return {
@@ -134,7 +126,6 @@ inline Vector4 operator/ (const Vector4& _v, float _scaler) {
 	};
 }
 
-
 inline Vector4 operator* (const Vector4& _v1, const Vector4& _v2) {
 	return {
 		_v1.x * _v2.x,
@@ -144,7 +135,6 @@ inline Vector4 operator* (const Vector4& _v1, const Vector4& _v2) {
 	};
 }
 
-
 inline Vector4 operator* (const Vector4& _v, float _scaler) {
 	return {
 		_v.x * _scaler,
@@ -153,7 +143,6 @@ inline Vector4 operator* (const Vector4& _v, float _scaler) {
 		_v.w * _scaler
 	};
 }
-
 
 inline Vector4 operator* (float _scaler, const Vector4& _v) {
 	return _v * _scaler;
@@ -174,7 +163,6 @@ inline bool operator==(const Vector4& _v1, const Vector4& _v2) {
 /// Vector4 : operator overload
 /// ===================================================
 
-
 inline Vector4& Vector4::operator=(const Vector4& _other) {
 	this->x = _other.x;
 	this->y = _other.y;
@@ -189,41 +177,34 @@ inline Vector4& Vector4::operator+= (const Vector4& _other) {
 	return *this;
 }
 
-
 inline Vector4& Vector4::operator-= (const Vector4& _other) {
 	(*this) = *this - _other;
 	return *this;
 }
-
 
 inline Vector4& Vector4::operator/= (const Vector4& _other) {
 	(*this) = *this / _other;
 	return *this;
 }
 
-
 inline Vector4& Vector4::operator*= (const Vector4& _other) {
 	(*this) = *this * _other;
 	return *this;
 }
-
 
 inline Vector4& Vector4::operator/= (float _scaler) {
 	(*this) = *this / _scaler;
 	return *this;
 }
 
-
 inline Vector4& Vector4::operator*= (float _scaler) {
 	(*this) = *this * _scaler;
 	return *this;
 }
 
-
 inline Vector4 Vector4::operator-() {
 	return (*this) * -1.0f;
 }
-
 
 inline Vector4 Vector4::operator+() {
 	return (*this);

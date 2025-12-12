@@ -1,4 +1,4 @@
-#include "Vector4.h"
+﻿#include "Vector4.h"
 
 /// std
 #include <cmath>
@@ -9,16 +9,10 @@ using namespace ONEngine;
 /// static objects initialize
 /// ===================================================
 
-const Vector4 Vector4::k1000 = { 1,0,0,0 };
-const Vector4 Vector4::k0100 = { 0,1,0,0 };
-const Vector4 Vector4::k0010 = { 0,0,1,0 };
-const Vector4 Vector4::k0001 = { 0,0,0,1 };
-
 const Vector4 Vector4::kWhite = { 1,1,1,1 };
 const Vector4 Vector4::kRed   = { 1,0,0,1 };
 const Vector4 Vector4::kGreen = { 0,1,0,1 };
 const Vector4 Vector4::kBlue  = { 0,0,1,1 };
-
 const Vector4 Vector4::kZero = { 0,0,0,0 };
 
 
