@@ -31,7 +31,7 @@ public:
 	static_assert(IsAsset<T>, "AssetLoader can only be used with Asset types.");
 
 	AssetLoaderT() = default;
-	~AssetLoaderT() = default;
+	~AssetLoaderT() override = default;
 
 	/// @brief 読み込み用関数
 	/// @param _filepath 読み込み対象のファイルパス
@@ -43,9 +43,6 @@ public:
 	/// @return 読み込んだアセット
 	T Reload(const std::string& /*_filepath*/, T* /*_src*/) {}
 	
-protected:
-	DxManager* pDxManager_;
-	AssetCollection* pAssetCollection_;
 };
 
 
