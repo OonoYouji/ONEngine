@@ -5,7 +5,7 @@
 
 using namespace ONEngine;
 
-std::optional<Material> AssetLoaderT<Material>::Load(const std::string& _filepath) {
+std::optional<Material> AssetLoader<Material>::Load(const std::string& _filepath) {
 	/// ファイルを開く
 	std::ifstream ifs(_filepath);
 	if (!ifs) {
@@ -37,7 +37,7 @@ std::optional<Material> AssetLoaderT<Material>::Load(const std::string& _filepat
 	return std::move(material);
 }
 
-std::optional<Material> AssetLoaderT<Material>::Reload(const std::string& _filepath, Material* /*_src*/) {
+std::optional<Material> AssetLoader<Material>::Reload(const std::string& _filepath, Material* /*_src*/) {
 	/// Materialの再読み込みは新規読み込みと同じ処理を行う
 	return std::move(Load(_filepath));
 }

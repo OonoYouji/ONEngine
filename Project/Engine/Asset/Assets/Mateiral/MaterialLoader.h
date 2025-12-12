@@ -7,14 +7,14 @@
 namespace ONEngine {
 
 template<>
-class AssetLoaderT<Material> : public IAssetLoader {
+class AssetLoader<Material> : public IAssetLoader {
 public:
 	/// ==================================================
 	/// public : methods
 	/// ==================================================
 
-	AssetLoaderT() = default;
-	~AssetLoaderT() override = default;
+	AssetLoader() = default;
+	~AssetLoader() override = default;
 
 	/// @brief モデルの読み込みを行う
 	/// @param _filepath 対象のファイルパス

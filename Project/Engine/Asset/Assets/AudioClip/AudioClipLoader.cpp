@@ -16,7 +16,7 @@
 
 using namespace ONEngine;
 
-std::optional<AudioClip> AssetLoaderT<AudioClip>::Load(const std::string& _filepath) {
+std::optional<AudioClip> AssetLoader<AudioClip>::Load(const std::string& _filepath) {
 	/// ----- オーディオクリップの読み込み ----- ///
 
 	/// ファイルが存在するのかチェックする
@@ -110,6 +110,6 @@ std::optional<AudioClip> AssetLoaderT<AudioClip>::Load(const std::string& _filep
 	return std::move(audioClip);
 }
 
-std::optional<AudioClip> AssetLoaderT<AudioClip>::Reload(const std::string& _filepath, AudioClip* /*_src*/) {
+std::optional<AudioClip> AssetLoader<AudioClip>::Reload(const std::string& _filepath, AudioClip* /*_src*/) {
 	return std::move(Load(_filepath));
 }

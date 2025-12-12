@@ -10,14 +10,14 @@ struct aiScene;
 namespace ONEngine {
 
 template<>
-class AssetLoaderT<Model> : public IAssetLoader {
+class AssetLoader<Model> : public IAssetLoader {
 public:
 	/// ====================================================
 	/// public : methods
 	/// ====================================================
 
-	AssetLoaderT(DxManager* _dxm);
-	~AssetLoaderT() override = default;
+	AssetLoader(DxManager* _dxm);
+	~AssetLoader() override = default;
 
 	/// @brief モデルファイルの読み込みを行う
 	/// @param _filepath 対象のファイルパス

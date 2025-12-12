@@ -27,12 +27,12 @@ public:
 /// 各アセットごとに特殊化して使用する
 /// ///////////////////////////////////////////////////
 template <typename T>
-class AssetLoaderT : public IAssetLoader {
+class AssetLoader : public IAssetLoader {
 public:
 	static_assert(IsAsset<T>, "AssetLoader can only be used with Asset types.");
 
-	AssetLoaderT() = default;
-	~AssetLoaderT() override = default;
+	AssetLoader() = default;
+	~AssetLoader() override = default;
 
 	/// @brief 読み込み用関数
 	/// @param _filepath 読み込み対象のファイルパス

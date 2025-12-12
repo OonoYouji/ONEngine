@@ -12,12 +12,12 @@
 using namespace ONEngine;
 
 
-AssetLoaderT<Model>::AssetLoaderT(DxManager* _dxm)
+AssetLoader<Model>::AssetLoader(DxManager* _dxm)
 	: pDxManager_(_dxm) {
 	assimpLoadFlags_ = aiProcess_FlipWindingOrder | aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices;
 }
 
-std::optional<Model> AssetLoaderT<Model>::Load(const std::string& _filepath) {
+std::optional<Model> AssetLoader<Model>::Load(const std::string& _filepath) {
 	/// ----- モデルの読み込み ----- ///
 	/// ファイルの拡張子を取得
 	const std::string fileExtension = FileSystem::FileExtension(_filepath);
@@ -122,14 +122,14 @@ std::optional<Model> AssetLoaderT<Model>::Load(const std::string& _filepath) {
 	return model;
 }
 
-std::optional<Model> AssetLoaderT<Model>::Reload(const std::string& _filepath, Model* /*_src*/) {
+std::optional<Model> AssetLoader<Model>::Reload(const std::string& _filepath, Model* /*_src*/) {
 
 	/// モデルの再読み込みは特殊な操作をする必要がないのでもう一度読み込んだ内容を渡す
 	return Load(_filepath);
 }
 
 
-Node AssetLoaderT<Model>::ReadNode(aiNode* _node) {
+Node AssetLoader<Model>::ReadNode(aiNode* _node) {
 	/// ----- nodeの読み込み ----- ///
 
 	Node result;
@@ -157,7 +157,7 @@ Node AssetLoaderT<Model>::ReadNode(aiNode* _node) {
 	return result;
 }
 
-void AssetLoaderT<Model>::LoadAnimation(Model* _model, const std::string& _filepath) {
+void AssetLoader<Model>::LoadAnimation(Model* _model, const std::string& _filepath) {
 	/// ----- アニメーションの読み込み ----- ///
 
 	Assimp::Importer importer;
@@ -235,7 +235,7 @@ void AssetLoaderT<Model>::LoadAnimation(Model* _model, const std::string& _filep
 	}
 }
 
-bool AssetLoaderT<Model>::ValidateModel(const aiScene* _aiScene) {
+bool AssetLoader<Model>::ValidateModel(const aiScene* _aiScene) {
 	if (!_aiScene || !_aiScene->mNumMeshes) {
 		return false;
 	}

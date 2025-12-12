@@ -9,11 +9,11 @@
 
 using namespace ONEngine;
 
-AssetLoaderT<Texture>::AssetLoaderT(DxManager* _dxm, AssetCollection* _ac)
+AssetLoader<Texture>::AssetLoader(DxManager* _dxm, AssetCollection* _ac)
 	: pDxManager_(_dxm), pAssetCollection_(_ac) {
 }
 
-std::optional<Texture> AssetLoaderT<Texture>::Load(const std::string& _filepath) {
+std::optional<Texture> AssetLoader<Texture>::Load(const std::string& _filepath) {
 	/// 3Dテクスチャか2Dテクスチャかを判別して読み込みを行う
 	/// 3Dテクスチャか判別し、3Dなら3Dテクスチャとして読み込む
 	const std::string extension = FileSystem::FileExtension(_filepath);
@@ -29,7 +29,7 @@ std::optional<Texture> AssetLoaderT<Texture>::Load(const std::string& _filepath)
 	return Load2DTexture(_filepath);
 }
 
-std::optional<Texture> AssetLoaderT<Texture>::Reload(const std::string& _filepath, Texture* _src) {
+std::optional<Texture> AssetLoader<Texture>::Reload(const std::string& _filepath, Texture* _src) {
 	const std::string extension = FileSystem::FileExtension(_filepath);
 	if (extension == ".dds") {
 		DirectX::ScratchImage scratch = LoadScratchImage3D(_filepath);
@@ -44,7 +44,7 @@ std::optional<Texture> AssetLoaderT<Texture>::Reload(const std::string& _filepat
 }
 
 
-std::optional<Texture> AssetLoaderT<Texture>::Load2DTexture(const std::string& _filepath) {
+std::optional<Texture> AssetLoader<Texture>::Load2DTexture(const std::string& _filepath) {
 	/// ----- テクスチャの読み込み ----- ///
 
 	Texture texture;
@@ -119,7 +119,7 @@ std::optional<Texture> AssetLoaderT<Texture>::Load2DTexture(const std::string& _
 	return std::move(texture);
 }
 
-std::optional<Texture> AssetLoaderT<Texture>::Load3DTexture(const std::string& _filepath) {
+std::optional<Texture> AssetLoader<Texture>::Load3DTexture(const std::string& _filepath) {
 	/// ----- DDSファイルの読み込み ----- ///
 	Texture texture;
 
@@ -198,7 +198,7 @@ std::optional<Texture> AssetLoaderT<Texture>::Load3DTexture(const std::string& _
 }
 
 
-std::optional<Texture> AssetLoaderT<Texture>::Reload2DTexture(const std::string& _filepath, Texture* _src) {
+std::optional<Texture> AssetLoader<Texture>::Reload2DTexture(const std::string& _filepath, Texture* _src) {
 	/// ----- テクスチャの読み込み ----- ///
 	Texture texture = *_src; // 元のテクスチャをコピー
 	DirectX::ScratchImage       scratchImage = LoadScratchImage2D(_filepath);
@@ -259,7 +259,7 @@ std::optional<Texture> AssetLoaderT<Texture>::Reload2DTexture(const std::string&
 }
 
 
-std::optional<Texture> AssetLoaderT<Texture>::Reload3DTexture(const std::string& _filepath, Texture* _src) {
+std::optional<Texture> AssetLoader<Texture>::Reload3DTexture(const std::string& _filepath, Texture* _src) {
 	/// ----- DDSファイルの読み込み ----- ///
 	Texture texture = *_src; // 元のテクスチャをコピー
 	/// スクラッチイメージを読み込み、使用可能かチェック
@@ -305,7 +305,7 @@ std::optional<Texture> AssetLoaderT<Texture>::Reload3DTexture(const std::string&
 }
 
 
-DirectX::ScratchImage AssetLoaderT<Texture>::LoadScratchImage2D(const std::string& _filepath) {
+DirectX::ScratchImage AssetLoader<Texture>::LoadScratchImage2D(const std::string& _filepath) {
 	/// テクスチャファイルを読んでプログラムで扱えるようにする
 	DirectX::ScratchImage image{};
 	std::wstring          filePathW = ConvertString(_filepath);
@@ -328,7 +328,7 @@ DirectX::ScratchImage AssetLoaderT<Texture>::LoadScratchImage2D(const std::strin
 	return mipImages;
 }
 
-DirectX::ScratchImage AssetLoaderT<Texture>::LoadScratchImage3D(const std::string& _filepath) {
+DirectX::ScratchImage AssetLoader<Texture>::LoadScratchImage3D(const std::string& _filepath) {
 	// DDS ファイル専用
 	if (!_filepath.ends_with(".dds")) {
 		Console::LogError("LoadScratchImage3D: Only DDS files are supported for Texture3D.");
@@ -379,7 +379,7 @@ DirectX::ScratchImage AssetLoaderT<Texture>::LoadScratchImage3D(const std::strin
 }
 
 
-DxResource AssetLoaderT<Texture>::CreateTextureResource2D(DxDevice* _dxDevice, const DirectX::TexMetadata& _metadata) {
+DxResource AssetLoader<Texture>::CreateTextureResource2D(DxDevice* _dxDevice, const DirectX::TexMetadata& _metadata) {
 	/// metadataを基にResourceの設定
 	D3D12_RESOURCE_DESC desc{};
 
@@ -410,7 +410,7 @@ DxResource AssetLoaderT<Texture>::CreateTextureResource2D(DxDevice* _dxDevice, c
 	return dxResource;
 }
 
-DxResource AssetLoaderT<Texture>::CreateTextureResource3D(DxDevice* _dxDevice, const DirectX::TexMetadata& _metadata) {
+DxResource AssetLoader<Texture>::CreateTextureResource3D(DxDevice* _dxDevice, const DirectX::TexMetadata& _metadata) {
 	if (_metadata.dimension != DirectX::TEX_DIMENSION_TEXTURE3D) {
 		Console::LogError("[CreateTexture3DResource] Metadata is not Texture3D.");
 		return DxResource{};
@@ -443,7 +443,7 @@ DxResource AssetLoaderT<Texture>::CreateTextureResource3D(DxDevice* _dxDevice, c
 	return dxResource;
 }
 
-DxResource AssetLoaderT<Texture>::UploadTextureData(ID3D12Resource* _texture, const DirectX::ScratchImage& _mipScratchImage) {
+DxResource AssetLoader<Texture>::UploadTextureData(ID3D12Resource* _texture, const DirectX::ScratchImage& _mipScratchImage) {
 	DxDevice* dxDevice = pDxManager_->GetDxDevice();
 	DxCommand* dxCommand = pDxManager_->GetDxCommand();
 

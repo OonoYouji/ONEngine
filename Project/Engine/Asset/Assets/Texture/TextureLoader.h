@@ -17,11 +17,11 @@ namespace ONEngine {
 /// Texture用のアセットローダー
 /// ///////////////////////////////////////////////////
 template<>
-class AssetLoaderT<Texture> : public IAssetLoader {
+class AssetLoader<Texture> : public IAssetLoader {
 public:
 
-	AssetLoaderT(DxManager* _dxm, AssetCollection* _ac);
-	~AssetLoaderT() override = default;
+	AssetLoader(DxManager* _dxm, AssetCollection* _ac);
+	~AssetLoader() override = default;
 
 	/// @brief テクスチャの読み込みを行う
 	/// @param _filepath 対象のファイルパス

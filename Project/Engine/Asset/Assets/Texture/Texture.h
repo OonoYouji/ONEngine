@@ -11,14 +11,13 @@
 namespace ONEngine {
 
 template <typename T>
-class AssetLoaderT;
+class AssetLoader;
 
 /// ///////////////////////////////////////////////////
 /// texture
 /// ///////////////////////////////////////////////////
 class Texture final : public IAsset {
-	friend class AssetLoader;
-	friend class AssetLoaderT<Texture>;
+	friend class AssetLoader<Texture>;
 public:
 	/// ===================================================
 	/// public : sub class
