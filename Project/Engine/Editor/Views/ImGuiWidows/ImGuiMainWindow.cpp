@@ -4,6 +4,9 @@
 /// external
 #include <imgui.h>
 
+/// engine
+#include "Engine/Core/Utility/Utility.h"
+
 using namespace Editor;
 
 void ImGuiMainWindow::ShowImGui() {
@@ -18,7 +21,8 @@ void ImGuiMainWindow::ShowImGui() {
 	imGuiFlags |= ImGuiWindowFlags_NoBringToFrontOnFocus;
 
 	ImGui::SetNextWindowPos(ImVec2(0, 20), ImGuiCond_FirstUseEver);
-	ImGui::SetNextWindowSize(ImVec2(1280, 700), ImGuiCond_FirstUseEver);
+	const ImVec2 windowSize = ImVec2(ONEngine::Vector2::HD.x, ONEngine::Vector2::HD.y);
+	ImGui::SetNextWindowSize(windowSize, ImGuiCond_FirstUseEver);
 	ImGui::Begin("main", nullptr, imGuiFlags);
 
 	// ドッキングスペースの作成

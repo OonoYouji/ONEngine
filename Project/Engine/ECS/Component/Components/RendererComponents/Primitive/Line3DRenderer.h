@@ -31,7 +31,7 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	size_t refCount_;
+	size_t lineCount_;
 	std::vector<Line3DRenderingPipeline::VertexData> vertices_;
 
 

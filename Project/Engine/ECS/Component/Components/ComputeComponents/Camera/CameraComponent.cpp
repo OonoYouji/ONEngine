@@ -8,26 +8,13 @@
 /// engine
 #include "Engine/Core/Config/EngineConfig.h"
 #include "Engine/Core/Utility/Math/Mathf.h"
+#include "Engine/Core/Utility/Math/Primitive.h"
 #include "Engine/Editor/Commands/ImGuiCommand/ImGuiCommand.h"
 #include "Engine/ECS/Entity/GameEntity/GameEntity.h"
 
 using namespace ONEngine;
 
 namespace {
-
-	/// @brief 平面
-	struct Plane {
-		/// @brief 面の法線
-		Vector3 normal;
-		/// @brief 面から原点までの距離
-		float d;
-	};
-
-
-	/// @brief 視錐台
-	struct Frustum {
-		std::array<Plane, 6> planes;
-	};
 
 
 	/// @brief ViewProjection行列から視錐台を作成する
@@ -75,7 +62,7 @@ namespace {
 		// 法線を正規化
 		for (auto& p : frustum.planes) {
 			p.normal = p.normal.Normalize();
-			p.d /= p.normal.Len(); // Normalize 内で0除算済みでも安全のため
+			p.d /= p.normal.Length(); // Normalize 内で0除算済みでも安全のため
 		}
 
 		return frustum;
@@ -118,12 +105,12 @@ namespace {
 }	/// namespace
 
 
-void COMP_DEBUG::CameraDebug(CameraComponent* _camera) {
+void ComponentDebug::CameraDebug(CameraComponent* _camera) {
 	if (!_camera) {
 		return;
 	}
 
-	Editor::ImMathf::DragFloat("fovY", &_camera->fovY_, 0.01f, 0.1f, 3.14f);
+	Editor::ImMathf::DragFloat("fovY", &_camera->fovY_, 0.01f, 0.1f, Mathf::PI);
 	Editor::ImMathf::DragFloat("near clip", &_camera->nearClip_, 0.01f, 0.01f, 100.0f);
 	Editor::ImMathf::DragFloat("far clip", &_camera->farClip_, 0.01f, 100.0f, 10000.0f);
 
@@ -251,7 +238,7 @@ void CameraComponent::UpdateViewProjection() {
 	}
 
 	viewProjection_.SetMappedData(ViewProjection(matView_ * matProjection_, matView_, matProjection_));
-	Vector4 cameraPos = Vector4::Convert(entity->GetPosition(), 1.0f);
+	Vector4 cameraPos = Mathf::ConvertToVector4(entity->GetPosition(), 1.0f);
 	cameraPosBuffer_.SetMappedData(cameraPos);
 }
 
@@ -262,7 +249,7 @@ void CameraComponent::MakeViewProjection(DxDevice* _dxDevice) {
 	));
 
 	cameraPosBuffer_.Create(_dxDevice);
-	Vector4 cameraPos = Vector4::Convert(GetOwner()->GetPosition(), 1.0f);
+	Vector4 cameraPos = Mathf::ConvertToVector4(GetOwner()->GetPosition(), 1.0f);
 	cameraPosBuffer_.SetMappedData(cameraPos);
 }
 

@@ -1,10 +1,10 @@
-#pragma once
+﻿#pragma once
 
 /// std
 #include <optional>
 
 /// engine
-#include "../Asset.h"
+#include "../IAsset.h"
 #include "Engine/Asset/Guid/Guid.h"
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/Graphics/Buffer/Data/UVTransform.h"

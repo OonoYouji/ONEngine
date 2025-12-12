@@ -530,7 +530,7 @@ const std::vector<Variables::Group>& Variables::GetGroups() const {
 
 
 
-void COMP_DEBUG::VariablesDebug(Variables* _variables) {
+void ComponentDebug::VariablesDebug(Variables* _variables) {
 	if (!_variables) {
 		return;
 	}

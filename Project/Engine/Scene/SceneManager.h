@@ -98,7 +98,7 @@ public:
 
 
 
-namespace MONO_INTERNAL_METHOD {
+namespace MonoInternalMethods {
 
 	void InternalLoadScene(MonoString* _sceneName);
 }

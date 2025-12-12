@@ -32,7 +32,7 @@ void GrassBufferCreateSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
 	/// 実際に処理する
 	/// -------------------------------------------------
 
-	/// 縦x横 で密度を決める (2000個 x 2000個 = 400万本)
+	/// 縦x横 で密度を決める (1500個 x 1500個 = 225万本)
 	uint32_t maxBladeCount = 1500 * 1500;
 	for (auto& grass : grassArray->GetUsedComponents()) {
 		grass->Initialize(

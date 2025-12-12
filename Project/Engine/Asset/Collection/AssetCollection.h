@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// std
 #include <memory>
@@ -17,10 +17,6 @@
 
 /// @brief TがIAssetを継承しているかのコンセプト
 namespace ONEngine {
-
-template <typename T>
-concept IsAssetExist = std::is_base_of_v<IAsset, T>;
-
 
 static const uint32_t MAX_TEXTURE_COUNT   = 2048; ///< 最大テクスチャ数
 static const uint32_t MAX_MODEL_COUNT     = 128; ///< 最大モデル数
@@ -55,13 +51,13 @@ public:
 	/// @tparam T 追加するアセットの型
 	/// @param _filepath アセットへのファイルパス
 	/// @param _asset 追加するアセットのインスタンス
-	template <IsAssetExist T>
+	template <IsAsset T>
 	void AddAsset(const std::string& _filepath, T&& _asset);
 
 	/// @brief guidがアセットの物かチェックする
 	/// @param _guid Guid
 	/// @return true: アセット, false: アセットではない
-	bool IsAssetExist(const Guid& _guid) const;
+	bool IsAsset(const Guid& _guid) const;
 
 
 	/// @brief アセットを持っているのかチェックする

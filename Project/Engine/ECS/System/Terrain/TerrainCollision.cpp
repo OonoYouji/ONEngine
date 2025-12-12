@@ -88,7 +88,7 @@ void TerrainCollision::RuntimeUpdate(ECSGroup* _ecs) {
 						{	/// Gizmoで値の確認
 							Vector3 gradient = terrainCollider->GetGradient(sphere->GetPosition());
 							const float maxSlope = 3.0f;
-							float intensity = gradient.Len();
+							float intensity = gradient.Length();
 							Color color = Vector4::Lerp(Color::kBlue, Color::kRed, std::clamp(intensity / maxSlope, 0.0f, 1.0f));
 							Gizmo::DrawRay(spherePos, -gradient.Normalize() * 12.0f, Color::kRed);
 						}

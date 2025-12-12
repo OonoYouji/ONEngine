@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// std
 #include <string>
@@ -16,10 +16,10 @@
 namespace ONEngine {
 
 /// @brief 音の再生状態
-enum AudioState {
-	AudioState_Stopped,
-	AudioState_Playing,
-	AudioState_Paused,
+enum class AudioState {
+	Stopped,
+	Playing,
+	Paused,
 };
 
 /// @brief 一度キリの再生に使う構造体
@@ -88,11 +88,11 @@ public:
 
 };
 
-namespace COMP_DEBUG {
+namespace ComponentDebug {
 	void AudioSourceDebug(AudioSource* _as);
 }
 
-namespace MONO_INTERNAL_METHOD {
+namespace MonoInternalMethods {
 	void InternalGetParams(uint64_t _nativeHandle, float* _volume, float* _pitch);
 	void InternalSetParams(uint64_t _nativeHandle, float _volume, float _pitch);
 	void InternalPlayOneShot(uint64_t _nativeHandle, float _volume, float _pitch, MonoString* _path);

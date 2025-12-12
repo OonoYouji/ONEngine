@@ -55,32 +55,32 @@ ImGuiInspectorWindow::ImGuiInspectorWindow(const std::string& _windowName, DxMan
 	/// ---------------------------------------------------
 
 	/// compute
-	RegisterComponent<Transform>([&](IComponent* _comp) { COMP_DEBUG::TransformDebug(static_cast<Transform*>(_comp)); });
+	RegisterComponent<Transform>([&](IComponent* _comp) { ComponentDebug::TransformDebug(static_cast<Transform*>(_comp)); });
 	RegisterComponent<DirectionalLight>([&](IComponent* _comp) { DirectionalLightDebug(static_cast<DirectionalLight*>(_comp)); });
-	RegisterComponent<AudioSource>([&](IComponent* _comp) { COMP_DEBUG::AudioSourceDebug(static_cast<AudioSource*>(_comp)); });
-	RegisterComponent<Variables>([&](IComponent* _comp) { COMP_DEBUG::VariablesDebug(static_cast<Variables*>(_comp)); });
-	RegisterComponent<Effect>([&](IComponent* _comp) { COMP_DEBUG::EffectDebug(static_cast<Effect*>(_comp)); });
-	RegisterComponent<Script>([&](IComponent* _comp) { COMP_DEBUG::ScriptDebug(static_cast<Script*>(_comp)); });
-	RegisterComponent<Terrain>([&](IComponent* _comp) { COMP_DEBUG::TerrainDebug(static_cast<Terrain*>(_comp), pEcs_, pAssetCollection_); });
-	RegisterComponent<TerrainCollider>([&](IComponent* _comp) { COMP_DEBUG::TerrainColliderDebug(static_cast<TerrainCollider*>(_comp)); });
-	RegisterComponent<GrassField>([&](IComponent* _comp) { COMP_DEBUG::GrassFieldDebug(static_cast<GrassField*>(_comp), pAssetCollection_); });
-	RegisterComponent<CameraComponent>([&](IComponent* _comp) { COMP_DEBUG::CameraDebug(static_cast<CameraComponent*>(_comp)); });
-	RegisterComponent<ShadowCaster>([&](IComponent* _comp) { COMP_DEBUG::ShadowCasterDebug(static_cast<ShadowCaster*>(_comp)); });
-	RegisterComponent<VoxelTerrain>([&](IComponent* _comp) { COMP_DEBUG::VoxelTerrainDebug(static_cast<VoxelTerrain*>(_comp), pDxManager_); });
+	RegisterComponent<AudioSource>([&](IComponent* _comp) { ComponentDebug::AudioSourceDebug(static_cast<AudioSource*>(_comp)); });
+	RegisterComponent<Variables>([&](IComponent* _comp) { ComponentDebug::VariablesDebug(static_cast<Variables*>(_comp)); });
+	RegisterComponent<Effect>([&](IComponent* _comp) { ComponentDebug::EffectDebug(static_cast<Effect*>(_comp)); });
+	RegisterComponent<Script>([&](IComponent* _comp) { ComponentDebug::ScriptDebug(static_cast<Script*>(_comp)); });
+	RegisterComponent<Terrain>([&](IComponent* _comp) { ComponentDebug::TerrainDebug(static_cast<Terrain*>(_comp), pEcs_, pAssetCollection_); });
+	RegisterComponent<TerrainCollider>([&](IComponent* _comp) { ComponentDebug::TerrainColliderDebug(static_cast<TerrainCollider*>(_comp)); });
+	RegisterComponent<GrassField>([&](IComponent* _comp) { ComponentDebug::GrassFieldDebug(static_cast<GrassField*>(_comp), pAssetCollection_); });
+	RegisterComponent<CameraComponent>([&](IComponent* _comp) { ComponentDebug::CameraDebug(static_cast<CameraComponent*>(_comp)); });
+	RegisterComponent<ShadowCaster>([&](IComponent* _comp) { ComponentDebug::ShadowCasterDebug(static_cast<ShadowCaster*>(_comp)); });
+	RegisterComponent<VoxelTerrain>([&](IComponent* _comp) { ComponentDebug::VoxelTerrainDebug(static_cast<VoxelTerrain*>(_comp), pDxManager_); });
 
 	/// renderer
-	RegisterComponent<MeshRenderer>([&](IComponent* _comp) { COMP_DEBUG::MeshRendererDebug(static_cast<MeshRenderer*>(_comp), pAssetCollection_); });
+	RegisterComponent<MeshRenderer>([&](IComponent* _comp) { ComponentDebug::MeshRendererDebug(static_cast<MeshRenderer*>(_comp), pAssetCollection_); });
 	RegisterComponent<CustomMeshRenderer>([&](IComponent* _comp) { CustomMeshRendererDebug(static_cast<CustomMeshRenderer*>(_comp)); });
-	RegisterComponent<SpriteRenderer>([&](IComponent* _comp) { COMP_DEBUG::SpriteDebug(static_cast<SpriteRenderer*>(_comp), pAssetCollection_); });
+	RegisterComponent<SpriteRenderer>([&](IComponent* _comp) { ComponentDebug::SpriteDebug(static_cast<SpriteRenderer*>(_comp), pAssetCollection_); });
 	RegisterComponent<Line2DRenderer>([&]([[maybe_unused]] IComponent* _comp) {});
 	RegisterComponent<Line3DRenderer>([&]([[maybe_unused]] IComponent* _comp) {});
-	RegisterComponent<SkinMeshRenderer>([&](IComponent* _comp) { COMP_DEBUG::SkinMeshRendererDebug(static_cast<SkinMeshRenderer*>(_comp)); });
-	RegisterComponent<ScreenPostEffectTag>([&](IComponent* _comp) { COMP_DEBUG::ScreenPostEffectTagDebug(static_cast<ScreenPostEffectTag*>(_comp)); });
-	RegisterComponent<Skybox>([&](IComponent* _comp) { COMP_DEBUG::SkyboxDebug(static_cast<Skybox*>(_comp)); });
+	RegisterComponent<SkinMeshRenderer>([&](IComponent* _comp) { ComponentDebug::SkinMeshRendererDebug(static_cast<SkinMeshRenderer*>(_comp)); });
+	RegisterComponent<ScreenPostEffectTag>([&](IComponent* _comp) { ComponentDebug::ScreenPostEffectTagDebug(static_cast<ScreenPostEffectTag*>(_comp)); });
+	RegisterComponent<Skybox>([&](IComponent* _comp) { ComponentDebug::SkyboxDebug(static_cast<Skybox*>(_comp)); });
 
 	/// collider
-	RegisterComponent<SphereCollider>([&](IComponent* _comp) { COMP_DEBUG::SphereColliderDebug(static_cast<SphereCollider*>(_comp)); });
-	RegisterComponent<BoxCollider>([&](IComponent* _comp) { COMP_DEBUG::BoxColliderDebug(static_cast<BoxCollider*>(_comp)); });
+	RegisterComponent<SphereCollider>([&](IComponent* _comp) { ComponentDebug::SphereColliderDebug(static_cast<SphereCollider*>(_comp)); });
+	RegisterComponent<BoxCollider>([&](IComponent* _comp) { ComponentDebug::BoxColliderDebug(static_cast<BoxCollider*>(_comp)); });
 
 
 
@@ -89,9 +89,10 @@ ImGuiInspectorWindow::ImGuiInspectorWindow(const std::string& _windowName, DxMan
 	/// ---------------------------------------------------
 
 	inspectorFunctions_.resize(static_cast<size_t>(SelectionType::Count));
+	inspectorFunctions_[static_cast<size_t>(SelectionType::None)] = ([this]() {});
 	inspectorFunctions_[static_cast<size_t>(SelectionType::Entity)] = ([this]() { EntityInspector(); });
 	inspectorFunctions_[static_cast<size_t>(SelectionType::Asset)] = ([this]() { AssetInspector(); });
-
+	inspectorFunctions_[static_cast<size_t>(SelectionType::Script)] = ([this]() {});
 }
 
 
@@ -117,7 +118,7 @@ void ImGuiInspectorWindow::EntityInspector() {
 	}
 
 	/// アセットなら抜ける
-	bool isAsset = pAssetCollection_->IsAssetExist(selectionGuid);
+	bool isAsset = pAssetCollection_->IsAsset(selectionGuid);
 	if (isAsset) {
 		return;
 	}

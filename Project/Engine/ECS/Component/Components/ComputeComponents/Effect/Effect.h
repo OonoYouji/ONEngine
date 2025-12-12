@@ -228,7 +228,7 @@ public:
 };
 
 
-namespace COMP_DEBUG {
+namespace ComponentDebug {
 	/// @brief Effectのデバッグ関数
 	/// @param _effect デバッグするEffect
 	void EffectDebug(Effect* _effect);

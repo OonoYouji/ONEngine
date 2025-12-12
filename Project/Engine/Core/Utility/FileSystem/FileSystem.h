@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// std
 #include <string>
@@ -42,7 +42,7 @@ std::string LoadFile(const std::string& _path);
 /// //////////////////////////////////////////////////////
 /// Monoから呼び出すための内部関数群
 /// //////////////////////////////////////////////////////
-namespace MONO_INTERNAL_METHOD {
+namespace MonoInternalMethods {
 
 /// @brief ファイルを読み込む
 MonoString* LoadFile(MonoString* _path);

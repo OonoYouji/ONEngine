@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// externals
 #include <nlohmann/json.hpp>
@@ -12,12 +12,12 @@
 #include "Engine/Graphics/Buffer/Data/ViewProjection.h"
 
 
-/// @brief COMP_DEBUG名前空間ように前方宣言
+/// @brief ComponentDebug名前空間ように前方宣言
 namespace ONEngine {
 
 class ShadowCaster;
 
-namespace COMP_DEBUG {
+namespace ComponentDebug {
 void ShadowCasterDebug(ShadowCaster* _shadowCaster);
 }
 
@@ -38,7 +38,7 @@ struct ShadowParameter {
 /// 影の投影を行うためのコンポーネント
 /// ///////////////////////////////////////////////////
 class ShadowCaster : public IComponent {
-	friend void COMP_DEBUG::ShadowCasterDebug(ShadowCaster* _shadowCaster);
+	friend void ComponentDebug::ShadowCasterDebug(ShadowCaster* _shadowCaster);
 	friend void from_json(const nlohmann::json& _j, ShadowCaster& _c);
 	friend void to_json(nlohmann::json& _j, const ShadowCaster& _c);
 public:

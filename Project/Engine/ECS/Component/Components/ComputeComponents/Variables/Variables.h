@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// std
 #include <variant>
@@ -151,7 +151,7 @@ private:
 
 
 /// @brief ComponentのDebug
-namespace COMP_DEBUG {
+namespace ComponentDebug {
 	/// @brief Variableをデバッグする
 	/// @param _variables 対象のポインタ
 	void VariablesDebug(Variables* _variables);

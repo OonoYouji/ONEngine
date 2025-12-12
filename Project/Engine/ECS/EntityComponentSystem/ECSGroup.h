@@ -55,18 +55,18 @@ public:
 	/// ----- component ----- ///
 
 	/// 生成
-	template<ComponentType Comp>
+	template<IsComponent Comp>
 	Comp* AddComponent();
 	IComponent* AddComponent(const std::string& _compName);
 
 	/// 取得
-	template<ComponentType Comp>
+	template<IsComponent Comp>
 	Comp* GetComponent(size_t _entityId);
-	template<ComponentType Comp>
+	template<IsComponent Comp>
 	ComponentArray<Comp>* GetComponentArray();
 
 	/// 削除
-	template<ComponentType Comp>
+	template<IsComponent Comp>
 	void RemoveComponent(uint32_t _compId);
 	void RemoveComponent(size_t _hash, uint32_t _compId);
 	void RemoveComponentAll(GameEntity* _entity);
@@ -133,12 +133,12 @@ public:
 /// inline methods
 /// ===================================================
 
-template<ComponentType Comp>
+template<IsComponent Comp>
 inline Comp* ECSGroup::AddComponent() {
 	return componentCollection_->AddComponent<Comp>();
 }
 
-template<ComponentType Comp>
+template<IsComponent Comp>
 inline Comp* ECSGroup::GetComponent(size_t _entityId) {
 	GameEntity* entity = entityCollection_->GetEntity(_entityId);
 	if (entity) {
@@ -148,12 +148,12 @@ inline Comp* ECSGroup::GetComponent(size_t _entityId) {
 	return nullptr;
 }
 
-template<ComponentType Comp>
+template<IsComponent Comp>
 inline ComponentArray<Comp>* ECSGroup::GetComponentArray() {
 	return componentCollection_->GetComponentArray<Comp>();
 }
 
-template<ComponentType Comp>
+template<IsComponent Comp>
 inline void ECSGroup::RemoveComponent(uint32_t _compId) {
 	componentCollection_->RemoveComponent<Comp>(_compId);
 }

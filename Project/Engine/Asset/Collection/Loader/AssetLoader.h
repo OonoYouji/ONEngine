@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// directX
 #include <d3d12.h>
@@ -154,7 +154,7 @@ private:
 	class DxManager*       pDxManager_;
 	class AssetCollection* pAssetCollection_;
 
-	unsigned int assimpLoadFlags_; /// assimpで.objを読み込むときに使用するフラグ
+	uint32_t assimpLoadFlags_; /// assimpで.objを読み込むときに使用するフラグ
 
 };
 

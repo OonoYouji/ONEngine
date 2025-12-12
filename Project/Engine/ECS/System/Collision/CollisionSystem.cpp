@@ -421,7 +421,7 @@ bool CheckMethod::CollisionCheckSphereVsSphere(SphereCollider* _s1, SphereCollid
 	GameEntity* e1 = _s1->GetOwner();
 	GameEntity* e2 = _s2->GetOwner();
 
-	float distance = (e1->GetPosition() - e2->GetPosition()).Len();
+	float distance = (e1->GetPosition() - e2->GetPosition()).Length();
 
 	/// 衝突情報の設定
 	if (_info) {
@@ -459,7 +459,7 @@ bool CheckMethod::CollisionCheckSphereVsBox(SphereCollider* _s, BoxCollider* _b,
 
 		/// 最近接点と球中心の差
 		Vector3 delta = sphereCenter - closestPoint;
-		float dist = delta.Len();
+		float dist = delta.Length();
 
 		/// AABBとの各軸方向の距離
 		float dxMin = std::fabs(sphereCenter.x - cubeMin.x);
@@ -471,21 +471,21 @@ bool CheckMethod::CollisionCheckSphereVsBox(SphereCollider* _s, BoxCollider* _b,
 
 		/// 最も近い面を探す
 		float minDist = (std::min)({ dxMin, dxMax, dyMin, dyMax, dzMin, dzMax });
-		Vector3 normal = Vector3::kZero;
+		Vector3 normal = Vector3::Zero;
 
 		/// 最も近い面の法線を設定
 		if (minDist == dxMin) {
-			normal = Vector3::kLeft;
+			normal = Vector3::Left;
 		} else if (minDist == dxMax) {
-			normal = Vector3::kRight;
+			normal = Vector3::Right;
 		} else if (minDist == dyMin) {
-			normal = Vector3::kDown;
+			normal = Vector3::Down;
 		} else if (minDist == dyMax) {
-			normal = Vector3::kUp;
+			normal = Vector3::Up;
 		} else if (minDist == dzMin) {
-			normal = Vector3::kBack;
+			normal = Vector3::Back;
 		} else if (minDist == dzMax) {
-			normal = Vector3::kFront;
+			normal = Vector3::Forward;
 		}
 
 		// めり込み量（球がAABBの表面を越えた距離）

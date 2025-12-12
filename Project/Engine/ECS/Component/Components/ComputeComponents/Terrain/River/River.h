@@ -35,14 +35,6 @@ struct RiverVertex {
 /// ///////////////////////////////////////////////////
 /// spline曲線の計算関数
 /// ///////////////////////////////////////////////////
-Vector3 CatmullRomPosition(
-	const Vector3& _p0,
-	const Vector3& _p1,
-	const Vector3& _p2,
-	const Vector3& _p3,
-	float _t
-);
-
 RiverControlPoint CatmullRom(
 	const RiverControlPoint& _p0,
 	const RiverControlPoint& _p1,
