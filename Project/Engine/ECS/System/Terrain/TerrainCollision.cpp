@@ -101,7 +101,7 @@ void TerrainCollision::RuntimeUpdate(ECSGroup* _ecs) {
 						float dot = Vector3::Dot(velocity.Normalize(), gradient.Normalize());
 
 						float slopeAngle = GetSlopeAngle(terrainCollider, spherePos);
-						float maxClimbAngle = terrainCollider->GetMaxSlopeAngle() * Mathf::Deg2Rad;
+						float maxClimbAngle = terrainCollider->GetMaxSlopeAngle() * Math::Deg2Rad;
 
 						/// 傾斜が急すぎる場合は押し上げない
 						if (dot < 0.0f && slopeAngle > maxClimbAngle) {

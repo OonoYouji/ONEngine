@@ -6,7 +6,7 @@
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Core/Utility/Utility.h"
-#include "Engine/Core/Utility/Math/Mathf.h"
+#include "Engine/Core/Utility/Math/Math.h"
 
 
 using namespace ONEngine;

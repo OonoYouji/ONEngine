@@ -91,7 +91,7 @@ void RiverMeshGeneratePipeline::Execute(ONEngine::EntityComponentSystem* _ecs, O
 	const UINT totalVertices = river->GetSamplePerSegment() * (river->GetNumControlPoint() - 3) * 2;
 	const UINT threadsPerGroup = 16;
 	cmdList->Dispatch(
-		ONEngine::Mathf::DivideAndRoundUp(totalVertices, threadsPerGroup),
+		ONEngine::Math::DivideAndRoundUp(totalVertices, threadsPerGroup),
 		1, 1
 	);
 }

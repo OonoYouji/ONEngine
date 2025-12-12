@@ -76,7 +76,7 @@ void RiverTerrainAbjustPipeline::Execute(ONEngine::EntityComponentSystem* _ecs, 
 
 	const UINT maxVertex = static_cast<UINT>(terrain->GetMaxVertexNum());
 	const UINT groupSize = 32;
-	cmdList->Dispatch(ONEngine::Mathf::DivideAndRoundUp(maxVertex, groupSize), 1, 1);
+	cmdList->Dispatch(ONEngine::Math::DivideAndRoundUp(maxVertex, groupSize), 1, 1);
 
 }
 

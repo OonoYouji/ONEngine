@@ -78,7 +78,7 @@ void PostProcessTerrainBrush::Execute(
 	/// brush data
 	const Vector2 mousePos = Input::GetImGuiImageMousePosNormalized("Scene");
 	/// 範囲外なら処理しない
-	if (!Mathf::Inside(mousePos, Vector2::Zero, Vector2::HD)) {
+	if (!Math::Inside(mousePos, Vector2::Zero, Vector2::HD)) {
 		return;
 	}
 
@@ -111,8 +111,8 @@ void PostProcessTerrainBrush::Execute(
 
 
 	cmdList->Dispatch(
-		Mathf::DivideAndRoundUp(static_cast<uint32_t>(EngineConfig::kWindowSize.x), 16),
-		Mathf::DivideAndRoundUp(static_cast<uint32_t>(EngineConfig::kWindowSize.y), 16),
+		Math::DivideAndRoundUp(static_cast<uint32_t>(EngineConfig::kWindowSize.x), 16),
+		Math::DivideAndRoundUp(static_cast<uint32_t>(EngineConfig::kWindowSize.y), 16),
 		1
 	);
 

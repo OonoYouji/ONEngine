@@ -1,4 +1,4 @@
-﻿#include "Mathf.h"
+﻿#include "Math.h"
 
 /// std
 #include <filesystem>
@@ -12,13 +12,13 @@ namespace fs = std::filesystem;
 
 using namespace ONEngine;
 
-float Mathf::Cot(float _t) {
+float Math::Cot(float _t) {
 	/// 逆タンジェント
 	return 1.0f / std::tan(_t);
 }
 
 
-uint32_t Mathf::DivideAndRoundUp(uint32_t _numerator, uint32_t _denominator) {
+uint32_t Math::DivideAndRoundUp(uint32_t _numerator, uint32_t _denominator) {
 	if (_denominator == 0) {
 		return 0; // ゼロ除算防止
 	}
@@ -27,7 +27,7 @@ uint32_t Mathf::DivideAndRoundUp(uint32_t _numerator, uint32_t _denominator) {
 }
 
 
-Vector3 Mathf::CatmullRomPosition(const Vector3& _p0, const Vector3& _p1, const Vector3& _p2, const Vector3& _p3, float _t) {
+Vector3 Math::CatmullRomPosition(const Vector3& _p0, const Vector3& _p1, const Vector3& _p2, const Vector3& _p3, float _t) {
 	float t2 = _t * _t;
 	float t3 = t2 * _t;
 
@@ -38,13 +38,13 @@ Vector3 Mathf::CatmullRomPosition(const Vector3& _p0, const Vector3& _p1, const 
 		(-_p0 + 3.0f * _p1 - 3.0f * _p2 + _p3) * t3);
 }
 
-bool ONEngine::Mathf::Inside(const Vector2& _point, const Vector2& _min, const Vector2& _max) {
+bool ONEngine::Math::Inside(const Vector2& _point, const Vector2& _min, const Vector2& _max) {
 	/// 点が矩形の内側にあるか判定
 	return (_point.x >= _min.x && _point.x <= _max.x
 		&& _point.y >= _min.y && _point.y <= _max.y);
 }
 
-Vector4 ONEngine::Mathf::ConvertToVector4(const Vector3& _v3, float _w) {
+Vector4 ONEngine::Math::ConvertToVector4(const Vector3& _v3, float _w) {
 	return Vector4(
 		_v3.x,
 		_v3.y,
