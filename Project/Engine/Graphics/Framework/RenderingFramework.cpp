@@ -59,7 +59,7 @@ void RenderingFramework::Initialize(DxManager* _dxm, WindowManager* _windowManag
 #else
 	copyImagePipeline_ = std::make_unique<CopyImageRenderingPipeline>(assetCollection_.get());
 	copyImagePipeline_->Initialize(shaderCompiler_.get(), pDxManager_);
-	releaseBuildSubWindow_ = pWindowManager_->GenerateWindow(L"test", Vector2::kHD, WindowManager::WindowType::Sub);
+	releaseBuildSubWindow_ = pWindowManager_->GenerateWindow(L"test", Vector2::HD, WindowManager::WindowType::Sub);
 	pWindowManager_->HideGameWindow(releaseBuildSubWindow_);
 #endif // DEBUG_MODE
 

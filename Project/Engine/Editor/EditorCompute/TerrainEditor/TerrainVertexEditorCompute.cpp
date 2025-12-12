@@ -79,7 +79,7 @@ void TerrainVertexEditorCompute::Execute(ONEngine::EntityComponentSystem* _ecs, 
 
 	/// マウスが範囲外なら処理しない
 	const ONEngine::Vector2& mousePosition = ONEngine::Input::GetImGuiImageMousePosNormalized("Scene");
-	if (!ONEngine::Mathf::Inside(mousePosition, ONEngine::Vector2::kZero, ONEngine::Vector2::kHD)) {
+	if (!ONEngine::Mathf::Inside(mousePosition, ONEngine::Vector2::Zero, ONEngine::Vector2::HD)) {
 		return;
 	}
 

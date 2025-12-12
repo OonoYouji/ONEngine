@@ -89,9 +89,10 @@ ImGuiInspectorWindow::ImGuiInspectorWindow(const std::string& _windowName, DxMan
 	/// ---------------------------------------------------
 
 	inspectorFunctions_.resize(static_cast<size_t>(SelectionType::Count));
+	inspectorFunctions_[static_cast<size_t>(SelectionType::None)] = ([this]() {});
 	inspectorFunctions_[static_cast<size_t>(SelectionType::Entity)] = ([this]() { EntityInspector(); });
 	inspectorFunctions_[static_cast<size_t>(SelectionType::Asset)] = ([this]() { AssetInspector(); });
-
+	inspectorFunctions_[static_cast<size_t>(SelectionType::Script)] = ([this]() {});
 }
 
 

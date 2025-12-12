@@ -270,7 +270,7 @@ void River::SetMaterialData(int32_t _entityId, int32_t _texIndex) {
 	materialBuffer_.SetMappedData({
 		.uvTransform = {
 			.position = Vector2(Time::GetTime(), 0.0f),
-			.scale = Vector2::kOne,
+			.scale = Vector2::One,
 			.rotate = 0.0f,
 		},
 		.baseColor = Vector4::kWhite,

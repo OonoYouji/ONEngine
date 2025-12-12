@@ -64,8 +64,8 @@ Guid Guid::FromString(const std::string& _str) {
 		return Guid{};
 	}
 
-	uint64_t hi = std::stoull(_str.substr(0, kGuidStringLength), nullptr, kGuidStringLength);
-	uint64_t lo = std::stoull(_str.substr(kGuidStringLength, kGuidStringLength), nullptr, kGuidStringLength);
+	uint64_t hi = std::stoull(_str.substr(0, kGuidHexSegmentLength), nullptr, kGuidHexSegmentLength);
+	uint64_t lo = std::stoull(_str.substr(kGuidHexSegmentLength, kGuidHexSegmentLength), nullptr, kGuidHexSegmentLength);
 	return Guid(hi, lo);
 }
 

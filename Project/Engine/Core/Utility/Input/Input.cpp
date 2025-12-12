@@ -68,7 +68,7 @@ Vector2 Input::GetGamepadLeftThumb() {
 		);
 	}
 
-	return Vector2::kZero;
+	return Vector2::Zero;
 }
 
 Vector2 Input::GetGamepadRightThumb() {
@@ -81,7 +81,7 @@ Vector2 Input::GetGamepadRightThumb() {
 		);
 	}
 
-	return Vector2::kZero;
+	return Vector2::Zero;
 }
 
 float Input::GetMouseWheel() {

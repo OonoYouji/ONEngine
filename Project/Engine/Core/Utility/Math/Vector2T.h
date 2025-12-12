@@ -1,10 +1,21 @@
 ﻿#pragma once
+#pragma once
+
+#ifdef max
+#undef max
+#endif
+
 
 /// std
 #include <cmath>
+#include <limits>
+#include <format>
+#include <type_traits>
+#include <algorithm>
 
 /// externals
 #include <nlohmann/json.hpp>
+
 
 namespace ONEngine {
 
@@ -24,24 +35,25 @@ struct Vector2T final {
 	/// public : constants
 	/// ===================================================
 
-	static constexpr Vector2T<T> Zero = Vector2T<T>(static_cast<T>(0), static_cast<T>(0));
-	static constexpr Vector2T<T> One = Vector2T<T>(static_cast<T>(1), static_cast<T>(1));
+	static const Vector2T<T> Zero;
+	static const Vector2T<T> One;
 
-	static constexpr Vector2T<T> Left = Vector2T<T>(static_cast<T>(-1), static_cast<T>(0));
-	static constexpr Vector2T<T> Right = Vector2T<T>(static_cast<T>(1), static_cast<T>(0));
-	static constexpr Vector2T<T> Up = Vector2T<T>(static_cast<T>(0), static_cast<T>(1));
-	static constexpr Vector2T<T> Down = Vector2T<T>(static_cast<T>(0), static_cast<T>(-1));
+	static const Vector2T<T> Left;
+	static const Vector2T<T> Right;
+	static const Vector2T<T> Up;
+	static const Vector2T<T> Down;
 
-	static constexpr Vector2T<T> Infinity = Vector2T<T>(std::numeric_limits<T>::infinity(), std::numeric_limits<T>::infinity());
-	static constexpr Vector2T<T> NegativeInfinity = Vector2T<T>(-std::numeric_limits<T>::infinity(), -std::numeric_limits<T>::infinity());
+	static const Vector2T<T> Infinity;
+	static const Vector2T<T> NegativeInfinity;
 
-	static constexpr Vector2T<T> Max = Vector2T<T>(std::numeric_limits<T>::max(), std::numeric_limits<T>::max());
-	static constexpr Vector2T<T> Min = Vector2T<T>(std::numeric_limits<T>::lowest(), std::numeric_limits<T>::lowest());
+	static const Vector2T<T> Max;
+	static const Vector2T<T> Min;
 
-	static constexpr Vector2T<T> HD = Vector2T<T>(static_cast<T>(1280), static_cast<T>(720));
-	static constexpr Vector2T<T> FHD = Vector2T<T>(static_cast<T>(1920), static_cast<T>(1080));
+	static const Vector2T<T> HD;
+	static const Vector2T<T> FHD;
 
-	static constexpr Vector2T<T> Half = Vector2T<T>(static_cast<T>(0.5), static_cast<T>(0.5));
+	static const Vector2T<T> Half;
+
 
 	/// ===================================================
 	/// public : constructors
@@ -51,6 +63,7 @@ struct Vector2T final {
 	Vector2T(T _x, T _y) : x(_x), y(_y) {}
 	Vector2T(const Vector2T&) = default;
 	Vector2T(Vector2T&&) = default;
+
 	Vector2T& operator=(const Vector2T&) = default;
 	Vector2T& operator=(Vector2T&&) = default;
 
@@ -208,6 +221,47 @@ struct Vector2T final {
 };
 
 
+// クラス外で定義
+template <typename T>
+const Vector2T<T> Vector2T<T>::Zero = Vector2T<T>(static_cast<T>(0), static_cast<T>(0));
+
+template <typename T>
+const Vector2T<T> Vector2T<T>::One = Vector2T<T>(static_cast<T>(1), static_cast<T>(1));
+
+template <typename T>
+const Vector2T<T> Vector2T<T>::Left = Vector2T<T>(static_cast<T>(-1), static_cast<T>(0));
+
+template <typename T>
+const Vector2T<T> Vector2T<T>::Right = Vector2T<T>(static_cast<T>(1), static_cast<T>(0));
+
+template <typename T>
+const Vector2T<T> Vector2T<T>::Up = Vector2T<T>(static_cast<T>(0), static_cast<T>(1));
+
+template <typename T>
+const Vector2T<T> Vector2T<T>::Down = Vector2T<T>(static_cast<T>(0), static_cast<T>(-1));
+
+template <typename T>
+const Vector2T<T> Vector2T<T>::Infinity = Vector2T<T>(std::numeric_limits<T>::infinity(), std::numeric_limits<T>::infinity());
+
+template <typename T>
+const Vector2T<T> Vector2T<T>::NegativeInfinity = Vector2T<T>(-std::numeric_limits<T>::infinity(), -std::numeric_limits<T>::infinity());
+
+template <typename T>
+const Vector2T<T> Vector2T<T>::Max = Vector2T<T>(std::numeric_limits<T>::max(), std::numeric_limits<T>::max());
+
+template <typename T>
+const Vector2T<T> Vector2T<T>::Min = Vector2T<T>(std::numeric_limits<T>::lowest(), std::numeric_limits<T>::lowest());
+
+template <typename T>
+const Vector2T<T> Vector2T<T>::HD = Vector2T<T>(static_cast<T>(1280), static_cast<T>(720));
+
+template <typename T>
+const Vector2T<T> Vector2T<T>::FHD = Vector2T<T>(static_cast<T>(1920), static_cast<T>(1080));
+
+template <typename T>
+const Vector2T<T> Vector2T<T>::Half = Vector2T<T>(static_cast<T>(0.5), static_cast<T>(0.5));
+
+
 /// ///////////////////////////////////////////////////
 /// operator
 /// ///////////////////////////////////////////////////
@@ -274,16 +328,3 @@ void to_json(nlohmann::json& _j, const Vector2T<T>& _v) {
 }
 
 }
-
-
-template <typename T>
-struct std::formatter<ONEngine::Vector2T<T>> {
-	constexpr auto parse(format_parse_context& _ctx) {
-		return _ctx.begin();
-	}
-
-	template <typename FormatContext>
-	auto format(const ONEngine::Vector2& _vec, FormatContext& _ctx) const {
-		return std::format_to(_ctx.out(), "({}, {})", _vec.x, _vec.y);
-	}
-};
