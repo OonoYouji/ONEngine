@@ -1,4 +1,4 @@
-#include "PostProcessLighting.h"
+﻿#include "PostProcessLighting.h"
 
 using namespace ONEngine;
 
@@ -90,7 +90,7 @@ void PostProcessLighting::Execute(const std::string& _textureName, DxCommand* _d
 		/// set light data
 		directionalLightBufferData_->SetMappedData(
 			{
-				Vector4::Convert(directionalLights.front()->GetOwner()->GetPosition()),
+				Mathf::ConvertToVector4(directionalLights.front()->GetOwner()->GetPosition(), 1.0f),
 				directionalLights.front()->GetColor(),
 				directionalLights.front()->GetDirection(),
 				directionalLights.front()->GetIntensity()
@@ -101,7 +101,7 @@ void PostProcessLighting::Execute(const std::string& _textureName, DxCommand* _d
 		CameraComponent* camera = ecsGroup->GetMainCamera();
 		if (camera) {
 			if (GameEntity* entity = camera->GetOwner()) {
-				cameraBufferData_->SetMappedData({ Vector4(entity->GetPosition(), 1.0f) });
+				cameraBufferData_->SetMappedData({ Mathf::ConvertToVector4(entity->GetPosition(), 1.0f) });
 			}
 		}
 

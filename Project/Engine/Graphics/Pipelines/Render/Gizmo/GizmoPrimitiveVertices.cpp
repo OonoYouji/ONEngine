@@ -20,11 +20,11 @@ std::vector<VertexData> ONEngine::GetSphereVertices(const Vector3& _center, floa
 			Vector3 dir1 = Vector3::Normalize(_axis1 * std::cos(angle1) + _axis2 * std::sin(angle1));
 
 			VertexData v0;
-			v0.position = Vector4(_center + dir0 * _radius, 1.0f);
+			v0.position = Vector4(Mathf::ConvertToVector4(_center + dir0 * _radius, 1.0f));
 			v0.color = _color;
 
 			VertexData v1;
-			v1.position = Vector4(_center + dir1 * _radius, 1.0f);
+			v1.position = Vector4(Mathf::ConvertToVector4(_center + dir1 * _radius, 1.0f));
 			v1.color = _color;
 
 			outVertices.push_back(v0);
@@ -69,10 +69,10 @@ std::vector<VertexData> ONEngine::GetCubeVertices(const Vector3& _center, const 
 
 	VertexData v0, v1;
 	for (size_t i = 0; i < sizeof(indices) / sizeof(int); i += 2) {
-		v0.position = Vector4(vertices[indices[i + 0]], 1.0f);
+		v0.position = Vector4(Mathf::ConvertToVector4(vertices[indices[i + 0]], 1.0f));
 		v0.color = _color;
 
-		v1.position = Vector4(vertices[indices[i + 1]], 1.0f);
+		v1.position = Vector4(Mathf::ConvertToVector4(vertices[indices[i + 1]], 1.0f));
 		v1.color = _color;
 
 		outVertices.push_back(v0);
@@ -103,9 +103,9 @@ std::vector<GizmoPrimitive::VertexData> ONEngine::GetRectVertices(const Matrix4x
 	/// 各頂点をつなぐ線を生成
 	for (int i = 0; i < 4; ++i) {
 		VertexData v0, v1;
-		v0.position = Vector4(vertices[i], 1.0f);
+		v0.position = Vector4(Mathf::ConvertToVector4(vertices[i], 1.0f));
 		v0.color = _color;
-		v1.position = Vector4(vertices[(i + 1) % 4], 1.0f);
+		v1.position = Vector4(Mathf::ConvertToVector4(vertices[(i + 1) % 4], 1.0f));
 		v1.color = _color;
 		outVertices.push_back(v0);
 		outVertices.push_back(v1);

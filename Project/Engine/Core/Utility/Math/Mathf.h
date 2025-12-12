@@ -8,6 +8,7 @@
 /// engine
 #include "Engine/Core/Utility/Math/Vector2.h"
 #include "Engine/Core/Utility/Math/Vector3.h"
+#include "Engine/Core/Utility/Math/Vector4.h"
 
 namespace ONEngine {
 
@@ -110,6 +111,12 @@ Vector3 CatmullRomPosition(
 /// @param _max Rect の最大値
 /// @return true: 内側にある / false: 内側にない
 bool Inside(const Vector2& _point, const Vector2& _min, const Vector2& _max);
+
+/// @brief Vector3 を Vector4 に変換する
+/// @param _v3 Vector3 型のベクトル
+/// @param _w Vector4 の w 成分に設定する値
+/// @return Vector4 型のベクトル
+Vector4 ConvertToVector4(const Vector3& _v3, float _w);
 
 
 } /// namespace Mathf

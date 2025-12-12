@@ -1,4 +1,4 @@
-#include "GPUMaterial.h"
+﻿#include "GPUMaterial.h"
 
 using namespace ONEngine;
 
@@ -26,7 +26,7 @@ void ONEngine::to_json(nlohmann::json& _j, const GPUMaterial& _material) {
 
 void ONEngine::from_json(const nlohmann::json& _j, GPUMaterial& _material) {
 	_material.uvTransform     = _j.value("uvTransform", UVTransform{});
-	_material.baseColor       = _j.value("baseColor", Vector4::kWhite);
+	_material.baseColor       = _j.value("baseColor", Vector4::White);
 	_material.postEffectFlags = _j.value("postEffectFlags", PostEffectFlags_None);
 	_material.entityId        = _j.value("entityId", 0);
 	_material.baseTextureId   = _j.value("baseTextureId", -1);

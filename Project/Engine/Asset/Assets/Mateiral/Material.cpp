@@ -1,4 +1,4 @@
-#include "Material.h"
+﻿#include "Material.h"
 
 /// std
 #include <fstream>
@@ -17,7 +17,7 @@ Material ONEngine::GenerateMaterial() {
 	Material material;
 
 	material.guid = GenerateGuid();
-	material.baseColor = Vector4::kWhite;
+	material.baseColor = Vector4::White;
 	material.postEffectFlags = 1;
 
 	return material;
@@ -67,7 +67,7 @@ void ONEngine::from_json(const nlohmann::json& _j, Material& _material) {
 	_j.at("baseColor").get<ONEngine::Vector4>();
 
 	_material.guid = _j.value("guid", Guid{});
-	_material.baseColor = _j.value("baseColor", Vector4::kWhite);
+	_material.baseColor = _j.value("baseColor", Vector4::White);
 	_material.postEffectFlags = _j.value("postEffectFlags", 1u);
 	Guid baseTextureGuid = _j.value("baseTextureGuid", Guid::kInvalid);
 	if (baseTextureGuid.CheckValid()) {
@@ -101,7 +101,7 @@ void ONEngine::to_json(nlohmann::json& _j, const Material& _material) {
 /// //////////////////////////////////////////////////////////
 
 Material::Material() {
-	baseColor = Vector4::kWhite;
+	baseColor = Vector4::White;
 	postEffectFlags = 1;
 	uvTransform = UVTransform();
 };

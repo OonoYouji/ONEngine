@@ -9,7 +9,6 @@
 #include "Engine/Asset/Assets/Texture/Texture.h"
 #include "Engine/Asset/Assets/Mateiral/Material.h"
 #include "Engine/Core/Utility/Utility.h"
-#include "Engine/Core/Utility/Math/Vector3Int.h"
 #include "Engine/Graphics/Buffer/ConstantBuffer.h"
 #include "Engine/Graphics/Buffer/StructuredBuffer.h"
 #include "Engine/Graphics/Buffer/Data/GPUMaterial.h"

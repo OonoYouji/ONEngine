@@ -52,13 +52,13 @@ void ONEngine::from_json(const nlohmann::json& _j, SpriteRenderer& _sr) {
 /// /////////////////////////////////////////////////////////////
 
 SpriteRenderer::SpriteRenderer() {
-	gpuMaterial_.baseColor = Vector4::kWhite;
+	gpuMaterial_.baseColor = Vector4::White;
 	gpuMaterial_.entityId = 0;
 	gpuMaterial_.baseTextureId = 0;
 	gpuMaterial_.uvTransform = UVTransform();
 	gpuMaterial_.postEffectFlags = 0;
 
-	material_.baseColor = Vector4::kWhite;
+	material_.baseColor = Vector4::White;
 	material_.postEffectFlags = 0;
 }
 SpriteRenderer::~SpriteRenderer() {}

@@ -238,7 +238,7 @@ void CameraComponent::UpdateViewProjection() {
 	}
 
 	viewProjection_.SetMappedData(ViewProjection(matView_ * matProjection_, matView_, matProjection_));
-	Vector4 cameraPos = Vector4::Convert(entity->GetPosition(), 1.0f);
+	Vector4 cameraPos = Mathf::ConvertToVector4(entity->GetPosition(), 1.0f);
 	cameraPosBuffer_.SetMappedData(cameraPos);
 }
 
@@ -249,7 +249,7 @@ void CameraComponent::MakeViewProjection(DxDevice* _dxDevice) {
 	));
 
 	cameraPosBuffer_.Create(_dxDevice);
-	Vector4 cameraPos = Vector4::Convert(GetOwner()->GetPosition(), 1.0f);
+	Vector4 cameraPos = Mathf::ConvertToVector4(GetOwner()->GetPosition(), 1.0f);
 	cameraPosBuffer_.SetMappedData(cameraPos);
 }
 

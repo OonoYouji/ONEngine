@@ -174,3 +174,12 @@ bool ONEngine::Mathf::Inside(const Vector2& _point, const Vector2& _min, const V
 	return (_point.x >= _min.x && _point.x <= _max.x
 		&& _point.y >= _min.y && _point.y <= _max.y);
 }
+
+Vector4 ONEngine::Mathf::ConvertToVector4(const Vector3& _v3, float _w) {
+	return Vector4(
+		_v3.x,
+		_v3.y,
+		_v3.z,
+		_w
+	);
+}

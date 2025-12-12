@@ -273,7 +273,7 @@ void River::SetMaterialData(int32_t _entityId, int32_t _texIndex) {
 			.scale = Vector2::One,
 			.rotate = 0.0f,
 		},
-		.baseColor = Vector4::kWhite,
+		.baseColor = Vector4::White,
 		.postEffectFlags = 0,
 		.entityId = _entityId,
 		.baseTextureId = _texIndex,
