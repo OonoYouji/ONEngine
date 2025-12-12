@@ -34,7 +34,7 @@ void AssetCollection::LoadResources(const std::vector<std::string>& _filePaths) 
 
 	std::string extension;
 	for (auto& path : _filePaths) {
-		AssetType type = GetAssetTypeFromExtension(Mathf::FileExtension(path));
+		AssetType type = GetAssetTypeFromExtension(FileSystem::FileExtension(path));
 
 		/// 拡張子をチェックして、リソースの種類を決定
 		if (type != AssetType::None) {
@@ -50,7 +50,7 @@ void AssetCollection::UnloadResources(const std::vector<std::string>& _filePaths
 	std::string extension;
 	for (auto& path : _filePaths) {
 		/// 拡張子をチェックして、リソースの種類を決定
-		AssetType type = GetAssetTypeFromExtension(Mathf::FileExtension(path));
+		AssetType type = GetAssetTypeFromExtension(FileSystem::FileExtension(path));
 
 		/// 拡張子ごとに処理
 		switch (type) {
@@ -80,7 +80,7 @@ void AssetCollection::UnloadAssetByPath(const std::string& _filepath) {
 	/// ----- 指定されたファイルパスのアセットを解放する ----- ///
 
 	/// 拡張子をチェックして、リソースの種類を決定
-	AssetType type = GetAssetTypeFromExtension(Mathf::FileExtension(_filepath));
+	AssetType type = GetAssetTypeFromExtension(FileSystem::FileExtension(_filepath));
 
 	/// 拡張子ごとに処理
 	switch (type) {
@@ -186,7 +186,7 @@ bool AssetCollection::HasAsset(const std::string& _filepath) {
 	/// ----- アセットを持っているのかチェックする ----- ///
 
 	/// Typeの判定
-	const std::string extension = Mathf::FileExtension(_filepath);
+	const std::string extension = FileSystem::FileExtension(_filepath);
 	AssetType type = GetAssetTypeFromExtension(extension);
 
 	/// 各コンテナで存在チェック
@@ -225,7 +225,7 @@ bool AssetCollection::ReloadAsset(const std::string& _filepath) {
 	/// ----- アセットのリロード ----- ///
 
 	/// Typeの判定
-	const std::string extension = Mathf::FileExtension(_filepath);
+	const std::string extension = FileSystem::FileExtension(_filepath);
 	AssetType type = GetAssetTypeFromExtension(extension);
 
 	/// Typeごとにリロード処理を実行
@@ -266,10 +266,10 @@ std::vector<std::string> AssetCollection::GetResourceFilePaths(const std::string
 		if (entry.is_regular_file()) {
 			std::string path = entry.path().string();
 			/// パスの中にある "\\" を "/" に置き換える
-			Mathf::ReplaceAll(&path, "\\", "/");
+			FileSystem::ReplaceAll(&path, "\\", "/");
 
 			/// 拡張子をチェックして、リソースの種類を決定
-			AssetType type = GetAssetTypeFromExtension(Mathf::FileExtension(path));
+			AssetType type = GetAssetTypeFromExtension(FileSystem::FileExtension(path));
 			if (type != AssetType::None) {
 				resourcePaths.push_back(path);
 			}
@@ -281,7 +281,7 @@ std::vector<std::string> AssetCollection::GetResourceFilePaths(const std::string
 }
 
 const Guid& AssetCollection::GetAssetGuidFromPath(const std::string& _filepath) const {
-	const std::string extension = Mathf::FileExtension(_filepath);
+	const std::string extension = FileSystem::FileExtension(_filepath);
 	AssetType type = GetAssetTypeFromExtension(extension);
 
 	switch (type) {

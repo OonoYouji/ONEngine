@@ -189,7 +189,7 @@ bool ComponentDebug::TerrainTextureEditModeDebug(std::array<std::string, 4>* _te
 						const std::string path = assetPayload->filePath;
 
 						/// パスの拡張子をチェック
-						const std::string extension = Mathf::FileExtension(path);
+						const std::string extension = FileSystem::FileExtension(path);
 						if (CheckAssetType(extension, AssetType::Texture)) {
 
 							text = path;

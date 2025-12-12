@@ -1,4 +1,4 @@
-#include "AssetLoader.h"
+﻿#include "AssetLoader.h"
 
 /// directX
 #include <d3dx12.h>
@@ -61,7 +61,7 @@ void AssetLoader::Initialize() {
 }
 
 bool AssetLoader::LoadTextureAuto(const std::string& _filepath) {
-	const std::string extension = Mathf::FileExtension(_filepath);
+	const std::string extension = FileSystem::FileExtension(_filepath);
 	if (extension == ".dds") {
 		DirectX::ScratchImage scratch = LoadScratchImage3D(_filepath);
 
@@ -271,7 +271,7 @@ bool AssetLoader::LoadTextureDDS(const std::string& _filepath) {
 bool AssetLoader::ReloadTextureAuto(const std::string& _filepath) {
 	/// ファイルの拡張子を確認して、DDSなら3Dテクスチャとしてリロード
 
-	const std::string extension = Mathf::FileExtension(_filepath);
+	const std::string extension = FileSystem::FileExtension(_filepath);
 	if (extension == ".dds") {
 		DirectX::ScratchImage scratch = LoadScratchImage3D(_filepath);
 		const auto& meta = scratch.GetMetadata();
@@ -408,7 +408,7 @@ bool AssetLoader::LoadModelObj(const std::string& _filepath) {
 	}
 
 	/// ファイルの拡張子を取得
-	std::string fileExtension = Mathf::FileExtension(_filepath);
+	std::string fileExtension = FileSystem::FileExtension(_filepath);
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(_filepath, assimpLoadFlags_);
 
@@ -715,7 +715,7 @@ bool AssetLoader::LoadAudioClip(const std::string& _filepath) {
 bool AssetLoader::LoadMaterial(const std::string& _filepath) {
 
 	/// ファイル拡張子を確認 Materialファイル以外は処理しない
-	const std::string ext = Mathf::FileExtension(_filepath);
+	const std::string ext = FileSystem::FileExtension(_filepath);
 	if (ext != ".mat") {
 		return false;
 	}
@@ -739,7 +739,7 @@ bool AssetLoader::LoadMaterial(const std::string& _filepath) {
 	while (std::getline(ifs, line)) {
 		/// ----- 各文字列ごとに対応した処理を行う ----- ///
 
-		if (Mathf::StartsWith(line, "guid: ")) {
+		if (FileSystem::StartsWith(line, "guid: ")) {
 			/// ファイルの文字列をGuidに変換して格納
 			std::string guidStr = line.substr(6);
 			material.guid = Guid::FromString(guidStr);

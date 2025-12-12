@@ -37,7 +37,7 @@ bool MetaFile::LoadFromFile(const std::string& _metaFilePath) {
 	std::string line;
 	while (std::getline(ifs, line)) {
 		/// バージョンの読み込み
-		if (Mathf::StartsWith(line, "version: ")) {
+		if (FileSystem::StartsWith(line, "version: ")) {
 			/// "version: "の部分を削除して数値部分だけを取得
 			const size_t versionStrSize = strlen("version: ");
 			std::string versionStr = line.substr(versionStrSize);
@@ -49,7 +49,7 @@ bool MetaFile::LoadFromFile(const std::string& _metaFilePath) {
 				return false;
 			}
 
-		} else if (Mathf::StartsWith(line, "guid: ")) {
+		} else if (FileSystem::StartsWith(line, "guid: ")) {
 			/// Guidの読み込み
 			const size_t guidStrSize = strlen("guid: ");
 			std::string guidStr = line.substr(guidStrSize);
@@ -101,7 +101,7 @@ MetaFile ONEngine::GenerateMetaFile(const std::string& _refFile) {
 	metaFile.guid = GenerateGuid();
 
 	/// 拡張子からアセットタイプを決定
-	std::string extension = Mathf::FileExtension(_refFile);
+	std::string extension = FileSystem::FileExtension(_refFile);
 	metaFile.assetType = GetAssetTypeFromExtension(extension);
 
 	/// 一度ファイルに保存しておく

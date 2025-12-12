@@ -65,7 +65,7 @@ Variables::~Variables() = default;
 
 void Variables::LoadJson(const std::string& _path) {
 	/// .jsonファイルかチェック
-	if (Mathf::FileExtension(_path) != ".json") {
+	if (FileSystem::FileExtension(_path) != ".json") {
 		return;
 	}
 
