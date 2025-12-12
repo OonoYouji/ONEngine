@@ -11,6 +11,9 @@
 
 namespace ONEngine {
 
+template<typename T>
+class AssetLoaderT;
+
 /// ////////////////////////////////////////////////////////////////
 /// @brief サウンドの読み込み、再生に必用な構造体
 /// ////////////////////////////////////////////////////////////////
@@ -44,6 +47,7 @@ namespace AudioStructs {
 /// ////////////////////////////////////////////////////////////////
 class AudioClip final : public IAsset {
 	friend class AssetLoader;
+	friend class AssetLoaderT<AudioClip>;
 public:
 	/// ===================================================
 	/// public : methods
