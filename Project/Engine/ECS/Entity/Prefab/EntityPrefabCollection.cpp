@@ -8,7 +8,7 @@ void EntityPrefabCollection::LoadPrefabAll() {
 	/// Assets/Prefabs フォルダから全てのプレハブを読み込む
 	std::string prefabPath = "./Assets/Prefabs/";
 
-	std::vector<File> prefabFiles = FileSystem::FindFiles(prefabPath, ".prefab");
+	std::vector<File> prefabFiles = FileSystem::GetFiles(prefabPath, ".prefab");
 
 	if (prefabFiles.empty()) {
 		Console::LogError("No prefab files found in: " + prefabPath);

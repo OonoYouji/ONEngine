@@ -130,9 +130,7 @@ void ComponentDebug::AudioSourceDebug(AudioSource* _as) {
 	/// 再生状態の表示
 	int state = _as->GetState();
 	std::string stateStr = static_cast<std::string>(magic_enum::enum_name(static_cast<AudioState>(state)));
-	ImGui::Text("State: %s", stateStr);
-
-
+	ImGui::Text("State: %s", stateStr.c_str());
 
 }
 

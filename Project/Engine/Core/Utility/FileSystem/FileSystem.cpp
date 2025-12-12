@@ -16,7 +16,7 @@ using namespace ONEngine;
 namespace fs = std::filesystem;
 
 
-std::vector<File> FileSystem::FindFiles(const std::string& _fileDirectory, const std::string& _fileExtension) {
+std::vector<File> FileSystem::GetFiles(const std::string& _fileDirectory, const std::string& _fileExtension) {
 	/// ----- 指定されたディレクトリ内のファイルを全て探索 ----- ///
 
 	std::vector<File> result{};
@@ -73,7 +73,7 @@ File FileSystem::GetFile(const std::string& _fileDirectory, const std::string& _
 	return File();
 }
 
-bool FileSystem::FindFile(const std::string& _fileDirectory, const std::string& _filename) {
+bool FileSystem::FileExists(const std::string& _fileDirectory, const std::string& _filename) {
 	/// ディレクトリが存在するか確認
 	if (!fs::exists(_fileDirectory) || !fs::is_directory(_fileDirectory)) {
 		return false;
@@ -90,7 +90,7 @@ bool FileSystem::FindFile(const std::string& _fileDirectory, const std::string& 
 	return false;
 }
 
-bool FileSystem::FindFile(const std::string& _path) {
+bool FileSystem::FileExists(const std::string& _path) {
 	return std::filesystem::exists(_path);
 }
 
@@ -176,7 +176,7 @@ bool FileSystem::StartsWith(const std::string& _str, const std::string& _prefix)
 std::string FileSystem::LoadFile(const std::string& _directory, const std::string& _filename) {
 	/// ----- ファイルを読み込む ----- ///
 
-	if (!FindFile(_directory, _filename)) {
+	if (!FileExists(_directory, _filename)) {
 		return "";
 	}
 

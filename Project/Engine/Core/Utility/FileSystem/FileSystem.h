@@ -21,7 +21,7 @@ namespace FileSystem {
 /// @param _fileDirectory 検索対象のディレクトリ
 /// @param _fileExtension 探索対象のファイル拡張子
 /// @return 見つかったファイルのパスと名前のペアのベクター
-std::vector<File> FindFiles(const std::string& _fileDirectory, const std::string& _fileExtension);
+std::vector<File> GetFiles(const std::string& _fileDirectory, const std::string& _fileExtension);
 
 /// @brief ファイルの探索
 /// @param _fileDirectory 探索対象のディレクトリ
@@ -33,12 +33,12 @@ File GetFile(const std::string& _fileDirectory, const std::string& _filename);
 /// @param _fileDirectory 探索対象のディレクトリ
 /// @param _filename 探索対象のファイル名
 /// @return 見つかったファイル
-bool FindFile(const std::string& _fileDirectory, const std::string& _filename);
+bool FileExists(const std::string& _fileDirectory, const std::string& _filename);
 
 /// @brief ファイルを探す
 /// @param _path 探索するファイルのパス
 /// @return true: 見つかった / false: 見つからなかった
-bool FindFile(const std::string& _path);
+bool FileExists(const std::string& _path);
 
 /// @brief _str内の_allを_toに置換する
 /// @param _str 変換対象の文字列ポインタ
