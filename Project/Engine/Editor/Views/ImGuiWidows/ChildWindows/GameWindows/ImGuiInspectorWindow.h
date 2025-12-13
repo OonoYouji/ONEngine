@@ -24,20 +24,20 @@ class Texture;
 /// ///////////////////////////////////////////////////
 namespace Editor {
 
-class ImGuiInspectorWindow : public IEditorView {
+class InspectorWindow : public IEditorWindow {
 public:
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
 
-	ImGuiInspectorWindow(
+	InspectorWindow(
 		const std::string& _windowName, 
 		ONEngine::DxManager* _dxm,
 		ONEngine::EntityComponentSystem* _ecs, 
 		ONEngine::AssetCollection* _assetCollection, 
 		EditorManager* _editorManager
 	);
-	~ImGuiInspectorWindow() {}
+	~InspectorWindow() {}
 
 	/// @brief imgui windowの描画処理
 	void ShowImGui() override;
@@ -80,7 +80,7 @@ private:
 };
 
 template<typename T>
-inline void ImGuiInspectorWindow::RegisterComponent(std::function<void(ONEngine::IComponent*)> _func) {
+inline void InspectorWindow::RegisterComponent(std::function<void(ONEngine::IComponent*)> _func) {
 	size_t hash = GetComponentHash<T>();
 	componentDebugFuncs_[hash] = _func;
 	componentNames_[hash] = GetComponentTypeName<T>();

@@ -30,14 +30,14 @@ ImGuiGameWindow::ImGuiGameWindow(
 	imGuiFlags_ |= ImGuiWindowFlags_NoBringToFrontOnFocus;
 
 	/// 子windowの追加
-	ImGuiInspectorWindow* inspector = static_cast<ImGuiInspectorWindow*>(AddView(std::make_unique<ImGuiInspectorWindow>("Inspector##Game", _dxm, _ecs, _assetCollection, _editorManager)));
-	AddView(std::make_unique<ImGuiGameSceneWindow>(_assetCollection));
+	InspectorWindow* inspector = static_cast<InspectorWindow*>(AddView(std::make_unique<InspectorWindow>("Inspector##Game", _dxm, _ecs, _assetCollection, _editorManager)));
+	AddView(std::make_unique<GameSceneWindow>(_assetCollection));
 	AddView(std::make_unique<ImGuiNormalHierarchyWindow>("Hierarchy", _ecs, _editorManager, _sceneManager));
-	AddView(std::make_unique<ImGuiHierarchyWindow>("DebugHierarchy", _ecs->GetECSGroup("Debug"), _editorManager, _sceneManager));
-	AddView(std::make_unique<ImGuiSceneWindow>(_ecs, _assetCollection, _sceneManager, inspector));
-	AddView(std::make_unique<ImGuiProjectWindow>(_assetCollection, _editorManager));
-	AddView(std::make_unique<ImGuiConsoleWindow>());
-	AddView(std::make_unique<ImGuiTexturePreviewWindow>(_assetCollection));
+	AddView(std::make_unique<HierarchyWindow>("DebugHierarchy", _ecs->GetECSGroup("Debug"), _editorManager, _sceneManager));
+	AddView(std::make_unique<DebugSceneView>(_ecs, _assetCollection, _sceneManager, inspector));
+	AddView(std::make_unique<ProjectWindow>(_assetCollection, _editorManager));
+	AddView(std::make_unique<ConsoleWindow>());
+	AddView(std::make_unique<TexturePreviewWindow>(_assetCollection));
 }
 
 

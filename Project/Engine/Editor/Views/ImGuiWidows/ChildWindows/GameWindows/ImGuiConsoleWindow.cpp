@@ -12,7 +12,7 @@
 
 using namespace Editor;
 
-void ImGuiConsoleWindow::ShowImGui() {
+void ConsoleWindow::ShowImGui() {
 	if (!ImGui::Begin("Console")) {
 		ImGui::End();
 		return;

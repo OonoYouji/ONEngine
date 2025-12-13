@@ -16,7 +16,7 @@
 
 using namespace Editor;
 
-ImGuiPrefabFileWindow::ImGuiPrefabFileWindow(ONEngine::EntityComponentSystem* _ecs, ONEngine::AssetCollection* _assetCollection, ImGuiInspectorWindow* _inspector)
+ImGuiPrefabFileWindow::ImGuiPrefabFileWindow(ONEngine::EntityComponentSystem* _ecs, ONEngine::AssetCollection* _assetCollection, InspectorWindow* _inspector)
 	: pEcs_(_ecs), pAssetCollection_(_assetCollection), pInspector_(_inspector) {
 
 	/// Prefabファイルの取得

@@ -15,18 +15,18 @@ class Texture;
 
 namespace Editor {
 
-class ImGuiInspectorWindow;
+class InspectorWindow;
 
 /// //////////////////////////////////////////////////////
 /// PrefabFileを表示するためのImGuiWindow
 /// //////////////////////////////////////////////////////
-class ImGuiPrefabFileWindow : public IEditorView {
+class ImGuiPrefabFileWindow : public IEditorWindow {
 public:
 	/// =====================================================
 	/// public : methods
 	/// =====================================================
 
-	ImGuiPrefabFileWindow(ONEngine::EntityComponentSystem* _ecs, ONEngine::AssetCollection* _assetCollection, ImGuiInspectorWindow* _inspector);
+	ImGuiPrefabFileWindow(ONEngine::EntityComponentSystem* _ecs, ONEngine::AssetCollection* _assetCollection, InspectorWindow* _inspector);
 	~ImGuiPrefabFileWindow() override = default;
 
 	void ShowImGui() override;
@@ -54,7 +54,7 @@ private:
 	/// --------------- other class pointers --------------- ///
 	ONEngine::EntityComponentSystem* pEcs_;
 	ONEngine::AssetCollection*       pAssetCollection_;
-	ImGuiInspectorWindow*  pInspector_;
+	InspectorWindow*  pInspector_;
 
 
 	/// --------------- member objects --------------- ///

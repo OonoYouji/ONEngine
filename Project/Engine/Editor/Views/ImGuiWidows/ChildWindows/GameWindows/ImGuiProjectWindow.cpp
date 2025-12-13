@@ -53,7 +53,7 @@ namespace {
 
 
 
-ImGuiProjectWindow::ImGuiProjectWindow(ONEngine::AssetCollection* _assetCollection, EditorManager* /*_editorManager*/)
+ProjectWindow::ProjectWindow(ONEngine::AssetCollection* _assetCollection, EditorManager* /*_editorManager*/)
 	: pAssetCollection_(_assetCollection) {
 
 	/// デフォルトのウィンドウ名
@@ -82,11 +82,11 @@ ImGuiProjectWindow::ImGuiProjectWindow(ONEngine::AssetCollection* _assetCollecti
 	}
 }
 
-ImGuiProjectWindow::~ImGuiProjectWindow() {
+ProjectWindow::~ProjectWindow() {
 	fileWatcher_.Stop();
 }
 
-void ImGuiProjectWindow::ShowImGui() {
+void ProjectWindow::ShowImGui() {
 	if (!ImGui::Begin(windowName_.c_str())) {
 		ImGui::End();
 		return;
@@ -163,11 +163,11 @@ void ImGuiProjectWindow::ShowImGui() {
 	ImGui::End();
 }
 
-void ImGuiProjectWindow::SetWindowName(const std::string& _windowName) {
+void ProjectWindow::SetWindowName(const std::string& _windowName) {
 	windowName_ = _windowName;
 }
 
-void ImGuiProjectWindow::DrawDirectoryTree(const std::filesystem::path& _dir) {
+void ProjectWindow::DrawDirectoryTree(const std::filesystem::path& _dir) {
 	/// ----- 引数のディレクトリを再帰的に表示していく ----- ///
 
 	auto it = directoryCache_.find(_dir.string());
@@ -196,7 +196,7 @@ void ImGuiProjectWindow::DrawDirectoryTree(const std::filesystem::path& _dir) {
 	}
 }
 
-void ImGuiProjectWindow::DrawFileView(const std::filesystem::path& dir) {
+void ProjectWindow::DrawFileView(const std::filesystem::path& dir) {
 	/// ----- 引数のディレクトリ内のファイルを表示していく ----- ///
 
 	auto it = fileCache_.find(dir.string());
@@ -336,7 +336,7 @@ void ImGuiProjectWindow::DrawFileView(const std::filesystem::path& dir) {
 	ImGui::Columns(1);
 }
 
-void ImGuiProjectWindow::PopupContextMenu(const std::filesystem::path& _dir) {
+void ProjectWindow::PopupContextMenu(const std::filesystem::path& _dir) {
 
 	/// 右クリックメニュー
 	if (ImGui::BeginPopupContextItem("FileContextMenu")) {
@@ -418,7 +418,7 @@ void ImGuiProjectWindow::PopupContextMenu(const std::filesystem::path& _dir) {
 
 }
 
-void ImGuiProjectWindow::SetRenameMode(const std::filesystem::path& _path) {
+void ProjectWindow::SetRenameMode(const std::filesystem::path& _path) {
 	isRenaming_ = true;
 	renamingPath_ = _path;
 	renameBuffer_ = _path.filename().string();
@@ -426,7 +426,7 @@ void ImGuiProjectWindow::SetRenameMode(const std::filesystem::path& _path) {
 	ImGui::SetKeyboardFocusHere(0);
 }
 
-void ImGuiProjectWindow::HandleFileAdded(const std::filesystem::path& _path) {
+void ProjectWindow::HandleFileAdded(const std::filesystem::path& _path) {
 	if (std::filesystem::is_directory(_path)) {
 		// ディレクトリが追加された場合、親ディレクトリのキャッシュを更新
 		UpdateDirectoryCache(_path.parent_path());
@@ -447,7 +447,7 @@ void ImGuiProjectWindow::HandleFileAdded(const std::filesystem::path& _path) {
 	}
 }
 
-void ImGuiProjectWindow::HandleFileRemoved(const std::filesystem::path& _path) {
+void ProjectWindow::HandleFileRemoved(const std::filesystem::path& _path) {
 	if (std::filesystem::is_directory(_path)) {
 		// ディレクトリが削除された場合、親ディレクトリのファイルキャッシュを更新
 		UpdateDirectoryCache(_path.parent_path());
@@ -473,7 +473,7 @@ void ImGuiProjectWindow::HandleFileRemoved(const std::filesystem::path& _path) {
 	}
 }
 
-void ImGuiProjectWindow::HandleFileModified(const std::filesystem::path& _path) {
+void ProjectWindow::HandleFileModified(const std::filesystem::path& _path) {
 	if (!std::filesystem::exists(_path)) {
 		return; // ファイルが存在しない場合は何もしない
 	}
@@ -492,7 +492,7 @@ void ImGuiProjectWindow::HandleFileModified(const std::filesystem::path& _path) 
 	UpdateFileCache(_path.parent_path());
 }
 
-void ImGuiProjectWindow::UpdateDirectoryCache(const std::filesystem::path& _dir) {
+void ProjectWindow::UpdateDirectoryCache(const std::filesystem::path& _dir) {
 	/// ----- 引数のディレクトリ内のサブディレクトリをキャッシュに保存 ----- ///
 
 	if (!std::filesystem::exists(_dir)) {
@@ -521,7 +521,7 @@ void ImGuiProjectWindow::UpdateDirectoryCache(const std::filesystem::path& _dir)
 }
 
 
-void ImGuiProjectWindow::UpdateFileCache(const std::filesystem::path& _dir) {
+void ProjectWindow::UpdateFileCache(const std::filesystem::path& _dir) {
 	/// ----- 引数のディレクトリ内のファイルをキャッシュに保存 ----- ///
 
 	if (!std::filesystem::exists(_dir)) {

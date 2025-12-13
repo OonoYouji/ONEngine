@@ -16,7 +16,7 @@ class AssetCollection;
 
 namespace Editor {
 
-class ImGuiProjectWindow : public IEditorView {
+class ProjectWindow : public IEditorWindow {
 public:
 
 	struct FileItem {
@@ -29,8 +29,8 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	ImGuiProjectWindow(ONEngine::AssetCollection* _assetCollection, class EditorManager* _editorManager);
-	~ImGuiProjectWindow();
+	ProjectWindow(ONEngine::AssetCollection* _assetCollection, class EditorManager* _editorManager);
+	~ProjectWindow();
 
 	/// @brief imgui windowの描画処理
 	void ShowImGui() override;

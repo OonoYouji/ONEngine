@@ -18,14 +18,14 @@ class GameEntity;
 /// ///////////////////////////////////////////////////
 namespace Editor {
 
-class ImGuiHierarchyWindow : public IEditorView {
+class HierarchyWindow : public IEditorWindow {
 public:
 	/// ===================================================
 	/// public : methods   
 	/// ===================================================
 
-	ImGuiHierarchyWindow(const std::string& _imGuiWindowName, ONEngine::ECSGroup*, class EditorManager*, ONEngine::SceneManager*);
-	~ImGuiHierarchyWindow() override = default;
+	HierarchyWindow(const std::string& _imGuiWindowName, ONEngine::ECSGroup*, class EditorManager*, ONEngine::SceneManager*);
+	~HierarchyWindow() override = default;
 
 	void ShowImGui() override;
 
@@ -105,7 +105,7 @@ protected:
 /// ///////////////////////////////////////////////////
 /// 通常のシーンのHierarchyウィンドウ
 /// ///////////////////////////////////////////////////
-class ImGuiNormalHierarchyWindow : public ImGuiHierarchyWindow {
+class ImGuiNormalHierarchyWindow : public HierarchyWindow {
 public:
 	/// ===================================================
 	/// public : methods

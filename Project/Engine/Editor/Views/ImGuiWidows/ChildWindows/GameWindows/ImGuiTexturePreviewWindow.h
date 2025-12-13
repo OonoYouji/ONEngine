@@ -15,14 +15,14 @@ namespace Editor {
 /// ///////////////////////////////////////////////////
 /// TextureのPreviewを行う 主にシーンのテクスチャを確認するためのウィンドウ
 /// ///////////////////////////////////////////////////
-class ImGuiTexturePreviewWindow : public IEditorView {
+class TexturePreviewWindow : public IEditorWindow {
 public:
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
 
-	ImGuiTexturePreviewWindow(ONEngine::AssetCollection* _assetCollection);
-	~ImGuiTexturePreviewWindow();
+	TexturePreviewWindow(ONEngine::AssetCollection* _assetCollection);
+	~TexturePreviewWindow();
 
 	void ShowImGui() override;
 

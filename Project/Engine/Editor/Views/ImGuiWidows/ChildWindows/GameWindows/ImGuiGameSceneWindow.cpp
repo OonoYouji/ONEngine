@@ -11,7 +11,7 @@
 
 using namespace Editor;
 
-void ImGuiGameSceneWindow::ShowImGui() {
+void GameSceneWindow::ShowImGui() {
 	if (!ImGui::Begin("GameScene")) {
 		ImGui::End();
 		return;

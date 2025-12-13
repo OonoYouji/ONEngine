@@ -14,13 +14,13 @@
 /// ///////////////////////////////////////////////////
 namespace Editor {
 
-class ImGuiConsoleWindow : public IEditorView {
+class ConsoleWindow : public IEditorWindow {
 public:
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
-	ImGuiConsoleWindow() {}
-	~ImGuiConsoleWindow() {}
+	ConsoleWindow() {}
+	~ConsoleWindow() {}
 
 	/// @brief imgui windowの描画処理
 	void ShowImGui() override;

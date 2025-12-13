@@ -45,7 +45,7 @@ void EditorViewCollection::Update() {
 
 }
 
-void EditorViewCollection::AddParentWindow(const std::string& _name, std::unique_ptr<class IEditorViewContainer> _window) {
+void EditorViewCollection::AddParentWindow(const std::string& _name, std::unique_ptr<class IEditorWindowContainer> _window) {
 	parentWindowNames_.push_back(_name);
 	_window->pImGuiManager_ = pImGuiManager_;
 	for (auto& child : _window->children_) {
@@ -90,14 +90,14 @@ void EditorViewCollection::MainMenuUpdate() {
 /// ImGuiの親windowクラス
 /// ///////////////////////////////////////////////////
 
-void IEditorViewContainer::UpdateViews() {
+void IEditorWindowContainer::UpdateViews() {
 	for (auto& child : children_) {
 		child->ShowImGui();
 	}
 }
 
-IEditorView* IEditorViewContainer::AddView(std::unique_ptr<class IEditorView> _child) {
-	class IEditorView* child = _child.get();
+IEditorWindow* IEditorWindowContainer::AddView(std::unique_ptr<class IEditorWindow> _child) {
+	class IEditorWindow* child = _child.get();
 	children_.push_back(std::move(_child));
 	return child;
 }

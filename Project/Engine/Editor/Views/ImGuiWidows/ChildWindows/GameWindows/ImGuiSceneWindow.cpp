@@ -24,7 +24,7 @@
 
 using namespace Editor;
 
-ImGuiSceneWindow::ImGuiSceneWindow(ONEngine::EntityComponentSystem* _ecs, ONEngine::AssetCollection* _assetCollection, ONEngine::SceneManager* _sceneManager, ImGuiInspectorWindow* _inspector)
+DebugSceneView::DebugSceneView(ONEngine::EntityComponentSystem* _ecs, ONEngine::AssetCollection* _assetCollection, ONEngine::SceneManager* _sceneManager, InspectorWindow* _inspector)
 	: pEcs_(_ecs), pAssetCollection_(_assetCollection), pSceneManager_(_sceneManager), pInspector_(_inspector) {
 
 	manipulateOperation_ = ImGuizmo::OPERATION::TRANSLATE; // 初期操作モードは移動
@@ -32,7 +32,7 @@ ImGuiSceneWindow::ImGuiSceneWindow(ONEngine::EntityComponentSystem* _ecs, ONEngi
 }
 
 
-void ImGuiSceneWindow::ShowImGui() {
+void DebugSceneView::ShowImGui() {
 	if (!ImGui::Begin("Scene")) {
 		ImGui::End();
 		return;
@@ -209,7 +209,7 @@ void ImGuiSceneWindow::ShowImGui() {
 
 }
 
-void ImGuiSceneWindow::SetGamePlay(bool _isGamePlay) {
+void DebugSceneView::SetGamePlay(bool _isGamePlay) {
 	ONEngine::DebugConfig::isDebugging = _isGamePlay;
 
 	/// 共通の処理（ゲーム開始、停止時に行う処理）

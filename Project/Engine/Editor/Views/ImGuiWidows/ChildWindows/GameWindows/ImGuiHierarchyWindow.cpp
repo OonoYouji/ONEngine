@@ -23,7 +23,7 @@
 
 using namespace Editor;
 
-ImGuiHierarchyWindow::ImGuiHierarchyWindow(
+HierarchyWindow::HierarchyWindow(
 	const std::string& _imGuiWindowName,
 	ONEngine::ECSGroup* _ecsGroup,
 	EditorManager* _editorManager,
@@ -35,7 +35,7 @@ ImGuiHierarchyWindow::ImGuiHierarchyWindow(
 	isNodeOpen_ = false;
 }
 
-void ImGuiHierarchyWindow::ShowImGui() {
+void HierarchyWindow::ShowImGui() {
 	if (!ImGui::Begin(imGuiWindowName_.c_str(), nullptr)) {
 		ImGui::End();
 		return;
@@ -47,7 +47,7 @@ void ImGuiHierarchyWindow::ShowImGui() {
 	ImGui::End();
 }
 
-void ImGuiHierarchyWindow::PrefabDragAndDrop() {
+void HierarchyWindow::PrefabDragAndDrop() {
 	/// ----- Prefabのドラッグアンドドロップ処理 ----- ///
 
 	if (ImGui::BeginDragDropTarget()) {
@@ -77,7 +77,7 @@ void ImGuiHierarchyWindow::PrefabDragAndDrop() {
 	}
 }
 
-void ImGuiHierarchyWindow::DrawMenuBar() {
+void HierarchyWindow::DrawMenuBar() {
 	/// ----- MenuBarの表示 ----- ///
 
 	/// 新規作成やシーンの保存などなど
@@ -97,7 +97,7 @@ void ImGuiHierarchyWindow::DrawMenuBar() {
 	DrawSceneSaveDialog();
 }
 
-void ImGuiHierarchyWindow::DrawMenuEntity() {
+void HierarchyWindow::DrawMenuEntity() {
 	if (ImGui::BeginMenu("create")) {
 		if (ImGui::MenuItem("create empty object")) {
 			pEditorManager_->ExecuteCommand<CreateGameObjectCommand>(pEcsGroup_);
@@ -107,7 +107,7 @@ void ImGuiHierarchyWindow::DrawMenuEntity() {
 	}
 }
 
-void ImGuiHierarchyWindow::DrawMenuScene() {
+void HierarchyWindow::DrawMenuScene() {
 	/// ----- sceneメニューの表示 ----- ///
 
 	if (ImGui::BeginMenu("scene")) {
@@ -138,7 +138,7 @@ void ImGuiHierarchyWindow::DrawMenuScene() {
 	}
 }
 
-void ImGuiHierarchyWindow::DrawHierarchy() {
+void HierarchyWindow::DrawHierarchy() {
 
 	/// ECSGroupないにあるEntityの表示
 	if (ImGui::CollapsingHeader(pEcsGroup_->GetGroupName().c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
@@ -190,7 +190,7 @@ void ImGuiHierarchyWindow::DrawHierarchy() {
 }
 
 
-void ImGuiHierarchyWindow::EntityRename(ONEngine::GameEntity* _entity) {
+void HierarchyWindow::EntityRename(ONEngine::GameEntity* _entity) {
 
 	if (ImGuiInputText("##rename", &newName_, ImGuiInputTextFlags_CallbackAlways | ImGuiInputTextFlags_EnterReturnsTrue)) {
 		pEditorManager_->ExecuteCommand<EntityRenameCommand>(_entity, newName_);
@@ -203,7 +203,7 @@ void ImGuiHierarchyWindow::EntityRename(ONEngine::GameEntity* _entity) {
 	}
 }
 
-void ImGuiHierarchyWindow::DrawDialog() {
+void HierarchyWindow::DrawDialog() {
 	// display
 	if (ImGuiFileDialog::Instance()->Display("Dialog", ImGuiWindowFlags_NoDocking)) {
 		if (ImGuiFileDialog::Instance()->IsOk()) { // action if OK
@@ -230,7 +230,7 @@ void ImGuiHierarchyWindow::DrawDialog() {
 
 }
 
-void ImGuiHierarchyWindow::DrawSceneSaveDialog() {
+void HierarchyWindow::DrawSceneSaveDialog() {
 	/// ----- シーン保存ダイアログの表示 ----- ///
 
 	if (ImGuiFileDialog::Instance()->Display("save file dialog")) {
@@ -254,7 +254,7 @@ void ImGuiHierarchyWindow::DrawSceneSaveDialog() {
 	}
 }
 
-void ImGuiHierarchyWindow::DrawEntity(ONEngine::GameEntity* _entity) {
+void HierarchyWindow::DrawEntity(ONEngine::GameEntity* _entity) {
 	/// ----- Entityの表示 ----- ///
 
 	bool hasChildren = !_entity->GetChildren().empty();
@@ -411,7 +411,7 @@ void ImGuiHierarchyWindow::DrawEntity(ONEngine::GameEntity* _entity) {
 	}
 }
 
-bool ImGuiHierarchyWindow::IsDescendant(ONEngine::GameEntity* _ancestor, ONEngine::GameEntity* _descendant) {
+bool HierarchyWindow::IsDescendant(ONEngine::GameEntity* _ancestor, ONEngine::GameEntity* _descendant) {
 	/// ----- _ancestorが_descendantの子ではないかチェック ----- ///
 
 	if (!_descendant) {
@@ -429,7 +429,7 @@ bool ImGuiHierarchyWindow::IsDescendant(ONEngine::GameEntity* _ancestor, ONEngin
 	return false;
 }
 
-void ImGuiHierarchyWindow::ShowInvalidParentPopup() {
+void HierarchyWindow::ShowInvalidParentPopup() {
 	if (showInvalidParentPopup_) {
 		ImGui::OpenPopup("Invalid Parent");
 
@@ -450,7 +450,7 @@ void ImGuiHierarchyWindow::ShowInvalidParentPopup() {
 /// /////////////////////////////////////////////////////////////////////////
 
 ImGuiNormalHierarchyWindow::ImGuiNormalHierarchyWindow(const std::string& _imGuiWindowName, ONEngine::EntityComponentSystem* _ecs, EditorManager* _editorManager, ONEngine::SceneManager* _sceneManager)
-	: ImGuiHierarchyWindow(_imGuiWindowName, nullptr, _editorManager, _sceneManager) {
+	: HierarchyWindow(_imGuiWindowName, nullptr, _editorManager, _sceneManager) {
 	pEcs_ = _ecs;
 }
 

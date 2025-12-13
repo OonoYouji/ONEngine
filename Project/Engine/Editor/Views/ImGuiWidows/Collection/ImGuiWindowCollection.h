@@ -46,7 +46,7 @@ public:
 	void Update();
 
 	/// @brief windowの追加
-	void AddParentWindow(const std::string& _name, std::unique_ptr<class IEditorViewContainer> _window);
+	void AddParentWindow(const std::string& _name, std::unique_ptr<class IEditorWindowContainer> _window);
 
 private:
 	/// ===================================================
@@ -65,7 +65,7 @@ private:
 	ImGuiManager* pImGuiManager_;
 
 	/// ----- collection window ----- ///
-	std::vector<std::unique_ptr<IEditorViewContainer>> parentWindows_;
+	std::vector<std::unique_ptr<IEditorWindowContainer>> parentWindows_;
 	std::vector<std::string> parentWindowNames_;
 	int selectedMenuIndex_ = 0;
 };
@@ -74,14 +74,14 @@ private:
 /// ///////////////////////////////////////////////////
 /// (File, Edit, View...)などの大枠のImGui windowクラス
 /// ///////////////////////////////////////////////////
-class IEditorViewContainer {
+class IEditorWindowContainer {
 	friend class EditorViewCollection;
 public:
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
 
-	virtual ~IEditorViewContainer() = default;
+	virtual ~IEditorWindowContainer() = default;
 	virtual void ShowImGui() = 0;
 
 	/// @brief 子windowの更新
@@ -89,7 +89,7 @@ public:
 
 	/// @brief 子windowの追加
 	/// @param _child 子window 
-	class IEditorView* AddView(std::unique_ptr<class IEditorView> _child);
+	class IEditorWindow* AddView(std::unique_ptr<class IEditorWindow> _child);
 
 
 protected:
@@ -97,21 +97,21 @@ protected:
 	/// protected : objects
 	/// ===================================================
 	ImGuiManager* pImGuiManager_ = nullptr; ///< ImGuiManagerへのポインタ
-	std::vector<std::unique_ptr<class IEditorView>> children_;
+	std::vector<std::unique_ptr<class IEditorWindow>> children_;
 };
 
 
 /// ///////////////////////////////////////////////////
 /// ImGuiの子windowクラス
 /// ///////////////////////////////////////////////////
-class IEditorView {
+class IEditorWindow {
 	friend class EditorViewCollection;
 public:
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
 
-	virtual ~IEditorView() = default;
+	virtual ~IEditorWindow() = default;
 	virtual void ShowImGui() = 0;
 
 protected:

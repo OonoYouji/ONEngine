@@ -46,7 +46,7 @@
 using namespace Editor;
 using namespace ONEngine;
 
-ImGuiInspectorWindow::ImGuiInspectorWindow(const std::string& _windowName, DxManager* _dxm, EntityComponentSystem* _ecs, AssetCollection* _assetCollection, EditorManager* _editorManager)
+InspectorWindow::InspectorWindow(const std::string& _windowName, DxManager* _dxm, EntityComponentSystem* _ecs, AssetCollection* _assetCollection, EditorManager* _editorManager)
 	: pEcs_(_ecs), pDxManager_(_dxm), pAssetCollection_(_assetCollection), pEditorManager_(_editorManager) {
 	windowName_ = _windowName;
 
@@ -96,7 +96,7 @@ ImGuiInspectorWindow::ImGuiInspectorWindow(const std::string& _windowName, DxMan
 }
 
 
-void ImGuiInspectorWindow::ShowImGui() {
+void InspectorWindow::ShowImGui() {
 	if (!ImGui::Begin(windowName_.c_str(), nullptr, ImGuiWindowFlags_MenuBar)) {
 		ImGui::End();
 		return;
@@ -109,7 +109,7 @@ void ImGuiInspectorWindow::ShowImGui() {
 }
 
 
-void ImGuiInspectorWindow::EntityInspector() {
+void InspectorWindow::EntityInspector() {
 
 	/// guidの取得、無効値なら抜ける
 	const Guid& selectionGuid = ImGuiSelection::GetSelectedObject();
@@ -313,7 +313,7 @@ void ImGuiInspectorWindow::EntityInspector() {
 
 }
 
-void ImGuiInspectorWindow::AssetInspector() {
+void InspectorWindow::AssetInspector() {
 	/// Typeごとに表示を変える
 
 	AssetType type = pAssetCollection_->GetAssetTypeFromGuid(ImGuiSelection::GetSelectedObject());
@@ -342,7 +342,7 @@ void ImGuiInspectorWindow::AssetInspector() {
 
 }
 
-void ImGuiInspectorWindow::TextureAssetInspector(Texture* _texture) {
+void InspectorWindow::TextureAssetInspector(Texture* _texture) {
 	/// ----- テクスチャのインスペクター表示 ----- /
 
 	/// previewのための枠を確保

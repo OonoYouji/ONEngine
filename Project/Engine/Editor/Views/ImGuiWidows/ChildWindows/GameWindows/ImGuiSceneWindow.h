@@ -8,14 +8,14 @@
 /// ///////////////////////////////////////////////////
 namespace Editor {
 
-class ImGuiSceneWindow : public IEditorView {
+class DebugSceneView : public IEditorWindow {
 public:
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
 
-	ImGuiSceneWindow(ONEngine::EntityComponentSystem* _ecs, ONEngine::AssetCollection* _assetCollection, ONEngine::SceneManager* _sceneManager, class ImGuiInspectorWindow* _inspector);
-	~ImGuiSceneWindow() {}
+	DebugSceneView(ONEngine::EntityComponentSystem* _ecs, ONEngine::AssetCollection* _assetCollection, ONEngine::SceneManager* _sceneManager, class InspectorWindow* _inspector);
+	~DebugSceneView() {}
 
 	/// @brief imgui windowの描画処理
 	void ShowImGui() override;
@@ -33,7 +33,7 @@ private:
 	ONEngine::EntityComponentSystem* pEcs_;
 	ONEngine::AssetCollection*       pAssetCollection_;
 	ONEngine::SceneManager*          pSceneManager_;
-	class ImGuiInspectorWindow*  pInspector_;
+	class InspectorWindow*  pInspector_;
 
 	int manipulateOperation_;
 	int manipulateMode_;

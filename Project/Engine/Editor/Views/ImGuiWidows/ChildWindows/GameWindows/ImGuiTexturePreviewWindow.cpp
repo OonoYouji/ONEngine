@@ -9,15 +9,15 @@
 
 using namespace Editor;
 
-ImGuiTexturePreviewWindow::ImGuiTexturePreviewWindow(ONEngine::AssetCollection* _assetCollection)
+TexturePreviewWindow::TexturePreviewWindow(ONEngine::AssetCollection* _assetCollection)
 	: pAssetCollection_(_assetCollection) {
 	searchFilter_ = "./Assets/Scene/RenderTexture/shadowMapScene";
 }
 
-ImGuiTexturePreviewWindow::~ImGuiTexturePreviewWindow() {
+TexturePreviewWindow::~TexturePreviewWindow() {
 }
 
-void ImGuiTexturePreviewWindow::ShowImGui() {
+void TexturePreviewWindow::ShowImGui() {
 	if(!ImGui::Begin("Texture Preview")) {
 		ImGui::End();
 		return;

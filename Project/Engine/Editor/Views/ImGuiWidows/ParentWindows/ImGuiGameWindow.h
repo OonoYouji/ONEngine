@@ -19,7 +19,7 @@ class EditorManager;
 /// ///////////////////////////////////////////////////
 /// GameWindow
 /// ///////////////////////////////////////////////////
-class ImGuiGameWindow : public IEditorViewContainer {
+class ImGuiGameWindow : public IEditorWindowContainer {
 public:
 	/// ===================================================
 	/// public : methods

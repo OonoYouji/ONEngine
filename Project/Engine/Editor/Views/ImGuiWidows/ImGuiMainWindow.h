@@ -8,7 +8,7 @@ namespace Editor {
 /// ///////////////////////////////////////////////////
 /// ImGuiMainWindow
 /// ///////////////////////////////////////////////////
-class MainWindow : public IEditorViewContainer {
+class MainWindow : public IEditorWindowContainer {
 public:
 	/// ===================================================
 	/// public : methods
