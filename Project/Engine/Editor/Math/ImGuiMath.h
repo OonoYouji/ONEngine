@@ -23,7 +23,7 @@ namespace Editor {
 /// ////////////////////////////////////////////////////////
 namespace ImMathf {
 
-bool DrawVec3Control(const std::string& _label, ONEngine::Vector3& _values, float _resetValue = 0.0f, float _columnWidth = 100.0f, bool* _isUnifined = nullptr);
+bool DrawVec3Control(const std::string& _label, ONEngine::Vector3& _values, float _speed, float _columnWidth = 100.0f, bool* _isUnifined = nullptr);
 
 /// @brief Vector4 -> ImVec4 変換
 /// @param _vec 自作のVector4

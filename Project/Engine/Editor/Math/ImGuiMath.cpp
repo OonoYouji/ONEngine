@@ -38,7 +38,8 @@ std::string variableName = "";
 
 }	/// unnamed namespace
 
-bool ImMathf::DrawVec3Control(const std::string& _label, ONEngine::Vector3& _values, float _resetValue, float _columnWidth, bool* _unified) {
+
+bool ImMathf::DrawVec3Control(const std::string& _label, ONEngine::Vector3& _values, float _speed, float _columnWidth, bool* _unified) {
 	bool valueChanged = false;
 
 	// ==========================================================
@@ -60,248 +61,248 @@ bool ImMathf::DrawVec3Control(const std::string& _label, ONEngine::Vector3& _val
 	constexpr float kColorActiveOffset = 0.2f;
 
 	constexpr float kZeroEpsilon = 1e-6f;
-	constexpr float kDragSpeedNormal = 0.1f;
-	constexpr float kDragSpeedSlow = 0.1f;
 	constexpr int   kTextBufferSize = 64;
 
 	const ImVec2 kTextAlignCenter = ImVec2(0.5f, 0.5f);
 
 	// ==========================================================
 
-	// ★追加: 操作開始時の値を保持するためのstatic変数
-	// 同時に1つのウィジェットしか操作しない前提
 	static ONEngine::Vector3 s_startValue;
 
 	ImGui::PushID(_label.c_str());
 
 	ONEngine::Vector3 beforeValues = _values;
 
-	// --- 左カラム: ラベル ---
-	ImGui::Columns(kNumColumns);
-	ImGui::SetColumnWidth(0, _columnWidth);
-	ImGui::AlignTextToFramePadding();
-	ImGui::Text("%s", _label.c_str());
-	ImGui::NextColumn();
+	// リサイズ不可 (Resizableフラグなし)
+	ImGuiTableFlags tableFlags = ImGuiTableFlags_NoSavedSettings;
 
-	// --- 右カラム: 幅計算 ---
-	ImGui::PushID("##Vec3Vals");
+	if(ImGui::BeginTable("##Vec3ControlTable", kNumColumns, tableFlags)) {
 
-	float availWidth = ImGui::GetContentRegionAvail().x - kSafetyMarginWidth;
-	float itemSpacing = GImGui->Style.ItemSpacing.x;
-	float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * kFramePaddingScale;
-	ImVec2 buttonSize = { lineHeight + kButtonPaddingW, lineHeight };
+		ImGui::TableSetupColumn("##Label", ImGuiTableColumnFlags_WidthFixed, _columnWidth);
+		ImGui::TableSetupColumn("##Values", ImGuiTableColumnFlags_WidthStretch);
 
-	float checkboxWidth = (_unified != nullptr) ? (ImGui::GetFrameHeight() + itemSpacing) : 0.0f;
-	float totalAxesWidth = availWidth - checkboxWidth - (itemSpacing * kSpacingScale);
-	float axisWidth = totalAxesWidth / static_cast<float>(kNumAxes);
-	float inputWidth = std::max(kMinInputWidth, axisWidth - buttonSize.x);
+		ImGui::TableNextRow();
 
-	// --- チェックボックス ---
-	if(_unified != nullptr) {
-		ImGui::Checkbox("##Unified", _unified);
-		if(ImGui::IsItemHovered()) {
-			ImGui::SetTooltip("Uniform Scale (Lock Ratio)");
-		}
-		ImGui::SameLine();
-	}
+		// --- 1列目: ラベル ---
+		ImGui::TableNextColumn();
+		ImGui::AlignTextToFramePadding();
+		ImGui::Text("%s", _label.c_str());
 
-	float* axisValues[] = { &_values.x, &_values.y, &_values.z };
-	float beforeAxisValues[] = { beforeValues.x, beforeValues.y, beforeValues.z };
-	const char* axisLabels[] = { "X", "Y", "Z" };
-	const ImVec4 axisColors[] = { kColorX, kColorY, kColorZ };
+		// --- 2列目: 値の操作 ---
+		ImGui::TableNextColumn();
 
-	// 次にフォーカスを当てるべき軸のインデックス (-1は無し)
-	ImGuiID nextFocusID = ImGui::GetID("##nextFocusAxis");
-	int focusAxisIdx = ImGui::GetStateStorage()->GetInt(nextFocusID, -1);
-	if(focusAxisIdx != -1) {
-		ImGui::GetStateStorage()->SetInt(nextFocusID, -1);
-	}
+		ImGui::PushID("##Vec3Vals");
 
-	for(int i = 0; i < kNumAxes; ++i) {
-		ImGui::PushID(i);
+		float availWidth = ImGui::GetContentRegionAvail().x - kSafetyMarginWidth;
+		float itemSpacing = GImGui->Style.ItemSpacing.x;
+		float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * kFramePaddingScale;
+		ImVec2 buttonSize = { lineHeight + kButtonPaddingW, lineHeight };
 
-		bool isZero = fabsf(*axisValues[i]) < kZeroEpsilon;
-		bool isUnified = (_unified && *_unified);
-		bool isLocked = isUnified && isZero;
+		float checkboxWidth = (_unified != nullptr) ? (ImGui::GetFrameHeight() + itemSpacing) : 0.0f;
+		float totalAxesWidth = availWidth - checkboxWidth - (itemSpacing * kSpacingScale);
+		float axisWidth = totalAxesWidth / static_cast<float>(kNumAxes);
+		float inputWidth = std::max(kMinInputWidth, axisWidth - buttonSize.x);
 
-		if(isLocked) {
-			ImGui::BeginDisabled(true);
-		}
-
-		// ==========================================================
-		// A. 軸ラベルボタン (ドラッグ操作)
-		// ==========================================================
-		ImVec4 baseColor = axisColors[i];
-		ImVec4 hoverColor = ImVec4(baseColor.x + kColorHoverOffset, baseColor.y + kColorHoverOffset, baseColor.z + kColorHoverOffset, 1.0f);
-		ImVec4 activeColor = ImVec4(baseColor.x + kColorActiveOffset, baseColor.y + kColorActiveOffset, baseColor.z + kColorActiveOffset, 1.0f);
-
-		ImGui::PushStyleColor(ImGuiCol_Button, baseColor);
-		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, hoverColor);
-		ImGui::PushStyleColor(ImGuiCol_ButtonActive, activeColor);
-
-		ImGui::Button(axisLabels[i], buttonSize);
-
-		// ★追加: ボタン操作開始 (ドラッグ開始)
-		if(ImGui::IsItemActivated()) {
-			s_startValue = _values;
-		}
-
-		// ★追加: ボタン操作終了 (ドラッグ終了)
-		// 値が変わっていたらUndoコマンド発行
-		if(ImGui::IsItemDeactivated()) {
-			// 値が変わったか簡易チェック (厳密にはEpsilon比較推奨ですが、ここでは簡易的に)
-			bool changed = (_values.x != s_startValue.x || _values.y != s_startValue.y || _values.z != s_startValue.z);
-			if(changed) {
-				EditCommand::Execute<ImGuiCommand::ModifyValueCommand<ONEngine::Vector3>>(&_values, s_startValue, _values);
+		// --- チェックボックス ---
+		if(_unified != nullptr) {
+			ImGui::Checkbox("##Unified", _unified);
+			if(ImGui::IsItemHovered()) {
+				ImGui::SetTooltip("Uniform Scale (Lock Ratio)");
 			}
+			ImGui::SameLine();
 		}
 
-		bool buttonActive = ImGui::IsItemActive();
-		bool buttonDragged = buttonActive && ImGui::IsMouseDragging(ImGuiMouseButton_Left);
+		float* axisValues[] = { &_values.x, &_values.y, &_values.z };
+		float beforeAxisValues[] = { beforeValues.x, beforeValues.y, beforeValues.z };
+		const char* axisLabels[] = { "X", "Y", "Z" };
+		const ImVec4 axisColors[] = { kColorX, kColorY, kColorZ };
 
-		if(!isLocked && (ImGui::IsItemHovered() || buttonActive)) {
-			ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeEW);
+		ImGuiID nextFocusID = ImGui::GetID("##nextFocusAxis");
+		int focusAxisIdx = ImGui::GetStateStorage()->GetInt(nextFocusID, -1);
+		if(focusAxisIdx != -1) {
+			ImGui::GetStateStorage()->SetInt(nextFocusID, -1);
 		}
 
-		ImGui::PopStyleColor(3);
-		ImGui::SameLine(0, 0);
+		for(int i = 0; i < kNumAxes; ++i) {
+			ImGui::PushID(i);
 
-		// ==========================================================
-		// B. 数値表示/入力エリア
-		// ==========================================================
-		ImGui::SetNextItemWidth(inputWidth);
+			bool isZero = fabsf(*axisValues[i]) < kZeroEpsilon;
+			bool isUnified = (_unified && *_unified);
+			bool isLocked = isUnified && isZero;
 
-		ImGuiID inputID = ImGui::GetID("##v");
-		ImGuiID focusReqID = ImGui::GetID("##req_focus");
-
-		if(focusAxisIdx == i && !isLocked) {
-			ImGui::GetStateStorage()->SetBool(inputID, true);
-			ImGui::GetStateStorage()->SetBool(focusReqID, true);
-		}
-
-		bool isEditing = ImGui::GetStateStorage()->GetBool(inputID, false);
-		bool inputChanged = false;
-
-		// 編集モード
-		if(isEditing && !isLocked) {
-			if(ImGui::GetStateStorage()->GetBool(focusReqID, false)) {
-				ImGui::SetKeyboardFocusHere(0);
-				ImGui::GetStateStorage()->SetBool(focusReqID, false);
+			if(isLocked) {
+				ImGui::BeginDisabled(true);
 			}
 
-			inputChanged = ImGui::InputFloat("##v", axisValues[i], 0.0f, 0.0f, "%.2f");
+			// ==========================================================
+			// A. 軸ラベルボタン
+			// ==========================================================
+			ImVec4 baseColor = axisColors[i];
+			ImVec4 hoverColor = ImVec4(baseColor.x + kColorHoverOffset, baseColor.y + kColorHoverOffset, baseColor.z + kColorHoverOffset, 1.0f);
+			ImVec4 activeColor = ImVec4(baseColor.x + kColorActiveOffset, baseColor.y + kColorActiveOffset, baseColor.z + kColorActiveOffset, 1.0f);
 
-			// ★追加: 入力操作開始
+			ImGui::PushStyleColor(ImGuiCol_Button, baseColor);
+			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, hoverColor);
+			ImGui::PushStyleColor(ImGuiCol_ButtonActive, activeColor);
+
+			ImGui::Button(axisLabels[i], buttonSize);
+
+			// ボタン操作開始
 			if(ImGui::IsItemActivated()) {
 				s_startValue = _values;
 			}
 
-			// ★追加: 入力操作終了 (編集確定後)
-			if(ImGui::IsItemDeactivatedAfterEdit()) {
-				EditCommand::Execute<ImGuiCommand::ModifyValueCommand<ONEngine::Vector3>>(&_values, s_startValue, _values);
-			}
-
-			// Tabキー遷移処理
-			bool tabPressed = ImGui::IsKeyPressed(ImGuiKey_Tab);
-			bool shiftPressed = ImGui::GetIO().KeyShift;
-
-			if(tabPressed && (ImGui::IsItemActive() || ImGui::IsItemDeactivated())) {
-				ImGui::GetStateStorage()->SetBool(inputID, false);
-
-				int direction = shiftPressed ? -1 : 1;
-				int targetIdx = i + direction;
-
-				if(targetIdx >= 0 && targetIdx < kNumAxes) {
-					if(direction > 0) {
-						focusAxisIdx = targetIdx;
-					} else {
-						ImGui::GetStateStorage()->SetInt(nextFocusID, targetIdx);
-					}
+			// ボタン操作終了 (Undo)
+			if(ImGui::IsItemDeactivated()) {
+				bool changed = (_values.x != s_startValue.x || _values.y != s_startValue.y || _values.z != s_startValue.z);
+				if(changed) {
+					EditCommand::Execute<ImGuiCommand::ModifyValueCommand<ONEngine::Vector3>>(&_values, s_startValue, _values);
 				}
-			} else if(ImGui::IsItemDeactivated()) {
-				ImGui::GetStateStorage()->SetBool(inputID, false);
 			}
-		}
-		// 表示モード
-		else {
-			ImGui::PushStyleColor(ImGuiCol_Button, ImGui::GetStyleColorVec4(ImGuiCol_FrameBg));
-			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImGui::GetStyleColorVec4(ImGuiCol_FrameBgHovered));
-			ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImGui::GetStyleColorVec4(ImGuiCol_FrameBgActive));
-			ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, kTextAlignCenter);
 
-			char buf[kTextBufferSize];
-			sprintf_s(buf, kTextBufferSize, "%.2f", *axisValues[i]);
+			bool buttonActive = ImGui::IsItemActive();
+			bool buttonDragged = buttonActive && ImGui::IsMouseDragging(ImGuiMouseButton_Left);
 
-			if(ImGui::Button(buf, ImVec2(inputWidth, 0))) {
+			if(!isLocked && (ImGui::IsItemHovered() || buttonActive)) {
+				ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeEW);
+			}
+
+			ImGui::PopStyleColor(3);
+			ImGui::SameLine(0, 0);
+
+			// ==========================================================
+			// B. 数値表示/入力エリア
+			// ==========================================================
+			ImGui::SetNextItemWidth(inputWidth);
+
+			ImGuiID inputID = ImGui::GetID("##v");
+			ImGuiID focusReqID = ImGui::GetID("##req_focus");
+
+			if(focusAxisIdx == i && !isLocked) {
 				ImGui::GetStateStorage()->SetBool(inputID, true);
 				ImGui::GetStateStorage()->SetBool(focusReqID, true);
-				// ★追加: クリックで編集モードに入った瞬間をCaptureしたいが、
-				// 次のフレームでInputFloatがActivateされるため、そちらでCaptureされる。
-				// ここでは不要。
 			}
 
-			ImGui::PopStyleVar();
-			ImGui::PopStyleColor(3);
-		}
+			bool isEditing = ImGui::GetStateStorage()->GetBool(inputID, false);
+			bool inputChanged = false;
 
-		if(isLocked) {
-			ImGui::EndDisabled();
-		}
-
-		// ==========================================================
-		// C. 変更反映 (ドラッグ中などのリアルタイム反映)
-		// ==========================================================
-		bool currentAxisChanged = false;
-
-		if(!isLocked) {
-			if(buttonDragged) {
-				float dragDelta = ImGui::GetIO().MouseDelta.x * kDragSpeedNormal;
-				if(ImGui::GetIO().KeyShift) {
-					dragDelta *= kDragSpeedSlow;
+			// 編集モード
+			if(isEditing && !isLocked) {
+				if(ImGui::GetStateStorage()->GetBool(focusReqID, false)) {
+					ImGui::SetKeyboardFocusHere(0);
+					ImGui::GetStateStorage()->SetBool(focusReqID, false);
 				}
-				*axisValues[i] += dragDelta;
-				currentAxisChanged = true;
-			}
 
-			if(inputChanged) {
-				currentAxisChanged = true;
-			}
-		}
+				inputChanged = ImGui::InputFloat("##v", axisValues[i], 0.0f, 0.0f, "%.2f");
 
-		if(currentAxisChanged) {
-			valueChanged = true;
-
-			if((_unified && *_unified) || ImGui::IsKeyDown(ImGuiKey_LeftShift)) {
-				float oldVal = beforeAxisValues[i];
-				float newVal = *axisValues[i];
-
-				if(fabsf(oldVal) > kZeroEpsilon) {
-					float ratio = newVal / oldVal;
-					_values.x = beforeValues.x * ratio;
-					_values.y = beforeValues.y * ratio;
-					_values.z = beforeValues.z * ratio;
-				} else {
-					_values.x = newVal;
-					_values.y = newVal;
-					_values.z = newVal;
+				if(ImGui::IsItemActivated()) {
+					s_startValue = _values;
 				}
-				*axisValues[i] = newVal;
+
+				if(ImGui::IsItemDeactivatedAfterEdit()) {
+					EditCommand::Execute<ImGuiCommand::ModifyValueCommand<ONEngine::Vector3>>(&_values, s_startValue, _values);
+				}
+
+				bool tabPressed = ImGui::IsKeyPressed(ImGuiKey_Tab);
+				bool shiftPressed = ImGui::GetIO().KeyShift;
+
+				if(tabPressed && (ImGui::IsItemActive() || ImGui::IsItemDeactivated())) {
+					ImGui::GetStateStorage()->SetBool(inputID, false);
+
+					int direction = shiftPressed ? -1 : 1;
+					int targetIdx = i + direction;
+
+					if(targetIdx >= 0 && targetIdx < kNumAxes) {
+						if(direction > 0) {
+							focusAxisIdx = targetIdx;
+						} else {
+							ImGui::GetStateStorage()->SetInt(nextFocusID, targetIdx);
+						}
+					}
+				} else if(ImGui::IsItemDeactivated()) {
+					ImGui::GetStateStorage()->SetBool(inputID, false);
+				}
 			}
+			// 表示モード
+			else {
+				ImGui::PushStyleColor(ImGuiCol_Button, ImGui::GetStyleColorVec4(ImGuiCol_FrameBg));
+				ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImGui::GetStyleColorVec4(ImGuiCol_FrameBgHovered));
+				ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImGui::GetStyleColorVec4(ImGuiCol_FrameBgActive));
+				ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, kTextAlignCenter);
+
+				char buf[kTextBufferSize];
+				sprintf_s(buf, kTextBufferSize, "%.2f", *axisValues[i]);
+
+				if(ImGui::Button(buf, ImVec2(inputWidth, 0))) {
+					ImGui::GetStateStorage()->SetBool(inputID, true);
+					ImGui::GetStateStorage()->SetBool(focusReqID, true);
+				}
+
+				ImGui::PopStyleVar();
+				ImGui::PopStyleColor(3);
+			}
+
+			if(isLocked) {
+				ImGui::EndDisabled();
+			}
+
+			// ==========================================================
+			// C. 変更反映
+			// ==========================================================
+			bool currentAxisChanged = false;
+
+			if(!isLocked) {
+				if(buttonDragged) {
+					float dragDelta = ImGui::GetIO().MouseDelta.x * _speed;
+
+					if(ImGui::GetIO().KeyShift || ImGui::GetIO().KeyAlt) {
+						dragDelta *= 0.01f;
+					}
+
+					*axisValues[i] += dragDelta;
+					currentAxisChanged = true;
+				}
+
+				if(inputChanged) {
+					currentAxisChanged = true;
+				}
+			}
+
+			if(currentAxisChanged) {
+				valueChanged = true;
+
+				if((_unified && *_unified) || ImGui::IsKeyDown(ImGuiKey_LeftShift)) {
+					float oldVal = beforeAxisValues[i];
+					float newVal = *axisValues[i];
+
+					if(fabsf(oldVal) > kZeroEpsilon) {
+						float ratio = newVal / oldVal;
+						_values.x = beforeValues.x * ratio;
+						_values.y = beforeValues.y * ratio;
+						_values.z = beforeValues.z * ratio;
+					} else {
+						_values.x = newVal;
+						_values.y = newVal;
+						_values.z = newVal;
+					}
+					*axisValues[i] = newVal;
+				}
+			}
+
+			if(i < kNumAxes - 1) {
+				ImGui::SameLine();
+			}
+			ImGui::PopID();
 		}
 
-		if(i < kNumAxes - 1) {
-			ImGui::SameLine();
-		}
 		ImGui::PopID();
+		ImGui::EndTable();
 	}
 
-	ImGui::PopID();
-	ImGui::Columns(1);
 	ImGui::PopID();
 
 	return valueChanged;
 }
-
 
 ImVec4 ImMathf::ToImVec4(const ONEngine::Vector4& _vec) {
 	return ImVec4(_vec.x, _vec.y, _vec.z, _vec.w);
