@@ -17,9 +17,11 @@ public:
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
-	GameSceneView(ONEngine::AssetCollection* _assetCollection) : pAssetCollection_(_assetCollection) {}
+	GameSceneView(ONEngine::AssetCollection* _ac, const std::string& _windowName)
+		: pAssetCollection_(_ac), windowName_(_windowName) {
+	}
 	~GameSceneView() {}
-	
+
 	/// @brief imgui windowの描画処理
 	void ShowImGui() override;
 
@@ -29,6 +31,7 @@ private:
 	/// ===================================================
 
 	ONEngine::AssetCollection* pAssetCollection_ = nullptr;
+	const std::string windowName_ = "GameView";
 
 };
 

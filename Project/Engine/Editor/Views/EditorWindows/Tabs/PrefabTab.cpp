@@ -8,9 +8,9 @@
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "../Windows/Prefab/PrefabViewWindow.h"
 #include "../Windows/Prefab/PrefabFileWindow.h"
-#include "../Windows/Game/InspectorWindow.h"
-#include "../Windows/Game/ProjectWindow.h"
-#include "../Windows/Game/HierarchyWindow.h"
+#include "../Windows/Develop/InspectorWindow.h"
+#include "../Windows/Develop/ProjectWindow.h"
+#include "../Windows/Develop/HierarchyWindow.h"
 
 using namespace Editor;
 

@@ -12,7 +12,7 @@
 using namespace Editor;
 
 void GameSceneView::ShowImGui() {
-	if (!ImGui::Begin("GameScene")) {
+	if (!ImGui::Begin(windowName_.c_str())) {
 		ImGui::End();
 		return;
 	}

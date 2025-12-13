@@ -12,7 +12,7 @@
 /// editor
 #include "Engine/Editor/Math/ImGuiMath.h"
 #include "Engine/Editor/Views/ImGuiSelection.h"
-#include "../Game/InspectorWindow.h"
+#include "../Develop/InspectorWindow.h"
 
 using namespace Editor;
 

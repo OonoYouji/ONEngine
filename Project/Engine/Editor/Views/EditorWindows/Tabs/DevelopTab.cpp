@@ -7,13 +7,13 @@
 /// engine
 #include "Engine/Core/Config/EngineConfig.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
-#include "../Windows/Game/ProjectWindow.h"
-#include "../Windows/Game/GameSceneView.h"
-#include "../Windows/Game/DebugSceneView.h"
-#include "../Windows/Game/InspectorWindow.h"
-#include "../Windows/Game/HierarchyWindow.h"
-#include "../Windows/Game/ConsoleWindow.h"
-#include "../Windows/Game/TexturePreviewWindow.h"
+#include "../Windows/Develop/ProjectWindow.h"
+#include "../Windows/Develop/GameSceneView.h"
+#include "../Windows/Develop/DebugSceneView.h"
+#include "../Windows/Develop/InspectorWindow.h"
+#include "../Windows/Develop/HierarchyWindow.h"
+#include "../Windows/Develop/ConsoleWindow.h"
+#include "../Windows/Develop/TexturePreviewWindow.h"
 
 using namespace ONEngine;
 using namespace Editor;
@@ -26,7 +26,7 @@ DevelopTab::DevelopTab(
 
 	/// 子windowの追加
 	InspectorWindow* inspector = static_cast<InspectorWindow*>(AddView(std::make_unique<InspectorWindow>("Inspector##Game", _dxm, _ecs, _assetCollection, _editorManager)));
-	AddView(std::make_unique<GameSceneView>(_assetCollection));
+	AddView(std::make_unique<GameSceneView>(_assetCollection, "GameScene"));
 	AddView(std::make_unique<ImGuiNormalHierarchyWindow>("Hierarchy", _ecs, _editorManager, _sceneManager));
 	AddView(std::make_unique<HierarchyWindow>("DebugHierarchy", _ecs->GetECSGroup("Debug"), _editorManager, _sceneManager));
 	AddView(std::make_unique<DebugSceneView>(_ecs, _assetCollection, _sceneManager, inspector));

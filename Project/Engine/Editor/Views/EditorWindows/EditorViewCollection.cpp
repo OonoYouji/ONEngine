@@ -6,6 +6,7 @@
 /// engine
 #include "Engine/Core/Config/EngineConfig.h"
 #include "Tabs/DevelopTab.h"
+#include "Tabs/GameTab.h"
 #include "Tabs/PrefabTab.h"
 #include "Tabs/EditorTab.h"
 
@@ -25,6 +26,7 @@ EditorViewCollection::EditorViewCollection(
 
 	/// ここでwindowを生成する
 	AddViewContainer("Develop", std::make_unique<DevelopTab>(_dxm, _ecs, _assetCollection, _editorManager, _sceneManager));
+	AddViewContainer("Game", std::make_unique<GameTab>(_assetCollection));
 	AddViewContainer("Prefab", std::make_unique<PrefabTab>(_dxm, _ecs, _assetCollection, _editorManager, _sceneManager));
 	AddViewContainer("Editor", std::make_unique<EditorTab>());
 

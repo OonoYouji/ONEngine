@@ -668,12 +668,8 @@ void ImGuiManager::Initialize(ONEngine::AssetCollection* _assetCollection) {
 
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
-	InputImGuiStyle("./imgui_style.json");
-	ImGuiStyle& imStyle = ImGui::GetStyle();
-	imStyle.FrameBorderSize = 0.5f;
 
 	SetupVS2026Style();
-
 
 	ImGuiIO& imGuiIO = ImGui::GetIO();
 	imGuiIO.ConfigFlags = ImGuiConfigFlags_DockingEnable;
