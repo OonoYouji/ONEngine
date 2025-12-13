@@ -20,14 +20,14 @@ class InspectorWindow;
 /// //////////////////////////////////////////////////////
 /// PrefabFileを表示するためのImGuiWindow
 /// //////////////////////////////////////////////////////
-class ImGuiPrefabFileWindow : public IEditorWindow {
+class PrefabFileWindow : public IEditorWindow {
 public:
 	/// =====================================================
 	/// public : methods
 	/// =====================================================
 
-	ImGuiPrefabFileWindow(ONEngine::EntityComponentSystem* _ecs, ONEngine::AssetCollection* _assetCollection, InspectorWindow* _inspector);
-	~ImGuiPrefabFileWindow() override = default;
+	PrefabFileWindow(ONEngine::EntityComponentSystem* _ecs, ONEngine::AssetCollection* _assetCollection, InspectorWindow* _inspector);
+	~PrefabFileWindow() override = default;
 
 	void ShowImGui() override;
 

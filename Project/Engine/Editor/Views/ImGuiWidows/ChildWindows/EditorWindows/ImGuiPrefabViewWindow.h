@@ -12,14 +12,14 @@ namespace Editor {
 /// //////////////////////////////////////////////////////
 /// Prefab編集用のimgui window
 /// //////////////////////////////////////////////////////
-class ImGuiPrefabViewWindow : public IEditorWindow {
+class PrefabViewWindow : public IEditorWindow {
 public:
 	/// =====================================================
 	/// public : methods
 	/// =====================================================
 
-	ImGuiPrefabViewWindow(ONEngine::EntityComponentSystem* _ecs, ONEngine::AssetCollection* _assetCollection);
-	~ImGuiPrefabViewWindow() {}
+	PrefabViewWindow(ONEngine::EntityComponentSystem* _ecs, ONEngine::AssetCollection* _assetCollection);
+	~PrefabViewWindow() {}
 
 	void ShowImGui() override;
 

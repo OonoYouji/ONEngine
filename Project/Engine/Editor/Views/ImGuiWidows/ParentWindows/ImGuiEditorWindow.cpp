@@ -25,8 +25,8 @@ ImGuiEditorWindow::ImGuiEditorWindow(
 	InspectorWindow* inspector = static_cast<InspectorWindow*>(
 		AddView(std::make_unique<InspectorWindow>("Inspector##Prefab", _dxm, _ecs, _assetCollection, _editorManager)));
 
-	AddView(std::make_unique<ImGuiPrefabFileWindow>(_ecs, _assetCollection, inspector));
-	AddView(std::make_unique<ImGuiPrefabViewWindow>(_ecs, _assetCollection));
+	AddView(std::make_unique<PrefabFileWindow>(_ecs, _assetCollection, inspector));
+	AddView(std::make_unique<PrefabViewWindow>(_ecs, _assetCollection));
 	AddView(std::make_unique<HierarchyWindow>("Hierarchy##Prefab", _ecs->GetECSGroup("Debug"), _editorManager, _sceneManager));
 	ProjectWindow* project = static_cast<ProjectWindow*>(
 		AddView(std::make_unique<ProjectWindow>(_assetCollection, _editorManager)));

@@ -16,7 +16,7 @@
 
 using namespace Editor;
 
-ImGuiPrefabFileWindow::ImGuiPrefabFileWindow(ONEngine::EntityComponentSystem* _ecs, ONEngine::AssetCollection* _assetCollection, InspectorWindow* _inspector)
+PrefabFileWindow::PrefabFileWindow(ONEngine::EntityComponentSystem* _ecs, ONEngine::AssetCollection* _assetCollection, InspectorWindow* _inspector)
 	: pEcs_(_ecs), pAssetCollection_(_assetCollection), pInspector_(_inspector) {
 
 	/// Prefabファイルの取得
@@ -25,7 +25,7 @@ ImGuiPrefabFileWindow::ImGuiPrefabFileWindow(ONEngine::EntityComponentSystem* _e
 }
 
 
-void ImGuiPrefabFileWindow::ShowImGui() {
+void PrefabFileWindow::ShowImGui() {
 	if (!ImGui::Begin("Prefab File")) {
 		ImGui::End();
 		return;
@@ -61,7 +61,7 @@ void ImGuiPrefabFileWindow::ShowImGui() {
 	ImGui::End();
 }
 
-void ImGuiPrefabFileWindow::ShowPrefabFileList() {
+void PrefabFileWindow::ShowPrefabFileList() {
 	/// ----- prefabファイルのpreview (検索機能付き) ----- ///
 
 	for (auto& file : files_) {
@@ -92,7 +92,7 @@ void ImGuiPrefabFileWindow::ShowPrefabFileList() {
 	}
 }
 
-void ImGuiPrefabFileWindow::ReloadPrefabFiles(const ONEngine::Texture* _tex) {
+void PrefabFileWindow::ReloadPrefabFiles(const ONEngine::Texture* _tex) {
 
 	/// Reloadボタンの表示
 	ImVec2 buttonSize = ImVec2(24.0f, 24.0f);
@@ -112,7 +112,7 @@ void ImGuiPrefabFileWindow::ReloadPrefabFiles(const ONEngine::Texture* _tex) {
 
 }
 
-void ImGuiPrefabFileWindow::AddNewPrefabWindow() {
+void PrefabFileWindow::AddNewPrefabWindow() {
 
 	/// 新規作成ボタン
 	if (ImGui::Button("New Prefab")) {
@@ -138,7 +138,7 @@ void ImGuiPrefabFileWindow::AddNewPrefabWindow() {
 
 }
 
-bool ImGuiPrefabFileWindow::GenerateNewPrefab() {
+bool PrefabFileWindow::GenerateNewPrefab() {
 	/// ----- 新規のprefabファイルを作成する ----- ///
 
 	/// 既に同じ名前のPrefabが存在するかチェック

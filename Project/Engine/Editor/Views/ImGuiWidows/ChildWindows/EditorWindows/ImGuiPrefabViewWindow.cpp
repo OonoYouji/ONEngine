@@ -15,10 +15,10 @@
 
 using namespace Editor;
 
-ImGuiPrefabViewWindow::ImGuiPrefabViewWindow(ONEngine::EntityComponentSystem* _ecs, ONEngine::AssetCollection* _assetCollection)
+PrefabViewWindow::PrefabViewWindow(ONEngine::EntityComponentSystem* _ecs, ONEngine::AssetCollection* _assetCollection)
 	: pEcs_(_ecs), pAssetCollection_(_assetCollection) {}
 
-void ImGuiPrefabViewWindow::ShowImGui() {
+void PrefabViewWindow::ShowImGui() {
 	if (!ImGui::Begin("prefab view")) {
 		ImGui::End();
 		return;
@@ -51,7 +51,7 @@ void ImGuiPrefabViewWindow::ShowImGui() {
 	ImGui::End();
 }
 
-void ImGuiPrefabViewWindow::RenderView() {
+void PrefabViewWindow::RenderView() {
 	/// ----- SceneのRTVTextureを描画 ----- ///
 
 	/// 描画する画像の取得

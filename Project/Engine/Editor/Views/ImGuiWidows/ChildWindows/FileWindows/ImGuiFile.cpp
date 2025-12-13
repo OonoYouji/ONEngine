@@ -12,9 +12,9 @@
 
 using namespace Editor;
 
-ImGuiFile::ImGuiFile() {}
+ImGuiStyleWindow::ImGuiStyleWindow() {}
 
-void ImGuiFile::ShowImGui() {
+void ImGuiStyleWindow::ShowImGui() {
 	if (!ImGui::Begin("ImGui")) {
 		ImGui::End();
 		return;

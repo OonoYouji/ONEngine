@@ -18,7 +18,7 @@ ImGuiFileWindow::ImGuiFileWindow() {
 	imGuiFlags_ |= ImGuiWindowFlags_NoBringToFrontOnFocus;
 
 	/// 子ウィンドウの追加
-	AddView(std::make_unique<ImGuiFile>());
+	AddView(std::make_unique<ImGuiStyleWindow>());
 
 }
 

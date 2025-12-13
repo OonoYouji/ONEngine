@@ -7,14 +7,14 @@
 /// //////////////////////////////////////////////////////
 namespace Editor {
 
-class ImGuiFile : public IEditorWindow {
+class ImGuiStyleWindow : public IEditorWindow {
 public:
 	/// ====================================================
 	/// public : methods
 	/// ====================================================
 
-	ImGuiFile();
-	~ImGuiFile() {}
+	ImGuiStyleWindow();
+	~ImGuiStyleWindow() {}
 
 	void ShowImGui() override;
 
