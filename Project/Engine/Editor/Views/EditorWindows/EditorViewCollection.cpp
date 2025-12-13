@@ -24,9 +24,9 @@ EditorViewCollection::EditorViewCollection(
 	: pImGuiManager_(_imGuiManager) {
 
 	/// ここでwindowを生成する
-	AddParentWindow("File", std::make_unique<FileTab>());
-	AddParentWindow("Game", std::make_unique<GameTab>(_dxm, _ecs, _assetCollection, _editorManager, _sceneManager));
-	AddParentWindow("Prefab", std::make_unique<PrefabTab>(_dxm, _ecs, _assetCollection, _editorManager, _sceneManager));
+	AddViewContainer("File", std::make_unique<FileTab>());
+	AddViewContainer("Game", std::make_unique<GameTab>(_dxm, _ecs, _assetCollection, _editorManager, _sceneManager));
+	AddViewContainer("Prefab", std::make_unique<PrefabTab>(_dxm, _ecs, _assetCollection, _editorManager, _sceneManager));
 
 	// game windowで開始
 	selectedMenuIndex_ = 1;
@@ -44,7 +44,7 @@ void EditorViewCollection::Update() {
 
 }
 
-void EditorViewCollection::AddParentWindow(const std::string& _name, std::unique_ptr<class IEditorWindowContainer> _window) {
+void EditorViewCollection::AddViewContainer(const std::string& _name, std::unique_ptr<class IEditorWindowContainer> _window) {
 	parentWindowNames_.push_back(_name);
 	_window->pImGuiManager_ = pImGuiManager_;
 	for (auto& child : _window->children_) {

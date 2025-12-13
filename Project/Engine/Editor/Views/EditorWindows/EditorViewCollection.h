@@ -46,7 +46,7 @@ public:
 	void Update();
 
 	/// @brief windowの追加
-	void AddParentWindow(const std::string& _name, std::unique_ptr<class IEditorWindowContainer> _window);
+	void AddViewContainer(const std::string& _name, std::unique_ptr<class IEditorWindowContainer> _window);
 
 private:
 	/// ===================================================
