@@ -10,8 +10,7 @@
 
 /// editor
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentJsonConverter.h"
-#include "Engine/Editor/Commands/ImGuiCommand/ImGuiCommand.h"
-#include "Engine/Editor/Math/ImGuiMath.h"
+#include "Engine/Editor/EditorUtils.h"
 
 using namespace ONEngine;
 
