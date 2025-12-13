@@ -5,9 +5,9 @@
 
 /// engine
 #include "Engine/Core/Config/EngineConfig.h"
-#include "Tabs/GameTab.h"
+#include "Tabs/DevelopTab.h"
 #include "Tabs/PrefabTab.h"
-#include "Tabs/FileTab.h"
+#include "Tabs/EditorTab.h"
 
 using namespace Editor;
 
@@ -24,9 +24,9 @@ EditorViewCollection::EditorViewCollection(
 	: pImGuiManager_(_imGuiManager) {
 
 	/// ここでwindowを生成する
-	AddViewContainer("File", std::make_unique<FileTab>());
-	AddViewContainer("Game", std::make_unique<GameTab>(_dxm, _ecs, _assetCollection, _editorManager, _sceneManager));
+	AddViewContainer("Develop", std::make_unique<DevelopTab>(_dxm, _ecs, _assetCollection, _editorManager, _sceneManager));
 	AddViewContainer("Prefab", std::make_unique<PrefabTab>(_dxm, _ecs, _assetCollection, _editorManager, _sceneManager));
+	AddViewContainer("Editor", std::make_unique<EditorTab>());
 
 	// game windowで開始
 	selectedMenuIndex_ = 1;

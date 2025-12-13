@@ -539,6 +539,106 @@ const ImWchar gGlyphRangesJapanese[] = {
 	0x9F76, 0x9F77, 0x9F8D, 0x9F8D, 0x9F95, 0x9F95, 0x9F9C, 0x9F9D, 0x9FA0, 0x9FA0, 0xFF01, 0xFF01, 0xFF03, 0xFF06, 0xFF08, 0xFF0C,
 	0xFF0E, 0xFF3B, 0xFF3D, 0xFF5D, 0xFF61, 0xFF9F, 0xFFE3, 0xFFE3, 0xFFE5, 0xFFE5, 0xFFFF, 0xFFFF, 0,
 };
+
+void SetupVS2026Style() {
+	ImGuiStyle& style = ImGui::GetStyle();
+	ImVec4* colors = style.Colors;
+
+	// --- 1. サイズと形状 (Fluent Design Evolution) ---
+	style.WindowRounding = 6.0f;  // 程よい丸み（Windows 11風）
+	style.ChildRounding = 4.0f;
+	style.FrameRounding = 4.0f;  // 入力欄は少し角丸
+	style.PopupRounding = 4.0f;
+	style.ScrollbarRounding = 8.0f;  // 丸いスクロールバー
+	style.GrabRounding = 3.0f;
+	style.TabRounding = 4.0f;  // 上部のタブ
+
+	style.WindowBorderSize = 0.0f;
+	style.ChildBorderSize = 1.0f;
+	style.PopupBorderSize = 1.0f;
+	style.FrameBorderSize = 1.0f; // 入力欄には薄い枠線をつける（VSの入力欄の特徴）
+	style.TabBorderSize = 0.0f;
+
+	// --- 2. 余白 (Density for Pro Tools) ---
+	style.WindowPadding = ImVec2(10.0f, 10.0f);
+	style.FramePadding = ImVec2(8.0f, 5.0f);   // 縦を少し詰めて情報量を確保
+	style.ItemSpacing = ImVec2(8.0f, 6.0f);
+	style.ItemInnerSpacing = ImVec2(6.0f, 4.0f);
+	style.ScrollbarSize = 12.0f;                // 少し細め
+
+	// --- 3. カラーパレット (Modern Dark Theme) ---
+
+	// 定数: Visual Studio Dark Modern ベースの色
+	const ImVec4 color_bg = ImVec4(0.11f, 0.11f, 0.11f, 1.00f); // #1E1E1E
+	const ImVec4 color_bg_alt = ImVec4(0.13f, 0.13f, 0.13f, 1.00f); // #252526 (Sidebars)
+	const ImVec4 color_border = ImVec4(0.24f, 0.24f, 0.24f, 1.00f); // #3E3E42
+	const ImVec4 color_accent = ImVec4(0.00f, 0.48f, 0.80f, 1.00f); // #007ACC (VS Blue)
+	const ImVec4 color_accent_hover = ImVec4(0.11f, 0.59f, 0.92f, 1.00f);
+	const ImVec4 color_text = ImVec4(0.95f, 0.95f, 0.95f, 1.00f);
+	const ImVec4 color_text_dim = ImVec4(0.60f, 0.60f, 0.60f, 1.00f);
+
+	// テキスト
+	colors[ImGuiCol_Text] = color_text;
+	colors[ImGuiCol_TextDisabled] = color_text_dim;
+
+	// ウィンドウ背景
+	colors[ImGuiCol_WindowBg] = color_bg;
+	colors[ImGuiCol_ChildBg] = color_bg;
+	colors[ImGuiCol_PopupBg] = ImVec4(0.15f, 0.15f, 0.15f, 0.98f); // 少し浮かす
+
+	// 境界線（非常に重要：フラットすぎず、立体すぎず）
+	colors[ImGuiCol_Border] = color_border;
+	colors[ImGuiCol_BorderShadow] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
+
+	// タイトルバー
+	colors[ImGuiCol_TitleBg] = color_bg;
+	colors[ImGuiCol_TitleBgActive] = color_bg; // アクティブ時も色は変えない（モダン）
+	colors[ImGuiCol_TitleBgCollapsed] = color_bg;
+
+	// メニューバー
+	colors[ImGuiCol_MenuBarBg] = color_bg_alt;
+
+	// スクロールバー
+	colors[ImGuiCol_ScrollbarBg] = ImVec4(0.11f, 0.11f, 0.11f, 0.00f); // 背景なし
+	colors[ImGuiCol_ScrollbarGrab] = ImVec4(0.28f, 0.28f, 0.28f, 1.00f); // 薄いグレー
+	colors[ImGuiCol_ScrollbarGrabHovered] = ImVec4(0.35f, 0.35f, 0.35f, 1.00f);
+	colors[ImGuiCol_ScrollbarGrabActive] = ImVec4(0.40f, 0.40f, 0.40f, 1.00f);
+
+	// チェックマーク
+	colors[ImGuiCol_CheckMark] = color_accent;
+
+	// スライダー
+	colors[ImGuiCol_SliderGrab] = ImVec4(0.40f, 0.40f, 0.40f, 1.00f);
+	colors[ImGuiCol_SliderGrabActive] = color_accent;
+
+	// ボタン（VSのようなフラットなボタン）
+	colors[ImGuiCol_Button] = ImVec4(0.18f, 0.18f, 0.18f, 1.00f);
+	colors[ImGuiCol_ButtonHovered] = ImVec4(0.25f, 0.25f, 0.25f, 1.00f);
+	colors[ImGuiCol_ButtonActive] = ImVec4(0.00f, 0.48f, 0.80f, 0.60f); // 押したときは青
+
+	// ヘッダー（リストの選択項目など）
+	colors[ImGuiCol_Header] = ImVec4(0.18f, 0.18f, 0.20f, 1.00f); // 選択前ホバー
+	colors[ImGuiCol_HeaderHovered] = ImVec4(0.22f, 0.22f, 0.25f, 1.00f);
+	colors[ImGuiCol_HeaderActive] = ImVec4(0.02f, 0.25f, 0.45f, 1.00f); // 濃い青（選択中）
+
+	// タブ（重要：VSのタブはアクティブなものが背景色と同化し、強調線が入る）
+	// ImGui標準では線の表現が難しいので、色差で表現
+	colors[ImGuiCol_Tab] = color_bg_alt;  // 非アクティブ
+	colors[ImGuiCol_TabHovered] = color_accent_hover;
+	colors[ImGuiCol_TabActive] = color_accent;  // アクティブ（青）
+	colors[ImGuiCol_TabUnfocused] = color_bg_alt;
+	colors[ImGuiCol_TabUnfocusedActive] = ImVec4(0.18f, 0.18f, 0.18f, 1.00f);
+
+	// ウィンドウのリサイズグリップ
+	colors[ImGuiCol_ResizeGrip] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f); // 透明で見えなくする
+	colors[ImGuiCol_ResizeGripHovered] = ImVec4(0.28f, 0.28f, 0.28f, 1.00f);
+	colors[ImGuiCol_ResizeGripActive] = color_accent;
+
+	// ドッキング時のプレビュー色
+	colors[ImGuiCol_DockingPreview] = ImVec4(0.00f, 0.48f, 0.80f, 0.30f);
+	colors[ImGuiCol_DockingEmptyBg] = ImVec4(0.11f, 0.11f, 0.11f, 1.00f);
+}
+
 }	/// namespace
 #pragma endregion
 
@@ -571,6 +671,8 @@ void ImGuiManager::Initialize(ONEngine::AssetCollection* _assetCollection) {
 	InputImGuiStyle("./imgui_style.json");
 	ImGuiStyle& imStyle = ImGui::GetStyle();
 	imStyle.FrameBorderSize = 0.5f;
+
+	SetupVS2026Style();
 
 
 	ImGuiIO& imGuiIO = ImGui::GetIO();

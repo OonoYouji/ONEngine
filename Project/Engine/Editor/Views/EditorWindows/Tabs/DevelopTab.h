@@ -19,18 +19,18 @@ class EditorManager;
 /// ///////////////////////////////////////////////////
 /// GameWindow
 /// ///////////////////////////////////////////////////
-class GameTab : public IEditorWindowContainer {
+class DevelopTab : public IEditorWindowContainer {
 public:
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
 
-	GameTab(ONEngine::DxManager* _dxm,
+	DevelopTab(ONEngine::DxManager* _dxm,
 		ONEngine::EntityComponentSystem* _ecs,
 		ONEngine::AssetCollection* _assetCollection,
 		EditorManager* _editorManager,
 		ONEngine::SceneManager* _sceneManager);
-	~GameTab() {}
+	~DevelopTab() {}
 
 };
 

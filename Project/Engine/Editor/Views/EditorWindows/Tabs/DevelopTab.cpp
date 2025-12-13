@@ -1,4 +1,4 @@
-﻿#include "GameTab.h"
+﻿#include "DevelopTab.h"
 
 
 /// external
@@ -18,7 +18,7 @@
 using namespace ONEngine;
 using namespace Editor;
 
-GameTab::GameTab(
+DevelopTab::DevelopTab(
 	DxManager* _dxm,
 	EntityComponentSystem* _ecs, AssetCollection* _assetCollection,
 	EditorManager* _editorManager, SceneManager* _sceneManager)
