@@ -12,7 +12,7 @@ namespace Editor {
 /// ///////////////////////////////////////////////////
 /// GameSceneTextureを表示するためのImGuiWindow
 /// ///////////////////////////////////////////////////
-class ImGuiGameSceneWindow : public IImGuiChildWindow {
+class ImGuiGameSceneWindow : public IEditorView {
 public:
 	/// ===================================================
 	/// public : methods

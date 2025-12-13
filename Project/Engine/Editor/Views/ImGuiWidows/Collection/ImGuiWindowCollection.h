@@ -24,29 +24,29 @@ class ImGuiManager;
 class EditorManager;
 
 /// ///////////////////////////////////////////////////
-/// 他のImGuiWindowを持ち、表示するためのクラス
+/// 他のエディター用のViewを持ち、表示するためのクラス
 /// ///////////////////////////////////////////////////
-class ImGuiWindowCollection {
+class EditorViewCollection {
 public:
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
 
-	ImGuiWindowCollection(
-		ONEngine::DxManager* _dxManager,
+	EditorViewCollection(
+		ONEngine::DxManager* _dxm,
 		ONEngine::EntityComponentSystem* _ecs,
 		ONEngine::AssetCollection* _assetCollection,
 		ImGuiManager* _imGuiManager,
 		EditorManager* _editorManager,
 		ONEngine::SceneManager* _sceneManager
 	);
-	~ImGuiWindowCollection();
+	~EditorViewCollection();
 
 	/// @brief 更新
 	void Update();
 
 	/// @brief windowの追加
-	void AddParentWindow(const std::string& _name, std::unique_ptr<class IImGuiParentWindow> _window);
+	void AddParentWindow(const std::string& _name, std::unique_ptr<class IEditorViewContainer> _window);
 
 private:
 	/// ===================================================
@@ -65,31 +65,31 @@ private:
 	ImGuiManager* pImGuiManager_;
 
 	/// ----- collection window ----- ///
-	std::vector<std::unique_ptr<IImGuiParentWindow>> parentWindows_;
+	std::vector<std::unique_ptr<IEditorViewContainer>> parentWindows_;
 	std::vector<std::string> parentWindowNames_;
 	int selectedMenuIndex_ = 0;
 };
 
 
 /// ///////////////////////////////////////////////////
-/// ImGuiの親Windowクラス
+/// (File, Edit, View...)などの大枠のImGui windowクラス
 /// ///////////////////////////////////////////////////
-class IImGuiParentWindow {
-	friend class ImGuiWindowCollection;
+class IEditorViewContainer {
+	friend class EditorViewCollection;
 public:
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
 
-	virtual ~IImGuiParentWindow() = default;
+	virtual ~IEditorViewContainer() = default;
 	virtual void ShowImGui() = 0;
 
 	/// @brief 子windowの更新
-	void UpdateChildren();
+	void UpdateViews();
 
 	/// @brief 子windowの追加
 	/// @param _child 子window 
-	class IImGuiChildWindow* AddChild(std::unique_ptr<class IImGuiChildWindow> _child);
+	class IEditorView* AddView(std::unique_ptr<class IEditorView> _child);
 
 
 protected:
@@ -97,21 +97,21 @@ protected:
 	/// protected : objects
 	/// ===================================================
 	ImGuiManager* pImGuiManager_ = nullptr; ///< ImGuiManagerへのポインタ
-	std::vector<std::unique_ptr<class IImGuiChildWindow>> children_;
+	std::vector<std::unique_ptr<class IEditorView>> children_;
 };
 
 
 /// ///////////////////////////////////////////////////
 /// ImGuiの子windowクラス
 /// ///////////////////////////////////////////////////
-class IImGuiChildWindow {
-	friend class ImGuiWindowCollection;
+class IEditorView {
+	friend class EditorViewCollection;
 public:
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
 
-	virtual ~IImGuiChildWindow() = default;
+	virtual ~IEditorView() = default;
 	virtual void ShowImGui() = 0;
 
 protected:

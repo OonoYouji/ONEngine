@@ -16,7 +16,7 @@ class AssetCollection;
 
 namespace Editor {
 
-class ImGuiProjectWindow : public IImGuiChildWindow {
+class ImGuiProjectWindow : public IEditorView {
 public:
 
 	struct FileItem {

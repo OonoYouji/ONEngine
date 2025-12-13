@@ -24,7 +24,7 @@ class Texture;
 /// ///////////////////////////////////////////////////
 namespace Editor {
 
-class ImGuiInspectorWindow : public IImGuiChildWindow {
+class ImGuiInspectorWindow : public IEditorView {
 public:
 	/// ===================================================
 	/// public : methods
@@ -32,7 +32,7 @@ public:
 
 	ImGuiInspectorWindow(
 		const std::string& _windowName, 
-		ONEngine::DxManager* _dxManager,
+		ONEngine::DxManager* _dxm,
 		ONEngine::EntityComponentSystem* _ecs, 
 		ONEngine::AssetCollection* _assetCollection, 
 		EditorManager* _editorManager

@@ -7,7 +7,7 @@
 /// //////////////////////////////////////////////////////
 namespace Editor {
 
-class ImGuiFile : public IImGuiChildWindow {
+class ImGuiFile : public IEditorView {
 public:
 	/// ====================================================
 	/// public : methods

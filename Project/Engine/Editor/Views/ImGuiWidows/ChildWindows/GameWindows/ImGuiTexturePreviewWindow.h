@@ -15,7 +15,7 @@ namespace Editor {
 /// ///////////////////////////////////////////////////
 /// TextureのPreviewを行う 主にシーンのテクスチャを確認するためのウィンドウ
 /// ///////////////////////////////////////////////////
-class ImGuiTexturePreviewWindow : public IImGuiChildWindow {
+class ImGuiTexturePreviewWindow : public IEditorView {
 public:
 	/// ===================================================
 	/// public : methods

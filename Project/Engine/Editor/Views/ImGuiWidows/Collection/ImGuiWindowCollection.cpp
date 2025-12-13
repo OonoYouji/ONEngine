@@ -15,8 +15,8 @@ using namespace Editor;
 /// ///////////////////////////////////////////////////
 /// ImGuiWindowCollection
 /// ///////////////////////////////////////////////////
-ImGuiWindowCollection::ImGuiWindowCollection(
-	ONEngine::DxManager* _dxManager,
+EditorViewCollection::EditorViewCollection(
+	ONEngine::DxManager* _dxm,
 	ONEngine::EntityComponentSystem* _ecs,
 	ONEngine::AssetCollection* _assetCollection,
 	ImGuiManager* _imGuiManager,
@@ -26,16 +26,16 @@ ImGuiWindowCollection::ImGuiWindowCollection(
 
 	/// ここでwindowを生成する
 	AddParentWindow("File", std::make_unique<ImGuiFileWindow>());
-	AddParentWindow("Game", std::make_unique<ImGuiGameWindow>(_dxManager, _ecs, _assetCollection, _editorManager, _sceneManager));
-	AddParentWindow("Prefab", std::make_unique<ImGuiEditorWindow>(_dxManager, _ecs, _assetCollection, _editorManager, _sceneManager));
+	AddParentWindow("Game", std::make_unique<ImGuiGameWindow>(_dxm, _ecs, _assetCollection, _editorManager, _sceneManager));
+	AddParentWindow("Prefab", std::make_unique<ImGuiEditorWindow>(_dxm, _ecs, _assetCollection, _editorManager, _sceneManager));
 
 	// game windowで開始
 	selectedMenuIndex_ = 1;
 }
 
-ImGuiWindowCollection::~ImGuiWindowCollection() {}
+EditorViewCollection::~EditorViewCollection() {}
 
-void ImGuiWindowCollection::Update() {
+void EditorViewCollection::Update() {
 
 	MainMenuUpdate();
 
@@ -45,7 +45,7 @@ void ImGuiWindowCollection::Update() {
 
 }
 
-void ImGuiWindowCollection::AddParentWindow(const std::string& _name, std::unique_ptr<class IImGuiParentWindow> _window) {
+void EditorViewCollection::AddParentWindow(const std::string& _name, std::unique_ptr<class IEditorViewContainer> _window) {
 	parentWindowNames_.push_back(_name);
 	_window->pImGuiManager_ = pImGuiManager_;
 	for (auto& child : _window->children_) {
@@ -55,7 +55,7 @@ void ImGuiWindowCollection::AddParentWindow(const std::string& _name, std::uniqu
 	parentWindows_.push_back(std::move(_window));
 }
 
-void ImGuiWindowCollection::MainMenuUpdate() {
+void EditorViewCollection::MainMenuUpdate() {
 	/// ----- MainMenuの更新(選択されたMenuの内容を別の処理で表示する) ----- ///
 
 	if (!ImGui::BeginMainMenuBar()) {
@@ -90,14 +90,14 @@ void ImGuiWindowCollection::MainMenuUpdate() {
 /// ImGuiの親windowクラス
 /// ///////////////////////////////////////////////////
 
-void IImGuiParentWindow::UpdateChildren() {
+void IEditorViewContainer::UpdateViews() {
 	for (auto& child : children_) {
 		child->ShowImGui();
 	}
 }
 
-IImGuiChildWindow* IImGuiParentWindow::AddChild(std::unique_ptr<class IImGuiChildWindow> _child) {
-	class IImGuiChildWindow* child = _child.get();
+IEditorView* IEditorViewContainer::AddView(std::unique_ptr<class IEditorView> _child) {
+	class IEditorView* child = _child.get();
 	children_.push_back(std::move(_child));
 	return child;
 }

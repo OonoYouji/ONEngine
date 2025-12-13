@@ -15,7 +15,7 @@
 using namespace Editor;
 
 ImGuiEditorWindow::ImGuiEditorWindow(
-	ONEngine::DxManager* _dxManager, ONEngine::EntityComponentSystem* _ecs, ONEngine::AssetCollection* _assetCollection, EditorManager* _editorManager, ONEngine::SceneManager* _sceneManager) {
+	ONEngine::DxManager* _dxm, ONEngine::EntityComponentSystem* _ecs, ONEngine::AssetCollection* _assetCollection, EditorManager* _editorManager, ONEngine::SceneManager* _sceneManager) {
 	imGuiFlags_ |= ImGuiWindowFlags_NoMove;
 	imGuiFlags_ |= ImGuiWindowFlags_NoResize;
 	imGuiFlags_ |= ImGuiWindowFlags_NoTitleBar;
@@ -23,13 +23,13 @@ ImGuiEditorWindow::ImGuiEditorWindow(
 
 	/// 子windowの追加
 	ImGuiInspectorWindow* inspector = static_cast<ImGuiInspectorWindow*>(
-		AddChild(std::make_unique<ImGuiInspectorWindow>("Inspector##Prefab", _dxManager, _ecs, _assetCollection, _editorManager)));
+		AddView(std::make_unique<ImGuiInspectorWindow>("Inspector##Prefab", _dxm, _ecs, _assetCollection, _editorManager)));
 
-	AddChild(std::make_unique<ImGuiPrefabFileWindow>(_ecs, _assetCollection, inspector));
-	AddChild(std::make_unique<ImGuiPrefabViewWindow>(_ecs, _assetCollection));
-	AddChild(std::make_unique<ImGuiHierarchyWindow>("Hierarchy##Prefab", _ecs->GetECSGroup("Debug"), _editorManager, _sceneManager));
+	AddView(std::make_unique<ImGuiPrefabFileWindow>(_ecs, _assetCollection, inspector));
+	AddView(std::make_unique<ImGuiPrefabViewWindow>(_ecs, _assetCollection));
+	AddView(std::make_unique<ImGuiHierarchyWindow>("Hierarchy##Prefab", _ecs->GetECSGroup("Debug"), _editorManager, _sceneManager));
 	ImGuiProjectWindow* project = static_cast<ImGuiProjectWindow*>(
-		AddChild(std::make_unique<ImGuiProjectWindow>(_assetCollection, _editorManager)));
+		AddView(std::make_unique<ImGuiProjectWindow>(_assetCollection, _editorManager)));
 
 	project->SetWindowName("Prefab Project");
 
@@ -47,7 +47,7 @@ void ImGuiEditorWindow::ShowImGui() {
 	ImGuiID dockspaceID = ImGui::GetID("EditorDockingSpace");
 	ImGui::DockSpace(dockspaceID, ImVec2(0.0f, 0.0f));
 
-	UpdateChildren();
+	UpdateViews();
 
 	ImGui::End();
 }

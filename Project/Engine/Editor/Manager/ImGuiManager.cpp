@@ -603,7 +603,7 @@ void ImGuiManager::Initialize(ONEngine::AssetCollection* _assetCollection) {
 	style &= ~WS_SYSMENU; // システムメニュー（閉じるボタン含む）を無効化
 	SetWindowLong(pDebugGameWindow_->GetHwnd(), GWL_STYLE, style);
 
-	imGuiWindowCollection_ = std::make_unique<ImGuiWindowCollection>(
+	imGuiWindowCollection_ = std::make_unique<EditorViewCollection>(
 		dxManager_, pEntityComponentSystem_, pAssetCollection_, this, pEditorManager_, pSceneManager_
 	);
 }

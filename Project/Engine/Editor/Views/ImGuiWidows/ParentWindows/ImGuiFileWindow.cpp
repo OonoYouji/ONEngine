@@ -18,7 +18,7 @@ ImGuiFileWindow::ImGuiFileWindow() {
 	imGuiFlags_ |= ImGuiWindowFlags_NoBringToFrontOnFocus;
 
 	/// 子ウィンドウの追加
-	AddChild(std::make_unique<ImGuiFile>());
+	AddView(std::make_unique<ImGuiFile>());
 
 }
 
@@ -34,7 +34,7 @@ void ImGuiFileWindow::ShowImGui() {
 	ImGuiID dockspaceID = ImGui::GetID("FileDockingSpace");
 	ImGui::DockSpace(dockspaceID, ImVec2(0.0f, 0.0f));
 
-	UpdateChildren();
+	UpdateViews();
 
 	ImGui::End();
 }

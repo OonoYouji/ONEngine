@@ -12,7 +12,7 @@ namespace Editor {
 /// //////////////////////////////////////////////////////
 /// Prefab編集用のimgui window
 /// //////////////////////////////////////////////////////
-class ImGuiPrefabViewWindow : public IImGuiChildWindow {
+class ImGuiPrefabViewWindow : public IEditorView {
 public:
 	/// =====================================================
 	/// public : methods

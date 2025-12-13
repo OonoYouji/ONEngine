@@ -18,7 +18,7 @@ class GameEntity;
 /// ///////////////////////////////////////////////////
 namespace Editor {
 
-class ImGuiHierarchyWindow : public IImGuiChildWindow {
+class ImGuiHierarchyWindow : public IEditorView {
 public:
 	/// ===================================================
 	/// public : methods   

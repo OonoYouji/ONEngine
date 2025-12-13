@@ -46,8 +46,8 @@
 using namespace Editor;
 using namespace ONEngine;
 
-ImGuiInspectorWindow::ImGuiInspectorWindow(const std::string& _windowName, DxManager* _dxManager, EntityComponentSystem* _ecs, AssetCollection* _assetCollection, EditorManager* _editorManager)
-	: pEcs_(_ecs), pDxManager_(_dxManager), pAssetCollection_(_assetCollection), pEditorManager_(_editorManager) {
+ImGuiInspectorWindow::ImGuiInspectorWindow(const std::string& _windowName, DxManager* _dxm, EntityComponentSystem* _ecs, AssetCollection* _assetCollection, EditorManager* _editorManager)
+	: pEcs_(_ecs), pDxManager_(_dxm), pAssetCollection_(_assetCollection), pEditorManager_(_editorManager) {
 	windowName_ = _windowName;
 
 	/// ---------------------------------------------------

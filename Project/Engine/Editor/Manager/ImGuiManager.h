@@ -93,7 +93,7 @@ private:
 	ONEngine::Window* pImGuiWindow_;
 	ONEngine::Window* pDebugGameWindow_;
 
-	std::unique_ptr<ImGuiWindowCollection> imGuiWindowCollection_ = nullptr;
+	std::unique_ptr<EditorViewCollection> imGuiWindowCollection_ = nullptr;
 
 	std::unordered_map<std::string, ImGuiSceneImageInfo> sceneImageInfos_ = {}; ///< imguiのシーンイメージ情報
 

@@ -8,14 +8,14 @@
 /// ///////////////////////////////////////////////////
 namespace Editor {
 
-class ImGuiEditorWindow : public IImGuiParentWindow {
+class ImGuiEditorWindow : public IEditorViewContainer {
 public:
 	/// ===================================================
 	/// public : methods   
 	/// ===================================================
 
 	ImGuiEditorWindow(
-		ONEngine::DxManager* _dxManager,
+		ONEngine::DxManager* _dxm,
 		ONEngine::EntityComponentSystem* _ecs, 
 		ONEngine::AssetCollection* _assetCollection, 
 		EditorManager* _editorManager, 

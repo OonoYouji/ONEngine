@@ -20,7 +20,7 @@ class ImGuiInspectorWindow;
 /// //////////////////////////////////////////////////////
 /// PrefabFileを表示するためのImGuiWindow
 /// //////////////////////////////////////////////////////
-class ImGuiPrefabFileWindow : public IImGuiChildWindow {
+class ImGuiPrefabFileWindow : public IEditorView {
 public:
 	/// =====================================================
 	/// public : methods

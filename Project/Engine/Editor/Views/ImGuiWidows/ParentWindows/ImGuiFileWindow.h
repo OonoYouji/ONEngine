@@ -8,7 +8,7 @@
 /// ///////////////////////////////////////////////////
 namespace Editor {
 
-class ImGuiFileWindow : public IImGuiParentWindow {
+class ImGuiFileWindow : public IEditorViewContainer {
 public:
 	/// ===================================================
 	/// public : methods

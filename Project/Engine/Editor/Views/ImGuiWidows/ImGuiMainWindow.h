@@ -8,14 +8,14 @@ namespace Editor {
 /// ///////////////////////////////////////////////////
 /// ImGuiMainWindow
 /// ///////////////////////////////////////////////////
-class ImGuiMainWindow : public IImGuiParentWindow {
+class MainWindow : public IEditorViewContainer {
 public:
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
 
-	ImGuiMainWindow() {}
-	~ImGuiMainWindow() {}
+	MainWindow() {}
+	~MainWindow() {}
 
 	/// @brief imgui windowの描画処理
 	void ShowImGui() override;

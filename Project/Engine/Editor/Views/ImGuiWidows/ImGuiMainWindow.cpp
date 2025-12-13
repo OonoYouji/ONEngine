@@ -9,7 +9,7 @@
 
 using namespace Editor;
 
-void ImGuiMainWindow::ShowImGui() {
+void MainWindow::ShowImGui() {
 
 	/// main menuの処理
 	MainMenu();
@@ -33,7 +33,7 @@ void ImGuiMainWindow::ShowImGui() {
 }
 
 
-void ImGuiMainWindow::MainMenu() {
+void MainWindow::MainMenu() {
 
 	///!< 開いていない場合即returnする
 	if (!ImGui::BeginMainMenuBar()) {
