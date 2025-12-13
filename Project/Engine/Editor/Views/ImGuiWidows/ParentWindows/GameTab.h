@@ -19,18 +19,18 @@ class EditorManager;
 /// ///////////////////////////////////////////////////
 /// GameWindow
 /// ///////////////////////////////////////////////////
-class ImGuiGameWindow : public IEditorWindowContainer {
+class GameTab : public IEditorWindowContainer {
 public:
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
 
-	ImGuiGameWindow(ONEngine::DxManager* _dxm,
+	GameTab(ONEngine::DxManager* _dxm,
 		ONEngine::EntityComponentSystem* _ecs,
 		ONEngine::AssetCollection* _assetCollection,
 		EditorManager* _editorManager,
 		ONEngine::SceneManager* _sceneManager);
-	~ImGuiGameWindow() {}
+	~GameTab() {}
 
 	/// @brief imgui windowの描画処理
 	void ShowImGui() override;

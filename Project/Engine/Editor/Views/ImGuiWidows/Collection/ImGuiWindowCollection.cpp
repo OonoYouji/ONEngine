@@ -6,9 +6,9 @@
 /// engine
 #include "Engine/Core/Config/EngineConfig.h"
 #include "../ImGuiMainWindow.h"
-#include "../ParentWindows/ImGuiGameWindow.h"
-#include "../ParentWindows/ImGuiEditorWindow.h"
-#include "../ParentWindows/ImGuiFileWindow.h"
+#include "../ParentWindows/GameTab.h"
+#include "../ParentWindows/PrefabTab.h"
+#include "../ParentWindows/FileTab.h"
 
 using namespace Editor;
 
@@ -25,9 +25,9 @@ EditorViewCollection::EditorViewCollection(
 	: pImGuiManager_(_imGuiManager) {
 
 	/// ここでwindowを生成する
-	AddParentWindow("File", std::make_unique<ImGuiFileWindow>());
-	AddParentWindow("Game", std::make_unique<ImGuiGameWindow>(_dxm, _ecs, _assetCollection, _editorManager, _sceneManager));
-	AddParentWindow("Prefab", std::make_unique<ImGuiEditorWindow>(_dxm, _ecs, _assetCollection, _editorManager, _sceneManager));
+	AddParentWindow("File", std::make_unique<FileTab>());
+	AddParentWindow("Game", std::make_unique<GameTab>(_dxm, _ecs, _assetCollection, _editorManager, _sceneManager));
+	AddParentWindow("Prefab", std::make_unique<PrefabTab>(_dxm, _ecs, _assetCollection, _editorManager, _sceneManager));
 
 	// game windowで開始
 	selectedMenuIndex_ = 1;

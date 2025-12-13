@@ -1,4 +1,4 @@
-﻿#include "ImGuiFileWindow.h"
+﻿#include "FileTab.h"
 
 /// externals
 #include <imgui.h>
@@ -9,7 +9,7 @@
 
 using namespace Editor;
 
-ImGuiFileWindow::ImGuiFileWindow() {
+FileTab::FileTab() {
 
 	/// windowの設定
 	imGuiFlags_ |= ImGuiWindowFlags_NoMove;
@@ -22,7 +22,7 @@ ImGuiFileWindow::ImGuiFileWindow() {
 
 }
 
-void ImGuiFileWindow::ShowImGui() {
+void FileTab::ShowImGui() {
 
 	ImGui::SetNextWindowPos(ImVec2(0, 20), ImGuiCond_Appearing);
 	ImGui::SetNextWindowSize(ImVec2(ONEngine::EngineConfig::kWindowSize.x, ONEngine::EngineConfig::kWindowSize.y), ImGuiCond_Appearing);

@@ -1,4 +1,4 @@
-﻿#include "ImGuiGameWindow.h"
+﻿#include "GameTab.h"
 
 
 /// external
@@ -18,7 +18,7 @@
 using namespace ONEngine;
 using namespace Editor;
 
-ImGuiGameWindow::ImGuiGameWindow(
+GameTab::GameTab(
 	DxManager* _dxm,
 	EntityComponentSystem* _ecs, AssetCollection* _assetCollection,
 	EditorManager* _editorManager, SceneManager* _sceneManager) {
@@ -42,7 +42,7 @@ ImGuiGameWindow::ImGuiGameWindow(
 
 
 
-void ImGuiGameWindow::ShowImGui() {
+void GameTab::ShowImGui() {
 
 	ImGui::SetNextWindowPos(ImVec2(0, 20));
 	ImGui::SetNextWindowSize(ImVec2(EngineConfig::kWindowSize.x, EngineConfig::kWindowSize.y));

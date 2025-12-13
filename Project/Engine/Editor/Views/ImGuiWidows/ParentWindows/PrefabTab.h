@@ -8,20 +8,20 @@
 /// ///////////////////////////////////////////////////
 namespace Editor {
 
-class ImGuiEditorWindow : public IEditorWindowContainer {
+class PrefabTab : public IEditorWindowContainer {
 public:
 	/// ===================================================
 	/// public : methods   
 	/// ===================================================
 
-	ImGuiEditorWindow(
+	PrefabTab(
 		ONEngine::DxManager* _dxm,
 		ONEngine::EntityComponentSystem* _ecs, 
 		ONEngine::AssetCollection* _assetCollection, 
 		EditorManager* _editorManager, 
 		ONEngine::SceneManager* _sceneManager
 	);
-	~ImGuiEditorWindow() {}
+	~PrefabTab() {}
 
 	void ShowImGui() override;
 

@@ -1,4 +1,4 @@
-﻿#include "ImGuiEditorWindow.h"
+﻿#include "PrefabTab.h"
 
 /// external
 #include <imgui.h>
@@ -6,15 +6,15 @@
 /// engine
 #include "Engine/Core/Config/EngineConfig.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
-#include "../ChildWindows/EditorWindows/PrefabViewWindow.h"
-#include "../ChildWindows/EditorWindows/PrefabFileWindow.h"
+#include "../ChildWindows/PrefabWindows/PrefabViewWindow.h"
+#include "../ChildWindows/PrefabWindows/PrefabFileWindow.h"
 #include "../ChildWindows/GameWindows/InspectorWindow.h"
 #include "../ChildWindows/GameWindows/ProjectWindow.h"
 #include "../ChildWindows/GameWindows/HierarchyWindow.h"
 
 using namespace Editor;
 
-ImGuiEditorWindow::ImGuiEditorWindow(
+PrefabTab::PrefabTab(
 	ONEngine::DxManager* _dxm, ONEngine::EntityComponentSystem* _ecs, ONEngine::AssetCollection* _assetCollection, EditorManager* _editorManager, ONEngine::SceneManager* _sceneManager) {
 	imGuiFlags_ |= ImGuiWindowFlags_NoMove;
 	imGuiFlags_ |= ImGuiWindowFlags_NoResize;
@@ -35,7 +35,7 @@ ImGuiEditorWindow::ImGuiEditorWindow(
 
 }
 
-void ImGuiEditorWindow::ShowImGui() {
+void PrefabTab::ShowImGui() {
 
 	ImGui::SetNextWindowPos(ImVec2(0, 20), ImGuiCond_Appearing);
 	ImGui::SetNextWindowSize(ImVec2(ONEngine::EngineConfig::kWindowSize.x, ONEngine::EngineConfig::kWindowSize.y), ImGuiCond_Appearing);

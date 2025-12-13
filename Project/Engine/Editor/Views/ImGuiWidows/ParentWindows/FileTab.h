@@ -8,13 +8,13 @@
 /// ///////////////////////////////////////////////////
 namespace Editor {
 
-class ImGuiFileWindow : public IEditorWindowContainer {
+class FileTab : public IEditorWindowContainer {
 public:
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
-	ImGuiFileWindow();
-	~ImGuiFileWindow() {}
+	FileTab();
+	~FileTab() {}
 	/// @brief imgui windowの描画処理
 	void ShowImGui() override;
 
