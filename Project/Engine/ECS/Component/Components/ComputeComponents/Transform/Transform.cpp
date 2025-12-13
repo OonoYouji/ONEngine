@@ -1,5 +1,9 @@
 ﻿#include "Transform.h"
 
+#define NOMINMAX
+
+/// std
+#include <limits>
 
 /// externals
 #include <imgui.h>
@@ -190,9 +194,11 @@ void ComponentDebug::TransformDebug(Transform* _transform) {
 	static Vector3 eulerAngles = Quaternion::ToEuler(_transform->rotate);
 
 	static bool isUnifieds[3] = { false, false, true };
-	isEdit |= Editor::ImMathf::DrawVec3Control("position", _transform->position, 0.1f,             100.0f, &isUnifieds[0]);
-	isEdit |= Editor::ImMathf::DrawVec3Control("rotate",   eulerAngles,          Math::PI / 12.0f, 100.0f, &isUnifieds[1]);
-	isEdit |= Editor::ImMathf::DrawVec3Control("scale",    _transform->scale,    0.1f,             100.0f, &isUnifieds[2]);
+	constexpr float minValue = std::numeric_limits<float>::lowest();
+	constexpr float maxValue = std::numeric_limits<float>::max();
+	isEdit |= Editor::ImMathf::DrawVec3Control("position", _transform->position, 0.1f,             minValue, maxValue, 100.0f, &isUnifieds[0]);
+	isEdit |= Editor::ImMathf::DrawVec3Control("rotate",   eulerAngles,          Math::PI / 12.0f, minValue, maxValue, 100.0f, &isUnifieds[1]);
+	isEdit |= Editor::ImMathf::DrawVec3Control("scale",    _transform->scale,    0.1f,             minValue, maxValue, 100.0f, &isUnifieds[2]);
 
 	if(isEdit) {
 		_transform->rotate = Quaternion::FromEuler(eulerAngles);

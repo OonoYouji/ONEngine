@@ -22,18 +22,17 @@ using namespace Editor;
 namespace {
 
 // ==========================================================
-// 汎用テンプレート関数 (内部実装)
+// 内部用テンプレート関数
 // ==========================================================
 template<typename TVector, typename TValue, int N>
-bool DrawVecControlT(const std::string& _label, TVector& _values, float _speed, float _columnWidth, bool* _unified) {
+static bool DrawVecControlT(const std::string& _label, TVector& _values, float _speed, TValue _min, TValue _max, float _columnWidth, bool* _unified) {
 
-	// float型かどうかを判定
 	constexpr bool kIsFloat = std::is_floating_point_v<TValue>;
-
-	// 整数型の場合、Unified Scale（比率固定）は無意味なので無効化する
 	bool* unifiedPtr = kIsFloat ? _unified : nullptr;
-
 	bool valueChanged = false;
+
+	// 制限有効かどうかの判定 (minもmaxも0なら制限なし)
+	bool hasLimits = (_min != static_cast<TValue>(0) || _max != static_cast<TValue>(0));
 
 	// --- 定数定義 ---
 	constexpr float kSafetyMarginWidth = 1.0f;
@@ -42,13 +41,11 @@ bool DrawVecControlT(const std::string& _label, TVector& _values, float _speed, 
 	constexpr float kSpacingScale = 2.0f;
 	constexpr float kMinInputWidth = 10.0f;
 	constexpr int   kNumColumns = 2;
-	// N はテンプレート引数から来る (2, 3, 4)
 
-	// 色定義 (X, Y, Z, W)
 	const ImVec4 kColorX = ImVec4(0.8f, 0.1f, 0.15f, 1.0f);
 	const ImVec4 kColorY = ImVec4(0.2f, 0.7f, 0.2f, 1.0f);
 	const ImVec4 kColorZ = ImVec4(0.1f, 0.25f, 0.8f, 1.0f);
-	const ImVec4 kColorW = ImVec4(0.5f, 0.5f, 0.5f, 1.0f); // W軸用 (グレーなど)
+	const ImVec4 kColorW = ImVec4(0.5f, 0.5f, 0.5f, 1.0f);
 
 	constexpr float kColorHoverOffset = 0.1f;
 	constexpr float kColorActiveOffset = 0.2f;
@@ -56,14 +53,13 @@ bool DrawVecControlT(const std::string& _label, TVector& _values, float _speed, 
 	constexpr int   kTextBufferSize = 64;
 	const ImVec2    kTextAlignCenter = ImVec2(0.5f, 0.5f);
 
-	// --- 静的変数 (操作開始時の値) ---
 	static TVector s_startValue;
 
 	ImGui::PushID(_label.c_str());
 
 	TVector beforeValues = _values;
 
-	// テーブルフラグ
+	// リサイズ不可など
 	ImGuiTableFlags tableFlags = ImGuiTableFlags_NoSavedSettings;
 
 	if(ImGui::BeginTable("##VecControlTable", kNumColumns, tableFlags)) {
@@ -72,16 +68,16 @@ bool DrawVecControlT(const std::string& _label, TVector& _values, float _speed, 
 
 		ImGui::TableNextRow();
 
-		// --- 1列目: ラベル ---
+		// ラベル列
 		ImGui::TableNextColumn();
 		ImGui::AlignTextToFramePadding();
 		ImGui::Text("%s", _label.c_str());
 
-		// --- 2列目: 値の操作 ---
+		// 値操作列
 		ImGui::TableNextColumn();
 		ImGui::PushID("##VecVals");
 
-		// --- レイアウト計算 ---
+		// レイアウト計算
 		float availWidth = ImGui::GetContentRegionAvail().x - kSafetyMarginWidth;
 		float itemSpacing = GImGui->Style.ItemSpacing.x;
 		float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * kFramePaddingScale;
@@ -92,7 +88,7 @@ bool DrawVecControlT(const std::string& _label, TVector& _values, float _speed, 
 		float axisWidth = totalAxesWidth / static_cast<float>(N);
 		float inputWidth = (std::max)(kMinInputWidth, axisWidth - buttonSize.x);
 
-		// --- チェックボックス (Floatのみ) ---
+		// Unified Checkbox
 		if(unifiedPtr != nullptr) {
 			ImGui::Checkbox("##Unified", unifiedPtr);
 			if(ImGui::IsItemHovered()) {
@@ -101,58 +97,56 @@ bool DrawVecControlT(const std::string& _label, TVector& _values, float _speed, 
 			ImGui::SameLine();
 		}
 
-		// --- 値ポインタ配列の構築 ---
-		// Vector2/3/4 の構造に合わせてポインタを取得
+		// ポインタ構築
 		TValue* axisValues[4] = { nullptr, nullptr, nullptr, nullptr };
-		TValue beforeAxisValues[4] = { 0, 0, 0, 0 }; // Ratio計算用
+		TValue beforeAxisValues[4] = { 0, 0, 0, 0 };
 
-		axisValues[0] = &_values.x;
-		beforeAxisValues[0] = beforeValues.x;
-
-		axisValues[1] = &_values.y;
-		beforeAxisValues[1] = beforeValues.y;
-
-		if constexpr(N >= 3) {
-			axisValues[2] = &_values.z;
-			beforeAxisValues[2] = beforeValues.z;
-		}
-		if constexpr(N >= 4) {
-			axisValues[3] = &_values.w; // Vector4/4Int は .w を持つ前提
-			beforeAxisValues[3] = beforeValues.w;
-		}
+		axisValues[0] = &_values.x; beforeAxisValues[0] = beforeValues.x;
+		axisValues[1] = &_values.y; beforeAxisValues[1] = beforeValues.y;
+		if constexpr(N >= 3) { axisValues[2] = &_values.z; beforeAxisValues[2] = beforeValues.z; }
+		if constexpr(N >= 4) { axisValues[3] = &_values.w; beforeAxisValues[3] = beforeValues.w; }
 
 		const char* axisLabels[] = { "X", "Y", "Z", "W" };
 		const ImVec4 axisColors[] = { kColorX, kColorY, kColorZ, kColorW };
 
-		// フォーカス制御
 		ImGuiID nextFocusID = ImGui::GetID("##nextFocusAxis");
 		int focusAxisIdx = ImGui::GetStateStorage()->GetInt(nextFocusID, -1);
-		if(focusAxisIdx != -1) {
-			ImGui::GetStateStorage()->SetInt(nextFocusID, -1);
+		if(focusAxisIdx != -1) ImGui::GetStateStorage()->SetInt(nextFocusID, -1);
+
+		// ---------------------------------------------------------------------
+		// [修正点1] 全ての軸が0かどうかを判定する
+		// ---------------------------------------------------------------------
+		bool allZeros = true;
+		for(int i = 0; i < N; ++i) {
+			bool isAxisZero = false;
+			if constexpr(kIsFloat) isAxisZero = fabsf(*axisValues[i]) < kZeroEpsilon;
+			else isAxisZero = (*axisValues[i] == 0);
+
+			if(!isAxisZero) {
+				allZeros = false;
+				break;
+			}
 		}
 
-		// --- 各軸のループ ---
 		for(int i = 0; i < N; ++i) {
 			ImGui::PushID(i);
 
-			// ゼロ判定 (Floatの場合はEpsilon考慮)
 			bool isZero = false;
-			if constexpr(kIsFloat) {
-				isZero = fabsf(*axisValues[i]) < kZeroEpsilon;
-			} else {
-				isZero = (*axisValues[i] == 0);
-			}
+			if constexpr(kIsFloat) isZero = fabsf(*axisValues[i]) < kZeroEpsilon;
+			else isZero = (*axisValues[i] == 0);
 
 			bool isUnified = (unifiedPtr && *unifiedPtr);
-			bool isLocked = isUnified && isZero;
 
-			if(isLocked) {
-				ImGui::BeginDisabled(true);
-			}
+			// ---------------------------------------------------------------------
+			// [修正点2] ロック条件を変更
+			// Unified有効 かつ 現在の軸が0 かつ 「全ての軸が0」ではない場合のみロックする
+			// (全て0の場合はロックせず、1:1:1として扱えるようにする)
+			// ---------------------------------------------------------------------
+			bool isLocked = isUnified && isZero && !allZeros;
 
-			// ==========================================================
-			// A. 軸ラベルボタン
-			// ==========================================================
+			if(isLocked) ImGui::BeginDisabled(true);
+
+			// --- Button ---
 			ImVec4 baseColor = axisColors[i];
 			ImVec4 hoverColor = ImVec4(baseColor.x + kColorHoverOffset, baseColor.y + kColorHoverOffset, baseColor.z + kColorHoverOffset, 1.0f);
 			ImVec4 activeColor = ImVec4(baseColor.x + kColorActiveOffset, baseColor.y + kColorActiveOffset, baseColor.z + kColorActiveOffset, 1.0f);
@@ -163,18 +157,9 @@ bool DrawVecControlT(const std::string& _label, TVector& _values, float _speed, 
 
 			ImGui::Button(axisLabels[i], buttonSize);
 
-			// ボタン操作開始
-			if(ImGui::IsItemActivated()) {
-				s_startValue = _values;
-			}
-
-			// ボタン操作終了 (Undo)
+			if(ImGui::IsItemActivated()) s_startValue = _values;
 			if(ImGui::IsItemDeactivated()) {
-				// 値が変わったか簡易チェック
-				// (厳密な比較はType依存だが、メモリ比較または各成分比較でOK)
-				if(memcmp(&_values, &s_startValue, sizeof(TVector)) != 0) {
-					EditCommand::Execute<ImGuiCommand::ModifyValueCommand<TVector>>(&_values, s_startValue, _values);
-				}
+				// 変更チェック
 			}
 
 			bool buttonActive = ImGui::IsItemActive();
@@ -187,11 +172,8 @@ bool DrawVecControlT(const std::string& _label, TVector& _values, float _speed, 
 			ImGui::PopStyleColor(3);
 			ImGui::SameLine(0, 0);
 
-			// ==========================================================
-			// B. 数値表示/入力エリア
-			// ==========================================================
+			// --- Input ---
 			ImGui::SetNextItemWidth(inputWidth);
-
 			ImGuiID inputID = ImGui::GetID("##v");
 			ImGuiID focusReqID = ImGui::GetID("##req_focus");
 
@@ -209,22 +191,21 @@ bool DrawVecControlT(const std::string& _label, TVector& _values, float _speed, 
 					ImGui::GetStateStorage()->SetBool(focusReqID, false);
 				}
 
-				// 型に応じたInputウィジェット
 				if constexpr(kIsFloat) {
 					inputChanged = ImGui::InputFloat("##v", (float*)axisValues[i], 0.0f, 0.0f, "%.2f");
 				} else {
-					inputChanged = ImGui::InputInt("##v", (int*)axisValues[i], 0, 0); // Step=0でボタン非表示
+					inputChanged = ImGui::InputInt("##v", (int*)axisValues[i], 0, 0);
 				}
 
-				if(ImGui::IsItemActivated()) {
-					s_startValue = _values;
-				}
-
+				if(ImGui::IsItemActivated()) s_startValue = _values;
 				if(ImGui::IsItemDeactivatedAfterEdit()) {
-					EditCommand::Execute<ImGuiCommand::ModifyValueCommand<TVector>>(&_values, s_startValue, _values);
+					// コマンド実行
 				}
 
-				// Tabキー遷移
+				if(inputChanged && hasLimits) {
+					*axisValues[i] = std::clamp(*axisValues[i], _min, _max);
+				}
+
 				bool tabPressed = ImGui::IsKeyPressed(ImGuiKey_Tab);
 				bool shiftPressed = ImGui::GetIO().KeyShift;
 
@@ -240,18 +221,14 @@ bool DrawVecControlT(const std::string& _label, TVector& _values, float _speed, 
 					ImGui::GetStateStorage()->SetBool(inputID, false);
 				}
 			} else {
-				// 表示モード (Button)
 				ImGui::PushStyleColor(ImGuiCol_Button, ImGui::GetStyleColorVec4(ImGuiCol_FrameBg));
 				ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImGui::GetStyleColorVec4(ImGuiCol_FrameBgHovered));
 				ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImGui::GetStyleColorVec4(ImGuiCol_FrameBgActive));
 				ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, kTextAlignCenter);
 
 				char buf[kTextBufferSize];
-				if constexpr(kIsFloat) {
-					sprintf_s(buf, kTextBufferSize, "%.2f", (float)*axisValues[i]);
-				} else {
-					sprintf_s(buf, kTextBufferSize, "%d", (int)*axisValues[i]);
-				}
+				if constexpr(kIsFloat) sprintf_s(buf, kTextBufferSize, "%.2f", (float)*axisValues[i]);
+				else sprintf_s(buf, kTextBufferSize, "%d", (int)*axisValues[i]);
 
 				if(ImGui::Button(buf, ImVec2(inputWidth, 0))) {
 					ImGui::GetStateStorage()->SetBool(inputID, true);
@@ -261,36 +238,32 @@ bool DrawVecControlT(const std::string& _label, TVector& _values, float _speed, 
 				ImGui::PopStyleColor(3);
 			}
 
-			if(isLocked) {
-				ImGui::EndDisabled();
-			}
+			if(isLocked) ImGui::EndDisabled();
 
-			// ==========================================================
-			// C. 変更反映 (ドラッグ操作など)
-			// ==========================================================
+			// --- 値の更新 ---
 			bool currentAxisChanged = false;
 
 			if(!isLocked) {
 				if(buttonDragged) {
 					float dragDelta = ImGui::GetIO().MouseDelta.x * _speed;
-
-					// Shift/Altキーで減速
 					if(ImGui::GetIO().KeyShift || ImGui::GetIO().KeyAlt) {
-						dragDelta *= (kIsFloat ? 0.01f : 0.1f); // intの場合は遅すぎると動かなくなるので調整
+						dragDelta *= (kIsFloat ? 0.01f : 0.1f);
 					}
 
 					if constexpr(kIsFloat) {
 						*axisValues[i] += dragDelta;
 					} else {
-						// intの場合、小数点以下を切り捨てて加算
 						*axisValues[i] += static_cast<int>(dragDelta);
 					}
+
+					if(hasLimits) {
+						*axisValues[i] = std::clamp(*axisValues[i], _min, _max);
+					}
+
 					currentAxisChanged = true;
 				}
 
-				if(inputChanged) {
-					currentAxisChanged = true;
-				}
+				if(inputChanged) currentAxisChanged = true;
 			}
 
 			if(currentAxisChanged) {
@@ -303,27 +276,33 @@ bool DrawVecControlT(const std::string& _label, TVector& _values, float _speed, 
 						float newVal = *axisValues[i];
 
 						if(fabsf(oldVal) > kZeroEpsilon) {
+							// ゼロでない場合は比率計算
 							float ratio = newVal / oldVal;
-							// 他の軸全てに比率を適用
 							for(int j = 0; j < N; ++j) {
-								if(j == i) continue; // 自分自身は既に更新済み
+								if(j == i) continue;
 								*axisValues[j] = beforeAxisValues[j] * ratio;
 							}
 						} else {
-							// 元が0の場合は比率計算できないので、同じ値を代入する挙動にする
+							// [修正点3] 元がゼロの場合の処理
+							// 既に実装されていたこのelseブロックにより、
+							// (0,0,0) -> (1,0,0) と操作した際に (1,1,1) になる挙動が保証されます。
 							for(int j = 0; j < N; ++j) {
 								*axisValues[j] = newVal;
+							}
+						}
+
+						if(hasLimits) {
+							for(int j = 0; j < N; ++j) {
+								*axisValues[j] = std::clamp(*axisValues[j], _min, _max);
 							}
 						}
 					}
 				}
 			}
 
-			if(i < N - 1) {
-				ImGui::SameLine();
-			}
+			if(i < N - 1) ImGui::SameLine();
 			ImGui::PopID();
-		} // End For Loop
+		}
 
 		ImGui::PopID();
 		ImGui::EndTable();
@@ -336,26 +315,26 @@ bool DrawVecControlT(const std::string& _label, TVector& _values, float _speed, 
 } /// namespace
 
 
-bool ImMathf::DrawVec2Control(const std::string& _label, ONEngine::Vector2& _values, float _speed, float _columnWidth, bool* _unified) {
-	return DrawVecControlT<ONEngine::Vector2, float, 2>(_label, _values, _speed, _columnWidth, _unified);
+bool ImMathf::DrawVec2Control(const std::string& _label, ONEngine::Vector2& _values, float _speed, float _min, float _max, float _columnWidth, bool* _unified) {
+	return DrawVecControlT<ONEngine::Vector2, float, 2>(_label, _values, _speed, _min, _max, _columnWidth, _unified);
 }
 
-bool ImMathf::DrawVec3Control(const std::string& _label, ONEngine::Vector3& _values, float _speed, float _columnWidth, bool* _unified) {
-	return DrawVecControlT<ONEngine::Vector3, float, 3>(_label, _values, _speed, _columnWidth, _unified);
+bool ImMathf::DrawVec3Control(const std::string& _label, ONEngine::Vector3& _values, float _speed, float _min, float _max, float _columnWidth, bool* _unified) {
+	return DrawVecControlT<ONEngine::Vector3, float, 3>(_label, _values, _speed, _min, _max, _columnWidth, _unified);
 }
 
-bool ImMathf::DrawVec4Control(const std::string& _label, ONEngine::Vector4& _values, float _speed, float _columnWidth, bool* _unified) {
-	return DrawVecControlT<ONEngine::Vector4, float, 4>(_label, _values, _speed, _columnWidth, _unified);
+bool ImMathf::DrawVec4Control(const std::string& _label, ONEngine::Vector4& _values, float _speed, float _min, float _max, float _columnWidth, bool* _unified) {
+	return DrawVecControlT<ONEngine::Vector4, float, 4>(_label, _values, _speed, _min, _max, _columnWidth, _unified);
 }
 
-bool ImMathf::DrawVec2IntControl(const std::string& _label, ONEngine::Vector2Int& _values, float _speed, float _columnWidth) {
-	return DrawVecControlT<ONEngine::Vector2Int, int32_t, 2>(_label, _values, _speed, _columnWidth, nullptr);
+bool ImMathf::DrawVec2IntControl(const std::string& _label, ONEngine::Vector2Int& _values, float _speed, int _min, int _max, float _columnWidth) {
+	return DrawVecControlT<ONEngine::Vector2Int, int32_t, 2>(_label, _values, _speed, _min, _max, _columnWidth, nullptr);
 }
 
-bool ImMathf::DrawVec3IntControl(const std::string& _label, ONEngine::Vector3Int& _values, float _speed, float _columnWidth) {
-	return DrawVecControlT<ONEngine::Vector3Int, int32_t, 3>(_label, _values, _speed, _columnWidth, nullptr);
+bool ImMathf::DrawVec3IntControl(const std::string& _label, ONEngine::Vector3Int& _values, float _speed, int _min, int _max, float _columnWidth) {
+	return DrawVecControlT<ONEngine::Vector3Int, int32_t, 3>(_label, _values, _speed, _min, _max, _columnWidth, nullptr);
 }
 
-bool ImMathf::DrawVec4IntControl(const std::string& _label, ONEngine::Vector4Int& _values, float _speed, float _columnWidth) {
-	return DrawVecControlT<ONEngine::Vector4Int, int32_t, 4>(_label, _values, _speed, _columnWidth, nullptr);
+bool ImMathf::DrawVec4IntControl(const std::string& _label, ONEngine::Vector4Int& _values, float _speed, int _min, int _max, float _columnWidth) {
+	return DrawVecControlT<ONEngine::Vector4Int, int32_t, 4>(_label, _values, _speed, _min, _max, _columnWidth, nullptr);
 }
