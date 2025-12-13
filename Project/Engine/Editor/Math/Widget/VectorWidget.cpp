@@ -1,6 +1,7 @@
 ﻿#include "VectorWidget.h"
 
 /// std
+#include <concepts>
 #include <string>
 #include <cstdio>
 #include <cmath>
@@ -21,10 +22,19 @@ using namespace Editor;
 
 namespace {
 
+template<typename T>
+concept IsVector =
+std::same_as<T, ONEngine::Vector2> ||
+std::same_as<T, ONEngine::Vector2Int> ||
+std::same_as<T, ONEngine::Vector3> ||
+std::same_as<T, ONEngine::Vector3Int> ||
+std::same_as<T, ONEngine::Vector4> ||
+std::same_as<T, ONEngine::Vector4Int>;
+
 // ==========================================================
 // 内部用テンプレート関数
 // ==========================================================
-template<typename TVector, typename TValue, int N>
+template<IsVector TVector, typename TValue, int N>
 static bool DrawVecControlT(const std::string& _label, TVector& _values, float _speed, TValue _min, TValue _max, float _columnWidth, bool* _unified) {
 
 	constexpr bool kIsFloat = std::is_floating_point_v<TValue>;
@@ -53,7 +63,7 @@ static bool DrawVecControlT(const std::string& _label, TVector& _values, float _
 	constexpr int   kTextBufferSize = 64;
 	const ImVec2    kTextAlignCenter = ImVec2(0.5f, 0.5f);
 
-	static TVector s_startValue;
+	static TVector sStartValue;
 
 	ImGui::PushID(_label.c_str());
 
@@ -111,16 +121,16 @@ static bool DrawVecControlT(const std::string& _label, TVector& _values, float _
 
 		ImGuiID nextFocusID = ImGui::GetID("##nextFocusAxis");
 		int focusAxisIdx = ImGui::GetStateStorage()->GetInt(nextFocusID, -1);
-		if(focusAxisIdx != -1) ImGui::GetStateStorage()->SetInt(nextFocusID, -1);
+		if(focusAxisIdx != -1) { ImGui::GetStateStorage()->SetInt(nextFocusID, -1); }
 
-		// ---------------------------------------------------------------------
-		// [修正点1] 全ての軸が0かどうかを判定する
-		// ---------------------------------------------------------------------
 		bool allZeros = true;
 		for(int i = 0; i < N; ++i) {
 			bool isAxisZero = false;
-			if constexpr(kIsFloat) isAxisZero = fabsf(*axisValues[i]) < kZeroEpsilon;
-			else isAxisZero = (*axisValues[i] == 0);
+			if constexpr(kIsFloat) {
+				isAxisZero = fabsf(*axisValues[i]) < kZeroEpsilon;
+			} else {
+				isAxisZero = (*axisValues[i] == 0);
+			}
 
 			if(!isAxisZero) {
 				allZeros = false;
@@ -132,19 +142,17 @@ static bool DrawVecControlT(const std::string& _label, TVector& _values, float _
 			ImGui::PushID(i);
 
 			bool isZero = false;
-			if constexpr(kIsFloat) isZero = fabsf(*axisValues[i]) < kZeroEpsilon;
-			else isZero = (*axisValues[i] == 0);
+			if constexpr(kIsFloat) {
+				isZero = fabsf(*axisValues[i]) < kZeroEpsilon;
+			} else {
+				isZero = (*axisValues[i] == 0);
+			}
 
 			bool isUnified = (unifiedPtr && *unifiedPtr);
 
-			// ---------------------------------------------------------------------
-			// [修正点2] ロック条件を変更
-			// Unified有効 かつ 現在の軸が0 かつ 「全ての軸が0」ではない場合のみロックする
-			// (全て0の場合はロックせず、1:1:1として扱えるようにする)
-			// ---------------------------------------------------------------------
 			bool isLocked = isUnified && isZero && !allZeros;
 
-			if(isLocked) ImGui::BeginDisabled(true);
+			if(isLocked) { ImGui::BeginDisabled(true); }
 
 			// --- Button ---
 			ImVec4 baseColor = axisColors[i];
@@ -157,9 +165,10 @@ static bool DrawVecControlT(const std::string& _label, TVector& _values, float _
 
 			ImGui::Button(axisLabels[i], buttonSize);
 
-			if(ImGui::IsItemActivated()) s_startValue = _values;
+			if(ImGui::IsItemActivated()) { sStartValue = _values; }
 			if(ImGui::IsItemDeactivated()) {
-				// 変更チェック
+				const TVector endValue = _values;
+				EditCommand::Execute<ModifyValueCommand<TVector>>(&_values, sStartValue, endValue);
 			}
 
 			bool buttonActive = ImGui::IsItemActive();
@@ -197,9 +206,10 @@ static bool DrawVecControlT(const std::string& _label, TVector& _values, float _
 					inputChanged = ImGui::InputInt("##v", (int*)axisValues[i], 0, 0);
 				}
 
-				if(ImGui::IsItemActivated()) s_startValue = _values;
+				if(ImGui::IsItemActivated()) { sStartValue = _values; }
 				if(ImGui::IsItemDeactivatedAfterEdit()) {
-					// コマンド実行
+					const TVector endValue = _values;
+					EditCommand::Execute<ModifyValueCommand<TVector>>(&_values, sStartValue, endValue);
 				}
 
 				if(inputChanged && hasLimits) {
@@ -214,8 +224,11 @@ static bool DrawVecControlT(const std::string& _label, TVector& _values, float _
 					int direction = shiftPressed ? -1 : 1;
 					int targetIdx = i + direction;
 					if(targetIdx >= 0 && targetIdx < N) {
-						if(direction > 0) focusAxisIdx = targetIdx;
-						else ImGui::GetStateStorage()->SetInt(nextFocusID, targetIdx);
+						if(direction > 0) {
+							focusAxisIdx = targetIdx;
+						} else {
+							ImGui::GetStateStorage()->SetInt(nextFocusID, targetIdx);
+						}
 					}
 				} else if(ImGui::IsItemDeactivated()) {
 					ImGui::GetStateStorage()->SetBool(inputID, false);
@@ -227,8 +240,11 @@ static bool DrawVecControlT(const std::string& _label, TVector& _values, float _
 				ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, kTextAlignCenter);
 
 				char buf[kTextBufferSize];
-				if constexpr(kIsFloat) sprintf_s(buf, kTextBufferSize, "%.2f", (float)*axisValues[i]);
-				else sprintf_s(buf, kTextBufferSize, "%d", (int)*axisValues[i]);
+				if constexpr(kIsFloat) {
+					sprintf_s(buf, kTextBufferSize, "%.2f", (float)*axisValues[i]);
+				} else {
+					sprintf_s(buf, kTextBufferSize, "%d", (int)*axisValues[i]);
+				}
 
 				if(ImGui::Button(buf, ImVec2(inputWidth, 0))) {
 					ImGui::GetStateStorage()->SetBool(inputID, true);

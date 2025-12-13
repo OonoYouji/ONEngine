@@ -13,12 +13,6 @@ void TestWindow::ShowImGui() {
 	}
 
 
-	//static ONEngine::Vector3 vec[3] = {};
-
-	//ImMathf::DrawVec3Control("position", vec[0], 1.0f, 100.0f, &isUnified[0]);
-	//ImMathf::DrawVec3Control("rotate",   vec[1], 1.0f, 100.0f, &isUnified[1]);
-	//ImMathf::DrawVec3Control("scale",    vec[2], 1.0f, 100.0f, &isUnified[2]);
-
 	constexpr float minValue = std::numeric_limits<float>::lowest();
 	constexpr float maxValue = std::numeric_limits<float>::max();
 	constexpr int intMinValue = std::numeric_limits<int>::min();
@@ -45,6 +39,23 @@ void TestWindow::ShowImGui() {
 
 	static ONEngine::Vector4Int vec4i = { 0, 0, 0, 0 };
 	ImMathf::DrawVec4IntControl("vector4i", vec4i, 1.0f, intMinValue, intMaxValue, 100.0f);
+
+		
+	ImGui::SeparatorText("Int");
+
+	static int intValue = 0;
+	Editor::DragInt("Drag Int", intValue, 1.0f, -100, 100);
+	Editor::SliderInt("Slider Int", intValue, -100, 100);
+	Editor::InputInt("Input Int", intValue, 1, 100);
+
+
+	ImGui::SeparatorText("Float");
+
+	static float floatValue = 0.0f;
+	Editor::DragFloat("Drag Float", floatValue, 0.1f, -100.0f, 100.0f);
+	Editor::SliderFloat("Slider Float", floatValue, -100.0f, 100.0f);
+	Editor::InputFloat("Input Float", floatValue, 0.1f, 1.0f);
+
 
 
 	ImGui::End();
