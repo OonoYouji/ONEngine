@@ -18,7 +18,7 @@
 #include "Engine/Editor/Manager/EditCommand.h"
 #include "Engine/Editor/Manager/EditorManager.h"
 #include "Engine/Editor/Math/ImGuiMath.h"
-#include "Engine/Editor/Views/ImGuiSelection.h"
+#include "Engine/Editor/Math/ImGuiSelection.h"
 #include "InspectorWindow.h"
 
 using namespace Editor;

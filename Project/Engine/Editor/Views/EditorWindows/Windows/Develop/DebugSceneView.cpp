@@ -19,7 +19,7 @@
 
 /// editor
 #include "Engine/Editor/Manager/ImGuiManager.h"
-#include "Engine/Editor/Views/ImGuiSelection.h"
+#include "Engine/Editor/Math/ImGuiSelection.h"
 #include "InspectorWindow.h"
 
 using namespace Editor;

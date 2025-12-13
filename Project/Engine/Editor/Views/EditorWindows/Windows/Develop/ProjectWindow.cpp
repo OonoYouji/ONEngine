@@ -11,14 +11,12 @@
 
 /// engine
 #include "Engine/Asset/Collection/AssetCollection.h"
-#include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 
 /// editor
+#include "Engine/Editor/Manager/EditorManager.h"
 #include "Engine/Editor/Math/AssetPayload.h"
 #include "Engine/Editor/Math/ImGuiMath.h"
-#include "Engine/Editor/Views/ImGuiSelection.h"
-#include "Engine/Editor/Manager/EditorManager.h"
-#include "Engine/Editor/Commands/WorldEditorCommands/WorldEditorCommands.h"
+#include "Engine/Editor/Math/ImGuiSelection.h"
 
 
 using namespace Editor;

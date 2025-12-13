@@ -7,11 +7,10 @@
 #include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
-#include "Engine/Script/MonoScriptEngine.h"
 
 /// editor
 #include "Engine/Editor/Math/ImGuiMath.h"
-#include "Engine/Editor/Views/ImGuiSelection.h"
+#include "Engine/Editor/Math/ImGuiSelection.h"
 #include "../Develop/InspectorWindow.h"
 
 using namespace Editor;
