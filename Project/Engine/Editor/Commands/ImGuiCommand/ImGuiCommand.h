@@ -97,11 +97,6 @@ namespace ImMathf {
 
 
 
-/// ///////////////////////////////////////////////////
-/// ImGuiCommand名前空間
-/// ///////////////////////////////////////////////////
-namespace ImGuiCommand {
-
 /// @brief T型の値を変更するコマンド
 /// @tparam T 変更する値の型 (T型のoperator=が定義されている必要がある)
 template <typename T>
@@ -141,7 +136,5 @@ private:
 	T* pValue_;
 	T oldValue_, newValue_;
 };
-
-} /// ImGuiCommand
 
 } /// Editor

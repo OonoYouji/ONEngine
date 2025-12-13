@@ -57,7 +57,7 @@ class VoxelTerrain;
 class DxManager;
 
 namespace ComponentDebug {
-void VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _dxManager);
+void VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _dxm);
 }
 
 void from_json(const nlohmann::json& _j, std::vector<Chunk>& _chunk);
@@ -110,7 +110,7 @@ struct EditInfo {
 /// ///////////////////////////////////////////////////
 class VoxelTerrain : public IComponent {
 	/// --------------- friend function --------------- ///
-	friend void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _dxManager);
+	friend void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _dxm);
 	friend void from_json(const nlohmann::json& _j, VoxelTerrain& _voxelTerrain);
 	friend void to_json(nlohmann::json& _j, const VoxelTerrain& _voxelTerrain);
 

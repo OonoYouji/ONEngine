@@ -1,5 +1,9 @@
 ﻿#include "Transform.h"
 
+#define NOMINMAX
+
+/// std
+#include <limits>
 
 /// externals
 #include <imgui.h>
@@ -7,8 +11,10 @@
 /// engine
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/Script/MonoScriptEngine.h"
+
+/// editor
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentJsonConverter.h"
-#include "Engine/Editor/Commands/ImGuiCommand/ImGuiCommand.h"
+#include "Engine/Editor/EditorUtils.h"
 
 using namespace ONEngine;
 
@@ -69,14 +75,14 @@ const Matrix4x4& Transform::GetMatWorld() const {
 /// ===================================================
 
 void ONEngine::UpdateTransform(Transform* _transform) {
-	if (GameEntity* entity = _transform->GetOwner()) {
+	if(GameEntity* entity = _transform->GetOwner()) {
 		entity->UpdateTransform();
 	}
 }
 
 void ONEngine::InternalGetPosition(uint64_t _nativeHandle, float* _x, float* _y, float* _z) {
 	Transform* transform = reinterpret_cast<Transform*>(_nativeHandle);
-	if (!transform) {
+	if(!transform) {
 		Console::LogError("Transform pointer is null");
 		return;
 	}
@@ -84,51 +90,51 @@ void ONEngine::InternalGetPosition(uint64_t _nativeHandle, float* _x, float* _y,
 	const Matrix4x4& matWorld = transform->GetMatWorld();
 	const Vector3& position = { matWorld.m[3][0], matWorld.m[3][1], matWorld.m[3][2] };
 
-	if (_x) { *_x = position.x; }
-	if (_y) { *_y = position.y; }
-	if (_z) { *_z = position.z; }
+	if(_x) { *_x = position.x; }
+	if(_y) { *_y = position.y; }
+	if(_z) { *_z = position.z; }
 }
 
 void ONEngine::InternalGetLocalPosition(uint64_t _nativeHandle, float* _x, float* _y, float* _z) {
 	Transform* transform = reinterpret_cast<Transform*>(_nativeHandle);
-	if (!transform) {
+	if(!transform) {
 		Console::LogError("Transform pointer is null");
 		return;
 	}
 
-	if (_x) { *_x = transform->position.x; }
-	if (_y) { *_y = transform->position.y; }
-	if (_z) { *_z = transform->position.z; }
+	if(_x) { *_x = transform->position.x; }
+	if(_y) { *_y = transform->position.y; }
+	if(_z) { *_z = transform->position.z; }
 }
 
 void ONEngine::InternalGetRotate(uint64_t _nativeHandle, float* _x, float* _y, float* _z, float* _w) {
 	Transform* transform = reinterpret_cast<Transform*>(_nativeHandle);
-	if (!transform) {
+	if(!transform) {
 		Console::LogError("Transform pointer is null");
 		return;
 	}
 
-	if (_x) { *_x = transform->rotate.x; }
-	if (_y) { *_y = transform->rotate.y; }
-	if (_z) { *_z = transform->rotate.z; }
-	if (_w) { *_w = transform->rotate.w; }
+	if(_x) { *_x = transform->rotate.x; }
+	if(_y) { *_y = transform->rotate.y; }
+	if(_z) { *_z = transform->rotate.z; }
+	if(_w) { *_w = transform->rotate.w; }
 }
 
 void ONEngine::InternalGetScale(uint64_t _nativeHandle, float* _x, float* _y, float* _z) {
 	Transform* transform = reinterpret_cast<Transform*>(_nativeHandle);
-	if (!transform) {
+	if(!transform) {
 		Console::LogError("Transform pointer is null");
 		return;
 	}
 
-	if (_x) { *_x = transform->scale.x; }
-	if (_y) { *_y = transform->scale.y; }
-	if (_z) { *_z = transform->scale.z; }
+	if(_x) { *_x = transform->scale.x; }
+	if(_y) { *_y = transform->scale.y; }
+	if(_z) { *_z = transform->scale.z; }
 }
 
 void ONEngine::InternalSetPosition(uint64_t _nativeHandle, float _x, float _y, float _z) {
 	Transform* transform = reinterpret_cast<Transform*>(_nativeHandle);
-	if (!transform) {
+	if(!transform) {
 		Console::LogError("Transform pointer is null");
 		return;
 	}
@@ -141,7 +147,7 @@ void ONEngine::InternalSetPosition(uint64_t _nativeHandle, float _x, float _y, f
 
 void ONEngine::InternalSetLocalPosition(uint64_t _nativeHandle, float _x, float _y, float _z) {
 	Transform* transform = reinterpret_cast<Transform*>(_nativeHandle);
-	if (!transform) {
+	if(!transform) {
 		Console::LogError("Transform pointer is null");
 		return;
 	}
@@ -154,7 +160,7 @@ void ONEngine::InternalSetLocalPosition(uint64_t _nativeHandle, float _x, float 
 
 void ONEngine::InternalSetRotate(uint64_t _nativeHandle, float _x, float _y, float _z, float _w) {
 	Transform* transform = reinterpret_cast<Transform*>(_nativeHandle);
-	if (!transform) {
+	if(!transform) {
 		Console::LogError("Transform pointer is null");
 		return;
 	}
@@ -168,7 +174,7 @@ void ONEngine::InternalSetRotate(uint64_t _nativeHandle, float _x, float _y, flo
 
 void ONEngine::InternalSetScale(uint64_t _nativeHandle, float _x, float _y, float _z) {
 	Transform* transform = reinterpret_cast<Transform*>(_nativeHandle);
-	if (!transform) {
+	if(!transform) {
 		Console::LogError("Transform pointer is null");
 		return;
 	}
@@ -180,16 +186,19 @@ void ONEngine::InternalSetScale(uint64_t _nativeHandle, float _x, float _y, floa
 }
 
 void ComponentDebug::TransformDebug(Transform* _transform) {
-	if (!_transform) {
+	if(!_transform) {
 		return;
 	}
 
 	bool isEdit = false;
 	static Vector3 eulerAngles = Quaternion::ToEuler(_transform->rotate);
 
-	isEdit |= Editor::ImMathf::DragFloat3("position", &_transform->position, 0.1f);
-	isEdit |= Editor::ImMathf::DragFloat3("rotate", &eulerAngles, Math::PI / 12.0f);
-	isEdit |= Editor::ImMathf::DragFloat3("scale", &_transform->scale, 0.1f);
+	static bool isUnifieds[3] = { false, false, true };
+	constexpr float minValue = std::numeric_limits<float>::lowest();
+	constexpr float maxValue = std::numeric_limits<float>::max();
+	isEdit |= Editor::DrawVec3Control("position", _transform->position, 0.1f,             minValue, maxValue, 100.0f, &isUnifieds[0]);
+	isEdit |= Editor::DrawVec3Control("rotate",   eulerAngles,          Math::PI / 12.0f, minValue, maxValue, 100.0f, &isUnifieds[1]);
+	isEdit |= Editor::DrawVec3Control("scale",    _transform->scale,    0.1f,             minValue, maxValue, 100.0f, &isUnifieds[2]);
 
 	if(isEdit) {
 		_transform->rotate = Quaternion::FromEuler(eulerAngles);
@@ -203,7 +212,7 @@ void ComponentDebug::TransformDebug(Transform* _transform) {
 
 	_transform->matrixCalcFlags = matrixCalcFlags;
 
-	if (isEdit) {
+	if(isEdit) {
 		_transform->Update();
 	}
 

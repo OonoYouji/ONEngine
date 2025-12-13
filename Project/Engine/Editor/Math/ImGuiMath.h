@@ -7,6 +7,7 @@
 #include <imgui.h>
 
 /// engine
+#include "Engine/Core/Utility/Math/Vector3.h"
 #include "Engine/Core/Utility/Math/Vector4.h"
 #include "Engine/Graphics/Buffer/Data/GPUMaterial.h"
 
