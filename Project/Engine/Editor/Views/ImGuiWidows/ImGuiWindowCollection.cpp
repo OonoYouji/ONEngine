@@ -5,10 +5,9 @@
 
 /// engine
 #include "Engine/Core/Config/EngineConfig.h"
-#include "../ImGuiMainWindow.h"
-#include "../ParentWindows/GameTab.h"
-#include "../ParentWindows/PrefabTab.h"
-#include "../ParentWindows/FileTab.h"
+#include "ParentWindows/GameTab.h"
+#include "ParentWindows/PrefabTab.h"
+#include "ParentWindows/FileTab.h"
 
 using namespace Editor;
 

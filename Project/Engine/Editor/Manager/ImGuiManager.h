@@ -15,7 +15,7 @@
 #include "Engine/Core/Utility/Math/Vector2.h"
 
 /// editor
-#include "Engine/Editor/Views/ImGuiWidows/Collection/ImGuiWindowCollection.h"
+#include "Engine/Editor/Views/ImGuiWidows/ImGuiWindowCollection.h"
 #include "Engine/Editor/Math/ImGuiSceneImageInfo.h"
 
 namespace ONEngine {

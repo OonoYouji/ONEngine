@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 /// engine
-#include "../../Collection/ImGuiWindowCollection.h"
+#include "../../ImGuiWindowCollection.h"
 
 namespace ONEngine {
 class AssetCollection;
