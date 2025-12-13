@@ -7,13 +7,13 @@
 /// engine
 #include "Engine/Core/Config/EngineConfig.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
-#include "../ChildWindows/GameWindows/ProjectWindow.h"
-#include "../ChildWindows/GameWindows/GameSceneView.h"
-#include "../ChildWindows/GameWindows/DebugSceneView.h"
-#include "../ChildWindows/GameWindows/InspectorWindow.h"
-#include "../ChildWindows/GameWindows/HierarchyWindow.h"
-#include "../ChildWindows/GameWindows/ConsoleWindow.h"
-#include "../ChildWindows/GameWindows/TexturePreviewWindow.h"
+#include "../Windows/Game/ProjectWindow.h"
+#include "../Windows/Game/GameSceneView.h"
+#include "../Windows/Game/DebugSceneView.h"
+#include "../Windows/Game/InspectorWindow.h"
+#include "../Windows/Game/HierarchyWindow.h"
+#include "../Windows/Game/ConsoleWindow.h"
+#include "../Windows/Game/TexturePreviewWindow.h"
 
 using namespace ONEngine;
 using namespace Editor;

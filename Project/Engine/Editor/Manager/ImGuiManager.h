@@ -3,8 +3,6 @@
 #include <Windows.h>
 
 /// std
-#include <functional>
-#include <vector>
 #include <memory>
 #include <unordered_map>
 
@@ -15,7 +13,7 @@
 #include "Engine/Core/Utility/Math/Vector2.h"
 
 /// editor
-#include "Engine/Editor/Views/ImGuiWidows/EditorViewCollection.h"
+#include "Engine/Editor/Views/EditorWindows/EditorViewCollection.h"
 #include "Engine/Editor/Math/ImGuiSceneImageInfo.h"
 
 namespace ONEngine {
