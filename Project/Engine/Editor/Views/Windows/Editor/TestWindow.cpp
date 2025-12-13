@@ -21,24 +21,24 @@ void TestWindow::ShowImGui() {
 
 	static bool unified[3] = {};
 	static ONEngine::Vector2 vec2 = { 0.0f, 0.0f };
-	ImMathf::DrawVec2Control("vector2", vec2, 0.1f, minValue, maxValue, 100.0f, &unified[0]);
+	DrawVec2Control("vector2", vec2, 0.1f, minValue, maxValue, 100.0f, &unified[0]);
 
 	static ONEngine::Vector3 vec3 = { 0.0f, 0.0f, 0.0f };
-	ImMathf::DrawVec3Control("vector3", vec3, 0.1f, minValue, maxValue, 100.0f, &unified[1]);
+	DrawVec3Control("vector3", vec3, 0.1f, minValue, maxValue, 100.0f, &unified[1]);
 
 	static ONEngine::Vector4 vec4 = { 0.0f, 0.0f, 0.0f, 0.0f };
-	ImMathf::DrawVec4Control("vector4", vec4, 0.1f, minValue, maxValue, 100.0f, &unified[2]);
+	DrawVec4Control("vector4", vec4, 0.1f, minValue, maxValue, 100.0f, &unified[2]);
 
 	ImGui::Separator();
 
 	static ONEngine::Vector2Int vec2i = { 0, 0 };
-	ImMathf::DrawVec2IntControl("vector2i", vec2i, 1.0f, intMinValue, intMaxValue, 100.0f);
+	DrawVec2IntControl("vector2i", vec2i, 1.0f, intMinValue, intMaxValue, 100.0f);
 
 	static ONEngine::Vector3Int vec3i = { 0, 0, 0 };
-	ImMathf::DrawVec3IntControl("vector3i", vec3i, 1.0f, intMinValue, intMaxValue, 100.0f);
+	DrawVec3IntControl("vector3i", vec3i, 1.0f, intMinValue, intMaxValue, 100.0f);
 
 	static ONEngine::Vector4Int vec4i = { 0, 0, 0, 0 };
-	ImMathf::DrawVec4IntControl("vector4i", vec4i, 1.0f, intMinValue, intMaxValue, 100.0f);
+	DrawVec4IntControl("vector4i", vec4i, 1.0f, intMinValue, intMaxValue, 100.0f);
 
 		
 	ImGui::SeparatorText("Int");

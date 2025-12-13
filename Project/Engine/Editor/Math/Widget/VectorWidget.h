@@ -8,8 +8,6 @@
 
 namespace Editor {
 
-namespace ImMathf {
-
 // ==================================================================================
 // Floating Point Vectors
 // ==================================================================================
@@ -36,5 +34,4 @@ bool DrawVec3IntControl(const std::string& _label, ONEngine::Vector3Int& _values
 
 bool DrawVec4IntControl(const std::string& _label, ONEngine::Vector4Int& _values, float _speed = 1.0f, int _min = 0, int _max = 0, float _columnWidth = 100.0f);
 
-} /// namespace ImMathf
 } /// namespace Editor

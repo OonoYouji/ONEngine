@@ -331,26 +331,26 @@ static bool DrawVecControlT(const std::string& _label, TVector& _values, float _
 } /// namespace
 
 
-bool ImMathf::DrawVec2Control(const std::string& _label, ONEngine::Vector2& _values, float _speed, float _min, float _max, float _columnWidth, bool* _unified) {
+bool Editor::DrawVec2Control(const std::string& _label, ONEngine::Vector2& _values, float _speed, float _min, float _max, float _columnWidth, bool* _unified) {
 	return DrawVecControlT<ONEngine::Vector2, float, 2>(_label, _values, _speed, _min, _max, _columnWidth, _unified);
 }
 
-bool ImMathf::DrawVec3Control(const std::string& _label, ONEngine::Vector3& _values, float _speed, float _min, float _max, float _columnWidth, bool* _unified) {
+bool Editor::DrawVec3Control(const std::string& _label, ONEngine::Vector3& _values, float _speed, float _min, float _max, float _columnWidth, bool* _unified) {
 	return DrawVecControlT<ONEngine::Vector3, float, 3>(_label, _values, _speed, _min, _max, _columnWidth, _unified);
 }
 
-bool ImMathf::DrawVec4Control(const std::string& _label, ONEngine::Vector4& _values, float _speed, float _min, float _max, float _columnWidth, bool* _unified) {
+bool Editor::DrawVec4Control(const std::string& _label, ONEngine::Vector4& _values, float _speed, float _min, float _max, float _columnWidth, bool* _unified) {
 	return DrawVecControlT<ONEngine::Vector4, float, 4>(_label, _values, _speed, _min, _max, _columnWidth, _unified);
 }
 
-bool ImMathf::DrawVec2IntControl(const std::string& _label, ONEngine::Vector2Int& _values, float _speed, int _min, int _max, float _columnWidth) {
+bool Editor::DrawVec2IntControl(const std::string& _label, ONEngine::Vector2Int& _values, float _speed, int _min, int _max, float _columnWidth) {
 	return DrawVecControlT<ONEngine::Vector2Int, int32_t, 2>(_label, _values, _speed, _min, _max, _columnWidth, nullptr);
 }
 
-bool ImMathf::DrawVec3IntControl(const std::string& _label, ONEngine::Vector3Int& _values, float _speed, int _min, int _max, float _columnWidth) {
+bool Editor::DrawVec3IntControl(const std::string& _label, ONEngine::Vector3Int& _values, float _speed, int _min, int _max, float _columnWidth) {
 	return DrawVecControlT<ONEngine::Vector3Int, int32_t, 3>(_label, _values, _speed, _min, _max, _columnWidth, nullptr);
 }
 
-bool ImMathf::DrawVec4IntControl(const std::string& _label, ONEngine::Vector4Int& _values, float _speed, int _min, int _max, float _columnWidth) {
+bool Editor::DrawVec4IntControl(const std::string& _label, ONEngine::Vector4Int& _values, float _speed, int _min, int _max, float _columnWidth) {
 	return DrawVecControlT<ONEngine::Vector4Int, int32_t, 4>(_label, _values, _speed, _min, _max, _columnWidth, nullptr);
 }

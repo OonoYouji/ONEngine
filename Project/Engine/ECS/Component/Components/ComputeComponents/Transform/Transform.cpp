@@ -196,9 +196,9 @@ void ComponentDebug::TransformDebug(Transform* _transform) {
 	static bool isUnifieds[3] = { false, false, true };
 	constexpr float minValue = std::numeric_limits<float>::lowest();
 	constexpr float maxValue = std::numeric_limits<float>::max();
-	isEdit |= Editor::ImMathf::DrawVec3Control("position", _transform->position, 0.1f,             minValue, maxValue, 100.0f, &isUnifieds[0]);
-	isEdit |= Editor::ImMathf::DrawVec3Control("rotate",   eulerAngles,          Math::PI / 12.0f, minValue, maxValue, 100.0f, &isUnifieds[1]);
-	isEdit |= Editor::ImMathf::DrawVec3Control("scale",    _transform->scale,    0.1f,             minValue, maxValue, 100.0f, &isUnifieds[2]);
+	isEdit |= Editor::DrawVec3Control("position", _transform->position, 0.1f,             minValue, maxValue, 100.0f, &isUnifieds[0]);
+	isEdit |= Editor::DrawVec3Control("rotate",   eulerAngles,          Math::PI / 12.0f, minValue, maxValue, 100.0f, &isUnifieds[1]);
+	isEdit |= Editor::DrawVec3Control("scale",    _transform->scale,    0.1f,             minValue, maxValue, 100.0f, &isUnifieds[2]);
 
 	if(isEdit) {
 		_transform->rotate = Quaternion::FromEuler(eulerAngles);
