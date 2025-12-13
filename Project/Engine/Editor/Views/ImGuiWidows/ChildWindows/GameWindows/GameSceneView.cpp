@@ -1,4 +1,4 @@
-﻿#include "GameSceneWindow.h"
+﻿#include "GameSceneView.h"
 
 /// external
 #include <imgui.h>
@@ -11,7 +11,7 @@
 
 using namespace Editor;
 
-void GameSceneWindow::ShowImGui() {
+void GameSceneView::ShowImGui() {
 	if (!ImGui::Begin("GameScene")) {
 		ImGui::End();
 		return;

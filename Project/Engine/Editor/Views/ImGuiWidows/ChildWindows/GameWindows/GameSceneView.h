@@ -12,13 +12,13 @@ namespace Editor {
 /// ///////////////////////////////////////////////////
 /// GameSceneTextureを表示するためのImGuiWindow
 /// ///////////////////////////////////////////////////
-class GameSceneWindow : public IEditorWindow {
+class GameSceneView : public IEditorWindow {
 public:
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
-	GameSceneWindow(ONEngine::AssetCollection* _assetCollection) : pAssetCollection_(_assetCollection) {}
-	~GameSceneWindow() {}
+	GameSceneView(ONEngine::AssetCollection* _assetCollection) : pAssetCollection_(_assetCollection) {}
+	~GameSceneView() {}
 	
 	/// @brief imgui windowの描画処理
 	void ShowImGui() override;
