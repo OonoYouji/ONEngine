@@ -31,7 +31,7 @@ EditorViewCollection::EditorViewCollection(
 	AddViewContainer("Editor", std::make_unique<EditorTab>());
 
 	// game windowで開始
-	selectedMenuIndex_ = 1;
+	selectedMenuIndex_ = 0;
 }
 
 EditorViewCollection::~EditorViewCollection() {}
