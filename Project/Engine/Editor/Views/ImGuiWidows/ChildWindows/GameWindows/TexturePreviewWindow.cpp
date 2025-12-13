@@ -1,4 +1,4 @@
-﻿#include "ImGuiTexturePreviewWindow.h"
+﻿#include "TexturePreviewWindow.h"
 
 /// external
 #include <imgui.h>

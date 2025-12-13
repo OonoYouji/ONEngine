@@ -1,4 +1,4 @@
-﻿#include "ImGuiPrefabFileWindow.h"
+﻿#include "PrefabFileWindow.h"
 
 /// externals
 #include <imgui.h>
@@ -12,7 +12,7 @@
 /// editor
 #include "Engine/Editor/Math/ImGuiMath.h"
 #include "Engine/Editor/Views/ImGuiSelection.h"
-#include "../GameWindows/ImGuiInspectorWindow.h"
+#include "../GameWindows/InspectorWindow.h"
 
 using namespace Editor;
 

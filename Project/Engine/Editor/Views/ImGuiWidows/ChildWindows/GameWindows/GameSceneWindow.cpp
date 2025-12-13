@@ -1,4 +1,4 @@
-﻿#include "ImGuiGameSceneWindow.h"
+﻿#include "GameSceneWindow.h"
 
 /// external
 #include <imgui.h>

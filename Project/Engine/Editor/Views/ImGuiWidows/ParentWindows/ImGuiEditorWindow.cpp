@@ -6,11 +6,11 @@
 /// engine
 #include "Engine/Core/Config/EngineConfig.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
-#include "../ChildWindows/EditorWindows/ImGuiPrefabViewWindow.h"
-#include "../ChildWindows/EditorWindows/ImGuiPrefabFileWindow.h"
-#include "../ChildWindows/GameWindows/ImGuiInspectorWindow.h"
-#include "../ChildWindows/GameWindows/ImGuiProjectWindow.h"
-#include "../ChildWindows/GameWindows/ImGuiHierarchyWindow.h"
+#include "../ChildWindows/EditorWindows/PrefabViewWindow.h"
+#include "../ChildWindows/EditorWindows/PrefabFileWindow.h"
+#include "../ChildWindows/GameWindows/InspectorWindow.h"
+#include "../ChildWindows/GameWindows/ProjectWindow.h"
+#include "../ChildWindows/GameWindows/HierarchyWindow.h"
 
 using namespace Editor;
 

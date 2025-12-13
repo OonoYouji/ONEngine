@@ -1,4 +1,4 @@
-﻿#include "ImGuiSceneWindow.h"
+﻿#include "DebugSceneView.h"
 
 /// std
 #include <array>
@@ -20,7 +20,7 @@
 /// editor
 #include "Engine/Editor/Manager/ImGuiManager.h"
 #include "Engine/Editor/Views/ImGuiSelection.h"
-#include "ImGuiInspectorWindow.h"
+#include "InspectorWindow.h"
 
 using namespace Editor;
 

@@ -1,4 +1,4 @@
-﻿#include "ImGuiHierarchyWindow.h"
+﻿#include "HierarchyWindow.h"
 
 
 /// external
@@ -19,7 +19,7 @@
 #include "Engine/Editor/Manager/EditorManager.h"
 #include "Engine/Editor/Math/ImGuiMath.h"
 #include "Engine/Editor/Views/ImGuiSelection.h"
-#include "ImGuiInspectorWindow.h"
+#include "InspectorWindow.h"
 
 using namespace Editor;
 

@@ -1,4 +1,4 @@
-﻿#include "ImGuiPrefabViewWindow.h"
+﻿#include "PrefabViewWindow.h"
 
 /// externals
 #include <imgui.h>
