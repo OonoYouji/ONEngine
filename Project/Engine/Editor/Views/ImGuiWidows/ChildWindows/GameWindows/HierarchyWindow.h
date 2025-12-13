@@ -5,7 +5,7 @@
 #include <list>
 
 /// engine
-#include "../../ImGuiWindowCollection.h"
+#include "../../EditorViewCollection.h"
 
 namespace ONEngine {
 /// 前方宣言

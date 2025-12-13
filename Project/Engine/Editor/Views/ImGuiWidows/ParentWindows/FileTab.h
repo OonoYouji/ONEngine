@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 /// engine
-#include "../ImGuiWindowCollection.h"
+#include "../EditorViewCollection.h"
 
 /// ///////////////////////////////////////////////////
 /// File操作用のImGuiWindow

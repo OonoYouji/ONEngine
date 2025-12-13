@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 /// engine
-#include "../../ImGuiWindowCollection.h"
+#include "../../EditorViewCollection.h"
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/Asset/Guid/Guid.h"
 

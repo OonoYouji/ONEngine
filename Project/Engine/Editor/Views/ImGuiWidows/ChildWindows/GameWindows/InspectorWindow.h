@@ -10,7 +10,7 @@
 #include "Engine/ECS/Component/Collection/ComponentHash.h"
 
 /// editor
-#include "../../ImGuiWindowCollection.h"
+#include "../../EditorViewCollection.h"
 
 namespace ONEngine {
 /// 前方宣言

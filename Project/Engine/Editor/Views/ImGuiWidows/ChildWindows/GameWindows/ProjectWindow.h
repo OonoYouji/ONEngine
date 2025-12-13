@@ -6,7 +6,7 @@
 #include <unordered_map>
 
 /// engine
-#include "../../ImGuiWindowCollection.h"
+#include "../../EditorViewCollection.h"
 #include "Engine/Editor/Math/FileWatcher/FileWatcher.h"
 
 

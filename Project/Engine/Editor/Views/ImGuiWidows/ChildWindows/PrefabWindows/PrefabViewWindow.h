@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include "../../ImGuiWindowCollection.h"
+#include "../../EditorViewCollection.h"
 
 namespace ONEngine {
 class EntityComponentSystem;

@@ -1,4 +1,4 @@
-﻿#include "ImGuiWindowCollection.h"
+﻿#include "EditorViewCollection.h"
 
 /// external
 #include <imgui.h>
