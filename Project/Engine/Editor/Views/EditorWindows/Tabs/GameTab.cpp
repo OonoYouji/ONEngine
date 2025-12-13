@@ -21,13 +21,8 @@ using namespace Editor;
 GameTab::GameTab(
 	DxManager* _dxm,
 	EntityComponentSystem* _ecs, AssetCollection* _assetCollection,
-	EditorManager* _editorManager, SceneManager* _sceneManager) {
-
-	/// windowの設定
-	imGuiFlags_ |= ImGuiWindowFlags_NoMove;
-	imGuiFlags_ |= ImGuiWindowFlags_NoResize;
-	imGuiFlags_ |= ImGuiWindowFlags_NoTitleBar;
-	imGuiFlags_ |= ImGuiWindowFlags_NoBringToFrontOnFocus;
+	EditorManager* _editorManager, SceneManager* _sceneManager)
+	: IEditorWindowContainer("Game") {
 
 	/// 子windowの追加
 	InspectorWindow* inspector = static_cast<InspectorWindow*>(AddView(std::make_unique<InspectorWindow>("Inspector##Game", _dxm, _ecs, _assetCollection, _editorManager)));
@@ -38,23 +33,4 @@ GameTab::GameTab(
 	AddView(std::make_unique<ProjectWindow>(_assetCollection, _editorManager));
 	AddView(std::make_unique<ConsoleWindow>());
 	AddView(std::make_unique<TexturePreviewWindow>(_assetCollection));
-}
-
-
-
-void GameTab::ShowImGui() {
-
-	ImGui::SetNextWindowPos(ImVec2(0, 20));
-	ImGui::SetNextWindowSize(ImVec2(EngineConfig::kWindowSize.x, EngineConfig::kWindowSize.y));
-	if (!ImGui::Begin("Game", nullptr, imGuiFlags_)) {
-		ImGui::End();
-		return;
-	}
-
-	ImGuiID dockspaceID = ImGui::GetID("GameDockingSpace");
-	ImGui::DockSpace(dockspaceID, ImVec2(0.0f, 0.0f));
-
-	UpdateViews();
-
-	ImGui::End();
 }

@@ -15,11 +15,12 @@
 using namespace Editor;
 
 PrefabTab::PrefabTab(
-	ONEngine::DxManager* _dxm, ONEngine::EntityComponentSystem* _ecs, ONEngine::AssetCollection* _assetCollection, EditorManager* _editorManager, ONEngine::SceneManager* _sceneManager) {
-	imGuiFlags_ |= ImGuiWindowFlags_NoMove;
-	imGuiFlags_ |= ImGuiWindowFlags_NoResize;
-	imGuiFlags_ |= ImGuiWindowFlags_NoTitleBar;
-	imGuiFlags_ |= ImGuiWindowFlags_NoBringToFrontOnFocus;
+	ONEngine::DxManager* _dxm,
+	ONEngine::EntityComponentSystem* _ecs,
+	ONEngine::AssetCollection* _assetCollection,
+	EditorManager* _editorManager,
+	ONEngine::SceneManager* _sceneManager)
+	: IEditorWindowContainer("Prefab") {
 
 	/// 子windowの追加
 	InspectorWindow* inspector = static_cast<InspectorWindow*>(
@@ -33,21 +34,4 @@ PrefabTab::PrefabTab(
 
 	project->SetWindowName("Prefab Project");
 
-}
-
-void PrefabTab::ShowImGui() {
-
-	ImGui::SetNextWindowPos(ImVec2(0, 20), ImGuiCond_Appearing);
-	ImGui::SetNextWindowSize(ImVec2(ONEngine::EngineConfig::kWindowSize.x, ONEngine::EngineConfig::kWindowSize.y), ImGuiCond_Appearing);
-	if (!ImGui::Begin("Prefab", nullptr, imGuiFlags_)) {
-		ImGui::End();
-		return;
-	}
-
-	ImGuiID dockspaceID = ImGui::GetID("EditorDockingSpace");
-	ImGui::DockSpace(dockspaceID, ImVec2(0.0f, 0.0f));
-
-	UpdateViews();
-
-	ImGui::End();
 }

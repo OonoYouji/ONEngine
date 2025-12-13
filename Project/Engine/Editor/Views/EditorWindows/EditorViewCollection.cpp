@@ -47,7 +47,7 @@ void EditorViewCollection::Update() {
 void EditorViewCollection::AddViewContainer(const std::string& _name, std::unique_ptr<class IEditorWindowContainer> _window) {
 	parentWindowNames_.push_back(_name);
 	_window->pImGuiManager_ = pImGuiManager_;
-	for (auto& child : _window->children_) {
+	for(auto& child : _window->children_) {
 		child->pImGuiManager_ = pImGuiManager_;
 	}
 
@@ -57,22 +57,22 @@ void EditorViewCollection::AddViewContainer(const std::string& _name, std::uniqu
 void EditorViewCollection::MainMenuUpdate() {
 	/// ----- MainMenuの更新(選択されたMenuの内容を別の処理で表示する) ----- ///
 
-	if (!ImGui::BeginMainMenuBar()) {
+	if(!ImGui::BeginMainMenuBar()) {
 		return;
 	}
 
-	for (int i = 0; auto& name : parentWindowNames_) {
+	for(int i = 0; auto& name : parentWindowNames_) {
 		int save = selectedMenuIndex_;
 
-		if (i == save) {
+		if(i == save) {
 			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.4f, 0.4f, 0.4f, 1.0f));
 		}
 
-		if (ImGui::Button(name.c_str())) {
+		if(ImGui::Button(name.c_str())) {
 			selectedMenuIndex_ = i;
 		}
 
-		if (i == save) {
+		if(i == save) {
 			ImGui::PopStyleColor();
 		}
 
@@ -89,8 +89,34 @@ void EditorViewCollection::MainMenuUpdate() {
 /// ImGuiの親windowクラス
 /// ///////////////////////////////////////////////////
 
+Editor::IEditorWindowContainer::IEditorWindowContainer(const std::string& _windowName)
+	: windowName_(_windowName) {
+}
+
+void Editor::IEditorWindowContainer::ShowImGui() {
+	uint32_t imGuiFlags_ = 0;
+	imGuiFlags_ |= ImGuiWindowFlags_NoMove;
+	imGuiFlags_ |= ImGuiWindowFlags_NoResize;
+	imGuiFlags_ |= ImGuiWindowFlags_NoTitleBar;
+	imGuiFlags_ |= ImGuiWindowFlags_NoBringToFrontOnFocus;
+
+	ImGui::SetNextWindowPos(ImVec2(0, 20));
+	ImGui::SetNextWindowSize(ImVec2(ONEngine::EngineConfig::kWindowSize.x, ONEngine::EngineConfig::kWindowSize.y));
+	if(!ImGui::Begin(windowName_.c_str(), nullptr, imGuiFlags_)) {
+		ImGui::End();
+		return;
+	}
+
+	ImGuiID dockspaceID = ImGui::GetID(windowName_.c_str());
+	ImGui::DockSpace(dockspaceID, ImVec2(0.0f, 0.0f));
+
+	UpdateViews();
+
+	ImGui::End();
+}
+
 void IEditorWindowContainer::UpdateViews() {
-	for (auto& child : children_) {
+	for(auto& child : children_) {
 		child->ShowImGui();
 	}
 }

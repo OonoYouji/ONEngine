@@ -23,14 +23,6 @@ public:
 	);
 	~PrefabTab() {}
 
-	void ShowImGui() override;
-
-private:
-	/// ===================================================
-	/// private : objects
-	/// ===================================================
-
-	int imGuiFlags_ = 0;
 };
 
 } /// Editor

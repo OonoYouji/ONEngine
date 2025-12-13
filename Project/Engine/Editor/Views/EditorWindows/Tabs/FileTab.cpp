@@ -9,32 +9,7 @@
 
 using namespace Editor;
 
-FileTab::FileTab() {
-
-	/// windowの設定
-	imGuiFlags_ |= ImGuiWindowFlags_NoMove;
-	imGuiFlags_ |= ImGuiWindowFlags_NoResize;
-	imGuiFlags_ |= ImGuiWindowFlags_NoTitleBar;
-	imGuiFlags_ |= ImGuiWindowFlags_NoBringToFrontOnFocus;
-
+FileTab::FileTab() : IEditorWindowContainer("File") {
 	/// 子ウィンドウの追加
 	AddView(std::make_unique<ImGuiStyleWindow>());
-
-}
-
-void FileTab::ShowImGui() {
-
-	ImGui::SetNextWindowPos(ImVec2(0, 20), ImGuiCond_Appearing);
-	ImGui::SetNextWindowSize(ImVec2(ONEngine::EngineConfig::kWindowSize.x, ONEngine::EngineConfig::kWindowSize.y), ImGuiCond_Appearing);
-	if (!ImGui::Begin("File", nullptr, imGuiFlags_)) {
-		ImGui::End();
-		return;
-	}
-
-	ImGuiID dockspaceID = ImGui::GetID("FileDockingSpace");
-	ImGui::DockSpace(dockspaceID, ImVec2(0.0f, 0.0f));
-
-	UpdateViews();
-
-	ImGui::End();
 }

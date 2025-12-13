@@ -81,8 +81,10 @@ public:
 	/// public : methods
 	/// ===================================================
 
+	IEditorWindowContainer(const std::string& _windowName);
 	virtual ~IEditorWindowContainer() = default;
-	virtual void ShowImGui() = 0;
+
+	void ShowImGui();
 
 	/// @brief 子windowの更新
 	void UpdateViews();
@@ -96,8 +98,17 @@ protected:
 	/// ===================================================
 	/// protected : objects
 	/// ===================================================
-	ImGuiManager* pImGuiManager_ = nullptr; ///< ImGuiManagerへのポインタ
+
+	/// ----- other class ----- ///
+
+	ImGuiManager* pImGuiManager_ = nullptr;
+
+
+	/// ----- member objects ----- ///
+
 	std::vector<std::unique_ptr<class IEditorWindow>> children_;
+	std::string windowName_;
+
 };
 
 

@@ -32,15 +32,6 @@ public:
 		ONEngine::SceneManager* _sceneManager);
 	~GameTab() {}
 
-	/// @brief imgui windowの描画処理
-	void ShowImGui() override;
-
-private:
-	/// ===================================================
-	/// private : objects
-	/// ===================================================
-
-	int imGuiFlags_ = 0;
 };
 
 } // namespace Editor
