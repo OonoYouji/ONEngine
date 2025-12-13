@@ -82,7 +82,7 @@ private:
 	/// ===================================================
 
 	/// ----- other class ----- ///
-	ONEngine::DxManager* dxManager_;
+	ONEngine::DxManager* pDxManager_;
 	ONEngine::WindowManager* pWindowManager_;
 	ONEngine::AssetCollection* pAssetCollection_;
 	ONEngine::EntityComponentSystem* pEntityComponentSystem_;

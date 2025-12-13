@@ -644,7 +644,7 @@ void SetupVS2026Style() {
 
 
 ImGuiManager::ImGuiManager(ONEngine::DxManager* _dxm, ONEngine::WindowManager* _windowManager, ONEngine::EntityComponentSystem* _pEntityComponentSystem, EditorManager* _editorManager, ONEngine::SceneManager* _sceneManager)
-	: dxManager_(_dxm), pWindowManager_(_windowManager), pEntityComponentSystem_(_pEntityComponentSystem),
+	: pDxManager_(_dxm), pWindowManager_(_windowManager), pEntityComponentSystem_(_pEntityComponentSystem),
 	pEditorManager_(_editorManager), pSceneManager_(_sceneManager) {
 }
 
@@ -662,7 +662,7 @@ void ImGuiManager::Initialize(ONEngine::AssetCollection* _assetCollection) {
 
 	pAssetCollection_ = _assetCollection;
 
-	ONEngine::DxSRVHeap* dxSRVHeap = dxManager_->GetDxSRVHeap();
+	ONEngine::DxSRVHeap* dxSRVHeap = pDxManager_->GetDxSRVHeap();
 	uint32_t   srvDescriptorIndex = dxSRVHeap->AllocateBuffer();
 
 
@@ -679,7 +679,7 @@ void ImGuiManager::Initialize(ONEngine::AssetCollection* _assetCollection) {
 
 	ImGui_ImplWin32_Init(pWindowManager_->GetMainWindow()->GetHwnd());
 	ImGui_ImplDX12_Init(
-		dxManager_->GetDxDevice()->GetDevice(),
+		pDxManager_->GetDxDevice()->GetDevice(),
 		2, ///< swap chain buffer count
 		DXGI_FORMAT_R8G8B8A8_UNORM,
 		dxSRVHeap->GetHeap(),
@@ -702,7 +702,7 @@ void ImGuiManager::Initialize(ONEngine::AssetCollection* _assetCollection) {
 	SetWindowLong(pDebugGameWindow_->GetHwnd(), GWL_STYLE, style);
 
 	imGuiWindowCollection_ = std::make_unique<EditorViewCollection>(
-		dxManager_, pEntityComponentSystem_, pAssetCollection_, this, pEditorManager_, pSceneManager_
+		pDxManager_, pEntityComponentSystem_, pAssetCollection_, this, pEditorManager_, pSceneManager_
 	);
 }
 
@@ -731,7 +731,7 @@ void ImGuiManager::Draw() {
 	ImGui::Render();
 	ImGui_ImplDX12_RenderDrawData(
 		ImGui::GetDrawData(),
-		dxManager_->GetDxCommand()->GetCommandList()
+		pDxManager_->GetDxCommand()->GetCommandList()
 	);
 }
 
