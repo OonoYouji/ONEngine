@@ -13,7 +13,7 @@
 #include "Engine/Core/Utility/Math/Vector2.h"
 
 /// editor
-#include "Engine/Editor/Views/EditorWindows/EditorViewCollection.h"
+#include "Engine/Editor/Views/EditorViewCollection.h"
 #include "Engine/Editor/Math/ImGuiSceneImageInfo.h"
 
 namespace ONEngine {
