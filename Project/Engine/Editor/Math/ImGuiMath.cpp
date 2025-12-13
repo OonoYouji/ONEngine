@@ -1,11 +1,17 @@
 ﻿#include "ImGuiMath.h"
 
+#define NOMINMAX
+
 /// std
 #include <numbers>
 #include <format>
 #include <variant>
+#include <algorithm>
+#include <cstdio> 
+#include <cmath> 
 
 /// external
+#include <imgui_internal.h> // PushMultiItemsWidths に必要
 #include <Externals/imgui/dialog/ImGuiFileDialog.h>
 
 /// engine
@@ -18,6 +24,8 @@
 #include "Engine/ECS/Component/Components/RendererComponents/Mesh/CustomMeshRenderer.h"
 
 /// editor
+#include "Engine/Editor/Manager/EditCommand.h"
+#include "Engine/Editor/Commands/ImGuiCommand/ImGuiCommand.h" 
 #include "Engine/Editor/Math/AssetPayload.h"
 
 using namespace Editor;
@@ -30,6 +38,270 @@ std::string variableName = "";
 
 }	/// unnamed namespace
 
+bool ImMathf::DrawVec3Control(const std::string& _label, ONEngine::Vector3& _values, float _resetValue, float _columnWidth, bool* _unified) {
+	bool valueChanged = false;
+
+	// ==========================================================
+	// 定数・設定値定義
+	// ==========================================================
+	constexpr float kSafetyMarginWidth = 1.0f;
+	constexpr float kButtonPaddingW = 3.0f;
+	constexpr float kFramePaddingScale = 2.0f;
+	constexpr float kSpacingScale = 2.0f;
+	constexpr float kMinInputWidth = 10.0f;
+	constexpr int   kNumColumns = 2;
+	constexpr int   kNumAxes = 3;
+
+	const ImVec4 kColorX = ImVec4(0.8f, 0.1f, 0.15f, 1.0f);
+	const ImVec4 kColorY = ImVec4(0.2f, 0.7f, 0.2f, 1.0f);
+	const ImVec4 kColorZ = ImVec4(0.1f, 0.25f, 0.8f, 1.0f);
+
+	constexpr float kColorHoverOffset = 0.1f;
+	constexpr float kColorActiveOffset = 0.2f;
+
+	constexpr float kZeroEpsilon = 1e-6f;
+	constexpr float kDragSpeedNormal = 0.1f;
+	constexpr float kDragSpeedSlow = 0.1f;
+	constexpr int   kTextBufferSize = 64;
+
+	const ImVec2 kTextAlignCenter = ImVec2(0.5f, 0.5f);
+
+	// ==========================================================
+
+	// ★追加: 操作開始時の値を保持するためのstatic変数
+	// 同時に1つのウィジェットしか操作しない前提
+	static ONEngine::Vector3 s_startValue;
+
+	ImGui::PushID(_label.c_str());
+
+	ONEngine::Vector3 beforeValues = _values;
+
+	// --- 左カラム: ラベル ---
+	ImGui::Columns(kNumColumns);
+	ImGui::SetColumnWidth(0, _columnWidth);
+	ImGui::AlignTextToFramePadding();
+	ImGui::Text("%s", _label.c_str());
+	ImGui::NextColumn();
+
+	// --- 右カラム: 幅計算 ---
+	ImGui::PushID("##Vec3Vals");
+
+	float availWidth = ImGui::GetContentRegionAvail().x - kSafetyMarginWidth;
+	float itemSpacing = GImGui->Style.ItemSpacing.x;
+	float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * kFramePaddingScale;
+	ImVec2 buttonSize = { lineHeight + kButtonPaddingW, lineHeight };
+
+	float checkboxWidth = (_unified != nullptr) ? (ImGui::GetFrameHeight() + itemSpacing) : 0.0f;
+	float totalAxesWidth = availWidth - checkboxWidth - (itemSpacing * kSpacingScale);
+	float axisWidth = totalAxesWidth / static_cast<float>(kNumAxes);
+	float inputWidth = std::max(kMinInputWidth, axisWidth - buttonSize.x);
+
+	// --- チェックボックス ---
+	if(_unified != nullptr) {
+		ImGui::Checkbox("##Unified", _unified);
+		if(ImGui::IsItemHovered()) {
+			ImGui::SetTooltip("Uniform Scale (Lock Ratio)");
+		}
+		ImGui::SameLine();
+	}
+
+	float* axisValues[] = { &_values.x, &_values.y, &_values.z };
+	float beforeAxisValues[] = { beforeValues.x, beforeValues.y, beforeValues.z };
+	const char* axisLabels[] = { "X", "Y", "Z" };
+	const ImVec4 axisColors[] = { kColorX, kColorY, kColorZ };
+
+	// 次にフォーカスを当てるべき軸のインデックス (-1は無し)
+	ImGuiID nextFocusID = ImGui::GetID("##nextFocusAxis");
+	int focusAxisIdx = ImGui::GetStateStorage()->GetInt(nextFocusID, -1);
+	if(focusAxisIdx != -1) {
+		ImGui::GetStateStorage()->SetInt(nextFocusID, -1);
+	}
+
+	for(int i = 0; i < kNumAxes; ++i) {
+		ImGui::PushID(i);
+
+		bool isZero = fabsf(*axisValues[i]) < kZeroEpsilon;
+		bool isUnified = (_unified && *_unified);
+		bool isLocked = isUnified && isZero;
+
+		if(isLocked) {
+			ImGui::BeginDisabled(true);
+		}
+
+		// ==========================================================
+		// A. 軸ラベルボタン (ドラッグ操作)
+		// ==========================================================
+		ImVec4 baseColor = axisColors[i];
+		ImVec4 hoverColor = ImVec4(baseColor.x + kColorHoverOffset, baseColor.y + kColorHoverOffset, baseColor.z + kColorHoverOffset, 1.0f);
+		ImVec4 activeColor = ImVec4(baseColor.x + kColorActiveOffset, baseColor.y + kColorActiveOffset, baseColor.z + kColorActiveOffset, 1.0f);
+
+		ImGui::PushStyleColor(ImGuiCol_Button, baseColor);
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, hoverColor);
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, activeColor);
+
+		ImGui::Button(axisLabels[i], buttonSize);
+
+		// ★追加: ボタン操作開始 (ドラッグ開始)
+		if(ImGui::IsItemActivated()) {
+			s_startValue = _values;
+		}
+
+		// ★追加: ボタン操作終了 (ドラッグ終了)
+		// 値が変わっていたらUndoコマンド発行
+		if(ImGui::IsItemDeactivated()) {
+			// 値が変わったか簡易チェック (厳密にはEpsilon比較推奨ですが、ここでは簡易的に)
+			bool changed = (_values.x != s_startValue.x || _values.y != s_startValue.y || _values.z != s_startValue.z);
+			if(changed) {
+				EditCommand::Execute<ImGuiCommand::ModifyValueCommand<ONEngine::Vector3>>(&_values, s_startValue, _values);
+			}
+		}
+
+		bool buttonActive = ImGui::IsItemActive();
+		bool buttonDragged = buttonActive && ImGui::IsMouseDragging(ImGuiMouseButton_Left);
+
+		if(!isLocked && (ImGui::IsItemHovered() || buttonActive)) {
+			ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeEW);
+		}
+
+		ImGui::PopStyleColor(3);
+		ImGui::SameLine(0, 0);
+
+		// ==========================================================
+		// B. 数値表示/入力エリア
+		// ==========================================================
+		ImGui::SetNextItemWidth(inputWidth);
+
+		ImGuiID inputID = ImGui::GetID("##v");
+		ImGuiID focusReqID = ImGui::GetID("##req_focus");
+
+		if(focusAxisIdx == i && !isLocked) {
+			ImGui::GetStateStorage()->SetBool(inputID, true);
+			ImGui::GetStateStorage()->SetBool(focusReqID, true);
+		}
+
+		bool isEditing = ImGui::GetStateStorage()->GetBool(inputID, false);
+		bool inputChanged = false;
+
+		// 編集モード
+		if(isEditing && !isLocked) {
+			if(ImGui::GetStateStorage()->GetBool(focusReqID, false)) {
+				ImGui::SetKeyboardFocusHere(0);
+				ImGui::GetStateStorage()->SetBool(focusReqID, false);
+			}
+
+			inputChanged = ImGui::InputFloat("##v", axisValues[i], 0.0f, 0.0f, "%.2f");
+
+			// ★追加: 入力操作開始
+			if(ImGui::IsItemActivated()) {
+				s_startValue = _values;
+			}
+
+			// ★追加: 入力操作終了 (編集確定後)
+			if(ImGui::IsItemDeactivatedAfterEdit()) {
+				EditCommand::Execute<ImGuiCommand::ModifyValueCommand<ONEngine::Vector3>>(&_values, s_startValue, _values);
+			}
+
+			// Tabキー遷移処理
+			bool tabPressed = ImGui::IsKeyPressed(ImGuiKey_Tab);
+			bool shiftPressed = ImGui::GetIO().KeyShift;
+
+			if(tabPressed && (ImGui::IsItemActive() || ImGui::IsItemDeactivated())) {
+				ImGui::GetStateStorage()->SetBool(inputID, false);
+
+				int direction = shiftPressed ? -1 : 1;
+				int targetIdx = i + direction;
+
+				if(targetIdx >= 0 && targetIdx < kNumAxes) {
+					if(direction > 0) {
+						focusAxisIdx = targetIdx;
+					} else {
+						ImGui::GetStateStorage()->SetInt(nextFocusID, targetIdx);
+					}
+				}
+			} else if(ImGui::IsItemDeactivated()) {
+				ImGui::GetStateStorage()->SetBool(inputID, false);
+			}
+		}
+		// 表示モード
+		else {
+			ImGui::PushStyleColor(ImGuiCol_Button, ImGui::GetStyleColorVec4(ImGuiCol_FrameBg));
+			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImGui::GetStyleColorVec4(ImGuiCol_FrameBgHovered));
+			ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImGui::GetStyleColorVec4(ImGuiCol_FrameBgActive));
+			ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, kTextAlignCenter);
+
+			char buf[kTextBufferSize];
+			sprintf_s(buf, kTextBufferSize, "%.2f", *axisValues[i]);
+
+			if(ImGui::Button(buf, ImVec2(inputWidth, 0))) {
+				ImGui::GetStateStorage()->SetBool(inputID, true);
+				ImGui::GetStateStorage()->SetBool(focusReqID, true);
+				// ★追加: クリックで編集モードに入った瞬間をCaptureしたいが、
+				// 次のフレームでInputFloatがActivateされるため、そちらでCaptureされる。
+				// ここでは不要。
+			}
+
+			ImGui::PopStyleVar();
+			ImGui::PopStyleColor(3);
+		}
+
+		if(isLocked) {
+			ImGui::EndDisabled();
+		}
+
+		// ==========================================================
+		// C. 変更反映 (ドラッグ中などのリアルタイム反映)
+		// ==========================================================
+		bool currentAxisChanged = false;
+
+		if(!isLocked) {
+			if(buttonDragged) {
+				float dragDelta = ImGui::GetIO().MouseDelta.x * kDragSpeedNormal;
+				if(ImGui::GetIO().KeyShift) {
+					dragDelta *= kDragSpeedSlow;
+				}
+				*axisValues[i] += dragDelta;
+				currentAxisChanged = true;
+			}
+
+			if(inputChanged) {
+				currentAxisChanged = true;
+			}
+		}
+
+		if(currentAxisChanged) {
+			valueChanged = true;
+
+			if((_unified && *_unified) || ImGui::IsKeyDown(ImGuiKey_LeftShift)) {
+				float oldVal = beforeAxisValues[i];
+				float newVal = *axisValues[i];
+
+				if(fabsf(oldVal) > kZeroEpsilon) {
+					float ratio = newVal / oldVal;
+					_values.x = beforeValues.x * ratio;
+					_values.y = beforeValues.y * ratio;
+					_values.z = beforeValues.z * ratio;
+				} else {
+					_values.x = newVal;
+					_values.y = newVal;
+					_values.z = newVal;
+				}
+				*axisValues[i] = newVal;
+			}
+		}
+
+		if(i < kNumAxes - 1) {
+			ImGui::SameLine();
+		}
+		ImGui::PopID();
+	}
+
+	ImGui::PopID();
+	ImGui::Columns(1);
+	ImGui::PopID();
+
+	return valueChanged;
+}
+
 
 ImVec4 ImMathf::ToImVec4(const ONEngine::Vector4& _vec) {
 	return ImVec4(_vec.x, _vec.y, _vec.z, _vec.w);
@@ -40,11 +312,11 @@ ImVec2 ImMathf::ToImVec2(const ONEngine::Vector2& _vec) {
 }
 
 bool ImMathf::ColorEdit(const char* _label, ONEngine::Vector4* _color, ImGuiColorEditFlags _flags) {
-	if (!_color) {
+	if(!_color) {
 		return false;
 	}
 
-	if (ImGui::ColorEdit4(_label, &_color->x, _flags)) {
+	if(ImGui::ColorEdit4(_label, &_color->x, _flags)) {
 		return true; // 色が変更された
 	}
 
@@ -52,7 +324,7 @@ bool ImMathf::ColorEdit(const char* _label, ONEngine::Vector4* _color, ImGuiColo
 }
 
 bool ImMathf::InputText(const char* _label, std::string* _text, ImGuiInputTextFlags _flags) {
-	if (!_text) {
+	if(!_text) {
 		return false; // nullptr check
 	}
 
@@ -63,7 +335,7 @@ bool ImMathf::InputText(const char* _label, std::string* _text, ImGuiInputTextFl
 	};
 
 	auto callback = [](ImGuiInputTextCallbackData* data) -> int {
-		if (data->EventFlag == ImGuiInputTextFlags_CallbackResize) {
+		if(data->EventFlag == ImGuiInputTextFlags_CallbackResize) {
 			auto* user = static_cast<CallbackUserData*>(data->UserData);
 
 			/// stringのサイズを変更
@@ -71,27 +343,27 @@ bool ImMathf::InputText(const char* _label, std::string* _text, ImGuiInputTextFl
 			data->Buf = user->text->data();
 		}
 		return 0;
-		};
+	};
 
 	CallbackUserData userData = { _text };
 	return ImGui::InputText(_label, _text->data(), _text->capacity(), _flags,
-		callback, &userData
+							callback, &userData
 	);
 }
 
 bool ImMathf::MaterialEdit(const char* _label, ONEngine::GPUMaterial* _material, ONEngine::AssetCollection* _assetCollection) {
 	/// nullptr check
-	if (!_material) {
+	if(!_material) {
 		return false;
 	}
 
 	bool isEdit = false;
-	if (ImGui::CollapsingHeader(_label)) {
-		if (ImGuiColorEdit("BaseColor", &_material->baseColor)) {
+	if(ImGui::CollapsingHeader(_label)) {
+		if(ImGuiColorEdit("BaseColor", &_material->baseColor)) {
 			isEdit = true;
 		}
 
-		if (UVTransformEdit("UVTransform", &_material->uvTransform)) {
+		if(UVTransformEdit("UVTransform", &_material->uvTransform)) {
 			isEdit = true;
 		}
 
@@ -99,21 +371,21 @@ bool ImMathf::MaterialEdit(const char* _label, ONEngine::GPUMaterial* _material,
 		/// ---------------------------------------------------
 		/// ポストエフェクトフラグの編集
 		/// ---------------------------------------------------
-		if (ImGui::CollapsingHeader("PostEffectFlags")) {
+		if(ImGui::CollapsingHeader("PostEffectFlags")) {
 			/// ポストエフェクトのフラグ
-			if (ImGui::CheckboxFlags("Lighting", &_material->postEffectFlags, PostEffectFlags_Lighting)) {
+			if(ImGui::CheckboxFlags("Lighting", &_material->postEffectFlags, PostEffectFlags_Lighting)) {
 				isEdit = true;
 			}
 
-			if (ImGui::CheckboxFlags("Grayscale", &_material->postEffectFlags, PostEffectFlags_Grayscale)) {
+			if(ImGui::CheckboxFlags("Grayscale", &_material->postEffectFlags, PostEffectFlags_Grayscale)) {
 				isEdit = true;
 			}
 
-			if (ImGui::CheckboxFlags("EnvironmentReflection", &_material->postEffectFlags, PostEffectFlags_EnvironmentReflection)) {
+			if(ImGui::CheckboxFlags("EnvironmentReflection", &_material->postEffectFlags, PostEffectFlags_EnvironmentReflection)) {
 				isEdit = true;
 			}
 
-			if (ImGui::CheckboxFlags("Shadow", &_material->postEffectFlags, PostEffectFlags_Shadow)) {
+			if(ImGui::CheckboxFlags("Shadow", &_material->postEffectFlags, PostEffectFlags_Shadow)) {
 				isEdit = true;
 			}
 
@@ -123,19 +395,19 @@ bool ImMathf::MaterialEdit(const char* _label, ONEngine::GPUMaterial* _material,
 		/// ---------------------------------------------------
 		/// テクスチャの編集
 		/// ---------------------------------------------------
-		if (ImGui::CollapsingHeader("Texture")) {
+		if(ImGui::CollapsingHeader("Texture")) {
 
 			/// textureの変更
 			const std::string& texturePath = _assetCollection->GetTexturePath(_material->baseTextureId);
 			ImMathf::InputText("Base Texture", const_cast<std::string*>(&texturePath), ImGuiInputTextFlags_ReadOnly);
-			if (ImGui::BeginDragDropTarget()) {
-				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("AssetData")) {
-					if (payload->Data) {
+			if(ImGui::BeginDragDropTarget()) {
+				if(const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("AssetData")) {
+					if(payload->Data) {
 						AssetPayload* assetPayload = *static_cast<AssetPayload**>(payload->Data);
 						std::string path = assetPayload->filePath;
 
 						ONEngine::AssetType type = ONEngine::GetAssetTypeFromExtension(ONEngine::FileSystem::FileExtension(path));
-						if (type == ONEngine::AssetType::Texture) {
+						if(type == ONEngine::AssetType::Texture) {
 							size_t droppedTextureIndex = _assetCollection->GetTextureIndex(path);
 							_material->baseTextureId = static_cast<int32_t>(droppedTextureIndex);
 							isEdit = true;
@@ -146,9 +418,9 @@ bool ImMathf::MaterialEdit(const char* _label, ONEngine::GPUMaterial* _material,
 			}
 
 			/// texture idが有効値じゃなければ無視
-			if (_material->baseTextureId >= 0) {
+			if(_material->baseTextureId >= 0) {
 				const ONEngine::Texture* baseTexture = _assetCollection->GetTexture(_assetCollection->GetTexturePath(_material->baseTextureId));
-				if (baseTexture) {
+				if(baseTexture) {
 					ImTextureID textureId = reinterpret_cast<ImTextureID>(baseTexture->GetSRVGPUHandle().ptr);
 					ImGui::Image(textureId, ImVec2(100, 100), ImVec2(0, 0), ImVec2(1, 1), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
 				}
@@ -161,12 +433,12 @@ bool ImMathf::MaterialEdit(const char* _label, ONEngine::GPUMaterial* _material,
 			/// 法線テクスチャの変更
 			const std::string& normalTexturePath = _assetCollection->GetTexturePath(_material->normalTextureId);
 			ImMathf::InputText("Normal Texture", const_cast<std::string*>(&normalTexturePath), ImGuiInputTextFlags_ReadOnly);
-			if (ImGui::BeginDragDropTarget()) {
-				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("AssetData")) {
-					if (payload->Data) {
+			if(ImGui::BeginDragDropTarget()) {
+				if(const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("AssetData")) {
+					if(payload->Data) {
 						const char* droppedPath = static_cast<const char*>(payload->Data);
 						std::string path = std::string(droppedPath);
-						if (path.find(".png") != std::string::npos || path.find(".jpg") != std::string::npos) {
+						if(path.find(".png") != std::string::npos || path.find(".jpg") != std::string::npos) {
 							size_t droppedTextureIndex = _assetCollection->GetTextureIndex(path);
 							_material->normalTextureId = static_cast<int32_t>(droppedTextureIndex);
 							isEdit = true;
@@ -178,9 +450,9 @@ bool ImMathf::MaterialEdit(const char* _label, ONEngine::GPUMaterial* _material,
 
 
 			/// normal texture idが有効値じゃなければ無視
-			if (_material->normalTextureId >= 0) {
+			if(_material->normalTextureId >= 0) {
 				const ONEngine::Texture* normalTexture = _assetCollection->GetTexture(_assetCollection->GetTexturePath(_material->normalTextureId));
-				if (normalTexture) {
+				if(normalTexture) {
 					ImTextureID textureId = reinterpret_cast<ImTextureID>(normalTexture->GetSRVGPUHandle().ptr);
 					ImGui::Image(textureId, ImVec2(100, 100), ImVec2(0, 0), ImVec2(1, 1), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
 				}
@@ -198,7 +470,7 @@ bool ImMathf::MaterialEdit(const char* _label, ONEngine::GPUMaterial* _material,
 
 bool ImMathf::UVTransformEdit(const char* _label, ONEngine::UVTransform* _uvTransform) {
 	/// nullptr check
-	if (!_uvTransform) {
+	if(!_uvTransform) {
 		return false;
 	}
 
@@ -206,17 +478,17 @@ bool ImMathf::UVTransformEdit(const char* _label, ONEngine::UVTransform* _uvTran
 
 	ImGui::PushID(2);
 
-	if (ImGui::CollapsingHeader(_label)) {
+	if(ImGui::CollapsingHeader(_label)) {
 		/// UVのオフセット
-		if (ImGui::DragFloat2("offset", &_uvTransform->position.x, 0.01f)) {
+		if(ImGui::DragFloat2("offset", &_uvTransform->position.x, 0.01f)) {
 			isEdit = true;
 		}
 		/// UVのスケール
-		if (ImGui::DragFloat2("scale", &_uvTransform->scale.x, 0.01f, 0.0f, FLT_MAX)) {
+		if(ImGui::DragFloat2("scale", &_uvTransform->scale.x, 0.01f, 0.0f, FLT_MAX)) {
 			isEdit = true;
 		}
 		/// UVの回転
-		if (ImGui::DragFloat("rotate", &_uvTransform->rotate, 0.01f, -std::numbers::pi_v<float>, std::numbers::pi_v<float>)) {
+		if(ImGui::DragFloat("rotate", &_uvTransform->rotate, 0.01f, -std::numbers::pi_v<float>, std::numbers::pi_v<float>)) {
 			isEdit = true;
 		}
 
@@ -235,7 +507,7 @@ ImVec2 ImMathf::CalculateAspectFitSize(const ONEngine::Vector2& _textureSize, fl
 	float width = _maxSize;
 	float height = _maxSize;
 
-	if (aspectRatio > 1.0f) {
+	if(aspectRatio > 1.0f) {
 		// 横長の場合
 		height = _maxSize / aspectRatio;
 	} else {
@@ -254,7 +526,7 @@ ImVec2 ImMathf::CalculateAspectFitSize(const ONEngine::Vector2& _textureSize, co
 	float width = _maxSize.x;
 	float height = _maxSize.y;
 
-	if (aspectRatio > (_maxSize.x / _maxSize.y)) {
+	if(aspectRatio > (_maxSize.x / _maxSize.y)) {
 		// 横長の場合、幅を最大にして高さを調整
 		height = _maxSize.x / aspectRatio;
 	} else {
@@ -267,7 +539,7 @@ ImVec2 ImMathf::CalculateAspectFitSize(const ONEngine::Vector2& _textureSize, co
 
 
 bool Editor::ImGuiInputText(const char* _label, std::string* _text, ImGuiInputTextFlags _flags) {
-	if (!_text) {
+	if(!_text) {
 		return false; // nullptr check
 	}
 
@@ -278,17 +550,17 @@ bool Editor::ImGuiInputText(const char* _label, std::string* _text, ImGuiInputTe
 	};
 
 	auto callback = [](ImGuiInputTextCallbackData* data) -> int {
-		if (data->EventFlag == ImGuiInputTextFlags_CallbackResize) {
+		if(data->EventFlag == ImGuiInputTextFlags_CallbackResize) {
 			auto* user = static_cast<CallbackUserData*>(data->UserData);
 			user->text->resize(data->BufTextLen);   // ← 入力が減っても size が追従する！
 			data->Buf = user->text->data();
 		}
 		return 0;
-		};
+	};
 
 	CallbackUserData userData = { _text };
 	return ImGui::InputText(_label, _text->data(), _text->capacity(), _flags,
-		callback, &userData
+							callback, &userData
 	);
 }
 
@@ -337,16 +609,16 @@ bool Editor::ImGuiColorEdit(const char* _label, ONEngine::Vector4* _color) {
 	ImGui::SameLine();
 
 	/// 色のプレビュー
-	if (ImGui::ColorButton(std::format("##Preview{}", *_label).c_str(), editColor, ImGuiColorEditFlags_NoTooltip, ImVec2(30, 0))) {
+	if(ImGui::ColorButton(std::format("##Preview{}", *_label).c_str(), editColor, ImGuiColorEditFlags_NoTooltip, ImVec2(30, 0))) {
 		openPicker = !openPicker;
 	}
 
-	if (openPicker) {
+	if(openPicker) {
 		ImGui::ColorPicker4(std::format("##Picker{}", *_label).c_str(), (float*)&editColor, ImGuiColorEditFlags_NoSidePreview | ImGuiColorEditFlags_NoLabel);
 	}
 
 	/// 色を更新
-	if (editColor.x != _color->x || editColor.y != _color->y || editColor.z != _color->z || editColor.w != _color->w) {
+	if(editColor.x != _color->x || editColor.y != _color->y || editColor.z != _color->z || editColor.w != _color->w) {
 		_color->x = editColor.x;
 		_color->y = editColor.y;
 		_color->z = editColor.z;
@@ -358,7 +630,7 @@ bool Editor::ImGuiColorEdit(const char* _label, ONEngine::Vector4* _color) {
 }
 
 void ONEngine::DirectionalLightDebug(DirectionalLight* _light) {
-	if (!_light) {
+	if(!_light) {
 		return;
 	}
 
@@ -368,22 +640,22 @@ void ONEngine::DirectionalLightDebug(DirectionalLight* _light) {
 	Vector3  direction = _light->GetDirection();
 
 	/// edit
-	if (ImGuiColorEdit("color", &color)) {
+	if(ImGuiColorEdit("color", &color)) {
 		_light->SetColor(color);
 	}
 
-	if (ImGui::DragFloat3("direction", &direction.x, 0.1f)) {
+	if(ImGui::DragFloat3("direction", &direction.x, 0.1f)) {
 		_light->SetDirection(Vector3::Normalize(direction));
 	}
 
-	if (ImGui::DragFloat("intensity", &intensity, 0.1f)) {
+	if(ImGui::DragFloat("intensity", &intensity, 0.1f)) {
 		_light->SetIntensity(intensity);
 	}
 
 }
 
 void ONEngine::AudioSourceDebug(AudioSource* _audioSource) {
-	if (!_audioSource) {
+	if(!_audioSource) {
 		return;
 	}
 
@@ -393,38 +665,38 @@ void ONEngine::AudioSourceDebug(AudioSource* _audioSource) {
 	std::string path = _audioSource->GetAudioPath();
 
 	/// edit
-	if (ImGui::DragFloat("volume", &volume, 0.1f)) {
+	if(ImGui::DragFloat("volume", &volume, 0.1f)) {
 		_audioSource->SetVolume(volume);
 	}
 
-	if (ImGui::DragFloat("pitch", &pitch, 0.1f)) {
+	if(ImGui::DragFloat("pitch", &pitch, 0.1f)) {
 		_audioSource->SetPitch(pitch);
 	}
 
 }
 
 void ONEngine::CustomMeshRendererDebug(CustomMeshRenderer* _customMeshRenderer) {
-	if (!_customMeshRenderer) {
+	if(!_customMeshRenderer) {
 		return;
 	}
 
 	/// param get
 	Vector4 color = _customMeshRenderer->GetColor();
 	/// edit
-	if (ImGuiColorEdit("color", &color)) {
+	if(ImGuiColorEdit("color", &color)) {
 		_customMeshRenderer->SetColor(color);
 	}
 }
 
 void ONEngine::EffectDebug(Effect* _effect) {
-	if (!_effect) {
+	if(!_effect) {
 		return;
 	}
 
 	/// main module
-	if (ImGui::TreeNodeEx("main module", ImGuiTreeNodeFlags_DefaultOpen)) {
+	if(ImGui::TreeNodeEx("main module", ImGuiTreeNodeFlags_DefaultOpen)) {
 		EffectMainModule* mainModule = _effect->GetMainModule();
-		if (!mainModule) {
+		if(!mainModule) {
 			ImGui::Text("no main module");
 		} else {
 
