@@ -9,7 +9,7 @@ public class PuzzleClearEffect : MonoScript {
 	private PuzzleStage puzzleStage_;
 	private PuzzleClearChecker puzzleClearChecker_;
 	[SerializeField] private float time_;
-	[SerializeField] private float repeatTime_;
+	[SerializeField] private float repeatTime_ = 1.0f;
 	[SerializeField] private int repeatCount_ = 0;
 	
 	public override void Initialize() {
