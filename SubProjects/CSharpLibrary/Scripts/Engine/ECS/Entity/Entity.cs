@@ -15,7 +15,7 @@ public class Entity {
 
 	// components, scripts
 	private Dictionary<string, Component> components_ = new Dictionary<string, Component>();
-	private Dictionary<string, MonoBehavior> scripts_ = new Dictionary<string, MonoBehavior>();
+	private Dictionary<string, MonoScript> scripts_ = new Dictionary<string, MonoScript>();
 
 	// id
 	private int entityId_;
@@ -171,7 +171,7 @@ public class Entity {
 		return result;
 	}
 
-	public T GetScript<T>() where T : MonoBehavior {
+	public T GetScript<T>() where T : MonoScript {
 		/// スクリプトを得る
 		string typeName = typeof(T).Name;
 		if (scripts_.ContainsKey(typeName)) {
@@ -183,7 +183,7 @@ public class Entity {
 		return null;
 	}
 
-	public MonoBehavior GetScript(string _scriptName) {
+	public MonoScript GetScript(string _scriptName) {
 		/// スクリプトを得る
 		if (scripts_.ContainsKey(_scriptName)) {
 			return scripts_[_scriptName];
@@ -191,15 +191,15 @@ public class Entity {
 		return null;
 	}
 
-	public List<MonoBehavior> GetScripts() {
-		List<MonoBehavior> result = new List<MonoBehavior>();
+	public List<MonoScript> GetScripts() {
+		List<MonoScript> result = new List<MonoScript>();
 		foreach (var keyValuePair in scripts_) {
 			result.Add(keyValuePair.Value);
 		}
 		return result;
 	}
 
-	public T AddScript<T>() where T : MonoBehavior {
+	public T AddScript<T>() where T : MonoScript {
 		// Debug.LogInfo("Entity.AddScript<T> - Adding script: " + typeof(T).Name + " to Entity ID: " + entityId_);
 
 		/// スクリプトを得る
@@ -220,7 +220,7 @@ public class Entity {
 		return (T)scripts_[typeName];
 	}
 
-	public MonoBehavior AddScript(MonoBehavior mb) {
+	public MonoScript AddScript(MonoScript mb) {
 		string scriptName = mb.GetType().Name;
 
 		/// スクリプトを得る

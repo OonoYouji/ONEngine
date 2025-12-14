@@ -6,7 +6,7 @@ using System.IO;
 /// <summary>
 /// ワールドを探索するプレイヤーのクラス
 /// </summary>
-public class Player : MonoBehavior {
+public class Player : MonoScript {
 
 	float height = 0.0f;
 	float jumpPower = 5.0f;

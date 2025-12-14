@@ -1,6 +1,6 @@
 ﻿using System;
 
-public class Enemy : MonoBehavior {
+public class Enemy : MonoScript {
 
 	float hp;
 	bool isAlive;

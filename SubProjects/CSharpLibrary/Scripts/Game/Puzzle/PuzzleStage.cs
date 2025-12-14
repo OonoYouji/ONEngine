@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class PuzzleStage : MonoBehavior {
+public class PuzzleStage : MonoScript {
 	private PuzzleBlockData blockData_;
 
 	// マップの情報、ブロックリスト、プレイヤーリスト

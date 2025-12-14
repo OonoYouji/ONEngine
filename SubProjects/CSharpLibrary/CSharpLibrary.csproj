@@ -85,7 +85,7 @@
     <Compile Include="Scripts\Game\Breathe.cs" />
     <Compile Include="Scripts\Game\DebugEntity\DebugCamera.cs" />
     <Compile Include="Scripts\Game\Enemy.cs" />
-    <Compile Include="Scripts\Engine\MonoBehavior.cs" />
+    <Compile Include="Scripts\Engine\MonoScript.cs" />
     <Compile Include="Scripts\Game\GameMath\GameMathf.cs" />
     <Compile Include="Scripts\Game\Player.cs" />
     <Compile Include="Scripts\Engine\Core\Utility\Math\Vector3.cs" />

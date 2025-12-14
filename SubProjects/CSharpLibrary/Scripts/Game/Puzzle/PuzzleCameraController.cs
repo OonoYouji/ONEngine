@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class PuzzleCameraController : MonoBehavior {
+public class PuzzleCameraController : MonoScript {
 
 	Entity cameraEntity;
 	[SerializeField] Vector3 cameraOffset = new Vector3(0f, 5f, -10f);

@@ -59,7 +59,7 @@ public class ECSGroup {
 	/// <summary>
 	/// C/C++側から呼び出すコンポーネントの追加関数
 	/// </summary>
-	public void AddScript(int _entityId, MonoBehavior _behavior, bool _enable) {
+	public void AddScript(int _entityId, MonoScript _behavior, bool _enable) {
 		Entity entity;
 		if (entities_.TryGetValue(_entityId, out entity)) {
 			Debug.LogInfo("ECSGroup.AddScript - Adding script to Entity ID: " + _entityId + ", Script Name: "
@@ -125,7 +125,7 @@ public class ECSGroup {
 				continue;
 			}
 
-			foreach (MonoBehavior script in entity.GetScripts()) {
+			foreach (MonoScript script in entity.GetScripts()) {
 				if (script.enable) {
 					script.Update();
 				}
@@ -157,7 +157,7 @@ public class ECSGroup {
 		List<Entity> entitiesToAwake = new List<Entity>(awakeList_);
 		awakeList_.Clear(); // 生成リストをクリア
 		foreach (Entity entity in entitiesToAwake) {
-			foreach (MonoBehavior script in entity.GetScripts()) {
+			foreach (MonoScript script in entity.GetScripts()) {
 				script.Awake();
 			}
 		}
@@ -187,7 +187,7 @@ public class ECSGroup {
 		List<Entity> entitiesToInitialize = new List<Entity>(initList_);
 		initList_.Clear();
 		foreach (Entity entity in entitiesToInitialize) {
-			foreach (MonoBehavior script in entity.GetScripts()) {
+			foreach (MonoScript script in entity.GetScripts()) {
 				script.Initialize();
 			}
 		}

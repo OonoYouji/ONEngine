@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class PuzzleClearEffect : MonoBehavior {
+public class PuzzleClearEffect : MonoScript {
 	
 	private PuzzleStage puzzleStage_;
 	private PuzzleClearChecker puzzleClearChecker_;

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class PuzzleManager : MonoBehavior {
+public class PuzzleManager : MonoScript {
 
 	List<Entity> puzzleStands_ = new List<Entity>();
 	uint childCount_ = 0;

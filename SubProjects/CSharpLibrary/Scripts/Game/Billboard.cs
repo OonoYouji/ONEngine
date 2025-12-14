@@ -1,4 +1,4 @@
-﻿public class Billboard : MonoBehavior {
+﻿public class Billboard : MonoScript {
 
 	Entity camera_;
 	public Entity target; /// 注視対象

@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class PuzzleStartController : MonoBehavior {
+public class PuzzleStartController : MonoScript {
 
-	private List<MonoBehavior> thisScripts_;
+	private List<MonoScript> thisScripts_;
 	private Player player_;
 	[SerializeField] float toPlayerDistance_ = 0.0f; /// プレイヤーとの距離
 	[SerializeField] float startPuzzleDistance_ = 4.0f; /// パズルを開始する距離

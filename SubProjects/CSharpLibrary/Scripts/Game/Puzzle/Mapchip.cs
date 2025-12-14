@@ -53,7 +53,7 @@ namespace Stage {
 }
 
 
-public class Mapchip : MonoBehavior {
+public class Mapchip : MonoScript {
 	// Mapデータの集まり
 	private Stage.Root root_;
 	private string loadedText_;
