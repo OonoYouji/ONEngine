@@ -18,6 +18,7 @@
 #include "Engine/Script/MonoScriptEngine.h"
 
 /// editor
+#include "Engine/Editor/EditorUtils.h"
 #include "Engine/Editor/Manager/ImGuiManager.h"
 #include "Engine/Editor/Math/ImGuiSelection.h"
 #include "InspectorWindow.h"
@@ -134,75 +135,82 @@ void DebugSceneView::ShowImGui() {
 	/// gizmoの表示
 	/// ----------------------------------------
 
-	/// Guidを元に操作対象のエンティティを取得する、
-	const ONEngine::Guid& selectedGuid = ImGuiSelection::GetSelectedObject();
-	if (ONEngine::GameEntity* entity = pEcs_->GetCurrentGroup()->GetEntityFromGuid(selectedGuid)) {
+	Editor::SetEntity(ImGuiSelection::GetSelectedObject());
 
-		ImGuizmo::SetOrthographic(false); // 透視投影
-		ImGuizmo::SetDrawlist();          // ImGuiの現在のDrawListに出力
+	ONEngine::Vector2 imagePosV = { imagePos.x, imagePos.y };
+	ONEngine::Vector2 imageSizeV = { imageSize.x, imageSize.y };
+	Editor::SetDrawRect(imagePosV, imageSizeV);
+	Editor::UpdatePivot(pEcs_);
 
-		// ウィンドウサイズに合わせて設定
-		ImGuizmo::SetRect(imagePos.x, imagePos.y, imageSize.x, imageSize.y);
+	///// Guidを元に操作対象のエンティティを取得する、
+	//const ONEngine::Guid& selectedGuid = ImGuiSelection::GetSelectedObject();
+	//if (ONEngine::GameEntity* entity = pEcs_->GetCurrentGroup()->GetEntityFromGuid(selectedGuid)) {
 
-		/// 操作モードの選択
-		if (ONEngine::Input::TriggerKey(DIK_W)) {
-			manipulateOperation_ = ImGuizmo::OPERATION::TRANSLATE; // 移動
-		} else if (ONEngine::Input::TriggerKey(DIK_E)) {
-			manipulateOperation_ = ImGuizmo::OPERATION::ROTATE; // 回転
-		} else if (ONEngine::Input::TriggerKey(DIK_R)) {
-			manipulateOperation_ = ImGuizmo::OPERATION::SCALE; // 拡縮
-		} else if (ONEngine::Input::TriggerKey(DIK_Q)) {
-			manipulateOperation_ = 0; // 操作なし
-		}
+	//	ImGuizmo::SetOrthographic(false); // 透視投影
+	//	ImGuizmo::SetDrawlist();          // ImGuiの現在のDrawListに出力
 
-		/// モードの選択
-		if (ONEngine::Input::TriggerKey(DIK_1)) {
-			manipulateMode_ = ImGuizmo::MODE::WORLD; // ワールド座標
-		} else if (ONEngine::Input::TriggerKey(DIK_2)) {
-			manipulateMode_ = ImGuizmo::MODE::LOCAL; // ローカル座標
-		}
+	//	// ウィンドウサイズに合わせて設定
+	//	ImGuizmo::SetRect(imagePos.x, imagePos.y, imageSize.x, imageSize.y);
 
-		if (manipulateOperation_ != 0) {
+	//	/// 操作モードの選択
+	//	if (ONEngine::Input::TriggerKey(DIK_W)) {
+	//		manipulateOperation_ = ImGuizmo::OPERATION::TRANSLATE; // 移動
+	//	} else if (ONEngine::Input::TriggerKey(DIK_E)) {
+	//		manipulateOperation_ = ImGuizmo::OPERATION::ROTATE; // 回転
+	//	} else if (ONEngine::Input::TriggerKey(DIK_R)) {
+	//		manipulateOperation_ = ImGuizmo::OPERATION::SCALE; // 拡縮
+	//	} else if (ONEngine::Input::TriggerKey(DIK_Q)) {
+	//		manipulateOperation_ = 0; // 操作なし
+	//	}
 
-			ONEngine::Transform* transform = entity->GetTransform();
-			/// 操作対象の行列
-			ONEngine::Matrix4x4 entityMatrix = transform->matWorld;
+	//	/// モードの選択
+	//	if (ONEngine::Input::TriggerKey(DIK_1)) {
+	//		manipulateMode_ = ImGuizmo::MODE::WORLD; // ワールド座標
+	//	} else if (ONEngine::Input::TriggerKey(DIK_2)) {
+	//		manipulateMode_ = ImGuizmo::MODE::LOCAL; // ローカル座標
+	//	}
 
-			/// カメラの取得
-			ONEngine::CameraComponent* camera = pEcs_->GetECSGroup("Debug")->GetMainCamera();
-			if (camera) {
-				ImGuizmo::Manipulate(
-					&camera->GetViewMatrix().m[0][0],
-					&camera->GetProjectionMatrix().m[0][0],
-					ImGuizmo::OPERATION(manipulateOperation_), // TRANSLATE, ROTATE, SCALE
-					ImGuizmo::MODE(manipulateMode_), // WORLD or LOCAL
-					&entityMatrix.m[0][0]
-				);
+	//	if (manipulateOperation_ != 0) {
 
-				if (ImGuizmo::IsUsing() && ImGuizmo::IsOver()) {
-					/// 行列をSRTに分解、エンティティに適応
-					float translation[3], rotation[3], scale[3];
-					ImGuizmo::DecomposeMatrixToComponents(&entityMatrix.m[0][0], translation, rotation, scale);
+	//		ONEngine::Transform* transform = entity->GetTransform();
+	//		/// 操作対象の行列
+	//		ONEngine::Matrix4x4 entityMatrix = transform->matWorld;
 
-					ONEngine::Vector3 translationV = ONEngine::Vector3(translation[0], translation[1], translation[2]);
-					if (ONEngine::GameEntity* owner = transform->GetOwner()) {
-						if (ONEngine::GameEntity* parent = owner->GetParent()) {
-							translationV = ONEngine::Matrix4x4::Transform(translationV, parent->GetTransform()->GetMatWorld().Inverse());
-						}
-					}
-					transform->SetPosition(translationV);
+	//		/// カメラの取得
+	//		ONEngine::CameraComponent* camera = pEcs_->GetECSGroup("Debug")->GetMainCamera();
+	//		if (camera) {
+	//			ImGuizmo::Manipulate(
+	//				&camera->GetViewMatrix().m[0][0],
+	//				&camera->GetProjectionMatrix().m[0][0],
+	//				ImGuizmo::OPERATION(manipulateOperation_), // TRANSLATE, ROTATE, SCALE
+	//				ImGuizmo::MODE(manipulateMode_), // WORLD or LOCAL
+	//				&entityMatrix.m[0][0]
+	//			);
 
-					ONEngine::Vector3 eulerRotation = ONEngine::Vector3(rotation[0] * ONEngine::Math::Deg2Rad, rotation[1] * ONEngine::Math::Deg2Rad, rotation[2] * ONEngine::Math::Deg2Rad);
-					transform->SetRotate(eulerRotation);
-					transform->SetScale(ONEngine::Vector3(scale[0], scale[1], scale[2]));
+	//			if (ImGuizmo::IsUsing() && ImGuizmo::IsOver()) {
+	//				/// 行列をSRTに分解、エンティティに適応
+	//				float translation[3], rotation[3], scale[3];
+	//				ImGuizmo::DecomposeMatrixToComponents(&entityMatrix.m[0][0], translation, rotation, scale);
 
-					transform->Update();
-				}
+	//				ONEngine::Vector3 translationV = ONEngine::Vector3(translation[0], translation[1], translation[2]);
+	//				if (ONEngine::GameEntity* owner = transform->GetOwner()) {
+	//					if (ONEngine::GameEntity* parent = owner->GetParent()) {
+	//						translationV = ONEngine::Matrix4x4::Transform(translationV, parent->GetTransform()->GetMatWorld().Inverse());
+	//					}
+	//				}
+	//				transform->SetPosition(translationV);
 
-			}
-		}
+	//				ONEngine::Vector3 eulerRotation = ONEngine::Vector3(rotation[0] * ONEngine::Math::Deg2Rad, rotation[1] * ONEngine::Math::Deg2Rad, rotation[2] * ONEngine::Math::Deg2Rad);
+	//				transform->SetRotate(eulerRotation);
+	//				transform->SetScale(ONEngine::Vector3(scale[0], scale[1], scale[2]));
 
-	}
+	//				transform->Update();
+	//			}
+
+	//		}
+	//	}
+
+	//}
 
 
 	ImGui::End();

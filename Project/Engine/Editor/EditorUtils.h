@@ -4,6 +4,7 @@
 #include <imgui.h>
 
 /// editor
+#include "Engine/Editor/Math/Pivot/Pivot.h"
 #include "Engine/Editor/Math/Widget/VectorWidget.h"
 #include "Engine/Editor/Math/Widget/BasicTypeWidget.h"
 #include "Engine/Editor/Math/ImGuiMath.h"
