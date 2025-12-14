@@ -43,8 +43,8 @@ std::string Guid::ToString() const {
 
 	std::ostringstream oss;
 	oss << std::hex << std::setfill('0')
-		<< std::setw(kGuidStringLength) << high
-		<< std::setw(kGuidStringLength) << low;
+		<< std::setw(kGuidHexSegmentLength) << high
+		<< std::setw(kGuidHexSegmentLength) << low;
 	return oss.str();
 }
 

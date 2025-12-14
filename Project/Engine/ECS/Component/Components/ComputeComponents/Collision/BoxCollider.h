@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 /// engine
+#include "Engine/Core/Config/EngineConfig.h"
 #include "ICollider.h"
 #include "Engine/Core/Utility/Math/Vector3.h"
 
@@ -41,6 +42,10 @@ private:
 	/// =====================================================
 
 	Vector3 size_;
+
+#ifdef DEBUG_MODE 
+	bool dUnified_ = false;
+#endif 
 
 public:
 	/// =====================================================

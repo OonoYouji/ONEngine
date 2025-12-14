@@ -109,7 +109,7 @@ void Editor::IEditorWindowContainer::ShowImGui() {
 		return;
 	}
 
-	ImGuiID dockspaceID = ImGui::GetID(windowName_.c_str());
+	ImGuiID dockspaceID = ImGui::GetID((windowName_ + "DockSpace").c_str());
 	ImGui::DockSpace(dockspaceID, ImVec2(0.0f, 0.0f));
 
 	UpdateViews();

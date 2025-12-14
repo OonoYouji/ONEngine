@@ -40,10 +40,10 @@ void RenderingFramework::Initialize(DxManager* _dxm, WindowManager* _windowManag
 	renderTextures_.resize(kRenderTexCount);
 
 	const Vector4 clearColor = Vector4(0.1f, 0.25f, 0.5f, 1.0f);
-	for (size_t i = 0; i < kRenderTexCount; i++) {
+	for(size_t i = 0; i < kRenderTexCount; i++) {
 		renderTextures_[i] = std::make_unique<SceneRenderTexture>();
 		renderTextures_[i]->Initialize(
-			"./Assets/Scene/RenderTexture/" + renderTexNames[i], 
+			"./Assets/Scene/RenderTexture/" + renderTexNames[i],
 			clearColor, EngineConfig::kWindowSize,
 			pDxManager_, assetCollection_.get()
 		);
@@ -76,16 +76,16 @@ void RenderingFramework::Draw() {
 	pImGuiManager_->GetDebugGameWindow()->PreDraw();
 
 	/// 選択しているWindow次第で描画を切り替え
-	switch (DebugConfig::selectedMode_) {
-	case DebugConfig::SELECTED_MODE_EDITOR:
+	switch(DebugConfig::selectedMode_) {
+	case static_cast<int>(DebugConfig::SelectedTab::Prefab):
 		/// Prefabモード時の描画
 		DrawPrefab();
 		break;
-	case DebugConfig::SELECTED_MODE_GAME:
+	case static_cast<int>(DebugConfig::SelectedTab::Develop):
 		DrawShadowMap();
-		
+
 		/// GameSceneを表示するのか
-		if (DebugConfig::isShowGameScene) {
+		if(DebugConfig::isShowGameScene) {
 			DrawScene();
 		}
 
@@ -130,7 +130,7 @@ void RenderingFramework::PreDraw(ECSGroup* _ecsGroup) {
 
 void RenderingFramework::DrawScene() {
 	CameraComponent* camera = pEntityComponentSystem_->GetCurrentGroup()->GetMainCamera();
-	if (!camera) {
+	if(!camera) {
 		Console::Log("[error] RenderingFramework::DrawScene: Main Camera is null");
 		return;
 	}
@@ -175,21 +175,21 @@ void RenderingFramework::DrawShadowMap() {
 
 	/// ShadowCaster ComponentArrayの取得&確認
 	ComponentArray<ShadowCaster>* shadowCasterArray = currentGroup->GetComponentArray<ShadowCaster>();
-	if (!shadowCasterArray || shadowCasterArray->GetUsedComponents().empty()) {
+	if(!shadowCasterArray || shadowCasterArray->GetUsedComponents().empty()) {
 		Console::LogError("RenderingFramework::DrawShadowMap: ShadowCaster ComponentArray is null");
 		return;
 	}
 
 	/// ShadowCasterの取得&確認
 	ShadowCaster* shadowCaster = shadowCasterArray->GetUsedComponents().front();
-	if (!shadowCaster) {
+	if(!shadowCaster) {
 		Console::LogError("RenderingFramework::DrawShadowMap: ShadowCaster is null");
 		return;
 	}
 
 	/// 投影用のカメラの取得&確認
 	CameraComponent* shadowCamera = shadowCaster->GetShadowCasterCamera();
-	if (!shadowCamera) {
+	if(!shadowCamera) {
 		Console::LogError("RenderingFramework::DrawShadowMap: ShadowCaster Camera is null");
 		return;
 	}

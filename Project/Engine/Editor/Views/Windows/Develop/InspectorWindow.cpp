@@ -351,6 +351,9 @@ void InspectorWindow::TextureAssetInspector(Texture* _texture) {
 	const Vector2& textureSize = _texture->GetTextureSize();
 	ImVec2 displaySize = ImMathf::CalculateAspectFitSize(textureSize, availSize);
 
+	/// Guidの表示
+	ImGuiInputTextReadOnly("Texture Guid", _texture->guid.ToString());
+
 	/// 枠を表示
 	ImGui::BeginChild("TextureFrame", displaySize, true, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 	ImGui::Image((ImTextureID)(uintptr_t)_texture->GetSRVGPUHandle().ptr, displaySize);

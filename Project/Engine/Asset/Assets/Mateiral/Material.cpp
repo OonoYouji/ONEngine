@@ -67,7 +67,7 @@ void ONEngine::from_json(const nlohmann::json& _j, Material& _material) {
 	_j.at("baseColor").get<ONEngine::Vector4>();
 
 	_material.guid = _j.value("guid", Guid{});
-	_material.baseColor = _j.value("baseColor", Vector4::White);
+	_material.baseColor = _j.value("baseColor", Vector4::Red);
 	_material.postEffectFlags = _j.value("postEffectFlags", 1u);
 	Guid baseTextureGuid = _j.value("baseTextureGuid", Guid::kInvalid);
 	if (baseTextureGuid.CheckValid()) {

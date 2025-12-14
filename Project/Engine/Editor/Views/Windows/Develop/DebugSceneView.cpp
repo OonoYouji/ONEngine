@@ -212,15 +212,21 @@ void DebugSceneView::ShowImGui() {
 void DebugSceneView::SetGamePlay(bool _isGamePlay) {
 	ONEngine::DebugConfig::isDebugging = _isGamePlay;
 
-	/// 共通の処理（ゲーム開始、停止時に行う処理）
-	pSceneManager_->ReloadScene(true);
-	ImGuiSelection::SetSelectedObject(ONEngine::Guid::kInvalid, SelectionType::None);
-
 	/// ゲームの開始処理
 	if (ONEngine::DebugConfig::isDebugging) {
 		pSceneManager_->SaveCurrentSceneTemporary();
+
+		pSceneManager_->ReloadScene(true);
+		ImGuiSelection::SetSelectedObject(ONEngine::Guid::kInvalid, SelectionType::None);
+
 		/// Monoスクリプトエンジンのホットリロードでスクリプトの初期化を行う
 		ONEngine::MonoScriptEngine::GetInstance().HotReload();
-	}
-}
+	} else {
 
+		/// 共通の処理（ゲーム開始、停止時に行う処理）
+		pSceneManager_->ReloadScene(true);
+		ImGuiSelection::SetSelectedObject(ONEngine::Guid::kInvalid, SelectionType::None);
+
+	}
+
+}

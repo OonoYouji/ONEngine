@@ -116,7 +116,7 @@ void ProjectWindow::ShowImGui() {
 	/// ---------------------------------------------------
 	/// テーブルレイアウトの開始
 	/// ---------------------------------------------------
-	if (ImGui::BeginTable("ProjectTable", 2, ImGuiTableFlags_Resizable)) {
+	if (ImGui::BeginTable("ProjectTable##ProjectWindow", 2, ImGuiTableFlags_Resizable)) {
 		ImGui::TableSetupColumn("Tree", ImGuiTableColumnFlags_WidthFixed, 250.0f);
 		ImGui::TableSetupColumn("View", ImGuiTableColumnFlags_WidthStretch);
 
@@ -200,28 +200,28 @@ void ProjectWindow::DrawFileView(const std::filesystem::path& dir) {
 	/// 1. 固定ヘッダー部分 (スクロールしない)
 	/// ========================================================================
 
-	// --- 現在のルート判定処理 (変更なし) ---
+	// --- 現在のルート判定処理 ---
 	const std::filesystem::path* pCurrentRoot = nullptr;
 	std::filesystem::path relativePathFromRoot;
-	for(const auto& root : rootPaths_) {
+	for (const auto& root : rootPaths_) {
 		try {
 			std::filesystem::path rel = std::filesystem::relative(dir, root);
-			if(!rel.empty() && rel.string().find("..") == std::string::npos) {
+			if (!rel.empty() && rel.string().find("..") == std::string::npos) {
 				pCurrentRoot = &root;
 				relativePathFromRoot = rel;
 				break;
 			}
-		} catch(...) { continue; }
+		} catch (...) { continue; }
 	}
 
-	if(!pCurrentRoot) {
+	if (!pCurrentRoot) {
 		ImGui::Text("Path: %s", dir.string().c_str());
 	} else {
 		// --- 戻るボタン ---
 		bool isRoot = std::filesystem::equivalent(dir, *pCurrentRoot);
-		if(!isRoot) {
-			if(ImGui::ArrowButton("##Back", ImGuiDir_Left)) {
-				if(dir.has_parent_path()) {
+		if (!isRoot) {
+			if (ImGui::ArrowButton("##Back", ImGuiDir_Left)) {
+				if (dir.has_parent_path()) {
 					currentPath_ = dir.parent_path();
 				}
 			}
@@ -237,18 +237,18 @@ void ProjectWindow::DrawFileView(const std::filesystem::path& dir) {
 		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.4f, 0.4f, 0.4f, 0.5f));
 
 		std::string rootName = pCurrentRoot->filename().string();
-		if(ImGui::Button(rootName.c_str())) {
+		if (ImGui::Button(rootName.c_str())) {
 			currentPath_ = *pCurrentRoot;
 		}
 
-		if(!isRoot && relativePathFromRoot != ".") {
+		if (!isRoot && relativePathFromRoot != ".") {
 			std::filesystem::path accumulatePath = *pCurrentRoot;
-			for(const auto& part : relativePathFromRoot) {
+			for (const auto& part : relativePathFromRoot) {
 				ImGui::SameLine();
 				ImGui::Text("/");
 				ImGui::SameLine();
 				accumulatePath /= part;
-				if(ImGui::Button(part.string().c_str())) {
+				if (ImGui::Button(part.string().c_str())) {
 					currentPath_ = accumulatePath;
 				}
 			}
@@ -259,25 +259,30 @@ void ProjectWindow::DrawFileView(const std::filesystem::path& dir) {
 	// ヘッダーとファイルリストの境界線
 	ImGui::Separator();
 
-	// ★ ここが重要：
-	// ヘッダーの下に少し余白を入れてから、残りの領域すべてを使ってスクロールエリアを作る
-	// ImVec2(0,0) を指定すると、「残りのスペース全て」を使う Child になります。
-	if(ImGui::BeginChild("FileScrollingRegion", ImVec2(0, 0), false)) {
+	/// ========================================================================
+	/// 2. ファイルリスト部分 (ここだけスクロールする)
+	/// ========================================================================
 
-		/// ========================================================================
-		/// 2. ファイルリスト部分 (ここだけスクロールする)
-		/// ========================================================================
+	bool isChildVisible = ImGui::BeginChild("FileScrollingRegion", ImVec2(0, 0), false);
 
+	// ディレクトリ移動リクエスト管理用
+	bool requestChangeDir = false;
+	std::filesystem::path nextTargetDir;
+
+	if (isChildVisible) {
 		ImGui::Spacing();
 
 		auto it = fileCache_.find(dir.string());
-		if(it != fileCache_.end()) {
+		if (it != fileCache_.end()) {
 
 			float iconSize = 64.0f;
-			int columnCount = (std::max)(1, (int)(ImGui::GetContentRegionAvail().x / (iconSize + 16.0f)));
+			float availX = ImGui::GetContentRegionAvail().x;
+			// カラム幅計算: アイコンサイズ + パディング分 + 列間の隙間 を考慮
+			int columnCount = (std::max)(1, (int)(availX / (iconSize + 20.0f)));
+
 			ImGui::Columns(columnCount, nullptr, false);
 
-			for(const auto& file : it->second) {
+			for (const auto& file : it->second) {
 				const std::filesystem::path& filePath = file.path;
 				const std::string name = filePath.filename().string();
 
@@ -290,29 +295,37 @@ void ProjectWindow::DrawFileView(const std::filesystem::path& dir) {
 
 				// .meta 除外
 				const std::string extension = filePath.extension().string();
-				if(extension == ".meta") {
+				if (extension == ".meta") {
 					continue;
 				}
 
 				ImGui::PushID(name.c_str());
 				ImGui::BeginGroup();
 
-				// --- アイコン表示 ---
-				if(file.isDirectory) {
+				// ============================================================
+				// アイコンの描画
+				// ============================================================
+
+				// ★修正点: パディングを (4, 4) に設定
+				// これにより、ボタンの背景矩形に対して画像が上下左右に4pxずつ内側に入ります
+				// (合計サイズは 64 + 4*2 = 72px になります)
+				ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4.0f, 4.0f));
+
+				if (file.isDirectory) {
 					ONEngine::Texture* texture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/FileIcons/FolderIcon.png");
 					ImGui::ImageButton("##Folder", (ImTextureID)(uintptr_t)texture->GetSRVGPUHandle().ptr, { iconSize, iconSize });
 				} else {
 					ONEngine::Texture* texture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/FileIcons/FileIcon.png");
 					ONEngine::AssetType type = ONEngine::GetAssetTypeFromExtension(extension);
-					switch(type) {
+					switch (type) {
 					case ONEngine::AssetType::Texture:
-						if(extension != ".dds") texture = pAssetCollection_->GetTexture(key);
+						if (extension != ".dds") texture = pAssetCollection_->GetTexture(key);
 						break;
 					case ONEngine::AssetType::Audio:
 						texture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/FileIcons/mp3Icon.png");
 						break;
 					}
-					if(!texture) texture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/FileIcons/FileIcon.png");
+					if (!texture) texture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/FileIcons/FileIcon.png");
 
 					ImGui::ImageButton(
 						"##File",
@@ -321,17 +334,19 @@ void ProjectWindow::DrawFileView(const std::filesystem::path& dir) {
 					);
 				}
 
+				ImGui::PopStyleVar(); // スタイルを戻す
+
 				// --- ドラッグ & ドロップ ---
-				if(ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
+				if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
 					static AssetPayload payload;
 					payload.filePath = key;
 					payload.guid = pAssetCollection_->GetAssetGuidFromPath(payload.filePath);
 
 					// プレビュー表示
 					ONEngine::AssetType type = pAssetCollection_->GetAssetTypeFromGuid(payload.guid);
-					if(type == ONEngine::AssetType::Texture) {
+					if (type == ONEngine::AssetType::Texture) {
 						ONEngine::Texture* tex = pAssetCollection_->GetTexture(payload.filePath);
-						if(tex) {
+						if (tex) {
 							ONEngine::Vector2 aspectRatio = tex->GetTextureSize();
 							aspectRatio /= (std::max)(aspectRatio.x, aspectRatio.y);
 							ImTextureID texId = reinterpret_cast<ImTextureID>(tex->GetSRVGPUHandle().ptr);
@@ -344,16 +359,10 @@ void ProjectWindow::DrawFileView(const std::filesystem::path& dir) {
 				}
 
 				// --- ダブルクリック処理 ---
-				if(ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
-					if(file.isDirectory) {
-						currentPath_ = filePath;
-						// Child, Group, ID, Columnのスタック整合性を保ってreturn
-						ImGui::EndGroup();
-						ImGui::PopID();
-						ImGui::NextColumn(); // 次のカラムへ
-						ImGui::Columns(1);   // カラムリセット
-						ImGui::EndChild();   // Child終了
-						return;
+				if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
+					if (file.isDirectory) {
+						requestChangeDir = true;
+						nextTargetDir = filePath;
 					} else {
 						const ONEngine::Guid& guid = pAssetCollection_->GetAssetGuidFromPath(key);
 						ImGuiSelection::SetSelectedObject(guid, SelectionType::Asset);
@@ -361,21 +370,32 @@ void ProjectWindow::DrawFileView(const std::filesystem::path& dir) {
 				}
 
 				// --- 右クリック ---
-				if(ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
+				if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
 					ImGui::OpenPopup("FileContextMenu");
 				}
 				PopupContextMenu(filePath);
 
+				// ============================================================
+				// テキストの描画
+				// ============================================================
 				ImGui::TextWrapped("%s", name.c_str());
+
 				ImGui::EndGroup();
-				ImGui::NextColumn();
 				ImGui::PopID();
+				ImGui::NextColumn();
+
+				if (requestChangeDir) {
+					break;
+				}
 			}
 			ImGui::Columns(1);
 		}
+	}
 
-		// Childウィンドウの終了
-		ImGui::EndChild();
+	ImGui::EndChild();
+
+	if (requestChangeDir) {
+		currentPath_ = nextTargetDir;
 	}
 }
 

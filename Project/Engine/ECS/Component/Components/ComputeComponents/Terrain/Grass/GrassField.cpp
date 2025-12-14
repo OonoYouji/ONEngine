@@ -34,6 +34,7 @@ void ONEngine::from_json(const nlohmann::json& _j, GrassField& _p) {
 	/// Json -> GrassField
 	_p.maxGrassCount_ = _j.value("maxGrassCount", 128);
 	_p.distributionTexturePath_ = _j.value("distributionTexturePath", "");
+
 	_p.material_ = _j.value("material", Material{});
 }
 
@@ -135,13 +136,13 @@ void GrassField::SetupRenderingData(AssetCollection* _assetCollection) {
 
 void GrassField::StartIndexMapping(UINT _oneDrawInstanceCount) {
 	//
-	
+
 	UINT forLoopCount = (maxGrassCount_ + _oneDrawInstanceCount - 1) / _oneDrawInstanceCount;
-	for(UINT i = 0; i < forLoopCount; i++) {
+	for (UINT i = 0; i < forLoopCount; i++) {
 		uint32_t mappedData = i * _oneDrawInstanceCount;
 		startIndexBuffer_.SetMappedData(i, mappedData);
 	}
-	
+
 }
 
 void GrassField::AppendBufferReadCounter(DxManager* _dxm, DxCommand* _dxCommand) {

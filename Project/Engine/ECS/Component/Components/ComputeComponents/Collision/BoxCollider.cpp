@@ -6,7 +6,7 @@
 #include <imgui.h>
 
 /// engine
-#include "Engine/Editor/Commands/ImGuiCommand/ImGuiCommand.h"
+#include "Engine/Editor/EditorUtils.h"
 
 using namespace ONEngine;
 
@@ -30,7 +30,7 @@ void ComponentDebug::BoxColliderDebug(BoxCollider* _bc) {
 
 	/// box parameter
 	ImGui::SeparatorText("box parameter");
-	Editor::ImMathf::DragFloat3("size", &_bc->size_, 0.1f, 0.0f, 100.0f);
+	Editor::DrawVec3Control("size", _bc->size_, 0.1f, 0.0f, 1024.0f, 100.0f, &_bc->dUnified_);
 
 }
 

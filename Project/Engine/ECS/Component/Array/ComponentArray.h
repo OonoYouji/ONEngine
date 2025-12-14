@@ -82,7 +82,7 @@ private:
 template<typename Comp> requires std::is_base_of_v<IComponent, Comp>
 inline ComponentArray<Comp>::ComponentArray() {
 	/// n個のコンポーネントを格納できるように予約
-	const size_t initialCapacity = 256;
+	const size_t initialCapacity = 1024;
 	components_.reserve(initialCapacity);
 }
 
