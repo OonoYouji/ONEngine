@@ -156,7 +156,7 @@ EDITOR_STATE CreateNewEntityClassCommand::CreateNewClassFile(const std::string& 
 	inputFile.close();
 
 	// 置き換える
-	ONEngine::Mathf::ReplaceAll(&content, sourceClassName_, pEntity_->GetName());
+	ONEngine::FileSystem::ReplaceAll(&content, sourceClassName_, pEntity_->GetName());
 
 	// 新しいファイルに書き込む
 	std::ofstream outputFile(_outputFileName + "/" + _newClassName);

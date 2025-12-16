@@ -88,7 +88,7 @@ void TerrainCollision::RuntimeUpdate(ECSGroup* _ecs) {
 						{	/// Gizmoで値の確認
 							Vector3 gradient = terrainCollider->GetGradient(sphere->GetPosition());
 							const float maxSlope = 3.0f;
-							float intensity = gradient.Len();
+							float intensity = gradient.Length();
 							Color color = Vector4::Lerp(Color::kBlue, Color::kRed, std::clamp(intensity / maxSlope, 0.0f, 1.0f));
 							Gizmo::DrawRay(spherePos, -gradient.Normalize() * 12.0f, Color::kRed);
 						}
@@ -101,7 +101,7 @@ void TerrainCollision::RuntimeUpdate(ECSGroup* _ecs) {
 						float dot = Vector3::Dot(velocity.Normalize(), gradient.Normalize());
 
 						float slopeAngle = GetSlopeAngle(terrainCollider, spherePos);
-						float maxClimbAngle = terrainCollider->GetMaxSlopeAngle() * Mathf::Deg2Rad;
+						float maxClimbAngle = terrainCollider->GetMaxSlopeAngle() * Math::Deg2Rad;
 
 						/// 傾斜が急すぎる場合は押し上げない
 						if (dot < 0.0f && slopeAngle > maxClimbAngle) {

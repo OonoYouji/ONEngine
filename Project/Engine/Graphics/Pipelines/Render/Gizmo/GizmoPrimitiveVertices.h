@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// std
 #include <vector>
@@ -38,6 +38,6 @@ std::vector<GizmoPrimitive::VertexData> GetCubeVertices(const Vector3& _center, 
 /// @param _color 色
 /// @param _rectSize 矩形の大きさ
 /// @return 矩形の頂点データ
-std::vector<GizmoPrimitive::VertexData> GetRectVertices(const Matrix4x4& _matWorld, const Vector4& _color, const Vector2& _rectSize = Vector2::kOne);
+std::vector<GizmoPrimitive::VertexData> GetRectVertices(const Matrix4x4& _matWorld, const Vector4& _color, const Vector2& _rectSize = Vector2::One);
 
 } /// ONEngine

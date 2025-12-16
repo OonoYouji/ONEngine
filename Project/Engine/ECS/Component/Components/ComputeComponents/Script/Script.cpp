@@ -171,7 +171,7 @@ bool Script::GetIsAdded() const {
 	return isAdded_;
 }
 
-void COMP_DEBUG::ScriptDebug(Script* _script) {
+void ComponentDebug::ScriptDebug(Script* _script) {
 	if (!_script) {
 		return;
 	}

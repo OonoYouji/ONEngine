@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "Engine/Core/Utility/Math/Vector2.h"
 
@@ -28,12 +28,19 @@ extern bool isDebugging;
 extern bool isShowDebugScene;
 extern bool isShowGameScene;
 
-enum SELECTED_MODE {
-	SELECTED_MODE_FILE,
-	SELECTED_MODE_GAME,
-	SELECTED_MODE_EDITOR,
-};
+//enum SELECTED_MODE {
+//	SELECTED_MODE_De,
+//	SELECTED_MODE_GAME,
+//	SELECTED_MODE_EDITOR,
+//};
 extern int selectedMode_; ///< 選択中のデバッグウィンドウ
+
+enum class SelectedTab {
+	Develop,
+	Game,
+	Prefab,
+	Editor,
+};
 
 }
 

@@ -20,8 +20,8 @@ Effect::Effect() {
 	SetMaxEffectCount(1000); // 初期の最大エフェクト数を設定
 
 	SetStartColor(Color::kWhite, Color::kWhite);
-	SetStartSize(Vector3::kOne, Vector3::kOne);
-	SetStartRotate(Vector3::kZero, Vector3::kZero);
+	SetStartSize(Vector3::One, Vector3::One);
+	SetStartRotate(Vector3::Zero, Vector3::Zero);
 	SetStartSpeed(1.0f, 1.0f);
 
 }
@@ -29,20 +29,20 @@ Effect::Effect() {
 void Effect::CreateElement(const Vector3& _position, const Color& _color) {
 	Element element;
 	element.transform.position = _position;
-	element.transform.scale = Vector3::kOne;
+	element.transform.scale = Vector3::One;
 	element.transform.rotate = Quaternion::kIdentity;
 	element.transform.Update();
 
 	element.color = _color;
 	element.lifeTime = mainModule_.lifeLeftTime_;
-	element.velocity = Vector3::kZero;
+	element.velocity = Vector3::Zero;
 	elements_.push_back(element);
 }
 
 void Effect::CreateElement(const Vector3& _position, const Vector3& _velocity, const Color& _color) {
 	Element element;
 	element.transform.position = _position;
-	element.transform.scale = Vector3::kOne;
+	element.transform.scale = Vector3::One;
 	element.transform.rotate = Quaternion::kIdentity;
 	element.transform.Update();
 
@@ -236,7 +236,7 @@ size_t Effect::GetEmitInstanceCount() const {
 	return emitInstanceCount_;
 }
 
-void COMP_DEBUG::EffectDebug(Effect* _effect) {
+void ComponentDebug::EffectDebug(Effect* _effect) {
 	if (!_effect) {
 		return;
 	}
@@ -366,7 +366,7 @@ void COMP_DEBUG::EffectDebug(Effect* _effect) {
 			switch (emitShape->GetType()) {
 			case EffectEmitShape::ShapeType::Sphere:
 			{
-				EffectEmitShape::Sphere sphere = emitShape->GetSphere();
+				Sphere sphere = emitShape->GetSphere();
 				ImGui::DragFloat3("center", &sphere.center.x, 0.1f);
 				ImGui::DragFloat("radius", &sphere.radius, 0.1f, 0.0f, FLT_MAX);
 				emitShape->SetSphere(sphere);
@@ -374,7 +374,7 @@ void COMP_DEBUG::EffectDebug(Effect* _effect) {
 			}
 			case EffectEmitShape::ShapeType::Cube:
 			{
-				EffectEmitShape::Cube cube = emitShape->GetCube();
+				Cube cube = emitShape->GetCube();
 				ImGui::DragFloat3("center", &cube.center.x, 0.1f);
 				ImGui::DragFloat3("size", &cube.size.x, 0.1f, 0.0f, FLT_MAX);
 				emitShape->SetCube(cube);
@@ -382,7 +382,7 @@ void COMP_DEBUG::EffectDebug(Effect* _effect) {
 			}
 			case EffectEmitShape::ShapeType::Cone:
 			{
-				EffectEmitShape::Cone cone = emitShape->GetCone();
+				Cone cone = emitShape->GetCone();
 				ImGui::DragFloat3("apex", &cone.center.x, 0.1f);
 				ImGui::DragFloat("angle", &cone.angle, 0.1f, 0.0f, 180.0f);
 				ImGui::DragFloat("radius", &cone.radius, 0.1f, 0.0f, FLT_MAX);

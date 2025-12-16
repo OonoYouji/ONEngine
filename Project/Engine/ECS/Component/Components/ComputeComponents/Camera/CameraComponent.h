@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// externals
 #include <nlohmann/json.hpp>
@@ -22,7 +22,7 @@ enum class CameraType {
 
 
 /// @brief Componentのデバッグ関数
-namespace COMP_DEBUG {
+namespace ComponentDebug {
 void CameraDebug(CameraComponent* _camera);
 }
 
@@ -39,7 +39,7 @@ class CameraComponent : public IComponent {
 	friend class CameraUpdateSystem;
 
 	/// ----- friend function ----- ///
-	friend void COMP_DEBUG::CameraDebug(CameraComponent* _camera);
+	friend void ComponentDebug::CameraDebug(CameraComponent* _camera);
 	friend void from_json(const nlohmann::json& _j, CameraComponent& _c);
 	friend void to_json(nlohmann::json& _j, const CameraComponent& _c);
 public:

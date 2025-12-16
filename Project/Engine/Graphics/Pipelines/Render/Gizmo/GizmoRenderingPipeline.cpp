@@ -1,4 +1,4 @@
-#include "GizmoRenderingPipeline.h"
+﻿#include "GizmoRenderingPipeline.h"
 
 using namespace ONEngine;
 
@@ -100,8 +100,8 @@ void GizmoRenderingPipeline::Draw(class ECSGroup* /*_ecsGroup*/, [[maybe_unused]
 	/// lineのデータを頂点データに積む
 	for (auto& data : lineData) {
 		VertexData v0, v1;
-		v0.position = Vector4(data.startPosition, 1.0f);
-		v1.position = Vector4(data.endPosition, 1.0f);
+		v0.position = Vector4(Math::ConvertToVector4(data.startPosition, 1.0f));
+		v1.position = Vector4(Math::ConvertToVector4(data.endPosition, 1.0f));
 		v0.color = data.color;
 		v1.color = data.color;
 		vertices_.push_back(v0);

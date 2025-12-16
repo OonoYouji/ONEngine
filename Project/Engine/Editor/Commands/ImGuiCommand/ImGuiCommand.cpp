@@ -21,7 +21,7 @@ bool ImMathf::DragInt(const std::string& _label, int* _pv, int _step, int _min, 
 	/// 操作を終えた
 	if (ImGui::IsItemDeactivatedAfterEdit()) {
 		int endValue = *_pv;
-		EditCommand::Execute<ImGuiCommand::ModifyValueCommand<int>>(_pv, startValue, endValue);
+		EditCommand::Execute<ModifyValueCommand<int>>(_pv, startValue, endValue);
 	}
 
 	return edit;
@@ -39,7 +39,7 @@ bool ImMathf::DragInt2(const std::string& _label, ONEngine::Vector2Int* _pv, int
 	/// 操作を終えた
 	if (ImGui::IsItemDeactivatedAfterEdit()) {
 		ONEngine::Vector2Int endValue = *_pv;
-		EditCommand::Execute<ImGuiCommand::ModifyValueCommand<ONEngine::Vector2Int>>(_pv, startValue, endValue);
+		EditCommand::Execute<ModifyValueCommand<ONEngine::Vector2Int>>(_pv, startValue, endValue);
 	}
 
 	return edit;
@@ -57,7 +57,7 @@ bool ImMathf::DragInt3(const std::string& _label, ONEngine::Vector3Int* _pv, int
 	/// 操作を終えた
 	if (ImGui::IsItemDeactivatedAfterEdit()) {
 		ONEngine::Vector3Int endValue = *_pv;
-		EditCommand::Execute<ImGuiCommand::ModifyValueCommand<ONEngine::Vector3Int>>(_pv, startValue, endValue);
+		EditCommand::Execute<ModifyValueCommand<ONEngine::Vector3Int>>(_pv, startValue, endValue);
 	}
 
 	return edit;
@@ -75,7 +75,7 @@ bool ImMathf::DragFloat(const std::string& _label, float* _pv, float _step, floa
 	/// 操作を終えた
 	if (ImGui::IsItemDeactivatedAfterEdit()) {
 		float endValue = *_pv;
-		EditCommand::Execute<ImGuiCommand::ModifyValueCommand<float>>(_pv, startValue, endValue);
+		EditCommand::Execute<ModifyValueCommand<float>>(_pv, startValue, endValue);
 	}
 
 	return edit;
@@ -93,7 +93,7 @@ bool ImMathf::DragFloat2(const std::string& _label, ONEngine::Vector2* _pv, floa
 	/// 操作を終えた
 	if (ImGui::IsItemDeactivatedAfterEdit()) {
 		ONEngine::Vector2 endValue = *_pv;
-		EditCommand::Execute<ImGuiCommand::ModifyValueCommand<ONEngine::Vector2>>(_pv, startValue, endValue);
+		EditCommand::Execute<ModifyValueCommand<ONEngine::Vector2>>(_pv, startValue, endValue);
 	}
 
 	return edit;
@@ -113,7 +113,7 @@ bool ImMathf::DragFloat3(const std::string& _label, ONEngine::Vector3* _pv, floa
 	/// 操作を終えた
 	if (ImGui::IsItemDeactivatedAfterEdit()) {
 		ONEngine::Vector3 endValue = *_pv;
-		EditCommand::Execute<ImGuiCommand::ModifyValueCommand<ONEngine::Vector3>>(_pv, startValue, endValue);
+		EditCommand::Execute<ModifyValueCommand<ONEngine::Vector3>>(_pv, startValue, endValue);
 	}
 
 	return edit;
@@ -132,7 +132,7 @@ bool ImMathf::DragFloat4(const std::string& _label, ONEngine::Vector4* _pv, floa
 	/// 操作を終えた
 	if (ImGui::IsItemDeactivatedAfterEdit()) {
 		ONEngine::Vector4 endValue = *_pv;
-		EditCommand::Execute<ImGuiCommand::ModifyValueCommand<ONEngine::Vector4>>(_pv, startValue, endValue);
+		EditCommand::Execute<ModifyValueCommand<ONEngine::Vector4>>(_pv, startValue, endValue);
 	}
 
 	return edit;
@@ -156,7 +156,7 @@ bool ImMathf::DragQuaternion(const std::string& _label, ONEngine::Quaternion* _p
 	/// 操作を終えた
 	if (ImGui::IsItemDeactivatedAfterEdit()) {
 		ONEngine::Quaternion endValue = *_pq;
-		EditCommand::Execute<ImGuiCommand::ModifyValueCommand<ONEngine::Quaternion>>(_pq, startValue, endValue);
+		EditCommand::Execute<ModifyValueCommand<ONEngine::Quaternion>>(_pq, startValue, endValue);
 	}
 
 	return false;
@@ -170,7 +170,7 @@ bool ImMathf::Checkbox(const std::string& _label, bool* _pv) {
 	bool edit = ImGui::Checkbox(_label.c_str(), _pv);
 	if (edit) {
 		bool endValue = *_pv;
-		EditCommand::Execute<ImGuiCommand::ModifyValueCommand<bool>>(_pv, startValue, endValue);
+		EditCommand::Execute<ModifyValueCommand<bool>>(_pv, startValue, endValue);
 	}
 
 

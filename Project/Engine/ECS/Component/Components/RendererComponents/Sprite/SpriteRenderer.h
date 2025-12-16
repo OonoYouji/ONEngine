@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// std
 #include <string>
@@ -19,7 +19,7 @@ namespace ONEngine {
 class AssetCollection;
 class SpriteRenderer;
 
-namespace COMP_DEBUG {
+namespace ComponentDebug {
 void SpriteDebug(SpriteRenderer* _sr, AssetCollection* _assetCollection);
 }
 
@@ -33,7 +33,7 @@ void from_json(const nlohmann::json& _j, SpriteRenderer& _sr);
 class SpriteRenderer final : public IComponent {
 	friend class SpriteUpdateSystem;
 
-	friend void COMP_DEBUG::SpriteDebug(SpriteRenderer* _sr, AssetCollection* _assetCollection);
+	friend void ComponentDebug::SpriteDebug(SpriteRenderer* _sr, AssetCollection* _assetCollection);
 	friend void to_json(nlohmann::json& _j, const SpriteRenderer& _sr);
 	friend void from_json(const nlohmann::json& _j, SpriteRenderer& _sr);
 public:
@@ -75,7 +75,7 @@ public:
 /// csで使用するための関数群
 /// ===================================================
 
-namespace InternalSpriteMethods {
+namespace MonoInternalMethods {
 	/// ここでコメントアウトしているのは今後実装する
 	//MonoString* InternalGetTexturePath(uint64_t _nativeHandle);
 	//void InternalSetTexturePath(uint64_t _nativeHandle, MonoString* _path);

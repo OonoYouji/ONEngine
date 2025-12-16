@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// externals
 #include <mono/jit/jit.h>
@@ -17,7 +17,7 @@ namespace ONEngine {
 class MeshRenderer;
 class AssetCollection;
 
-namespace COMP_DEBUG {
+namespace ComponentDebug {
 /// @brief MeshRendererのデバッグ表示
 void MeshRendererDebug(MeshRenderer* _mr, AssetCollection* _assetCollection);
 }
@@ -32,7 +32,7 @@ void to_json(nlohmann::json& _j, const MeshRenderer& _mr);
 /// ///////////////////////////////////////////////////
 class MeshRenderer : public IRenderComponent {
 	/// friend methods
-	friend void COMP_DEBUG::MeshRendererDebug(MeshRenderer* _mr, AssetCollection* _assetCollection);
+	friend void ComponentDebug::MeshRendererDebug(MeshRenderer* _mr, AssetCollection* _assetCollection);
 	friend void from_json(const nlohmann::json& _j, MeshRenderer& _mr);
 	friend void to_json(nlohmann::json& _j, const MeshRenderer& _mr);
 

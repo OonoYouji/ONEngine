@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// std
 #include <vector>
@@ -9,7 +9,6 @@
 #include "Engine/Asset/Assets/Texture/Texture.h"
 #include "Engine/Asset/Assets/Mateiral/Material.h"
 #include "Engine/Core/Utility/Utility.h"
-#include "Engine/Core/Utility/Math/Vector3Int.h"
 #include "Engine/Graphics/Buffer/ConstantBuffer.h"
 #include "Engine/Graphics/Buffer/StructuredBuffer.h"
 #include "Engine/Graphics/Buffer/Data/GPUMaterial.h"
@@ -57,8 +56,8 @@ struct Chunk {
 class VoxelTerrain;
 class DxManager;
 
-namespace COMP_DEBUG {
-void VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _dxManager);
+namespace ComponentDebug {
+void VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _dxm);
 }
 
 void from_json(const nlohmann::json& _j, std::vector<Chunk>& _chunk);
@@ -111,7 +110,7 @@ struct EditInfo {
 /// ///////////////////////////////////////////////////
 class VoxelTerrain : public IComponent {
 	/// --------------- friend function --------------- ///
-	friend void COMP_DEBUG::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _dxManager);
+	friend void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _dxm);
 	friend void from_json(const nlohmann::json& _j, VoxelTerrain& _voxelTerrain);
 	friend void to_json(nlohmann::json& _j, const VoxelTerrain& _voxelTerrain);
 
@@ -173,7 +172,7 @@ public:
 	/// @param _rootParamIndices 設定するルートパラメータのインデックス配列 (0:InputInfo, 1:TerrainInfo, 2:EditInfo, 3:Chunks)
 	/// @param _inputInfo InputInfo構造体
 	/// @param _editInfo EditInfo構造体
-	void SetupEditorBuffers(ID3D12GraphicsCommandList* _cmdList, const std::array<UINT, 4> _rootParamIndices, class AssetCollection* _assetCollection, const GPUData::InputInfo& _inputInfo, const GPUData::EditInfo& _editInfo);
+	void SetupEditorBuffers(ID3D12GraphicsCommandList* _cmdList, const std::array<UINT, 4> _rootParamIndices, class AssetCollection* _assetCollection, const GPUData::InputInfo& _inputInfo);
 
 	/// @brief チャンク用のTexture3D UAVを作成する
 	/// @param _dxDevice DxDeviceのポインタ

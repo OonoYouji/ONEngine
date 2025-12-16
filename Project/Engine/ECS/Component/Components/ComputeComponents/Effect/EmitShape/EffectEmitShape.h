@@ -21,27 +21,6 @@ public:
 		Cone,
 	};
 
-	/// @brief 形状1: 球
-	struct Sphere {
-		Vector3 center;
-		float radius;
-	};
-
-	/// @brief 形状2: 立方体
-	struct Cube {
-		Vector3 center;
-		Vector3 size;
-	};
-
-	/// @brief 形状3: 円錐
-	struct Cone {
-		Vector3 center;
-		float angle;  // 円錐の角度
-		float radius; // 円の半径
-		float height; // 円錐の高さ
-	};
-
-
 public:
 	/// =================================================
 	/// public : methods

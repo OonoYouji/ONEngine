@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// std
 #include <memory>
@@ -85,7 +85,7 @@ public:
 };
 
 
-namespace COMP_DEBUG {
+namespace ComponentDebug {
 	void TransformDebug(Transform* _transform);
 }
 

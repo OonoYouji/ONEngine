@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-public class PrefabTest : MonoBehavior {
+public class PrefabTest : MonoScript {
 	private float time = 0f;
 	private MeshRenderer renderer;
 

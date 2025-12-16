@@ -10,13 +10,13 @@ using namespace ONEngine;
 
 EffectEmitShape::EffectEmitShape() {
 	/// 球体の初期化
-	sphere_.center = Vector3::kZero;
+	sphere_.center = Vector3::Zero;
 	sphere_.radius = 1.0f;
 	/// 立方体の初期化
-	cube_.center = Vector3::kZero;
+	cube_.center = Vector3::Zero;
 	cube_.size = Vector3(1.0f, 1.0f, 1.0f);
 	/// 円錐の初期化
-	cone_.center = Vector3::kZero;
+	cone_.center = Vector3::Zero;
 	cone_.angle = 30.0f;
 	cone_.radius = 1.0f;
 	cone_.height = 1.0f;
@@ -73,7 +73,7 @@ Vector3 EffectEmitShape::GetEmitPosition() {
 }
 
 Vector3 EffectEmitShape::GetEmitDirection(const Vector3& _emitedPosition) {
-	Vector3 direction = Vector3::kZero;
+	Vector3 direction = Vector3::Zero;
 	/// 形状ごとに発生方向を取得する
 	switch (shapeType_) {
 	case ShapeType::Sphere:
@@ -133,7 +133,7 @@ Vector3 EffectEmitShape::GetCenter() const {
 	switch (shapeType_) {
 	case ShapeType::Cube: return cube_.center;
 	case ShapeType::Cone: return cone_.center;
-	default: return Vector3::kZero;
+	default: return Vector3::Zero;
 	}
 }
 
@@ -141,15 +141,15 @@ EffectEmitShape::ShapeType EffectEmitShape::GetType() const {
 	return shapeType_;
 }
 
-const EffectEmitShape::Sphere& EffectEmitShape::GetSphere() const {
+const Sphere& EffectEmitShape::GetSphere() const {
 	return sphere_;
 }
 
-const EffectEmitShape::Cube& EffectEmitShape::GetCube() const {
+const Cube& EffectEmitShape::GetCube() const {
 	return cube_;
 }
 
-const EffectEmitShape::Cone& EffectEmitShape::GetCone() const {
+const Cone& EffectEmitShape::GetCone() const {
 	return cone_;
 }
 

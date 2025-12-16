@@ -77,7 +77,7 @@ void SkinMeshSkeletonRenderingPipeline::Draw(class ECSGroup* _ecs, CameraCompone
 	/// 頂点データを集める
 	for (auto& smRenderer : skinMeshRendererArray->GetUsedComponents()) {
 
-		float scale = smRenderer->GetOwner()->GetScale().Len();
+		float scale = smRenderer->GetOwner()->GetScale().Length();
 
 		for (const Joint& joint : smRenderer->GetSkeleton().joints) {
 			if (!joint.parent.has_value()) {
@@ -90,7 +90,7 @@ void SkinMeshSkeletonRenderingPipeline::Draw(class ECSGroup* _ecs, CameraCompone
 
 			/// 色と座標を取得
 			Matrix4x4&& thisWorldMatrix = joint.matSkeletonSpace * smRenderer->GetOwner()->GetTransform()->matWorld;
-			Vector3 thisPosition = Matrix4x4::Transform(Vector3::kZero, thisWorldMatrix);
+			Vector3 thisPosition = Matrix4x4::Transform(Vector3::Zero, thisWorldMatrix);
 			Vector4 thisColor = Color::kRed;
 
 			/// Sphereの頂点データを取得
@@ -98,7 +98,7 @@ void SkinMeshSkeletonRenderingPipeline::Draw(class ECSGroup* _ecs, CameraCompone
 			vertices_.insert(vertices_.end(), sphereVertices.begin(), sphereVertices.end());
 
 			/// Rectの頂点データを取得
-			auto rectVertices = GetRectVertices(thisWorldMatrix, Color::kGreen, Vector2::kOne * (4.0f * scale));
+			auto rectVertices = GetRectVertices(thisWorldMatrix, Color::kGreen, Vector2::One * (4.0f * scale));
 			vertices_.insert(vertices_.end(), rectVertices.begin(), rectVertices.end());
 
 
@@ -108,13 +108,13 @@ void SkinMeshSkeletonRenderingPipeline::Draw(class ECSGroup* _ecs, CameraCompone
 
 			const Joint& parentJoint = smRenderer->GetSkeleton().joints[joint.parent.value()];
 			Matrix4x4&& parentWorldMatrix = parentJoint.matSkeletonSpace * smRenderer->GetOwner()->GetTransform()->matWorld;
-			Vector3 parentPosition = Matrix4x4::Transform(Vector3::kZero, parentWorldMatrix);
+			Vector3 parentPosition = Matrix4x4::Transform(Vector3::Zero, parentWorldMatrix);
 
 			/// 線の頂点データを作成
 			VertexData v0, v1;
-			v0.position = Vector4(thisPosition, 1.0f);
+			v0.position = Math::ConvertToVector4(thisPosition, 1.0f);
 			v0.color = thisColor;
-			v1.position = Vector4(parentPosition, 1.0f);
+			v1.position = Math::ConvertToVector4(parentPosition, 1.0f);
 			v1.color = thisColor;
 
 			vertices_.push_back(v0);

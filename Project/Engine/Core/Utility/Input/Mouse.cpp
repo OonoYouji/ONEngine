@@ -102,8 +102,8 @@ const Vector2& Mouse::GetImGuiImageMousePosNormalized(const std::string& _name) 
 	);
 
 	/// 1280x720のRTVサイズに合わせて正規化  
-	imageMousePosition.x = (mousePosInImage.x / imageInfo->size.x) * 1280.0f;
-	imageMousePosition.y = (mousePosInImage.y / imageInfo->size.y) * 720.0f;
+	imageMousePosition.x = (mousePosInImage.x / imageInfo->size.x) * Vector2::HD.x;
+	imageMousePosition.y = (mousePosInImage.y / imageInfo->size.y) * Vector2::HD.y;
 
 	return imageMousePosition;
 }

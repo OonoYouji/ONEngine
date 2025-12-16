@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// engine
 #include "Engine/Asset/Guid/Guid.h"
@@ -34,7 +34,7 @@ public:
 	/// @brief component の追加
 	/// @tparam T 追加する component の型
 	/// @return 追加した component のポインタ
-	template <ComponentType Comp>
+	template <IsComponent Comp>
 	Comp* AddComponent();
 
 	/// @brief stringから component を追加する
@@ -45,7 +45,7 @@ public:
 	/// @brief component の取得
 	/// @tparam T ゲットする component の型
 	/// @return component のポインタ
-	template <ComponentType Comp>
+	template <IsComponent Comp>
 	Comp* GetComponent() const;
 
 	/// @brief Componentの名前から取得する
@@ -54,7 +54,7 @@ public:
 
 	/// @brief Componentの削除
 	/// @tparam Comp 削除するComponentの型
-	template <ComponentType Comp>
+	template <IsComponent Comp>
 	void RemoveComponent();
 
 	/// @brief Componentの名前から削除する
@@ -239,13 +239,13 @@ private:
 
 };
 
-template<ComponentType Comp>
+template<IsComponent Comp>
 inline Comp* GameEntity::AddComponent() {
 	const std::string name = GetComponentTypeName<Comp>();
 	return static_cast<Comp*>(AddComponent(name));
 }
 
-template<ComponentType Comp>
+template<IsComponent Comp>
 inline Comp* GameEntity::GetComponent() const {
 	auto it = components_.find(GetComponentHash<Comp>());
 	if (it != components_.end()) {
@@ -254,13 +254,9 @@ inline Comp* GameEntity::GetComponent() const {
 	return nullptr;
 }
 
-template<ComponentType Comp>
+template<IsComponent Comp>
 inline void GameEntity::RemoveComponent() {
-	std::string name = typeid(Comp).name();
-	if (name.find("class ONEngine") == 0) {
-		name = name.substr(strlen("class ONEngine"));
-	}
-
+	const std::string name = GetComponentTypeName<Comp>();
 	RemoveComponent(name);
 }
 

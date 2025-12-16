@@ -32,7 +32,7 @@ namespace {
 }
 
 
-void COMP_DEBUG::ShadowCasterDebug(ShadowCaster* _shadowCaster) {
+void ComponentDebug::ShadowCasterDebug(ShadowCaster* _shadowCaster) {
 	if (!_shadowCaster) {
 		return;
 	}
@@ -139,7 +139,8 @@ void ShadowCaster::CreateShadowCaster() {
 	camera_ = GetOwner()->AddComponent<CameraComponent>();
 	camera_->SetCameraType(static_cast<int>(CameraType::Type2D));
 	camera_->SetIsMainCameraRequest(false); /// シャドウキャスター用カメラはメインカメラにしない
-	camera_->SetOrthographicSize(Vector2(1280.0f, 720.0f) * 0.01f);
+	const float factor = 0.01f;
+	camera_->SetOrthographicSize(Vector2::HD * factor);
 }
 
 void ShadowCaster::CalculationLightViewMatrix(ECSGroup* _ecsGroup, DirectionalLight* _directionLight) {
@@ -156,7 +157,7 @@ void ShadowCaster::CalculationLightViewMatrix(ECSGroup* _ecsGroup, DirectionalLi
 	const Vector3& dir = _directionLight->GetDirection();
 	Quaternion cameraRotation = Quaternion::LookAt(
 		{}, dir,
-		Vector3::kUp
+		Vector3::Up
 	);
 
 	/// カメラの回転を設定

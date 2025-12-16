@@ -1,4 +1,4 @@
-﻿public class AttachObjectToJoint : MonoBehavior {
+﻿public class AttachObjectToJoint : MonoScript {
 
 	public string jointName = "JointName"; // Attach to this joint
 	public Entity attachedEntity; // Entity to attach

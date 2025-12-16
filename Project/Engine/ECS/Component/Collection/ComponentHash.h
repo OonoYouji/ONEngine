@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// std
 #include <string>
@@ -22,7 +22,7 @@ inline std::string GetComponentTypeName(const IComponent* _component) {
 /// @brief Componentの型から名前を取得する
 /// @tparam T Componentの型
 /// @return クラス名
-template <ComponentType T>
+template <IsComponent T>
 inline std::string GetComponentTypeName() {
 	std::string name = typeid(T).name();
 	if (name.find("class ONEngine::") == 0) {
@@ -41,7 +41,7 @@ inline size_t GetComponentHash(const std::string& _name) {
 /// @brief Componentの型からハッシュ値を取得する
 /// @tparam T Componentの型
 /// @return Hash値
-template <ComponentType T>
+template <IsComponent T>
 inline size_t GetComponentHash() {
 	return GetComponentHash(GetComponentTypeName<T>());
 }

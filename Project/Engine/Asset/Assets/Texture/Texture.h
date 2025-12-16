@@ -1,20 +1,23 @@
-#pragma once
+﻿#pragma once
 
 /// std
 #include <optional>
 #include <string>
 
 /// engine
-#include "../Asset.h"
+#include "../IAsset.h"
 #include "Engine/Core/DirectX12/Resource/DxResource.h"
 
 namespace ONEngine {
+
+template <typename T>
+class AssetLoader;
 
 /// ///////////////////////////////////////////////////
 /// texture
 /// ///////////////////////////////////////////////////
 class Texture final : public IAsset {
-	friend class AssetLoader;
+	friend class AssetLoader<Texture>;
 public:
 	/// ===================================================
 	/// public : sub class
@@ -35,8 +38,10 @@ public:
 	Texture(const Vector2& _textureSize);
 	~Texture() override = default;
 
-
+	/// @brief SRVHandleの空の状態を作成する
 	void CreateEmptySRVHandle();
+
+	/// @brief UAVHandleの空の状態を作成する
 	void CreateEmptyUAVHandle();
 
 
@@ -151,7 +156,12 @@ public:
 /// @param _overwrite 上書き保存するかどうか
 void SaveTextureToPNG(const std::wstring& _filename, size_t _width, size_t _height, bool _overwrite);
 
-
+/// @brief テクスチャをDDS形式で保存する
+/// @param _filename ファイル名
+/// @param _width テクスチャの幅
+/// @param _height テクスチャの高さ
+/// @param _depth テクスチャの奥行き
+/// @param _overwrite 上書き保存するかどうか
 void SaveTextureToDDS(const std::wstring& _filename, size_t _width, size_t _height, size_t _depth, bool _overwrite);
 
 } /// ONEngine

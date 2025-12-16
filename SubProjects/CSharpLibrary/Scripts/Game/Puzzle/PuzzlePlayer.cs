@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class PuzzlePlayer : MonoBehavior {
+public class PuzzlePlayer : MonoScript {
 	public PuzzleBlockData blockData; // ブロックデータ
 	public Flag isGoaled;
 	private AudioSource audioSource_;

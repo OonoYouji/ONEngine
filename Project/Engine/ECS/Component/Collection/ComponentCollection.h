@@ -24,14 +24,14 @@ public:
 
 	/// @brief Componentのファクトリを登録する
 	/// @tparam Comp Componentの型
-	template<typename Comp>
+	template<IsComponent Comp>
 	void RegisterComponentFactory();
 
 	/// @brief 新規Componentを追加する
 	/// @tparam Comp Componentの型
 	/// @return 追加されたComponentのポインタ、失敗したら nullptr
-	template<typename Comp>
-	Comp* AddComponent() requires std::is_base_of_v<IComponent, Comp>;
+	template<IsComponent Comp>
+	Comp* AddComponent();
 
 	/// @brief 新規Componentを追加する
 	/// @param _name Componentの名前
@@ -42,14 +42,14 @@ public:
 	/// @tparam Comp Componentの型
 	/// @param _index Arrayのインデックス
 	/// @return Componentのポインタ、失敗したら nullptr
-	template<typename Comp>
-	Comp* GetComponent(size_t _index) requires std::is_base_of_v<IComponent, Comp>;
+	template<IsComponent Comp>
+	Comp* GetComponent(size_t _index);
 
 	/// @brief Componentの削除
 	/// @tparam Comp 削除するComponentの型
 	/// @param _index Arrayのインデックス
-	template<typename Comp>
-	void RemoveComponent(size_t _index) requires std::is_base_of_v<IComponent, Comp>;
+	template<IsComponent Comp>
+	void RemoveComponent(size_t _index);
 
 	/// @brief Componentの削除
 	/// @param _hash CompのHash
@@ -64,8 +64,8 @@ public:
 	/// @brief Componentの配列を取得する
 	/// @tparam Comp Componentの型
 	/// @return ComponentArray
-	template <typename Comp>
-	ComponentArray<Comp>* GetComponentArray() requires std::is_base_of_v<IComponent, Comp>;
+	template <IsComponent Comp>
+	ComponentArray<Comp>* GetComponentArray();
 
 private:
 	/// ===================================================
@@ -81,7 +81,7 @@ private:
 /// inline methods
 /// //////////////////////////////////////////////
 
-template<typename Comp>
+template<IsComponent Comp>
 inline void ComponentCollection::RegisterComponentFactory() {
 	size_t hash = GetComponentHash<Comp>();
 	if (arrayMap_.find(hash) == arrayMap_.end()) {
@@ -94,8 +94,8 @@ inline void ComponentCollection::RegisterComponentFactory() {
 		};
 }
 
-template<typename Comp>
-inline Comp* ComponentCollection::AddComponent() requires std::is_base_of_v<IComponent, Comp> {
+template<IsComponent Comp>
+inline Comp* ComponentCollection::AddComponent() {
 	size_t hash = GetComponentHash<Comp>();
 	if (arrayMap_.find(hash) == arrayMap_.end()) {
 		RegisterComponentFactory<Comp>();
@@ -107,16 +107,16 @@ inline Comp* ComponentCollection::AddComponent() requires std::is_base_of_v<ICom
 	return static_cast<Comp*>(factoryMap_[hash]());
 }
 
-template<typename Comp>
-inline Comp* ComponentCollection::GetComponent(size_t _index) requires std::is_base_of_v<IComponent, Comp> {
+template<IsComponent Comp>
+inline Comp* ComponentCollection::GetComponent(size_t _index) {
 	size_t hash = GetComponentHash<Comp>();
 	ComponentArray<Comp>* componentArray = static_cast<ComponentArray<Comp>*>(arrayMap_[hash].get());
 
 	return &componentArray->components_[_index];
 }
 
-template<typename Comp>
-inline void ComponentCollection::RemoveComponent(size_t _index) requires std::is_base_of_v<IComponent, Comp> {
+template<IsComponent Comp>
+inline void ComponentCollection::RemoveComponent(size_t _index) {
 	size_t hash = GetComponentHash<Comp>();
 	ComponentArray<Comp>* componentArray = static_cast<ComponentArray<Comp>*>(arrayMap_[hash].get());
 	componentArray->usedIndices_.erase(std::remove(componentArray->usedIndices_.begin(), componentArray->usedIndices_.end(), _index), componentArray->usedIndices_.end());
@@ -128,8 +128,8 @@ inline void ComponentCollection::RemoveComponent(size_t _index) requires std::is
 	);
 }
 
-template<typename Comp>
-inline ComponentArray<Comp>* ComponentCollection::GetComponentArray() requires std::is_base_of_v<IComponent, Comp> {
+template<IsComponent Comp>
+inline ComponentArray<Comp>* ComponentCollection::GetComponentArray() {
 	size_t hash = GetComponentHash<Comp>();
 	if (arrayMap_.find(hash) != arrayMap_.end()) {
 		return static_cast<ComponentArray<Comp>*>(arrayMap_[hash].get());

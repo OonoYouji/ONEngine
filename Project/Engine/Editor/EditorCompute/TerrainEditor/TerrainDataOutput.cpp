@@ -87,8 +87,8 @@ void TerrainDataOutput::Execute(ONEngine::EntityComponentSystem* _ecs, ONEngine:
 
 	const size_t threadGroupSize = 16;
 	cmdList->Dispatch(
-		ONEngine::Mathf::DivideAndRoundUp(width, threadGroupSize),
-		ONEngine::Mathf::DivideAndRoundUp(height, threadGroupSize),
+		ONEngine::Math::DivideAndRoundUp(width, threadGroupSize),
+		ONEngine::Math::DivideAndRoundUp(height, threadGroupSize),
 		1
 	);
 

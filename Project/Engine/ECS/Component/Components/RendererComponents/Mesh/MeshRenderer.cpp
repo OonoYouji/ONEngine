@@ -18,7 +18,7 @@ using namespace ONEngine;
 
 MeshRenderer::MeshRenderer() {
 	SetMeshPath("./Packages/Models/primitive/cube.obj");
-	material_.baseColor = Vector4::kWhite;
+	material_.baseColor = Vector4::White;
 	material_.postEffectFlags = PostEffectFlags_Lighting;
 }
 
@@ -100,7 +100,7 @@ Vector4 ONEngine::InternalGetMeshColor(uint64_t _nativeHandle) {
 	MeshRenderer* renderer = reinterpret_cast<MeshRenderer*>(_nativeHandle);
 	if (!renderer) {
 		Console::Log("MeshRenderer pointer is null");
-		return Vector4::kZero;
+		return Vector4::Zero;
 	}
 
 	return renderer->GetColor();
@@ -136,7 +136,7 @@ void ONEngine::InternalSetPostEffectFlags(uint64_t _nativeHandle, uint32_t _flag
 	}
 }
 
-void COMP_DEBUG::MeshRendererDebug(MeshRenderer* _mr, AssetCollection* _assetCollection) {
+void ComponentDebug::MeshRendererDebug(MeshRenderer* _mr, AssetCollection* _assetCollection) {
 	if (!_mr) {
 		return;
 	}
@@ -163,7 +163,7 @@ void COMP_DEBUG::MeshRendererDebug(MeshRenderer* _mr, AssetCollection* _assetCol
 			if (payload->Data) {
 				Editor::AssetPayload* assetPayload = *static_cast<Editor::AssetPayload**>(payload->Data);
 				std::string path = assetPayload->filePath;
-				AssetType type = GetAssetTypeFromExtension(Mathf::FileExtension(path));
+				AssetType type = GetAssetTypeFromExtension(FileSystem::FileExtension(path));
 
 				/// メッシュのパスが有効な形式か確認
 				if (type == AssetType::Mesh) {
@@ -225,7 +225,7 @@ void COMP_DEBUG::MeshRendererDebug(MeshRenderer* _mr, AssetCollection* _assetCol
 				const std::string path = assetPayload->filePath;
 
 				/// テクスチャのパスが有効な形式か確認
-				const AssetType type = GetAssetTypeFromExtension(Mathf::FileExtension(path));
+				const AssetType type = GetAssetTypeFromExtension(FileSystem::FileExtension(path));
 				if (type == AssetType::Texture) {
 					_mr->material_.SetBaseTextureGuid(assetPayload->guid);
 

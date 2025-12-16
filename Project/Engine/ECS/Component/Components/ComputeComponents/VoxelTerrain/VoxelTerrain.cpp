@@ -16,7 +16,7 @@
 
 using namespace ONEngine;
 
-void COMP_DEBUG::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _dxManager) {
+void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _dxm) {
 	if (!_voxelTerrain) {
 		Console::LogError("VoxelTerrainDebug: _voxelTerrain is nullptr");
 		return;
@@ -59,7 +59,7 @@ void COMP_DEBUG::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _dxMa
 			filepath = L"./Packages/Textures/Terrain/Chunk/" + std::to_wstring(i) + L".dds";
 
 			const Chunk& chunk = _voxelTerrain->chunks_[i];
-			chunk.pTexture->OutputTexture3D(filepath, _dxManager->GetDxDevice(), _dxManager->GetDxCommand());
+			chunk.pTexture->OutputTexture3D(filepath, _dxm->GetDxDevice(), _dxm->GetDxCommand());
 			Console::Log("Chunk " + std::to_string(i) + ": Texture3D GUID = " + chunk.texture3DId.ToString());
 		}
 	}
@@ -271,7 +271,7 @@ void VoxelTerrain::CreateEditorBuffers(DxDevice* _dxDevice, DxSRVHeap* _dxSRVHea
 	sBufferEditorChunks_.Create(chunkCount, _dxDevice, _dxSRVHeap);
 }
 
-void VoxelTerrain::SetupEditorBuffers(ID3D12GraphicsCommandList* _cmdList, const std::array<UINT, 4> _rootParamIndices, AssetCollection* _assetCollection, const GPUData::InputInfo& _inputInfo, const GPUData::EditInfo& _editInfo) {
+void VoxelTerrain::SetupEditorBuffers(ID3D12GraphicsCommandList* _cmdList, const std::array<UINT, 4> _rootParamIndices, AssetCollection* _assetCollection, const GPUData::InputInfo& _inputInfo) {
 	/// InputInfoの設定
 	cBufferInputInfo_.SetMappedData(_inputInfo);
 	cBufferInputInfo_.BindForComputeCommandList(_cmdList, _rootParamIndices[0]);
@@ -283,7 +283,6 @@ void VoxelTerrain::SetupEditorBuffers(ID3D12GraphicsCommandList* _cmdList, const
 		});
 	cBufferTerrainInfo_.BindForComputeCommandList(_cmdList, _rootParamIndices[1]);
 	/// EditInfoの設定
-	//cBufferEditInfo_.SetMappedData(_editInfo);
 	cBufferEditInfo_.BindForComputeCommandList(_cmdList, _rootParamIndices[2]);
 
 	/// ChunkArrayの設定

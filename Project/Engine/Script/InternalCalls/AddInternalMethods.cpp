@@ -1,4 +1,4 @@
-#include "AddInternalMethods.h"
+﻿#include "AddInternalMethods.h"
 
 /// externals
 #include <mono/jit/jit.h>
@@ -28,8 +28,8 @@
 
 
 using namespace ONEngine;
-using namespace MONO_INTERNAL_METHOD;
-using namespace InternalSpriteMethods;
+using namespace MonoInternalMethods;
+using namespace MonoInternalMethods;
 
 void ONEngine::AddComponentInternalCalls() {
 

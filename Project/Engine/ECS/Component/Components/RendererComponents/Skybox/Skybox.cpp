@@ -24,7 +24,7 @@ const std::string& Skybox::GetDDSTexturePath() const {
 
 
 
-void COMP_DEBUG::SkyboxDebug(const Skybox* _skybox) {
+void ComponentDebug::SkyboxDebug(const Skybox* _skybox) {
 	if (!_skybox) {
 		return;
 	}

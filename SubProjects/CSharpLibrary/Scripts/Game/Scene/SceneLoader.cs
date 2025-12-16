@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class SceneLoader : MonoBehavior {
+public class SceneLoader : MonoScript {
 	[SerializeField] private bool isLoading_ = false;
 	[SerializeField] public string sceneName = "";
 

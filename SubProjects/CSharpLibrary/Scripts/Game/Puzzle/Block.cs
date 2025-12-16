@@ -5,7 +5,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-public class Block : MonoBehavior {
+public class Block : MonoScript {
 	public PuzzleBlockData blockData;
 
 	/* ----- color ----- */

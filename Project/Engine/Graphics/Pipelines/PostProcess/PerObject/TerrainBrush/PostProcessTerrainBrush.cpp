@@ -1,4 +1,4 @@
-#include "PostProcessTerrainBrush.h"
+﻿#include "PostProcessTerrainBrush.h"
 
 using namespace ONEngine;
 
@@ -56,15 +56,10 @@ void PostProcessTerrainBrush::Execute(
 
 	/// TerrainComponentの有無チェック
 	ComponentArray<Terrain>* terrainArray = _ecs->GetCurrentGroup()->GetComponentArray<Terrain>();
-	ComponentArray<VoxelTerrain>* voxelTerrainArray = _ecs->GetCurrentGroup()->GetComponentArray<VoxelTerrain>();
-
 	/// 両方とも存在しない、もしくは使用中のコンポーネントが無い場合は処理しない
-	if ((!terrainArray || terrainArray->GetUsedComponents().empty()) &&
-		(!voxelTerrainArray || voxelTerrainArray->GetUsedComponents().empty())) {
+	if ((!terrainArray || terrainArray->GetUsedComponents().empty())) {
 		return;
 	}
-
-
 
 	/// 地形が編集モード中なのかチェック
 	Terrain* editTerrain = nullptr;
@@ -75,35 +70,21 @@ void PostProcessTerrainBrush::Execute(
 		}
 	}
 
-	VoxelTerrain* editVoxelTerrain = nullptr;
-	//for (const auto& voxelTerrain : voxelTerrainArray->GetUsedComponents()) {
-	//	if (voxelTerrain) {
-	//		editVoxelTerrain = voxelTerrain;
-	//		break;
-	//	}
-	//}
-
 	/// 編集モードでなければ処理しない
-	if (!editTerrain && !editVoxelTerrain) {
+	if (!editTerrain) {
 		return;
 	}
-
-
 
 	/// brush data
 	const Vector2 mousePos = Input::GetImGuiImageMousePosNormalized("Scene");
 	/// 範囲外なら処理しない
-	if (mousePos.x < 0.0f || mousePos.x > 1280.0f ||
-		mousePos.y < 0.0f || mousePos.y > 720.0f) {
+	if (!Math::Inside(mousePos, Vector2::Zero, Vector2::HD)) {
 		return;
 	}
-
 
 	float brushRadius = 0.0f;
 	if (editTerrain) {
 		brushRadius = editTerrain->GetEditorInfo().brushRadius;
-	} else if (editVoxelTerrain) {
-		brushRadius = 32.0f;
 	}
 
 
@@ -130,8 +111,8 @@ void PostProcessTerrainBrush::Execute(
 
 
 	cmdList->Dispatch(
-		Mathf::DivideAndRoundUp(static_cast<uint32_t>(EngineConfig::kWindowSize.x), 16),
-		Mathf::DivideAndRoundUp(static_cast<uint32_t>(EngineConfig::kWindowSize.y), 16),
+		Math::DivideAndRoundUp(static_cast<uint32_t>(EngineConfig::kWindowSize.x), 16),
+		Math::DivideAndRoundUp(static_cast<uint32_t>(EngineConfig::kWindowSize.y), 16),
 		1
 	);
 

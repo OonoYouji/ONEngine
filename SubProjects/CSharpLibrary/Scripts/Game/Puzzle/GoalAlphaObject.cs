@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class GoalAlphaObject : MonoBehavior {
+public class GoalAlphaObject : MonoScript {
 
 	[SerializeField] float minAlpha = 0.0f;
 	[SerializeField] float maxAlpha = 1.0f;

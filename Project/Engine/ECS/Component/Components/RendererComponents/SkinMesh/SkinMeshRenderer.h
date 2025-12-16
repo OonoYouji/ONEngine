@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// std
 #include <string>
@@ -79,7 +79,7 @@ public:
 };
 
 
-namespace COMP_DEBUG {
+namespace ComponentDebug {
 	void SkinMeshRendererDebug(SkinMeshRenderer* _smr);
 }
 

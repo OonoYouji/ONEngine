@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// std
 #include <memory>
@@ -6,7 +6,7 @@
 #include <string>
 
 /// engine
-#include "../Asset.h"
+#include "../IAsset.h"
 #include "Mesh.h"
 #include "Skinning.h"
 

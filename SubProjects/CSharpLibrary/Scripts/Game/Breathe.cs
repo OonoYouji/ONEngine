@@ -1,5 +1,5 @@
 ﻿
-public class Breathe : MonoBehavior {
+public class Breathe : MonoScript {
 
 	[SerializeField] public Vector3 defaultScale = Vector3.one; // デフォルトのスケール
 	Vector3 scale = Vector3.one;

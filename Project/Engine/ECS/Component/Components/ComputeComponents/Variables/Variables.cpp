@@ -9,7 +9,7 @@
 #include <Externals/imgui/dialog/ImGuiFileDialog.h>
 
 /// engine
-#include "Engine/Core/Utility/Math/Mathf.h"
+#include "Engine/Core/Utility/Math/Math.h"
 #include "Engine/ECS/EntityComponentSystem/ECSGroup.h"
 #include "Engine/ECS/Entity/GameEntity/GameEntity.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Script/Script.h"
@@ -65,7 +65,7 @@ Variables::~Variables() = default;
 
 void Variables::LoadJson(const std::string& _path) {
 	/// .jsonファイルかチェック
-	if (Mathf::FileExtension(_path) != ".json") {
+	if (FileSystem::FileExtension(_path) != ".json") {
 		return;
 	}
 
@@ -530,7 +530,7 @@ const std::vector<Variables::Group>& Variables::GetGroups() const {
 
 
 
-void COMP_DEBUG::VariablesDebug(Variables* _variables) {
+void ComponentDebug::VariablesDebug(Variables* _variables) {
 	if (!_variables) {
 		return;
 	}

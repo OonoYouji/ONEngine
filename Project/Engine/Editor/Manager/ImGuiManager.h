@@ -3,8 +3,6 @@
 #include <Windows.h>
 
 /// std
-#include <functional>
-#include <vector>
 #include <memory>
 #include <unordered_map>
 
@@ -15,7 +13,7 @@
 #include "Engine/Core/Utility/Math/Vector2.h"
 
 /// editor
-#include "Engine/Editor/Views/ImGuiWidows/Collection/ImGuiWindowCollection.h"
+#include "Engine/Editor/Views/EditorViewCollection.h"
 #include "Engine/Editor/Math/ImGuiSceneImageInfo.h"
 
 namespace ONEngine {
@@ -84,7 +82,7 @@ private:
 	/// ===================================================
 
 	/// ----- other class ----- ///
-	ONEngine::DxManager* dxManager_;
+	ONEngine::DxManager* pDxManager_;
 	ONEngine::WindowManager* pWindowManager_;
 	ONEngine::AssetCollection* pAssetCollection_;
 	ONEngine::EntityComponentSystem* pEntityComponentSystem_;
@@ -93,7 +91,7 @@ private:
 	ONEngine::Window* pImGuiWindow_;
 	ONEngine::Window* pDebugGameWindow_;
 
-	std::unique_ptr<ImGuiWindowCollection> imGuiWindowCollection_ = nullptr;
+	std::unique_ptr<EditorViewCollection> imGuiWindowCollection_ = nullptr;
 
 	std::unordered_map<std::string, ImGuiSceneImageInfo> sceneImageInfos_ = {}; ///< imguiのシーンイメージ情報
 

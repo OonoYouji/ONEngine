@@ -35,7 +35,7 @@ void VoxelTerrainEditorComputePipeline::Initialize(ONEngine::ShaderCompiler* _sh
 		/// Descriptor Range
 		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // SRV_CHUNKS
 		pipeline_->AddDescriptorRange(1, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // SRV_WORLD_TEXTURE
-		pipeline_->AddDescriptorRange(0, ONEngine::MAX_TEXTURE_COUNT*2, D3D12_DESCRIPTOR_RANGE_TYPE_UAV); // UAV_VOXEL_TEXTURES
+		pipeline_->AddDescriptorRange(0, ONEngine::MAX_TEXTURE_COUNT * 2, D3D12_DESCRIPTOR_RANGE_TYPE_UAV); // UAV_VOXEL_TEXTURES
 
 		/// SRV
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 0); // SRV_CHUNKS
@@ -105,30 +105,14 @@ void VoxelTerrainEditorComputePipeline::Execute(ONEngine::EntityComponentSystem*
 	inputInfo.screenMousePos = ONEngine::Input::GetImGuiImageMousePosNormalized("Scene");
 
 	/// マウスがウィンドウ外なら終了
-	if (inputInfo.screenMousePos.x < 0.0f || inputInfo.screenMousePos.x > 1280.0f ||
-		inputInfo.screenMousePos.y < 0.0f || inputInfo.screenMousePos.y > 720.0f) {
+	if (!ONEngine::Math::Inside(inputInfo.screenMousePos, ONEngine::Vector2::Zero, ONEngine::Vector2::FHD)) {
 		return;
 	}
-
-	///// 入力が無ければ終了
-	//if (!inputInfo.mouseLeftButton) {
-	//	return;
-	//}
-
-	///// マウスがウィンドウ外なら終了
-	//if (inputInfo.screenMousePos.x < 0.0f || inputInfo.screenMousePos.x > 1280.0f ||
-	//	inputInfo.screenMousePos.y < 0.0f || inputInfo.screenMousePos.y > 720.0f) {
-	//	return;
-	//}
-
-
-	ONEngine::GPUData::EditInfo editInfo{};
-	editInfo.brushRadius = 12.0f;
 
 	voxelTerrain->SetupEditorBuffers(
 		cmdList,
 		{ CBV_INPUT_INFO, CBV_TERRAIN_INFO, CBV_EDITOR_INFO, SRV_CHUNKS },
-		_assetCollection, inputInfo, editInfo
+		_assetCollection, inputInfo
 	);
 
 
@@ -157,7 +141,7 @@ void VoxelTerrainEditorComputePipeline::Execute(ONEngine::EntityComponentSystem*
 	const UINT TGSize = 256;
 	const ONEngine::Vector2Int& voxelChunkCount = voxelTerrain->GetChunkCountXZ();
 	cmdList->Dispatch(
-		ONEngine::Mathf::DivideAndRoundUp(voxelChunkCount.x * voxelChunkCount.y, TGSize),
+		ONEngine::Math::DivideAndRoundUp(voxelChunkCount.x * voxelChunkCount.y, TGSize),
 		1, 1
 	);
 

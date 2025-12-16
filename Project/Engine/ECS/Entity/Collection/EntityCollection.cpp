@@ -230,7 +230,7 @@ void EntityCollection::LoadPrefabAll() {
 	/// Assets/Prefabs フォルダから全てのプレハブを読み込む
 	std::string prefabPath = "./Assets/Prefabs/";
 
-	std::vector<File> prefabFiles = Mathf::FindFiles(prefabPath, ".prefab");
+	std::vector<File> prefabFiles = FileSystem::GetFiles(prefabPath, ".prefab");
 
 	if (prefabFiles.empty()) {
 		Console::Log("No prefab files found in: " + prefabPath);
@@ -247,7 +247,7 @@ void EntityCollection::ReloadPrefab(const std::string& _prefabName) {
 	auto itr = prefabs_.find(_prefabName);
 	if (itr == prefabs_.end()) {
 		/// もう一度Fileを探索して確認
-		File file = Mathf::FindFile("./Assets/Prefabs/", _prefabName);
+		File file = FileSystem::GetFile("./Assets/Prefabs/", _prefabName);
 
 		if (file.first.empty()) {
 			Console::LogWarning("Prefab not found: " + _prefabName);
@@ -329,7 +329,7 @@ GameEntity* EntityCollection::GenerateEntityRecursive(const nlohmann::json& _jso
 
 	/// 名前とPrefab名を設定
 	const std::string prefabName = _json.value("prefabName", "");
-	std::string name = Mathf::FileNameWithoutExtension(prefabName);
+	std::string name = FileSystem::FileNameWithoutExtension(prefabName);
 	if (prefabName.empty()) {
 		name = _json.value("name", "New Entity");
 	}

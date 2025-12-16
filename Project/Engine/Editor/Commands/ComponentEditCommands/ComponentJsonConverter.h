@@ -56,13 +56,6 @@ void from_json(const nlohmann::json& _j, EffectMainModule& _e);
 void to_json(nlohmann::json& _j, const EffectMainModule& _e);
 void from_json(const nlohmann::json& _j, EffectEmitShape& _e);
 void to_json(nlohmann::json& _j, const EffectEmitShape& _e);
-// エフェクトのエミッターの形状
-void from_json(const nlohmann::json& _j, EffectEmitShape::Sphere& _e);
-void to_json(nlohmann::json& _j, const EffectEmitShape::Sphere& _e);
-void from_json(const nlohmann::json& _j, EffectEmitShape::Cube& _e);
-void to_json(nlohmann::json& _j, const EffectEmitShape::Cube& _e);
-void from_json(const nlohmann::json& _j, EffectEmitShape::Cone& _e);
-void to_json(nlohmann::json& _j, const EffectEmitShape::Cone& _e);
 
 // CustomMeshRenderer
 void from_json(const nlohmann::json& _j, CustomMeshRenderer& _m);

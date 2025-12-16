@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// std
 #include <string>
@@ -6,8 +6,10 @@
 #include <unordered_map>
 #include <fstream>
 #include <filesystem>
+#include <cstdint>
 
 /// engine
+#include "Engine/Asset/Assets/IAsset.h"
 #include "Engine/Asset/Guid/Guid.h"
 #include "Engine/Asset/Meta/MetaFile.h"
 
@@ -25,7 +27,7 @@ public:
 /// ///////////////////////////////////////////////////
 /// リソースのコンテナクラス
 /// ///////////////////////////////////////////////////
-template <typename T>
+template <IsAsset T>
 class AssetContainer : public IAssetContainer {
 public:
 	/// ===================================================
@@ -117,15 +119,15 @@ private:
 /// methods
 /// ///////////////////////////////////////////////////
 
-template<typename T>
+template<IsAsset T>
 inline AssetContainer<T>::AssetContainer(size_t _maxResourceSize) {
 	values_.resize(_maxResourceSize);
 }
 
-template<typename T>
+template<IsAsset T>
 inline AssetContainer<T>::~AssetContainer() {}
 
-template<typename T>
+template<IsAsset T>
 inline T* AssetContainer<T>::Add(const std::string& _key, T _t) {
 	/// すでに同じキーが存在する場合は、値を更新
 	if (indexMap_.contains(_key)) {
@@ -161,7 +163,7 @@ inline T* AssetContainer<T>::Add(const std::string& _key, T _t) {
 	return &values_[index];
 }
 
-template<typename T>
+template<IsAsset T>
 inline void AssetContainer<T>::Remove(const std::string& _key) {
 
 	/// 参照する方法を消して使えないようにする
@@ -172,7 +174,7 @@ inline void AssetContainer<T>::Remove(const std::string& _key) {
 	}
 }
 
-template<typename T>
+template<IsAsset T>
 inline void AssetContainer<T>::Remove(int32_t _index) {
 
 	/// 参照する方法を消して使えないようにする
@@ -183,7 +185,7 @@ inline void AssetContainer<T>::Remove(int32_t _index) {
 	}
 }
 
-template<typename T>
+template<IsAsset T>
 inline T* AssetContainer<T>::Get(const std::string& _key) {
 	/// ----- IndexMapを_keyで参照して T型の Assetを返す ----- ///
 	if (indexMap_.contains(_key)) {
@@ -194,7 +196,7 @@ inline T* AssetContainer<T>::Get(const std::string& _key) {
 	return nullptr;
 }
 
-template<typename T>
+template<IsAsset T>
 inline T* AssetContainer<T>::Get(int32_t _index) {
 	/// ----- Indexで直接参照してアセットを返す ----- ///
 
@@ -205,12 +207,12 @@ inline T* AssetContainer<T>::Get(int32_t _index) {
 	return nullptr;
 }
 
-template<typename T>
+template<IsAsset T>
 inline T* AssetContainer<T>::GetFirst() {
 	return &values_.front();
 }
 
-template<typename T>
+template<IsAsset T>
 inline const std::string& AssetContainer<T>::GetKey(int32_t _index) const {
 	if(reverseIndexMap_.contains(_index)) {
 		return reverseIndexMap_.at(_index);
@@ -221,7 +223,7 @@ inline const std::string& AssetContainer<T>::GetKey(int32_t _index) const {
 	return emptyString;
 }
 
-template<typename T>
+template<IsAsset T>
 inline int32_t AssetContainer<T>::GetIndex(const std::string& _key) const {
 	if(indexMap_.contains(_key)) {
 		return indexMap_.at(_key);
@@ -231,7 +233,7 @@ inline int32_t AssetContainer<T>::GetIndex(const std::string& _key) const {
 	return -1;
 }
 
-template<typename T>
+template<IsAsset T>
 inline int32_t AssetContainer<T>::GetIndex(const Guid& _guid) const {
 	if(guidToIndexMap_.contains(_guid)) {
 		return guidToIndexMap_.at(_guid);
@@ -241,22 +243,22 @@ inline int32_t AssetContainer<T>::GetIndex(const Guid& _guid) const {
 	return -1;
 }
 
-template<typename T>
+template<IsAsset T>
 inline const std::vector<T>& AssetContainer<T>::GetValues() const {
 	return values_;
 }
 
-template<typename T>
+template<IsAsset T>
 inline std::vector<T>& AssetContainer<T>::GetValues() {
 	return values_;
 }
 
-template<typename T>
+template<IsAsset T>
 inline const std::unordered_map<std::string, int32_t>& AssetContainer<T>::GetIndexMap() const {
 	return indexMap_;
 }
 
-template<typename T>
+template<IsAsset T>
 inline const Guid& AssetContainer<T>::GetGuid(const std::string& _key) const {
 	if (indexMap_.contains(_key)) {
 		return indexToGuidMap_.at(indexMap_.at(_key));
@@ -265,7 +267,7 @@ inline const Guid& AssetContainer<T>::GetGuid(const std::string& _key) const {
 	return Guid::kInvalid;
 }
 
-template<typename T>
+template<IsAsset T>
 inline const Guid& AssetContainer<T>::GetGuid(int32_t _index) const {
 	return indexToGuidMap_.at(_index);
 }

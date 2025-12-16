@@ -11,7 +11,7 @@
 
 using namespace ONEngine;
 
-void COMP_DEBUG::TerrainColliderDebug(TerrainCollider* _collider) {
+void ComponentDebug::TerrainColliderDebug(TerrainCollider* _collider) {
 	if (!_collider) {
 		return;
 	}

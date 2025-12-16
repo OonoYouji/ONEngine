@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// std
 #include <string>
@@ -103,7 +103,7 @@ public:
 
 };
 
-namespace COMP_DEBUG {
+namespace ComponentDebug {
 	void ScriptDebug(Script* _script);
 }
 

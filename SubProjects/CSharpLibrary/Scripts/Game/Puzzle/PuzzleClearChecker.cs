@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-public class PuzzleClearChecker : MonoBehavior {
+public class PuzzleClearChecker : MonoScript {
 	private PuzzleStage puzzleStage_;
 	private List<Vector2Int> goalAddresses_ = new List<Vector2Int>();
 	private bool isClear_;

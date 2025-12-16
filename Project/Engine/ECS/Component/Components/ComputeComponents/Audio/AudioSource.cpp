@@ -2,11 +2,11 @@
 
 /// external
 #include <imgui.h>
+#include <magic_enum/magic_enum.hpp>
 
 /// engine
 #include "Engine/Asset/Assets/AudioClip/AudioClip.h"
-#include "Engine/Core/Utility/Math/Mathf.h"
-#include "Engine/Core/Utility/Tools/Log.h"
+#include "Engine/Core/Utility/Utility.h"
 
 /// editor
 #include "Engine/Editor/Math/ImGuiMath.h"
@@ -17,7 +17,7 @@ AudioSource::AudioSource()
 	: volume_(1.0f),
 	pitch_(1.0f),
 	state_(0),
-	isPlayingRequest_(false){
+	isPlayingRequest_(false) {
 }
 
 AudioSource::~AudioSource() {}
@@ -73,7 +73,7 @@ int AudioSource::GetState() const {
 
 /// 
 
-void COMP_DEBUG::AudioSourceDebug(AudioSource* _as) {
+void ComponentDebug::AudioSourceDebug(AudioSource* _as) {
 	if (!_as) {
 		return;
 	}
@@ -88,7 +88,7 @@ void COMP_DEBUG::AudioSourceDebug(AudioSource* _as) {
 			if (payload->Data) {
 				const char* droppedPath = static_cast<const char*>(payload->Data);
 				const std::string&& path = std::string(droppedPath);
-				const std::string&& extension = Mathf::FileExtension(path);
+				const std::string&& extension = FileSystem::FileExtension(path);
 
 				/// Audioのパスが有効な形式か確認
 				if (extension == ".mp3" ||
@@ -129,13 +129,12 @@ void COMP_DEBUG::AudioSourceDebug(AudioSource* _as) {
 
 	/// 再生状態の表示
 	int state = _as->GetState();
-	ImGui::Text("State: %s", state == AudioState_Playing ? "Playing" : "Stopped");
-
-
+	std::string stateStr = static_cast<std::string>(magic_enum::enum_name(static_cast<AudioState>(state)));
+	ImGui::Text("State: %s", stateStr.c_str());
 
 }
 
-void MONO_INTERNAL_METHOD::InternalGetParams(uint64_t _nativeHandle, float* _volume, float* _pitch) {
+void MonoInternalMethods::InternalGetParams(uint64_t _nativeHandle, float* _volume, float* _pitch) {
 	AudioSource* audioSource = reinterpret_cast<AudioSource*>(_nativeHandle);
 	if (!audioSource) {
 		Console::LogError("AudioSource pointer is null");
@@ -147,7 +146,7 @@ void MONO_INTERNAL_METHOD::InternalGetParams(uint64_t _nativeHandle, float* _vol
 
 }
 
-void MONO_INTERNAL_METHOD::InternalSetParams(uint64_t _nativeHandle, float _volume, float _pitch) {
+void MonoInternalMethods::InternalSetParams(uint64_t _nativeHandle, float _volume, float _pitch) {
 	AudioSource* audioSource = reinterpret_cast<AudioSource*>(_nativeHandle);
 	if (!audioSource) {
 		Console::LogError("AudioSource pointer is null");
@@ -158,7 +157,7 @@ void MONO_INTERNAL_METHOD::InternalSetParams(uint64_t _nativeHandle, float _volu
 	audioSource->SetPitch(_pitch);
 }
 
-void MONO_INTERNAL_METHOD::InternalPlayOneShot(uint64_t _nativeHandle, float _volume, float _pitch, MonoString* _path) {
+void MonoInternalMethods::InternalPlayOneShot(uint64_t _nativeHandle, float _volume, float _pitch, MonoString* _path) {
 	/// 音の再生
 	AudioSource* audioSource = reinterpret_cast<AudioSource*>(_nativeHandle);
 	if (!audioSource) {
