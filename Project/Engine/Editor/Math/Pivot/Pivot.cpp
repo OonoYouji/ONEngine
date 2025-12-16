@@ -129,17 +129,6 @@ PivotInstance gPivotInstance;
 } /// unnamed namespace
 
 
-
-/*
-* ピボットの全体を処理する
-* - 初期化
-* - 更新
-* - 描画
-*
-* ImGizmoは複数箇所で呼び出すと不具合が起きるため、ここで一括管理する
-*/
-
-
 void Editor::UpdatePivot(ONEngine::EntityComponentSystem* _ecs) {
 
 	ONEngine::GameEntity* entity = nullptr;
