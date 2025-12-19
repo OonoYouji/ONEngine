@@ -34,17 +34,22 @@ public:
 	/// =========================================
 	/// public : methods
 	/// =========================================
-	
+
 	GameEntityPickingPipeline();
 	~GameEntityPickingPipeline() override;
 
 	void Initialize(ONEngine::ShaderCompiler* _shaderCompiler, ONEngine::DxManager* _dxm) override;
 	void Execute(ONEngine::EntityComponentSystem* _ecs, ONEngine::DxCommand* _dxCommand, ONEngine::AssetCollection* _assetCollection) override;
 
+
+	void ReadbackPickingData(ONEngine::DxCommand* _dxCommand, Picking& _outPickingData);
+
 private:
 	/// =========================================
 	/// private : objects
 	/// =========================================
+
+	ONEngine::DxManager* pDxm_ = nullptr;
 
 	ONEngine::ConstantBuffer<PickingParams> cbufPickingParams_;
 	ONEngine::StructuredBuffer<Picking>     sbufPicking_;
