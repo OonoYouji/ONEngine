@@ -49,6 +49,11 @@ void VoxelTerrainEditorComputePipeline::Initialize(ONEngine::ShaderCompiler* _sh
 		pipeline_->CreatePipeline(_dxm->GetDxDevice());
 	}
 
+	{	/// member objects
+		editCount_    = 0;
+		maxEditCount_ = 1000;
+	}
+
 }
 
 void VoxelTerrainEditorComputePipeline::Execute(ONEngine::EntityComponentSystem* _ecs, ONEngine::DxCommand* _dxCommand, ONEngine::AssetCollection* _assetCollection) {
@@ -105,7 +110,7 @@ void VoxelTerrainEditorComputePipeline::Execute(ONEngine::EntityComponentSystem*
 	inputInfo.screenMousePos = ONEngine::Input::GetImGuiImageMousePosNormalized("Scene");
 
 	/// マウスがウィンドウ外なら終了
-	if (!ONEngine::Math::Inside(inputInfo.screenMousePos, ONEngine::Vector2::Zero, ONEngine::Vector2::FHD)) {
+	if (!ONEngine::Math::Inside(inputInfo.screenMousePos, ONEngine::Vector2::Zero, ONEngine::Vector2::HD)) {
 		return;
 	}
 
@@ -147,5 +152,20 @@ void VoxelTerrainEditorComputePipeline::Execute(ONEngine::EntityComponentSystem*
 
 	/// 編集したのであればSRVに対してコピーを行う
 	voxelTerrain->CopyEditorTextureToChunkTexture(_dxCommand);
+
+}
+
+void VoxelTerrainEditorComputePipeline::EditStart() {
+	/// ---------------------------------------------------
+	/// 編集を開始したときの状態を保存しておく
+	/// ---------------------------------------------------
+	
+
+}
+
+void VoxelTerrainEditorComputePipeline::EditEnd() {
+	/// ---------------------------------------------------
+	/// 編集を終了したときの状態を保存しておく
+	/// ---------------------------------------------------
 
 }

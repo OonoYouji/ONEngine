@@ -32,12 +32,18 @@ public:
 	void Initialize(ONEngine::ShaderCompiler* _shaderCompiler, ONEngine::DxManager* _dxm) override;
 	void Execute(ONEngine::EntityComponentSystem* _ecs, ONEngine::DxCommand* _dxCommand, ONEngine::AssetCollection* _assetCollection) override;
 
+	void EditStart();
+	void EditEnd();
+
 private:
 	/// =========================================
 	/// private : objects
 	/// =========================================
 
 	ONEngine::DxManager* pDxManager_ = nullptr;
+
+	uint32_t editCount_;
+	uint32_t maxEditCount_;
 
 };
 
