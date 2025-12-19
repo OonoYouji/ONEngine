@@ -10,12 +10,14 @@ namespace ONEngine {
 
 class BoxCollider;
 
+#ifdef DEBUG_MODE
 namespace ComponentDebug {
 /// @brief BoxColliderのデバッグ表示
 /// @param _boxCollider 
 void BoxColliderDebug(BoxCollider* _boxCollider);
 
 }	/// namespace ComponentDebug
+#endif
 
 void from_json(const nlohmann::json& _j, BoxCollider& _b);
 void to_json(nlohmann::json& _j, const BoxCollider& _b);
@@ -25,7 +27,9 @@ void to_json(nlohmann::json& _j, const BoxCollider& _b);
 /// //////////////////////////////////////
 class BoxCollider : public ICollider {
 	/// --------------- friend function --------------- ///
+#ifdef DEBUG_MODE
 	friend void ComponentDebug::BoxColliderDebug(BoxCollider* _boxCollider);
+#endif // DEBUG_MODE
 	friend void from_json(const nlohmann::json& _j, BoxCollider& _b);
 	friend void to_json(nlohmann::json& _j, const BoxCollider& _b);
 public:

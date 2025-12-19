@@ -2,11 +2,6 @@
 
 #include "Engine/Core/Utility/Math/Vector2.h"
 
-#if defined(_DEBUG) || defined(DEBUG_BUILD)
-#define DEBUG_MODE
-#endif
-
-
 namespace ONEngine {
 
 /// /////////////////////////////////////////////////
