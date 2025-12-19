@@ -52,13 +52,13 @@ void VoxelTerrainEditorComputePipeline::Initialize(ONEngine::ShaderCompiler* _sh
 	{	/// member objects
 		editCount_ = 0;
 		maxEditCount_ = 100;
-		editedTexture_.CreateUAVTexture3D(
-			ONEngine::VoxelTerrain::kChunkCount.x * ONEngine::VoxelTerrain::kDefaultChunkSize.x * maxEditCount_,
-			ONEngine::VoxelTerrain::kDefaultChunkSize.y,
-			ONEngine::VoxelTerrain::kChunkCount.y * ONEngine::VoxelTerrain::kDefaultChunkSize.z,
-			pDxManager_->GetDxDevice(), pDxManager_->GetDxSRVHeap(),
-			DXGI_FORMAT_R8G8B8A8_UNORM
-		);
+		//editedTexture_.CreateUAVTexture3D(
+		//	ONEngine::VoxelTerrain::kChunkCount.x * ONEngine::VoxelTerrain::kDefaultChunkSize.x * maxEditCount_,
+		//	ONEngine::VoxelTerrain::kDefaultChunkSize.y,
+		//	ONEngine::VoxelTerrain::kChunkCount.y * ONEngine::VoxelTerrain::kDefaultChunkSize.z,
+		//	pDxManager_->GetDxDevice(), pDxManager_->GetDxSRVHeap(),
+		//	DXGI_FORMAT_R8G8B8A8_UNORM
+		//);
 	}
 
 }
