@@ -11,7 +11,6 @@
 
 using namespace ONEngine;
 
-#ifdef DEBUG_MODE
 void ComponentDebug::BoxColliderDebug(BoxCollider* _bc) {
 	if (!_bc) {
 		return;
@@ -32,9 +31,9 @@ void ComponentDebug::BoxColliderDebug(BoxCollider* _bc) {
 
 	/// box parameter
 	ImGui::SeparatorText("box parameter");
-	Editor::DrawVec3Control("size", _bc->size_, 0.1f, 0.0f, 1024.0f, 100.0f, &_bc->dUnified_);
+	static bool unified = false;
+	Editor::DrawVec3Control("size", _bc->size_, 0.1f, 0.0f, 1024.0f, 100.0f, &unified);
 }
-#endif
 
 void ONEngine::from_json(const nlohmann::json& _j, BoxCollider& _b) {
 	_b.enable = _j.value("enable", 1);
