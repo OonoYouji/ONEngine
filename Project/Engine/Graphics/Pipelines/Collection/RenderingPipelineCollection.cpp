@@ -12,6 +12,7 @@ using namespace ONEngine;
 
 /// pipelines
 #include "../Render/Mesh/MeshRenderingPipeline.h"
+#include "../Render/Mesh/DissolveMeshRenderingPipeline.h"
 #include "../Render/Mesh/SkinMeshRenderingPipeline.h"
 #include "../Render/Mesh/SkinMeshSkeletonRenderingPipeline.h"
 #include "../Render/Effect/EffectRenderingPipeline.h"
@@ -55,6 +56,7 @@ void RenderingPipelineCollection::Initialize() {
 	Generate3DRenderingPipeline<TerrainProceduralRenderingPipeline>(pAssetCollection_);
 	Generate3DRenderingPipeline<RiverRenderingPipeline>(pAssetCollection_);
 	Generate3DRenderingPipeline<MeshRenderingPipeline>(pAssetCollection_);
+	Generate3DRenderingPipeline<DissolveMeshRenderingPipeline>(pAssetCollection_);
 	Generate3DRenderingPipeline<SkinMeshRenderingPipeline>(pAssetCollection_);
 #ifdef DEBUG_MODE
 	/// Debug用にスケルトンを描画するパイプラインを追加
