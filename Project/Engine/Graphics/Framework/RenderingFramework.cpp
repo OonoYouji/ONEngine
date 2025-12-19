@@ -3,11 +3,11 @@
 using namespace ONEngine;
 
 /// engine
-#include "Engine/Core/DirectX12/Device/DxDevice.h"
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/ShadowCaster/ShadowCaster.h"
+#include "RenderInfo.h"
 
 /// editor
 #include "Engine/Editor/Manager/ImGuiManager.h"
@@ -33,17 +33,13 @@ void RenderingFramework::Initialize(DxManager* _dxm, WindowManager* _windowManag
 
 
 	/// ----- RenderTextureの初期化 ----- ///
-	const size_t kRenderTexCount = 4;
-	const std::array<std::string, kRenderTexCount> renderTexNames = {
-		"scene", "debug", "prefab", "shadowMap"
-	};
-	renderTextures_.resize(kRenderTexCount);
+	renderTextures_.resize(RenderInfo::kRenderTextureCount);
 
 	const Vector4 clearColor = Vector4(0.1f, 0.25f, 0.5f, 1.0f);
-	for(size_t i = 0; i < kRenderTexCount; i++) {
+	for(size_t i = 0; i < RenderInfo::kRenderTextureCount; i++) {
 		renderTextures_[i] = std::make_unique<SceneRenderTexture>();
 		renderTextures_[i]->Initialize(
-			"./Assets/Scene/RenderTexture/" + renderTexNames[i],
+			RenderInfo::kRenderTargetDir + RenderInfo::kRenderTargetNames[i],
 			clearColor, EngineConfig::kWindowSize,
 			pDxManager_, assetCollection_.get()
 		);

@@ -15,6 +15,7 @@
 #include "Engine/Editor/EditorCompute/River/RiverMeshGeneratePipeline.h"
 #include "Engine/Editor/EditorCompute/Grass/GrassArrangementPipeline.h"
 #include "Engine/Editor/EditorCompute/VoxelTerrainEditor/VoxelTerrainEditorComputePipeline.h"
+#include "Engine/Editor/EditorCompute/GameEntityPicking/GameEntityPickingPipeline.h"
 
 using namespace Editor;
 
@@ -29,6 +30,7 @@ void EditorManager::Initialize(ONEngine::DxManager* _dxm, ONEngine::ShaderCompil
 	EditCommand::pEditorManager_ = this;
 
 	/// editor compute の登録
+	AddEditorCompute(_dxm, _sc, std::make_unique<GameEntityPickingPipeline>());
 	AddEditorCompute(_dxm, _sc, std::make_unique<TerrainDataOutput>());
 	AddEditorCompute(_dxm, _sc, std::make_unique<TerrainVertexCreator>());
 	AddEditorCompute(_dxm, _sc, std::make_unique<TerrainVertexEditorCompute>());

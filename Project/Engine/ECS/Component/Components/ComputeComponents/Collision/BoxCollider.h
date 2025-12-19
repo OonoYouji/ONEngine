@@ -43,10 +43,6 @@ private:
 
 	Vector3 size_;
 
-#ifdef DEBUG_MODE 
-	bool dUnified_ = false;
-#endif 
-
 public:
 	/// =====================================================
 	/// public : accessors
