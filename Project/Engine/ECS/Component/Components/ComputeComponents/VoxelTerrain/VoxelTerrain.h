@@ -116,6 +116,15 @@ class VoxelTerrain : public IComponent {
 
 public:
 	/// ===========================================
+	/// public : static objects
+	/// ===========================================
+
+	inline static const Vector3Int kDefaultChunkSize = Vector3Int(16, 128, 16);
+	inline static const Vector2Int kChunkCount = Vector2Int(32, 32);
+
+
+public:
+	/// ===========================================
 	/// public : methods
 	/// ===========================================
 

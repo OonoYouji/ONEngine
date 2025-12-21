@@ -90,6 +90,24 @@ bool ONEngine::CheckComponentEnable(IComponent* _component) {
 	return true;
 }
 
+bool ONEngine::CheckComponentArrayEnable(IComponentArray* _componentArray) {
+	/*
+	* 確認事項
+	* - componentArrayがnullptrでないこと
+	* - componentArrayがemptyでないこと
+	*/
+	if (!_componentArray) {
+		return false;
+	}
+
+	if(_componentArray->GetUsedComponentCount() == 0) {
+		return false;
+	}
+
+	return true;
+}
+
+
 
 EntityComponentSystem::EntityComponentSystem(DxManager* _pDxManager)
 	: pDxManager_(_pDxManager) {

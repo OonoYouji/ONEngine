@@ -36,6 +36,7 @@
 #include "Engine/ECS/Component/Components/RendererComponents/Skybox/Skybox.h"
 #include "Engine/ECS/Component/Components/RendererComponents/Mesh/MeshRenderer.h"
 #include "Engine/ECS/Component/Components/RendererComponents/Mesh/CustomMeshRenderer.h"
+#include "Engine/ECS/Component/Components/RendererComponents/Mesh/DissolveMeshRenderer.h"
 #include "Engine/ECS/Component/Components/RendererComponents/SkinMesh/SkinMeshRenderer.h"
 #include "Engine/ECS/Component/Components/RendererComponents/Sprite/SpriteRenderer.h"
 #include "Engine/ECS/Component/Components/RendererComponents/Primitive/Line2DRenderer.h"
@@ -71,6 +72,7 @@ InspectorWindow::InspectorWindow(const std::string& _windowName, DxManager* _dxm
 	/// renderer
 	RegisterComponent<MeshRenderer>([&](IComponent* _comp) { ComponentDebug::MeshRendererDebug(static_cast<MeshRenderer*>(_comp), pAssetCollection_); });
 	RegisterComponent<CustomMeshRenderer>([&](IComponent* _comp) { CustomMeshRendererDebug(static_cast<CustomMeshRenderer*>(_comp)); });
+	RegisterComponent<DissolveMeshRenderer>([&](IComponent* _comp) { ShowGUI(static_cast<DissolveMeshRenderer*>(_comp), pAssetCollection_); });
 	RegisterComponent<SpriteRenderer>([&](IComponent* _comp) { ComponentDebug::SpriteDebug(static_cast<SpriteRenderer*>(_comp), pAssetCollection_); });
 	RegisterComponent<Line2DRenderer>([&]([[maybe_unused]] IComponent* _comp) {});
 	RegisterComponent<Line3DRenderer>([&]([[maybe_unused]] IComponent* _comp) {});
@@ -97,7 +99,7 @@ InspectorWindow::InspectorWindow(const std::string& _windowName, DxManager* _dxm
 
 
 void InspectorWindow::ShowImGui() {
-	if (!ImGui::Begin(windowName_.c_str(), nullptr, ImGuiWindowFlags_MenuBar)) {
+	if(!ImGui::Begin(windowName_.c_str(), nullptr, ImGuiWindowFlags_MenuBar)) {
 		ImGui::End();
 		return;
 	}
@@ -113,47 +115,47 @@ void InspectorWindow::EntityInspector() {
 
 	/// guidの取得、無効値なら抜ける
 	const Guid& selectionGuid = ImGuiSelection::GetSelectedObject();
-	if (!selectionGuid.CheckValid()) {
+	if(!selectionGuid.CheckValid()) {
 		return;
 	}
 
 	/// アセットなら抜ける
 	bool isAsset = pAssetCollection_->IsAsset(selectionGuid);
-	if (isAsset) {
+	if(isAsset) {
 		return;
 	}
 
 	GameEntity* selectedEntity = nullptr;
-	for (auto& group : pEcs_->GetECSGroups()) {
+	for(auto& group : pEcs_->GetECSGroups()) {
 		selectedEntity = group.second->GetEntityFromGuid(selectionGuid);
-		if (selectedEntity) {
+		if(selectedEntity) {
 			break;
 		}
 	}
 
-	if (!selectedEntity) {
+	if(!selectedEntity) {
 		return;
 	}
 
 	/// ----------------------------
 	/// 適当な編集の機能
 	/// ----------------------------
-	if (ImGui::BeginMenuBar()) {
-		if (ImGui::BeginMenu("File")) {
-			if (ImGui::MenuItem("Save")) {
+	if(ImGui::BeginMenuBar()) {
+		if(ImGui::BeginMenu("File")) {
+			if(ImGui::MenuItem("Save")) {
 				pEditorManager_->ExecuteCommand<EntityDataOutputCommand>(selectedEntity);
 			}
 
-			if (ImGui::MenuItem("Load")) {
+			if(ImGui::MenuItem("Load")) {
 				pEditorManager_->ExecuteCommand<EntityDataInputCommand>(selectedEntity);
 			}
 
 			ImGui::EndMenu();
 		}
 
-		if (ImGui::MenuItem("Apply Prefab")) {
+		if(ImGui::MenuItem("Apply Prefab")) {
 
-			if (!selectedEntity->GetPrefabName().empty()) {
+			if(!selectedEntity->GetPrefabName().empty()) {
 				pEditorManager_->ExecuteCommand<CreatePrefabCommand>(selectedEntity);
 				pEcs_->ReloadPrefab(selectedEntity->GetPrefabName());
 			} else {
@@ -169,7 +171,7 @@ void InspectorWindow::EntityInspector() {
 	/// entityの基本情報表示
 	/// ----------------------------
 
-	if (!selectedEntity->GetPrefabName().empty()) {
+	if(!selectedEntity->GetPrefabName().empty()) {
 		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.75f, 0, 0, 1));
 		ImGuiInputTextReadOnly("entity prefab name", selectedEntity->GetPrefabName());
 		ImGui::PopStyleColor();
@@ -183,7 +185,7 @@ void InspectorWindow::EntityInspector() {
 	/// ----------------------------
 	/// componentのデバッグ
 	/// ----------------------------
-	for (auto itr = selectedEntity->GetComponents().begin(); itr != selectedEntity->GetComponents().end(); ) {
+	for(auto itr = selectedEntity->GetComponents().begin(); itr != selectedEntity->GetComponents().end(); ) {
 		std::pair<size_t, IComponent*> component = *itr;
 		std::string componentName = GetComponentTypeName(component.second);
 		std::string label = componentName + "##" + std::to_string(reinterpret_cast<uintptr_t>(component.second));
@@ -193,7 +195,7 @@ void InspectorWindow::EntityInspector() {
 
 		/// チェックボックスでenable/disableを切り替え
 		bool enabled = component.second->enable;
-		if (ImGui::Checkbox(("##" + label).c_str(), &enabled)) {
+		if(ImGui::Checkbox(("##" + label).c_str(), &enabled)) {
 			component.second->enable = enabled;
 		}
 
@@ -202,7 +204,7 @@ void InspectorWindow::EntityInspector() {
 
 
 		/// アクティブ/非アクティブで表示を変える
-		if (!enabled) {
+		if(!enabled) {
 			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.75f, 0.75f, 0.75f, 1.0f)); // 白色
 		}
 
@@ -219,7 +221,7 @@ void InspectorWindow::EntityInspector() {
 		/// ==============================================
 		/// ドラッグソースの開始
 		/// ==============================================
-		if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
+		if(ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
 			ImGui::SetDragDropPayload("Component", &component.second, sizeof(IComponent*));
 			ImGui::Text("%s", componentName.c_str());
 			ImGui::EndDragDropSource();
@@ -228,14 +230,14 @@ void InspectorWindow::EntityInspector() {
 		/// ==============================================
 		/// 実際のComponentごとのデバッグ表示
 		/// ==============================================
-		if (isHeaderOpen) {
+		if(isHeaderOpen) {
 			/// 右クリックでポップアップメニューを開く
-			if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
+			if(ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
 				ImGui::OpenPopup(label.c_str());
 			}
 
 			ImGui::Indent(34.0f);
-			if (componentDebugFuncs_.contains(component.first)) {
+			if(componentDebugFuncs_.contains(component.first)) {
 				componentDebugFuncs_[component.first](component.second);
 			}
 			ImGui::Unindent(34.0f);
@@ -243,19 +245,19 @@ void InspectorWindow::EntityInspector() {
 
 
 
-		if (!enabled) {
+		if(!enabled) {
 			ImGui::PopStyleColor();
 		}
 
 
-		if (ImGui::BeginPopupContextItem(label.c_str())) {
-			if (ImGui::MenuItem("delete")) {
+		if(ImGui::BeginPopupContextItem(label.c_str())) {
+			if(ImGui::MenuItem("delete")) {
 				auto resultItr = selectedEntity->GetComponents().begin();
 				pEditorManager_->ExecuteCommand<RemoveComponentCommand>(selectedEntity, componentName, &resultItr);
 				itr = resultItr; // イテレータを更新
 
 				/// endじゃないかチェック
-				if (itr == selectedEntity->GetComponents().end()) {
+				if(itr == selectedEntity->GetComponents().end()) {
 					ImGui::EndPopup();
 					ImGui::PopID();
 					break; // もしendに到達したらループを抜ける
@@ -263,7 +265,7 @@ void InspectorWindow::EntityInspector() {
 
 			}
 
-			if (ImGui::MenuItem("reset")) {
+			if(ImGui::MenuItem("reset")) {
 				IComponent* comp = selectedEntity->GetComponent(componentName);
 				comp->Reset();
 			}
@@ -281,26 +283,26 @@ void InspectorWindow::EntityInspector() {
 	/// componentの追加
 	/// ----------------------------
 	ImGui::Separator();
-	for (int i = 0; i < 4; ++i) {
+	for(int i = 0; i < 4; ++i) {
 		ImGui::Indent();
 	}
 
-	if (ImGui::Button("Add Component")) {
+	if(ImGui::Button("Add Component")) {
 		ImGui::OpenPopup("AddComponent");
 	}
 
-	for (int i = 0; i < 4; ++i) {
+	for(int i = 0; i < 4; ++i) {
 		ImGui::Unindent();
 	}
 
 
 	/// popup window
-	if (ImGui::BeginPopup("AddComponent", ImGuiWindowFlags_AlwaysVerticalScrollbar)) {
+	if(ImGui::BeginPopup("AddComponent", ImGuiWindowFlags_AlwaysVerticalScrollbar)) {
 
 		ImVec2 buttonSize = ImVec2(128.f, 0.f);
-		for (const auto& name : componentNames_) {
+		for(const auto& name : componentNames_) {
 			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
-			if (ImGui::Button(name.second.c_str(), buttonSize)) {
+			if(ImGui::Button(name.second.c_str(), buttonSize)) {
 				pEditorManager_->ExecuteCommand<AddComponentCommand>(selectedEntity, name.second);
 			}
 
@@ -318,12 +320,12 @@ void InspectorWindow::AssetInspector() {
 
 	AssetType type = pAssetCollection_->GetAssetTypeFromGuid(ImGuiSelection::GetSelectedObject());
 
-	switch (type) {
+	switch(type) {
 	case AssetType::Texture:
 	{
 		ImGui::Text("Texture Inspector");
 		Texture* texture = pAssetCollection_->GetTextureFromGuid(ImGuiSelection::GetSelectedObject());
-		if (texture) {
+		if(texture) {
 			TextureAssetInspector(texture);
 		}
 

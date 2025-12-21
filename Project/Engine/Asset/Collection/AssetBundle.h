@@ -33,9 +33,9 @@ public:
 	std::unique_ptr<AssetContainer<T>> container;
 
 	void Load(const std::string& _filepath) override {
-		if (container->GetIndex(_filepath) == -1) {
+		if(container->GetIndex(_filepath) == -1) {
 			auto texture = loader->Load(_filepath);
-			if (texture.has_value()) {
+			if(texture.has_value()) {
 				container->Add(_filepath, std::move(texture.value()));
 			}
 		}
@@ -43,10 +43,10 @@ public:
 
 	void Reload(const std::string& _filepath) override {
 		int32_t index = container->GetIndex(_filepath);
-		if (index != -1) {
+		if(index != -1) {
 			T* src = container->Get(index);
 			auto reloadedAsset = loader->Reload(_filepath, src);
-			if (reloadedAsset.has_value()) {
+			if(reloadedAsset.has_value()) {
 				container->Remove(index);
 				container->Add(_filepath, std::move(reloadedAsset.value()));
 			}

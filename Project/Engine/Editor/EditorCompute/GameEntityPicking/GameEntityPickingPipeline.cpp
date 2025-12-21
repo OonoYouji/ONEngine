@@ -1,5 +1,9 @@
 ﻿#include "GameEntityPickingPipeline.h"
 
+/// externals
+#include <imgui.h>
+#include <ImGuizmo.h>
+
 /// engine
 #include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
@@ -91,14 +95,22 @@ void GameEntityPickingPipeline::Execute(
 	Picking out;
 	ReadbackPickingData(_dxCommand, out);
 
-	if(Input::TriggerMouse(Mouse::Left)) {
-		if(ECSGroup* current = _ecs->GetCurrentGroup()) {
-			if(GameEntity* entity = current->GetEntity(out.entityId)) {
-				ImGuiSelection::SetSelectedObject(entity->GetGuid(), SelectionType::Entity);
+
+
+	static bool preUsingPivot = false;
+	bool usingPivot = ImGuizmo::IsUsing();
+
+	if(Input::ReleaseMouse(Mouse::Left)) {
+		if(!preUsingPivot && !usingPivot) {
+			if(ECSGroup* current = _ecs->GetCurrentGroup()) {
+				if(GameEntity* entity = current->GetEntity(out.entityId)) {
+					ImGuiSelection::SetSelectedObject(entity->GetGuid(), SelectionType::Entity);
+				}
 			}
 		}
-
 	}
+
+	preUsingPivot = ImGuizmo::IsUsing();
 
 }
 
