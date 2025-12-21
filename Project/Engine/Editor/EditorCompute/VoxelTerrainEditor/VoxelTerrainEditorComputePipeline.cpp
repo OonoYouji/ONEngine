@@ -50,8 +50,15 @@ void VoxelTerrainEditorComputePipeline::Initialize(ONEngine::ShaderCompiler* _sh
 	}
 
 	{	/// member objects
-		editCount_    = 0;
-		maxEditCount_ = 1000;
+		editCount_ = 0;
+		maxEditCount_ = 100;
+		//editedTexture_.CreateUAVTexture3D(
+		//	ONEngine::VoxelTerrain::kChunkCount.x * ONEngine::VoxelTerrain::kDefaultChunkSize.x * maxEditCount_,
+		//	ONEngine::VoxelTerrain::kDefaultChunkSize.y,
+		//	ONEngine::VoxelTerrain::kChunkCount.y * ONEngine::VoxelTerrain::kDefaultChunkSize.z,
+		//	pDxManager_->GetDxDevice(), pDxManager_->GetDxSRVHeap(),
+		//	DXGI_FORMAT_R8G8B8A8_UNORM
+		//);
 	}
 
 }
@@ -60,7 +67,7 @@ void VoxelTerrainEditorComputePipeline::Execute(ONEngine::EntityComponentSystem*
 
 	/// 早期リターンの条件チェック
 	ONEngine::ComponentArray<ONEngine::VoxelTerrain>* voxelTerrainArray = _ecs->GetCurrentGroup()->GetComponentArray<ONEngine::VoxelTerrain>();
-	if (!voxelTerrainArray || voxelTerrainArray->GetUsedComponents().empty()) {
+	if(!voxelTerrainArray || voxelTerrainArray->GetUsedComponents().empty()) {
 		ONEngine::Console::LogWarning("VoxelTerrainEditorComputePipeline::Execute: VoxelTerrain component array is null");
 		return;
 	}
@@ -68,27 +75,27 @@ void VoxelTerrainEditorComputePipeline::Execute(ONEngine::EntityComponentSystem*
 
 	/// 使用できるVoxelTerrainコンポーネントを探す
 	ONEngine::VoxelTerrain* voxelTerrain = nullptr;
-	for (const auto& vt : voxelTerrainArray->GetUsedComponents()) {
-		if (vt && vt->enable) {
+	for(const auto& vt : voxelTerrainArray->GetUsedComponents()) {
+		if(vt && vt->enable) {
 			voxelTerrain = vt;
 			break;
 		}
 	}
 
 	/// 見つからなかった
-	if (!voxelTerrain) {
+	if(!voxelTerrain) {
 		return;
 	}
 
 
 	pDxManager_->HeapBindToCommandList();
 	/// --------------- バッファの生成 --------------- ///
-	if (!voxelTerrain->CheckCreatedBuffers()) {
+	if(!voxelTerrain->CheckCreatedBuffers()) {
 		voxelTerrain->SettingChunksGuid(_assetCollection);
 		voxelTerrain->CreateBuffers(pDxManager_->GetDxDevice(), pDxManager_->GetDxSRVHeap());
 	}
 
-	if (!voxelTerrain->CheckBufferCreatedForEditor()) {
+	if(!voxelTerrain->CheckBufferCreatedForEditor()) {
 		voxelTerrain->CreateEditorBuffers(pDxManager_->GetDxDevice(), pDxManager_->GetDxSRVHeap());
 		voxelTerrain->CreateChunkTextureUAV(_dxCommand, pDxManager_->GetDxDevice(), pDxManager_->GetDxSRVHeap(), _assetCollection);
 		return;
@@ -110,7 +117,7 @@ void VoxelTerrainEditorComputePipeline::Execute(ONEngine::EntityComponentSystem*
 	inputInfo.screenMousePos = ONEngine::Input::GetImGuiImageMousePosNormalized("Scene");
 
 	/// マウスがウィンドウ外なら終了
-	if (!ONEngine::Math::Inside(inputInfo.screenMousePos, ONEngine::Vector2::Zero, ONEngine::Vector2::HD)) {
+	if(!ONEngine::Math::Inside(inputInfo.screenMousePos, ONEngine::Vector2::Zero, ONEngine::Vector2::HD)) {
 		return;
 	}
 
@@ -123,7 +130,7 @@ void VoxelTerrainEditorComputePipeline::Execute(ONEngine::EntityComponentSystem*
 
 	ONEngine::CameraComponent* cameraComp = _ecs->GetECSGroup("Debug")->GetMainCamera();
 	/// cameraBufferが生成済みでないなら終了
-	if (!cameraComp->IsMakeViewProjection()) {
+	if(!cameraComp->IsMakeViewProjection()) {
 		ONEngine::Console::LogWarning("VoxelTerrainEditorComputePipeline::Execute: Camera viewProjection buffer is not created");
 		return;
 	}
@@ -159,7 +166,8 @@ void VoxelTerrainEditorComputePipeline::EditStart() {
 	/// ---------------------------------------------------
 	/// 編集を開始したときの状態を保存しておく
 	/// ---------------------------------------------------
-	
+
+
 
 }
 
@@ -167,5 +175,7 @@ void VoxelTerrainEditorComputePipeline::EditEnd() {
 	/// ---------------------------------------------------
 	/// 編集を終了したときの状態を保存しておく
 	/// ---------------------------------------------------
+
+
 
 }

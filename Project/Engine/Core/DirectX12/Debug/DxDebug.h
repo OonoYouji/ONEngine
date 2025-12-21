@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// directX
 #include <d3d12.h>
@@ -38,7 +38,7 @@ private:
 	/// private : objects
 	/// ===================================================
 
-#ifdef DEBUG_MODE
+#ifdef _DEBUG
 	ComPtr<ID3D12Debug1> debugController_ = nullptr;
 #endif // DEBUG_MODE
 

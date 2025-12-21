@@ -2,6 +2,7 @@
 
 /// engine
 #include "../Interface/IEditorCompute.h"
+#include "Engine/Asset/Assets/Texture/Texture.h"
 
 /// /////////////////////////////////////////////////
 /// ボクセル地形を編集するためのパイプラインを起動するクラス
@@ -44,6 +45,11 @@ private:
 
 	uint32_t editCount_;
 	uint32_t maxEditCount_;
+
+	/// 地形が編集される毎に地形テクスチャのコピーを保存しておくためのテクスチャ
+	/// 複数回のUndo/Redoに対応するためこのテクスチャは地形のn倍の大きさで用意しておく
+	/// n = maxEditCount_
+	ONEngine::Texture editedTexture_;
 
 };
 
