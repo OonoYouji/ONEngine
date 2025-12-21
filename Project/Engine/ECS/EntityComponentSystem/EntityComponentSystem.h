@@ -16,6 +16,7 @@
 #include "../System/SystemCollection/SystemCollection.h"
 
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentEditCommands.h"
+#include <Engine/ECS/Component/Array/ComponentArray.h>
 
 namespace ONEngine {
 
@@ -95,6 +96,12 @@ bool CheckParentEntityEnable(GameEntity* _entity);
 /// @param _component 対象のコンポーネント
 /// @return true: 有効, false: 無効
 bool CheckComponentEnable(IComponent* _component);
+
+/// @brief ComponentArray<T>が有効かどうかをチェックする
+/// @param _componentArray 
+/// @return true: 有効, false: 無効
+bool CheckComponentArrayEnable(IComponentArray* _componentArray);
+
 
 
 /// =============================================

@@ -24,6 +24,7 @@
 #include "Engine/ECS/Component/Components/RendererComponents/Skybox/Skybox.h"
 #include "Engine/ECS/Component/Components/RendererComponents/Sprite/SpriteRenderer.h"
 #include "Engine/ECS/Component/Components/RendererComponents/Mesh/MeshRenderer.h"
+#include "Engine/ECS/Component/Components/RendererComponents/Mesh/DissolveMeshRenderer.h"
 #include "Engine/ECS/Component/Components/RendererComponents/SkinMesh/SkinMeshRenderer.h"
 #include "Engine/ECS/Component/Components/RendererComponents/ScreenPostEffectTag/ScreenPostEffectTag.h"
 
@@ -59,6 +60,7 @@ namespace {
 			Register<SpriteRenderer>();
 			Register<CustomMeshRenderer>();
 			Register<MeshRenderer>();
+			Register<DissolveMeshRenderer>();
 			Register<SkinMeshRenderer>();
 			Register<Line2DRenderer>();
 			Register<Line3DRenderer>();

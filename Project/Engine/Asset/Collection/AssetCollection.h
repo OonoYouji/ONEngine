@@ -15,6 +15,7 @@
 #include "Engine/Asset/Assets/Mateiral/MaterialLoader.h"
 
 #include "AssetBundle.h"
+#include <Engine/Asset/Guid/Guid.h>
 
 
 /// @brief TがIAssetを継承しているかのコンセプト
@@ -49,6 +50,22 @@ public:
 	void UnloadResources(const std::vector<std::string>& _filepaths);
 	void UnloadAssetByPath(const std::string& _filepath);
 
+
+	/// @brief アセットを取得する
+	/// @tparam T 取得したアセットの型
+	/// @param _guid アセットのGuid
+	/// @return 所得できたアセットのポインタ、見つからなかった場合はnullptr
+	template <IsAsset T>
+	const T* GetAsset(const Guid& _guid) const;
+
+	/// @brief アセットのパスを取得する
+	/// @tparam T 取得したアセットの型
+	/// @param _guid アセットのGuid
+	/// @return 取得出来たアセットのパスの参照
+	template <IsAsset T>
+	const std::string& GetAssetPath(const Guid& _guid) const;
+
+
 	/// @brief アセットの追加
 	/// @tparam T 追加するアセットの型
 	/// @param _filepath アセットへのファイルパス
@@ -81,12 +98,12 @@ private:
 	template <typename T>
 	AssetBundle<T>* GetBundle(AssetType _type) const {
 		// Noneの場合は即座に無効値を返す
-		if (_type == AssetType::None) {
+		if(_type == AssetType::None) {
 			return nullptr;
 		}
 		// 範囲外チェック、または初期化されていない(nullptr)チェック
 		size_t index = static_cast<size_t>(_type);
-		if (index >= assetBundles_.size() || !assetBundles_[index]) {
+		if(index >= assetBundles_.size() || !assetBundles_[index]) {
 			return nullptr;
 		}
 		return static_cast<AssetBundle<T>*>(assetBundles_[index].get());
@@ -106,7 +123,6 @@ public:
 	/// ===================================================
 	/// public : accessor
 	/// ===================================================
-
 
 	/// @brief アセットのパスからGuidを取得する
 	/// @param _filepath ファイルパス
@@ -158,5 +174,34 @@ public:
 	AudioClip* GetAudioClip(const std::string& _filepath);
 
 };
+
+template<IsAsset T>
+inline const T* AssetCollection::GetAsset(const Guid& _guid) const {
+	auto* bundle = GetBundle<T>(GetAssetTypeFromGuid(_guid));
+	if(!bundle) {
+		return nullptr;
+	}
+
+	auto* container = bundle->container.get();
+	int32_t index = container->GetIndex(_guid);
+	if(index != -1) {
+		return container->Get(index);
+	}
+
+	return nullptr;
+}
+
+template<IsAsset T>
+inline const std::string& AssetCollection::GetAssetPath(const Guid& _guid) const {
+	auto* bundle = GetBundle<T>(GetAssetTypeFromGuid(_guid));
+	if(!bundle) {
+		static std::string emptyString = "";
+		return emptyString;
+	}
+
+	auto* container = bundle->container.get();
+	int32_t index = container->GetIndex(_guid);
+	return container->GetKey(index);
+}
 
 } /// ONEngine

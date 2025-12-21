@@ -3,6 +3,9 @@
 /// engine
 #include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
+#include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
+#include "Engine/ECS/Component/Components/RendererComponents/Mesh/DissolveMeshRenderer.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 
 
 
@@ -58,7 +61,94 @@ void DissolveMeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, 
 		pipeline_->CreatePipeline(_dxm->GetDxDevice());
 	}
 
+	{	/// buffers
+		sbufTransforms_.Create(kMaxRenderingMeshCount_, _dxm->GetDxDevice(), _dxm->GetDxSRVHeap());
+		sbufMaterials_.Create(kMaxRenderingMeshCount_, _dxm->GetDxDevice(), _dxm->GetDxSRVHeap());
+		sbufTextureIds_.Create(kMaxRenderingMeshCount_, _dxm->GetDxDevice(), _dxm->GetDxSRVHeap());
+		sbufDissolveParams_.Create(kMaxRenderingMeshCount_, _dxm->GetDxDevice(), _dxm->GetDxSRVHeap());
+	}
+
 }
 
 void DissolveMeshRenderingPipeline::Draw(ECSGroup* _ecsGroup, CameraComponent* _camera, DxCommand* _dxCommand) {
+
+	ComponentArray<DissolveMeshRenderer>* dmrArray = _ecsGroup->GetComponentArray<DissolveMeshRenderer>();
+	if(!CheckComponentArrayEnable(dmrArray)) {
+		return;
+	}
+
+	using DMRList = std::list<DissolveMeshRenderer*>;
+	std::unordered_map<Guid, DMRList> meshCompMap;
+	for(auto& dmr : dmrArray->GetUsedComponents()) {
+		if(!CheckComponentEnable(dmr)) {
+			continue;
+		}
+
+		/// 無効なメッシュガイドの場合はスキップ
+		if(dmr->GetMeshGuid() == Guid::kInvalid) {
+			continue;
+		}
+
+		meshCompMap[dmr->GetMeshGuid()].emplace_back(dmr);
+	}
+
+
+
+	auto cmdList = _dxCommand->GetCommandList();
+	pipeline_->SetPipelineStateForCommandList(_dxCommand);
+	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(cmdList, CBV_VIEW_PROJECTION);
+
+	const Texture& frontTexture = pAssetCollection_->GetTextures().front();
+	cmdList->SetGraphicsRootDescriptorTable(SRV_TEXTURE, frontTexture.GetSRVGPUHandle());
+
+	uint32_t transformIndex = 0;
+	uint32_t instanceIndex_ = 0;
+
+	for(const auto& [meshGuid, dmrList] : meshCompMap) {
+		const Model* model = pAssetCollection_->GetAsset<Model>(meshGuid);
+		if(!model) {
+			continue;
+		}
+
+		for(const auto& dmr : dmrList) {
+
+			const GPUMaterial& gpuMat = dmr->GetGPUMaterial(pAssetCollection_);
+			sbufMaterials_.SetMappedData(transformIndex, gpuMat);
+			sbufTextureIds_.SetMappedData(transformIndex, gpuMat.baseTextureId);
+			sbufTransforms_.SetMappedData(
+				transformIndex, dmr->GetOwner()->GetTransform()->GetMatWorld()
+			);
+			sbufDissolveParams_.SetMappedData(
+				transformIndex,
+				GPUDissolveParams{
+					dmr->GetDissolveTextureId(pAssetCollection_),
+					dmr->GetDissolveThreshold()
+				}
+			);
+
+			++transformIndex;
+		}
+
+		sbufMaterials_.SRVBindForGraphicsCommandList(cmdList, SRV_MATERIAL);
+		sbufTextureIds_.SRVBindForGraphicsCommandList(cmdList, SRV_TEXTURE_ID);
+		sbufTransforms_.SRVBindForGraphicsCommandList(cmdList, SRV_TRANSFORM);
+		sbufDissolveParams_.SRVBindForGraphicsCommandList(cmdList, SRV_DISSOLVE_PARAMS);
+
+		cmdList->SetGraphicsRoot32BitConstant(CBV_INSTANCE_OFFSET, instanceIndex_, 0);
+
+		for(const auto& mesh : model->GetMeshes()) {
+			cmdList->IASetVertexBuffers(0, 1, &mesh->GetVBV());
+			cmdList->IASetIndexBuffer(&mesh->GetIBV());
+
+			cmdList->DrawIndexedInstanced(
+				static_cast<UINT>(mesh->GetIndices().size()),
+				static_cast<UINT>(dmrList.size()),
+				0, 0, 0
+			);
+		}
+
+	}
+
 }

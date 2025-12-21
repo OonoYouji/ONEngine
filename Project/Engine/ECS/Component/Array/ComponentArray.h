@@ -23,9 +23,9 @@ public:
 	virtual void RemoveComponent(size_t _index) = 0;
 	virtual size_t GetComponentIndex(IComponent* _component) = 0;
 	virtual size_t NewComponentId() = 0;
+	virtual size_t GetUsedComponentCount() = 0;
 
 protected:
-
 	std::vector<size_t> usedIndices_;    ///< 使用中のインデックスのリスト
 	std::vector<size_t> removedIndices_; ///< 削除されたインデックスのリスト
 };
@@ -34,7 +34,7 @@ protected:
 /// ///////////////////////////////////////////////////
 /// ComponentArrayクラス
 /// ///////////////////////////////////////////////////
-template <typename Comp> requires std::is_base_of_v<IComponent, Comp>
+template <IsComponent Comp>
 class ComponentArray final : public IComponentArray {
 	friend class ComponentCollection;
 public:
@@ -61,6 +61,10 @@ public:
 	/// @return _componentのIndex
 	size_t GetComponentIndex(IComponent* _component) override;
 
+	/// @brief 使用中のComponent数を取得する
+	/// @return 使用中のComponent数
+	size_t GetUsedComponentCount() override;
+
 	/// @brief 新しいComponentのIDを取得する
 	/// @return 新規Id
 	size_t NewComponentId() override;
@@ -79,23 +83,23 @@ private:
 	std::vector<Comp*> usedComponents_; ///< 使用中のコンポーネントのリスト
 };
 
-template<typename Comp> requires std::is_base_of_v<IComponent, Comp>
+template <IsComponent Comp>
 inline ComponentArray<Comp>::ComponentArray() {
 	/// n個のコンポーネントを格納できるように予約
 	const size_t initialCapacity = 1024;
 	components_.reserve(initialCapacity);
 }
 
-template<typename Comp> requires std::is_base_of_v<IComponent, Comp>
+template <IsComponent Comp>
 inline Comp* ComponentArray<Comp>::AddComponent() {
 	Comp* comp = static_cast<Comp*>(AddComponentUntyped());
 	return comp;
 }
 
-template<typename Comp> requires std::is_base_of_v<IComponent, Comp>
+template <IsComponent Comp>
 inline IComponent* ComponentArray<Comp>::AddComponentUntyped() {
 	///< 削除されたインデックスがある場合
-	if (removedIndices_.size() > 0) {
+	if(removedIndices_.size() > 0) {
 		size_t index = removedIndices_.back();
 		removedIndices_.pop_back();
 		usedIndices_.push_back(index);
@@ -123,9 +127,9 @@ inline IComponent* ComponentArray<Comp>::AddComponentUntyped() {
 	return &components_[index];
 }
 
-template<typename Comp> requires std::is_base_of_v<IComponent, Comp>
+template <IsComponent Comp>
 inline void ComponentArray<Comp>::RemoveComponent(size_t _id) {
-	if (_id >= components_.size()) {
+	if(_id >= components_.size()) {
 		Console::LogError("ComponentArray: RemoveComponent failed, index out of range.");
 		return;
 	}
@@ -137,12 +141,12 @@ inline void ComponentArray<Comp>::RemoveComponent(size_t _id) {
 	usedComponents_.erase(std::remove(usedComponents_.begin(), usedComponents_.end(), &components_[_id]), usedComponents_.end());
 }
 
-template<typename Comp> requires std::is_base_of_v<IComponent, Comp>
+template <IsComponent Comp>
 inline size_t ComponentArray<Comp>::GetComponentIndex(IComponent* _component) {
 
-	for (size_t i = 0; i < components_.size(); i++) {
+	for(size_t i = 0; i < components_.size(); i++) {
 		const Comp& comp = components_[i];
-		if (comp.id == _component->id) {
+		if(comp.id == _component->id) {
 			return i;
 		}
 	}
@@ -150,12 +154,17 @@ inline size_t ComponentArray<Comp>::GetComponentIndex(IComponent* _component) {
 	return 0;
 }
 
-template<typename Comp> requires std::is_base_of_v<IComponent, Comp>
+template <IsComponent Comp>
+inline size_t ComponentArray<Comp>::GetUsedComponentCount() {
+	return usedComponents_.size();
+}
+
+template <IsComponent Comp>
 inline size_t ComponentArray<Comp>::NewComponentId() {
 	return static_cast<size_t>(components_.size() - 1);
 }
 
-template<typename Comp> requires std::is_base_of_v<IComponent, Comp>
+template <IsComponent Comp>
 inline std::vector<Comp*>& ComponentArray<Comp>::GetUsedComponents() {
 	return usedComponents_;
 }

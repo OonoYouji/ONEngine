@@ -3,13 +3,18 @@
 /// engine
 #include "../../Interface/IRenderingPipeline.h"
 
+/// engine
+#include "../../Interface/IRenderingPipeline.h"
+#include "Engine/Graphics/Buffer/StructuredBuffer.h"
+#include "Engine/Graphics/Buffer/Data/GPUMaterial.h"
+#include "Engine/Core/Utility/Math/Matrix4x4.h"
+
 namespace ONEngine {
 
 class AssetCollection;
 
 /// ///////////////////////////////////////////////////
 /// DissolveMeshRendererのデータを使い描画を行うパイプライン
-/// ///////////////////////////////////////////////////
 class DissolveMeshRenderingPipeline : public IRenderingPipeline {
 
 	enum ROOT_PARAM {
@@ -20,6 +25,11 @@ class DissolveMeshRenderingPipeline : public IRenderingPipeline {
 		SRV_TEXTURE_ID,
 		SRV_TEXTURE,
 		CBV_INSTANCE_OFFSET,
+	};
+
+	struct GPUDissolveParams {
+		uint32_t textureId;
+		float threshold;
 	};
 
 
@@ -42,6 +52,12 @@ private:
 
 	AssetCollection* pAssetCollection_ = nullptr;
 
+	const uint32_t kMaxRenderingMeshCount_ = 1024; ///< 最大描画メッシュ数
+
+	StructuredBuffer<Matrix4x4> sbufTransforms_;
+	StructuredBuffer<GPUMaterial> sbufMaterials_;
+	StructuredBuffer<uint32_t> sbufTextureIds_;
+	StructuredBuffer<GPUDissolveParams> sbufDissolveParams_;
 };
 
 } /// namespace ONEngine

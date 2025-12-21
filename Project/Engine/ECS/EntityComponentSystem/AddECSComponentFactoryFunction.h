@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "EntityComponentSystem.h"
 #include "Engine/ECS/Component/Collection/ComponentCollection.h"
@@ -19,6 +19,7 @@
 /// renderer
 #include "Engine/ECS/Component/Components/RendererComponents/Skybox/Skybox.h"
 #include "Engine/ECS/Component/Components/RendererComponents/Mesh/MeshRenderer.h"
+#include "Engine/ECS/Component/Components/RendererComponents/Mesh/DissolveMeshRenderer.h"
 #include "Engine/ECS/Component/Components/RendererComponents/Mesh/CustomMeshRenderer.h"
 #include "Engine/ECS/Component/Components/RendererComponents/SkinMesh/SkinMeshRenderer.h"
 #include "Engine/ECS/Component/Components/RendererComponents/Sprite/SpriteRenderer.h"
@@ -44,6 +45,7 @@ inline void AddComponentFactoryFunction(ComponentCollection* _compCollection) {
 
 	/// renderer
 	_compCollection->RegisterComponentFactory<MeshRenderer>();
+	_compCollection->RegisterComponentFactory<DissolveMeshRenderer>();
 	_compCollection->RegisterComponentFactory<CustomMeshRenderer>();
 	_compCollection->RegisterComponentFactory<SkinMeshRenderer>();
 	_compCollection->RegisterComponentFactory<SpriteRenderer>();
