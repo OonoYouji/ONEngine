@@ -26,10 +26,6 @@ void ONEngine::ShowGUI(DissolveMeshRenderer* _dmr, AssetCollection* _ac) {
 		}
 	}
 
-	/// material
-	Editor::ImMathf::MaterialEdit("Material##MeshRenderer", &_dmr->material_, _ac);
-
-
 	/// dissolve texture
 	const float texturePreviewSize = 64.0f;
 	const std::string dissolveTexName = _ac->GetAssetPath<Texture>(_dmr->dissolveTexture_);
@@ -41,6 +37,12 @@ void ONEngine::ShowGUI(DissolveMeshRenderer* _dmr, AssetCollection* _ac) {
 			_dmr->dissolveTexture_ = payload->guid;
 		}
 	}
+
+	Editor::SliderFloat("Dissolve Threshold", _dmr->dissolveThreshold_, 0.0f, 1.0f);
+
+	/// material
+	Editor::ImMathf::MaterialEdit("Material##MeshRenderer", &_dmr->material_, _ac);
+
 
 }
 
