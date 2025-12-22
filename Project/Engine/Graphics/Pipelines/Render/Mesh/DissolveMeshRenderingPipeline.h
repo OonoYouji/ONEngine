@@ -29,6 +29,7 @@ class DissolveMeshRenderingPipeline : public IRenderingPipeline {
 
 	struct GPUDissolveParams {
 		uint32_t textureId;
+		uint32_t dissolveCompare;
 		float threshold;
 	};
 

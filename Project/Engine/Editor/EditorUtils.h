@@ -6,6 +6,7 @@
 /// editor
 #include "Engine/Editor/Math/AssetDebugger.h"
 #include "Engine/Editor/Math/ImGuiMath.h"
+#include "Engine/Editor/Math/Combo/Combo.h"
 #include "Engine/Editor/Math/DragDrop/DragDrop.h"
 #include "Engine/Editor/Math/Preview/Texture2DPreview.h"
 #include "Engine/Editor/Math/Pivot/Pivot.h"

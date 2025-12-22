@@ -1,5 +1,8 @@
 ﻿#include "DissolveMeshRenderer.h"
 
+/// externals
+#include <magic_enum/magic_enum.hpp>
+
 /// engine
 #include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/ECS/Entity/GameEntity/GameEntity.h"
@@ -38,7 +41,11 @@ void ONEngine::ShowGUI(DissolveMeshRenderer* _dmr, AssetCollection* _ac) {
 		}
 	}
 
+	/// compare
+	Editor::Combo<DissolveCompare>("Dissolve Compare", _dmr->dissolveCompare_);
+
 	Editor::SliderFloat("Dissolve Threshold", _dmr->dissolveThreshold_, 0.0f, 1.0f);
+
 
 	/// material
 	Editor::ImMathf::MaterialEdit("Material##MeshRenderer", &_dmr->material_, _ac);
@@ -104,6 +111,10 @@ GPUMaterial DissolveMeshRenderer::GetGPUMaterial(AssetCollection* _ac) const {
 	}
 
 	return result;
+}
+
+uint32_t ONEngine::DissolveMeshRenderer::GetDissolveCompare() const {
+	return static_cast<uint32_t>(dissolveCompare_);
 }
 
 

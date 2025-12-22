@@ -1,4 +1,4 @@
-#include "Mesh.hlsli"
+﻿#include "Mesh.hlsli"
 
 #include "../../ConstantBufferData/Material.hlsli"
 
@@ -7,14 +7,19 @@ struct TextureId {
 };
 
 struct DissolveParams {
-    uint id;
-    float threshold;
+	uint id;
+	uint dissolveCompare;
+	float threshold;
 };
 
 
-StructuredBuffer<Material>       materials      : register(t0);
+static const uint DISSOLVE_COMPARE_LESS = 0;
+static const uint DISSOLVE_COMPARE_GREATER = 1;
+
+
+StructuredBuffer<Material> materials : register(t0);
 StructuredBuffer<DissolveParams> dissolveParams : register(t1);
-StructuredBuffer<TextureId>      textureIds     : register(t2);
+StructuredBuffer<TextureId> textureIds : register(t2);
 
 Texture2D<float4> textures[] : register(t3);
 SamplerState textureSampler : register(s0);
@@ -23,13 +28,18 @@ SamplerState textureSampler : register(s0);
 PSOutput main(VSOutput input) {
 	PSOutput output;
 
-    DissolveParams dissolveParam = dissolveParams[input.instanceId];
-    float4 dissolveTextureColor = textures[dissolveParam.id].Sample(textureSampler, input.uv);
-    if (dissolveTextureColor.r < dissolveParam.threshold) {
-        discard;
-    }
+	DissolveParams dissolveParam = dissolveParams[input.instanceId];
+	float4 dissolveTextureColor = textures[dissolveParam.id].Sample(textureSampler, input.uv);
+	if (dissolveParam.dissolveCompare == DISSOLVE_COMPARE_LESS) {
+		if (dissolveTextureColor.a > dissolveParam.threshold) {
+			discard;
+		}
+	} else if (dissolveParam.dissolveCompare == DISSOLVE_COMPARE_GREATER) {
+		if (dissolveTextureColor.a < dissolveParam.threshold) {
+			discard;
+		}
+	}
     
-
 	Material material = materials[input.instanceId];
 	float2 uv = mul(float3(input.uv, 1), MatUVTransformToMatrix(material.uvTransform)).xy;
 	float4 textureColor = textures[textureIds[input.instanceId].id].Sample(textureSampler, uv);

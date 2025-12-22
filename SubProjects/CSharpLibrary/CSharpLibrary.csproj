@@ -69,7 +69,6 @@
     <Compile Include="Scripts\Engine\Core\Utility\Math\Vector4.cs" />
     <Compile Include="Scripts\Engine\Core\Utility\Time\Time.cs" />
     <Compile Include="Scripts\Engine\ECS\Components\Component.cs" />
-    <Compile Include="Scripts\Engine\ECS\Components\ComponentCollection.cs" />
     <Compile Include="Scripts\Engine\ECS\Components\Compute\AudioSource.cs" />
     <Compile Include="Scripts\Engine\ECS\Components\Renderer\MeshRenderer.cs" />
     <Compile Include="Scripts\Engine\ECS\Components\Renderer\SkinMeshRenderer.cs" />
@@ -79,7 +78,7 @@
     <Compile Include="Scripts\Engine\ECS\Entity\Entity.cs" />
     <Compile Include="Scripts\Engine\Graphics\Material.cs" />
     <Compile Include="Scripts\Engine\Scene\SceneManager.cs" />
-    <Compile Include="Scripts\Engine\ECS\Components\Transform.cs" />
+    <Compile Include="Scripts\Engine\ECS\Components\Compute\Transform.cs" />
     <Compile Include="Scripts\Game\AttachObjectToJoint.cs" />
     <Compile Include="Scripts\Game\Billboard.cs" />
     <Compile Include="Scripts\Game\Breathe.cs" />

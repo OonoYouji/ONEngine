@@ -16,6 +16,15 @@ class DissolveMeshRenderer;
 
 
 /// ///////////////////////////////////////////////////
+/// ディゾルブの比較方法
+/// ///////////////////////////////////////////////////
+enum class DissolveCompare {
+	LessEqual,
+	GreaterEqual
+};
+
+
+/// ///////////////////////////////////////////////////
 /// メッシュをディゾルブ表現で表示するためのコンポーネント
 /// ///////////////////////////////////////////////////
 class DissolveMeshRenderer : public IRenderComponent {
@@ -41,6 +50,7 @@ private:
 
 	float dissolveThreshold_ = 0.5f;
 	
+	DissolveCompare dissolveCompare_ = DissolveCompare::LessEqual;
 
 public:
 	/// ===========================================
@@ -55,6 +65,7 @@ public:
 
 	GPUMaterial GetGPUMaterial(class AssetCollection* _ac) const;
 
+	uint32_t GetDissolveCompare() const;
 };
 
 } /// namespace ONEngine

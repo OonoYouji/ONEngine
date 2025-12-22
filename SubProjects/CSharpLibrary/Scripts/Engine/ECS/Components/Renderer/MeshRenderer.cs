@@ -12,7 +12,7 @@ class MeshRenderer : Component {
 			return InternalGetMeshName(nativeHandle);
 		}
 		set {
-			InternalSetMeshName(nativeHandle, value);
+			//InternalSetMeshName(nativeHandle, value);
 		}
 	}
 
@@ -21,7 +21,7 @@ class MeshRenderer : Component {
 			return InternalGetColor(nativeHandle);
 		}
 		set {
-			InternalSetColor(nativeHandle, value);
+			//InternalSetColor(nativeHandle, value);
 		}
 	}
 
@@ -30,7 +30,7 @@ class MeshRenderer : Component {
 			return InternalGetPostEffectFlags(nativeHandle);
 		}
 		set {
-			InternalSetPostEffectFlags(nativeHandle, value);
+			//InternalSetPostEffectFlags(nativeHandle, value);
 		}
 	}
 

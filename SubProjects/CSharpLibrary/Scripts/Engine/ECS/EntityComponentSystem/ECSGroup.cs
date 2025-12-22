@@ -1,7 +1,8 @@
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System;
 
 public class ECSGroup {
 	///////////////////////////////////////////////////////////////////////////////////////////
@@ -105,10 +106,8 @@ public class ECSGroup {
 			return;
 		}
 
-		Debug.Log("//////////////////////////////////////////////////////////////////////////////////////////////////");
-		Debug.Log("ECSGroup.UpdateEntities - Updating entities in group: " + groupName + ", EntityCount: " + entities_.Count);
-		Debug.Log($"gen0:{GC.CollectionCount(0)} gen1:{GC.CollectionCount(1)} gen2:{GC.CollectionCount(2)}");
-		Debug.Log("//////////////////////////////////////////////////////////////////////////////////////////////////");
+		var sw = Stopwatch.StartNew();
+
 
 		/// 生成、初期化の呼び出しを行う
 		CallAwake();
@@ -137,6 +136,16 @@ public class ECSGroup {
 				comp.End();
 			}
 		}
+
+
+
+		Debug.Log("//////////////////////////////////////////////////////////////////////////////////////////////////");
+		Debug.Log("ECSGroup.UpdateEntities - Updating entities in group: " + groupName + ", EntityCount: " + entities_.Count);
+		Debug.Log($"gen0:{GC.CollectionCount(0)} gen1:{GC.CollectionCount(1)} gen2:{GC.CollectionCount(2)}");
+		sw.Stop();
+		double ms = sw.ElapsedTicks * 1000.0 / Stopwatch.Frequency;
+		Debug.Log("Update Time (ms): " + ms);
+		Debug.Log("//////////////////////////////////////////////////////////////////////////////////////////////////");
 	}
 
 
