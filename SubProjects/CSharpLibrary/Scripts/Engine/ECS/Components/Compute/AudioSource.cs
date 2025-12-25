@@ -18,18 +18,18 @@ public class AudioSource : Component {
 	///////////////////////////////////////////////////////////////////////////////////////////
 	/// method
 	///////////////////////////////////////////////////////////////////////////////////////////
-	public override void Begin() {
-		InternalSetParams(nativeHandle, volume, pitch);
-	}
+	//public override void Begin() {
+	//	InternalSetParams(nativeHandle, volume, pitch);
+	//}
 
-	public override void End() {
-		InternalSetParams(nativeHandle, volume, pitch);
+	//public override void End() {
+	//	InternalSetParams(nativeHandle, volume, pitch);
 		
-		if (isPlayRequest_) {
-			isPlayRequest_ = false;
-			InternalPlayOneShot(nativeHandle, volume, pitch, path);
-		}
-	}
+	//	if (isPlayRequest_) {
+	//		isPlayRequest_ = false;
+	//		InternalPlayOneShot(nativeHandle, volume, pitch, path);
+	//	}
+	//}
 
 	public void Play() {
 		isPlayRequest_ = true;

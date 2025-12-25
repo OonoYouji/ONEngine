@@ -12,10 +12,10 @@ public class ECSGroup {
 	public string groupName;
 	private bool enable_; //!< このGroupの有効/無効フラグ
 	private Dictionary<int, Entity> entities_ = new Dictionary<int, Entity>();
+	public ComponentCollection componentCollection = new ComponentCollection();
 
 	/// 生成処理、初期化処理の呼び出し用リスト
 	private List<Entity> awakeList_ = new List<Entity>();
-
 	private List<Entity> initList_ = new List<Entity>();
 
 
@@ -28,6 +28,7 @@ public class ECSGroup {
 	/// </summary>
 	/// <param name="_groupName"></param>
 	public ECSGroup(string _groupName) {
+		ComponentBatchManager.Initialize();
 		groupName = _groupName;
 		enable_ = true;
 	}
@@ -40,14 +41,12 @@ public class ECSGroup {
 	/// c/c++側から呼び出すエンティティの追加関数
 	/// </summary>
 	public void AddEntity(int _id) {
-		/// 引数の_idがすでに存在する場合はエラー
-		if (entities_.ContainsKey(_id)) {
-			// Debug.LogError("ECSGroup.AddEntity - Entity with ID: " + _id + " already exists in group: " + groupName);
+		//Debug.LogInfo("ECSGroup.AddEntity - Adding entity with ID: " + _id + ", Group Name: " + groupName);
+		if(entities_.ContainsKey(_id)) {
+			//Debug.LogError("ECSGroup.AddEntity - Entity already exists with ID: " + _id + ", Group Name: " + groupName);
 			return;
 		}
 
-
-		Debug.LogInfo("ECSGroup.AddEntity - Adding entity with ID: " + _id + ", Group Name: " + groupName);
 
 		Entity entity = new Entity(_id, this);
 		entities_.Add(_id, entity);
@@ -63,13 +62,12 @@ public class ECSGroup {
 	public void AddScript(int _entityId, MonoScript _behavior, bool _enable) {
 		Entity entity;
 		if (entities_.TryGetValue(_entityId, out entity)) {
-			Debug.LogInfo("ECSGroup.AddScript - Adding script to Entity ID: " + _entityId + ", Script Name: "
-						  + _behavior.GetType().Name);
+			//Debug.LogInfo("ECSGroup.AddScript - Adding script to Entity ID: " + _entityId + ", Script Name: " + _behavior.GetType().Name);
 			_behavior.CreateBehavior(_entityId, _behavior.GetType().Name, this);
 			_behavior.enable = _enable;
 			entity.AddScript(_behavior);
 		} else {
-			Debug.LogError("Entity.AddScript - Entity not found with ID: " + _entityId);
+			//Debug.LogError("Entity.AddScript - Entity not found with ID: " + _entityId);
 		}
 	}
 
@@ -77,8 +75,7 @@ public class ECSGroup {
 	/// c#側から呼び出すエンティティの生成関数
 	/// </summary>
 	public Entity CreateEntity(string _prefabName) {
-		Debug.LogInfo("ECSGroup.CreateEntity - Creating entity with prefab: " + _prefabName + ", Group Name: "
-					  + groupName);
+		//Debug.LogInfo("ECSGroup.CreateEntity - Creating entity with prefab: " + _prefabName + ", Group Name: " + groupName);
 
 		int id = 0;
 		InternalCreateEntity(out id, _prefabName, groupName);
@@ -87,8 +84,7 @@ public class ECSGroup {
 
 		awakeList_.Add(entity); //!< 生成されたエンティティを生成リストに追加
 		initList_.Add(entity); //!< 初期化リストにも追加
-		Debug.Log("ECSGroup.CreateEntity - AwakeListCount: " + awakeList_.Count + ", InitListCount: "
-				  + initList_.Count);
+		//Debug.Log("ECSGroup.CreateEntity - AwakeListCount: " + awakeList_.Count + ", InitListCount: " + initList_.Count);
 
 		return entity;
 	}
@@ -108,16 +104,11 @@ public class ECSGroup {
 
 		var sw = Stopwatch.StartNew();
 
-
 		/// 生成、初期化の呼び出しを行う
 		CallAwake();
 		CallInitialize();
 
-		foreach (Entity entity in entities_.Values) {
-			foreach (Component comp in entity.GetComponents()) {
-				comp.Begin();
-			}
-		}
+		ComponentBatchManager.ReceiveAllBatches(componentCollection, groupName);
 
 		foreach (Entity entity in entities_.Values) {
 			if (!CheckEnable(entity)) {
@@ -131,13 +122,7 @@ public class ECSGroup {
 			}
 		}
 
-		foreach (Entity entity in entities_.Values) {
-			foreach (Component comp in entity.GetComponents()) {
-				comp.End();
-			}
-		}
-
-
+		ComponentBatchManager.SendAllBatches(componentCollection, groupName);
 
 		Debug.Log("//////////////////////////////////////////////////////////////////////////////////////////////////");
 		Debug.Log("ECSGroup.UpdateEntities - Updating entities in group: " + groupName + ", EntityCount: " + entities_.Count);
@@ -219,7 +204,7 @@ public class ECSGroup {
 		}
 
 #if DEBUG
-		Debug.LogError("ECSGroup.GetEntity - Entity not found with ID: " + _id + ", Group Name: " + groupName);
+		//Debug.LogError("ECSGroup.GetEntity - Entity not found with ID: " + _id + ", Group Name: " + groupName);
 #endif
 		return null;
 	}
