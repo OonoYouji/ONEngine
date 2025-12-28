@@ -200,11 +200,9 @@ private:
 	/// private : objects
 	/// ===========================================
 
-	/*
-	*  [ 必要なデータ ]
-	* Chunkの配列
-	* １つあたりのチャンクの大きさ (x*y*z)
-	*/
+	/// --------------- Other Class Pointers --------------- ///
+	DxSRVHeap* pDxSRVHeap_;
+
 
 	std::vector<Chunk> chunks_; ///< チャンクの配列
 

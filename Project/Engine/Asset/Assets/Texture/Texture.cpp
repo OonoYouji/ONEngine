@@ -459,6 +459,10 @@ D3D12_GPU_DESCRIPTOR_HANDLE Texture::GetSRVGPUHandle() const {
 	return srvHandle_->gpuHandle;
 }
 
+bool ONEngine::Texture::HasSRVHandle() const {
+	return srvHandle_.has_value();
+}
+
 uint32_t Texture::GetUAVDescriptorIndex() const {
 	Assert(uavHandle_.has_value());
 	return uavHandle_->descriptorIndex;
@@ -472,6 +476,10 @@ D3D12_CPU_DESCRIPTOR_HANDLE Texture::GetUAVCPUHandle() const {
 D3D12_GPU_DESCRIPTOR_HANDLE Texture::GetUAVGPUHandle() const {
 	Assert(uavHandle_.has_value());
 	return uavHandle_->gpuHandle;
+}
+
+bool ONEngine::Texture::HasUAVHandle() const {
+	return uavHandle_.has_value();
 }
 
 const DxResource& Texture::GetDxResource() const {
