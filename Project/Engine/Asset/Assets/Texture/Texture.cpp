@@ -341,18 +341,35 @@ void Texture::OutputTexture3D(const std::wstring& _filename, DxDevice* _dxDevice
 	DirectX::ScratchImage volumeScratch;
 	volumeScratch.Initialize3D(desc.Format, desc.Width, desc.Height, desc.DepthOrArraySize, desc.MipLevels);
 
+	// コピー元（Readbackバッファ）のRowPitch
+	const size_t srcRowPitch = static_cast<size_t>(footprint.Footprint.RowPitch);
+	// スライスごとのサイズ（パディング込み）
+	const size_t srcSlicePitch = srcRowPitch * footprint.Footprint.Height;
+
+	const uint8_t* srcStart = reinterpret_cast<uint8_t*>(mapped) + footprint.Offset;
+
 	for (UINT z = 0; z < desc.DepthOrArraySize; z++) {
-		size_t sliceOffset = footprint.Offset + z * footprint.Footprint.RowPitch * footprint.Footprint.Height;
+		// コピー先のイメージ情報を取得
+		const DirectX::Image* dstImage = volumeScratch.GetImage(0, 0, z);
 
-		DirectX::Image img = {};
-		img.format = desc.Format;
-		img.width = static_cast<size_t>(desc.Width);
-		img.height = static_cast<size_t>(desc.Height);
-		img.rowPitch = footprint.Footprint.RowPitch;
-		img.slicePitch = footprint.Footprint.RowPitch * desc.Height;
-		img.pixels = reinterpret_cast<uint8_t*>(mapped) + sliceOffset;
+		// 現在のスライスの先頭ポインタ
+		const uint8_t* srcSlicePtr = srcStart + (z * srcSlicePitch);
+		uint8_t* dstSlicePtr = dstImage->pixels;
 
-		memcpy(volumeScratch.GetImage(0, 0, z)->pixels, img.pixels, img.slicePitch);
+		// 1行あたりの有効バイト数（フォーマットに基づく最小サイズ）
+		// dstImage->rowPitch と srcRowPitch の小さい方、あるいは明示的に計算しても良いですが
+		// 基本的には dstImage->width とフォーマットから計算されるサイズをコピーします。
+		// 安全のため、コピー先とコピー元の小さい方に合わせるのが定石です。
+		const size_t bytesPerRow = std::min<size_t>(dstImage->rowPitch, srcRowPitch);
+
+		// 高さ（行）ループ
+		for (size_t y = 0; y < dstImage->height; ++y) {
+			memcpy(
+				dstSlicePtr + (y * dstImage->rowPitch), // コピー先アドレス
+				srcSlicePtr + (y * srcRowPitch),        // コピー元アドレス（256バイトアラインメント考慮）
+				bytesPerRow                             // パディングを含まない有効データサイズ
+			);
+		}
 	}
 
 	DirectX::SaveToDDSFile(
@@ -364,6 +381,7 @@ void Texture::OutputTexture3D(const std::wstring& _filename, DxDevice* _dxDevice
 	);
 
 	readback.Get()->Unmap(0, nullptr);
+	volumeScratch.Release();
 }
 
 

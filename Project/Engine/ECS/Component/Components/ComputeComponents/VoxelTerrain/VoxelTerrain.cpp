@@ -234,6 +234,8 @@ void VoxelTerrain::TransitionTextureStates(DxCommand* _dxCommand, AssetCollectio
 	std::vector<DxResource*> resources;
 	resources.reserve(maxChunkCount_);
 	for (size_t i = 0; i < maxChunkCount_; i++) {
+		const Guid& guid = chunks_[i].texture3DId;
+		chunks_[i].pTexture = _assetCollection->GetTextureFromGuid(guid);
 		if (chunks_[i].pTexture) {
 			resources.push_back(&chunks_[i].pTexture->GetDxResource());
 		}
@@ -287,7 +289,7 @@ void VoxelTerrain::SetupEditorBuffers(ID3D12GraphicsCommandList* _cmdList, const
 
 	/// ChunkArrayの設定
 	for (size_t i = 0; i < maxChunkCount_; i++) {
-		sBufferEditorChunks_.SetMappedData(i, GPUData::Chunk{ static_cast<uint32_t>(chunks_[i].uavTexture.GetUAVDescriptorIndex())});
+		sBufferEditorChunks_.SetMappedData(i, GPUData::Chunk{ static_cast<uint32_t>(chunks_[i].uavTexture.GetUAVDescriptorIndex()) });
 	}
 	/// Chunk
 	sBufferEditorChunks_.SRVBindForComputeCommandList(_cmdList, _rootParamIndices[3]);
