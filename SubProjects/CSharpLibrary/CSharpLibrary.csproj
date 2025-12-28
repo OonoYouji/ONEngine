@@ -69,6 +69,8 @@
     <Compile Include="Scripts\Engine\Core\Utility\Math\Vector4.cs" />
     <Compile Include="Scripts\Engine\Core\Utility\Time\Time.cs" />
     <Compile Include="Scripts\Engine\ECS\Components\Component.cs" />
+    <Compile Include="Scripts\Engine\ECS\Components\ComponentBatchManager.cs" />
+    <Compile Include="Scripts\Engine\ECS\Components\ComponentCollection.cs" />
     <Compile Include="Scripts\Engine\ECS\Components\Compute\AudioSource.cs" />
     <Compile Include="Scripts\Engine\ECS\Components\Renderer\MeshRenderer.cs" />
     <Compile Include="Scripts\Engine\ECS\Components\Renderer\SkinMeshRenderer.cs" />

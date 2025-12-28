@@ -107,6 +107,7 @@ public:
 
 namespace MonoScriptEngineUtils {
 	MonoMethod* FindMethodInClassOrParents(MonoClass* _class, const char* _methodName, int _paramCount);
+	MonoClassField* FindFieldRecursive(MonoClass* _class, const char* _name);
 } // namespace MonoScriptEngineUtils
 
 } /// ONEngine

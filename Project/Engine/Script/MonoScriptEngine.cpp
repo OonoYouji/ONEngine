@@ -14,8 +14,8 @@ using namespace ONEngine;
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/Core/Utility/FileSystem/FileSystem.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
+#include "Engine/ECS/EntityComponentSystem/ComponentApplyFunc.h"
 #include "InternalCalls/AddInternalMethods.h"
-
 
 namespace {
 	void LogCallback(const char* _log_domain, const char* _log_level, const char* _message, mono_bool _fatal, void*) {
@@ -129,6 +129,7 @@ void MonoScriptEngine::RegisterFunctions() {
 	AddInputInternalCalls();
 
 	AddSceneInternalCalls();
+	ComponentApplyFuncs::Initialize(image_);
 }
 
 void MonoScriptEngine::HotReload() {
@@ -370,6 +371,17 @@ MonoMethod* MonoScriptEngineUtils::FindMethodInClassOrParents(MonoClass* _class,
 		MonoMethod* method = mono_class_get_method_from_name(_class, _methodName, _paramCount);
 		if (method)
 			return method;
+		_class = mono_class_get_parent(_class);
+	}
+	return nullptr;
+}
+
+MonoClassField* ONEngine::MonoScriptEngineUtils::FindFieldRecursive(MonoClass* _class, const char* _name) {
+	while(_class) {
+		MonoClassField* field = mono_class_get_field_from_name(_class, _name);
+		if(field) {
+			return field;
+		}
 		_class = mono_class_get_parent(_class);
 	}
 	return nullptr;

@@ -52,6 +52,11 @@ public:
 	/// @brief Interface型のComponentを返す
 	IComponent* AddComponentUntyped() override;
 
+	/// @brief Comp型の_index番目のComponentを取得する
+	/// @param _index 配列のインデックス
+	/// @return 取得したComponentのポインタ、失敗したら nullptr
+	Comp* GetComponent(size_t _index);
+
 	/// @brief _index番目のComponentを削除する
 	/// @param _index ComponentArrayのインデックス
 	void RemoveComponent(size_t _index) override;
@@ -125,6 +130,15 @@ inline IComponent* ComponentArray<Comp>::AddComponentUntyped() {
 
 	usedComponents_.push_back(&components_[index]); ///< 使用中のコンポーネントリストに追加
 	return &components_[index];
+}
+
+template<IsComponent Comp>
+inline Comp* ComponentArray<Comp>::GetComponent(size_t _index) {
+	if(_index >= components_.size()) {
+		Console::LogError("ComponentArray: GetComponent failed, index out of range.");
+		return nullptr;
+	}
+	return &components_[_index];
 }
 
 template <IsComponent Comp>

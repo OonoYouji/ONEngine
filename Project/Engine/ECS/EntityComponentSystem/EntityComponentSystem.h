@@ -118,14 +118,14 @@ namespace MonoInternalMethods {
 	/// @param _monoTypeName Componentの型名
 	/// @param _groupName ECSGroupの名前
 	/// @return 追加したComponentのポインタの整数
-	uint64_t InternalAddComponent(int32_t _entityId, MonoString* _monoTypeName, MonoString* _groupName);
+	uint64_t InternalAddComponent(int32_t _entityId, MonoString* _monoTypeName, MonoString* _groupName, uint32_t* _compId);
 
 	/// @brief Componentの取得
 	/// @param _entityId 対象のエンティティID
 	/// @param _monoTypeName Componentの型名
 	/// @param _groupName ECSGroupの名前
 	/// @return ゲットしたComponentのポインタの整数
-	uint64_t InternalGetComponent(int32_t _entityId, MonoString* _monoTypeName, MonoString* _groupName);
+	uint64_t InternalGetComponent(int32_t _entityId, MonoString* _monoTypeName, MonoString* _groupName, uint32_t* _compId);
 
 	/// @brief エンティティの名前の取得
 	/// @param _entityId 対象のエンティティID
@@ -200,6 +200,11 @@ namespace MonoInternalMethods {
 	/// @param _enable 設定する値
 	/// @param _ecsGroupName ECSGroupの名前
 	void InternalSetEnable(int32_t _entityId, bool _enable, MonoString* _ecsGroupName);
+
+
+	void InternalSetBatch(MonoReflectionType* _typeReflection, MonoArray* _batchArray, int _count, MonoString* _ecsGroupName);
+	void InternalGetBatch(MonoReflectionType* _typeReflection, MonoArray* _batchArray, int _count, MonoString* _ecsGroupName);
+
 
 } // namespace MonoInternalMethods
 
