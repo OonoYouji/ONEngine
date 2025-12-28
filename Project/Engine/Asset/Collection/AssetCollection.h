@@ -204,4 +204,12 @@ inline const std::string& AssetCollection::GetAssetPath(const Guid& _guid) const
 	return container->GetKey(index);
 }
 
+//template<IsAsset T>
+//inline void AssetCollection::AddAsset(const std::string& _filepath, T&& _asset) {
+//	auto* bundle = GetBundle<T>(GetAssetTypeFromGuid(_asset.guid));
+//	if (bundle) {
+//		bundle->container->Add(_filepath, std::move(_asset));
+//	}
+//}
+
 } /// ONEngine
