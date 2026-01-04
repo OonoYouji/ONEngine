@@ -151,6 +151,10 @@ public class Entity {
 			Debug.LogError("Failed to create component: " + typeName + " (Entity ID: " + entityId_ + ")");
 		}
 
+		Debug.Log("---");
+		Debug.Log("--- add component: \n     - component id: " + components_[typeName].compId);
+		Debug.Log("---");
+
 		ecsGroup_.componentCollection.AddComponent(comp);
 		return comp;
 	}

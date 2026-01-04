@@ -52,6 +52,7 @@ void ComponentApplyFuncs::ApplyTransform(void* _element, ECSGroup* _ecsGroup) {
 		t->SetPosition(data->position);
 		t->SetRotate(data->rotate);
 		t->SetScale(data->scale);
+		t->Update();
 	}
 }
 

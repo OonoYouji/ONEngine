@@ -198,7 +198,7 @@ public class ECSGroup {
 	public Entity GetEntity(int _id) {
 		if (entities_.TryGetValue(_id, out Entity entity)) {
 #if DEBUG
-			Debug.Log("ECSGroup.GetEntity - Entity found with ID: " + entity.Id + ", Entity Name: " + entity.name);
+			//Debug.Log("ECSGroup.GetEntity - Entity found with ID: " + entity.Id + ", Entity Name: " + entity.name);
 #endif
 			return entity;
 		}
