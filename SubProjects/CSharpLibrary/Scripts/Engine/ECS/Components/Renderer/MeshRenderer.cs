@@ -6,31 +6,43 @@ using System.Threading.Tasks;
 using System.Runtime.CompilerServices;
 
 class MeshRenderer : Component {
+	public struct BatchData {
+		public ulong nativeHandle;
+		public string meshPath;
+		public Vector4 color;
+		public uint postEffectFlags;
+	}
+
+	BatchData batchData;
+	public BatchData GetBatchData() {
+		return batchData;
+	}
+
 
 	public string meshPath {
 		get {
-			return InternalGetMeshName(nativeHandle);
+			return batchData.meshPath;
 		}
 		set {
-			InternalSetMeshName(nativeHandle, value);
+			batchData.meshPath = value;
 		}
 	}
 
 	public Vector4 color {
 		get {
-			return InternalGetColor(nativeHandle);
+			return batchData.color;
 		}
 		set {
-			InternalSetColor(nativeHandle, value);
+			batchData.color = value;
 		}
 	}
 
 	public uint postEffectFlags {
 		get {
-			return InternalGetPostEffectFlags(nativeHandle);
+			return batchData.postEffectFlags;
 		}
 		set {
-			InternalSetPostEffectFlags(nativeHandle, value);
+			batchData.postEffectFlags = value;
 		}
 	}
 
@@ -38,22 +50,22 @@ class MeshRenderer : Component {
 	/// internal methods
 	/// -------------------------------------------
 
-	[MethodImpl(MethodImplOptions.InternalCall)]
-	static extern string InternalGetMeshName(ulong _nativeHandle);
+	//[MethodImpl(MethodImplOptions.InternalCall)]
+	//static extern string InternalGetMeshName(ulong _nativeHandle);
 
-	[MethodImpl(MethodImplOptions.InternalCall)]
-	static extern void InternalSetMeshName(ulong _nativeHandle, string _meshName);
+	//[MethodImpl(MethodImplOptions.InternalCall)]
+	//static extern void InternalSetMeshName(ulong _nativeHandle, string _meshName);
 
-	[MethodImpl(MethodImplOptions.InternalCall)]
-	static extern Vector4 InternalGetColor(ulong _nativeHandle);
+	//[MethodImpl(MethodImplOptions.InternalCall)]
+	//static extern Vector4 InternalGetColor(ulong _nativeHandle);
 
-	[MethodImpl(MethodImplOptions.InternalCall)]
-	static extern void InternalSetColor(ulong _nativeHandle, Vector4 _color);
+	//[MethodImpl(MethodImplOptions.InternalCall)]
+	//static extern void InternalSetColor(ulong _nativeHandle, Vector4 _color);
 
-	[MethodImpl(MethodImplOptions.InternalCall)]
-	static extern uint InternalGetPostEffectFlags(ulong _nativeHandle);
-	
-	[MethodImpl(MethodImplOptions.InternalCall)]
-	static extern void InternalSetPostEffectFlags(ulong _nativeHandle, uint _flags);
+	//[MethodImpl(MethodImplOptions.InternalCall)]
+	//static extern uint InternalGetPostEffectFlags(ulong _nativeHandle);
+
+	//[MethodImpl(MethodImplOptions.InternalCall)]
+	//static extern void InternalSetPostEffectFlags(ulong _nativeHandle, uint _flags);
 
 }

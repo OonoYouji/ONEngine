@@ -51,6 +51,10 @@ public class Player : MonoScript {
 	public override void Update() {
 		/// ----- プレイヤーの移動 ----- ///
 
+		Debug.Log("-----");
+		Debug.Log("----- player update.");
+		Debug.Log("-----");
+
 		Move();
 		//Jump();
 
@@ -80,7 +84,7 @@ public class Player : MonoScript {
 			isDushing = !isDushing; // ダッシュのトグル
 		}
 
-
+		Debug.Log("velocity :" + velocity.ToString());
 
 		/// 移動速度
 		float speed = isDushing ? dushSpeed : moveSpeed;

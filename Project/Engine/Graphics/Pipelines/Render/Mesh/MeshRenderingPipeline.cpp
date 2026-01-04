@@ -86,7 +86,7 @@ void MeshRenderingPipeline::Draw(class ECSGroup* _ecs, CameraComponent* _camera,
 	/// mesh path ごとに mesh renderer を分類
 	std::unordered_map<std::string, std::list<MeshRenderer*>> pathMeshMap;
 	for (const auto& meshRenderer : meshRendererArray->GetUsedComponents()) {
-		if (!meshRenderer || !meshRenderer->enable) {
+		if(!CheckComponentEnable(meshRenderer)) {
 			continue;
 		}
 

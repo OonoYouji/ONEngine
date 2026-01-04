@@ -33,6 +33,10 @@ using namespace MonoInternalMethods;
 
 void ONEngine::AddComponentInternalCalls() {
 
+	/// batch
+	mono_add_internal_call("ComponentBatchManager::InternalSetBatch", (void*)InternalSetBatch);
+	mono_add_internal_call("ComponentBatchManager::InternalGetBatch", (void*)InternalGetBatch);
+
 	/// transform
 	mono_add_internal_call("Transform::InternalGetPosition", (void*)InternalGetPosition);
 	mono_add_internal_call("Transform::InternalGetLocalPosition", (void*)InternalGetLocalPosition);

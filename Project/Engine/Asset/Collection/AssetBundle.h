@@ -47,7 +47,6 @@ public:
 			T* src = container->Get(index);
 			auto reloadedAsset = loader->Reload(_filepath, src);
 			if(reloadedAsset.has_value()) {
-				container->Remove(index);
 				container->Add(_filepath, std::move(reloadedAsset.value()));
 			}
 		}

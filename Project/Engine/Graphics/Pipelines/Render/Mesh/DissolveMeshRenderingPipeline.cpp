@@ -124,6 +124,7 @@ void DissolveMeshRenderingPipeline::Draw(ECSGroup* _ecsGroup, CameraComponent* _
 				transformIndex,
 				GPUDissolveParams{
 					dmr->GetDissolveTextureId(pAssetCollection_),
+					dmr->GetDissolveCompare(),
 					dmr->GetDissolveThreshold()
 				}
 			);

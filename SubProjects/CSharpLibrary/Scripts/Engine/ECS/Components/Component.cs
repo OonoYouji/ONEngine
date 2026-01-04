@@ -8,10 +8,8 @@ public class Component {
 	public int enable;
 	/// 0 = disabled, 1 = enabled
 	public ulong nativeHandle;
+	public uint compId;
 	public Entity entity;
-	
-	public virtual void Begin() {}
-	public virtual void End() {}
 
 	public static implicit operator bool(Component _component) {
 		return _component != null;

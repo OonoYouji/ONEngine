@@ -15,11 +15,12 @@ using namespace ONEngine;
 #include "Engine/ECS/Component/Components/ComputeComponents/Script/Script.h"
 #include "AddECSSystemFunction.h"
 #include "AddECSComponentFactoryFunction.h"
+#include "ComponentApplyFunc.h"
 
 namespace {
-	ECSGroup* gGameGroup = nullptr;
-	ECSGroup* gDebugGroup = nullptr;
-	EntityComponentSystem* gECS = nullptr;
+ECSGroup* gGameGroup = nullptr;
+ECSGroup* gDebugGroup = nullptr;
+EntityComponentSystem* gECS = nullptr;
 }
 
 void ONEngine::SetEntityComponentSystemPtr(ECSGroup* _gameGroup, ECSGroup* _debugGroup) {
@@ -39,13 +40,13 @@ bool ONEngine::CheckParentEntityEnable(GameEntity* _entity) {
 	* - 親の親が有効か(再帰的に)
 	*/
 
-	if (!_entity) {
+	if(!_entity) {
 		return false;
 	}
 
 	GameEntity* parent = _entity->GetParent();
-	if (parent) {
-		if (!parent->active) {
+	if(parent) {
+		if(!parent->active) {
 			return false;
 		}
 
@@ -65,24 +66,24 @@ bool ONEngine::CheckComponentEnable(IComponent* _component) {
 	* - entityの親が有効であること
 	*/
 
-	if (!_component) {
+	if(!_component) {
 		return false;
 	}
 
-	if (!_component->enable) {
+	if(!_component->enable) {
 		return false;
 	}
 
 	GameEntity* owner = _component->GetOwner();
-	if (!owner) {
+	if(!owner) {
 		return false;
 	}
 
-	if (!owner->active) {
+	if(!owner->active) {
 		return false;
 	}
 
-	if (owner->GetParent()) {
+	if(owner->GetParent()) {
 		return CheckParentEntityEnable(owner);
 	}
 
@@ -96,7 +97,7 @@ bool ONEngine::CheckComponentArrayEnable(IComponentArray* _componentArray) {
 	* - componentArrayがnullptrでないこと
 	* - componentArrayがemptyでないこと
 	*/
-	if (!_componentArray) {
+	if(!_componentArray) {
 		return false;
 	}
 
@@ -153,7 +154,7 @@ void EntityComponentSystem::DebuggingUpdate() {
 ECSGroup* EntityComponentSystem::AddECSGroup(const std::string& _name) {
 	/// すでに存在する場合は何もしない
 	auto itr = ecsGroups_.find(_name);
-	if (itr != ecsGroups_.end()) {
+	if(itr != ecsGroups_.end()) {
 		Console::LogWarning("ECSGroup with name '" + _name + "' already exists.");
 		return itr->second.get();
 	}
@@ -169,7 +170,7 @@ ECSGroup* EntityComponentSystem::AddECSGroup(const std::string& _name) {
 ECSGroup* EntityComponentSystem::GetECSGroup(const std::string& _name) const {
 	/// 指定された名前のECSグループが存在するかチェック
 	auto it = ecsGroups_.find(_name);
-	if (it != ecsGroups_.end()) {
+	if(it != ecsGroups_.end()) {
 		return it->second.get();
 	}
 
@@ -179,7 +180,7 @@ ECSGroup* EntityComponentSystem::GetECSGroup(const std::string& _name) const {
 
 ECSGroup* EntityComponentSystem::GetCurrentGroup() const {
 	/// 現在のグループを取得する
-	if (ecsGroups_.empty()) {
+	if(ecsGroups_.empty()) {
 		Console::LogWarning("No ECSGroup available.");
 		return nullptr;
 	}
@@ -189,27 +190,27 @@ ECSGroup* EntityComponentSystem::GetCurrentGroup() const {
 
 void EntityComponentSystem::MainCameraSetting() {
 	auto Setting = [&](ECSGroup* _group)
-		{
-			/// 初期化時のmain cameraを設定する
-			ComponentArray<CameraComponent>* cameraArray = _group->GetComponentArray<CameraComponent>();
-			if (cameraArray) {
-				for (auto& cameraComponent : cameraArray->GetUsedComponents()) {
-					/// componentがnullptrでないことを確認、main cameraかどうかを確認
-					if (cameraComponent && cameraComponent->GetIsMainCameraRequest()) {
+	{
+		/// 初期化時のmain cameraを設定する
+		ComponentArray<CameraComponent>* cameraArray = _group->GetComponentArray<CameraComponent>();
+		if(cameraArray) {
+			for(auto& cameraComponent : cameraArray->GetUsedComponents()) {
+				/// componentがnullptrでないことを確認、main cameraかどうかを確認
+				if(cameraComponent && cameraComponent->GetIsMainCameraRequest()) {
 
-						int type = cameraComponent->GetCameraType();
-						if (type == static_cast<int>(CameraType::Type3D)) {
-							_group->SetMainCamera(cameraComponent);
-						} else if (type == static_cast<int>(CameraType::Type2D)) {
-							_group->SetMainCamera2D(cameraComponent);
-						}
+					int type = cameraComponent->GetCameraType();
+					if(type == static_cast<int>(CameraType::Type3D)) {
+						_group->SetMainCamera(cameraComponent);
+					} else if(type == static_cast<int>(CameraType::Type2D)) {
+						_group->SetMainCamera2D(cameraComponent);
 					}
 				}
 			}
-		};
+		}
+	};
 
 
-	for (auto& group : ecsGroups_) {
+	for(auto& group : ecsGroups_) {
 		Setting(group.second.get());
 	}
 }
@@ -227,7 +228,7 @@ const std::unordered_map<std::string, std::unique_ptr<ECSGroup>>& EntityComponen
 }
 
 void EntityComponentSystem::ReloadPrefab(const std::string& _prefabName) {
-	for (auto& group : ecsGroups_) {
+	for(auto& group : ecsGroups_) {
 		auto entityCollection = group.second->GetEntityCollection();
 		entityCollection->ReloadPrefab(_prefabName);
 	}
@@ -240,38 +241,42 @@ void EntityComponentSystem::ReloadPrefab(const std::string& _prefabName) {
 
 GameEntity* MonoInternalMethods::GetEntityById(int32_t _entityId, const std::string& _groupName) {
 	ECSGroup* ecsGroup = gECS->GetECSGroup(_groupName);
-	if (ecsGroup) {
+	if(ecsGroup) {
 		return ecsGroup->GetEntity(_entityId);
 	}
 
 	return nullptr;
 }
 
-uint64_t MonoInternalMethods::InternalAddComponent(int32_t _entityId, MonoString* _monoTypeName, MonoString* _groupName) {
+uint64_t MonoInternalMethods::InternalAddComponent(int32_t _entityId, MonoString* _monoTypeName, MonoString* _groupName, uint32_t* _compId) {
 	std::string groupName = mono_string_to_utf8(_groupName);
 
 	std::string typeName = mono_string_to_utf8(_monoTypeName);
 	GameEntity* entity = GetEntityById(_entityId, groupName);
-	if (!entity) {
+	if(!entity) {
 		Console::Log("Entity not found for ID: " + std::to_string(_entityId));
 		return 0;
 	}
 
 	IComponent* component = entity->AddComponent(typeName);
-	if (!component) {
+	if(!component) {
 		Console::Log("Failed to add component: " + typeName);
 		return 0;
+	}
+
+	if(_compId) {
+		*_compId = component->id;
 	}
 
 	return reinterpret_cast<uint64_t>(component);
 }
 
-uint64_t MonoInternalMethods::InternalGetComponent(int32_t _entityId, MonoString* _monoTypeName, MonoString* _groupName) {
+uint64_t MonoInternalMethods::InternalGetComponent(int32_t _entityId, MonoString* _monoTypeName, MonoString* _groupName, uint32_t* _compId) {
 	std::string groupName = mono_string_to_utf8(_groupName);
 
 	/// idからentityを取得
 	GameEntity* entity = GetEntityById(_entityId, groupName);
-	if (!entity) {
+	if(!entity) {
 		Console::LogError("Entity not found for ID: " + std::to_string(_entityId));
 		return 0;
 	}
@@ -280,13 +285,18 @@ uint64_t MonoInternalMethods::InternalGetComponent(int32_t _entityId, MonoString
 	std::string typeName = mono_string_to_utf8(_monoTypeName);
 	IComponent* component = entity->GetComponent(typeName);
 
+
+	if(_compId) {
+		*_compId = component->id;
+	}
+
 	return reinterpret_cast<uint64_t>(component);
 }
 
 const char* MonoInternalMethods::InternalGetName(int32_t _entityId, MonoString* _groupName) {
 	std::string groupName = mono_string_to_utf8(_groupName);
 	GameEntity* entity = GetEntityById(_entityId, groupName);
-	if (!entity) {
+	if(!entity) {
 		Console::LogError("Entity not found for ID: " + std::to_string(_entityId));
 		return nullptr;
 	}
@@ -299,7 +309,7 @@ void MonoInternalMethods::InternalSetName(int32_t _entityId, MonoString* _name, 
 	std::string name = mono_string_to_utf8(_name);
 	GameEntity* entity = GetEntityById(_entityId, groupName);
 
-	if (!entity) {
+	if(!entity) {
 		Console::LogError("Entity not found for ID: " + std::to_string(_entityId));
 		return;
 	}
@@ -310,13 +320,13 @@ void MonoInternalMethods::InternalSetName(int32_t _entityId, MonoString* _name, 
 int32_t MonoInternalMethods::InternalGetChildId(int32_t _entityId, uint32_t _childIndex, MonoString* _groupName) {
 	std::string groupName = mono_string_to_utf8(_groupName);
 	GameEntity* entity = GetEntityById(_entityId, groupName);
-	if (!entity) {
+	if(!entity) {
 		Console::LogError("Entity not found for ID: " + std::to_string(_entityId));
 		return 0;
 	}
 
 	const auto& children = entity->GetChildren();
-	if (_childIndex >= children.size()) {
+	if(_childIndex >= children.size()) {
 		Console::LogError("Child index out of range for entity ID: " + std::to_string(_entityId));
 		return 0;
 	}
@@ -328,7 +338,7 @@ int32_t MonoInternalMethods::InternalGetChildId(int32_t _entityId, uint32_t _chi
 int32_t MonoInternalMethods::InternalGetChildrenCount(int32_t _entityId, MonoString* _groupName) {
 	std::string groupName = mono_string_to_utf8(_groupName);
 	GameEntity* entity = GetEntityById(_entityId, groupName);
-	if (!entity) {
+	if(!entity) {
 		return 0;
 	}
 
@@ -339,13 +349,13 @@ int32_t MonoInternalMethods::InternalGetChildrenCount(int32_t _entityId, MonoStr
 int32_t MonoInternalMethods::InternalGetParentId(int32_t _entityId, MonoString* _groupName) {
 	std::string groupName = mono_string_to_utf8(_groupName);
 	GameEntity* entity = GetEntityById(_entityId, groupName);
-	if (!entity) {
+	if(!entity) {
 		Console::LogError("Entity not found for ID: " + std::to_string(_entityId));
 		return 0;
 	}
 
 	GameEntity* parent = entity->GetParent();
-	if (parent) {
+	if(parent) {
 		return parent->GetId();
 	}
 
@@ -358,19 +368,19 @@ void MonoInternalMethods::InternalSetParent(int32_t _entityId, int32_t _parentId
 	GameEntity* parent = GetEntityById(_parentId, groupName);
 
 	/// nullptr チェック
-	if (!entity || !parent) {
+	if(!entity || !parent) {
 		Console::LogError("Entity or parent not found for IDs: " + std::to_string(_entityId) + ", " + std::to_string(_parentId));
 		return;
 	}
 
 	/// idが同じ場合は何もしない
-	if (entity->GetId() == parent->GetId()) {
+	if(entity->GetId() == parent->GetId()) {
 		Console::LogError("Cannot set entity as its own parent: " + std::to_string(_entityId));
 		return;
 	}
 
 	/// 既存の親を削除
-	if (entity->GetParent()) {
+	if(entity->GetParent()) {
 		entity->RemoveParent();
 	}
 
@@ -382,17 +392,17 @@ void MonoInternalMethods::InternalAddScript(int32_t _entityId, MonoString* _scri
 	std::string groupName = mono_string_to_utf8(_groupName);
 	std::string scriptName = mono_string_to_utf8(_scriptName);
 	GameEntity* entity = GetEntityById(_entityId, groupName);
-	if (!entity) {
+	if(!entity) {
 		Console::LogError("Entity not found for ID: " + std::to_string(_entityId));
 		return;
 	}
 
 	/// 追加されていなければスクリプトを追加
 	Script* script = entity->AddComponent<Script>();
-	if (!script->Contains(scriptName)) {
+	if(!script->Contains(scriptName)) {
 		script->AddScript(scriptName);
 		Script::ScriptData* data = script->GetScriptData(scriptName);
-		if (data) {
+		if(data) {
 			data->isAdded = true;
 		}
 	}
@@ -401,13 +411,13 @@ void MonoInternalMethods::InternalAddScript(int32_t _entityId, MonoString* _scri
 bool MonoInternalMethods::InternalGetScript(int32_t _entityId, MonoString* _scriptName, MonoString* _groupName) {
 	std::string groupName = mono_string_to_utf8(_groupName);
 	GameEntity* entity = GetEntityById(_entityId, groupName);
-	if (!entity) {
+	if(!entity) {
 		Console::LogError("Entity not found for ID: " + std::to_string(_entityId));
 		return false;
 	}
 
 	Script* script = entity->GetComponent<Script>();
-	if (!script) {
+	if(!script) {
 		Console::LogError("Script component not found for Entity ID: " + std::to_string(_entityId));
 		return false;
 	}
@@ -416,7 +426,7 @@ bool MonoInternalMethods::InternalGetScript(int32_t _entityId, MonoString* _scri
 	std::string scriptName(cstr);
 	mono_free(cstr);
 
-	if (script->Contains(scriptName)) {
+	if(script->Contains(scriptName)) {
 		Console::Log(std::format("Script {} found for Entity ID: {}", scriptName, _entityId));
 		return true;
 	}
@@ -431,19 +441,19 @@ void MonoInternalMethods::InternalCreateEntity(int32_t* _entityId, MonoString* _
 	/// prefabを検索
 	std::string prefabName = mono_string_to_utf8(_prefabName);
 	GameEntity* entity = group->GenerateEntityFromPrefab(prefabName + ".prefab");
-	if (!entity) {
+	if(!entity) {
 		entity = group->GenerateEntity(GenerateGuid(), true);
-		if (!entity) {
+		if(!entity) {
 			return;
 		}
 	}
 
 	/// EntityのScriptのAddedをTrueにする
-	if (Script* script = entity->GetComponent<Script>()) {
+	if(Script* script = entity->GetComponent<Script>()) {
 		script->SetIsAdded(true);
 	}
 
-	if (_entityId) {
+	if(_entityId) {
 		*_entityId = entity->GetId();
 	}
 }
@@ -452,7 +462,7 @@ void MonoInternalMethods::InternalDestroyEntity(MonoString* _ecsGroupName, int32
 	char* cstr = mono_string_to_utf8(_ecsGroupName);
 	ECSGroup* group = gECS->GetECSGroup(cstr);
 
-	if (!group) {
+	if(!group) {
 		Console::LogError("ECSGroup not found: " + std::string(cstr));
 		return;
 	}
@@ -471,7 +481,7 @@ bool MonoInternalMethods::InternalGetEnable(int32_t _entityId, MonoString* _ecsG
 
 	/// Entityの取得
 	GameEntity* entity = group->GetEntity(_entityId);
-	if (!entity) {
+	if(!entity) {
 		Console::LogError("Entity not found for ID: " + std::to_string(_entityId));
 		return false;
 	}
@@ -486,11 +496,56 @@ void MonoInternalMethods::InternalSetEnable(int32_t _entityId, bool _enable, Mon
 
 	/// Entityの取得
 	GameEntity* entity = group->GetEntity(_entityId);
-	if (!entity) {
+	if(!entity) {
 		Console::LogError("Entity not found for ID: " + std::to_string(_entityId));
 		return;
 	}
 
 	/// Entityの有効化・無効化
 	entity->active = _enable;
+}
+
+void ONEngine::MonoInternalMethods::InternalSetBatch(MonoReflectionType* _typeReflection, MonoArray* _batchArray, int _count, MonoString* _ecsGroupName) {
+	MonoType* monoType = mono_reflection_type_get_type(_typeReflection);
+	MonoClass* monoClass = mono_type_get_class(monoType);
+
+	char* cstr = mono_string_to_utf8(_ecsGroupName);
+	ECSGroup* ecsGroup = gECS->GetECSGroup(cstr);
+
+	ComponentApplyFunc func = ComponentApplyFuncs::GetApplyFunc(monoClass);
+	if(!func) {
+		Console::LogError("Apply function not found for the given MonoClass.");
+		mono_free(cstr);
+		return;
+	}
+
+	size_t elementSize = ComponentApplyFuncs::GetBatchElementSize(monoClass);
+	for(size_t i = 0; i < _count; i++) {
+		void* element = mono_array_addr_with_size(_batchArray, elementSize, i);
+		func(element, ecsGroup);
+	}
+
+	mono_free(cstr);
+}
+
+void ONEngine::MonoInternalMethods::InternalGetBatch(MonoReflectionType* _typeReflection, MonoArray* _batchArray, int _count, MonoString* _ecsGroupName) {
+	MonoType* monoType = mono_reflection_type_get_type(_typeReflection);
+	MonoClass* monoClass = mono_type_get_class(monoType);
+
+	char* cstr = mono_string_to_utf8(_ecsGroupName);
+	ECSGroup* ecsGroup = gECS->GetECSGroup(cstr);
+	ComponentApplyFunc func = ComponentApplyFuncs::GetFetchFunc(monoClass);
+	if(!func) {
+		Console::LogError("Apply function not found for the given MonoClass.");
+		mono_free(cstr);
+		return;
+	}
+
+	size_t elementSize = ComponentApplyFuncs::GetBatchElementSize(monoClass);
+	for(size_t i = 0; i < _count; i++) {
+		void* element = mono_array_addr_with_size(_batchArray, elementSize, i);
+		func(element, ecsGroup);
+	}
+
+	mono_free(cstr);
 }

@@ -160,7 +160,16 @@ VoxelTerrain::VoxelTerrain() {
 	maxChunkCount_ = static_cast<UINT>(chunkCountXZ_.x * chunkCountXZ_.y);
 }
 
-VoxelTerrain::~VoxelTerrain() {}
+VoxelTerrain::~VoxelTerrain() {
+	if (pDxSRVHeap_) {
+		/// 使用しているUAVテクスチャの解放を行う
+		for (auto& chunk : chunks_) {
+			if (chunk.uavTexture.HasUAVHandle()) {
+				pDxSRVHeap_->Free(chunk.uavTexture.GetUAVHandle().descriptorIndex);
+			}
+		}
+	}
+}
 
 void VoxelTerrain::SettingChunksGuid(AssetCollection* _assetCollection) {
 	maxChunkCount_ = static_cast<size_t>(chunkCountXZ_.x * chunkCountXZ_.y);
@@ -234,6 +243,8 @@ void VoxelTerrain::TransitionTextureStates(DxCommand* _dxCommand, AssetCollectio
 	std::vector<DxResource*> resources;
 	resources.reserve(maxChunkCount_);
 	for (size_t i = 0; i < maxChunkCount_; i++) {
+		const Guid& guid = chunks_[i].texture3DId;
+		chunks_[i].pTexture = _assetCollection->GetTextureFromGuid(guid);
 		if (chunks_[i].pTexture) {
 			resources.push_back(&chunks_[i].pTexture->GetDxResource());
 		}
@@ -287,7 +298,7 @@ void VoxelTerrain::SetupEditorBuffers(ID3D12GraphicsCommandList* _cmdList, const
 
 	/// ChunkArrayの設定
 	for (size_t i = 0; i < maxChunkCount_; i++) {
-		sBufferEditorChunks_.SetMappedData(i, GPUData::Chunk{ static_cast<uint32_t>(chunks_[i].uavTexture.GetUAVDescriptorIndex())});
+		sBufferEditorChunks_.SetMappedData(i, GPUData::Chunk{ static_cast<uint32_t>(chunks_[i].uavTexture.GetUAVDescriptorIndex()) });
 	}
 	/// Chunk
 	sBufferEditorChunks_.SRVBindForComputeCommandList(_cmdList, _rootParamIndices[3]);
@@ -295,6 +306,7 @@ void VoxelTerrain::SetupEditorBuffers(ID3D12GraphicsCommandList* _cmdList, const
 
 void VoxelTerrain::CreateChunkTextureUAV(DxCommand* _dxCommand, DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap, AssetCollection* _assetCollection) {
 
+	pDxSRVHeap_ = _dxSRVHeap;
 	for (auto& chunk : chunks_) {
 		chunk.uavTexture.CreateUAVTexture3D(
 			static_cast<UINT>(textureSize_.x),

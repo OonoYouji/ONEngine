@@ -121,6 +121,11 @@ public class Entity {
 		ecsGroup_.DestroyEntity(entityId_);
 		entityId_ = 0; // IDを無効化
 		transform = null;
+
+		foreach (var comp in components_) {
+			ecsGroup_.componentCollection.RemoveComponent(comp.Value);
+		}
+
 		components_.Clear();
 		scripts_.Clear();
 	}
@@ -133,24 +138,36 @@ public class Entity {
 	public T AddComponent<T>() where T : Component {
 		/// コンポーネントを作る
 		string typeName = typeof(T).Name;
-		ulong nativeHandle = InternalAddComponent<T>(entityId_, typeName, ecsGroupName_);
+		uint compId;
+		ulong nativeHandle = InternalAddComponent<T>(entityId_, typeName, ecsGroupName_, out compId);
 
 		T comp = Activator.CreateInstance<T>();
 		comp.nativeHandle = nativeHandle;
 		comp.entity = this;
+		comp.compId = compId;
 		components_[typeName] = comp;
 
 		if (comp == null) {
 			Debug.LogError("Failed to create component: " + typeName + " (Entity ID: " + entityId_ + ")");
 		}
 
+		Debug.Log("---");
+		Debug.Log("--- add component: \n     - component id: " + components_[typeName].compId);
+		Debug.Log("---");
+
+		ecsGroup_.componentCollection.AddComponent(comp);
 		return comp;
 	}
 
 	public T GetComponent<T>() where T : Component {
+		if (components_.ContainsKey(typeof(T).Name)) {
+			return (T)components_[typeof(T).Name];
+		}
+
 		/// コンポーネントを得る
 		string typeName = typeof(T).Name;
-		ulong nativeHandle = InternalGetComponent<T>(entityId_, typeName, ecsGroupName_);
+		uint compId;
+		ulong nativeHandle = InternalGetComponent<T>(entityId_, typeName, ecsGroupName_, out compId);
 
 		if (nativeHandle == 0) {
 			return null;
@@ -158,8 +175,12 @@ public class Entity {
 
 		T comp = Activator.CreateInstance<T>();
 		comp.nativeHandle = nativeHandle;
+		comp.compId = compId;
 		comp.entity = this;
 		components_[typeName] = comp;
+
+		ecsGroup_.componentCollection.AddComponent(comp);
+
 		return comp;
 	}
 
@@ -200,8 +221,6 @@ public class Entity {
 	}
 
 	public T AddScript<T>() where T : MonoScript {
-		// Debug.LogInfo("Entity.AddScript<T> - Adding script: " + typeof(T).Name + " to Entity ID: " + entityId_);
-
 		/// スクリプトを得る
 		string typeName = typeof(T).Name;
 		if (scripts_.ContainsKey(typeName)) {
@@ -245,10 +264,10 @@ public class Entity {
 	/// ------------------------------------------
 
 	[MethodImpl(MethodImplOptions.InternalCall)]
-	static extern ulong InternalAddComponent<T>(int _entityId, string _compTypeName, string _groupName);
+	static extern ulong InternalAddComponent<T>(int _entityId, string _compTypeName, string _groupName, out uint _compId);
 
 	[MethodImpl(MethodImplOptions.InternalCall)]
-	static extern ulong InternalGetComponent<T>(int _entityId, string _compTypeName, string _groupName);
+	static extern ulong InternalGetComponent<T>(int _entityId, string _compTypeName, string _groupName, out uint _compId);
 
 	[MethodImpl(MethodImplOptions.InternalCall)]
 	static extern IntPtr InternalGetName(int _entityId, string _groupName);

@@ -135,10 +135,12 @@ public:
 	uint32_t GetSRVDescriptorIndex() const;
 	D3D12_CPU_DESCRIPTOR_HANDLE GetSRVCPUHandle() const;
 	D3D12_GPU_DESCRIPTOR_HANDLE GetSRVGPUHandle() const;
+	bool HasSRVHandle() const;
 
 	uint32_t GetUAVDescriptorIndex() const;
 	D3D12_CPU_DESCRIPTOR_HANDLE GetUAVCPUHandle() const;
 	D3D12_GPU_DESCRIPTOR_HANDLE GetUAVGPUHandle() const;
+	bool HasUAVHandle() const;
 
 	const DxResource& GetDxResource() const;
 	DxResource& GetDxResource();
