@@ -5,7 +5,7 @@ static public class Input {
 	// ===================================================================
 	// キーボード入力
 	// ===================================================================
-	
+
 	static public bool TriggerKey(KeyCode keyCode) {
 		return InternalTriggerKey((int)keyCode);
 	}
@@ -86,6 +86,12 @@ static public class Input {
 		return output;
 	}
 
+	static public float MouseWheel() {
+		float wheel;
+		InternalGetMouseWheel(out wheel);
+		return wheel;
+	}
+
 	static public Vector2 MousePosition() {
 		Vector2 output;
 		InternalGetMousePosition(out output.x, out output.y);
@@ -120,15 +126,18 @@ static public class Input {
 
 	[MethodImpl(MethodImplOptions.InternalCall)]
 	static extern bool InternalTriggerMouse(int _mouse);
-	
+
 	[MethodImpl(MethodImplOptions.InternalCall)]
 	static extern bool InternalPressMouse(int _mouse);
-	
+
 	[MethodImpl(MethodImplOptions.InternalCall)]
 	static extern bool InternalReleaseMouse(int _mouse);
-	
+
 	[MethodImpl(MethodImplOptions.InternalCall)]
 	static extern void InternalGetMouseVelocity(out float _x, out float _y);
+
+	[MethodImpl(MethodImplOptions.InternalCall)]
+	static extern void InternalGetMouseWheel(out float _w);
 
 	[MethodImpl(MethodImplOptions.InternalCall)]
 	static extern void InternalGetMousePosition(out float _x, out float _y);

@@ -35,6 +35,8 @@ public class DebugCamera : MonoScript {
 		/// マウスがimgui scene window内にあるか判断する or C/C++側で判断してからこの関数を呼び出すようにするか
 
 		/// 移動速度の切り替え
+		float mouseWheel = Input.MouseWheel();
+
 		if (Input.PressKey(KeyCode.LeftControl)) {
 			/// 下げる処理
 			if (Input.TriggerKey(KeyCode.Minus)) {
@@ -45,9 +47,26 @@ public class DebugCamera : MonoScript {
 				}
 			}
 
+			if (mouseWheel < 0f) {
+				moveSpeed_ *= 0.9f;
+				if (moveSpeed_ < 0.001f) {
+					/// 移動の最低値
+					moveSpeed_ = 0.001f;
+				}
+			}
+
+
 			/// 上げる処理
 			if (Input.TriggerKey(KeyCode.Equals)) {
 				moveSpeed_ *= 2.0f;
+				if (moveSpeed_ > 1.0f) {
+					/// 移動の最大値を設定
+					moveSpeed_ = 1.0f;
+				}
+			}
+
+			if (mouseWheel > 0f) {
+				moveSpeed_ *= 1.1f;
 				if (moveSpeed_ > 1.0f) {
 					/// 移動の最大値を設定
 					moveSpeed_ = 1.0f;
