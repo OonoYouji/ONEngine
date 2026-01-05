@@ -98,7 +98,7 @@ void main(uint3 DTid : SV_DispatchThreadID) {
 	// 
 	uint cubeIndex = 0;
 	for (uint i = 0; i < 8; ++i) {
-		cubeIndex |= (density[i] < marchingCube.isoValue) ? (1 << i) : 0;
+		cubeIndex |= (density[i] < marchingCube.isoValue) ? (1u << i) : 0;
 	}
 	
 	uint edgeMask = EdgeTable[cubeIndex];
@@ -110,7 +110,7 @@ void main(uint3 DTid : SV_DispatchThreadID) {
 	
 	/// 
 	for (uint i = 0; i < 12; ++i) {
-		if ((edgeMask & (1 << i)) != 0) {
+		if ((edgeMask & (1u << i)) != 0) {
 			uint2 edge = EdgeIndex[i];
 			edgeVertices[i] = Interpolate(
 				pos[edge.x],
