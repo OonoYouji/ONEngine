@@ -8,25 +8,12 @@
 
 namespace ONEngine {
 
-class VoxelTerrainChunk {
-	friend class VoxelTerrain;
-public:
+struct VoxelTerrainChunk {
 
 	struct Vertex {
 		Vector4 position;
 		Vector3 normal;
 	};
-
-	//using TerrainMesh = Mesh<Vertex>;
-
-public:
-
-	VoxelTerrainChunk();
-	~VoxelTerrainChunk();
-
-
-
-private:
 
 	StructuredBuffer<Vertex> rwVertices_;
 	uint32_t vertexCount_;

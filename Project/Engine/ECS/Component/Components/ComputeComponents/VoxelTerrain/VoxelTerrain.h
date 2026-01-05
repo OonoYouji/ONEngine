@@ -43,6 +43,13 @@
 
 namespace ONEngine {
 
+
+struct VoxelTerrainVertex {
+	Vector4 position;
+	Vector3 normal;
+};
+
+
 /// ///////////////////////////////////////////////////
 /// ボクセル地形におけるチャンク
 /// ///////////////////////////////////////////////////
@@ -50,6 +57,9 @@ struct Chunk {
 	Guid texture3DId; ///< このチャンクを表現するTexture3DのId
 	Texture* pTexture;
 	Texture uavTexture; ///< エディタ用UAVテクスチャ
+
+	StructuredBuffer<VoxelTerrainVertex> rwVertices;
+	uint32_t vertexCount;
 };
 
 /// @brief デバッグ関数用に前方宣言をする
@@ -102,6 +112,14 @@ struct EditInfo {
 	float brushRadius;
 };
 
+
+struct MarchingCube {
+	float isoValue;
+	float voxelSize;
+};
+
+
+
 }
 
 
@@ -114,6 +132,9 @@ class VoxelTerrain : public IComponent {
 	friend void from_json(const nlohmann::json& _j, VoxelTerrain& _voxelTerrain);
 	friend void to_json(nlohmann::json& _j, const VoxelTerrain& _voxelTerrain);
 
+	/// --------------- friend class --------------- ///
+	friend class VoxelTerrainRenderingPipeline;
+	friend class VoxelTerrainVertexCreatePipeline;
 public:
 	/// ===========================================
 	/// public : static objects
@@ -143,7 +164,7 @@ public:
 	/// @brief Bufferの生成を行う
 	/// @param _dxDevice DxDeviceのポインタ
 	/// @param _dxSRVHeap DxSRVHeapのポインタ
-	void CreateBuffers(DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap);
+	void CreateBuffers(DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap, AssetCollection* _assetCollection);
 
 	/// @brief GraphicsPipeline用のバッファ設定を行う
 	/// @param _cmdList GraphicsCommandListのポインタ
@@ -224,6 +245,13 @@ private:
 	/// --------------- エディタ用 --------------- ///
 	ConstantBuffer<GPUData::InputInfo> cBufferInputInfo_;
 	ConstantBuffer<GPUData::EditInfo>  cBufferEditInfo_;
+
+
+	ConstantBuffer<GPUData::MarchingCube> cBufferMarchingCubeInfo_;
+	bool isCreatedVoxelTerrain_ = false;
+
+	bool canMeshShaderRendering_ = false;
+	bool canVertexShaderRendering_ = true;
 
 };
 

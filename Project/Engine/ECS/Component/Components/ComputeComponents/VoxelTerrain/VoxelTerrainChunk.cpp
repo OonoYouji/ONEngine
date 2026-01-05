@@ -2,5 +2,3 @@
 
 using namespace ONEngine;
 
-VoxelTerrainChunk::VoxelTerrainChunk() = default;
-VoxelTerrainChunk::~VoxelTerrainChunk() = default;

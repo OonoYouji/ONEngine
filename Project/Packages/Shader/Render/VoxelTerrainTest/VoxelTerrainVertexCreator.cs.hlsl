@@ -11,7 +11,6 @@ struct Vertex {
 struct MarchingCube {
 	float isoValue;
 	float voxelSize;
-	float3 gridSize; /// ボクセル数 == VoxelTerrainInfo.textureSize
 };
 
 struct ChunkIndex {
@@ -25,10 +24,10 @@ ConstantBuffer<ChunkIndex> chunkIndex : register(b2);
 
 StructuredBuffer<Chunk> chunks : register(t0);
 
-AppendStructuredBuffer<Vertex> OutVertiecs : register(u0);
+AppendStructuredBuffer<Vertex> OutVertiecs : register(u1);
 
-Texture3D<float4> volumeTextures[] : register(t1);
-SamplerState textureSampler : register(s0);
+Texture3D<float4> volumeTextures[] : register(t2);
+// SamplerState textureSampler : register(s0);
 
 
 static const uint2 EdgeIndex[12] = {
@@ -91,7 +90,7 @@ void main(uint3 DTid : SV_DispatchThreadID) {
 	
 	for (uint i = 0; i < 8; ++i) {
 		int3 samplePos = int3(DTid) + VertexOffset[i];
-		density[i] = volumeTextures[textureId].SampleLevel(textureSampler, (float3(samplePos) + 0.5) / float3(voxelTerrainInfo.textureSize), 0).w;
+		density[i] = volumeTextures[textureId].Load(int4(samplePos, 0)).w;
 		pos[i] = (float3(samplePos) + 0.5) * marchingCube.voxelSize;
 	}
 	

@@ -92,7 +92,7 @@ void VoxelTerrainEditorComputePipeline::Execute(ONEngine::EntityComponentSystem*
 	/// --------------- バッファの生成 --------------- ///
 	if(!voxelTerrain->CheckCreatedBuffers()) {
 		voxelTerrain->SettingChunksGuid(_assetCollection);
-		voxelTerrain->CreateBuffers(pDxManager_->GetDxDevice(), pDxManager_->GetDxSRVHeap());
+		voxelTerrain->CreateBuffers(pDxManager_->GetDxDevice(), pDxManager_->GetDxSRVHeap(), _assetCollection);
 	}
 
 	if(!voxelTerrain->CheckBufferCreatedForEditor()) {

@@ -7,6 +7,7 @@
 namespace ONEngine {
 
 class AssetCollection;
+class DxManager;
 
 class VoxelTerrainVertexCreatePipeline : public IRenderingPipeline {
 
@@ -36,6 +37,7 @@ private:
 	std::unique_ptr<ComputePipeline> computePipeline_;
 	AssetCollection* pAssetCollection_;
 
+	DxManager* pDxManager_;
 
 };
 
