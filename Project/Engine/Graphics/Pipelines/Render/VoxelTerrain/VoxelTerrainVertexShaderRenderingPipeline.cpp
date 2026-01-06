@@ -27,7 +27,8 @@ void VoxelTerrainVertexShaderRenderingPipeline::Initialize(ShaderCompiler* _shad
 		pipeline_ = std::make_unique<GraphicsPipeline>();
 		pipeline_->SetShader(&shader);
 
-		pipeline_->AddInputElement("POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT);
+		pipeline_->AddInputElement("POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT);
+		pipeline_->AddInputElement("COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT);
 		pipeline_->AddInputElement("NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT);
 
 		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 0); // CBV_VIEW_PROJECTION
@@ -35,7 +36,7 @@ void VoxelTerrainVertexShaderRenderingPipeline::Initialize(ShaderCompiler* _shad
 
 		pipeline_->SetBlendDesc(BlendMode::Normal());
 		pipeline_->SetFillMode(D3D12_FILL_MODE_SOLID);
-		pipeline_->SetCullMode(D3D12_CULL_MODE_BACK);
+		pipeline_->SetCullMode(D3D12_CULL_MODE_NONE);
 		pipeline_->SetDepthStencilDesc(DefaultDepthStencilDesc());
 		pipeline_->SetTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
 
@@ -78,19 +79,15 @@ void VoxelTerrainVertexShaderRenderingPipeline::Draw(ECSGroup* _ecs, CameraCompo
 	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(cmdList, CBV_VIEW_PROJECTION);
 	vt->cBufferMaterial_.BindForGraphicsCommandList(cmdList, CBV_MATERIAL);
 
-	for(size_t i = 0; i < vt->chunks_.size(); i++) {
-		const auto& chunk = vt->chunks_[i];
-		if(!chunk.rwVertices.GetResource().Get() || chunk.vertexCount == 0) {
-			continue;
-		}
+	for(size_t i = 0; i < 1; i++) {
+		//for(size_t i = 0; i < vt->chunks_.size(); i++) {
+		auto& chunk = vt->chunks_[i];
+		//if(!chunk.rwVertices.GetResource().Get() || chunk.vertexCount == 0) {
+		//	continue;
+		//}
 
-		D3D12_VERTEX_BUFFER_VIEW vbv = {};
-		vbv.BufferLocation = chunk.rwVertices.GetResource().Get()->GetGPUVirtualAddress();
-		vbv.SizeInBytes = static_cast<UINT>(sizeof(VoxelTerrainVertex) * chunk.vertexCount);
-		vbv.StrideInBytes = sizeof(VoxelTerrainVertex);
-
-		cmdList->IASetVertexBuffers(0, 1, &vbv);
-		cmdList->DrawInstanced(chunk.vertexCount, 1, 0, 0);
+		chunk.vbv.BindForCommandList(cmdList);
+		cmdList->DrawInstanced(80000, 1, 0, 0);
 	}
 
 }

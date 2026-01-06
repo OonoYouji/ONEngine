@@ -169,7 +169,7 @@ void Texture::CreateUAVTexture3D(UINT _width, UINT _height, UINT _depth, DxDevic
 	texDesc.Alignment = 0;
 	texDesc.Width = _width;
 	texDesc.Height = _height;
-	texDesc.DepthOrArraySize = _depth;
+	texDesc.DepthOrArraySize = static_cast<UINT16>(_depth);
 	texDesc.MipLevels = 1;
 	texDesc.Format = _dxgiFormat;
 	texDesc.SampleDesc.Count = 1;

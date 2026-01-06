@@ -102,6 +102,10 @@ void VoxelTerrainEditorComputePipeline::Execute(ONEngine::EntityComponentSystem*
 	}
 
 
+	if(!voxelTerrain->CanMeshShaderRendering()) {
+		return;
+	}
+
 
 	/// ---------------------------------------------------
 	/// ここから パイプラインの設定、実行

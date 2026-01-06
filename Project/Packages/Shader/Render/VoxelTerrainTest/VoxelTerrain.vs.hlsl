@@ -9,6 +9,7 @@ VSOutput main(Vertex input) {
 	output.position = mul(input.position, viewProjection.matVP);
 	output.worldPos = input.position;
 	output.normal = input.normal;
+	output.color = input.color;
 
 	return output;
 }

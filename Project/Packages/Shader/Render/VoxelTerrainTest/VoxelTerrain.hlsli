@@ -1,5 +1,6 @@
-struct Vertex {
+﻿struct Vertex {
     float4 position : POSITION;
+	float4 color : COLOR0;
     float3 normal : NORMAL;
 };
 
@@ -7,6 +8,7 @@ struct VSOutput {
     float4 position : SV_POSITION;
     float4 worldPos : TEXCOORD0;
     float3 normal : NORMAL;
+	float4 color : COLOR0;
 };
 
 struct PSOutput {

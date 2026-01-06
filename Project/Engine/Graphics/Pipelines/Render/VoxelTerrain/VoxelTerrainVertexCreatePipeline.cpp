@@ -36,20 +36,20 @@ void VoxelTerrainVertexCreatePipeline::Initialize(ShaderCompiler* _shaderCompile
 		/// Descriptor Range
 		computePipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // SRV_CHUNKS
 		computePipeline_->AddDescriptorRange(1, 1, D3D12_DESCRIPTOR_RANGE_TYPE_UAV); // APPEND_OUT_VERTICES
-		computePipeline_->AddDescriptorRange(2, MAX_TEXTURE_COUNT, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // SRV_VOXEL_TEXTURES
+		computePipeline_->AddDescriptorRange(2, 1, D3D12_DESCRIPTOR_RANGE_TYPE_UAV); // UAV_VERTEX_COUNTER
+		computePipeline_->AddDescriptorRange(3, MAX_TEXTURE_COUNT, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // SRV_VOXEL_TEXTURES
 
 		computePipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 0); // SRV_CHUNKS
 		computePipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 1); // APPEND_OUT_VERTICES
-		computePipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 2); // SRV_VOXEL_TEXTURES
-
-		//computePipeline_->AddStaticSampler(D3D12_SHADER_VISIBILITY_ALL, 0);
+		computePipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 2); // UAV_VERTEX_COUNTER
+		computePipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 3); // SRV_VOXEL_TEXTURES
 
 		computePipeline_->CreatePipeline(_dxm->GetDxDevice());
 	}
 
 }
 
-void VoxelTerrainVertexCreatePipeline::PreDraw(ECSGroup* _ecs, CameraComponent* _camera, DxCommand* _dxCommand) {
+void VoxelTerrainVertexCreatePipeline::PreDraw(ECSGroup* _ecs, CameraComponent* /*_camera*/, DxCommand* _dxCommand) {
 
 	ComponentArray<VoxelTerrain>* voxelTerrainCompArray = _ecs->GetComponentArray<VoxelTerrain>();
 	if(!CheckComponentArrayEnable(voxelTerrainCompArray)) {
@@ -86,7 +86,7 @@ void VoxelTerrainVertexCreatePipeline::PreDraw(ECSGroup* _ecs, CameraComponent* 
 	if(!vt->cBufferMarchingCubeInfo_.Get()) {
 		vt->cBufferMarchingCubeInfo_.Create(pDxManager_->GetDxDevice());
 		vt->cBufferMarchingCubeInfo_.SetMappedData(
-			{ .isoValue = 1.0f, .voxelSize = 1.0f }
+			{ .isoValue = 0.3f, .voxelSize = 1.0f }
 		);
 	}
 
@@ -101,10 +101,12 @@ void VoxelTerrainVertexCreatePipeline::PreDraw(ECSGroup* _ecs, CameraComponent* 
 	D3D12_GPU_DESCRIPTOR_HANDLE frontSRVHandle = pDxManager_->GetDxSRVHeap()->GetSRVStartGPUHandle();
 	cmdList->SetComputeRootDescriptorTable(SRV_VOXEL_TEXTURES, frontSRVHandle);
 
-	for(uint32_t i = 0; i < vt->chunks_.size(); i++) {
+	//for(uint32_t i = 0; i < 1; i++) {
+		for(uint32_t i = 0; i < vt->chunks_.size(); i++) {
 		const auto& chunk = vt->chunks_[i];
 		cmdList->SetComputeRoot32BitConstant(BIT32_CHUNK_INDEX, i, 0);
-		chunk.rwVertices.AppendBindForComputeCommandList(cmdList, APPEND_OUT_VERTICES);
+		chunk.rwVertices.UAVBindForComputeCommandList(cmdList, APPEND_OUT_VERTICES);
+		chunk.rwVertexCounter.UAVBindForComputeCommandList(cmdList, UAV_VERTEX_COUNTER);
 
 		const Vector3Int& chunkSize = vt->GetChunkSize();
 		const Vector3Int numthreads = { 8, 8, 8 };
@@ -115,14 +117,29 @@ void VoxelTerrainVertexCreatePipeline::PreDraw(ECSGroup* _ecs, CameraComponent* 
 		);
 	}
 
+
+	//_dxCommand->CommandExecuteAndWait();
+	//_dxCommand->CommandReset();
+	//_dxCommand->WaitForGpuComplete();
+
 	/// カウンター
-	for(uint32_t i = 0; i < vt->chunks_.size(); i++) {
+	//for(uint32_t i = 0; i < 1; i++) {
+		for(uint32_t i = 0; i < vt->chunks_.size(); i++) {
 		auto& chunk = vt->chunks_[i];
-		uint32_t count = chunk.rwVertices.ReadCounter(_dxCommand);
-		chunk.vertexCount = count;
+		//uint32_t count = chunk.rwVertices.ReadCounter(_dxCommand);
+		//chunk.vertexCount = count;
+
+		 // UAVバリアを挿入（シェーダーの書き込み完了を保証）
+		D3D12_RESOURCE_BARRIER uavBarrier = CD3DX12_RESOURCE_BARRIER::UAV(
+			chunk.rwVertices.GetResource().Get()
+		);
+		cmdList->ResourceBarrier(1, &uavBarrier);
+
+		/// 頂点バッファにデータをコピー
+		chunk.vbv.CopyFromUAVBuffer(cmdList, chunk.rwVertices.GetResource().Get(), 80000);
 	}
 
-	pDxManager_->HeapBindToCommandList();
+	//pDxManager_->HeapBindToCommandList();
 	vt->isCreatedVoxelTerrain_ = true;
 
 }

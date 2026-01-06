@@ -285,7 +285,7 @@ void ONEngine::VoxelTerrain::SettingMaterial() {
 		.baseColor = material_.baseColor,
 		.postEffectFlags = material_.postEffectFlags,
 		.entityId = GetOwner()->GetId(),
-	});
+								   });
 }
 
 bool VoxelTerrain::CheckBufferCreatedForEditor() const {
@@ -310,11 +310,13 @@ void VoxelTerrain::SetupEditorBuffers(ID3D12GraphicsCommandList* _cmdList, const
 	cBufferInputInfo_.SetMappedData(_inputInfo);
 	cBufferInputInfo_.BindForComputeCommandList(_cmdList, _rootParamIndices[0]);
 	/// TerrainInfoの設定
-	cBufferTerrainInfo_.SetMappedData(GPUData::VoxelTerrainInfo{
-		.terrainOrigin = GetOwner()->GetTransform()->GetPosition(),
-		.textureSize = textureSize_, .chunkSize = chunkSize_,
-		.chunkCountXZ = chunkCountXZ_, .maxChunkCount = maxChunkCount_
-									  });
+	cBufferTerrainInfo_.SetMappedData(
+		GPUData::VoxelTerrainInfo{
+			.terrainOrigin = GetOwner()->GetTransform()->GetPosition(),
+			.textureSize = textureSize_, .chunkSize = chunkSize_,
+			.chunkCountXZ = chunkCountXZ_, .maxChunkCount = maxChunkCount_
+		}
+	);
 	cBufferTerrainInfo_.BindForComputeCommandList(_cmdList, _rootParamIndices[1]);
 	/// EditInfoの設定
 	cBufferEditInfo_.BindForComputeCommandList(_cmdList, _rootParamIndices[2]);
@@ -339,9 +341,16 @@ void VoxelTerrain::CreateChunkTextureUAV(DxCommand* _dxCommand, DxDevice* _dxDev
 			DXGI_FORMAT_R8G8B8A8_UNORM
 		);
 
-		const uint32_t vertexCount = static_cast<uint32_t>(std::pow(2, 16));
-		chunk.rwVertices.CreateAppendBuffer(vertexCount, _dxDevice, _dxCommand, _dxSRVHeap);
+	//}
+
+	//{
+		//auto& chunk = chunks_[0];
+		const uint32_t vertexCount = 80000;
+		chunk.rwVertices.CreateUAV(vertexCount, _dxDevice, _dxCommand, _dxSRVHeap);
+		chunk.rwVertexCounter.CreateUAV(vertexCount, _dxDevice, _dxCommand, _dxSRVHeap);
+		chunk.vbv.Create(vertexCount, _dxDevice, _dxCommand);
 	}
+
 
 	D3D12_RESOURCE_STATES srvTextureBefore = chunks_[0].pTexture->GetDxResource().GetCurrentState();
 	D3D12_RESOURCE_STATES uavTextureBefore = chunks_[0].uavTexture.GetDxResource().GetCurrentState();

@@ -11,6 +11,7 @@
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/Graphics/Buffer/ConstantBuffer.h"
 #include "Engine/Graphics/Buffer/StructuredBuffer.h"
+#include "Engine/Graphics/Buffer/VertexBuffer.h"
 #include "Engine/Graphics/Buffer/Data/GPUMaterial.h"
 
 /*
@@ -46,6 +47,7 @@ namespace ONEngine {
 
 struct VoxelTerrainVertex {
 	Vector4 position;
+	Vector4 color;
 	Vector3 normal;
 };
 
@@ -59,7 +61,9 @@ struct Chunk {
 	Texture uavTexture; ///< エディタ用UAVテクスチャ
 
 	StructuredBuffer<VoxelTerrainVertex> rwVertices;
+	StructuredBuffer<uint32_t> rwVertexCounter;
 	uint32_t vertexCount;
+	VertexBuffer<VoxelTerrainVertex> vbv;
 };
 
 /// @brief デバッグ関数用に前方宣言をする
@@ -219,6 +223,9 @@ public:
 	/// @param _dxDevice DxDeviceのポインタ
 	/// @param _assetCollection 
 	void CopyEditorTextureToChunkTexture(DxCommand* _dxCommand);
+
+
+	bool CanMeshShaderRendering() const { return canMeshShaderRendering_; }
 
 private:
 	/// ===========================================

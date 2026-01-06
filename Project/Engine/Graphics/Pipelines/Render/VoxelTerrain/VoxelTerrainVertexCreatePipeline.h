@@ -17,6 +17,7 @@ class VoxelTerrainVertexCreatePipeline : public IRenderingPipeline {
 		BIT32_CHUNK_INDEX,
 		SRV_CHUNKS,
 		APPEND_OUT_VERTICES,
+		UAV_VERTEX_COUNTER,
 		SRV_VOXEL_TEXTURES,
 	};
 
