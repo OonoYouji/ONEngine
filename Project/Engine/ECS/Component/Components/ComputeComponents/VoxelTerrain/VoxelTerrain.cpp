@@ -235,11 +235,7 @@ void VoxelTerrain::SetupGraphicBuffers(ID3D12GraphicsCommandList* _cmdList, cons
 	cBufferTerrainInfo_.BindForGraphicsCommandList(_cmdList, _rootParamIndices[0]);
 
 	/// Materialの設定
-	cBufferMaterial_.SetMappedData({
-		.baseColor = material_.baseColor,
-		.postEffectFlags = material_.postEffectFlags,
-		.entityId = GetOwner()->GetId(),
-								   });
+	SettingMaterial();
 	cBufferMaterial_.BindForGraphicsCommandList(_cmdList, _rootParamIndices[1]);
 
 	/// ChunkArrayの設定
@@ -281,6 +277,15 @@ const Vector2Int& VoxelTerrain::GetChunkCountXZ() const {
 
 const Vector3Int& VoxelTerrain::GetChunkSize() const {
 	return chunkSize_;
+}
+
+void ONEngine::VoxelTerrain::SettingMaterial() {
+	/// Materialの設定
+	cBufferMaterial_.SetMappedData({
+		.baseColor = material_.baseColor,
+		.postEffectFlags = material_.postEffectFlags,
+		.entityId = GetOwner()->GetId(),
+	});
 }
 
 bool VoxelTerrain::CheckBufferCreatedForEditor() const {

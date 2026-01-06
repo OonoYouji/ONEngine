@@ -134,6 +134,7 @@ class VoxelTerrain : public IComponent {
 
 	/// --------------- friend class --------------- ///
 	friend class VoxelTerrainRenderingPipeline;
+	friend class VoxelTerrainVertexShaderRenderingPipeline;
 	friend class VoxelTerrainVertexCreatePipeline;
 public:
 	/// ===========================================
@@ -185,6 +186,9 @@ public:
 	/// @brief チャンクの大きさを取得する
 	/// @return チャンクの大きさ
 	const Vector3Int& GetChunkSize() const;
+
+
+	void SettingMaterial();
 
 
 	/// --------------- エディタ用 関数 --------------- ///

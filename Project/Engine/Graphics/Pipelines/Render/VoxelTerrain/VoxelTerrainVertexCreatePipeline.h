@@ -30,7 +30,8 @@ public:
 
 	/// --------------- override methods --------------- ///
 	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxm) override;
-	void Draw(class ECSGroup* _ecs, class CameraComponent* _camera, DxCommand* _dxCommand) override;
+	void PreDraw(class ECSGroup* _ecs, class CameraComponent* _camera, DxCommand* _dxCommand) override;
+	void Draw(class ECSGroup*, class CameraComponent*, DxCommand*) override {}
 
 private:
 

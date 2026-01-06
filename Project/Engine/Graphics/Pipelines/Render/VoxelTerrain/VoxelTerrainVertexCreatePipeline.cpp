@@ -49,7 +49,7 @@ void VoxelTerrainVertexCreatePipeline::Initialize(ShaderCompiler* _shaderCompile
 
 }
 
-void VoxelTerrainVertexCreatePipeline::Draw(ECSGroup* _ecs, CameraComponent* _camera, DxCommand* _dxCommand) {
+void VoxelTerrainVertexCreatePipeline::PreDraw(ECSGroup* _ecs, CameraComponent* _camera, DxCommand* _dxCommand) {
 
 	ComponentArray<VoxelTerrain>* voxelTerrainCompArray = _ecs->GetComponentArray<VoxelTerrain>();
 	if(!CheckComponentArrayEnable(voxelTerrainCompArray)) {
@@ -115,9 +115,6 @@ void VoxelTerrainVertexCreatePipeline::Draw(ECSGroup* _ecs, CameraComponent* _ca
 		);
 	}
 
-
-	pDxManager_->HeapBindToCommandList();
-
 	/// カウンター
 	for(uint32_t i = 0; i < vt->chunks_.size(); i++) {
 		auto& chunk = vt->chunks_[i];
@@ -125,6 +122,7 @@ void VoxelTerrainVertexCreatePipeline::Draw(ECSGroup* _ecs, CameraComponent* _ca
 		chunk.vertexCount = count;
 	}
 
+	pDxManager_->HeapBindToCommandList();
 	vt->isCreatedVoxelTerrain_ = true;
 
 }

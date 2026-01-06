@@ -2,7 +2,9 @@
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
-
+#include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/VoxelTerrain/VoxelTerrain.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 
 using namespace ONEngine;
 
@@ -42,4 +44,53 @@ void VoxelTerrainVertexShaderRenderingPipeline::Initialize(ShaderCompiler* _shad
 }
 
 void VoxelTerrainVertexShaderRenderingPipeline::Draw(ECSGroup* _ecs, CameraComponent* _camera, DxCommand* _dxCommand) {
+
+	ComponentArray<VoxelTerrain>* voxelTerrainCompArray = _ecs->GetComponentArray<VoxelTerrain>();
+	if(!CheckComponentArrayEnable(voxelTerrainCompArray)) {
+		return;
+	}
+
+	VoxelTerrain* vt = nullptr;
+	for(auto& voxelTerrain : voxelTerrainCompArray->GetUsedComponents()) {
+		if(CheckComponentEnable(voxelTerrain)) {
+			vt = voxelTerrain;
+			break;
+		}
+	}
+
+	if(!vt || !CheckComponentEnable(vt)) {
+		return;
+	}
+
+	if(!vt->CheckCreatedBuffers()) {
+		vt->SettingChunksGuid(pAssetCollection_);
+		vt->CreateBuffers(pDxManager_->GetDxDevice(), pDxManager_->GetDxSRVHeap(), pAssetCollection_);
+		return;
+	}
+
+
+	vt->SettingMaterial();
+
+	pipeline_->SetPipelineStateForCommandList(_dxCommand);
+	auto cmdList = _dxCommand->GetCommandList();
+
+	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(cmdList, CBV_VIEW_PROJECTION);
+	vt->cBufferMaterial_.BindForGraphicsCommandList(cmdList, CBV_MATERIAL);
+
+	for(size_t i = 0; i < vt->chunks_.size(); i++) {
+		const auto& chunk = vt->chunks_[i];
+		if(!chunk.rwVertices.GetResource().Get() || chunk.vertexCount == 0) {
+			continue;
+		}
+
+		D3D12_VERTEX_BUFFER_VIEW vbv = {};
+		vbv.BufferLocation = chunk.rwVertices.GetResource().Get()->GetGPUVirtualAddress();
+		vbv.SizeInBytes = static_cast<UINT>(sizeof(VoxelTerrainVertex) * chunk.vertexCount);
+		vbv.StrideInBytes = sizeof(VoxelTerrainVertex);
+
+		cmdList->IASetVertexBuffers(0, 1, &vbv);
+		cmdList->DrawInstanced(chunk.vertexCount, 1, 0, 0);
+	}
+
 }
