@@ -349,10 +349,10 @@ void VoxelTerrain::CreateChunkTextureUAV(DxCommand* _dxCommand, DxDevice* _dxDev
 
 		//{
 			//auto& chunk = chunks_[0];
-		const uint32_t vertexCount = 80000;
-		chunk.rwVertices.CreateUAV(vertexCount, _dxDevice, _dxCommand, _dxSRVHeap);
-		chunk.rwVertexCounter.CreateUAV(vertexCount, _dxDevice, _dxCommand, _dxSRVHeap);
-		chunk.vbv.Create(vertexCount, _dxDevice, _dxCommand);
+		//const uint32_t vertexCount = 80000;
+		//chunk.rwVertices.CreateUAV(vertexCount, _dxDevice, _dxCommand, _dxSRVHeap);
+		//chunk.rwVertexCounter.CreateUAV(vertexCount, _dxDevice, _dxCommand, _dxSRVHeap);
+		//chunk.vbv.Create(vertexCount, _dxDevice, _dxCommand);
 	}
 
 

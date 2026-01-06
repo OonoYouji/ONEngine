@@ -54,9 +54,9 @@ void RenderingPipelineCollection::Initialize() {
 	Generate3DRenderingPipeline<Line3DRenderingPipeline>();
 	Generate3DRenderingPipeline<SkyboxRenderingPipeline>(pAssetCollection_);
 	Generate3DRenderingPipeline<TerrainRenderingPipeline>(pAssetCollection_);
-	Generate3DRenderingPipeline<VoxelTerrainVertexCreatePipeline>(pAssetCollection_);
+	//Generate3DRenderingPipeline<VoxelTerrainVertexCreatePipeline>(pAssetCollection_);
 	Generate3DRenderingPipeline<VoxelTerrainRenderingPipeline>(pAssetCollection_);
-	Generate3DRenderingPipeline<VoxelTerrainVertexShaderRenderingPipeline>(pAssetCollection_);
+	//Generate3DRenderingPipeline<VoxelTerrainVertexShaderRenderingPipeline>(pAssetCollection_);
 	Generate3DRenderingPipeline<TerrainProceduralRenderingPipeline>(pAssetCollection_);
 	Generate3DRenderingPipeline<RiverRenderingPipeline>(pAssetCollection_);
 	Generate3DRenderingPipeline<MeshRenderingPipeline>(pAssetCollection_);
