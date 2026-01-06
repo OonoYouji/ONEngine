@@ -92,9 +92,9 @@ void main(uint3 DTid : SV_DispatchThreadID) {
 	//	return;
 	//}
 	
-	//if (any(DTid >= voxelTerrainInfo.textureSize - 1)) {
-	//	return;
-	//}
+	if (any(DTid >= voxelTerrainInfo.textureSize)) {
+		return;
+	}
 
 	float density[8];
 	float3 pos[8];
@@ -134,12 +134,13 @@ void main(uint3 DTid : SV_DispatchThreadID) {
 	}
 	
 
-	float3 chunkPos = float3(chunkIndex.value * 32, 0, 0);
-	//float3 chunkPos = float3(
-	//	chunkIndex.value % voxelTerrainInfo.chunkCountXZ.x,
-	//	0,
-	//	chunkIndex.value / voxelTerrainInfo.chunkCountXZ.x
-	//);
+	//float3 chunkPos = float3(chunkIndex.value * 32, 0, 0);
+	float3 chunkPos = float3(
+		chunkIndex.value % voxelTerrainInfo.chunkCountXZ.x,
+		0,
+		chunkIndex.value / voxelTerrainInfo.chunkCountXZ.x
+	);
+	chunkPos = chunkPos * voxelTerrainInfo.chunkSize;
 	
 	/// 三角形の生成
 	for (uint i = 0; i < 16; i += 3) {

@@ -94,6 +94,7 @@ void VoxelTerrainVertexCreatePipeline::PreDraw(ECSGroup* _ecs, CameraComponent* 
 	computePipeline_->SetPipelineStateForCommandList(_dxCommand);
 	auto cmdList = _dxCommand->GetCommandList();
 
+	vt->SettingTerrainInfo();
 	vt->cBufferTerrainInfo_.BindForComputeCommandList(cmdList, CBV_VOXEL_TERRAIN_INFO);
 	vt->cBufferMarchingCubeInfo_.BindForComputeCommandList(cmdList, CBV_MARCHING_CUBE);
 	vt->sBufferChunks_.SRVBindForComputeCommandList(cmdList, SRV_CHUNKS);

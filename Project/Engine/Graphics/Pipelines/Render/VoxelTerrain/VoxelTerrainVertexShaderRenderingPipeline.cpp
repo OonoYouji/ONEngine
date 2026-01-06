@@ -79,7 +79,7 @@ void VoxelTerrainVertexShaderRenderingPipeline::Draw(ECSGroup* _ecs, CameraCompo
 	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(cmdList, CBV_VIEW_PROJECTION);
 	vt->cBufferMaterial_.BindForGraphicsCommandList(cmdList, CBV_MATERIAL);
 
-	for(size_t i = 0; i < 1; i++) {
+	for(size_t i = 0; i < 3; i++) {
 		//for(size_t i = 0; i < vt->chunks_.size(); i++) {
 		auto& chunk = vt->chunks_[i];
 		//if(!chunk.rwVertices.GetResource().Get() || chunk.vertexCount == 0) {

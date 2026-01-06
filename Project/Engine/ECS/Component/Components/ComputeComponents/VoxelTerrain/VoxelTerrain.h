@@ -193,6 +193,7 @@ public:
 
 
 	void SettingMaterial();
+	void SettingTerrainInfo();
 
 
 	/// --------------- エディタ用 関数 --------------- ///
