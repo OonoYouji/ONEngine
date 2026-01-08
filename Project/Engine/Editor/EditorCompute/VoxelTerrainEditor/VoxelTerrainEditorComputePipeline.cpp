@@ -125,6 +125,10 @@ void VoxelTerrainEditorComputePipeline::Execute(ONEngine::EntityComponentSystem*
 		return;
 	}
 
+	if(!voxelTerrain->IsEditMode()) {
+		return;
+	}
+
 	voxelTerrain->SetupEditorBuffers(
 		cmdList,
 		{ CBV_INPUT_INFO, CBV_TERRAIN_INFO, CBV_EDITOR_INFO, SRV_CHUNKS },

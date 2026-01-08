@@ -227,6 +227,7 @@ public:
 
 
 	bool CanMeshShaderRendering() const { return canMeshShaderRendering_; }
+	bool IsEditMode() const { return isEditMode_; }
 
 private:
 	/// ===========================================
@@ -257,6 +258,7 @@ private:
 	/// --------------- エディタ用 --------------- ///
 	ConstantBuffer<GPUData::InputInfo> cBufferInputInfo_;
 	ConstantBuffer<GPUData::EditInfo>  cBufferEditInfo_;
+	bool isEditMode_ = false;
 
 
 	ConstantBuffer<GPUData::MarchingCube> cBufferMarchingCubeInfo_;

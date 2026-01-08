@@ -32,6 +32,33 @@ void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _
 	Editor::ImMathf::DragInt2("Chunk Count XZ", &_voxelTerrain->chunkCountXZ_, 1, 1, 32);
 	Editor::ImMathf::DragInt3("Chunk Size", &_voxelTerrain->chunkSize_, 1, 1, 1024);
 	Editor::ImMathf::DragInt3("Texture Size", &_voxelTerrain->textureSize_, 1, 1, 256);
+	/// テクスチャサイズを変更したらpTextureに適用する
+	if(ImGui::Button("Texture Size Apply And Output")) {
+		for(auto& chunk : _voxelTerrain->chunks_) {
+			if(chunk.pTexture) {
+				chunk.pTexture->ResizeTexture3D(
+					Vector2(static_cast<float>(_voxelTerrain->textureSize_.x), static_cast<float>(_voxelTerrain->textureSize_.y)),
+					static_cast<UINT>(_voxelTerrain->textureSize_.z),
+					_dxm->GetDxDevice(),
+					_dxm->GetDxCommand(),
+					_dxm->GetDxSRVHeap()
+				);
+			}
+		}
+
+		_dxm->HeapBindToCommandList();
+
+		std::wstring filepath = L"";
+		for(size_t i = 0; i < _voxelTerrain->chunks_.size(); i++) {
+			filepath = L"./Packages/Textures/Terrain/Chunk/" + std::to_wstring(i) + L".dds";
+
+			const Chunk& chunk = _voxelTerrain->chunks_[i];
+			chunk.pTexture->OutputTexture3D(filepath, _dxm->GetDxDevice(), _dxm->GetDxCommand());
+			Console::Log("Chunk " + std::to_string(i) + ": Texture3D GUID = " + chunk.texture3DId.ToString());
+		}
+
+		_dxm->HeapBindToCommandList();
+	}
 
 	Editor::ImMathf::MaterialEdit("Material", &_voxelTerrain->material_, nullptr, false);
 
@@ -72,6 +99,7 @@ void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _
 
 
 	/// ----- Gizmoでチャンクの枠線を描画 ----- ///
+	Editor::ImMathf::Checkbox("IsEditMode", &_voxelTerrain->isEditMode_);
 	static bool showChunkBounds = false;
 	Editor::ImMathf::Checkbox("Show Chunk Bounds", &showChunkBounds);
 	if(showChunkBounds) {
@@ -359,26 +387,26 @@ void VoxelTerrain::CreateChunkTextureUAV(DxCommand* _dxCommand, DxDevice* _dxDev
 	D3D12_RESOURCE_STATES srvTextureBefore = chunks_[0].pTexture->GetDxResource().GetCurrentState();
 	D3D12_RESOURCE_STATES uavTextureBefore = chunks_[0].uavTexture.GetDxResource().GetCurrentState();
 
-	auto cmdList = _dxCommand->GetCommandList();
-	/// テクスチャの状態遷移
-	for(auto& chunk : chunks_) {
-		chunk.pTexture->GetDxResource().CreateBarrier(D3D12_RESOURCE_STATE_COPY_SOURCE, _dxCommand);
-		chunk.uavTexture.GetDxResource().CreateBarrier(D3D12_RESOURCE_STATE_COPY_DEST, _dxCommand);
-	}
+	//auto cmdList = _dxCommand->GetCommandList();
+	///// テクスチャの状態遷移
+	//for(auto& chunk : chunks_) {
+	//	chunk.pTexture->GetDxResource().CreateBarrier(D3D12_RESOURCE_STATE_COPY_SOURCE, _dxCommand);
+	//	chunk.uavTexture.GetDxResource().CreateBarrier(D3D12_RESOURCE_STATE_COPY_DEST, _dxCommand);
+	//}
 
-	/// 実際に使用するSRVをUAVテクスチャにコピーする
-	for(auto& chunk : chunks_) {
-		cmdList->CopyResource(
-			chunk.uavTexture.GetDxResource().Get(),
-			chunk.pTexture->GetDxResource().Get()
-		);
-	}
+	///// 実際に使用するSRVをUAVテクスチャにコピーする
+	//for(auto& chunk : chunks_) {
+	//	cmdList->CopyResource(
+	//		chunk.uavTexture.GetDxResource().Get(),
+	//		chunk.pTexture->GetDxResource().Get()
+	//	);
+	//}
 
-	/// テクスチャの状態遷移
-	for(auto& chunk : chunks_) {
-		chunk.pTexture->GetDxResource().CreateBarrier(srvTextureBefore, _dxCommand);
-		chunk.uavTexture.GetDxResource().CreateBarrier(uavTextureBefore, _dxCommand);
-	}
+	///// テクスチャの状態遷移
+	//for(auto& chunk : chunks_) {
+	//	chunk.pTexture->GetDxResource().CreateBarrier(srvTextureBefore, _dxCommand);
+	//	chunk.uavTexture.GetDxResource().CreateBarrier(uavTextureBefore, _dxCommand);
+	//}
 }
 
 void VoxelTerrain::CopyEditorTextureToChunkTexture(DxCommand* _dxCommand) {
