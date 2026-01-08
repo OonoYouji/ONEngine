@@ -264,7 +264,7 @@ private:
 	ConstantBuffer<GPUData::MarchingCube> cBufferMarchingCubeInfo_;
 	bool isCreatedVoxelTerrain_ = false;
 
-	bool canMeshShaderRendering_ = false;
+	bool canMeshShaderRendering_ = true;
 	bool canVertexShaderRendering_ = false;
 
 };

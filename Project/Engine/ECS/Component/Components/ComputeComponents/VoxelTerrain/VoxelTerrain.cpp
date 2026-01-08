@@ -23,84 +23,10 @@ void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _
 	}
 
 
+	ImGui::SeparatorText("DebugRendering");
 	Editor::ImMathf::Checkbox("Can MeshShader Rendering", &_voxelTerrain->canMeshShaderRendering_);
-	Editor::ImMathf::Checkbox("Can VertexShader Rendering", &_voxelTerrain->canVertexShaderRendering_);
-
-	ImGui::Separator();
-
-	/// チャンクのデバッグ表示
-	Editor::ImMathf::DragInt2("Chunk Count XZ", &_voxelTerrain->chunkCountXZ_, 1, 1, 32);
-	Editor::ImMathf::DragInt3("Chunk Size", &_voxelTerrain->chunkSize_, 1, 1, 1024);
-	Editor::ImMathf::DragInt3("Texture Size", &_voxelTerrain->textureSize_, 1, 1, 256);
-	/// テクスチャサイズを変更したらpTextureに適用する
-	if(ImGui::Button("Texture Size Apply And Output")) {
-		for(auto& chunk : _voxelTerrain->chunks_) {
-			if(chunk.pTexture) {
-				chunk.pTexture->ResizeTexture3D(
-					Vector2(static_cast<float>(_voxelTerrain->textureSize_.x), static_cast<float>(_voxelTerrain->textureSize_.y)),
-					static_cast<UINT>(_voxelTerrain->textureSize_.z),
-					_dxm->GetDxDevice(),
-					_dxm->GetDxCommand(),
-					_dxm->GetDxSRVHeap()
-				);
-			}
-		}
-
-		_dxm->HeapBindToCommandList();
-
-		std::wstring filepath = L"";
-		for(size_t i = 0; i < _voxelTerrain->chunks_.size(); i++) {
-			filepath = L"./Packages/Textures/Terrain/Chunk/" + std::to_wstring(i) + L".dds";
-
-			const Chunk& chunk = _voxelTerrain->chunks_[i];
-			chunk.pTexture->OutputTexture3D(filepath, _dxm->GetDxDevice(), _dxm->GetDxCommand());
-			Console::Log("Chunk " + std::to_string(i) + ": Texture3D GUID = " + chunk.texture3DId.ToString());
-		}
-
-		_dxm->HeapBindToCommandList();
-	}
-
-	Editor::ImMathf::MaterialEdit("Material", &_voxelTerrain->material_, nullptr, false);
-
-	/// editor用
-	{
-		static float radius = 5.0f;
-		Editor::ImMathf::DragFloat("Brush Radius", &radius, 0.1f, 1.0f, 100.0f);
-		_voxelTerrain->cBufferEditInfo_.SetMappedData({ radius });
-	}
-
-
-
-	/// 仮
-	if(ImGui::Button("Create Texture3D (all chunks)")) {
-		for(size_t i = 0; i < _voxelTerrain->maxChunkCount_; i++) {
-			const std::wstring filename = L"./Packages/Textures/Terrain/Chunk/" + std::to_wstring(i) + L".dds";
-			SaveTextureToDDS(
-				filename,
-				_voxelTerrain->textureSize_.x,
-				_voxelTerrain->textureSize_.y,
-				_voxelTerrain->textureSize_.z,
-				true
-			);
-		}
-	}
-
-	/// 出力用
-	if(ImGui::Button("Output Chunk Textures Info")) {
-		std::wstring filepath = L"";
-		for(size_t i = 0; i < _voxelTerrain->chunks_.size(); i++) {
-			filepath = L"./Packages/Textures/Terrain/Chunk/" + std::to_wstring(i) + L".dds";
-
-			const Chunk& chunk = _voxelTerrain->chunks_[i];
-			chunk.pTexture->OutputTexture3D(filepath, _dxm->GetDxDevice(), _dxm->GetDxCommand());
-			Console::Log("Chunk " + std::to_string(i) + ": Texture3D GUID = " + chunk.texture3DId.ToString());
-		}
-	}
-
-
-	/// ----- Gizmoでチャンクの枠線を描画 ----- ///
-	Editor::ImMathf::Checkbox("IsEditMode", &_voxelTerrain->isEditMode_);
-	static bool showChunkBounds = false;
+	//Editor::ImMathf::Checkbox("Can VertexShader Rendering", &_voxelTerrain->canVertexShaderRendering_);
+	static bool showChunkBounds = true;
 	Editor::ImMathf::Checkbox("Show Chunk Bounds", &showChunkBounds);
 	if(showChunkBounds) {
 		const Vector3Int& chunkSizeInt = _voxelTerrain->GetChunkSize();
@@ -123,6 +49,61 @@ void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _
 			}
 		}
 	}
+
+
+	ImGui::Separator();
+
+	/// チャンクのデバッグ表示
+	Editor::ImMathf::DragInt2("Chunk Count XZ", &_voxelTerrain->chunkCountXZ_, 1, 1, 32);
+	Editor::ImMathf::DragInt3("Chunk Size", &_voxelTerrain->chunkSize_, 1, 1, 1024);
+	Editor::ImMathf::DragInt3("Texture Size", &_voxelTerrain->textureSize_, 1, 1, 256);
+
+
+	Editor::ImMathf::MaterialEdit("Material", &_voxelTerrain->material_, nullptr, false);
+
+	/// editor用
+	{
+		static float radius = 5.0f;
+		Editor::ImMathf::DragFloat("Brush Radius", &radius, 0.1f, 1.0f, 100.0f);
+		_voxelTerrain->cBufferEditInfo_.SetMappedData({ radius });
+	}
+
+
+
+	/// ----- Gizmoでチャンクの枠線を描画 ----- ///
+	Editor::ImMathf::Checkbox("IsEditMode", &_voxelTerrain->isEditMode_);
+
+
+	ImGui::SeparatorText("TextureExport");
+
+	/// テクスチャを初期の状態で保存する
+	if(ImGui::Button("地形を初期状態に戻す")) {
+		for(size_t i = 0; i < _voxelTerrain->maxChunkCount_; i++) {
+			const std::wstring filename = L"./Packages/Textures/Terrain/Chunk/" + std::to_wstring(i) + L".dds";
+			SaveTextureToDDS(
+				filename,
+				_voxelTerrain->textureSize_.x,
+				_voxelTerrain->textureSize_.y,
+				_voxelTerrain->textureSize_.z,
+				true
+			);
+		}
+	}
+
+	ImGui::Spacing();
+
+	/// 出力用
+	if(ImGui::Button("地形を保存する")) {
+		std::wstring filepath = L"";
+		for(size_t i = 0; i < _voxelTerrain->chunks_.size(); i++) {
+			filepath = L"./Packages/Textures/Terrain/Chunk/" + std::to_wstring(i) + L".dds";
+
+			const Chunk& chunk = _voxelTerrain->chunks_[i];
+			chunk.pTexture->OutputTexture3D(filepath, _dxm->GetDxDevice(), _dxm->GetDxCommand());
+			Console::Log("Chunk " + std::to_string(i) + ": Texture3D GUID = " + chunk.texture3DId.ToString());
+		}
+	}
+
 
 
 
