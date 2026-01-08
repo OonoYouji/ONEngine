@@ -1,4 +1,4 @@
-#include "DxResource.h"
+﻿#include "DxResource.h"
 
 using namespace ONEngine;
 
@@ -71,6 +71,36 @@ void DxResource::CreateUAVResource(DxDevice* _dxDevice, class DxCommand* _dxComm
 	Assert(SUCCEEDED(result), "UAV Resource creation failed.");
 }
 
+void DxResource::CreateDefaultHeap(DxDevice* _dxDevice, DxCommand* _dxCommand, size_t _sizeInByte, D3D12_RESOURCE_STATES initState = D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER) {
+	D3D12_HEAP_PROPERTIES heapProps{};
+	heapProps.Type = D3D12_HEAP_TYPE_DEFAULT; // ここがポイント
+
+	D3D12_RESOURCE_DESC desc{};
+	desc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
+	desc.Width = _sizeInByte;
+	desc.Height = 1;
+	desc.DepthOrArraySize = 1;
+	desc.MipLevels = 1;
+	desc.SampleDesc.Count = 1;
+	desc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+
+	HRESULT result = _dxDevice->GetDevice()->CreateCommittedResource(
+		&heapProps,
+		D3D12_HEAP_FLAG_NONE,
+		&desc,
+		D3D12_RESOURCE_STATE_COMMON,
+		nullptr,
+		IID_PPV_ARGS(&resource_)
+	);
+	Assert(SUCCEEDED(result), "Default Heap Resource creation failed.");
+
+	CreateBarrier(
+		D3D12_RESOURCE_STATE_COMMON,
+		initState, _dxCommand
+	);
+}
+
+
 
 void DxResource::CreateCommittedResource(DxDevice* _dxDevice, const D3D12_HEAP_PROPERTIES* _pHeapProperties, D3D12_HEAP_FLAGS _HeapFlags, const D3D12_RESOURCE_DESC* _pDesc, D3D12_RESOURCE_STATES _InitialResourceState, const D3D12_CLEAR_VALUE* _pOptimizedClearValue) {
 	currentState_ = _InitialResourceState;
@@ -84,7 +114,7 @@ void DxResource::CreateCommittedResource(DxDevice* _dxDevice, const D3D12_HEAP_P
 		IID_PPV_ARGS(&resource_)
 	);
 
-	if (!SUCCEEDED(hr)) {
+	if(!SUCCEEDED(hr)) {
 		Console::LogError("[DxResource::CreateCommittedResource] Committed Resource creation failed.");
 		Assert(false, "Committed Resource creation failed.");
 	}
@@ -213,19 +243,19 @@ std::wstring ONEngine::GetD3D12Name(ID3D12Object* _object) {
 
 	/// まずサイズを調べる
 	HRESULT hr = _object->GetPrivateData(WKPDID_D3DDebugObjectNameW, &size, nullptr);
-	if (FAILED(hr) || size == 0) {
+	if(FAILED(hr) || size == 0) {
 		return L""; // 名前なし
 	}
 
 	std::wstring name(size / sizeof(wchar_t), L'\0');
 
 	hr = _object->GetPrivateData(WKPDID_D3DDebugObjectNameW, &size, name.data());
-	if (FAILED(hr)) {
+	if(FAILED(hr)) {
 		return L"";
 	}
 
 	/// 末尾の null を削る
-	if (!name.empty() && name.back() == L'\0') {
+	if(!name.empty() && name.back() == L'\0') {
 		name.pop_back();
 	}
 
@@ -235,7 +265,7 @@ std::wstring ONEngine::GetD3D12Name(ID3D12Object* _object) {
 void ONEngine::CreateBarrier(ID3D12Resource* _resource, D3D12_RESOURCE_STATES _before, D3D12_RESOURCE_STATES _after, DxCommand* _dxCommand) {
 	/// ----- リソースバリアーの作成 ----- ///
 
-	if (_before == _after) {
+	if(_before == _after) {
 		return;
 	}
 
@@ -256,8 +286,8 @@ void ONEngine::CreateBarriers(std::vector<DxResource*>& _resources, D3D12_RESOUR
 	std::vector<D3D12_RESOURCE_BARRIER> barriers;
 	barriers.reserve(_resources.size());
 
-	for (auto& res : _resources) {
-		if (res->GetCurrentState() != _after) {
+	for(auto& res : _resources) {
+		if(res->GetCurrentState() != _after) {
 			D3D12_RESOURCE_BARRIER barrier{};
 			barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 			barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
@@ -270,7 +300,7 @@ void ONEngine::CreateBarriers(std::vector<DxResource*>& _resources, D3D12_RESOUR
 
 	}
 
-	if (barriers.empty()) {
+	if(barriers.empty()) {
 		return;
 	}
 
@@ -278,7 +308,7 @@ void ONEngine::CreateBarriers(std::vector<DxResource*>& _resources, D3D12_RESOUR
 		static_cast<UINT>(barriers.size()), barriers.data()
 	);
 
-	for (auto& res : _resources) {
+	for(auto& res : _resources) {
 		res->SetCurrentState(_after);
 	}
 }
@@ -290,8 +320,8 @@ void ONEngine::CreateBarriers(std::vector<DxResource*>& _resources, D3D12_RESOUR
 	std::vector<D3D12_RESOURCE_BARRIER> barriers;
 	barriers.reserve(_resources.size());
 
-	for (auto& res : _resources) {
-		if (res->GetCurrentState() != _after) {
+	for(auto& res : _resources) {
+		if(res->GetCurrentState() != _after) {
 			D3D12_RESOURCE_BARRIER barrier{};
 			barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 			barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
@@ -304,7 +334,7 @@ void ONEngine::CreateBarriers(std::vector<DxResource*>& _resources, D3D12_RESOUR
 
 	}
 
-	if (barriers.empty()) {
+	if(barriers.empty()) {
 		return;
 	}
 
@@ -312,7 +342,7 @@ void ONEngine::CreateBarriers(std::vector<DxResource*>& _resources, D3D12_RESOUR
 		static_cast<UINT>(barriers.size()), barriers.data()
 	);
 
-	for (auto& res : _resources) {
+	for(auto& res : _resources) {
 		res->SetCurrentState(_after);
 	}
 

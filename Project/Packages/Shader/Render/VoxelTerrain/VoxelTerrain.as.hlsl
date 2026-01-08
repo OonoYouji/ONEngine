@@ -1,4 +1,4 @@
-#include "VoxelTerrain.hlsli"
+﻿#include "VoxelTerrain.hlsli"
 
 
 ///// ---------------------------------------------------
@@ -47,33 +47,36 @@ void main(
 
 		float3 diff = nearPoint - camera.position.xyz;
 		float lengthToCamera = length(diff);
+		if (lengthToCamera <= 1000.0f) {
+			
 
-		uint subChunkSizeValue;
+			uint subChunkSizeValue;
 
-		/// LOD レベルを ndc.z の値に基づいて設定
-		if (lengthToCamera < 50.0f) {
-			asPayload.lodLevel = 0; // 高詳細度
-			subChunkSizeValue = 2;
+			/// LOD レベルを ndc.z の値に基づいて設定
+			if (lengthToCamera < 50.0f) {
+				asPayload.lodLevel = 0; // 高詳細度
+				subChunkSizeValue = 2;
 
-		} else if (lengthToCamera < 150.0f) {
-			asPayload.lodLevel = 1; // 中詳細度
-			subChunkSizeValue = 4;
+			} else if (lengthToCamera < 100.0f) {
+				asPayload.lodLevel = 1; // 中詳細度
+				subChunkSizeValue = 4;
 
-		} else if (lengthToCamera < 300.0f) {
-			asPayload.lodLevel = 2; // 低詳細度
-			subChunkSizeValue = 8;
-		} else {
-			asPayload.lodLevel = 3; // 低詳細度
-			subChunkSizeValue = 16;
-		}
+			} else if (lengthToCamera < 200.0f) {
+				asPayload.lodLevel = 2; // 低詳細度
+				subChunkSizeValue = 8;
+			} else {
+				asPayload.lodLevel = 3; // 低詳細度
+				subChunkSizeValue = 16;
+			}
 
 
-		asPayload.chunkIndex = IndexOfMeshGroup(groupId, uint3(voxelTerrainInfo.chunkCountXZ.x, 1, voxelTerrainInfo.chunkCountXZ.y));
+			asPayload.chunkIndex = IndexOfMeshGroup(groupId, uint3(voxelTerrainInfo.chunkCountXZ.x, 1, voxelTerrainInfo.chunkCountXZ.y));
 
-		asPayload.subChunkSize = uint3(subChunkSizeValue, subChunkSizeValue, subChunkSizeValue);
-		dispatchSize = voxelTerrainInfo.textureSize / asPayload.subChunkSize;
+			asPayload.subChunkSize = uint3(subChunkSizeValue, subChunkSizeValue, subChunkSizeValue);
+			dispatchSize = voxelTerrainInfo.textureSize / asPayload.subChunkSize;
 	
-		asPayload.dispatchSize = dispatchSize;
+			asPayload.dispatchSize = dispatchSize;
+		}
 
 	
 	}

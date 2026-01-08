@@ -26,7 +26,8 @@ void VoxelTerrainRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, 
 		shader.Initialize(_shaderCompiler);
 
 		shader.CompileShader(L"./Packages/Shader/Render/VoxelTerrain/VoxelTerrain.as.hlsl", L"as_6_5", Shader::Type::as);
-		shader.CompileShader(L"./Packages/Shader/Render/VoxelTerrain/VoxelTerrain.ms.hlsl", L"ms_6_5", Shader::Type::ms);
+		shader.CompileShader(L"./Packages/Shader/Render/VoxelTerrain/VoxelTerrainMarchingCube.ms.hlsl", L"ms_6_5", Shader::Type::ms);
+		//shader.CompileShader(L"./Packages/Shader/Render/VoxelTerrain/VoxelTerrain.ms.hlsl", L"ms_6_5", Shader::Type::ms);
 		shader.CompileShader(L"./Packages/Shader/Render/VoxelTerrain/VoxelTerrain.ps.hlsl", L"ps_6_0", Shader::Type::ps);
 
 
@@ -40,7 +41,7 @@ void VoxelTerrainRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, 
 		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 3); // Material
 
 		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // Chunk array
-		pipeline_->AddDescriptorRange(1, MAX_TEXTURE_COUNT*2, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // VoxelTerrain Texture3D
+		pipeline_->AddDescriptorRange(1, MAX_TEXTURE_COUNT * 2, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // VoxelTerrain Texture3D
 
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 0); // Chunk array
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 1); // VoxelTerrain Texture3D
@@ -51,6 +52,7 @@ void VoxelTerrainRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, 
 
 		pipeline_->SetBlendDesc(BlendMode::Normal());
 		pipeline_->SetFillMode(D3D12_FILL_MODE_SOLID);
+		//pipeline_->SetFillMode(D3D12_FILL_MODE_WIREFRAME);
 		pipeline_->SetCullMode(D3D12_CULL_MODE_BACK);
 		pipeline_->SetDepthStencilDesc(DefaultDepthStencilDesc());
 
@@ -65,29 +67,33 @@ void VoxelTerrainRenderingPipeline::Draw(ECSGroup* _ecs, CameraComponent* _camer
 	/// 早期リターンの条件チェック
 	/// ---------------------------------------------------
 	ComponentArray<VoxelTerrain>* voxelTerrainArray = _ecs->GetComponentArray<VoxelTerrain>();
-	if (!voxelTerrainArray || voxelTerrainArray->GetUsedComponents().empty()) {
+	if(!voxelTerrainArray || voxelTerrainArray->GetUsedComponents().empty()) {
 		return;
 	}
 
 	VoxelTerrain* voxelTerrain = nullptr;
-	for (auto& vt : voxelTerrainArray->GetUsedComponents()) {
-		if (vt->enable) {
+	for(auto& vt : voxelTerrainArray->GetUsedComponents()) {
+		if(CheckComponentEnable(vt)) {
 			voxelTerrain = vt;
 			break;
 		}
 	}
 
-	if (!voxelTerrain) {
+	if(!CheckComponentEnable(voxelTerrain)) {
 		return;
 	}
 
 	auto cmdList = _dxCommand->GetCommandList();
-	if (!voxelTerrain->CheckCreatedBuffers()) {
+	if(!voxelTerrain->CheckCreatedBuffers()) {
 		voxelTerrain->SettingChunksGuid(pAssetCollection_);
-		voxelTerrain->CreateBuffers(pDxManager_->GetDxDevice(), pDxManager_->GetDxSRVHeap());
+		voxelTerrain->CreateBuffers(pDxManager_->GetDxDevice(), pDxManager_->GetDxSRVHeap(), pAssetCollection_);
 		return;
 	}
 
+
+	if(!voxelTerrain->canMeshShaderRendering_) {
+		return;
+	}
 
 	/// ---------------------------------------------------
 	/// 描画

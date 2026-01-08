@@ -11,6 +11,7 @@
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/Graphics/Buffer/ConstantBuffer.h"
 #include "Engine/Graphics/Buffer/StructuredBuffer.h"
+#include "Engine/Graphics/Buffer/VertexBuffer.h"
 #include "Engine/Graphics/Buffer/Data/GPUMaterial.h"
 
 /*
@@ -43,6 +44,14 @@
 
 namespace ONEngine {
 
+
+struct VoxelTerrainVertex {
+	Vector4 position;
+	Vector4 color;
+	Vector3 normal;
+};
+
+
 /// ///////////////////////////////////////////////////
 /// ボクセル地形におけるチャンク
 /// ///////////////////////////////////////////////////
@@ -50,6 +59,11 @@ struct Chunk {
 	Guid texture3DId; ///< このチャンクを表現するTexture3DのId
 	Texture* pTexture;
 	Texture uavTexture; ///< エディタ用UAVテクスチャ
+
+	StructuredBuffer<VoxelTerrainVertex> rwVertices;
+	StructuredBuffer<uint32_t> rwVertexCounter;
+	uint32_t vertexCount;
+	VertexBuffer<VoxelTerrainVertex> vbv;
 };
 
 /// @brief デバッグ関数用に前方宣言をする
@@ -102,6 +116,14 @@ struct EditInfo {
 	float brushRadius;
 };
 
+
+struct MarchingCube {
+	float isoValue;
+	float voxelSize;
+};
+
+
+
 }
 
 
@@ -114,6 +136,10 @@ class VoxelTerrain : public IComponent {
 	friend void from_json(const nlohmann::json& _j, VoxelTerrain& _voxelTerrain);
 	friend void to_json(nlohmann::json& _j, const VoxelTerrain& _voxelTerrain);
 
+	/// --------------- friend class --------------- ///
+	friend class VoxelTerrainRenderingPipeline;
+	friend class VoxelTerrainVertexShaderRenderingPipeline;
+	friend class VoxelTerrainVertexCreatePipeline;
 public:
 	/// ===========================================
 	/// public : static objects
@@ -143,7 +169,7 @@ public:
 	/// @brief Bufferの生成を行う
 	/// @param _dxDevice DxDeviceのポインタ
 	/// @param _dxSRVHeap DxSRVHeapのポインタ
-	void CreateBuffers(DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap);
+	void CreateBuffers(DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap, AssetCollection* _assetCollection);
 
 	/// @brief GraphicsPipeline用のバッファ設定を行う
 	/// @param _cmdList GraphicsCommandListのポインタ
@@ -164,6 +190,10 @@ public:
 	/// @brief チャンクの大きさを取得する
 	/// @return チャンクの大きさ
 	const Vector3Int& GetChunkSize() const;
+
+
+	void SettingMaterial();
+	void SettingTerrainInfo();
 
 
 	/// --------------- エディタ用 関数 --------------- ///
@@ -195,6 +225,10 @@ public:
 	/// @param _assetCollection 
 	void CopyEditorTextureToChunkTexture(DxCommand* _dxCommand);
 
+
+	bool CanMeshShaderRendering() const { return canMeshShaderRendering_; }
+	bool IsEditMode() const { return isEditMode_; }
+
 private:
 	/// ===========================================
 	/// private : objects
@@ -224,6 +258,14 @@ private:
 	/// --------------- エディタ用 --------------- ///
 	ConstantBuffer<GPUData::InputInfo> cBufferInputInfo_;
 	ConstantBuffer<GPUData::EditInfo>  cBufferEditInfo_;
+	bool isEditMode_ = false;
+
+
+	ConstantBuffer<GPUData::MarchingCube> cBufferMarchingCubeInfo_;
+	bool isCreatedVoxelTerrain_ = false;
+
+	bool canMeshShaderRendering_ = false;
+	bool canVertexShaderRendering_ = false;
 
 };
 

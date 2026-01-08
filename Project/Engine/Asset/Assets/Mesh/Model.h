@@ -17,6 +17,15 @@ namespace ONEngine {
 /// ///////////////////////////////////////////////////
 class Model final : public IAsset {
 public:
+
+	struct Vertex {
+		Vector4 position;
+		Vector2 uv;
+		Vector3 normal;
+	};
+
+	using ModelMesh = Mesh<Vertex>;
+
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
@@ -26,16 +35,16 @@ public:
 
 	/// @brief mesh の新規追加
 	/// @param _mesh meshのunique_ptr
-	void AddMesh(std::shared_ptr<Mesh>&& _mesh);
+	void AddMesh(std::shared_ptr<ModelMesh>&& _mesh);
 
-	Mesh* CreateMesh();
+	ModelMesh* CreateMesh();
 
 private:
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
 
-	std::vector<std::shared_ptr<Mesh>> meshes_;
+	std::vector<std::shared_ptr<ModelMesh>> meshes_;
 	std::string                        path_;
 
 
@@ -53,7 +62,7 @@ public:
 
 	/// ----- setters ----- ///
 
-	void SetMeshes(std::vector<std::shared_ptr<Mesh>>&& _meshes);
+	void SetMeshes(std::vector<std::shared_ptr<ModelMesh>>&& _meshes);
 	void SetPath(const std::string& _path);
 	void SetRootNode(const Node& _node);
 	void SetAnimationDuration(float _duration);
@@ -65,8 +74,8 @@ public:
 	const std::string& GetPath() const;
 
 	/// @brief Modelが持つMesh群を取得
-	const std::vector<std::shared_ptr<Mesh>>& GetMeshes() const;
-	std::vector<std::shared_ptr<Mesh>>& GetMeshes();
+	const std::vector<std::shared_ptr<ModelMesh>>& GetMeshes() const;
+	std::vector<std::shared_ptr<ModelMesh>>& GetMeshes();
 
 	/// @brief アニメーションのルートノードを取得
 	const Node& GetRootNode() const;

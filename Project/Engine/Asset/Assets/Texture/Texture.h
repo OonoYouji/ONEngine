@@ -79,6 +79,8 @@ public:
 	void OutputTexture(const std::wstring& _filename, class DxDevice* _dxDevice, class DxCommand* _dxCommand);
 	void OutputTexture3D(const std::wstring& _filename, class DxDevice* _dxDevice, class DxCommand* _dxCommand);
 
+	void ResizeTexture3D(const Vector2& _newSize, UINT _newDepth, class DxDevice* _dxDevice, class DxCommand* _dxCommand, class DxSRVHeap* _dxSRVHeap);
+
 private:
 	/// ===================================================
 	/// private : objects

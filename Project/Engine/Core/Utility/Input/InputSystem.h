@@ -55,6 +55,7 @@ namespace MonoInternalMethods {
 	void InternalGetGamepadThumb(int _axisIndex, float* _x, float* _y);
 	void InternalGetMouseVelocity(float* _x, float* _y);
 	void InternalGetMousePosition(float* _x, float* _y);
+	void InternalGetMouseWheel(float* _wheel);
 }
 
 } /// ONEngine

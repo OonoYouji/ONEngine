@@ -76,3 +76,10 @@ void MonoInternalMethods::InternalGetMousePosition(float* _x, float* _y) {
 	*_x = position.x;
 	*_y = position.y;
 }
+
+void ONEngine::MonoInternalMethods::InternalGetMouseWheel(float* _wheel) {
+	float wheel = Input::GetMouseWheel();
+	if(_wheel) {
+		*_wheel = wheel;
+	}
+}

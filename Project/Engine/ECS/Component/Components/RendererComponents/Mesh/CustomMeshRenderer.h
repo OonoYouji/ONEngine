@@ -16,6 +16,16 @@ namespace ONEngine {
 
 class CustomMeshRenderer final : public IRenderComponent {
 public:
+
+	struct Vertex {
+		Vector4 position;
+		Vector2 uv;
+		Vector3 normal;
+	};
+
+	using CustomMesh = Mesh<Vertex>;
+
+public:
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
@@ -35,7 +45,7 @@ private:
 	/// private : objects
 	/// ====================================================
 
-	Mesh mesh_;
+	CustomMesh mesh_;
 	std::string texturePath_ = "Packages/Textures/uvChecker.png";
 	bool isVisible_ = true; ///< 描画するかどうか
 	bool isBufferRecreate_ = false; ///< バッファを再作成するかどうか
@@ -49,7 +59,7 @@ public:
 
 	/// @brief verticesのセッタ
 	/// @param _vertices meshの頂点データ
-	void SetVertices(const std::vector<Mesh::VertexData>& _vertices);
+	void SetVertices(const std::vector<Vertex>& _vertices);
 
 	/// @brief indicesのセッタ
 	/// @param _indices 頂点インデックスデータ
@@ -83,7 +93,7 @@ public:
 
 	/// @brief meshのゲッタ
 	/// @return Meshのポインタ
-	const Mesh* GetMesh() const;
+	const CustomMesh* GetMesh() const;
 
 	/// @brief 描画するかどうかのゲッタ
 	/// @return 描画フラグ

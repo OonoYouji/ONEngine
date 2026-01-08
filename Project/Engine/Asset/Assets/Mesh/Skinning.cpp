@@ -1,4 +1,4 @@
-#include "Skinning.h"
+﻿#include "Skinning.h"
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
@@ -122,7 +122,7 @@ SkinCluster ANIME_MATH::CreateSkinCluster(const Skeleton& _skeleton, Model* _mod
 
 
 	/// resource create
-	Mesh* frontMesh = _model->GetMeshes().front().get();
+	Model::ModelMesh* frontMesh = _model->GetMeshes().front().get();
 	result.influenceResource.CreateResource(dxDevice, sizeof(VertexInfluence) * frontMesh->GetVertices().size());
 
 	/// mapping

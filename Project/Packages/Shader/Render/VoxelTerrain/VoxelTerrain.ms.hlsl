@@ -947,7 +947,7 @@ void main(
 	uint3 groupId : SV_GroupID,
     in payload Payload asPayload,
     out vertices VertexOut verts[256],
-    out indices uint3 indices[256]) {
+    out indices uint3 indis[256]) {
 	
 	/// グループ内の最初のスレッドのみ処理
 	if (gi != 0) {
@@ -978,7 +978,6 @@ void main(
 	aabb.max = aabb.min + asPayload.subChunkSize;
 	
 	if (IsVisible(aabb, CreateFrustumFromMatrix(viewProjection.matVP))) {
-
 		float3 aabbDiff = aabb.max - aabb.min;
 		
 		for (int z = 0; z < 2; z++) {
@@ -1037,7 +1036,6 @@ void main(
 			}
 		}
 	}
-
 	
 	/// 描画するボクセル数に応じて頂点数、プリミティブ数を設定
 	SetMeshOutputCounts(numVertices, numPrimitives);
@@ -1066,7 +1064,7 @@ void main(
 		}
 		
 		for (int j = 0; j < kPatternPrimitiveCount[diis[i].patternIndex]; ++j) {
-			indices[iIndex + j] = rd.indis[j] + uint3(vIndex, vIndex, vIndex);
+			indis[iIndex + j] = rd.indis[j] + uint3(vIndex, vIndex, vIndex);
 		}
 		
 	}

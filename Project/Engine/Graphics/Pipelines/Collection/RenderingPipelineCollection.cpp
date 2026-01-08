@@ -25,6 +25,8 @@ using namespace ONEngine;
 #include "../Render/Terrain/TerrainProceduralRenderingPipeline.h"
 #include "../Render/River/RiverRenderingPipeline.h"
 #include "../Render/Grass/GrassRenderingPipeline.h"
+#include "../Render/VoxelTerrain/VoxelTerrainVertexCreatePipeline.h"
+#include "../Render/VoxelTerrain/VoxelTerrainVertexShaderRenderingPipeline.h"
 #include "../Render/VoxelTerrain/VoxelTerrainRenderingPipeline.h"
 
 /// post process
@@ -52,7 +54,9 @@ void RenderingPipelineCollection::Initialize() {
 	Generate3DRenderingPipeline<Line3DRenderingPipeline>();
 	Generate3DRenderingPipeline<SkyboxRenderingPipeline>(pAssetCollection_);
 	Generate3DRenderingPipeline<TerrainRenderingPipeline>(pAssetCollection_);
+	//Generate3DRenderingPipeline<VoxelTerrainVertexCreatePipeline>(pAssetCollection_);
 	Generate3DRenderingPipeline<VoxelTerrainRenderingPipeline>(pAssetCollection_);
+	//Generate3DRenderingPipeline<VoxelTerrainVertexShaderRenderingPipeline>(pAssetCollection_);
 	Generate3DRenderingPipeline<TerrainProceduralRenderingPipeline>(pAssetCollection_);
 	Generate3DRenderingPipeline<RiverRenderingPipeline>(pAssetCollection_);
 	Generate3DRenderingPipeline<MeshRenderingPipeline>(pAssetCollection_);
@@ -67,6 +71,8 @@ void RenderingPipelineCollection::Initialize() {
 
 	/// Gizmoは最後に描画する
 	Generate3DRenderingPipeline<GizmoRenderingPipeline>();
+
+
 
 	/// ----- オブジェクトごとのポストエフェクトのパイプラインを生成 ----- ///
 	GeneratePostProcessPipeline<PostProcessLighting>();
