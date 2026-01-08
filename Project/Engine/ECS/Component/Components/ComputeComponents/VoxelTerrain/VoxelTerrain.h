@@ -263,7 +263,7 @@ private:
 	bool isCreatedVoxelTerrain_ = false;
 
 	bool canMeshShaderRendering_ = false;
-	bool canVertexShaderRendering_ = true;
+	bool canVertexShaderRendering_ = false;
 
 };
 

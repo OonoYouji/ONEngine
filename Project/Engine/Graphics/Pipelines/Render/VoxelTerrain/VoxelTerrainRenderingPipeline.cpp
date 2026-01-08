@@ -26,7 +26,8 @@ void VoxelTerrainRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, 
 		shader.Initialize(_shaderCompiler);
 
 		shader.CompileShader(L"./Packages/Shader/Render/VoxelTerrain/VoxelTerrain.as.hlsl", L"as_6_5", Shader::Type::as);
-		shader.CompileShader(L"./Packages/Shader/Render/VoxelTerrain/VoxelTerrain.ms.hlsl", L"ms_6_5", Shader::Type::ms);
+		shader.CompileShader(L"./Packages/Shader/Render/VoxelTerrain/VoxelTerrainMarchingCube.ms.hlsl", L"ms_6_5", Shader::Type::ms);
+		//shader.CompileShader(L"./Packages/Shader/Render/VoxelTerrain/VoxelTerrain.ms.hlsl", L"ms_6_5", Shader::Type::ms);
 		shader.CompileShader(L"./Packages/Shader/Render/VoxelTerrain/VoxelTerrain.ps.hlsl", L"ps_6_0", Shader::Type::ps);
 
 
@@ -51,6 +52,7 @@ void VoxelTerrainRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, 
 
 		pipeline_->SetBlendDesc(BlendMode::Normal());
 		pipeline_->SetFillMode(D3D12_FILL_MODE_SOLID);
+		//pipeline_->SetFillMode(D3D12_FILL_MODE_WIREFRAME);
 		pipeline_->SetCullMode(D3D12_CULL_MODE_BACK);
 		pipeline_->SetDepthStencilDesc(DefaultDepthStencilDesc());
 
