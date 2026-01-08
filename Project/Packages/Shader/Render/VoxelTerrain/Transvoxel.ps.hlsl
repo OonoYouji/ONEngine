@@ -1,4 +1,4 @@
-#include "Transvoxel.hlsli"
+﻿#include "Transvoxel.hlsli"
 #include "../../ConstantBufferData/Material.hlsli"
 
 struct PSOutput {
@@ -8,14 +8,14 @@ struct PSOutput {
 	float4 flags : SV_Target3;
 };
 
-ConstantBuffer<ConstantBufferMaterial> material : register(b0);
+ConstantBuffer<ConstantBufferMaterial> material : register(b3);
 
 PSOutput main(VertexOut _out) {
 	PSOutput output;
 	
     output.color = material.baseColor;
 	output.worldPos = _out.worldPos;
-	output.normal = float4(normalize(_out.normal), 1);
+	output.normal = float4(normalize(_out.normal.xyz), 1);
 	output.flags = float4(material.intValues.x, material.intValues.y, 0, 1);
 
 	if (output.color.a <= 0.001f) {

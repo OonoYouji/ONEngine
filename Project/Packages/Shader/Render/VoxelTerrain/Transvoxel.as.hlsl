@@ -18,7 +18,7 @@ uint GetNeighborLOD(uint3 neighborGroupId) {
 // ---------------------------------------------------
 [shader("amplification")]
 [numthreads(1, 1, 1)]
-void AS_Transvoxel(
+void main(
     uint3 DTid : SV_DispatchThreadID,
     uint3 groupId : SV_GroupID,
     uint groupIndex : SV_GroupIndex) {
@@ -35,6 +35,8 @@ void AS_Transvoxel(
 	uint neighborLOD_ZN = GetNeighborLOD(groupId - uint3(0, 0, 1));
 	uint neighborLOD_YP = GetNeighborLOD(groupId + uint3(0, 1, 0));
 	uint neighborLOD_YN = GetNeighborLOD(groupId - uint3(0, 1, 0));
+
+	Payload payload;
 
     // 境界面ごとに必要なTransvoxel Dispatchを決定
     [unroll]
@@ -69,15 +71,21 @@ void AS_Transvoxel(
 		}
 
 		if (needTransvoxel) {
-			Payload payload;
 			payload.face = face;
 			payload.myLOD = myLOD;
 			payload.neighborLOD = neighborLOD;
 			payload.chunkOrigin = chunkOrigin;
 			payload.cellCount = voxelTerrainInfo.chunkSize.x >> myLOD; // X面セル数例
-
-            // DispatchMesh: 1スレッド=1境界セル
-			DispatchMesh(payload.cellCount, payload.cellCount, 1, payload);
 		}
 	}
+
+	
+	uint3 dispatchSize = uint3(payload.cellCount, payload.cellCount, 1);
+	if (payload.cellCount == 0) {
+		dispatchSize = uint3(0, 0, 0);
+	}
+	
+	// DispatchMesh: 1スレッド=1境界セル
+	DispatchMesh(dispatchSize.x, dispatchSize.y, dispatchSize.z, payload);
+
 }
