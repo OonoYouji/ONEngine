@@ -44,6 +44,8 @@ public:
 	void Draw(class ECSGroup* _ecs, class CameraComponent* _camera, DxCommand* _dxCommand) override;
 
 
+	void CreatePipeline(GraphicsPipeline* _pipeline, Shader& _shader, DxManager* _dxm, D3D12_FILL_MODE _fillMode, D3D12_BLEND_DESC _blendMode);
+
 private:
 	/// ===================================================
 	/// private : objects
@@ -51,7 +53,9 @@ private:
 
 	/// --------------- other class pointers --------------- ///
 	class AssetCollection* pAssetCollection_;
-	class DxManager*       pDxManager_;
+	class DxManager* pDxManager_;
+
+	std::unique_ptr<GraphicsPipeline> wireframePipeline_;
 
 };
 

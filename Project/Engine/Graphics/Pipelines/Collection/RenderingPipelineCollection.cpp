@@ -28,6 +28,7 @@ using namespace ONEngine;
 #include "../Render/VoxelTerrain/VoxelTerrainVertexCreatePipeline.h"
 #include "../Render/VoxelTerrain/VoxelTerrainVertexShaderRenderingPipeline.h"
 #include "../Render/VoxelTerrain/VoxelTerrainRenderingPipeline.h"
+#include "../Render/VoxelTerrain/VoxelTerrainTransvoxelRenderingPipeline.h"
 
 /// post process
 #include "../PostProcess/PerObject/Light/PostProcessLighting.h"
@@ -56,6 +57,7 @@ void RenderingPipelineCollection::Initialize() {
 	Generate3DRenderingPipeline<TerrainRenderingPipeline>(pAssetCollection_);
 	//Generate3DRenderingPipeline<VoxelTerrainVertexCreatePipeline>(pAssetCollection_);
 	Generate3DRenderingPipeline<VoxelTerrainRenderingPipeline>(pAssetCollection_);
+	//Generate3DRenderingPipeline<VoxelTerrainTransvoxelRenderingPipeline>(pAssetCollection_);
 	//Generate3DRenderingPipeline<VoxelTerrainVertexShaderRenderingPipeline>(pAssetCollection_);
 	Generate3DRenderingPipeline<TerrainProceduralRenderingPipeline>(pAssetCollection_);
 	Generate3DRenderingPipeline<RiverRenderingPipeline>(pAssetCollection_);

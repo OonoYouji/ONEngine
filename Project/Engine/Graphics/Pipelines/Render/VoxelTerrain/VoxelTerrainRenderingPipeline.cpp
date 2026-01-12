@@ -33,30 +33,9 @@ void VoxelTerrainRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, 
 
 		/// Pipeline
 		pipeline_ = std::make_unique<GraphicsPipeline>();
-		pipeline_->SetShader(&shader);
-
-		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 0); // VoxelTerrainInfo
-		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 1); // ViewProjection
-		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 2); // CameraPosition
-		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 3); // Material
-
-		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // Chunk array
-		pipeline_->AddDescriptorRange(1, MAX_TEXTURE_COUNT * 2, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // VoxelTerrain Texture3D
-
-		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 0); // Chunk array
-		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 1); // VoxelTerrain Texture3D
-
-
-		pipeline_->AddStaticSampler(StaticSampler::ClampSampler(), D3D12_SHADER_VISIBILITY_ALL, 0);
-
-
-		pipeline_->SetBlendDesc(BlendMode::Normal());
-		pipeline_->SetFillMode(D3D12_FILL_MODE_SOLID);
-		//pipeline_->SetFillMode(D3D12_FILL_MODE_WIREFRAME);
-		pipeline_->SetCullMode(D3D12_CULL_MODE_BACK);
-		pipeline_->SetDepthStencilDesc(DefaultDepthStencilDesc());
-
-		pipeline_->CreatePipeline(_dxm->GetDxDevice());
+		CreatePipeline(pipeline_.get(), shader, _dxm, D3D12_FILL_MODE_SOLID, BlendMode::Normal());
+		wireframePipeline_ = std::make_unique<GraphicsPipeline>();
+		CreatePipeline(wireframePipeline_.get(), shader, _dxm, D3D12_FILL_MODE_WIREFRAME, BlendMode::Multiply());
 	}
 
 }
@@ -120,4 +99,52 @@ void VoxelTerrainRenderingPipeline::Draw(ECSGroup* _ecs, CameraComponent* _camer
 		1,
 		voxelTerrain->GetChunkCountXZ().y
 	);
+
+
+
+	wireframePipeline_->SetPipelineStateForCommandList(_dxCommand);
+	pDxManager_->HeapBindToCommandList();
+
+	/// --------------- バッファの設定 --------------- ///
+	voxelTerrain->SetupGraphicBuffers(cmdList, { CBV_VOXEL_TERRAIN_INFO, CBV_MATERIAL, SRV_CHUNK_ARRAY }, pAssetCollection_);
+
+	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(_dxCommand->GetCommandList(), CBV_VIEW_PROJECTION);
+	_camera->GetCameraPosBuffer().BindForGraphicsCommandList(_dxCommand->GetCommandList(), CBV_CAMERA_POSITION);
+	cmdList->SetGraphicsRootDescriptorTable(
+		SRV_VOXEL_TERRAIN_TEXTURE3D, frontSRVHandle
+	);
+
+	/// --------------- ディスパッチ --------------- ///
+	cmdList->DispatchMesh(
+		voxelTerrain->GetChunkCountXZ().x,
+		1,
+		voxelTerrain->GetChunkCountXZ().y
+	);
+
+}
+
+void ONEngine::VoxelTerrainRenderingPipeline::CreatePipeline(GraphicsPipeline* _pipeline, Shader& _shader, DxManager* _dxm, D3D12_FILL_MODE _fillMode, D3D12_BLEND_DESC _blendMode) {
+	_pipeline->SetShader(&_shader);
+
+	_pipeline->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 0); // VoxelTerrainInfo
+	_pipeline->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 1); // ViewProjection
+	_pipeline->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 2); // CameraPosition
+	_pipeline->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 3); // Material
+
+	_pipeline->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // Chunk array
+	_pipeline->AddDescriptorRange(1, MAX_TEXTURE_COUNT * 2, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // VoxelTerrain Texture3D
+
+	_pipeline->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 0); // Chunk array
+	_pipeline->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 1); // VoxelTerrain Texture3D
+
+
+	_pipeline->AddStaticSampler(StaticSampler::ClampSampler(), D3D12_SHADER_VISIBILITY_ALL, 0);
+
+
+	_pipeline->SetBlendDesc(_blendMode);
+	_pipeline->SetFillMode(_fillMode);
+	_pipeline->SetCullMode(D3D12_CULL_MODE_BACK);
+	_pipeline->SetDepthStencilDesc(DefaultDepthStencilDesc());
+
+	_pipeline->CreatePipeline(_dxm->GetDxDevice());
 }
