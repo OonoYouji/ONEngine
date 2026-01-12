@@ -5,32 +5,32 @@ using namespace ONEngine;
 Model::Model() = default;
 Model::~Model() = default;
 
-void Model::AddMesh(std::shared_ptr<Mesh>&& _mesh) {
+void Model::AddMesh(std::shared_ptr<ModelMesh>&& _mesh) {
 	meshes_.push_back(std::move(_mesh));
 }
 
-Mesh* Model::CreateMesh() {
+Model::ModelMesh* Model::CreateMesh() {
 	/// ----- 新規Meshを追加し、返す ----- ///
-	meshes_.emplace_back(std::make_shared<Mesh>());
+	meshes_.emplace_back(std::make_shared<ModelMesh>());
 	return meshes_.back().get();
 }
 
-void Model::SetMeshes(std::vector<std::shared_ptr<Mesh>>&& _meshes) {
+void Model::SetMeshes(std::vector<std::shared_ptr<ModelMesh>>&& _meshes) {
 	/// ----- 新しいMeshと今のMeshを入れ替える ----- ///
-	if (_meshes.size() > meshes_.size()) {
+	if(_meshes.size() > meshes_.size()) {
 		meshes_.resize(_meshes.size());
 	}
 
-	for (size_t i = 0; i < _meshes.size(); ++i) {
+	for(size_t i = 0; i < _meshes.size(); ++i) {
 		meshes_[i] = std::move(_meshes[i]);
 	}
 }
 
-const std::vector<std::shared_ptr<Mesh>>& Model::GetMeshes() const {
+const std::vector<std::shared_ptr<Model::ModelMesh>>& Model::GetMeshes() const {
 	return meshes_;
 }
 
-std::vector<std::shared_ptr<Mesh>>& Model::GetMeshes() {
+std::vector<std::shared_ptr<Model::ModelMesh>>& Model::GetMeshes() {
 	return meshes_;
 }
 

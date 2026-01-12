@@ -22,7 +22,7 @@ void CustomMeshRenderer::VertexMemcpy() {
 	mesh_.MemcpyVertexData();
 }
 
-void CustomMeshRenderer::SetVertices(const std::vector<Mesh::VertexData>& _vertices) {
+void CustomMeshRenderer::SetVertices(const std::vector<CustomMeshRenderer::Vertex>& _vertices) {
 	mesh_.SetVertices(_vertices);
 }
 
@@ -54,7 +54,7 @@ const Vector4& CustomMeshRenderer::GetColor() const {
 	return gpuMaterial_.baseColor;
 }
 
-const Mesh* CustomMeshRenderer::GetMesh() const {
+const CustomMeshRenderer::CustomMesh* CustomMeshRenderer::GetMesh() const {
 	return &mesh_;
 }
 

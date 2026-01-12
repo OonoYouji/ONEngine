@@ -92,7 +92,7 @@ void VoxelTerrainEditorComputePipeline::Execute(ONEngine::EntityComponentSystem*
 	/// --------------- バッファの生成 --------------- ///
 	if(!voxelTerrain->CheckCreatedBuffers()) {
 		voxelTerrain->SettingChunksGuid(_assetCollection);
-		voxelTerrain->CreateBuffers(pDxManager_->GetDxDevice(), pDxManager_->GetDxSRVHeap());
+		voxelTerrain->CreateBuffers(pDxManager_->GetDxDevice(), pDxManager_->GetDxSRVHeap(), _assetCollection);
 	}
 
 	if(!voxelTerrain->CheckBufferCreatedForEditor()) {
@@ -101,6 +101,10 @@ void VoxelTerrainEditorComputePipeline::Execute(ONEngine::EntityComponentSystem*
 		return;
 	}
 
+
+	if(!voxelTerrain->CanMeshShaderRendering()) {
+		return;
+	}
 
 
 	/// ---------------------------------------------------
@@ -118,6 +122,10 @@ void VoxelTerrainEditorComputePipeline::Execute(ONEngine::EntityComponentSystem*
 
 	/// マウスがウィンドウ外なら終了
 	if(!ONEngine::Math::Inside(inputInfo.screenMousePos, ONEngine::Vector2::Zero, ONEngine::Vector2::HD)) {
+		return;
+	}
+
+	if(!voxelTerrain->IsEditMode()) {
 		return;
 	}
 

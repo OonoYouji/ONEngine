@@ -21,25 +21,25 @@
 using namespace ONEngine;
 
 namespace {
-	/// printf 互換のフォーマットログ
-	template <class... Args>
-	void Printf(const char* _fmt, Args... _args) {
-		// 出力サイズ計算
-		int size = std::snprintf(nullptr, 0, _fmt, _args...);
-		if (size <= 0) {
-			Console::Log("Format error");
-			return;
-		}
-
-		// サイズ分の文字列を生成
-		std::string msg(size, '\0');
-
-		// 実際にフォーマット文字列を埋め込む
-		std::snprintf(&msg[0], size + 1, _fmt, _args...);
-
-		// Console::Log に渡す
-		Console::Log(msg);
+/// printf 互換のフォーマットログ
+template <class... Args>
+void Printf(const char* _fmt, Args... _args) {
+	// 出力サイズ計算
+	int size = std::snprintf(nullptr, 0, _fmt, _args...);
+	if(size <= 0) {
+		Console::Log("Format error");
+		return;
 	}
+
+	// サイズ分の文字列を生成
+	std::string msg(size, '\0');
+
+	// 実際にフォーマット文字列を埋め込む
+	std::snprintf(&msg[0], size + 1, _fmt, _args...);
+
+	// Console::Log に渡す
+	Console::Log(msg);
+}
 }
 
 
@@ -124,7 +124,7 @@ void Texture::CreateUAVTexture3DWithUAV(
 	uavDesc.Texture3D.WSize = _depth;
 
 	uint32_t descriptorIndex;
-	if (!uavHandle_.has_value()) {
+	if(!uavHandle_.has_value()) {
 		/// 新規作成
 		CreateEmptyUAVHandle();
 		descriptorIndex = _dxSRVHeap->AllocateUAVTexture();
@@ -169,7 +169,7 @@ void Texture::CreateUAVTexture3D(UINT _width, UINT _height, UINT _depth, DxDevic
 	texDesc.Alignment = 0;
 	texDesc.Width = _width;
 	texDesc.Height = _height;
-	texDesc.DepthOrArraySize = _depth;
+	texDesc.DepthOrArraySize = static_cast<UINT16>(_depth);
 	texDesc.MipLevels = 1;
 	texDesc.Format = _dxgiFormat;
 	texDesc.SampleDesc.Count = 1;
@@ -277,7 +277,7 @@ void Texture::OutputTexture(const std::wstring& _filename, DxDevice* _dxDevice, 
 
 void Texture::OutputTexture3D(const std::wstring& _filename, DxDevice* _dxDevice, DxCommand* _dxCommand) {
 	auto desc = dxResource_.Get()->GetDesc();
-	if (desc.Dimension != D3D12_RESOURCE_DIMENSION_TEXTURE3D) {
+	if(desc.Dimension != D3D12_RESOURCE_DIMENSION_TEXTURE3D) {
 		Assert(false, "Not a 3D texture.");
 	}
 
@@ -348,7 +348,7 @@ void Texture::OutputTexture3D(const std::wstring& _filename, DxDevice* _dxDevice
 
 	const uint8_t* srcStart = reinterpret_cast<uint8_t*>(mapped) + footprint.Offset;
 
-	for (UINT z = 0; z < desc.DepthOrArraySize; z++) {
+	for(UINT z = 0; z < desc.DepthOrArraySize; z++) {
 		// コピー先のイメージ情報を取得
 		const DirectX::Image* dstImage = volumeScratch.GetImage(0, 0, z);
 
@@ -363,7 +363,7 @@ void Texture::OutputTexture3D(const std::wstring& _filename, DxDevice* _dxDevice
 		const size_t bytesPerRow = std::min<size_t>(dstImage->rowPitch, srcRowPitch);
 
 		// 高さ（行）ループ
-		for (size_t y = 0; y < dstImage->height; ++y) {
+		for(size_t y = 0; y < dstImage->height; ++y) {
 			memcpy(
 				dstSlicePtr + (y * dstImage->rowPitch), // コピー先アドレス
 				srcSlicePtr + (y * srcRowPitch),        // コピー元アドレス（256バイトアラインメント考慮）
@@ -384,11 +384,113 @@ void Texture::OutputTexture3D(const std::wstring& _filename, DxDevice* _dxDevice
 	volumeScratch.Release();
 }
 
+void Texture::ResizeTexture3D(const Vector2& _newSize, UINT _newDepth, DxDevice* _dxDevice, DxCommand* _dxCommand, DxSRVHeap* _dxSRVHeap) {
+	Assert(dxResource_.Get());
+
+	ID3D12Device* device = _dxDevice->GetDevice();
+
+	// 旧リソース情報
+	D3D12_RESOURCE_DESC oldDesc = dxResource_.Get()->GetDesc();
+
+	Assert(oldDesc.Dimension == D3D12_RESOURCE_DIMENSION_TEXTURE3D);
+
+	const UINT oldWidth = static_cast<UINT>(oldDesc.Width);
+	const UINT oldHeight = oldDesc.Height;
+	const UINT oldDepth = oldDesc.DepthOrArraySize;
+
+	const UINT newWidth = static_cast<UINT>(_newSize.x);
+	const UINT newHeight = static_cast<UINT>(_newSize.y);
+	const UINT newDepth = _newDepth;
+
+	// コピー可能な最小範囲
+	const UINT copyWidth = (std::min)(oldWidth, newWidth);
+	const UINT copyHeight = (std::min)(oldHeight, newHeight);
+	const UINT copyDepth = (std::min)(oldDepth, newDepth);
+
+	// 新しい Texture3D 作成
+	D3D12_RESOURCE_DESC newDesc = {};
+	newDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE3D;
+	newDesc.Width = newWidth;
+	newDesc.Height = newHeight;
+	newDesc.DepthOrArraySize = static_cast<UINT16>(newDepth);
+	newDesc.MipLevels = 1;
+	newDesc.Format = oldDesc.Format;
+	newDesc.SampleDesc.Count = 1;
+	newDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
+	newDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
+
+	D3D12_HEAP_PROPERTIES heapProps = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
+
+	DxResource newResource;
+	newResource.CreateCommittedResource(
+		_dxDevice,
+		&heapProps,
+		D3D12_HEAP_FLAG_NONE,
+		&newDesc,
+		D3D12_RESOURCE_STATE_COPY_DEST,
+		nullptr
+	);
+
+	// バリア
+	dxResource_.CreateBarrier(D3D12_RESOURCE_STATE_COPY_SOURCE, _dxCommand);
+
+	// CopyTextureRegion（3D）
+	D3D12_TEXTURE_COPY_LOCATION src = {};
+	src.pResource = dxResource_.Get();
+	src.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
+	src.SubresourceIndex = 0;
+
+	D3D12_TEXTURE_COPY_LOCATION dst = {};
+	dst.pResource = newResource.Get();
+	dst.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
+	dst.SubresourceIndex = 0;
+
+	D3D12_BOX box = {};
+	box.left = 0;
+	box.top = 0;
+	box.front = 0;
+	box.right = copyWidth;
+	box.bottom = copyHeight;
+	box.back = copyDepth;
+
+	_dxCommand->GetCommandList()->CopyTextureRegion(
+		&dst, 0, 0, 0,
+		&src, &box
+	);
+
+	// 実行
+	_dxCommand->CommandExecuteAndWait();
+	_dxCommand->CommandReset();
+
+	// 旧リソース破棄 → 新リソース差し替え
+	dxResource_ = std::move(newResource);
+	depth_ = newDepth;
+	textureSize_ = _newSize;
+
+	// UAV 再生成（既存 DescriptorIndex を再利用）
+	if(uavHandle_.has_value()) {
+		CreateUAVTexture3DWithUAV(
+			newWidth,
+			newHeight,
+			newDepth,
+			_dxDevice,
+			_dxSRVHeap,
+			uavFormat_
+		);
+	}
+
+	Console::Log("[ResizeTexture3D]");
+	Console::Log(" - Old: " + std::to_string(oldWidth) + "x" +
+				 std::to_string(oldHeight) + "x" + std::to_string(oldDepth));
+	Console::Log(" - New: " + std::to_string(newWidth) + "x" +
+				 std::to_string(newHeight) + "x" + std::to_string(newDepth));
+}
+
 
 
 void Texture::SetName(const std::string& _name) {
 	name_ = _name;
-	if (dxResource_.Get()) {
+	if(dxResource_.Get()) {
 		dxResource_.Get()->SetName(std::wstring(_name.begin(), _name.end()).c_str());
 	}
 }
@@ -504,13 +606,13 @@ void ONEngine::SaveTextureToPNG(const std::wstring& _filename, size_t _width, si
 
 	/// _filenameの先のディレクトリが存在しない場合は作成
 	std::filesystem::path filePath(_filename);
-	if (!std::filesystem::exists(filePath.parent_path())) {
+	if(!std::filesystem::exists(filePath.parent_path())) {
 		std::filesystem::create_directories(filePath.parent_path());
 	} else {
 		// ファイルが既に存在しているかチェック
-		if (std::filesystem::is_regular_file(filePath)) {
+		if(std::filesystem::is_regular_file(filePath)) {
 			/// あった場合上書きするのかどうか
-			if (!_overwrite) {
+			if(!_overwrite) {
 				return;
 			}
 		}
@@ -523,8 +625,8 @@ void ONEngine::SaveTextureToPNG(const std::wstring& _filename, size_t _width, si
 	const size_t slicePitch = rowPitch * _height;
 
 	std::vector<uint8_t> pixelData(slicePitch);
-	for (size_t y = 0; y < _height; ++y) {
-		for (size_t x = 0; x < _width; ++x) {
+	for(size_t y = 0; y < _height; ++y) {
+		for(size_t x = 0; x < _width; ++x) {
 			size_t index = y * rowPitch + x * 4;
 			pixelData[index + 0] = 255; // R
 			pixelData[index + 1] = 255; // G
@@ -552,13 +654,13 @@ void ONEngine::SaveTextureToDDS(const std::wstring& _filename, size_t _width, si
 
 	/// _filenameの先のディレクトリが存在しない場合は作成
 	std::filesystem::path filePath(_filename);
-	if (!std::filesystem::exists(filePath.parent_path())) {
+	if(!std::filesystem::exists(filePath.parent_path())) {
 		std::filesystem::create_directories(filePath.parent_path());
 	} else {
 		// ファイルが既に存在しているかチェック
-		if (std::filesystem::is_regular_file(filePath)) {
+		if(std::filesystem::is_regular_file(filePath)) {
 			/// あった場合上書きするのかどうか
-			if (!_overwrite) {
+			if(!_overwrite) {
 				return;
 			}
 		}
@@ -574,7 +676,7 @@ void ONEngine::SaveTextureToDDS(const std::wstring& _filename, size_t _width, si
 	Assert(SUCCEEDED(hr));
 
 	// 仮のデータで埋める（上半分を透明にする）
-	for (size_t z = 0; z < _depth; ++z) {
+	for(size_t z = 0; z < _depth; ++z) {
 
 		// 0.0 ～ 1.0 のグラデーション係数
 		float t = static_cast<float>(z) / static_cast<float>(_depth - 1);
@@ -582,8 +684,8 @@ void ONEngine::SaveTextureToDDS(const std::wstring& _filename, size_t _width, si
 		const DirectX::Image* img = volumeImage.GetImage(0, 0, z);
 		uint8_t* dst = img->pixels;
 
-		for (size_t y = 0; y < _height; ++y) {
-			for (size_t x = 0; x < _width; ++x) {
+		for(size_t y = 0; y < _height; ++y) {
+			for(size_t x = 0; x < _width; ++x) {
 
 				size_t index = y * rowPitch + x * 4;
 
@@ -594,7 +696,7 @@ void ONEngine::SaveTextureToDDS(const std::wstring& _filename, size_t _width, si
 
 				// 上半分を透明にする
 				uint8_t a = (y < _height / 2) ? 0 : 255;
-				if (a == 0) {
+				if(a == 0) {
 					r = 0;
 					g = 0;
 					b = 0;

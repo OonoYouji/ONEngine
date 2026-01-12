@@ -17,7 +17,7 @@ public class Player : MonoScript {
 	bool isDushing = false; // ダッシュ中かどうか
 	[SerializeField] float moveSpeed = 16f; // 移動速度
 	[SerializeField] float dushSpeed = 32f; // ダッシュ速度
-	float lastRotationY_ = 0.0f;
+	[SerializeField] float lastRotationY_ = 0.0f;
 	bool prevIsOperating_ = false;
 	bool isOperating_ = false;
 

@@ -293,7 +293,7 @@ void TerrainProceduralRenderingPipeline::Draw(ECSGroup* _ecs, CameraComponent* _
 	renderingInstanceAppendBuffer_.SRVBindForGraphicsCommandList(cmdList, GP_SRV_RENDERING_INSTANCE); // GP_SRV_INSNTANCE_DATA
 
 	/// pixel: texture id
-	uint32_t texId = static_cast<uint32_t>(pAssetCollection_->GetTextureIndex("./Packages/Textures/white.png"));
+	uint32_t texId = static_cast<uint32_t>(pAssetCollection_->GetTextureIndex("./Packages/Textures/Terrain/Tree.png"));
 	textureIdBuffer_.SetMappedData({ texId });
 	textureIdBuffer_.BindForGraphicsCommandList(cmdList, GP_CBV_TEXTURE_ID);
 	/// pixel: テクスチャをバインド

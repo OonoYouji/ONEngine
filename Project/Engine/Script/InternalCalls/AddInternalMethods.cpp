@@ -115,6 +115,7 @@ void ONEngine::AddInputInternalCalls() {
 	mono_add_internal_call("Input::InternalReleaseMouse", (void*)Input::ReleaseMouse);
 	mono_add_internal_call("Input::InternalGetMousePosition", (void*)InternalGetMousePosition);
 	mono_add_internal_call("Input::InternalGetMouseVelocity", (void*)InternalGetMouseVelocity);
+	mono_add_internal_call("Input::InternalGetMouseWheel", (void*)InternalGetMouseWheel);
 }
 
 void ONEngine::AddSceneInternalCalls() {

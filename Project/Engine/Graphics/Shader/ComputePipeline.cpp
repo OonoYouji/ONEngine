@@ -9,7 +9,9 @@ using namespace ONEngine;
 #include "Engine/Core/Utility/Tools/Assert.h"
 #include "Engine/Core/Utility/Tools/Log.h"
 
-ComputePipeline::ComputePipeline() = default;
+ComputePipeline::ComputePipeline() {
+	rootParameters_.reserve(16);
+}
 ComputePipeline::~ComputePipeline() = default;
 
 void ComputePipeline::CreatePipeline(DxDevice* _dxDevice) {

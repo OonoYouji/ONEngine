@@ -41,15 +41,15 @@ std::optional<Model> AssetLoader<Model>::Load(const std::string& _filepath) {
 		aiMesh* mesh = scene->mMeshes[meshIndex];
 
 		/// sceneのデータを使ってMeshを作成する
-		std::vector<Mesh::VertexData> vertices;
-		std::vector<uint32_t>         indices;
+		std::vector<Model::Vertex> vertices;
+		std::vector<uint32_t>      indices;
 
 		vertices.reserve(mesh->mNumVertices);
 		indices.reserve(mesh->mNumFaces * 3);
 
 		/// vertex 解析
 		for (uint32_t i = 0; i < mesh->mNumVertices; ++i) {
-			Mesh::VertexData&& vertex = {
+			Model::Vertex&& vertex = {
 				Vector4(-mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z, 1.0f),
 				Vector2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y),
 				Vector3(-mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z)
@@ -107,7 +107,7 @@ std::optional<Model> AssetLoader<Model>::Load(const std::string& _filepath) {
 		}
 
 		/// mesh dataを作成
-		std::unique_ptr<Mesh> meshData = std::make_unique<Mesh>();
+		std::unique_ptr<Model::ModelMesh> meshData = std::make_unique<Model::ModelMesh>();
 		meshData->SetVertices(vertices);
 		meshData->SetIndices(indices);
 

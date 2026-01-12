@@ -13,6 +13,6 @@ namespace DescriptorHeapLimits {
 
 	/// Textureのサイズは AssetCollection.h で定義しているのでそれ以上の数を確保する
 	/// MAX_TEXTURE_COUNT + Buffer分
-	static const uint32_t CBV_SRV_UAV = 2048;
+	static const uint32_t CBV_SRV_UAV = 4096;
 
 } /// namespace
