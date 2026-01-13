@@ -1,8 +1,10 @@
-﻿#include "VoxelTerrainCommon.hlsli"
+﻿#pragma once
+
+#include "VoxelTerrainCommon.hlsli"
 #include "../../ConstantBufferData/ViewProjection.hlsli"
 
 
-struct VertexOut {
+struct TransvoxelVertexOut {
 	float4 position : SV_POSITION;
 	float4 worldPos : POSITION0;
 	float3 normal : NORMAL0;

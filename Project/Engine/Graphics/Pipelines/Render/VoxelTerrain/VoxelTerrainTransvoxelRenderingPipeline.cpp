@@ -9,7 +9,7 @@
 using namespace ONEngine;
 
 VoxelTerrainTransvoxelRenderingPipeline::VoxelTerrainTransvoxelRenderingPipeline(AssetCollection* _ac)
-	: assetCollection_(_ac) {
+	: pAssetCollection_(_ac) {
 }
 
 VoxelTerrainTransvoxelRenderingPipeline::~VoxelTerrainTransvoxelRenderingPipeline() = default;

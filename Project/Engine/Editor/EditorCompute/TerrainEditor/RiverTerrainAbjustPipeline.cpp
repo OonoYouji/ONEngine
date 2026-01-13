@@ -8,10 +8,10 @@
 
 using namespace Editor;
 
-RiverTerrainAbjustPipeline::RiverTerrainAbjustPipeline() = default;
-RiverTerrainAbjustPipeline::~RiverTerrainAbjustPipeline() = default;
+RiverTerrainAdjustPipeline::RiverTerrainAdjustPipeline() = default;
+RiverTerrainAdjustPipeline::~RiverTerrainAdjustPipeline() = default;
 
-void RiverTerrainAbjustPipeline::Initialize(ONEngine::ShaderCompiler* _shaderCompiler, ONEngine::DxManager* _dxm) {
+void RiverTerrainAdjustPipeline::Initialize(ONEngine::ShaderCompiler* _shaderCompiler, ONEngine::DxManager* _dxm) {
 
 	{	/// shader
 		ONEngine::Shader shader;
@@ -35,7 +35,7 @@ void RiverTerrainAbjustPipeline::Initialize(ONEngine::ShaderCompiler* _shaderCom
 	}
 }
 
-void RiverTerrainAbjustPipeline::Execute(ONEngine::EntityComponentSystem* _ecs, ONEngine::DxCommand* _dxCommand, ONEngine::AssetCollection* /*_assetCollection*/) {
+void RiverTerrainAdjustPipeline::Execute(ONEngine::EntityComponentSystem* _ecs, ONEngine::DxCommand* _dxCommand, ONEngine::AssetCollection* /*_assetCollection*/) {
 
 	/// ----------------------------------------------------
 	/// 早期 return条件

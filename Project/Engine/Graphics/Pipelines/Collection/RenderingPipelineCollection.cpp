@@ -57,7 +57,7 @@ void RenderingPipelineCollection::Initialize() {
 	Generate3DRenderingPipeline<TerrainRenderingPipeline>(pAssetCollection_);
 	//Generate3DRenderingPipeline<VoxelTerrainVertexCreatePipeline>(pAssetCollection_);
 	Generate3DRenderingPipeline<VoxelTerrainRenderingPipeline>(pAssetCollection_);
-	//Generate3DRenderingPipeline<VoxelTerrainTransvoxelRenderingPipeline>(pAssetCollection_);
+	Generate3DRenderingPipeline<VoxelTerrainTransvoxelRenderingPipeline>(pAssetCollection_);
 	//Generate3DRenderingPipeline<VoxelTerrainVertexShaderRenderingPipeline>(pAssetCollection_);
 	Generate3DRenderingPipeline<TerrainProceduralRenderingPipeline>(pAssetCollection_);
 	Generate3DRenderingPipeline<RiverRenderingPipeline>(pAssetCollection_);

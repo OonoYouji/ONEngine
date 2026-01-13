@@ -137,9 +137,9 @@ void main(
     uint3 DTid : SV_DispatchThreadID,
     uint gi : SV_GroupIndex,
     in payload Payload asPayload,
-    out vertices VertexOut verts[16], // 最大出力数
-    out indices uint3 indis[6])      // 最大出力数
-{
+    out vertices TransvoxelVertexOut verts[16], // 最大出力数
+    out indices uint3 indis[6]) {
+
 	uint face = asPayload.face;
 	uint step = 1u << asPayload.myLOD;
 	uint cellIdxX = DTid.x;
@@ -188,21 +188,15 @@ void main(
     // 3. 三角形数の取得
     // テーブルのTransitionTriangleCountは static const int 配列として定義されている前提
 	uint triCount = TransitionTriangleCount[caseIndex];
-
-	uint numVertices = triCount * 3;
-	uint numPrimitives = triCount;
-    
-	SetMeshOutputCounts(numVertices, numPrimitives);
+	SetMeshOutputCounts(triCount * 3, triCount);
 
     // データがない場合はここで終了してOK
-	if (triCount == 0)
+	if (triCount == 0) {
 		return;
+	}
 
 
     // 4. 頂点とプリミティブの生成
-    // ループ回数が動的(caseIndex依存)なため、[unroll]だとコンパイルエラーになる可能性があります。
-    // 明示的に [loop] を使うか、上限値(5)まで回して break するのが安全です。
-    [loop] 
 	for (uint t = 0; t < triCount; ++t) {
         
         // テーブルからインデックス取得
@@ -211,8 +205,9 @@ void main(
 		int i2 = TransitionTriangles[caseIndex][t * 3 + 2];
 
         // センチネルチェック (-1 ならデータなし)
-		if (i0 < 0 || i1 < 0 || i2 < 0)
+		if (i0 < 0 || i1 < 0 || i2 < 0) {
 			break;
+		}
 
 		uint3 indices = uint3(i0, i1, i2);
 
@@ -227,12 +222,9 @@ void main(
 			verts[outIndex].worldPos = float4(p, 1);
 			verts[outIndex].position = mul(verts[outIndex].worldPos, viewProjection.matVP);
 			verts[outIndex].normal = ComputeGradient(p);
-            // 必要ならUVなどもここで設定
-			//verts[outIndex].uv = float2(0, 0);
 		}
 
         // プリミティブ（三角形）インデックスの書き込み
-        // このシェーダーでは頂点を共有させずフラットに展開しているため、連番になります
 		indis[t] = uint3(t * 3 + 0, t * 3 + 1, t * 3 + 2);
 	}
 }

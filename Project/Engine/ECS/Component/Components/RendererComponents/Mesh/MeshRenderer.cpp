@@ -144,7 +144,6 @@ void ComponentDebug::MeshRendererDebug(MeshRenderer* _mr, AssetCollection* _asse
 	/// param get
 	Vector4& color = _mr->material_.baseColor;
 	std::string& meshPath = _mr->meshPath_;
-	//std::string& texturePath = _mr->texturePath_;
 
 	/// edit
 	if (Editor::ImGuiColorEdit("color", &color)) {

@@ -28,7 +28,7 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	AssetCollection* assetCollection_;
+	AssetCollection* pAssetCollection_;
 
 };
 
