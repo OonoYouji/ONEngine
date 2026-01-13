@@ -16,9 +16,8 @@ static const float kIsoLevel = 0.5f;
 // ---------------------------------------------------
 
 static const float3 kCornerOffsets[8] = {
-	float3(-0.5, -0.5, -0.5), float3(0.5, -0.5, -0.5),
-    float3(0.5, 0.5, -0.5), float3(-0.5, 0.5, -0.5),
-    float3(-0.5, -0.5, 0.5), float3(0.5, -0.5, 0.5),
+	float3(-0.5, -0.5, -0.5), float3(0.5, -0.5, -0.5), float3(0.5, 0.5, -0.5),
+    float3(-0.5, 0.5, -0.5), float3(-0.5, -0.5, 0.5), float3(0.5, -0.5, 0.5),
     float3(0.5, 0.5, 0.5), float3(-0.5, 0.5, 0.5)
 };
 
@@ -37,7 +36,7 @@ float GetDensity(float3 _localPos, uint _chunkId) {
 	float3 textureSize = float3(voxelTerrainInfo.textureSize);
 	float3 uvw = _localPos / (textureSize * voxelSize);
 	uvw.y = 1.0f - uvw.y;
-    
+
 	uint chunkId = _chunkId;
 	int chunkX = int(chunkId) % int(voxelTerrainInfo.chunkCountXZ.x);
 	int chunkZ = int(chunkId) / int(voxelTerrainInfo.chunkCountXZ.x);
@@ -73,26 +72,31 @@ float GetDensity(float3 _localPos, uint _chunkId) {
 	if (uvw.y < 0.0f || uvw.y > 1.0f)
 		return 1.0f;
 	uvw = saturate(uvw);
-	return voxelChunkTextures[chunks[chunkId].textureId].SampleLevel(texSampler, uvw, 0).a;
+	return voxelChunkTextures[chunks[chunkId].textureId]
+      .SampleLevel(texSampler, uvw, 0)
+      .a;
 }
 
-void SampleDensities(uint3 basePos, uint step, uint myLOD, uint neighborLOD, out float densities[13]) {
-    [unroll]
+void SampleDensities(uint3 basePos, uint step, uint myLOD, uint neighborLOD,
+                     out float densities[13]) {
+  [unroll]
 	for (int i = 0; i < 8; ++i) {
 		float3 cornerOffset = kCornerOffsets[i] * step;
 		densities[i] = GetDensity(basePos + cornerOffset, myLOD);
 	}
-    // Transvoxel追加サンプル
+  // Transvoxel追加サンプル
 	densities[8] = GetDensity(basePos + float3(step * 0.5, 0, 0), myLOD);
 	densities[9] = GetDensity(basePos + float3(0, step * 0.5, 0), myLOD);
 	densities[10] = GetDensity(basePos + float3(0, 0, step * 0.5), myLOD);
-	densities[11] = GetDensity(basePos + float3(step * 0.5, 0, step * 0.5), myLOD);
-	densities[12] = GetDensity(basePos + float3(0, step * 0.5, step * 0.5), myLOD);
+	densities[11] =
+      GetDensity(basePos + float3(step * 0.5, 0, step * 0.5), myLOD);
+	densities[12] =
+      GetDensity(basePos + float3(0, step * 0.5, step * 0.5), myLOD);
 }
 
 uint ComputeTransvoxelCase(float densities[13]) {
 	uint caseIndex = 0;
-    [unroll]
+  [unroll]
 	for (int i = 0; i < 8; ++i) {
 		if (densities[i] < kIsoLevel)
 			caseIndex |= (1u << i);
@@ -100,7 +104,8 @@ uint ComputeTransvoxelCase(float densities[13]) {
 	return caseIndex;
 }
 
-float3 InterpolateTransvoxelVertex(uint vertexIndex, float densities[13], uint3 basePos, uint step) {
+float3 InterpolateTransvoxelVertex(uint vertexIndex, float densities[13],
+                                   uint3 basePos, uint step) {
 	int idx0 = kEdgeConnection[vertexIndex].x;
 	int idx1 = kEdgeConnection[vertexIndex].y;
 
@@ -120,9 +125,12 @@ float3 InterpolateTransvoxelVertex(uint vertexIndex, float densities[13], uint3 
 
 float3 ComputeGradient(float3 pos) {
 	float step = 0.5f;
-	float dx = GetDensity(pos + float3(step, 0, 0), 0) - GetDensity(pos - float3(step, 0, 0), 0);
-	float dy = GetDensity(pos + float3(0, step, 0), 0) - GetDensity(pos - float3(0, step, 0), 0);
-	float dz = GetDensity(pos + float3(0, 0, step), 0) - GetDensity(pos - float3(0, 0, step), 0);
+	float dx = GetDensity(pos + float3(step, 0, 0), 0) -
+             GetDensity(pos - float3(step, 0, 0), 0);
+	float dy = GetDensity(pos + float3(0, step, 0), 0) -
+             GetDensity(pos - float3(0, step, 0), 0);
+	float dz = GetDensity(pos + float3(0, 0, step), 0) -
+             GetDensity(pos - float3(0, 0, step), 0);
 	float3 grad = float3(dx, dy, dz);
 	return (length(grad) < 1e-5f) ? float3(0, 1, 0) : normalize(-grad);
 }
@@ -133,19 +141,16 @@ float3 ComputeGradient(float3 pos) {
 [shader("mesh")]
 [outputtopology("triangle")]
 [numthreads(1, 1, 1)] // 1スレッドで1ボクセルを処理する構成
-void main(
-    uint3 DTid : SV_DispatchThreadID,
-    uint gi : SV_GroupIndex,
-    in payload Payload asPayload,
-    out vertices TransvoxelVertexOut verts[16], // 最大出力数
-    out indices uint3 indis[6]) {
-
+    void main(uint3 DTid : SV_DispatchThreadID, uint gi : SV_GroupIndex,
+              in payload Payload asPayload,
+              out vertices TransvoxelVertexOut verts[16], // 最大出力数
+              out indices uint3 indis[6]) {
 	uint face = asPayload.face;
 	uint step = 1u << asPayload.myLOD;
 	uint cellIdxX = DTid.x;
 	uint cellIdxY = DTid.y;
 
-    // 1. 基点計算
+      // 1. 基点計算
 	uint3 basePos = asPayload.chunkOrigin;
 	switch (face) {
 		case 0:
@@ -180,25 +185,26 @@ void main(
 			break; // YN
 	}
 
-    // 2. 密度とケース計算
+      // 2. 密度とケース計算
 	float densities[13];
-	SampleDensities(basePos, step, asPayload.myLOD, asPayload.neighborLOD, densities);
+	SampleDensities(basePos, step, asPayload.myLOD, asPayload.neighborLOD,
+                      densities);
 	uint caseIndex = ComputeTransvoxelCase(densities);
 
-    // 3. 三角形数の取得
-    // テーブルのTransitionTriangleCountは static const int 配列として定義されている前提
+      // 3. 三角形数の取得
+      // テーブルのTransitionTriangleCountは static const int
+      // 配列として定義されている前提
 	uint triCount = TransitionTriangleCount[caseIndex];
 	SetMeshOutputCounts(triCount * 3, triCount);
 
-    // データがない場合はここで終了してOK
+      // データがない場合はここで終了してOK
 	if (triCount == 0) {
 		return;
 	}
 
-
-    // 4. 頂点とプリミティブの生成
+      // 4. 頂点とプリミティブの生成
 	for (uint t = 0; t < triCount; ++t) {
-        
+
         // テーブルからインデックス取得
 		int i0 = TransitionTriangles[caseIndex][t * 3 + 0];
 		int i1 = TransitionTriangles[caseIndex][t * 3 + 1];
@@ -214,13 +220,15 @@ void main(
         // 各頂点の計算と書き込み
         [unroll]
 		for (uint v = 0; v < 3; ++v) {
-            // 書き込み先のインデックス計算
+          // 書き込み先のインデックス計算
 			uint outIndex = t * 3 + v;
 
-			float3 p = InterpolateTransvoxelVertex(indices[v], densities, basePos, step);
-            
-			verts[outIndex].worldPos = float4(p, 1);
-			verts[outIndex].position = mul(verts[outIndex].worldPos, viewProjection.matVP);
+			float3 p =
+              InterpolateTransvoxelVertex(indices[v], densities, basePos, step);
+
+			float32_t4 worldPos = float32_t4(p, 1);
+			verts[outIndex].worldPos = worldPos;
+			verts[outIndex].position = mul(worldPos, viewProjection.matVP);
 			verts[outIndex].normal = ComputeGradient(p);
 		}
 

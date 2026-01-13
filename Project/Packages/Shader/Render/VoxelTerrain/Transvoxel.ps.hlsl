@@ -10,7 +10,7 @@ struct PSOutput {
 
 ConstantBuffer<ConstantBufferMaterial> material : register(b3);
 
-PSOutput main(VertexOut _out) {
+PSOutput main(TransvoxelVertexOut _out) {
 	PSOutput output;
 	
     output.color = material.baseColor;
