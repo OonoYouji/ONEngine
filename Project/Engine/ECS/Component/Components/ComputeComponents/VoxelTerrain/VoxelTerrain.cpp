@@ -25,6 +25,7 @@ void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _
 
 	ImGui::SeparatorText("DebugRendering");
 	Editor::ImMathf::Checkbox("Can MeshShader Rendering", &_voxelTerrain->canMeshShaderRendering_);
+	Editor::ImMathf::Checkbox("Is Rendering Transvoxel", &_voxelTerrain->isRenderingTransvoxel_);
 	//Editor::ImMathf::Checkbox("Can VertexShader Rendering", &_voxelTerrain->canVertexShaderRendering_);
 	static bool showChunkBounds = true;
 	Editor::ImMathf::Checkbox("Show Chunk Bounds", &showChunkBounds);
@@ -353,15 +354,6 @@ void VoxelTerrain::CreateChunkTextureUAV(DxCommand* _dxCommand, DxDevice* _dxDev
 			_dxDevice, _dxSRVHeap,
 			DXGI_FORMAT_R8G8B8A8_UNORM
 		);
-
-		//}
-
-		//{
-			//auto& chunk = chunks_[0];
-		//const uint32_t vertexCount = 80000;
-		//chunk.rwVertices.CreateUAV(vertexCount, _dxDevice, _dxCommand, _dxSRVHeap);
-		//chunk.rwVertexCounter.CreateUAV(vertexCount, _dxDevice, _dxCommand, _dxSRVHeap);
-		//chunk.vbv.Create(vertexCount, _dxDevice, _dxCommand);
 	}
 
 

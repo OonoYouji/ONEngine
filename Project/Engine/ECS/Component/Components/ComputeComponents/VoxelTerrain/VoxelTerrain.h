@@ -140,6 +140,7 @@ class VoxelTerrain : public IComponent {
 	friend class VoxelTerrainRenderingPipeline;
 	friend class VoxelTerrainVertexShaderRenderingPipeline;
 	friend class VoxelTerrainVertexCreatePipeline;
+	friend class VoxelTerrainTransvoxelRenderingPipeline;
 public:
 	/// ===========================================
 	/// public : static objects
@@ -266,6 +267,7 @@ private:
 
 	bool canMeshShaderRendering_ = true;
 	bool canVertexShaderRendering_ = false;
+	bool isRenderingTransvoxel_ = true;
 
 };
 

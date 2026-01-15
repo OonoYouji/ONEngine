@@ -3,7 +3,9 @@
 /// engine
 #include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
-#include "Engine/ECS//EntityComponentSystem/EntityComponentSystem.h"
+#include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/VoxelTerrain/VoxelTerrain.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 
 
 using namespace ONEngine;
@@ -15,6 +17,7 @@ VoxelTerrainTransvoxelRenderingPipeline::VoxelTerrainTransvoxelRenderingPipeline
 VoxelTerrainTransvoxelRenderingPipeline::~VoxelTerrainTransvoxelRenderingPipeline() = default;
 
 void VoxelTerrainTransvoxelRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {
+	pDxManager_ = _dxm;
 
 	{	/// shader
 		Shader shader;
@@ -42,13 +45,72 @@ void VoxelTerrainTransvoxelRenderingPipeline::Initialize(ShaderCompiler* _shader
 
 		pipeline_->SetBlendDesc(BlendMode::Normal());
 		pipeline_->SetFillMode(D3D12_FILL_MODE_SOLID);
-		pipeline_->SetCullMode(D3D12_CULL_MODE_BACK);
+		pipeline_->SetCullMode(D3D12_CULL_MODE_NONE);
 		pipeline_->SetDepthStencilDesc(DefaultDepthStencilDesc());
-		
+
 		pipeline_->CreatePipeline(_dxm->GetDxDevice());
 
 	}
 }
 
 void VoxelTerrainTransvoxelRenderingPipeline::Draw(ECSGroup* _ecs, CameraComponent* _camera, DxCommand* _dxCommand) {
+
+	ComponentArray<VoxelTerrain>* voxelTerrainArray = _ecs->GetComponentArray<VoxelTerrain>();
+	if(!CheckComponentArrayEnable(voxelTerrainArray)) {
+		return;
+	}
+
+	VoxelTerrain* vt = nullptr;
+	for(auto& comp : voxelTerrainArray->GetUsedComponents()) {
+		if(CheckComponentEnable(comp)) {
+			vt = comp;
+			break;
+		}
+	}
+
+	if(!CheckComponentEnable(vt)) {
+		return;
+	}
+
+	if(!vt->isRenderingTransvoxel_) {
+		return;
+	}
+
+
+	auto cmdList = _dxCommand->GetCommandList();
+	if(!vt->CheckCreatedBuffers()) {
+		vt->SettingChunksGuid(pAssetCollection_);
+		vt->CreateBuffers(pDxManager_->GetDxDevice(), pDxManager_->GetDxSRVHeap(), pAssetCollection_);
+		return;
+	}
+
+	/// ---------------------------------------------------
+	/// 描画
+	/// ---------------------------------------------------
+
+	/// --------------- パイプラインの設定 --------------- ///
+	pipeline_->SetPipelineStateForCommandList(_dxCommand);
+	pDxManager_->HeapBindToCommandList();
+
+	/// --------------- バッファの設定 --------------- ///
+	vt->SetupGraphicBuffers(cmdList, { CBV_VOXEL_TERRAIN_INFO, CBV_MATERIAL, SRV_CHUNK_ARRAY }, pAssetCollection_);
+
+	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(_dxCommand->GetCommandList(), CBV_VIEW_PROJECTION);
+	_camera->GetCameraPosBuffer().BindForGraphicsCommandList(_dxCommand->GetCommandList(), CBV_CAMERA_POSITION);
+
+	D3D12_GPU_DESCRIPTOR_HANDLE frontSRVHandle = pDxManager_->GetDxSRVHeap()->GetSRVStartGPUHandle();
+	cmdList->SetGraphicsRootDescriptorTable(
+		SRV_VOXEL_TERRAIN_TEXTURE3D, frontSRVHandle
+	);
+
+	/// --------------- ディスパッチ --------------- ///
+	//cmdList->DispatchMesh(
+	//	vt->GetChunkCountXZ().x,
+	//	1,
+	//	vt->GetChunkCountXZ().y
+	//);
+	cmdList->DispatchMesh(
+		4, 1, 4
+	);
+
 }

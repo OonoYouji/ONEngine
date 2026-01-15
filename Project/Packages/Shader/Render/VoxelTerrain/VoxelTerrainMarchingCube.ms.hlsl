@@ -104,12 +104,9 @@ float3 GetGradient(float3 _localPos, uint _chunkId) {
 	float step = 0.5f;
 	
 	// 中心差分法で勾配を計算
-	float dx = GetDensity(_localPos + float3(step, 0, 0), _chunkId) -
-	           GetDensity(_localPos - float3(step, 0, 0), _chunkId);
-	float dy = GetDensity(_localPos + float3(0, step, 0), _chunkId) -
-	           GetDensity(_localPos - float3(0, step, 0), _chunkId);
-	float dz = GetDensity(_localPos + float3(0, 0, step), _chunkId) -
-	           GetDensity(_localPos - float3(0, 0, step), _chunkId);
+	float dx = GetDensity(_localPos + float3(step, 0, 0), _chunkId) - GetDensity(_localPos - float3(step, 0, 0), _chunkId);
+	float dy = GetDensity(_localPos + float3(0, step, 0), _chunkId) - GetDensity(_localPos - float3(0, step, 0), _chunkId);
+	float dz = GetDensity(_localPos + float3(0, 0, step), _chunkId) - GetDensity(_localPos - float3(0, 0, step), _chunkId);
 
 	float3 grad = float3(dx, dy, dz);
 	float len = length(grad);
@@ -123,8 +120,8 @@ float3 GetGradient(float3 _localPos, uint _chunkId) {
 	return -normalize(grad);
 }
 
-// 頂点補間の修正版
-VertexOut VertexInterp(float3 p1, float3 p2, float3 _chunkOrigin, float d1, float d2, uint _chunkId) {
+// 頂点補間
+VertexOut VertexInterp(float3 p1, float3 p2, float3 _chunkOrigin,float3 subChunkSize, float d1, float d2, uint _chunkId) {
 	VertexOut vOut;
 	
 	// 補間係数の計算（ゼロ除算対策）
@@ -139,6 +136,8 @@ VertexOut VertexInterp(float3 p1, float3 p2, float3 _chunkOrigin, float d1, floa
 	float3 localPos = lerp(p1, p2, t);
 	
 	vOut.worldPosition = float4(localPos + _chunkOrigin, 1.0f);
+    vOut.worldPosition.xz += (subChunkSize / 2.0).xz; 
+
 	vOut.position = mul(vOut.worldPosition, viewProjection.matVP);
 	
 	// 補間位置での法線を計算
@@ -181,6 +180,7 @@ void main(
 	[unroll]
 	for (int i = 0; i < 8; ++i) {
 		float3 samplePos = basePos + (kCornerOffsets[i] * float3(step));
+
 		float d = GetDensity(samplePos, asPayload.chunkIndex);
 		cubeDensities[i] = d;
 		
@@ -210,7 +210,7 @@ void main(
 			float3 p1 = basePos + (kCornerOffsets[idx1] * float3(step));
 			float3 p2 = basePos + (kCornerOffsets[idx2] * float3(step));
 			
-			otuVerts[v] = VertexInterp(p1, p2, asPayload.chunkOrigin, cubeDensities[idx1], cubeDensities[idx2], asPayload.chunkIndex);
+			otuVerts[v] = VertexInterp(p1, p2, asPayload.chunkOrigin, float32_t3(asPayload.subChunkSize), cubeDensities[idx1], cubeDensities[idx2], asPayload.chunkIndex);
 			verts[(t * 3) + v] = otuVerts[v];
 		}
 		
