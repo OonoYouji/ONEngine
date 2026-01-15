@@ -1,135 +1,104 @@
-﻿// VoxelTerrainAS.hlsl
+﻿// Transvoxel.as.hlsl
 #include "Transvoxel.hlsli"
 
 //--------------------------------------
-// LOD 計算
+// ヘルパー関数
 //--------------------------------------
+uint3 GetChunkGridPos(uint chunkId)
+{
+    uint x = chunkId % voxelTerrainInfo.chunkCountXZ.x;
+    uint z = (chunkId / voxelTerrainInfo.chunkCountXZ.x) % voxelTerrainInfo.chunkCountXZ.y;
+    uint y = chunkId / (voxelTerrainInfo.chunkCountXZ.x * voxelTerrainInfo.chunkCountXZ.y);
+    return uint3(x, y, z);
+}
+
+float3 GetChunkWorldCenter(uint3 gridPos)
+{
+    float3 size = float3(voxelTerrainInfo.chunkSize);
+    float3 centerOffset = size * 0.5f; 
+    // VoxelSize = 1.0f 前提
+    return voxelTerrainInfo.terrainOrigin + (float3(gridPos) * size) + centerOffset;
+}
+
 uint CalculateLOD(float3 worldPos, float3 cameraPos)
 {
     float dist = distance(worldPos, cameraPos);
-
-    if (dist < 50.0f)  return 0; // finest
+    // 距離閾値はプロジェクトに合わせて調整してください
+    if (dist < 50.0f)  return 0; // 最も詳細
     if (dist < 100.0f) return 1;
     if (dist < 200.0f) return 2;
-    return 3;                   // coarsest
-}
-
-uint GetStepSize(uint lod)
-{
-    // Transvoxel 前提：LOD が 1 上がるごとに 2 倍
-    return 1u << (lod + 1); // 2,4,8,16
+    return 3;                    // 最も粗い
 }
 
 //--------------------------------------
-// Chunk index helper
-//--------------------------------------
-uint IndexOfMeshGroup(uint3 groupID, uint2 dimXZ)
-{
-    return groupID.x
-         + groupID.z * dimXZ.x;
-}
-
-//--------------------------------------
-// Amplification Shader
+// Amplification Shader Main
 //--------------------------------------
 [shader("amplification")]
 [numthreads(1, 1, 1)]
-void main(uint3 groupId : SV_GroupID)
+void main(uint gid : SV_GroupID)
 {
-    Payload payload;
+    uint chunkId = gid;
+    
+    // 初期化：デフォルトでは何も描画しない
+    uint dispatchCount = 0;
+    Payload payload = (Payload)0;
 
-    //----------------------------------
-    // 1. Chunk 基本情報
-    //----------------------------------
-    payload.chunkIndex =
-        IndexOfMeshGroup(
-            groupId,
-            voxelTerrainInfo.chunkCountXZ
-        );
-
-    payload.chunkOrigin =
-        float3(groupId) * float3(voxelTerrainInfo.chunkSize)
-        + voxelTerrainInfo.terrainOrigin;
-
-    float3 chunkCenter =
-        payload.chunkOrigin +
-        float3(voxelTerrainInfo.chunkSize) * 0.5f;
-
-    payload.lodLevel =
-        CalculateLOD(chunkCenter, camera.position.xyz);
-
-    uint stepSize = GetStepSize(payload.lodLevel);
-    payload.subChunkSize = uint3(stepSize, stepSize, stepSize);
-
-    // 1 辺あたりのセル数
-    payload.faceResolution =
-        voxelTerrainInfo.chunkSize.x / stepSize;
-
-    //----------------------------------
-    // 2. Transvoxel 遷移マスク生成
-    //----------------------------------
-    payload.transitionMask = 0;
-
-    float3 size = float3(voxelTerrainInfo.chunkSize);
-
-    // Transvoxel face bit 定義（MS 側と完全一致させる）
-    // bit:
-    // 0 : -X
-    // 1 : +X
-    // 4 : -Z
-    // 5 : +Z
-    struct Neighbor
+    // 範囲チェック
+    if (chunkId < voxelTerrainInfo.maxChunkCount)
     {
-        float3 offset;
-        uint   bit;
-    };
+        // 1. 自身のLOD計算
+        uint3 gridPos = GetChunkGridPos(chunkId);
+        float3 worldCenter = GetChunkWorldCenter(gridPos);
+        uint myLOD = CalculateLOD(worldCenter, camera.position.xyz);
 
-    Neighbor neighbors[4] =
-    {
-        { float3(-size.x, 0, 0), 0 },
-        { float3( size.x, 0, 0), 1 },
-        { float3( 0, 0,-size.z), 4 },
-        { float3( 0, 0, size.z), 5 }
-    };
+        // 2. Transition Mask 計算 (隣接とのLOD差判定)
+        uint transitionMask = 0;
+        
+        // チェックする方向: -X, +X, -Z, +Z
+        int3 offsets[4] = { int3(-1, 0, 0), int3(1, 0, 0), int3(0, 0, -1), int3(0, 0, 1) };
+        uint bits[4]    = { 1, 2, 16, 32 }; // 0x01, 0x02, 0x10, 0x20
 
-    uint activeFaceCount = 0;
-
-    [unroll]
-    for (uint i = 0; i < 4; ++i)
-    {
-        float3 neighborCenter =
-            chunkCenter + neighbors[i].offset;
-
-        uint neighborLOD =
-            CalculateLOD(neighborCenter, camera.position.xyz);
-
-        // 隣が粗い → 自分が高解像度 → Transvoxel 適用
-        if (neighborLOD > payload.lodLevel)
+        [unroll]
+        for(int i=0; i<4; ++i)
         {
-            payload.transitionMask |= (1u << neighbors[i].bit);
-            activeFaceCount++;
+            int3 neighborGrid = int3(gridPos) + offsets[i];
+            
+            // 隣接がグリッド範囲内かチェック
+            if(all(neighborGrid >= 0) && 
+               neighborGrid.x < (int)voxelTerrainInfo.chunkCountXZ.x && 
+               neighborGrid.z < (int)voxelTerrainInfo.chunkCountXZ.y)
+            {
+                float3 neighborCenter = GetChunkWorldCenter(uint3(neighborGrid));
+                uint neighborLOD = CalculateLOD(neighborCenter, camera.position.xyz);
+                
+                // Transvoxelのルール: 「隣接の方がLODが粗い(値が大きい)」場合のみTransition処理が必要
+                if(neighborLOD > myLOD)
+                {
+                    transitionMask |= bits[i];
+                }
+            }
         }
+
+        // 3. ペイロードの設定
+        payload.chunkId = chunkId;
+        payload.lodLevel = myLOD;
+        payload.transitionMask = transitionMask;
+
+        // 4. Dispatch数の計算
+        // LODに応じてステップサイズが変わる (Step = 2^LOD)
+        // これにより処理するセル数が減るため、Meshlet数も調整する
+        uint stepSize = 1u << myLOD;
+        uint3 rawSize = voxelTerrainInfo.chunkSize; 
+        
+        // 境界処理のため、厳密には (Size-1)/Step かどうかの調整が必要ですが、
+        // ここでは簡易的に有効セル数からグループ数を算出します
+        uint3 effectiveCells = (rawSize - 1) / stepSize;
+        uint totalCells = effectiveCells.x * effectiveCells.y * effectiveCells.z;
+        
+        // 1グループあたり最大128スレッドと仮定
+        dispatchCount = totalCells;
     }
 
-    //----------------------------------
-    // 3. DispatchMesh
-    //----------------------------------
-    // faceResolution^2 スレッド / face
-    uint threadsPerFace =
-        payload.faceResolution *
-        payload.faceResolution;
-
-    uint totalThreads =
-        activeFaceCount * threadsPerFace;
-
-    uint3 dispatchSize = uint3(totalThreads, 1, 1);
-
-    // Transvoxel face が無い場合は Dispatch しない
-    if (totalThreads > 0)
-    {
-        dispatchSize = uint3(0,0,0);
-    }
-
-
-    DispatchMesh(dispatchSize.x, dispatchSize.y, dispatchSize.z, payload);
+    // 制約通り、DispatchMeshはここで一度だけ呼び出す
+    DispatchMesh(dispatchCount, 1, 1, payload);
 }

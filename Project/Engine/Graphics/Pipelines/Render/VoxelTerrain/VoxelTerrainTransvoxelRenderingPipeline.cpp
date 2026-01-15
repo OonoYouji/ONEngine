@@ -22,8 +22,8 @@ void VoxelTerrainTransvoxelRenderingPipeline::Initialize(ShaderCompiler* _shader
 	{	/// shader
 		Shader shader;
 		shader.Initialize(_shaderCompiler);
-		shader.CompileShader(L"./Packages/Shader/Render/VoxelTerrain/Transvoxel.ms.hlsl", L"ms_6_5", Shader::Type::ms);
 		shader.CompileShader(L"./Packages/Shader/Render/VoxelTerrain/Transvoxel.as.hlsl", L"as_6_5", Shader::Type::as);
+		shader.CompileShader(L"./Packages/Shader/Render/VoxelTerrain/Transvoxel.ms.hlsl", L"ms_6_5", Shader::Type::ms);
 		shader.CompileShader(L"./Packages/Shader/Render/VoxelTerrain/Transvoxel.ps.hlsl", L"ps_6_0", Shader::Type::ps);
 
 		pipeline_ = std::make_unique<GraphicsPipeline>();
@@ -44,8 +44,8 @@ void VoxelTerrainTransvoxelRenderingPipeline::Initialize(ShaderCompiler* _shader
 		pipeline_->AddStaticSampler(StaticSampler::ClampSampler(), D3D12_SHADER_VISIBILITY_ALL, 0);
 
 		pipeline_->SetBlendDesc(BlendMode::Normal());
-		pipeline_->SetFillMode(D3D12_FILL_MODE_SOLID);
-		pipeline_->SetCullMode(D3D12_CULL_MODE_NONE);
+		pipeline_->SetFillMode(D3D12_FILL_MODE_WIREFRAME);
+		pipeline_->SetCullMode(D3D12_CULL_MODE_BACK);
 		pipeline_->SetDepthStencilDesc(DefaultDepthStencilDesc());
 
 		pipeline_->CreatePipeline(_dxm->GetDxDevice());

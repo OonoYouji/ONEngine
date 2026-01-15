@@ -7,239 +7,334 @@
 Texture3D<float> voxelChunkTextures[] : register(t1);
 SamplerState texSampler : register(s0);
 
-// -----------------------------------------------------------------------------
-// Constants
-// -----------------------------------------------------------------------------
-static const uint kTransitionCellStride = 10;
+static const float IsoLevel = 0.5f;
+static const float GlobalVoxelSize = 1.0f;
 
-// Transvoxel 13 nodes (face + interior)
-static const float3 kTransitionNodes[13] =
-{
-    float3(0,0,0), float3(1,0,0), float3(0,1,0), float3(1,1,0), // 0-3
-    float3(0.5,0,0), float3(0,0.5,0), float3(0.5,0.5,0),
-    float3(1,0.5,0), float3(0.5,1,0),                           // 4-8
-    float3(0,0,1), float3(1,0,1), float3(0,1,1), float3(1,1,1)  // 9-12
+// セルの頂点位置テーブル
+static const int3 CornerOffsets[8] = {
+    int3(0, 0, 0), int3(1, 0, 0), int3(1, 1, 0), int3(0, 1, 0),
+    int3(0, 0, 1), int3(1, 0, 1), int3(1, 1, 1), int3(0, 1, 1)
 };
 
-// -----------------------------------------------------------------------------
-// Transvoxel Table Helpers
-// -----------------------------------------------------------------------------
-uint GetTransitionClassId(uint caseCode)
+// エッジの頂点接続
+static const int2 EdgeConnection[12] = {
+    int2(0,1), int2(1,2), int2(2,3), int2(3,0),
+    int2(4,5), int2(5,6), int2(6,7), int2(7,4),
+    int2(0,4), int2(1,5), int2(2,6), int2(3,7)
+};
+
+// チャンクIDから3Dグリッド位置を計算
+uint3 GetChunkGridPos(uint chunkId)
 {
-    uint index = caseCode >> 2;
-    uint shift = (caseCode & 3) << 3;
-    return (index < 128) ? ((tTransitionCellClass[index] >> shift) & 0xFF) : 0;
+    uint x = chunkId % voxelTerrainInfo.chunkCountXZ.x;
+    uint z = (chunkId / voxelTerrainInfo.chunkCountXZ.x) % voxelTerrainInfo.chunkCountXZ.y;
+    uint y = chunkId / (voxelTerrainInfo.chunkCountXZ.x * voxelTerrainInfo.chunkCountXZ.y);
+    return uint3(x, y, z);
 }
 
-uint GetTransitionDataByte(uint classId, uint byteOffset)
+// チャンクIDからワールド位置を計算
+float3 GetChunkWorldPosition(uint chunkId)
 {
-    uint ptr   = classId * kTransitionCellStride + (byteOffset >> 2);
-    uint shift = (byteOffset & 3) << 3;
-    return (tTransitionCellData[ptr] >> shift) & 0xFF;
+    uint3 gridPos = GetChunkGridPos(chunkId);
+    return voxelTerrainInfo.terrainOrigin + float3(gridPos) * float3(voxelTerrainInfo.chunkSize) * GlobalVoxelSize;
 }
 
-// -----------------------------------------------------------------------------
-// Density Sampling (Texture3D 専用・安全版)
-// -----------------------------------------------------------------------------
-float GetDensity(float3 localPos, uint _chunkId)
+// 隣接チャンクIDを取得 (方向: 0=X+, 1=X-, 2=Y+, 3=Y-, 4=Z+, 5=Z-)
+int GetNeighborChunkId(uint chunkId, int direction)
 {
-    float3 texSize = float3(voxelTerrainInfo.textureSize);
-    float3 uvw = localPos / texSize;
-
-    uvw.y = 1.0f - uvw.y;
-
-	uint chunkId = _chunkId;
+    uint3 gridPos = GetChunkGridPos(chunkId);
+    int3 offset = int3(0, 0, 0);
     
-    // チャンクのグリッド座標を計算
-	int chunkX = int(chunkId) % int(voxelTerrainInfo.chunkCountXZ.x);
-	int chunkZ = int(chunkId) / int(voxelTerrainInfo.chunkCountXZ.x);
+    if (direction == 0) offset = int3(1, 0, 0);       // X+
+    else if (direction == 1) offset = int3(-1, 0, 0); // X-
+    else if (direction == 2) offset = int3(0, 1, 0);  // Y+
+    else if (direction == 3) offset = int3(0, -1, 0); // Y-
+    else if (direction == 4) offset = int3(0, 0, 1);  // Z+
+    else if (direction == 5) offset = int3(0, 0, -1); // Z-
     
-    /// uvwが0-1範囲外であれば隣のチャンクを参照する
-    // X方向の境界処理
-	if (uvw.x < 0.0f) {
-		if (chunkX > 0) {
-			chunkId = _chunkId - 1;
-			uvw.x += 1.0f;
-		} else {
-			return 0.0f;
-		}
-	} else if (uvw.x > 1.0f) {
-		if (chunkX < int(voxelTerrainInfo.chunkCountXZ.x) - 1) {
-			chunkId = _chunkId + 1;
-			uvw.x -= 1.0f;
-		} else {
-			return 0.0f;
-		}
-	}
+    int3 neighborPos = int3(gridPos) + offset;
     
-    // Z方向の境界処理
-	if (uvw.z < 0.0f) {
-		if (chunkZ > 0) {
-			chunkId -= uint(voxelTerrainInfo.chunkCountXZ.x);
-			uvw.z += 1.0f;
-		} else {
-			return 0.0f;
-		}
-	} else if (uvw.z > 1.0f) {
-		if (chunkZ < int(voxelTerrainInfo.chunkCountXZ.y) - 1) {
-			chunkId += uint(voxelTerrainInfo.chunkCountXZ.x);
-			uvw.z -= 1.0f;
-		} else {
-			return 0.0f;
-		}
-	}
+    // 境界チェック
+    if (neighborPos.x < 0 || neighborPos.x >= (int)voxelTerrainInfo.chunkCountXZ.x ||
+        neighborPos.z < 0 || neighborPos.z >= (int)voxelTerrainInfo.chunkCountXZ.y ||
+        neighborPos.y < 0)
+    {
+        return -1; // 無効なチャンク
+    }
     
-
-    return voxelChunkTextures[chunks[chunkId].textureId].SampleLevel(texSampler, uvw, 0);
+    return neighborPos.x + neighborPos.z * voxelTerrainInfo.chunkCountXZ.x + 
+           neighborPos.y * voxelTerrainInfo.chunkCountXZ.x * voxelTerrainInfo.chunkCountXZ.y;
 }
 
-// -----------------------------------------------------------------------------
-// Mesh Shader
-// -----------------------------------------------------------------------------
+// ボクセル値を取得 (チャンクIDとローカル座標から)
+float GetVoxelValue(uint chunkId, float3 localPos)
+{
+    Chunk chunk = chunks[chunkId];
+    float3 uvw = localPos / float3(voxelTerrainInfo.chunkSize);
+    uvw = saturate(uvw);
+    return voxelChunkTextures[chunk.textureId].SampleLevel(texSampler, uvw, 0);
+}
+
+// 隣接チャンクからボクセル値を取得 (境界処理用)
+float GetVoxelValueWithNeighbor(uint chunkId, float3 localPos)
+{
+    float3 chunkSizeF = float3(voxelTerrainInfo.chunkSize);
+    
+    // チャンク内の場合
+    if (all(localPos >= 0) && all(localPos < chunkSizeF))
+    {
+        return GetVoxelValue(chunkId, localPos);
+    }
+    
+    // 境界外の場合、隣接チャンクから取得
+    // X+ 方向
+    if (localPos.x >= chunkSizeF.x)
+    {
+        int neighborId = GetNeighborChunkId(chunkId, 0);
+        if (neighborId != -1)
+        {
+            float3 neighborPos = float3(localPos.x - chunkSizeF.x, localPos.y, localPos.z);
+            return GetVoxelValue(neighborId, neighborPos);
+        }
+    }
+    // X- 方向
+    if (localPos.x < 0)
+    {
+        int neighborId = GetNeighborChunkId(chunkId, 1);
+        if (neighborId != -1)
+        {
+            float3 neighborPos = float3(localPos.x + chunkSizeF.x, localPos.y, localPos.z);
+            return GetVoxelValue(neighborId, neighborPos);
+        }
+    }
+    // Y+ 方向
+    if (localPos.y >= chunkSizeF.y)
+    {
+        int neighborId = GetNeighborChunkId(chunkId, 2);
+        if (neighborId != -1)
+        {
+            float3 neighborPos = float3(localPos.x, localPos.y - chunkSizeF.y, localPos.z);
+            return GetVoxelValue(neighborId, neighborPos);
+        }
+    }
+    // Y- 方向
+    if (localPos.y < 0)
+    {
+        int neighborId = GetNeighborChunkId(chunkId, 3);
+        if (neighborId != -1)
+        {
+            float3 neighborPos = float3(localPos.x, localPos.y + chunkSizeF.y, localPos.z);
+            return GetVoxelValue(neighborId, neighborPos);
+        }
+    }
+    // Z+ 方向
+    if (localPos.z >= chunkSizeF.z)
+    {
+        int neighborId = GetNeighborChunkId(chunkId, 4);
+        if (neighborId != -1)
+        {
+            float3 neighborPos = float3(localPos.x, localPos.y, localPos.z - chunkSizeF.z);
+            return GetVoxelValue(neighborId, neighborPos);
+        }
+    }
+    // Z- 方向
+    if (localPos.z < 0)
+    {
+        int neighborId = GetNeighborChunkId(chunkId, 5);
+        if (neighborId != -1)
+        {
+            float3 neighborPos = float3(localPos.x, localPos.y, localPos.z + chunkSizeF.z);
+            return GetVoxelValue(neighborId, neighborPos);
+        }
+    }
+    
+    return 0.0; // デフォルト値
+}
+
+// 法線を計算
+float3 CalculateNormal(uint chunkId, float3 localPos)
+{
+    float delta = GlobalVoxelSize * 0.5;
+    float3 grad;
+    
+    grad.x = GetVoxelValueWithNeighbor(chunkId, localPos + float3(delta, 0, 0)) - 
+             GetVoxelValueWithNeighbor(chunkId, localPos - float3(delta, 0, 0));
+    grad.y = GetVoxelValueWithNeighbor(chunkId, localPos + float3(0, delta, 0)) - 
+             GetVoxelValueWithNeighbor(chunkId, localPos - float3(0, delta, 0));
+    grad.z = GetVoxelValueWithNeighbor(chunkId, localPos + float3(0, 0, delta)) - 
+             GetVoxelValueWithNeighbor(chunkId, localPos - float3(0, 0, delta));
+    
+    return normalize(-grad);
+}
+
+// エッジ上の交点を補間
+float3 VertexInterpolate(float3 p1, float3 p2, float v1, float v2)
+{
+    if (abs(IsoLevel - v1) < 0.00001) return p1;
+    if (abs(IsoLevel - v2) < 0.00001) return p2;
+    if (abs(v1 - v2) < 0.00001) return p1;
+    
+    float t = (IsoLevel - v1) / (v2 - v1);
+    return lerp(p1, p2, t);
+}
+
+// Transvoxelテーブルからバイトデータを抽出
+uint ExtractByte(uint packedData, uint byteIndex)
+{
+    return (packedData >> (byteIndex * 8)) & 0xFF;
+}
+
+
+uint3 UnflattenIndex(uint index, uint3 dim)
+{
+    uint x = index % dim.x;
+    uint y = (index / dim.x) % dim.y;
+    uint z = index / (dim.x * dim.y);
+    return uint3(x, y, z);
+}
+
+float3 GetChunkWorldOrigin(uint chunkId)
+{
+    uint x = chunkId % voxelTerrainInfo.chunkCountXZ.x;
+    uint z = (chunkId / voxelTerrainInfo.chunkCountXZ.x) % voxelTerrainInfo.chunkCountXZ.y;
+    uint y = chunkId / (voxelTerrainInfo.chunkCountXZ.x * voxelTerrainInfo.chunkCountXZ.y);
+    return voxelTerrainInfo.terrainOrigin + float3(x, y, z) * float3(voxelTerrainInfo.chunkSize);
+}
+
+float SampleDensity(uint3 gridPos, uint stepSize, uint chunkIndex)
+{
+    return voxelChunkTextures[chunkIndex].Load(int4(gridPos * stepSize, 0));
+}
+
+VertexOut GetVertex(uint3 cellOrigin, uint stepSize, float3 p1, float3 p2, float v1, float v2, float3 chunkWorldOrigin)
+{
+    float t = (IsoLevel - v1) / (v2 - v1);
+    float3 localP = p1 + (p2 - p1) * t;
+    
+    // 座標スケーリング： (セル位置 + 補間位置) * StepSize
+    float3 posInChunk = (float3(cellOrigin) + localP) * float(stepSize);
+    float3 worldPos = chunkWorldOrigin + posInChunk;
+    
+    VertexOut vOut;
+    vOut.position = mul(float4(worldPos, 1.0), viewProjection.matVP);
+    vOut.worldPosition = float4(worldPos, 1.0);
+    vOut.normal = float3(0, 1, 0); 
+    vOut.color = float4(1, 1, 1, 1);
+    return vOut;
+}
+
+// グループ共有メモリ
+groupshared float3 s_corners[8];
+groupshared float s_values[8];
+groupshared uint s_caseCode;
+groupshared uint s_cellClass;
+groupshared uint s_vertexCount;
+groupshared uint s_triangleCount;
+groupshared float3 s_vertices[12];
+
+
+// Mesh Shader - セルごとにメッシュレットを生成
 [shader("mesh")]
 [outputtopology("triangle")]
 [numthreads(1, 1, 1)]
 void main(
-    uint3 DTid : SV_DispatchThreadID,
+    uint gid : SV_GroupID,      // 今は何番目のグループ(セル)か
     in payload Payload payload,
-    out vertices VertexOut verts[16],
-    out indices  uint3 tris[16]
-)
-{
-    // -------------------------------------------------------------------------
-    // 1. Face & Cell Decode
-    // -------------------------------------------------------------------------
-    uint res = payload.faceResolution;
-    uint cellsPerFace = res * res;
+    out vertices VertexOut verts[64],
+    out indices uint3 tris[126]) {
 
-    uint faceSeq = DTid.x / cellsPerFace;
-    uint cellIdx = DTid.x % cellsPerFace;
+    // 1. パラメータ展開
+    uint chunkId = payload.chunkId;
+    uint lod = payload.lodLevel;
+    uint transitionMask = payload.transitionMask;
+    uint stepSize = 1u << lod;
 
-    uint checkBits[4] = { 0, 1, 4, 5 }; // -X +X -Z +Z
+    uint3 rawSize = voxelTerrainInfo.chunkSize;
+    uint3 effectiveDim = (rawSize - 1) / stepSize;
+    
+    // 【修正点】1スレッド1セルなので、グループIDがそのままセルインデックスになる
+    uint cellIndex = gid;
+    
+    // 範囲外なら何もしない (ASで個数制御していれば基本起きないが念のため)
+    if (cellIndex >= effectiveDim.x * effectiveDim.y * effectiveDim.z) return;
 
-    uint activeDir = 0xFFFFFFFF;
-    uint counter = 0;
+    uint3 cellPos = UnflattenIndex(cellIndex, effectiveDim);
+    float3 chunkWorldOrigin = GetChunkWorldOrigin(chunkId);
 
-    [unroll]
-    for (uint i = 0; i < 4; ++i)
-    {
-        if (payload.transitionMask & (1u << checkBits[i]))
-        {
-            if (counter == faceSeq)
-            {
-                activeDir = checkBits[i];
-                break;
-            }
-            counter++;
-        }
+    // 2. 密度値収集 (stepSize考慮はそのまま維持！)
+    float corners[8];
+    uint caseCode = 0;
+    for(int i=0; i<8; ++i) {
+        corners[i] = SampleDensity(cellPos + CornerOffsets[i], stepSize, chunkId);
+        if(corners[i] >= IsoLevel) caseCode |= (1u << i);
     }
 
-    bool valid = (activeDir != 0xFFFFFFFF);
+    if (caseCode == 0 || caseCode == 255) return;
 
-    uint numVerts = 0;
-    uint numTris  = 0;
-    uint classId  = 0;
+    // 3. Transition判定 & データ数取得
+    bool isTransition = false;
+    uint transitionCode = 0;
 
-    float densities[13];
-    float3 uVec, vVec, wVec;
-    float3 basePos;
-    float step = float(payload.subChunkSize.x);
+    // 簡易判定 (前回と同じ)
+    if ((cellPos.x == 0) && (transitionMask & 0x01)) { isTransition = true; transitionCode = (caseCode & 0xFF); }
+    else if ((cellPos.x == effectiveDim.x - 1) && (transitionMask & 0x02)) { isTransition = true; transitionCode = (caseCode & 0xFF) | (1 << 8); }
+    else if ((cellPos.z == 0) && (transitionMask & 0x10)) { isTransition = true; transitionCode = (caseCode & 0xFF) | (2 << 8); }
+    else if ((cellPos.z == effectiveDim.z - 1) && (transitionMask & 0x20)) { isTransition = true; transitionCode = (caseCode & 0xFF) | (3 << 8); }
 
-    // -------------------------------------------------------------------------
-    // 2. Coordinate Setup
-    // -------------------------------------------------------------------------
-    if (valid)
-    {
-        uint u = cellIdx % res;
-        uint v = cellIdx / res;
-        uint m = res - 1;
+    uint vertexCount = 0;
+    uint triangleCount = 0;
+    uint cellClass = 0;
 
-        float3 offset;
-
-        if (activeDir == 0)      { offset=float3(0,u,v)*step; uVec=float3(0,1,0); vVec=float3(0,0,1); wVec=float3(-1,0,0); }
-        else if (activeDir == 1) { offset=float3(m,u,v)*step; uVec=float3(0,1,0); vVec=float3(0,0,1); wVec=float3( 1,0,0); }
-        else if (activeDir == 4) { offset=float3(u,v,0)*step; uVec=float3(1,0,0); vVec=float3(0,1,0); wVec=float3(0,0,-1); }
-        else                     { offset=float3(u,v,m)*step; uVec=float3(1,0,0); vVec=float3(0,1,0); wVec=float3(0,0, 1); }
-
-        basePos = payload.chunkOrigin + offset;
-
-        // ---------------------------------------------------------------------
-        // 3. Density Sampling
-        // ---------------------------------------------------------------------
-        [unroll]
-        for (uint i = 0; i < 13; ++i)
-        {
-            float3 local = kTransitionNodes[i];
-            float3 pos   = offset + (local.x * uVec + local.y * vVec + local.z * wVec) * step;
-            densities[i] = GetDensity(pos, payload.chunkIndex);
-        }
-
-        // 中間点の補正（Transvoxel 必須）
-        densities[4] = (densities[0] + densities[1]) * 0.5f;
-        densities[5] = (densities[0] + densities[2]) * 0.5f;
-        densities[7] = (densities[1] + densities[3]) * 0.5f;
-        densities[8] = (densities[2] + densities[3]) * 0.5f;
-        densities[6] = (densities[0] + densities[1] + densities[2] + densities[3]) * 0.25f;
-
-        // ---------------------------------------------------------------------
-        // 4. Case Code
-        // ---------------------------------------------------------------------
-        uint caseCode = 0;
-        [unroll]
-        for (uint i = 0; i < 13; ++i)
-            caseCode |= (densities[i] < kIsoLevel) ? (1u << i) : 0;
-
-        if (caseCode != 0 && caseCode != 0x1FFF)
-        {
-            classId = GetTransitionClassId(caseCode);
-            if ((classId & 0x7F) != 0)
-            {
-                uint header = GetTransitionDataByte(classId, 0);
-                numVerts = (header >> 4) & 0x0F;
-                numTris  = header & 0x0F;
-            }
-        }
+    // データ取得 (ここはテーブル仕様に合わせて調整が必要ですが、構造はシンプルに)
+    if (isTransition) {
+        // 本来は tTransitionCellClass 等を使用
+        // 未実装なら Regular にフォールバック
+        cellClass = tRegularCellClass[caseCode];
+        vertexCount = (cellClass >> 8) & 0x0F;
+        triangleCount = (cellClass >> 12) & 0x0F;
+    } else {
+        cellClass = tRegularCellClass[caseCode];
+        vertexCount = (cellClass >> 8) & 0x0F;
+        triangleCount = (cellClass >> 12) & 0x0F;
     }
 
-    // -------------------------------------------------------------------------
-    // 5. Output Counts (全スレッド必須)
-    // -------------------------------------------------------------------------
-    SetMeshOutputCounts(numVerts, numTris);
+    // 4. 出力設定 (Wave計算不要！)
+    // 自分しかいないので、自分の出力数がそのままグループの出力数
+    SetMeshOutputCounts(vertexCount, triangleCount);
 
-    // -------------------------------------------------------------------------
-    // 6. Write Geometry
-    // -------------------------------------------------------------------------
-    if (numVerts == 0)
-        return;
-
-    [unroll]
-    for (uint i = 0; i < numVerts; ++i)
+    // 5. 書き込み (オフセット計算不要！)
+    if (triangleCount > 0)
     {
-        uint edge = GetTransitionDataByte(classId, 1 + i);
-        uint a = edge >> 4;
-        uint b = edge & 0x0F;
+        // A. 頂点書き込み (常にインデックス 0 から)
+        for (uint i = 0; i < vertexCount; ++i)
+        {
+             // ※ tRegularVertexDataの仕様に合わせて読み出し
+             // ここでは「12個のデータが並んでいる」と仮定したアクセスの例
+             uint cellTypeIndex = (cellClass & 0xFF); 
+             uint edgeCode = tRegularVertexData[cellTypeIndex * 12 + i]; 
 
-        float t = saturate((kIsoLevel - densities[a]) / (densities[b] - densities[a]));
-        float3 local = lerp(kTransitionNodes[a], kTransitionNodes[b], t);
+             uint v1 = (edgeCode >> 0) & 0x0F;
+             uint v2 = (edgeCode >> 4) & 0x0F;
+             
+             // 座標計算 (stepSize倍は必須！)
+             VertexOut vOut = GetVertex(cellPos, stepSize, 
+                                        float3(CornerOffsets[v1]), float3(CornerOffsets[v2]), 
+                                        corners[v1], corners[v2], chunkWorldOrigin);
+             
+             verts[i] = vOut; // オフセットなし！
+        }
 
-        float3 pos =
-            basePos +
-            (local.x * uVec + local.y * vVec + local.z * wVec) * step;
-
-        verts[i].worldPosition = float4(pos, 1);
-        verts[i].positionCS   = mul(float4(pos,1), viewProjection.matVP);
-        verts[i].normal       = float3(0,1,0); // 仮
-        verts[i].color        = float4(1,1,1,1);
-    }
-
-    uint triBase = 1 + numVerts;
-    [unroll]
-    for (uint i = 0; i < numTris; ++i)
-    {
-        tris[i] = uint3(
-            GetTransitionDataByte(classId, triBase + i*3 + 0),
-            GetTransitionDataByte(classId, triBase + i*3 + 1),
-            GetTransitionDataByte(classId, triBase + i*3 + 2)
-        );
+        // B. インデックス書き込み (常にインデックス 0 から)
+        for (uint t = 0; t < triangleCount; ++t)
+        {
+            uint cellTypeIndex = (cellClass & 0xFF);
+            uint3 localIndices;
+            // ※ tRegularCellDataの仕様に合わせて読み出し
+            localIndices.x = tRegularCellData[cellTypeIndex * 15 + (t * 3) + 0];
+            localIndices.y = tRegularCellData[cellTypeIndex * 15 + (t * 3) + 1];
+            localIndices.z = tRegularCellData[cellTypeIndex * 15 + (t * 3) + 2];
+            
+            tris[t] = localIndices; // オフセットなし！
+        }
     }
 }
