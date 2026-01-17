@@ -35,10 +35,10 @@ struct CommandInfo {
 /// functions
 /// ---------------------------------------------------
 
-uint IndexOfMeshGroup(uint3 _groupID, uint3 _dim) {
-	return _groupID.x
-         + _groupID.y * _dim.x
-         + _groupID.z * (_dim.x * _dim.y);
+uint32_t IndexOfMeshGroup(uint32_t3 groupID, uint32_t3 dim) {
+	return groupID.x
+         + groupID.y * dim.x
+         + groupID.z * (dim.x * dim.y);
 }
 
 

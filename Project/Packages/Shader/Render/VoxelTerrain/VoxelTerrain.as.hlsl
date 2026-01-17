@@ -52,7 +52,7 @@ void main(
 
 			uint subChunkSizeValue;
 
-			/// LOD レベルを ndc.z の値に基づいて設定
+			/// LOD レベルを lengthToCamera の値に基づいて設定
 			if (lengthToCamera < 50.0f) {
 				asPayload.lodLevel = 0; // 高詳細度
 				subChunkSizeValue = 2;

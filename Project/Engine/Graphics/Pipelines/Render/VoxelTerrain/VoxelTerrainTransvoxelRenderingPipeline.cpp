@@ -35,7 +35,7 @@ void VoxelTerrainTransvoxelRenderingPipeline::Initialize(ShaderCompiler* _shader
 		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 3); // Material
 
 		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // Chunk array
-		pipeline_->AddDescriptorRange(1, MAX_TEXTURE_COUNT * 2, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // VoxelTerrain Texture3D
+		pipeline_->AddDescriptorRange(1, MAX_TEXTURE_COUNT, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // VoxelTerrain Texture3D
 
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 0); // Chunk array
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 1); // VoxelTerrain Texture3D
@@ -44,8 +44,8 @@ void VoxelTerrainTransvoxelRenderingPipeline::Initialize(ShaderCompiler* _shader
 		pipeline_->AddStaticSampler(StaticSampler::ClampSampler(), D3D12_SHADER_VISIBILITY_ALL, 0);
 
 		pipeline_->SetBlendDesc(BlendMode::Normal());
-		pipeline_->SetFillMode(D3D12_FILL_MODE_WIREFRAME);
-		pipeline_->SetCullMode(D3D12_CULL_MODE_BACK);
+		pipeline_->SetFillMode(D3D12_FILL_MODE_SOLID);
+		pipeline_->SetCullMode(D3D12_CULL_MODE_NONE);
 		pipeline_->SetDepthStencilDesc(DefaultDepthStencilDesc());
 
 		pipeline_->CreatePipeline(_dxm->GetDxDevice());
@@ -105,12 +105,10 @@ void VoxelTerrainTransvoxelRenderingPipeline::Draw(ECSGroup* _ecs, CameraCompone
 
 	/// --------------- ディスパッチ --------------- ///
 	//cmdList->DispatchMesh(
-	//	vt->GetChunkCountXZ().x,
-	//	1,
-	//	vt->GetChunkCountXZ().y
+	//	Math::DivideAndRoundUp(vt->maxChunkCount_, 32), 1, 1
 	//);
 	cmdList->DispatchMesh(
-		4, 1, 4
+		1, 1, 1
 	);
 
 }
