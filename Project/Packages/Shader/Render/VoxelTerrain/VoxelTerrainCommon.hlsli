@@ -1,10 +1,4 @@
-/// ---------------------------------------------------
-/// Structs
-/// ---------------------------------------------------
-
-
 struct Chunk {
-    /// Texture3D Id
 	uint textureId;
 };
 
@@ -16,13 +10,10 @@ struct VoxelTerrainInfo {
 	uint32_t maxChunkCount;
 };
 
-
 struct SubChunk {
 	uint32_t3 subChunkOrigin;
 	uint32_t3 subChunkSize;
 };
-
-
 
 // 頂点オフセット (0-7) - 中心を原点とする版
 static const float3 kCornerOffsets[8] = {

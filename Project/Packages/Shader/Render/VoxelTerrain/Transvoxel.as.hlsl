@@ -145,7 +145,7 @@ void main(
         }
     }
 
-    if(isVisible) {
+    if(isVisible && myMask != 0) {
         uint listIndex;
         // 共有カウンタを1増やし、自分が書き込む場所(listIndex)を取得
         InterlockedAdd(sVisibleCount, 1, listIndex);
