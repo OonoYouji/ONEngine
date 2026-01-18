@@ -10,6 +10,7 @@
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Editor/Commands/ImGuiCommand/ImGuiCommand.h"
 #include "Engine/ECS/Entity/GameEntity/GameEntity.h"
+#include "Engine/Core/DirectX12/GPUTimeStamp/GPUTimeStamp.h"
 
 /// editor
 #include "Engine/Editor/Math/AssetDebugger.h"
@@ -106,7 +107,10 @@ void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _
 	}
 
 
-
+	double transvoxelRenderingTime = GPUTimeStamp::GetInstance().GetTimeStampMSec(0);
+	double regularRenderingTime = GPUTimeStamp::GetInstance().GetTimeStampMSec(1);
+	ImGui::Text("Transvoxel Rendering Time: %f ms", transvoxelRenderingTime);
+	ImGui::Text("Regular Rendering Time: %f ms", regularRenderingTime);
 
 }
 
