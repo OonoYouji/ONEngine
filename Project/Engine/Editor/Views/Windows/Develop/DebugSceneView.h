@@ -52,7 +52,6 @@ public:
 	/// @brief シーンの統計情報の描画
 	void DrawSceneOverlayStats(
 		const ImVec2& imagePos,
-		const ImVec2& imageSize,
 		const std::vector<OverlaySection>& sections
 	);
 

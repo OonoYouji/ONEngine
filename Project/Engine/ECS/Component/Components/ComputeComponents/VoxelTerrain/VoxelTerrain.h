@@ -69,9 +69,10 @@ struct Chunk {
 /// @brief デバッグ関数用に前方宣言をする
 class VoxelTerrain;
 class DxManager;
+class AssetCollection;
 
 namespace ComponentDebug {
-void VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _dxm);
+void VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _dxm, AssetCollection* _ac);
 }
 
 void from_json(const nlohmann::json& _j, std::vector<Chunk>& _chunk);
@@ -96,6 +97,7 @@ struct VoxelTerrainInfo {
 	float pad2;
 	Vector2Int chunkCountXZ; /// XZ平面でのチャンク数
 	uint32_t maxChunkCount;
+	float isoLevel;
 };
 
 /// @brief チャンクごとのGPU用データ
@@ -132,7 +134,7 @@ struct MarchingCube {
 /// ///////////////////////////////////////////////////
 class VoxelTerrain : public IComponent {
 	/// --------------- friend function --------------- ///
-	friend void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _dxm);
+	friend void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _dxm, AssetCollection* _ac);
 	friend void from_json(const nlohmann::json& _j, VoxelTerrain& _voxelTerrain);
 	friend void to_json(nlohmann::json& _j, const VoxelTerrain& _voxelTerrain);
 
@@ -252,6 +254,7 @@ private:
 	Vector3Int textureSize_;
 	Vector2Int chunkCountXZ_;
 	UINT maxChunkCount_;
+	float isoLevel_ = 0.5f;
 
 	Material material_;
 
@@ -265,7 +268,7 @@ private:
 	ConstantBuffer<GPUData::MarchingCube> cBufferMarchingCubeInfo_;
 	bool isCreatedVoxelTerrain_ = false;
 
-	bool canMeshShaderRendering_ = true;
+	bool canMeshShaderRendering_ = false;
 	bool canVertexShaderRendering_ = false;
 	bool isRenderingTransvoxel_ = true;
 

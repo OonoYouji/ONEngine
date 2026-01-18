@@ -98,6 +98,10 @@ void VoxelTerrainRenderingPipeline::Draw(ECSGroup* _ecs, CameraComponent* _camer
 	cmdList->SetGraphicsRootDescriptorTable(
 		SRV_VOXEL_TERRAIN_TEXTURE3D, frontSRVHandle
 	);
+	//cmdList->SetGraphicsRootDescriptorTable(
+	//	SRV_TEXTURES, frontSRVHandle
+	//);
+
 
 	/// --------------- ディスパッチ --------------- ///
 	cmdList->DispatchMesh(
@@ -105,6 +109,7 @@ void VoxelTerrainRenderingPipeline::Draw(ECSGroup* _ecs, CameraComponent* _camer
 		1,
 		voxelTerrain->GetChunkCountXZ().y
 	);
+
 
 	GPUTimeStamp::GetInstance().EndTimeStamp(
 		GPUTimeStampID::VoxelTerrainRegularCell
@@ -122,6 +127,9 @@ void VoxelTerrainRenderingPipeline::Draw(ECSGroup* _ecs, CameraComponent* _camer
 	cmdList->SetGraphicsRootDescriptorTable(
 		SRV_VOXEL_TERRAIN_TEXTURE3D, frontSRVHandle
 	);
+	//cmdList->SetGraphicsRootDescriptorTable(
+	//	SRV_TEXTURES, frontSRVHandle
+	//);
 
 	/// --------------- ディスパッチ --------------- ///
 	cmdList->DispatchMesh(
@@ -141,13 +149,16 @@ void ONEngine::VoxelTerrainRenderingPipeline::CreatePipeline(GraphicsPipeline* _
 	_pipeline->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 3); // Material
 
 	_pipeline->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // Chunk array
-	_pipeline->AddDescriptorRange(1, MAX_TEXTURE_COUNT * 2, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // VoxelTerrain Texture3D
+	_pipeline->AddDescriptorRange(1, MAX_TEXTURE_COUNT, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // VoxelTerrain Texture3D
+	//_pipeline->AddDescriptorRange(3000, MAX_TEXTURE_COUNT, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // Textures
 
 	_pipeline->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 0); // Chunk array
 	_pipeline->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 1); // VoxelTerrain Texture3D
+	//_pipeline->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 2); // Textures
 
 
 	_pipeline->AddStaticSampler(StaticSampler::ClampSampler(), D3D12_SHADER_VISIBILITY_ALL, 0);
+	//_pipeline->AddStaticSampler(D3D12_SHADER_VISIBILITY_ALL, 1);
 
 
 	_pipeline->SetBlendDesc(_blendMode);

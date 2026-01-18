@@ -17,7 +17,7 @@
 
 using namespace ONEngine;
 
-void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _dxm) {
+void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _dxm, AssetCollection* _ac) {
 	if(!_voxelTerrain) {
 		Console::LogError("VoxelTerrainDebug: _voxelTerrain is nullptr");
 		return;
@@ -59,9 +59,10 @@ void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _
 	Editor::ImMathf::DragInt2("Chunk Count XZ", &_voxelTerrain->chunkCountXZ_, 1, 1, 32);
 	Editor::ImMathf::DragInt3("Chunk Size", &_voxelTerrain->chunkSize_, 1, 1, 1024);
 	Editor::ImMathf::DragInt3("Texture Size", &_voxelTerrain->textureSize_, 1, 1, 256);
+	Editor::ImMathf::DragFloat("ISOLevel", &_voxelTerrain->isoLevel_, 0.05f, 0.0f, 1.0f);
 
 
-	Editor::ImMathf::MaterialEdit("Material", &_voxelTerrain->material_, nullptr, false);
+	Editor::ImMathf::MaterialEdit("Material", &_voxelTerrain->material_, _ac, false);
 
 	/// editor用
 	{
@@ -143,6 +144,7 @@ void ONEngine::from_json(const nlohmann::json& _j, VoxelTerrain& _voxelTerrain) 
 	_voxelTerrain.chunkCountXZ_ = _j.value("chunkCountXZ", Vector2Int{ 2, 2 });
 	_voxelTerrain.chunkSize_ = _j.value("chunkSize", Vector3Int{ 16, 128, 16 });
 	_voxelTerrain.textureSize_ = _j.value("textureSize", Vector3Int{ 32, 32, 32 });
+	_voxelTerrain.isoLevel_ = _j.value("isoLevel", 0.5f);
 
 	_voxelTerrain.material_ = _j.value("material", Material{});
 	_voxelTerrain.chunks_ = _j.value("chunks", std::vector<Chunk>{});
@@ -157,6 +159,7 @@ void ONEngine::to_json(nlohmann::json& _j, const VoxelTerrain& _voxelTerrain) {
 		{ "chunkSize", _voxelTerrain.chunkSize_ },
 		{ "textureSize", _voxelTerrain.textureSize_ },
 		{ "chunkCountXZ", _voxelTerrain.chunkCountXZ_ },
+		{ "isoLevel", _voxelTerrain.isoLevel_ },
 		{ "material", _voxelTerrain.material_ },
 		{ "chunks", _voxelTerrain.chunks_ }
 	};
@@ -239,7 +242,7 @@ void VoxelTerrain::SetupGraphicBuffers(ID3D12GraphicsCommandList* _cmdList, cons
 
 	/// VoxelTerrainInfoの設定
 	Vector3 terrainOrigin = GetOwner()->GetTransform()->GetPosition();
-	cBufferTerrainInfo_.SetMappedData(GPUData::VoxelTerrainInfo{ terrainOrigin, 0, textureSize_, 0, chunkSize_, 0, chunkCountXZ_, maxChunkCount_ });
+	cBufferTerrainInfo_.SetMappedData(GPUData::VoxelTerrainInfo{ terrainOrigin, 0, textureSize_, 0, chunkSize_, 0, chunkCountXZ_, maxChunkCount_, isoLevel_ });
 	cBufferTerrainInfo_.BindForGraphicsCommandList(_cmdList, _rootParamIndices[0]);
 
 	/// Materialの設定
@@ -301,7 +304,8 @@ void VoxelTerrain::SettingTerrainInfo() {
 		GPUData::VoxelTerrainInfo{
 			.terrainOrigin = GetOwner()->GetTransform()->GetPosition(),
 			.textureSize = textureSize_, .chunkSize = chunkSize_,
-			.chunkCountXZ = chunkCountXZ_, .maxChunkCount = maxChunkCount_
+			.chunkCountXZ = chunkCountXZ_, .maxChunkCount = maxChunkCount_,
+			.isoLevel = isoLevel_
 		}
 	);
 }
@@ -352,6 +356,8 @@ void VoxelTerrain::CreateChunkTextureUAV(DxCommand* _dxCommand, DxDevice* _dxDev
 			_dxDevice, _dxSRVHeap,
 			DXGI_FORMAT_R8G8B8A8_UNORM
 		);
+
+		
 	}
 
 

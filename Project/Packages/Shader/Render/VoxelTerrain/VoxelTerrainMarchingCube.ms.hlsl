@@ -122,7 +122,7 @@ VertexOut VertexInterp(float3 p1, float3 p2, float3 _chunkOrigin,float3 subChunk
 	vOut.position = mul(vOut.worldPosition, viewProjection.matVP);
 	
 	// 補間位置での法線を計算
-	vOut.normal = GetGradient(localPos, _chunkId);
+	// vOut.normal = GetGradient(localPos, _chunkId);
 	
 	// 高さベースの色付け
 	float worldY = vOut.worldPosition.y;
@@ -138,6 +138,8 @@ float3 GetNormal(float3 _p0, float3 _p1, float3 _p2) {
 	return normalize(cross(u, v));
 }
 
+// groupshared uint sVertexCount;
+// groupshared uint sPrimitiveCount;
 
 // ---------------------------------------------------
 // Main Mesh Shader
@@ -147,12 +149,20 @@ float3 GetNormal(float3 _p0, float3 _p1, float3 _p2) {
 [numthreads(1, 1, 1)]
 void main(
 	uint3 DTid : SV_DispatchThreadID,
-	uint gi : SV_GroupIndex,
+    uint3 GTid : SV_GroupThreadID,
+    uint3 groupId : SV_GroupID,
 	in payload Payload asPayload,
-	out vertices VertexOut verts[16],
-	out indices uint3 indis[6]) {
+	out vertices VertexOut verts[256],
+	out indices uint3 indis[256]) {
+
+    // if(GTid.x == 0) {
+    //     sVertexCount = 0;
+    //     sPrimitiveCount = 0;
+    // }
+    // GroupMemoryBarrierWithGroupSync();
 
 	uint3 step = asPayload.subChunkSize;
+    // step.x /= 16; // グループ内のスレッド数に合わせて分割
 	float3 basePos = float3(DTid * step);
 
 	float cubeDensities[8];
@@ -165,7 +175,7 @@ void main(
 		float d = GetDensity(samplePos, asPayload.chunkIndex);
 		cubeDensities[i] = d;
 		
-		if (d < kIsoLevel) {
+		if (d < voxelTerrainInfo.isoLevel) {
 			cubeIndex |= (1u << i);
 		}
 	}
@@ -175,12 +185,24 @@ void main(
 	for (int i = 0; i < 15; i += 3) {
 		triCount += (TriTable[cubeIndex][i] != -1) ? 1 : 0;
 	}
+
+    uint vertexOffset = 0;
+    uint primitiveOffset = 0;
+
+    // if(triCount != 0) {
+    //     InterlockedAdd(sVertexCount, triCount * 3, vertexOffset);
+    //     InterlockedAdd(sPrimitiveCount, triCount, primitiveOffset);
+    // }
 	
-	SetMeshOutputCounts(triCount * 3, triCount);
+    // GroupMemoryBarrierWithGroupSync();
+    SetMeshOutputCounts(triCount * 3, triCount);
+    // SetMeshOutputCounts(sVertexCount, sPrimitiveCount);
 	
 	for (uint t = 0; t < triCount; t++) {
+        uint vIndex = vertexOffset;
+        uint pIndex = primitiveOffset;
 
-		VertexOut otuVerts[3];
+		VertexOut outVerts[3];
 
 		for (int v = 0; v < 3; v++) {
 			int edgeIndex = TriTable[cubeIndex][(t * 3) + v];
@@ -191,24 +213,24 @@ void main(
 			float3 p1 = basePos + (kCornerOffsets[idx1] * float3(step));
 			float3 p2 = basePos + (kCornerOffsets[idx2] * float3(step));
 			
-			otuVerts[v] = VertexInterp(p1, p2, asPayload.chunkOrigin, float32_t3(asPayload.subChunkSize), cubeDensities[idx1], cubeDensities[idx2], asPayload.chunkIndex);
-			verts[(t * 3) + v] = otuVerts[v];
+			outVerts[v] = VertexInterp(p1, p2, asPayload.chunkOrigin, float32_t3(asPayload.subChunkSize), cubeDensities[idx1], cubeDensities[idx2], asPayload.chunkIndex);
+			verts[vIndex + (t * 3) + v] = outVerts[v];
 		}
 		
 		float3 normal = GetNormal(
-			otuVerts[0].worldPosition.xyz,
-			otuVerts[1].worldPosition.xyz,
-			otuVerts[2].worldPosition.xyz
+			outVerts[0].worldPosition.xyz,
+			outVerts[1].worldPosition.xyz,
+			outVerts[2].worldPosition.xyz
 		);
 		
-		verts[(t * 3) + 0].normal = normal;
-		verts[(t * 3) + 1].normal = normal;
-		verts[(t * 3) + 2].normal = normal;
+		verts[vIndex + (t * 3) + 0].normal = normal;
+		verts[vIndex + (t * 3) + 1].normal = normal;
+		verts[vIndex + (t * 3) + 2].normal = normal;
 		
-		indis[t] = uint3(
-			(t * 3) + 0,
-			(t * 3) + 1,
-			(t * 3) + 2
+		indis[pIndex + t] = uint3(
+			vIndex + (t * 3) + 0,
+			vIndex + (t * 3) + 1,
+			vIndex + (t * 3) + 2
 		);
 	}
 }

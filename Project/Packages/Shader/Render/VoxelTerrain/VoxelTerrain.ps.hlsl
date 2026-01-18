@@ -10,14 +10,14 @@ struct PSOutput {
 
 ConstantBuffer<ConstantBufferMaterial> material : register(b3);
 
-PSOutput main(VertexOut _out) {
+PSOutput main(VertexOut input) {
 	PSOutput output;
 
 	// 1. 法線の正規化
-	float3 N = normalize(_out.normal);
+	float3 N = normalize(input.normal);
 
 	// ---------------------------------------------------------
-	// 地形の色分け処理 (追加箇所)
+	// 地形の色分け処理
 	// ---------------------------------------------------------
 	
 	// 草の色 (緑)
@@ -38,7 +38,7 @@ PSOutput main(VertexOut _out) {
 	// 元の色情報(頂点カラー * マテリアル色) に 地形色 を乗算
 	output.color = material.baseColor * terrainColor;
 	
-	output.worldPos = _out.worldPosition;
+	output.worldPos = input.worldPosition;
 	output.normal = float4(N, 1);
 	output.flags = float4(material.intValues.x, material.intValues.y, 0, 1);
 

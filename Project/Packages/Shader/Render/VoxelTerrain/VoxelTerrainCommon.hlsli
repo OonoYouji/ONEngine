@@ -8,6 +8,7 @@ struct VoxelTerrainInfo {
 	uint32_t3 chunkSize;
 	uint32_t2 chunkCountXZ;
 	uint32_t maxChunkCount;
+    float32_t isoLevel;
 };
 
 struct SubChunk {

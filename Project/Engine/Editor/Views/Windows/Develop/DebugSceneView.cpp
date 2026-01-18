@@ -207,10 +207,10 @@ void Editor::DebugSceneView::ShowDebugSceneView(const ImVec2& imagePos, const Im
 	}
 
 	// 描画
-	DrawSceneOverlayStats(imagePos, imageSize, sections);
+	DrawSceneOverlayStats(imagePos, sections);
 }
 
-void DebugSceneView::DrawSceneOverlayStats(const ImVec2& imagePos, const ImVec2& imageSize, const std::vector<OverlaySection>& sections) {
+void DebugSceneView::DrawSceneOverlayStats(const ImVec2& imagePos, const std::vector<OverlaySection>& sections) {
 	ImDrawList* drawList = ImGui::GetForegroundDrawList();
 
 	float y = imagePos.y + 8.0f; // 上マージン

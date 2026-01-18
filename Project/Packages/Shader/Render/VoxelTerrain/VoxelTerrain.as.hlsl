@@ -1,15 +1,5 @@
 ﻿#include "VoxelTerrain.hlsli"
 
-
-///// ---------------------------------------------------
-///// Buffers
-///// ---------------------------------------------------
-
-//Texture3D<float4> voxelChunkTextures[] : register(t1);
-//SamplerState voxelSampler : register(s0);
-
-
-
 /// ---------------------------------------------------
 /// Main
 /// ---------------------------------------------------
@@ -74,13 +64,16 @@ void main(
 
 			asPayload.subChunkSize = uint3(subChunkSizeValue, subChunkSizeValue, subChunkSizeValue);
 			dispatchSize = voxelTerrainInfo.textureSize / asPayload.subChunkSize;
-	
-			asPayload.dispatchSize = dispatchSize;
 		}
 
 	
 	}
-	
+
+    // const uint kMeshShaderGroupSizeX = 1; 
+    // uint dispatchCountX = (dispatchSize.x + kMeshShaderGroupSizeX - 1) / kMeshShaderGroupSizeX;
+    // dispatchSize.x = dispatchCountX;
+
 	/// 分割された個数でディスパッチ
+	asPayload.dispatchSize = dispatchSize;
 	DispatchMesh(dispatchSize.x, dispatchSize.y, dispatchSize.z, asPayload);
 }
