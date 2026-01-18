@@ -3,6 +3,7 @@
 /// engine
 #include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
+#include "Engine/Core/DirectX12/GPUTimeStamp/GPUTimeStamp.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/VoxelTerrain/VoxelTerrain.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
@@ -88,6 +89,10 @@ void VoxelTerrainTransvoxelRenderingPipeline::Draw(ECSGroup* _ecs, CameraCompone
 	/// 描画
 	/// ---------------------------------------------------
 
+	GPUTimeStamp::GetInstance().BeginTimeStamp(
+		0
+	);
+
 	/// --------------- パイプラインの設定 --------------- ///
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 	pDxManager_->HeapBindToCommandList();
@@ -109,6 +114,10 @@ void VoxelTerrainTransvoxelRenderingPipeline::Draw(ECSGroup* _ecs, CameraCompone
 	//);
 	cmdList->DispatchMesh(
 		1, 1, 1
+	);
+
+	GPUTimeStamp::GetInstance().EndTimeStamp(
+		0
 	);
 
 }

@@ -5,6 +5,7 @@ using namespace ONEngine;
 /// engine
 #include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/Core/DirectX12/DescriptorHeap/DescriptorHeapSize.h"
+#include "../GPUTimeStamp/GPUTimeStamp.h"
 
 DxManager::DxManager() = default;
 DxManager::~DxManager() = default;
@@ -38,6 +39,12 @@ void DxManager::Initialize() {
 	for (auto& heap : dxDescriptorHeaps_) {
 		heap->Initialize();
 	}
+
+	GPUTimeStamp::GetInstance().Initialize(
+		dxDevice_.get(),
+		dxCommand_.get(),
+		128
+	);
 
 }
 
