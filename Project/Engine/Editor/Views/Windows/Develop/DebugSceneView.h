@@ -1,5 +1,12 @@
 ﻿#pragma once
 
+/// std
+#include <string>
+#include <vector>
+
+/// externals
+#include <imgui.h>
+
 /// engine
 #include "../../EditorViewCollection.h"
 
@@ -9,6 +16,20 @@
 namespace Editor {
 
 class DebugSceneView : public IEditorWindow {
+
+	struct OverlayItem {
+		std::string label;
+		std::string value;
+		ImU32       color = IM_COL32(255, 255, 255, 255);
+		bool        visible = true;
+	};
+
+	struct OverlaySection {
+		std::string name;
+		bool opened = true; // true=表示, false=折りたたみ
+		std::vector<OverlayItem> items;
+	};
+
 public:
 	/// ===================================================
 	/// public : methods
@@ -24,6 +45,18 @@ public:
 	/// @param _isGamePlay Runtime中かどうか
 	void SetGamePlay(bool _isGamePlay);
 
+
+	void ShowDebugSceneView(const ImVec2& imagePos, const ImVec2& imageSize);
+
+
+	/// @brief シーンの統計情報の描画
+	void DrawSceneOverlayStats(
+		const ImVec2& imagePos,
+		const ImVec2& imageSize,
+		const std::vector<OverlaySection>& sections
+	);
+
+
 private:
 	/// ===================================================
 	/// private : methods
@@ -37,6 +70,9 @@ private:
 
 	int manipulateOperation_;
 	int manipulateMode_;
+
+	OverlaySection sceneStatsSection_;
+
 };
 
 

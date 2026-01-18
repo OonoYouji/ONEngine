@@ -106,12 +106,6 @@ void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _
 		}
 	}
 
-
-	double transvoxelRenderingTime = GPUTimeStamp::GetInstance().GetTimeStampMSec(0);
-	double regularRenderingTime = GPUTimeStamp::GetInstance().GetTimeStampMSec(1);
-	ImGui::Text("Transvoxel Rendering Time: %f ms", transvoxelRenderingTime);
-	ImGui::Text("Regular Rendering Time: %f ms", regularRenderingTime);
-
 }
 
 

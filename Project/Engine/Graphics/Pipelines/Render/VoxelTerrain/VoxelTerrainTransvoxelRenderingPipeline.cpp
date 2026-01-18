@@ -90,7 +90,7 @@ void VoxelTerrainTransvoxelRenderingPipeline::Draw(ECSGroup* _ecs, CameraCompone
 	/// ---------------------------------------------------
 
 	GPUTimeStamp::GetInstance().BeginTimeStamp(
-		0
+		GPUTimeStampID::VoxelTerrainTransitionCell
 	);
 
 	/// --------------- パイプラインの設定 --------------- ///
@@ -117,7 +117,7 @@ void VoxelTerrainTransvoxelRenderingPipeline::Draw(ECSGroup* _ecs, CameraCompone
 	);
 
 	GPUTimeStamp::GetInstance().EndTimeStamp(
-		0
+		GPUTimeStampID::VoxelTerrainTransitionCell
 	);
 
 }

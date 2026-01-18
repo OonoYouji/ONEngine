@@ -1,12 +1,13 @@
 ﻿#pragma once
 
 #include <d3d12.h>
+#include <Windows.h>
+#include <cstdint>
 
 /// engine
 #include "../ComPtr/ComPtr.h"
 #include "../Resource/DxResource.h"
-#include <Windows.h>
-#include <cstdint>
+#include "GPUTimeStampID.h"
 
 namespace ONEngine {
 
@@ -40,7 +41,7 @@ public:
 	/// @param dxDevice D3D12 デバイスラッパー
 	/// @param dxCommand コマンドリスト／キューを管理するクラス
 	/// @param maxTimerCount 同時に使用可能なタイマー ID の最大数
-	void Initialize(DxDevice* dxDevice, DxCommand* dxCommand, UINT maxTimerCount);
+	void Initialize(DxDevice* dxDevice, DxCommand* dxCommand);
 
 	/// @brief 指定 ID の GPU タイムスタンプ計測を開始する
 	///
@@ -48,7 +49,7 @@ public:
 	/// 同じ ID に対して EndTimeStamp を必ず呼ぶ必要がある。
 	///
 	/// @param id タイマー ID（0 ～ maxTimerCount - 1）
-	void BeginTimeStamp(uint32_t id);
+	void BeginTimeStamp(GPUTimeStampID id);
 
 	/// @brief 指定 ID の GPU タイムスタンプ計測を終了する
 	///
@@ -56,7 +57,7 @@ public:
 	/// クエリ結果を ReadBack バッファへ Resolve する。
 	///
 	/// @param id タイマー ID（0 ～ maxTimerCount - 1）
-	void EndTimeStamp(uint32_t id);
+	void EndTimeStamp(GPUTimeStampID id);
 
 	/// @brief 指定 ID の GPU 実行時間をミリ秒単位で取得する
 	///
@@ -65,14 +66,18 @@ public:
 	///
 	/// @param id タイマー ID（0 ～ maxTimerCount - 1）
 	/// @return GPU 実行時間（ミリ秒）。取得できない場合は負の値。
-	double GetTimeStampMSec(uint32_t id);
+	double GetTimeStampMSec(GPUTimeStampID id);
 
 private:
 
 	/// @brief タイマー ID からクエリヒープ上のインデックスを計算する
 	/// @param id タイマー ID
 	/// @return クエリヒープ上の開始インデックス
-	uint32_t GetIndex(uint32_t id);
+	uint32_t GetIndex(GPUTimeStampID id);
+
+	/// @brief タイマー ID が範囲外でないかチェックする
+	/// @param id タイマー ID
+	void CheckOutOfRange(GPUTimeStampID id);
 
 private:
 	/// 1 タイマーあたりに使用するタイムスタンプ数（開始・終了）

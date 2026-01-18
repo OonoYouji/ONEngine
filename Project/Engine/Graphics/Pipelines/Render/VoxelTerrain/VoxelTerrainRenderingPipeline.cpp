@@ -79,8 +79,10 @@ void VoxelTerrainRenderingPipeline::Draw(ECSGroup* _ecs, CameraComponent* _camer
 	/// 描画
 	/// ---------------------------------------------------
 
-	
-	GPUTimeStamp::GetInstance().BeginTimeStamp(1);
+
+	GPUTimeStamp::GetInstance().BeginTimeStamp(
+		GPUTimeStampID::VoxelTerrainRegularCell
+	);
 
 	/// --------------- パイプラインの設定 --------------- ///
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
@@ -104,7 +106,9 @@ void VoxelTerrainRenderingPipeline::Draw(ECSGroup* _ecs, CameraComponent* _camer
 		voxelTerrain->GetChunkCountXZ().y
 	);
 
-	GPUTimeStamp::GetInstance().EndTimeStamp(1);
+	GPUTimeStamp::GetInstance().EndTimeStamp(
+		GPUTimeStampID::VoxelTerrainRegularCell
+	);
 
 
 	wireframePipeline_->SetPipelineStateForCommandList(_dxCommand);

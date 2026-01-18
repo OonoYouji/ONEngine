@@ -16,6 +16,7 @@
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 #include "Engine/Scene/SceneManager.h"
 #include "Engine/Script/MonoScriptEngine.h"
+#include "Engine/Core/DirectX12/GPUTimeStamp/GPUTimeStamp.h"
 
 /// editor
 #include "Engine/Editor/EditorUtils.h"
@@ -24,6 +25,21 @@
 #include "InspectorWindow.h"
 
 using namespace Editor;
+
+
+
+namespace {
+template<typename... Args>
+std::string Format(const char* fmt, Args... args) {
+	int size = std::snprintf(nullptr, 0, fmt, args...) + 1;
+	std::string buf(size, '\0');
+	std::snprintf(buf.data(), size, fmt, args...);
+	buf.pop_back(); // null文字削除
+	return buf;
+}
+}
+
+
 
 DebugSceneView::DebugSceneView(ONEngine::EntityComponentSystem* _ecs, ONEngine::AssetCollection* _assetCollection, ONEngine::SceneManager* _sceneManager, InspectorWindow* _inspector)
 	: pEcs_(_ecs), pAssetCollection_(_assetCollection), pSceneManager_(_sceneManager), pInspector_(_inspector) {
@@ -34,7 +50,7 @@ DebugSceneView::DebugSceneView(ONEngine::EntityComponentSystem* _ecs, ONEngine::
 
 
 void DebugSceneView::ShowImGui() {
-	if (!ImGui::Begin("Scene")) {
+	if(!ImGui::Begin("Scene")) {
 		ImGui::End();
 		return;
 	}
@@ -54,22 +70,22 @@ void DebugSceneView::ShowImGui() {
 	ImVec2 buttonSize = ImVec2(12.0f, 12.0f);
 	bool isGameDebug = ONEngine::DebugConfig::isDebugging;
 
-	if (isGameDebug) {
+	if(isGameDebug) {
 		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.125f, 0.263f, 0.388f, 1.0f));
 	}
 
 	ONEngine::MonoScriptEngine::GetInstance().SetIsHotReloadRequest(false);
-	if (ImGui::ImageButton("##play", ImTextureID(buttons[0]->GetSRVGPUHandle().ptr), buttonSize)) {
+	if(ImGui::ImageButton("##play", ImTextureID(buttons[0]->GetSRVGPUHandle().ptr), buttonSize)) {
 		SetGamePlay(!isGameDebug); // ゲームプレイの開始/停止
 	}
 	ImGui::SameLine();
 
-	if (isGameDebug) {
+	if(isGameDebug) {
 		ImGui::PopStyleColor(1);
 	}
 
 	/// 一時停止ボタン
-	if (ImGui::ImageButton("##pause", ImTextureID(buttons[1]->GetSRVGPUHandle().ptr), buttonSize)) {
+	if(ImGui::ImageButton("##pause", ImTextureID(buttons[1]->GetSRVGPUHandle().ptr), buttonSize)) {
 		// デバッグモードを停止
 		ONEngine::DebugConfig::isDebugging = false;
 	}
@@ -77,9 +93,13 @@ void DebugSceneView::ShowImGui() {
 	ImGui::SameLine();
 
 	/// DebugConfig::
-	if (ImGui::Checkbox("show debug scene", &ONEngine::DebugConfig::isShowDebugScene)) {
+	if(ImGui::Checkbox("show debug scene", &ONEngine::DebugConfig::isShowDebugScene)) {
 		ONEngine::Console::Log("ImGuiSceneWindow::ShowImGui -> clicked show debug scene");
 	}
+
+	ImGui::SameLine();
+	static bool isDrawSceneStats = false;
+	ImGui::Checkbox("show scene stats", &isDrawSceneStats);
 
 	/// ----------------------------------------
 	/// ImGuiInfoをTextに表示
@@ -109,7 +129,7 @@ void DebugSceneView::ShowImGui() {
 	// アスペクト比に合わせてサイズ調整
 	float aspectRatio = 16.0f / 9.0f;
 	ImVec2 imageSize = availRegion;
-	if (imageSize.x / imageSize.y > aspectRatio) {
+	if(imageSize.x / imageSize.y > aspectRatio) {
 		imageSize.x = imageSize.y * aspectRatio;
 	} else {
 		imageSize.y = imageSize.x / aspectRatio;
@@ -129,8 +149,6 @@ void DebugSceneView::ShowImGui() {
 	pImGuiManager_->AddSceneImageInfo("Scene", ImGuiSceneImageInfo{ imagePos, imageSize });
 
 
-
-
 	/// ----------------------------------------
 	/// gizmoの表示
 	/// ----------------------------------------
@@ -142,86 +160,18 @@ void DebugSceneView::ShowImGui() {
 	Editor::SetDrawRect(imagePosV, imageSizeV);
 	Editor::UpdatePivot(pEcs_);
 
-	///// Guidを元に操作対象のエンティティを取得する、
-	//const ONEngine::Guid& selectedGuid = ImGuiSelection::GetSelectedObject();
-	//if (ONEngine::GameEntity* entity = pEcs_->GetCurrentGroup()->GetEntityFromGuid(selectedGuid)) {
-
-	//	ImGuizmo::SetOrthographic(false); // 透視投影
-	//	ImGuizmo::SetDrawlist();          // ImGuiの現在のDrawListに出力
-
-	//	// ウィンドウサイズに合わせて設定
-	//	ImGuizmo::SetRect(imagePos.x, imagePos.y, imageSize.x, imageSize.y);
-
-	//	/// 操作モードの選択
-	//	if (ONEngine::Input::TriggerKey(DIK_W)) {
-	//		manipulateOperation_ = ImGuizmo::OPERATION::TRANSLATE; // 移動
-	//	} else if (ONEngine::Input::TriggerKey(DIK_E)) {
-	//		manipulateOperation_ = ImGuizmo::OPERATION::ROTATE; // 回転
-	//	} else if (ONEngine::Input::TriggerKey(DIK_R)) {
-	//		manipulateOperation_ = ImGuizmo::OPERATION::SCALE; // 拡縮
-	//	} else if (ONEngine::Input::TriggerKey(DIK_Q)) {
-	//		manipulateOperation_ = 0; // 操作なし
-	//	}
-
-	//	/// モードの選択
-	//	if (ONEngine::Input::TriggerKey(DIK_1)) {
-	//		manipulateMode_ = ImGuizmo::MODE::WORLD; // ワールド座標
-	//	} else if (ONEngine::Input::TriggerKey(DIK_2)) {
-	//		manipulateMode_ = ImGuizmo::MODE::LOCAL; // ローカル座標
-	//	}
-
-	//	if (manipulateOperation_ != 0) {
-
-	//		ONEngine::Transform* transform = entity->GetTransform();
-	//		/// 操作対象の行列
-	//		ONEngine::Matrix4x4 entityMatrix = transform->matWorld;
-
-	//		/// カメラの取得
-	//		ONEngine::CameraComponent* camera = pEcs_->GetECSGroup("Debug")->GetMainCamera();
-	//		if (camera) {
-	//			ImGuizmo::Manipulate(
-	//				&camera->GetViewMatrix().m[0][0],
-	//				&camera->GetProjectionMatrix().m[0][0],
-	//				ImGuizmo::OPERATION(manipulateOperation_), // TRANSLATE, ROTATE, SCALE
-	//				ImGuizmo::MODE(manipulateMode_), // WORLD or LOCAL
-	//				&entityMatrix.m[0][0]
-	//			);
-
-	//			if (ImGuizmo::IsUsing() && ImGuizmo::IsOver()) {
-	//				/// 行列をSRTに分解、エンティティに適応
-	//				float translation[3], rotation[3], scale[3];
-	//				ImGuizmo::DecomposeMatrixToComponents(&entityMatrix.m[0][0], translation, rotation, scale);
-
-	//				ONEngine::Vector3 translationV = ONEngine::Vector3(translation[0], translation[1], translation[2]);
-	//				if (ONEngine::GameEntity* owner = transform->GetOwner()) {
-	//					if (ONEngine::GameEntity* parent = owner->GetParent()) {
-	//						translationV = ONEngine::Matrix4x4::Transform(translationV, parent->GetTransform()->GetMatWorld().Inverse());
-	//					}
-	//				}
-	//				transform->SetPosition(translationV);
-
-	//				ONEngine::Vector3 eulerRotation = ONEngine::Vector3(rotation[0] * ONEngine::Math::Deg2Rad, rotation[1] * ONEngine::Math::Deg2Rad, rotation[2] * ONEngine::Math::Deg2Rad);
-	//				transform->SetRotate(eulerRotation);
-	//				transform->SetScale(ONEngine::Vector3(scale[0], scale[1], scale[2]));
-
-	//				transform->Update();
-	//			}
-
-	//		}
-	//	}
-
-	//}
-
+	if(isDrawSceneStats) {
+		ShowDebugSceneView(imagePos, imageSize);
+	}
 
 	ImGui::End();
-
 }
 
 void DebugSceneView::SetGamePlay(bool _isGamePlay) {
 	ONEngine::DebugConfig::isDebugging = _isGamePlay;
 
 	/// ゲームの開始処理
-	if (ONEngine::DebugConfig::isDebugging) {
+	if(ONEngine::DebugConfig::isDebugging) {
 		pSceneManager_->SaveCurrentSceneTemporary();
 
 		pSceneManager_->ReloadScene(true);
@@ -237,4 +187,98 @@ void DebugSceneView::SetGamePlay(bool _isGamePlay) {
 
 	}
 
+}
+
+void Editor::DebugSceneView::ShowDebugSceneView(const ImVec2& imagePos, const ImVec2& imageSize) {
+	std::vector<OverlaySection> sections;
+
+	{
+		// 地形描画 セクション
+		double regularCellTime = ONEngine::GPUTimeStamp::GetInstance().GetTimeStampMSec(ONEngine::GPUTimeStampID::VoxelTerrainRegularCell); // ms
+		double transitionCellTime = ONEngine::GPUTimeStamp::GetInstance().GetTimeStampMSec(ONEngine::GPUTimeStampID::VoxelTerrainTransitionCell); // ms
+		OverlaySection renderer;
+		renderer.name = "地形描画";
+		renderer.opened = true;
+		renderer.items = {
+			{ "RegularCell", Format("%f ms", regularCellTime), IM_COL32(255, 255, 255, 255) },
+			{ "TransitionCell", Format("%f ms", transitionCellTime), IM_COL32(255, 255, 255, 255) }
+		};
+		sections.push_back(renderer);
+	}
+
+	// 描画
+	DrawSceneOverlayStats(imagePos, imageSize, sections);
+}
+
+void DebugSceneView::DrawSceneOverlayStats(const ImVec2& imagePos, const ImVec2& imageSize, const std::vector<OverlaySection>& sections) {
+	ImDrawList* drawList = ImGui::GetForegroundDrawList();
+
+	float y = imagePos.y + 8.0f; // 上マージン
+	float x = imagePos.x + 8.0f; // 左マージン
+
+	auto DrawSeparator = [&](const std::vector<OverlayItem>& items)
+	{
+		float maxWidth = 0.0f;
+
+		// セクション内のテキスト幅を計算して最大値を取得
+		for(const auto& item : items) {
+			if(!item.visible) continue;
+			ImVec2 size = ImGui::CalcTextSize((item.label + " : " + item.value).c_str());
+			if(size.x > maxWidth) maxWidth = size.x;
+		}
+
+		// 少し余白をつける
+		maxWidth += 8.0f;
+
+		drawList->AddLine(
+			{ x, y },
+			{ x + maxWidth, y },
+			IM_COL32(255, 255, 255, 80)
+		);
+
+		y += 6.0f; // 線の下にマージン
+	};
+
+
+	auto DrawHeader = [&](const std::string& title, bool opened)
+	{
+		ImU32 color = opened
+			? IM_COL32(255, 220, 120, 255)
+			: IM_COL32(180, 180, 180, 255);
+
+		drawList->AddText(
+			{ x, y },
+			color,
+			title.c_str()
+		);
+
+		y += ImGui::GetTextLineHeight();
+	};
+
+	auto DrawItem = [&](const OverlayItem& item)
+	{
+		if(!item.visible) return;
+
+		std::string line = item.label + " : " + item.value;
+		drawList->AddText(
+			{ x, y },
+			item.color,
+			line.c_str()
+		);
+		y += ImGui::GetTextLineHeight();
+	};
+
+	// 各セクション描画
+	for(const auto& section : sections) {
+		DrawHeader(section.name, section.opened);
+		DrawSeparator(section.items);
+
+		if(section.opened) {
+			for(const auto& item : section.items) {
+				DrawItem(item);
+			}
+		}
+
+		y += 6.0f; // セクション間マージン
+	}
 }

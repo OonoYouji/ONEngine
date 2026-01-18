@@ -6,9 +6,9 @@
 
 using namespace ONEngine;
 
-void GPUTimeStamp::Initialize(DxDevice* dxDevice, DxCommand* dxCommand, UINT maxTimerCount) {
+void GPUTimeStamp::Initialize(DxDevice* dxDevice, DxCommand* dxCommand) {
 
-	maxTimerCount_ = maxTimerCount;
+	maxTimerCount_ = static_cast<uint32_t>(GPUTimeStampID::Count);
 	pDxCommand_ = dxCommand;
 
 	uint32_t totalQueryCount = maxTimerCount_ * kTimestampPerTimer;
@@ -53,14 +53,14 @@ void GPUTimeStamp::Initialize(DxDevice* dxDevice, DxCommand* dxCommand, UINT max
 	Assert(SUCCEEDED(hr), "");
 }
 
-void GPUTimeStamp::BeginTimeStamp(uint32_t id) {
-	Assert(id < maxTimerCount_);
+void GPUTimeStamp::BeginTimeStamp(GPUTimeStampID id) {
+	CheckOutOfRange(id);
 	uint32_t index = GetIndex(id);
 	pDxCommand_->GetCommandList()->EndQuery(queryHeap_.Get(), D3D12_QUERY_TYPE_TIMESTAMP, index);
 }
 
-void GPUTimeStamp::EndTimeStamp(uint32_t id) {
-	Assert(id < maxTimerCount_);
+void GPUTimeStamp::EndTimeStamp(GPUTimeStampID id) {
+	CheckOutOfRange(id);
 	uint32_t index = GetIndex(id) + 1;
 	pDxCommand_->GetCommandList()->EndQuery(queryHeap_.Get(), D3D12_QUERY_TYPE_TIMESTAMP, index);
 
@@ -78,8 +78,8 @@ void GPUTimeStamp::EndTimeStamp(uint32_t id) {
 	);
 }
 
-double GPUTimeStamp::GetTimeStampMSec(uint32_t id) {
-	Assert(id < maxTimerCount_);
+double GPUTimeStamp::GetTimeStampMSec(GPUTimeStampID id) {
+	CheckOutOfRange(id);
 
 	uint64_t* data = nullptr;
 	D3D12_RANGE readRange = {};
@@ -111,7 +111,11 @@ double GPUTimeStamp::GetTimeStampMSec(uint32_t id) {
 	return (static_cast<double>(delta) / static_cast<double>(gpuTimestampFrequency_)) * 1000.0;
 }
 
-uint32_t GPUTimeStamp::GetIndex(uint32_t id) {
-	return id * kTimestampPerTimer;
+uint32_t GPUTimeStamp::GetIndex(GPUTimeStampID id) {
+	return static_cast<uint32_t>(id) * kTimestampPerTimer;
+}
+
+void GPUTimeStamp::CheckOutOfRange(GPUTimeStampID id) {
+	Assert(static_cast<uint32_t>(id) < maxTimerCount_);
 }
 
