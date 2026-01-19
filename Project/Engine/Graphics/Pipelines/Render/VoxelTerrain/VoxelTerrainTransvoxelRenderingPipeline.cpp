@@ -46,7 +46,7 @@ void VoxelTerrainTransvoxelRenderingPipeline::Initialize(ShaderCompiler* _shader
 
 		pipeline_->SetBlendDesc(BlendMode::Normal());
 		pipeline_->SetFillMode(D3D12_FILL_MODE_SOLID);
-		pipeline_->SetCullMode(D3D12_CULL_MODE_BACK);
+		pipeline_->SetCullMode(D3D12_CULL_MODE_NONE);
 		pipeline_->SetDepthStencilDesc(DefaultDepthStencilDesc());
 
 		pipeline_->CreatePipeline(_dxm->GetDxDevice());

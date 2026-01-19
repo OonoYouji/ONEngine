@@ -25,6 +25,16 @@ struct Payload {
     // uint32_t activeCount;
 };
 
+
+// -----------------------------------------------------------------------------
+// Transvoxel標準のビットマスク順序
+// -----------------------------------------------------------------------------
+static const uint32_t TRANSITION_NX = 0x01; // -X (Left)
+static const uint32_t TRANSITION_PX = 0x02; // +X (Right)
+static const uint32_t TRANSITION_NZ = 0x10; // -Z (Back)
+static const uint32_t TRANSITION_PZ = 0x20; // +Z (Front)
+
+
 ConstantBuffer<VoxelTerrainInfo> voxelTerrainInfo : register(b0);
 ConstantBuffer<ViewProjection> viewProjection : register(b1);
 ConstantBuffer<Camera> camera : register(b2);

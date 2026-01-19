@@ -1,13 +1,6 @@
 ﻿#include "Transvoxel.hlsli"
 
 
-// -----------------------------------------------------------------------------
-// Transvoxel標準のビットマスク順序
-// -----------------------------------------------------------------------------
-static const uint32_t TRANSITION_NX = 0x01; // -X (Left)
-static const uint32_t TRANSITION_PX = 0x02; // +X (Right)
-static const uint32_t TRANSITION_NZ = 0x10; // -Z (Back)
-static const uint32_t TRANSITION_PZ = 0x20; // +Z (Front)
 
 // -----------------------------------------------------------------------------
 // ヘルパー：LOD計算関数
@@ -80,14 +73,6 @@ uint32_t GetTransitionMask(float32_t3 chunkCenter, float32_t chunkSize, uint32_t
 float32_t3 GetChunkCenter(float32_t3 chunkOrigin) {
     return chunkOrigin + float32_t3(voxelTerrainInfo.chunkSize) * 0.5f;   
 }
-
-// float32_t3 GetChunkOrigin(uint32_t chunkID) {
-    
-//     uint32_t x = chunkID % voxelTerrainInfo.chunkCountXZ.x;
-//     uint32_t z = chunkID / voxelTerrainInfo.chunkCountXZ.x;
-    
-//     return float3(x, 0, z) * voxelTerrainInfo.chunkSize + float3(voxelTerrainInfo.terrainOrigin);
-// }
 
 float32_t3 GetChunkOrigin(uint32_t3 groupID) {
     return float3(groupID) * voxelTerrainInfo.chunkSize + float3(voxelTerrainInfo.terrainOrigin);
