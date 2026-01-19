@@ -30,3 +30,14 @@ static const int2 kEdgeConnection[12] = {
 	int2(4, 5), int2(5, 6), int2(6, 7), int2(7, 4), // Top
 	int2(0, 4), int2(1, 5), int2(2, 6), int2(3, 7) // Vertical
 };
+
+
+/// ---------------------------------------------------
+/// functions
+/// ---------------------------------------------------
+
+uint32_t IndexOfMeshGroup(uint32_t3 groupID, uint32_t3 dim) {
+	return groupID.x
+         + groupID.y * dim.x
+         + groupID.z * (dim.x * dim.y);
+}

@@ -1,9 +1,6 @@
 ﻿#include "VoxelTerrain.hlsli"
 #include "../VoxelTerrainTest/Table.hlsli"
 
-// マーチングキューブ用の定数定義
-static const float kIsoLevel = 0.5f;
-
 // ---------------------------------------------------
 // Buffers (Tablesを削除しました)
 // ---------------------------------------------------
@@ -110,7 +107,7 @@ VertexOut VertexInterp(float3 p1, float3 p2, float3 _chunkOrigin,float3 subChunk
 	float t = 0.5f; // デフォルト値
 	
 	if (abs(denom) > 0.00001f) {
-		t = (kIsoLevel - d1) / denom;
+		t = (voxelTerrainInfo.isoLevel - d1) / denom;
 		t = saturate(t); // [0,1]にクランプ
 	}
 	
@@ -155,14 +152,8 @@ void main(
 	out vertices VertexOut verts[256],
 	out indices uint3 indis[256]) {
 
-    // if(GTid.x == 0) {
-    //     sVertexCount = 0;
-    //     sPrimitiveCount = 0;
-    // }
-    // GroupMemoryBarrierWithGroupSync();
 
 	uint3 step = asPayload.subChunkSize;
-    // step.x /= 16; // グループ内のスレッド数に合わせて分割
 	float3 basePos = float3(DTid * step);
 
 	float cubeDensities[8];
@@ -189,14 +180,7 @@ void main(
     uint vertexOffset = 0;
     uint primitiveOffset = 0;
 
-    // if(triCount != 0) {
-    //     InterlockedAdd(sVertexCount, triCount * 3, vertexOffset);
-    //     InterlockedAdd(sPrimitiveCount, triCount, primitiveOffset);
-    // }
-	
-    // GroupMemoryBarrierWithGroupSync();
     SetMeshOutputCounts(triCount * 3, triCount);
-    // SetMeshOutputCounts(sVertexCount, sPrimitiveCount);
 	
 	for (uint t = 0; t < triCount; t++) {
         uint vIndex = vertexOffset;

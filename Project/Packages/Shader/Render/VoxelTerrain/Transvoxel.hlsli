@@ -12,18 +12,17 @@ struct VertexOut {
     float4 color : COLOR0;
 };
 
-// struct Payload {
-//     uint32_t chunkId;
-//     uint32_t lodLevel;
-//     // bit0:-X, bit1:+X, bit4:-Z, bit5:+Z (Y軸は省略)
-//     uint32_t transitionMask;
-// };
-
 struct Payload {
-    uint32_t chunkIDs[32];
-    uint32_t LODLevels[32];
-    uint32_t transitionMasks[32];
-    uint32_t activeCount;
+    uint32_t chunkID;
+    uint32_t LODLevel;
+    uint32_t transitionMask;
+    float32_t3 chunkOrigin;
+	uint32_t3 subChunkSize;
+
+    // uint32_t chunkIDs[32];
+    // uint32_t LODLevels[32];
+    // uint32_t transitionMasks[32];
+    // uint32_t activeCount;
 };
 
 ConstantBuffer<VoxelTerrainInfo> voxelTerrainInfo : register(b0);

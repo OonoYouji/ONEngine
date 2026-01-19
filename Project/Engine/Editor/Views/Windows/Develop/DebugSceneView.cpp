@@ -98,7 +98,7 @@ void DebugSceneView::ShowImGui() {
 	}
 
 	ImGui::SameLine();
-	static bool isDrawSceneStats = false;
+	static bool isDrawSceneStats = true;
 	ImGui::Checkbox("show scene stats", &isDrawSceneStats);
 
 	/// ----------------------------------------

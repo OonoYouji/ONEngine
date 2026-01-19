@@ -356,9 +356,15 @@ void VoxelTerrain::CreateChunkTextureUAV(DxCommand* _dxCommand, DxDevice* _dxDev
 			_dxDevice, _dxSRVHeap,
 			DXGI_FORMAT_R8G8B8A8_UNORM
 		);
-
-		
 	}
+
+	//for(size_t i = 0; i < maxChunkCount_; i++) {
+	//	Chunk& chunk = chunks_[i];
+	//	const uint32_t vertexCount = 80000;
+	//	chunk.rwVertices.CreateUAV(vertexCount, _dxDevice, _dxCommand, _dxSRVHeap);
+	//	chunk.rwVertexCounter.CreateUAV(vertexCount, _dxDevice, _dxCommand, _dxSRVHeap);
+	//	chunk.vbv.Create(vertexCount, _dxDevice, _dxCommand);
+	//}
 
 
 	D3D12_RESOURCE_STATES srvTextureBefore = chunks_[0].pTexture->GetDxResource().GetCurrentState();

@@ -29,19 +29,6 @@ struct CommandInfo {
 	int3 dispatchSize;
 };
 
-
-
-/// ---------------------------------------------------
-/// functions
-/// ---------------------------------------------------
-
-uint32_t IndexOfMeshGroup(uint32_t3 groupID, uint32_t3 dim) {
-	return groupID.x
-         + groupID.y * dim.x
-         + groupID.z * (dim.x * dim.y);
-}
-
-
 /// ---------------------------------------------------
 /// VoxelTerrain Common Buffers
 /// ---------------------------------------------------

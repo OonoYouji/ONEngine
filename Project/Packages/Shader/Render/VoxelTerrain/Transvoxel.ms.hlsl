@@ -1,10 +1,11 @@
 #include "Transvoxel.hlsli"
 #include "TransvoxelTables.hlsli"
+#include "../VoxelTerrainTest/Table.hlsli"
 
 // -----------------------------------------------------------------------------
 // Resources
 // -----------------------------------------------------------------------------
-Texture3D<float> voxelChunkTextures[] : register(t1);
+Texture3D<float4> voxelChunkTextures[] : register(t1);
 SamplerState texSampler : register(s0);
 
 
@@ -21,8 +22,9 @@ float32_t3 GetChunkCenter(uint32_t chunkID) {
 }
 
 float32_t GetDensity(float32_t3 samplePos, uint32_t chunkID) {
+	float voxelSize = 1.0f;
     float32_t3 textureSize = float32_t3(voxelTerrainInfo.textureSize);
-    float32_t3 uvw = samplePos / textureSize;
+    float32_t3 uvw = samplePos / (textureSize * voxelSize);
 
     /// Y軸反転
     uvw.y = 1.0f - uvw.y;
@@ -85,6 +87,48 @@ float3 GetDebugColor(uint ID) {
     return float3(r, g, b) / 255.0f;
 }
 
+uint32_t GetSubChunkSize(uint32_t lodLevel) {
+    return 2u << (lodLevel);
+}
+
+// 頂点補間
+VertexOut VertexInterp(float3 p1, float3 p2, float3 _chunkOrigin,float3 subChunkSize, float d1, float d2, uint _chunkId) {
+	VertexOut vOut;
+	
+	// 補間係数の計算（ゼロ除算対策）
+	float denom = d2 - d1;
+	float t = 0.5f; // デフォルト値
+	
+	if (abs(denom) > 0.00001f) {
+		t = (voxelTerrainInfo.isoLevel - d1) / denom;
+		t = saturate(t); // [0,1]にクランプ
+	}
+	
+	float3 localPos = lerp(p1, p2, t);
+	
+	vOut.worldPosition = float4(localPos + _chunkOrigin, 1.0f);
+    vOut.worldPosition.xz += (subChunkSize / 2.0).xz; 
+
+	vOut.position = mul(vOut.worldPosition, viewProjection.matVP);
+	
+	// 補間位置での法線を計算
+	// vOut.normal = GetGradient(localPos, _chunkId);
+	
+	// 高さベースの色付け
+	float worldY = vOut.worldPosition.y;
+	vOut.color = lerp(float4(0.3, 0.8, 0.3, 1), float4(0.6, 0.5, 0.3, 1), worldY / 512.0f);
+	
+	return vOut;
+}
+
+
+float3 GetNormal(float3 _p0, float3 _p1, float3 _p2) {
+	float3 u = _p1 - _p0;
+	float3 v = _p2 - _p0;
+	return normalize(cross(u, v));
+}
+
+
 static const float32_t4 colors[8] = {
     float32_t4(1, 0, 0, 1),
     float32_t4(0, 1, 0, 1),
@@ -97,151 +141,96 @@ static const float32_t4 colors[8] = {
 };
 
 
-
-
-groupshared uint sVertexCount;
-groupshared uint sPrimitiveCount;
-groupshared uint sVertexOffsets[64];    
-groupshared uint sPrimitiveOffsets[64]; 
-
-
 [shader("mesh")]
 [outputtopology("triangle")]
-[numthreads(64, 1, 1)]
+[numthreads(1, 1, 1)]
 void main(
+    uint32_t3 DTid : SV_DispatchThreadID,
     uint32_t gtid : SV_GroupThreadID,
     uint32_t3 gid : SV_GroupID,
     in payload Payload payload,
     out vertices VertexOut verts[256],
     out indices uint32_t3 tris[256]) {
     
-    if (gtid == 0) {
-        sVertexCount = 0;
-        sPrimitiveCount = 0;
-    }
+    // bool isVisible = true;
 
-    GroupMemoryBarrierWithGroupSync();
+    uint32_t chunkID = payload.chunkID;
+    // uint32_t lodLevel = payload.LODLevel;
+    // uint32_t transitionMask = payload.transitionMask;
 
-    /// -----------------------------------------------------------------------------
-    /// 必要なデータを集める
-    /// -----------------------------------------------------------------------------
+    float32_t3 chunkOrigin = payload.chunkOrigin;
 
-    bool isVisible = true;
-
-    uint32_t chunkIndex = gid.y;
-    uint32_t meshletIndex = gid.x;
-
-    uint32_t chunkID = payload.chunkIDs[chunkIndex];
-    uint32_t lodLevel = payload.LODLevels[chunkIndex];
-    uint32_t transitionMask = payload.transitionMasks[chunkIndex];
-
-    if(chunkID >= voxelTerrainInfo.maxChunkCount) {
-        isVisible = false;
-    }
-
-    float32_t3 chunkOrigin = float32_t3(GetChunkPos(chunkID));
-
-    float32_t voxelSize = pow(1.0f, lodLevel);
-    float32_t meshletDimSize = voxelSize * 4.0;
-
-    uint32_t3 meshletCounts = uint32_t3(
-        voxelTerrainInfo.chunkSize.x / meshletDimSize,
-        voxelTerrainInfo.chunkSize.y / meshletDimSize,
-        voxelTerrainInfo.chunkSize.z / meshletDimSize
-    );
-
-    float32_t3 meshletCoord = float32_t3(
-        meshletIndex % meshletCounts.x,
-        (meshletIndex / meshletCounts.x) % meshletCounts.y,
-        meshletIndex / (meshletCounts.x * meshletCounts.y)
-    );
-
-    float32_t3 meshletOffset = meshletCoord * meshletDimSize;
-
-    float32_t3 voxelCoord = float32_t3(
-        gtid % 4,
-        (gtid / 4) % 4,
-        gtid / 16
-    );
-
-    float32_t3 voxelOffset = voxelCoord * voxelSize;
-    float32_t3 basePos = chunkOrigin + meshletOffset + voxelOffset;
-
+    uint3 step = payload.subChunkSize;
+	float3 basePos = float3(DTid * step);
+    
  
     /// -----------------------------------------------------------------------------
     /// 生成するメッシュのサイズを計算する
     /// -----------------------------------------------------------------------------
 
 
-    uint32_t caseCode = 0;
+	float cubeDensities[8];
+    uint32_t cubeIndex = 0;
     
     [unroll]
     for(uint32_t i=0; i<8; ++i) {
-        float32_t3 samplePos = basePos - chunkOrigin + (kCornerOffsets[i] * voxelSize);
+        float32_t3 samplePos = basePos + (kCornerOffsets[i] * float32_t3(step));
 
         /// チャンク内のローカルに合わせる
         float32_t density = GetDensity(samplePos, chunkID);
+        cubeDensities[i] = density;
 
-        if(density < 0.5f) {
-            caseCode |= (1u << i);
+        if(density < voxelTerrainInfo.isoLevel) {
+            cubeIndex |= (1u << i);
         }
     }
 
 
-    /// caseCodeに基づいてメッシュが生成可能かチェック
-    uint32_t triangleCount = 0;
-    uint32_t myVertOffset = 0;
-    uint32_t myPrimOffset = 0;
-    
-    if(isVisible) {
-        if(caseCode != 0 && caseCode != 255) {
-            triangleCount = 1;
-            InterlockedAdd(sVertexCount, 3, myVertOffset);
-            InterlockedAdd(sPrimitiveCount, 1, myPrimOffset);
+    uint triCount = 0;
+	[unroll]
+	for (int i = 0; i < 15; i += 3) {
+		triCount += (TriTable[cubeIndex][i] != -1) ? 1 : 0;
+	}
 
-            sVertexOffsets[gtid] = myVertOffset;
-            sPrimitiveOffsets[gtid] = myPrimOffset;
-        }
-    }
-    
+    uint vertexOffset = 0;
+    uint primitiveOffset = 0;
 
-    GroupMemoryBarrierWithGroupSync();
-    SetMeshOutputCounts(sVertexCount, sPrimitiveCount);
-    GroupMemoryBarrierWithGroupSync();
+    SetMeshOutputCounts(triCount * 3, triCount);
+	
+	for (uint t = 0; t < triCount; t++) {
+        uint vIndex = vertexOffset;
+        uint pIndex = primitiveOffset;
 
+		VertexOut outVerts[3];
 
-    if(triangleCount > 0) {
-        uint32_t vIdx = sVertexOffsets[gtid];
-        uint32_t pIdx = sPrimitiveOffsets[gtid];
-
-        float32_t3 centerPos = basePos;
-        float32_t size = 1.0f;
-
-        float32_t3 p0 = centerPos + float32_t3(-size, 0,    0);
-        float32_t3 p1 = centerPos + float32_t3(    0, 0, size);
-        float32_t3 p2 = centerPos + float32_t3( size, 0,    0);
-
-        float32_t4 color = colors[chunkID % 8];
-        if(chunkID == 0) {
-            color = float32_t4(1,1,1,1);
-        }
-
-        verts[vIdx + 0].position = mul(float32_t4(p0, 1), viewProjection.matVP);
-        verts[vIdx + 0].worldPosition = float4(p0, 1);
-        verts[vIdx + 0].normal = float3(0, 1, 0);
-        verts[vIdx + 0].color = color;
-
-        verts[vIdx + 1].position = mul(float32_t4(p1, 1), viewProjection.matVP);
-        verts[vIdx + 1].worldPosition = float4(p1, 1);
-        verts[vIdx + 1].normal = float3(0, 1, 0);
-        verts[vIdx + 1].color = color;
-
-        verts[vIdx + 2].position = mul(float32_t4(p2, 1), viewProjection.matVP);
-        verts[vIdx + 2].worldPosition = float4(p2, 1);
-        verts[vIdx + 2].normal = float3(0, 1, 0);
-        verts[vIdx + 2].color = color;
-
-        tris[pIdx] = uint32_t3(vIdx + 0, vIdx + 1, vIdx + 2);
-    }
+		for (int v = 0; v < 3; v++) {
+			int edgeIndex = TriTable[cubeIndex][(t * 3) + v];
+			
+			int idx1 = kEdgeConnection[edgeIndex].x;
+			int idx2 = kEdgeConnection[edgeIndex].y;
+			
+			float3 p1 = basePos + (kCornerOffsets[idx1] * float3(step));
+			float3 p2 = basePos + (kCornerOffsets[idx2] * float3(step));
+			
+			outVerts[v] = VertexInterp(p1, p2, payload.chunkOrigin, float32_t3(payload.subChunkSize), cubeDensities[idx1], cubeDensities[idx2], chunkID);
+			verts[vIndex + (t * 3) + v] = outVerts[v];
+		}
+		
+		float3 normal = GetNormal(
+			outVerts[0].worldPosition.xyz,
+			outVerts[1].worldPosition.xyz,
+			outVerts[2].worldPosition.xyz
+		);
+		
+		verts[vIndex + (t * 3) + 0].normal = normal;
+		verts[vIndex + (t * 3) + 1].normal = normal;
+		verts[vIndex + (t * 3) + 2].normal = normal;
+		
+		tris[pIndex + t] = uint3(
+			vIndex + (t * 3) + 0,
+			vIndex + (t * 3) + 1,
+			vIndex + (t * 3) + 2
+		);
+	}
 
 }

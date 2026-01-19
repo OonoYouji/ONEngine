@@ -46,7 +46,7 @@ void VoxelTerrainTransvoxelRenderingPipeline::Initialize(ShaderCompiler* _shader
 
 		pipeline_->SetBlendDesc(BlendMode::Normal());
 		pipeline_->SetFillMode(D3D12_FILL_MODE_SOLID);
-		pipeline_->SetCullMode(D3D12_CULL_MODE_NONE);
+		pipeline_->SetCullMode(D3D12_CULL_MODE_BACK);
 		pipeline_->SetDepthStencilDesc(DefaultDepthStencilDesc());
 
 		pipeline_->CreatePipeline(_dxm->GetDxDevice());
@@ -109,12 +109,17 @@ void VoxelTerrainTransvoxelRenderingPipeline::Draw(ECSGroup* _ecs, CameraCompone
 	);
 
 	/// --------------- ディスパッチ --------------- ///
+	cmdList->DispatchMesh(
+		vt->chunkCountXZ_.x,
+		1,
+		vt->chunkCountXZ_.y
+	);
 	//cmdList->DispatchMesh(
 	//	Math::DivideAndRoundUp(vt->maxChunkCount_, 32), 1, 1
 	//);
-	cmdList->DispatchMesh(
-		1, 1, 1
-	);
+	//cmdList->DispatchMesh(
+	//	1, 1, 1
+	//);
 
 	GPUTimeStamp::GetInstance().EndTimeStamp(
 		GPUTimeStampID::VoxelTerrainTransitionCell
