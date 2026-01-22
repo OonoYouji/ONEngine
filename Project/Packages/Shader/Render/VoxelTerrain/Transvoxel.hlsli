@@ -31,6 +31,8 @@ struct Payload {
 // -----------------------------------------------------------------------------
 static const uint32_t TRANSITION_NX = 0x01; // -X (Left)
 static const uint32_t TRANSITION_PX = 0x02; // +X (Right)
+static const uint32_t TRANSITION_NY = 0x04; // -Y (Bottom)
+static const uint32_t TRANSITION_PY = 0x08; // +Y (p)
 static const uint32_t TRANSITION_NZ = 0x10; // -Z (Back)
 static const uint32_t TRANSITION_PZ = 0x20; // +Z (Front)
 

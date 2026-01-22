@@ -25,42 +25,73 @@ uint CalculateLOD(float32_t3 worldPos, float32_t3 cameraPos)
 // myLOD      : 現在のチャンクのLODレベル
 // cameraPos  : カメラ位置
 // -----------------------------------------------------------------------------
-uint32_t GetTransitionMask(float32_t3 chunkCenter, float32_t chunkSize, uint32_t myLOD, float32_t3 cameraPos)
+// 修正: chunkSizeを float -> float32_t3 に変更
+uint32_t GetTransitionMask(float32_t3 chunkCenter, float32_t3 chunkSize, uint32_t myLOD, float32_t3 cameraPos)
 {
     uint32_t mask = 0;
-
-    // 隣接チャンクの中心位置を推定するためのオフセット距離
-    // ※隣接チャンクも同じサイズであると仮定して中心を探ります。
-    //   LODが切り替わる境界では、この点が「より粗いLODの領域」に含まれるかを判定することになります。
-    float offsetDist = chunkSize; 
+    
+    // 判定用のヘルパー関数（ラムダ式が使えないので直接計算）
+    // 隣接チャンクの中心位置とサイズから、そのチャンクの「カメラ最近点」を求めてLOD計算する
+    
+    float32_t3 halfSize = chunkSize / 2.0f;
+    float32_t3 offset = chunkSize; // 隣接へのオフセット（サイズ分だけ移動）
 
     // ------------------------------------------------------
-    // X軸方向のチェック (-X, +X)
+    // X軸方向 (-X: Left)
     // ------------------------------------------------------
     {
-        // -X (Left)
-        float32_t3 neighborPosNX = chunkCenter + float32_t3(-offsetDist, 0, 0);
-        uint32_t lodNX = CalculateLOD(neighborPosNX, cameraPos);
+        float32_t3 neighborCenter = chunkCenter - float32_t3(offset.x, 0, 0);
+        
+        // 隣接チャンクのAABB範囲
+        float32_t3 nMin = neighborCenter - halfSize;
+        float32_t3 nMax = neighborCenter + halfSize;
+        
+        // カメラから隣接AABBへの最近点 (nearPos) を計算 ★ここが修正ポイント
+        float32_t3 nNearPos = clamp(cameraPos, nMin, nMax);
+        
+        uint32_t lodNX = CalculateLOD(nNearPos, cameraPos);
         if (lodNX > myLOD) mask |= TRANSITION_NX;
+    }
 
-        // +X (Right)
-        float32_t3 neighborPosPX = chunkCenter + float32_t3(offsetDist, 0, 0);
-        uint32_t lodPX = CalculateLOD(neighborPosPX, cameraPos);
+    // ------------------------------------------------------
+    // X軸方向 (+X: Right)
+    // ------------------------------------------------------
+    {
+        float32_t3 neighborCenter = chunkCenter + float32_t3(offset.x, 0, 0);
+        
+        float32_t3 nMin = neighborCenter - halfSize;
+        float32_t3 nMax = neighborCenter + halfSize;
+        float32_t3 nNearPos = clamp(cameraPos, nMin, nMax); // ★最近点を使う
+        
+        uint32_t lodPX = CalculateLOD(nNearPos, cameraPos);
         if (lodPX > myLOD) mask |= TRANSITION_PX;
     }
 
     // ------------------------------------------------------
-    // Z軸方向のチェック (-Z, +Z)
+    // Z軸方向 (-Z: Back)
     // ------------------------------------------------------
     {
-        // -Z (Back)
-        float32_t3 neighborPosNZ = chunkCenter + float32_t3(0, 0, -offsetDist);
-        uint32_t lodNZ = CalculateLOD(neighborPosNZ, cameraPos);
+        float32_t3 neighborCenter = chunkCenter - float32_t3(0, 0, offset.z);
+        
+        float32_t3 nMin = neighborCenter - halfSize;
+        float32_t3 nMax = neighborCenter + halfSize;
+        float32_t3 nNearPos = clamp(cameraPos, nMin, nMax); // ★最近点を使う
+        
+        uint32_t lodNZ = CalculateLOD(nNearPos, cameraPos);
         if (lodNZ > myLOD) mask |= TRANSITION_NZ;
+    }
 
-        // +Z (Front)
-        float32_t3 neighborPosPZ = chunkCenter + float32_t3(0, 0, offsetDist);
-        uint32_t lodPZ = CalculateLOD(neighborPosPZ, cameraPos);
+    // ------------------------------------------------------
+    // Z軸方向 (+Z: Front)
+    // ------------------------------------------------------
+    {
+        float32_t3 neighborCenter = chunkCenter + float32_t3(0, 0, offset.z);
+        
+        float32_t3 nMin = neighborCenter - halfSize;
+        float32_t3 nMax = neighborCenter + halfSize;
+        float32_t3 nNearPos = clamp(cameraPos, nMin, nMax); // ★最近点を使う
+        
+        uint32_t lodPZ = CalculateLOD(nNearPos, cameraPos);
         if (lodPZ > myLOD) mask |= TRANSITION_PZ;
     }
 
@@ -121,7 +152,7 @@ void main(
             myLOD = CalculateLOD(nearPos, camera.position.xyz);
 
             /// トランジションマスクの計算
-            myMask = GetTransitionMask(chunkCenter, voxelTerrainInfo.chunkSize.x, myLOD, camera.position.xyz);
+            myMask = GetTransitionMask(chunkCenter, float32_t3(voxelTerrainInfo.chunkSize), myLOD, camera.position.xyz);
             p.chunkID = IndexOfMeshGroup(gid, uint3(voxelTerrainInfo.chunkCountXZ.x, 1, voxelTerrainInfo.chunkCountXZ.y));
             p.LODLevel = myLOD;
             p.transitionMask = myMask;
@@ -140,8 +171,10 @@ void main(
 		    	subChunkSize = 16;
 		    }
             
-            p.subChunkSize = uint3(subChunkSize, subChunkSize, subChunkSize);
-            dispatchSize = voxelTerrainInfo.textureSize / p.subChunkSize;
+            if(myMask != 0) {
+                p.subChunkSize = uint3(subChunkSize, subChunkSize, subChunkSize);
+                dispatchSize = voxelTerrainInfo.textureSize / p.subChunkSize;
+            }
         }
     }
     

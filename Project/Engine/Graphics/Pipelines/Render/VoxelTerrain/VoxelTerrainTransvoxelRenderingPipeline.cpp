@@ -114,12 +114,6 @@ void VoxelTerrainTransvoxelRenderingPipeline::Draw(ECSGroup* _ecs, CameraCompone
 		1,
 		vt->chunkCountXZ_.y
 	);
-	//cmdList->DispatchMesh(
-	//	Math::DivideAndRoundUp(vt->maxChunkCount_, 32), 1, 1
-	//);
-	//cmdList->DispatchMesh(
-	//	1, 1, 1
-	//);
 
 	GPUTimeStamp::GetInstance().EndTimeStamp(
 		GPUTimeStampID::VoxelTerrainTransitionCell

@@ -22,7 +22,6 @@ float32_t3 GetChunkCenter(uint32_t chunkID) {
 }
 
 // [解説] 3Dテクスチャから密度値(SDF等)をサンプリングする関数
-// 隣接チャンクへの境界処理（境界を超えたら隣のテクスチャを読む処理）が含まれています
 float32_t GetDensity(float32_t3 samplePos, uint32_t chunkID) {
     float voxelSize = 1.0f;
     float32_t3 textureSize = float32_t3(voxelTerrainInfo.textureSize);
@@ -42,16 +41,12 @@ float32_t GetDensity(float32_t3 samplePos, uint32_t chunkID) {
         if (chunkX > 0) {
             idx = chunkID - 1;
             uvw.x += 1.0f;
-        } else {
-            return 0.0f;
-        }
+        } else { return 0.0f; }
     } else if (uvw.x > 1.0f) {
         if (chunkX < int(voxelTerrainInfo.chunkCountXZ.x) - 1) {
             idx = chunkID + 1;
             uvw.x -= 1.0f;
-        } else {
-            return 0.0f;
-        }
+        } else { return 0.0f; }
     }
     
     // Z方向の境界処理
@@ -59,108 +54,22 @@ float32_t GetDensity(float32_t3 samplePos, uint32_t chunkID) {
         if (chunkZ > 0) {
             idx -= uint(voxelTerrainInfo.chunkCountXZ.x);
             uvw.z += 1.0f;
-        } else {
-            return 0.0f;
-        }
+        } else { return 0.0f; }
     } else if (uvw.z > 1.0f) {
         if (chunkZ < int(voxelTerrainInfo.chunkCountXZ.y) - 1) {
             idx += uint(voxelTerrainInfo.chunkCountXZ.x);
             uvw.z -= 1.0f;
-        } else {
-            return 0.0f;
-        }
+        } else { return 0.0f; }
     }
 
-    if (uvw.y < 0.0f || uvw.y > 1.0f) {
-        return 1.0f;
-    }
+    // Y方向の範囲外処理（空は空気、地下は固体）
+    if (uvw.y < 0.0f) { return 1.0f; } // 地下
+    if (uvw.y > 1.0f) { return 0.0f; } // 空
 
     uvw = saturate(uvw);
 
     float32_t4 rgba = voxelChunkTextures[chunks[idx].textureId].SampleLevel(texSampler, uvw, 0);
     return rgba.a;
-}
-
-float3 GetDebugColor(uint ID) {
-    uint r = (ID * 123456789u + 12345u) % 256u;
-    uint g = (ID * 987654321u + 54321u) % 256u;
-    uint b = (ID * 192837465u + 13579u) % 256u;
-    return float3(r, g, b) / 255.0f;
-}
-
-uint32_t GetSubChunkSize(uint32_t lodLevel) {
-    return 2u << (lodLevel);
-}
-
-
-float3 GetNormal(float3 _p0, float3 _p1, float3 _p2) {
-    float3 u = _p1 - _p0;
-    float3 v = _p2 - _p0;
-    return normalize(cross(u, v));
-}
-// Transvoxel.ms.hlsl 修正版
-
-static const float3 kTransitionCornerOffsets[13] = {
-    float3(0.0, 0.0, 0.0), // 0
-    float3(0.0, 1.0, 0.0), // 1
-    float3(0.0, 1.0, 1.0), // 2
-    float3(0.0, 0.0, 1.0), // 3
-    
-    float3(0.0, 0.5, 0.0), // 4  エッジ中点
-    float3(0.0, 1.0, 0.5), // 5
-    float3(0.0, 0.5, 1.0), // 6
-    float3(0.0, 0.0, 0.5), // 7
-    
-    float3(0.0, 0.5, 0.5), // 8  面中心
-    
-    float3(1.0, 0.0, 0.0), // 9  高解像度側
-    float3(1.0, 1.0, 0.0), // 10
-    float3(1.0, 1.0, 1.0), // 11
-    float3(1.0, 0.0, 1.0)  // 12
-};
-
-// 回転テーブル（Transvoxel標準）
-static const uint3 kPermutation[6] = {
-    uint3(0, 1, 2), // 0: -X
-    uint3(0, 1, 2), // 1: +X
-    uint3(1, 0, 2), // 2: -Y
-    uint3(1, 0, 2), // 3: +Y
-    uint3(2, 1, 0), // 4: -Z
-    uint3(2, 1, 0)  // 5: +Z
-};
-
-static const uint3 kInvert[6] = {
-    uint3(0, 0, 0), // 0: -X
-    uint3(1, 0, 0), // 1: +X
-    uint3(0, 0, 0), // 2: -Y
-    uint3(1, 0, 0), // 3: +Y
-    uint3(0, 0, 0), // 4: -Z
-    uint3(1, 0, 0)  // 5: +Z
-};
-
-// 修正版: 密度取得（回転考慮）
-float GetMappedDensity(int index, uint dirIndex, float3 basePos, float step, uint chunkID)
-{
-    // 1. 標準空間でのオフセット (0.0 ～ 1.0)
-    float3 localOffset = kTransitionCornerOffsets[index];
-    
-    // 2. 方向に合わせて座標を回転
-    float3 mappedOffset;
-    mappedOffset[0] = localOffset[kPermutation[dirIndex][0]];
-    mappedOffset[1] = localOffset[kPermutation[dirIndex][1]];
-    mappedOffset[2] = localOffset[kPermutation[dirIndex][2]];
-    
-    // 3. 反転（0-1座標系では 1.0 - x）
-    if (kInvert[dirIndex][0]) mappedOffset[0] = 1.0 - mappedOffset[0];
-    if (kInvert[dirIndex][1]) mappedOffset[1] = 1.0 - mappedOffset[1];
-    if (kInvert[dirIndex][2]) mappedOffset[2] = 1.0 - mappedOffset[2];
-    
-    // 4. ワールド座標に変換
-    // basePos はボクセルの「左下角」を指すように修正
-    float32_t3 fstep3 = float32_t3(step, step, step);
-    float3 samplePos = basePos + (mappedOffset * fstep3);
-    
-    return GetDensity(samplePos, chunkID);
 }
 
 // 法線計算用ヘルパー
@@ -179,18 +88,85 @@ float3 CalculateNormal(float3 worldPos, uint chunkID)
     return normalize(-grad);
 }
 
-// 修正版: 頂点処理
+// -----------------------------------------------------------------------------
+// Transvoxel Definitions (Corrected)
+// -----------------------------------------------------------------------------
+
+// Transvoxel Canonical Offsets (Z-Major Order)
+// Z軸方向(0->0.5->1)を先に進める順番。これでビットマスクが正しく「面」として認識されます。
+static const float3 kTransitionCornerOffsets[13] = 
+{
+    // --- High-Resolution Face (x=0) [Indices 0-8] ---
+    // (Local Y, Local Z)
+    float3(0, 0, 0),     // 0: (0, 0)   Bottom-Left
+    float3(0, 0, 0.5),   // 1: (0, 0.5) Bottom-Center
+    float3(0, 0, 1),     // 2: (0, 1)   Bottom-Right
+    
+    float3(0, 0.5, 0),   // 3: (0.5, 0) Mid-Left
+    float3(0, 0.5, 0.5), // 4: (0.5, 0.5) Center
+    float3(0, 0.5, 1),   // 5: (0.5, 1) Mid-Right
+    
+    float3(0, 1, 0),     // 6: (1, 0)   Top-Left
+    float3(0, 1, 0.5),   // 7: (1, 0.5) Top-Center
+    float3(0, 1, 1),     // 8: (1, 1)   Top-Right
+
+    // --- Low-Resolution Face (x=1) [Indices 9-12] ---
+    float3(1, 0, 0),     // 9: (0, 0)
+    float3(1, 0, 1),     // A: (0, 1) ... Z axis is fast
+    float3(1, 1, 0),     // B: (1, 0)
+    float3(1, 1, 1)      // C: (1, 1)
+};
+
+// 回転テーブル（Canonical X-Axis Thickness）
+static const uint3 kPermutation[6] = {
+    uint3(0, 1, 2), // 0: -X (Base)
+    uint3(0, 1, 2), // 1: +X
+    uint3(1, 2, 0), // 2: -Y (Rotate X-thickness to Y)
+    uint3(1, 2, 0), // 3: +Y
+    uint3(2, 0, 1), // 4: -Z (Rotate X-thickness to Z)
+    uint3(2, 0, 1)  // 5: +Z
+};
+
+// 反転テーブル（重要：プラス方向の面は高解像度面を外側に向けるため反転が必要）
+static const uint3 kInvert[6] = {
+    uint3(0, 0, 0), // 0: -X (そのままでOK)
+    uint3(1, 0, 0), // 1: +X (X軸を反転)
+    uint3(0, 0, 0), // 2: -Y
+    uint3(1, 0, 0), // 3: +Y
+    uint3(0, 0, 0), // 4: -Z
+    uint3(1, 0, 0)  // 5: +Z
+};
+
+float GetMappedDensity(int index, uint dirIndex, float3 basePos, float step, uint chunkID)
+{
+    // 1. 標準空間でのオフセット (0.0 ～ 1.0)
+    float3 localOffset = kTransitionCornerOffsets[index];
+    
+    // 2. 方向に合わせて座標を回転
+    float3 mappedOffset;
+    mappedOffset[0] = localOffset[kPermutation[dirIndex][0]];
+    mappedOffset[1] = localOffset[kPermutation[dirIndex][1]];
+    mappedOffset[2] = localOffset[kPermutation[dirIndex][2]];
+
+    // 3. 反転処理（復活）
+    if (kInvert[dirIndex][0]) mappedOffset[0] = 1.0 - mappedOffset[0];
+    if (kInvert[dirIndex][1]) mappedOffset[1] = 1.0 - mappedOffset[1];
+    if (kInvert[dirIndex][2]) mappedOffset[2] = 1.0 - mappedOffset[2];
+    
+    // 4. ワールド座標に変換
+    float32_t3 fstep3 = float32_t3(step, step, step);
+    float3 samplePos = basePos + (mappedOffset * fstep3);
+    
+    return GetDensity(samplePos, chunkID);
+}
+
 VertexOut ProcessTransvoxelVertex(float3 worldPos, float3 chunkOrigin, uint chunkID) {
     VertexOut vOut;
     
     vOut.worldPosition = float4(worldPos + chunkOrigin, 1.0);
     vOut.position = mul(vOut.worldPosition, viewProjection.matVP);
-    
-    // 法線計算
     vOut.normal = CalculateNormal(worldPos, chunkID);
-    
-    // デバッグ用カラー（TransitionCellを赤色で表示）
-    vOut.color = float4(1.0, 0.0, 0.0, 1.0);
+    vOut.color = float4(1.0, 1.0, 1.0, 1.0); 
     
     return vOut;
 }
@@ -208,13 +184,12 @@ void main(
     float32_t3 chunkOrigin = payload.chunkOrigin;
     uint3 step = payload.subChunkSize;
     
-    // ★重要: basePosをボクセルの「左下角」座標に修正
     float3 basePos = float3(DTid * step);
     uint32_t3 localPos = DTid * step;
     uint32_t3 chunkSize = uint32_t3(voxelTerrainInfo.chunkSize);
     uint32_t transitionCode = 0;
     
-    // ★修正: より正確な境界チェック
+    /// 境界面の判定
     bool isNX = (localPos.x == 0);
     bool isPX = (localPos.x >= chunkSize.x - step.x);
     bool isNY = (localPos.y == 0);
@@ -242,47 +217,44 @@ void main(
         dirIndex = 5; // +Z
     }
     
-    // Transitionが不要な場合は早期リターン
-
-    
     // 密度サンプリング
     float cellParams[13];
     uint caseCode = 0;
     if (transitionCode != 0) {
-        for (int i = 0; i < 13; ++i) {
+        // High-Res Face (0-8)
+        for (int i = 0; i < 9; ++i) {
             float d = GetMappedDensity(i, dirIndex, basePos, step.x, chunkID);
             cellParams[i] = d;
 
-            if (i < 9 && d < voxelTerrainInfo.isoLevel) {
+            if (d >= voxelTerrainInfo.isoLevel) {
                 caseCode |= (1u << i);
             }
         }
+        // Low-Res Face (9-12)
+        for (int j = 9; j < 13; ++j) {
+            cellParams[j] = GetMappedDensity(j, dirIndex, basePos, step.x, chunkID);
+        }
     }
     
-
     // テーブル参照
     uint classData      = 0;
     uint cellClass      = 0;
-    uint baseIndex      = 0;
     uint geometryCounts = 0;
     uint vertexCount    = 0;
     uint triangleCount  = 0;
 
-    // 空または完全に埋まっている場合
+    // 空(0) または 完全に埋まっている(511) 場合は描画しない
     if (caseCode != 0 && caseCode != 511) {
     
         // テーブル参照
         classData = tTransitionCellClass[caseCode];
         cellClass = classData & 0x7F;
-        baseIndex = cellClass * kTransitionCellDataStride;
-        geometryCounts = tTransitionCellData[baseIndex];
+        geometryCounts = transitionCellData[cellClass].geometryCounts;
 
         vertexCount = (geometryCounts >> 4) & 0x0F;
         triangleCount = geometryCounts & 0x0F;
     }
     
-
-    // GroupMemoryBarrierWithGroupSync();
     SetMeshOutputCounts(vertexCount, triangleCount);
     if (vertexCount == 0 || triangleCount == 0) {
         return;
@@ -290,14 +262,14 @@ void main(
     
     // 頂点生成
     for (uint v = 0; v < vertexCount; ++v) {
-        uint vData = tTransitionVertexData[cellClass * kTransitionVertexDataStride + v];
+        // データの直接参照（エッジテーブルは不要）
+        uint vData = tTransitionVertexData[caseCode * kTransitionVertexDataStride + v];
         uint idxA = vData & 0x0F;
         uint idxB = (vData >> 4) & 0x0F;
         
         float valA = cellParams[idxA];
         float valB = cellParams[idxB];
         
-        // 標準空間でのオフセット (0-1)
         float3 posA = kTransitionCornerOffsets[idxA];
         float3 posB = kTransitionCornerOffsets[idxB];
         
@@ -317,7 +289,7 @@ void main(
         mappedPos[1] = virtualPos[kPermutation[dirIndex][1]];
         mappedPos[2] = virtualPos[kPermutation[dirIndex][2]];
         
-        // 反転
+        // 反転処理（復活）
         if (kInvert[dirIndex][0]) mappedPos[0] = 1.0 - mappedPos[0];
         if (kInvert[dirIndex][1]) mappedPos[1] = 1.0 - mappedPos[1];
         if (kInvert[dirIndex][2]) mappedPos[2] = 1.0 - mappedPos[2];
@@ -328,28 +300,13 @@ void main(
         
         verts[v] = ProcessTransvoxelVertex(worldPos, chunkOrigin, chunkID);
     }
-    
-    // インデックス生成（安全装置付き）
+
+    // インデックス生成
     for (uint t = 0; t < triangleCount; ++t) {
-        uint i0 = tTransitionCellData[baseIndex + 1 + (t * 3 + 0)];
-        uint i1 = tTransitionCellData[baseIndex + 1 + (t * 3 + 1)];
-        uint i2 = tTransitionCellData[baseIndex + 1 + (t * 3 + 2)];
+        uint i0 = transitionCellData[cellClass].vertexIndex[t * 3 + 0];
+        uint i1 = transitionCellData[cellClass].vertexIndex[t * 3 + 1];
+        uint i2 = transitionCellData[cellClass].vertexIndex[t * 3 + 2];
         
-        // クランプ（安全装置）
-        i0 = min(i0, vertexCount - 1);
-        i1 = min(i1, vertexCount - 1);
-        i2 = min(i2, vertexCount - 1);
-
-        bool flipWinding =
-            (dirIndex == 1) || // +X
-            (dirIndex == 3) || // +Y
-            (dirIndex == 5);   // +Z
-
-        if (flipWinding) {
-            tris[t] = uint3(i0, i2, i1);
-        } else {
-            tris[t] = uint3(i0, i1, i2);
-        }
-
+        tris[t] = uint3(i0, i1, i2);
     }
 }
