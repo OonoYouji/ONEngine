@@ -37,7 +37,10 @@ static const uint32_t TRANSITION_NY = 0x04; // -Y (Bottom)
 static const uint32_t TRANSITION_PY = 0x08; // +Y (p)
 static const uint32_t TRANSITION_NZ = 0x10; // -Z (Back)
 static const uint32_t TRANSITION_PZ = 0x20; // +Z (Front)
-
+static const uint32_t TRANSITION_PXZ = 0x40; // +X +Z
+static const uint32_t TRANSITION_NXZ = 0x80; // -X -Z
+static const uint32_t TRANSITION_NXPZ = 0x100; // -X +Z
+static const uint32_t TRANSITION_PXNZ = 0x200; // +X -Z
 
 
 /// ---------------------------------------------------
@@ -95,7 +98,7 @@ uint32_t GetTransitionMask(float32_t3 chunkCenter, float32_t3 chunkSize, uint32_
         float32_t3 nMin = neighborCenter - halfSize;
         float32_t3 nMax = neighborCenter + halfSize;
         
-        // カメラから隣接AABBへの最近点 (nearPos) を計算 ★ここが修正ポイント
+        // カメラから隣接AABBへの最近点 (nearPos) を計算
         float32_t3 nNearPos = clamp(cameraPos, nMin, nMax);
         
         uint32_t lodNX = CalculateLOD(nNearPos, cameraPos);
@@ -110,7 +113,7 @@ uint32_t GetTransitionMask(float32_t3 chunkCenter, float32_t3 chunkSize, uint32_
         
         float32_t3 nMin = neighborCenter - halfSize;
         float32_t3 nMax = neighborCenter + halfSize;
-        float32_t3 nNearPos = clamp(cameraPos, nMin, nMax); // ★最近点を使う
+        float32_t3 nNearPos = clamp(cameraPos, nMin, nMax);
         
         uint32_t lodPX = CalculateLOD(nNearPos, cameraPos);
         if (lodPX > myLOD) mask |= TRANSITION_PX;
@@ -124,7 +127,7 @@ uint32_t GetTransitionMask(float32_t3 chunkCenter, float32_t3 chunkSize, uint32_
         
         float32_t3 nMin = neighborCenter - halfSize;
         float32_t3 nMax = neighborCenter + halfSize;
-        float32_t3 nNearPos = clamp(cameraPos, nMin, nMax); // ★最近点を使う
+        float32_t3 nNearPos = clamp(cameraPos, nMin, nMax);
         
         uint32_t lodNZ = CalculateLOD(nNearPos, cameraPos);
         if (lodNZ > myLOD) mask |= TRANSITION_NZ;
@@ -138,10 +141,66 @@ uint32_t GetTransitionMask(float32_t3 chunkCenter, float32_t3 chunkSize, uint32_
         
         float32_t3 nMin = neighborCenter - halfSize;
         float32_t3 nMax = neighborCenter + halfSize;
-        float32_t3 nNearPos = clamp(cameraPos, nMin, nMax); // ★最近点を使う
+        float32_t3 nNearPos = clamp(cameraPos, nMin, nMax);
         
         uint32_t lodPZ = CalculateLOD(nNearPos, cameraPos);
         if (lodPZ > myLOD) mask |= TRANSITION_PZ;
+    }
+
+    // ------------------------------------------------------
+    // +X +Z 方向
+    // ------------------------------------------------------
+    {
+        float32_t3 neighborCenter = chunkCenter + float32_t3(offset.x, 0, offset.z);
+        
+        float32_t3 nMin = neighborCenter - halfSize;
+        float32_t3 nMax = neighborCenter + halfSize;
+        float32_t3 nNearPos = clamp(cameraPos, nMin, nMax);
+        
+        uint32_t lodPXZ = CalculateLOD(nNearPos, cameraPos);
+        if (lodPXZ > myLOD) mask |= TRANSITION_PXZ;
+    }
+
+    // ------------------------------------------------------
+    // -X -Z 方向
+    // ------------------------------------------------------
+    {
+        float32_t3 neighborCenter = chunkCenter - float32_t3(offset.x, 0, offset.z);
+        
+        float32_t3 nMin = neighborCenter - halfSize;
+        float32_t3 nMax = neighborCenter + halfSize;
+        float32_t3 nNearPos = clamp(cameraPos, nMin, nMax);
+        
+        uint32_t lodNXZ = CalculateLOD(nNearPos, cameraPos);
+        if (lodNXZ > myLOD) mask |= TRANSITION_NXZ;
+    }
+
+    // ------------------------------------------------------
+    // -X +Z 方向
+    // ------------------------------------------------------
+    {
+        float32_t3 neighborCenter = chunkCenter + float32_t3(-offset.x, 0, offset.z);
+        
+        float32_t3 nMin = neighborCenter - halfSize;
+        float32_t3 nMax = neighborCenter + halfSize;
+        float32_t3 nNearPos = clamp(cameraPos, nMin, nMax);
+        
+        uint32_t lodNXPZ = CalculateLOD(nNearPos, cameraPos);
+        if (lodNXPZ > myLOD) mask |= TRANSITION_NXPZ;
+    }
+
+    // ------------------------------------------------------
+    // +X -Z 方向
+    // ------------------------------------------------------
+    {
+        float32_t3 neighborCenter = chunkCenter + float32_t3(offset.x, 0, -offset.z);
+        
+        float32_t3 nMin = neighborCenter - halfSize;
+        float32_t3 nMax = neighborCenter + halfSize;
+        float32_t3 nNearPos = clamp(cameraPos, nMin, nMax);
+        
+        uint32_t lodPXNZ = CalculateLOD(nNearPos, cameraPos);
+        if (lodPXNZ > myLOD) mask |= TRANSITION_PXNZ;
     }
 
     return mask;
