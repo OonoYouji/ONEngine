@@ -57,7 +57,7 @@ void main(
 
 			asPayload.chunkIndex = IndexOfMeshGroup(groupId, uint3(voxelTerrainInfo.chunkCountXZ.x, 1, voxelTerrainInfo.chunkCountXZ.y));
 			asPayload.subChunkSize = uint3(subChunkSizeValue, subChunkSizeValue, subChunkSizeValue);
-			dispatchSize = voxelTerrainInfo.textureSize / asPayload.subChunkSize;
+			dispatchSize = voxelTerrainInfo.textureSize / asPayload.subChunkSize / uint32_t3(2,4,2); // numthreads に合わせて分割
             
             asPayload.transitionMask = GetTransitionMask(center, float3(voxelTerrainInfo.chunkSize), asPayload.lodLevel, camera.position.xyz);
 		}

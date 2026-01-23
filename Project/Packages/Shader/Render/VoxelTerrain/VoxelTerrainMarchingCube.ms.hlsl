@@ -118,9 +118,6 @@ VertexOut VertexInterp(float3 p1, float3 p2, float3 _chunkOrigin,float3 subChunk
 
 	vOut.position = mul(vOut.worldPosition, viewProjection.matVP);
 	
-	// 補間位置での法線を計算
-	// vOut.normal = GetGradient(localPos, _chunkId);
-	
 	// 高さベースの色付け
 	// float worldY = vOut.worldPosition.y;
 	// vOut.color = lerp(float4(0.3, 0.8, 0.3, 1), float4(0.6, 0.5, 0.3, 1), worldY / 512.0f);
@@ -136,23 +133,20 @@ float3 GetNormal(float3 _p0, float3 _p1, float3 _p2) {
 	return normalize(cross(u, v));
 }
 
-// groupshared uint sVertexCount;
-// groupshared uint sPrimitiveCount;
 
 // ---------------------------------------------------
-// Main Mesh Shader
+// マーチングキューブ法の1ボクセルが表示する最大頂点は 15頂点 なので
+// 2^3*15 = 120 頂点でnumthreadsを設定
+// 3以降は頂点の個数が増えすぎるため使えない
 // ---------------------------------------------------
 [shader("mesh")]
 [outputtopology("triangle")]
-[numthreads(1, 1, 1)]
+[numthreads(2, 4, 2)]
 void main(
 	uint3 DTid : SV_DispatchThreadID,
-    uint3 GTid : SV_GroupThreadID,
-    uint3 groupId : SV_GroupID,
 	in payload Payload asPayload,
 	out vertices VertexOut verts[256],
 	out indices uint3 indis[256]) {
-
 
 	uint3 step = asPayload.subChunkSize;
 	float3 basePos = float3(DTid * step);
@@ -161,42 +155,42 @@ void main(
     uint32_t transitionCode = 0;
     
     /// 境界面の判定
-    bool isBoundary = false;
-    if(asPayload.transitionMask != 0) {
-        uint32_t3 localPos = DTid * step;
-        bool isNX = (localPos.x == 0);
-        bool isPX = (localPos.x >= chunkSize.x - step.x);
-        bool isNZ = (localPos.z == 0);
-        bool isPZ = (localPos.z >= chunkSize.z - step.x);
+    // bool isBoundary = false;
+    // if(asPayload.transitionMask != 0) {
+    //     uint32_t3 localPos = DTid * step;
+    //     bool isNX = (localPos.x == 0);
+    //     bool isPX = (localPos.x >= chunkSize.x - step.x);
+    //     bool isNZ = (localPos.z == 0);
+    //     bool isPZ = (localPos.z >= chunkSize.z - step.x);
     
-        int mask = asPayload.transitionMask;
-        if(mask & TRANSITION_NX) {
-            if(isNX) {
-                isBoundary = true;
-            }
-        }
-        if(mask & TRANSITION_PX) {
-            if(isPX) {
-                isBoundary = true;
-            }
-        }
-        if(mask & TRANSITION_NZ) {
-            if(isNZ) {
-                isBoundary = true;
-            }
-        }
-        if(mask & TRANSITION_PZ) {
-            if(isPZ) {
-                isBoundary = true;
-            }
-        }
-    } 
+    //     int mask = asPayload.transitionMask;
+    //     if(mask & TRANSITION_NX) {
+    //         if(isNX) {
+    //             isBoundary = true;
+    //         }
+    //     }
+    //     if(mask & TRANSITION_PX) {
+    //         if(isPX) {
+    //             isBoundary = true;
+    //         }
+    //     }
+    //     if(mask & TRANSITION_NZ) {
+    //         if(isNZ) {
+    //             isBoundary = true;
+    //         }
+    //     }
+    //     if(mask & TRANSITION_PZ) {
+    //         if(isPZ) {
+    //             isBoundary = true;
+    //         }
+    //     }
+    // } 
 
 	float cubeDensities[8];
 	uint cubeIndex = 0;
 	uint triCount = 0;
 	
-    if(!isBoundary) {
+    // if(!isBoundary) {
 
 	    [unroll]
 	    for (int i = 0; i < 8; ++i) {
@@ -214,21 +208,22 @@ void main(
 	    for (int i = 0; i < 15; i += 3) {
 	    	triCount += (TriTable[cubeIndex][i] != -1) ? 1 : 0;
 	    }
-    }
+    // }
 
-    uint vertexOffset = 0;
-    uint primitiveOffset = 0;
+    uint outputTriOffset = WavePrefixSum(triCount);
+    uint totalTriCount = WaveActiveSum(triCount);
 
-    // GroupMemoryBarrierWithGroupSync();
-    SetMeshOutputCounts(triCount * 3, triCount);
+    GroupMemoryBarrierWithGroupSync();
+    SetMeshOutputCounts(totalTriCount * 3, totalTriCount);
     if(triCount == 0) {
         return;
     }
 
 	
 	for (uint t = 0; t < triCount; t++) {
-        uint vIndex = vertexOffset;
-        uint pIndex = primitiveOffset;
+        uint currentTriIndex = outputTriOffset + t;
+        uint vIndex = currentTriIndex * 3;
+        uint pIndex = currentTriIndex;
 
 		VertexOut outVerts[3];
 
@@ -242,7 +237,7 @@ void main(
 			float3 p2 = basePos + (kCornerOffsets[idx2] * float3(step));
 			
 			outVerts[v] = VertexInterp(p1, p2, asPayload.chunkOrigin, float32_t3(asPayload.subChunkSize), cubeDensities[idx1], cubeDensities[idx2], asPayload.chunkIndex);
-			verts[vIndex + (t * 3) + v] = outVerts[v];
+			verts[vIndex + v] = outVerts[v];
 		}
 		
 		float3 normal = GetNormal(
@@ -251,14 +246,14 @@ void main(
 			outVerts[2].worldPosition.xyz
 		);
 		
-		verts[vIndex + (t * 3) + 0].normal = normal;
-		verts[vIndex + (t * 3) + 1].normal = normal;
-		verts[vIndex + (t * 3) + 2].normal = normal;
+		verts[vIndex + 0].normal = normal;
+		verts[vIndex + 1].normal = normal;
+		verts[vIndex + 2].normal = normal;
 		
-		indis[pIndex + t] = uint3(
-			vIndex + (t * 3) + 0,
-			vIndex + (t * 3) + 1,
-			vIndex + (t * 3) + 2
+		indis[pIndex] = uint3(
+			vIndex + 0,
+			vIndex + 1,
+			vIndex + 2
 		);
 	}
 }

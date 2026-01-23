@@ -160,14 +160,14 @@ float GetMappedDensity(int index, uint dirIndex, float3 basePos, float step, uin
     return GetDensity(samplePos, chunkID);
 }
 
-VertexOut ProcessTransvoxelVertex(float3 worldPos, float3 chunkOrigin, uint chunkID) {
+VertexOut ProcessTransvoxelVertex(float3 worldPos, float3 chunkOrigin, uint chunkID, uint32_t transitionCode) {
     VertexOut vOut;
     
     vOut.worldPosition = float4(worldPos + chunkOrigin, 1.0);
     vOut.position = mul(vOut.worldPosition, viewProjection.matVP);
     vOut.normal = CalculateNormal(worldPos, chunkID);
     // vOut.color = float4(1.0, 1.0, 1.0, 1.0); 
-    vOut.color = DebugColor(chunkID);
+    vOut.color = DebugColor(transitionCode);
     
     return vOut;
 }
@@ -188,17 +188,17 @@ void main(
     uint3 step = payload.subChunkSize;
     
     float3 basePos = float3(DTid * step);
-    uint32_t3 localPos = DTid * step;
     uint32_t3 chunkSize = uint32_t3(voxelTerrainInfo.chunkSize);
     uint32_t transitionCode = 0;
     
     /// 境界面の判定
+    uint32_t3 localPos = basePos;
     bool isNX = (localPos.x == 0);
-    bool isPX = (localPos.x >= chunkSize.x - step.x);
+    bool isPX = (localPos.x >= chunkSize.x);
     bool isNY = (localPos.y == 0);
-    bool isPY = (localPos.y >= chunkSize.y - step.y);
+    bool isPY = (localPos.y >= chunkSize.y);
     bool isNZ = (localPos.z == 0);
-    bool isPZ = (localPos.z >= chunkSize.z - step.z);
+    bool isPZ = (localPos.z >= chunkSize.z);
     
     // Transition方向の判定
     uint dirIndex = 0;
@@ -226,7 +226,7 @@ void main(
             float d = GetMappedDensity(i, dirIndex, basePos, step.x, chunkID);
             cellParams[i] = d;
 
-            if (d >= voxelTerrainInfo.isoLevel) {
+            if (d < voxelTerrainInfo.isoLevel) {
                 caseCode |= (1u << i);
             }
         }
@@ -298,7 +298,7 @@ void main(
         float32_t3 fstep = float32_t3(step.x, step.y, step.z);
         float3 worldPos = basePos + (mappedPos * fstep);
         
-        verts[v] = ProcessTransvoxelVertex(worldPos, chunkOrigin, chunkID);
+        verts[v] = ProcessTransvoxelVertex(worldPos, chunkOrigin, chunkID, transitionCode);
     }
 
     // インデックス生成
