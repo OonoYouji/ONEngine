@@ -11,6 +11,10 @@
 
 using namespace ONEngine;
 
+namespace {
+ConstantBuffer<Vector4> cBufPos;
+}
+
 VoxelTerrainTransvoxelRenderingPipeline::VoxelTerrainTransvoxelRenderingPipeline(AssetCollection* _ac)
 	: pAssetCollection_(_ac) {
 }
@@ -52,6 +56,9 @@ void VoxelTerrainTransvoxelRenderingPipeline::Initialize(ShaderCompiler* _shader
 		pipeline_->CreatePipeline(_dxm->GetDxDevice());
 
 	}
+
+	cBufPos.Create(_dxm->GetDxDevice());
+	cBufPos.SetMappedData(Vector4(180.0f, 465.0f, 182.0f, 1.0f));
 }
 
 void VoxelTerrainTransvoxelRenderingPipeline::Draw(ECSGroup* _ecs, CameraComponent* _camera, DxCommand* _dxCommand) {
@@ -101,7 +108,8 @@ void VoxelTerrainTransvoxelRenderingPipeline::Draw(ECSGroup* _ecs, CameraCompone
 	vt->SetupGraphicBuffers(cmdList, { CBV_VOXEL_TERRAIN_INFO, CBV_MATERIAL, SRV_CHUNK_ARRAY }, pAssetCollection_);
 
 	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(_dxCommand->GetCommandList(), CBV_VIEW_PROJECTION);
-	_camera->GetCameraPosBuffer().BindForGraphicsCommandList(_dxCommand->GetCommandList(), CBV_CAMERA_POSITION);
+	//_camera->GetCameraPosBuffer().BindForGraphicsCommandList(_dxCommand->GetCommandList(), CBV_CAMERA_POSITION);
+	cBufPos.BindForGraphicsCommandList(_dxCommand->GetCommandList(), CBV_CAMERA_POSITION);
 
 	D3D12_GPU_DESCRIPTOR_HANDLE frontSRVHandle = pDxManager_->GetDxSRVHeap()->GetSRVStartGPUHandle();
 	cmdList->SetGraphicsRootDescriptorTable(

@@ -22,6 +22,7 @@ struct Payload {
 
 	uint3 dispatchSize;
 	uint lodLevel;
+    uint32_t transitionMask;
 };
 
 

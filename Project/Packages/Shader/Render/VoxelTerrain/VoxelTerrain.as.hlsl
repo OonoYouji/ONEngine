@@ -1,5 +1,6 @@
 ﻿#include "VoxelTerrain.hlsli"
 
+
 /// ---------------------------------------------------
 /// Main
 /// ---------------------------------------------------
@@ -57,6 +58,8 @@ void main(
 			asPayload.chunkIndex = IndexOfMeshGroup(groupId, uint3(voxelTerrainInfo.chunkCountXZ.x, 1, voxelTerrainInfo.chunkCountXZ.y));
 			asPayload.subChunkSize = uint3(subChunkSizeValue, subChunkSizeValue, subChunkSizeValue);
 			dispatchSize = voxelTerrainInfo.textureSize / asPayload.subChunkSize;
+            
+            asPayload.transitionMask = GetTransitionMask(center, float3(voxelTerrainInfo.chunkSize), asPayload.lodLevel, camera.position.xyz);
 		}
 	}
 

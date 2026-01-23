@@ -156,31 +156,76 @@ void main(
 	uint3 step = asPayload.subChunkSize;
 	float3 basePos = float3(DTid * step);
 
+    uint32_t3 localPos = DTid * step;
+    uint32_t3 chunkSize = uint32_t3(voxelTerrainInfo.chunkSize);
+    uint32_t transitionCode = 0;
+    
+    /// 境界面の判定
+    bool isBoundary = false;
+    if(asPayload.transitionMask != 0) {
+        bool isNX = (localPos.x == 0);
+        bool isPX = (localPos.x >= chunkSize.x - step.x);
+        bool isNY = (localPos.y == 0);
+        bool isPY = (localPos.y >= chunkSize.y - step.y);
+        bool isNZ = (localPos.z == 0);
+        bool isPZ = (localPos.z >= chunkSize.z - step.x);
+    
+        int mask = asPayload.transitionMask;
+        if(mask & TRANSITION_NX) {
+            if(isNX) {
+                isBoundary = true;
+            }
+        }
+        if(mask & TRANSITION_PX) {
+            if(isPX) {
+                isBoundary = true;
+            }
+        }
+        if(mask & TRANSITION_NY) {
+            if(isNY) {
+                isBoundary = true;
+            }
+        }
+        if(mask & TRANSITION_PY) {
+            if(isPY) {
+                isBoundary = true;
+            }
+        }
+    } 
+
 	float cubeDensities[8];
 	uint cubeIndex = 0;
-	
-	[unroll]
-	for (int i = 0; i < 8; ++i) {
-		float3 samplePos = basePos + (kCornerOffsets[i] * float3(step));
-
-		float d = GetDensity(samplePos, asPayload.chunkIndex);
-		cubeDensities[i] = d;
-		
-		if (d < voxelTerrainInfo.isoLevel) {
-			cubeIndex |= (1u << i);
-		}
-	}
-
 	uint triCount = 0;
-	[unroll]
-	for (int i = 0; i < 15; i += 3) {
-		triCount += (TriTable[cubeIndex][i] != -1) ? 1 : 0;
-	}
+	
+    if(!isBoundary) {
+
+	    [unroll]
+	    for (int i = 0; i < 8; ++i) {
+	    	float3 samplePos = basePos + (kCornerOffsets[i] * float3(step));
+
+	    	float d = GetDensity(samplePos, asPayload.chunkIndex);
+	    	cubeDensities[i] = d;
+    
+	    	if (d < voxelTerrainInfo.isoLevel) {
+	    		cubeIndex |= (1u << i);
+	    	}
+	    }
+
+	    [unroll]
+	    for (int i = 0; i < 15; i += 3) {
+	    	triCount += (TriTable[cubeIndex][i] != -1) ? 1 : 0;
+	    }
+    }
 
     uint vertexOffset = 0;
     uint primitiveOffset = 0;
 
+    // GroupMemoryBarrierWithGroupSync();
     SetMeshOutputCounts(triCount * 3, triCount);
+    if(triCount == 0) {
+        return;
+    }
+
 	
 	for (uint t = 0; t < triCount; t++) {
         uint vIndex = vertexOffset;

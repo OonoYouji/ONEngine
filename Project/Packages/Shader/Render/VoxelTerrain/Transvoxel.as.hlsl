@@ -1,103 +1,6 @@
 ﻿#include "Transvoxel.hlsli"
 
 
-
-// -----------------------------------------------------------------------------
-// ヘルパー：LOD計算関数
-// -----------------------------------------------------------------------------
-uint CalculateLOD(float32_t3 worldPos, float32_t3 cameraPos)
-{
-    float dist = distance(worldPos, cameraPos);
-    
-    // 例: 距離ベースの簡易LOD
-    // 実際にはもっと細かく調整するか、事前計算されたLODマップを参照します
-    if (dist < 50.0f)  return 0;
-    if (dist < 100.0f) return 1;
-    if (dist < 200.0f) return 2;
-    return 3;
-}
-
-// -----------------------------------------------------------------------------
-// メイン関数：Transition Mask の計算
-// -----------------------------------------------------------------------------
-// chunkCenter: 現在処理中のチャンクの中心ワールド座標
-// chunkSize  : 現在処理中のチャンクの一辺のサイズ (LOD0基準ではなく、現在のスケールでのサイズ)
-// myLOD      : 現在のチャンクのLODレベル
-// cameraPos  : カメラ位置
-// -----------------------------------------------------------------------------
-// 修正: chunkSizeを float -> float32_t3 に変更
-uint32_t GetTransitionMask(float32_t3 chunkCenter, float32_t3 chunkSize, uint32_t myLOD, float32_t3 cameraPos)
-{
-    uint32_t mask = 0;
-    
-    // 判定用のヘルパー関数（ラムダ式が使えないので直接計算）
-    // 隣接チャンクの中心位置とサイズから、そのチャンクの「カメラ最近点」を求めてLOD計算する
-    
-    float32_t3 halfSize = chunkSize / 2.0f;
-    float32_t3 offset = chunkSize; // 隣接へのオフセット（サイズ分だけ移動）
-
-    // ------------------------------------------------------
-    // X軸方向 (-X: Left)
-    // ------------------------------------------------------
-    {
-        float32_t3 neighborCenter = chunkCenter - float32_t3(offset.x, 0, 0);
-        
-        // 隣接チャンクのAABB範囲
-        float32_t3 nMin = neighborCenter - halfSize;
-        float32_t3 nMax = neighborCenter + halfSize;
-        
-        // カメラから隣接AABBへの最近点 (nearPos) を計算 ★ここが修正ポイント
-        float32_t3 nNearPos = clamp(cameraPos, nMin, nMax);
-        
-        uint32_t lodNX = CalculateLOD(nNearPos, cameraPos);
-        if (lodNX > myLOD) mask |= TRANSITION_NX;
-    }
-
-    // ------------------------------------------------------
-    // X軸方向 (+X: Right)
-    // ------------------------------------------------------
-    {
-        float32_t3 neighborCenter = chunkCenter + float32_t3(offset.x, 0, 0);
-        
-        float32_t3 nMin = neighborCenter - halfSize;
-        float32_t3 nMax = neighborCenter + halfSize;
-        float32_t3 nNearPos = clamp(cameraPos, nMin, nMax); // ★最近点を使う
-        
-        uint32_t lodPX = CalculateLOD(nNearPos, cameraPos);
-        if (lodPX > myLOD) mask |= TRANSITION_PX;
-    }
-
-    // ------------------------------------------------------
-    // Z軸方向 (-Z: Back)
-    // ------------------------------------------------------
-    {
-        float32_t3 neighborCenter = chunkCenter - float32_t3(0, 0, offset.z);
-        
-        float32_t3 nMin = neighborCenter - halfSize;
-        float32_t3 nMax = neighborCenter + halfSize;
-        float32_t3 nNearPos = clamp(cameraPos, nMin, nMax); // ★最近点を使う
-        
-        uint32_t lodNZ = CalculateLOD(nNearPos, cameraPos);
-        if (lodNZ > myLOD) mask |= TRANSITION_NZ;
-    }
-
-    // ------------------------------------------------------
-    // Z軸方向 (+Z: Front)
-    // ------------------------------------------------------
-    {
-        float32_t3 neighborCenter = chunkCenter + float32_t3(0, 0, offset.z);
-        
-        float32_t3 nMin = neighborCenter - halfSize;
-        float32_t3 nMax = neighborCenter + halfSize;
-        float32_t3 nNearPos = clamp(cameraPos, nMin, nMax); // ★最近点を使う
-        
-        uint32_t lodPZ = CalculateLOD(nNearPos, cameraPos);
-        if (lodPZ > myLOD) mask |= TRANSITION_PZ;
-    }
-
-    return mask;
-}
-
 // -----------------------------------------------------------------------------
 // チャンクの中心点を取得する
 // -----------------------------------------------------------------------------
@@ -109,9 +12,6 @@ float32_t3 GetChunkOrigin(uint32_t3 groupID) {
     return float3(groupID) * voxelTerrainInfo.chunkSize + float3(voxelTerrainInfo.terrainOrigin);
 }
 
-
-// groupshared Payload sPayload;
-// groupshared uint sVisibleCount;
 
 // -----------------------------------------------------------------------------
 // Amplification Shader Main

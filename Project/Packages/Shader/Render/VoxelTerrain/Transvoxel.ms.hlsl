@@ -203,16 +203,13 @@ void main(
     if (isNX && (payload.transitionMask & TRANSITION_NX)) {
         transitionCode = 1;
         dirIndex = 0; // -X
-    }
-    else if (isPX && (payload.transitionMask & TRANSITION_PX)) {
+    } else if (isPX && (payload.transitionMask & TRANSITION_PX)) {
         transitionCode = 2;
         dirIndex = 1; // +X
-    }
-    else if (isNZ && (payload.transitionMask & TRANSITION_NZ)) {
+    } else if (isNZ && (payload.transitionMask & TRANSITION_NZ)) {
         transitionCode = 3;
         dirIndex = 4; // -Z
-    }
-    else if (isPZ && (payload.transitionMask & TRANSITION_PZ)) {
+    } else if (isPZ && (payload.transitionMask & TRANSITION_PZ)) {
         transitionCode = 4;
         dirIndex = 5; // +Z
     }
