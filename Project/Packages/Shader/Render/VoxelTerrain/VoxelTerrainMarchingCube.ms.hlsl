@@ -122,8 +122,9 @@ VertexOut VertexInterp(float3 p1, float3 p2, float3 _chunkOrigin,float3 subChunk
 	// vOut.normal = GetGradient(localPos, _chunkId);
 	
 	// 高さベースの色付け
-	float worldY = vOut.worldPosition.y;
-	vOut.color = lerp(float4(0.3, 0.8, 0.3, 1), float4(0.6, 0.5, 0.3, 1), worldY / 512.0f);
+	// float worldY = vOut.worldPosition.y;
+	// vOut.color = lerp(float4(0.3, 0.8, 0.3, 1), float4(0.6, 0.5, 0.3, 1), worldY / 512.0f);
+    vOut.color = DebugColor(_chunkId);
 	
 	return vOut;
 }
@@ -156,17 +157,15 @@ void main(
 	uint3 step = asPayload.subChunkSize;
 	float3 basePos = float3(DTid * step);
 
-    uint32_t3 localPos = DTid * step;
     uint32_t3 chunkSize = uint32_t3(voxelTerrainInfo.chunkSize);
     uint32_t transitionCode = 0;
     
     /// 境界面の判定
     bool isBoundary = false;
     if(asPayload.transitionMask != 0) {
+        uint32_t3 localPos = DTid * step;
         bool isNX = (localPos.x == 0);
         bool isPX = (localPos.x >= chunkSize.x - step.x);
-        bool isNY = (localPos.y == 0);
-        bool isPY = (localPos.y >= chunkSize.y - step.y);
         bool isNZ = (localPos.z == 0);
         bool isPZ = (localPos.z >= chunkSize.z - step.x);
     
@@ -181,13 +180,13 @@ void main(
                 isBoundary = true;
             }
         }
-        if(mask & TRANSITION_NY) {
-            if(isNY) {
+        if(mask & TRANSITION_NZ) {
+            if(isNZ) {
                 isBoundary = true;
             }
         }
-        if(mask & TRANSITION_PY) {
-            if(isPY) {
+        if(mask & TRANSITION_PZ) {
+            if(isPZ) {
                 isBoundary = true;
             }
         }

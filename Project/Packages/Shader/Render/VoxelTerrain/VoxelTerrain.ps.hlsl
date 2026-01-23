@@ -20,23 +20,23 @@ PSOutput main(VertexOut input) {
 	// 地形の色分け処理
 	// ---------------------------------------------------------
 	
-	// 草の色 (緑)
-	float4 grassColor = float4(0.1f, 0.55f, 0.2f, 1.0f);
-	// 岩/岸壁の色 (茶色～灰色)
-	float4 rockColor = float4(0.35f, 0.3f, 0.25f, 1.0f);
+	// // 草の色 (緑)
+	// float4 grassColor = float4(0.1f, 0.55f, 0.2f, 1.0f);
+	// // 岩/岸壁の色 (茶色～灰色)
+	// float4 rockColor = float4(0.35f, 0.3f, 0.25f, 1.0f);
 
-	// ブレンド率の計算
-	// N.y (法線の上方向成分) を使用します。
-	// 1.0 = 真上, 0.0 = 真横, -1.0 = 真下
-	float slopeBlend = smoothstep(0.4f, 0.8f, N.y);
+	// // ブレンド率の計算
+	// // N.y (法線の上方向成分) を使用します。
+	// // 1.0 = 真上, 0.0 = 真横, -1.0 = 真下
+	// float slopeBlend = smoothstep(0.4f, 0.8f, N.y);
 
-	// 岩と草の色を合成
-	float4 terrainColor = lerp(rockColor, grassColor, slopeBlend);
+	// // 岩と草の色を合成
+	// float4 terrainColor = lerp(rockColor, grassColor, slopeBlend);
 
 	// ---------------------------------------------------------
 
 	// 元の色情報(頂点カラー * マテリアル色) に 地形色 を乗算
-	output.color = material.baseColor * terrainColor;
+	output.color = material.baseColor * input.color;
 	
 	output.worldPos = input.worldPosition;
 	output.normal = float4(N, 1);

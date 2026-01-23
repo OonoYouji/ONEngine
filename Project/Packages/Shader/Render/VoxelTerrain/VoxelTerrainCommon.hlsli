@@ -146,3 +146,18 @@ uint32_t GetTransitionMask(float32_t3 chunkCenter, float32_t3 chunkSize, uint32_
 
     return mask;
 }
+
+
+float4 DebugColor(uint chunkID) {
+    float4 colors[] = {
+        float4(1.0f, 0.0f, 0.0f, 1.0f),
+        float4(0.0f, 1.0f, 0.0f, 1.0f),
+        float4(0.0f, 0.0f, 1.0f, 1.0f),
+        float4(1.0f, 1.0f, 0.0f, 1.0f),
+        float4(1.0f, 0.0f, 1.0f, 1.0f),
+        float4(0.0f, 1.0f, 1.0f, 1.0f),
+        float4(1.0f, 0.5f, 0.0f, 1.0f),
+    };
+
+    return colors[chunkID % 7];
+}

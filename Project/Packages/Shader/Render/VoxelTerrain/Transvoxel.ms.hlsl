@@ -166,10 +166,13 @@ VertexOut ProcessTransvoxelVertex(float3 worldPos, float3 chunkOrigin, uint chun
     vOut.worldPosition = float4(worldPos + chunkOrigin, 1.0);
     vOut.position = mul(vOut.worldPosition, viewProjection.matVP);
     vOut.normal = CalculateNormal(worldPos, chunkID);
-    vOut.color = float4(1.0, 1.0, 1.0, 1.0); 
+    // vOut.color = float4(1.0, 1.0, 1.0, 1.0); 
+    vOut.color = DebugColor(chunkID);
     
     return vOut;
 }
+
+
 
 [shader("mesh")]
 [outputtopology("triangle")]
