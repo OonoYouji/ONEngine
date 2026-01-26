@@ -270,7 +270,9 @@ private:
 
 	bool canMeshShaderRendering_ = true;
 	bool canVertexShaderRendering_ = false;
+	bool isRenderingWireframe_ = true;
 	bool isRenderingTransvoxel_ = false;
+	bool isRenderingCubic_ = false;
 
 };
 

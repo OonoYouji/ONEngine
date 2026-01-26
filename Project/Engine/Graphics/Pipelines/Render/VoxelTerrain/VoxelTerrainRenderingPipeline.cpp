@@ -39,8 +39,22 @@ void VoxelTerrainRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, 
 		/// Pipeline
 		pipeline_ = std::make_unique<GraphicsPipeline>();
 		CreatePipeline(pipeline_.get(), shader, _dxm, D3D12_FILL_MODE_SOLID, BlendMode::Normal());
+		wireframeSubtractBlendPipeline_ = std::make_unique<GraphicsPipeline>();
+		CreatePipeline(wireframeSubtractBlendPipeline_.get(), shader, _dxm, D3D12_FILL_MODE_WIREFRAME, BlendMode::Subtract());
 		wireframePipeline_ = std::make_unique<GraphicsPipeline>();
-		CreatePipeline(wireframePipeline_.get(), shader, _dxm, D3D12_FILL_MODE_WIREFRAME, BlendMode::Multiply());
+		CreatePipeline(wireframePipeline_.get(), shader, _dxm, D3D12_FILL_MODE_WIREFRAME, BlendMode::Normal());
+	}
+
+	{
+		Shader shader;
+		shader.Initialize(_shaderCompiler);
+
+		shader.CompileShader(L"./Packages/Shader/Render/VoxelTerrain/VoxelTerrainCubic.as.hlsl", L"as_6_5", Shader::Type::as);
+		shader.CompileShader(L"./Packages/Shader/Render/VoxelTerrain/VoxelTerrainCubic.ms.hlsl", L"ms_6_5", Shader::Type::ms);
+		shader.CompileShader(L"./Packages/Shader/Render/VoxelTerrain/VoxelTerrain.ps.hlsl", L"ps_6_0", Shader::Type::ps);
+		cubicPipeline_ = std::make_unique<GraphicsPipeline>();
+
+		CreatePipeline(cubicPipeline_.get(), shader, _dxm, D3D12_FILL_MODE_SOLID, BlendMode::Normal());
 	}
 
 	cBufPos.Create(_dxm->GetDxDevice());
@@ -77,78 +91,108 @@ void VoxelTerrainRenderingPipeline::Draw(ECSGroup* _ecs, CameraComponent* _camer
 	}
 
 
-	if(!voxelTerrain->canMeshShaderRendering_) {
-		return;
+
+	if(voxelTerrain->isRenderingCubic_) {
+		DrawCubic(voxelTerrain, _camera, _dxCommand);
 	}
+
 
 	/// ---------------------------------------------------
 	/// 描画
 	/// ---------------------------------------------------
 
 
-	GPUTimeStamp::GetInstance().BeginTimeStamp(
-		GPUTimeStampID::VoxelTerrainRegularCell
-	);
+	if(voxelTerrain->canMeshShaderRendering_) {
+		GPUTimeStamp::GetInstance().BeginTimeStamp(
+			GPUTimeStampID::VoxelTerrainRegularCell
+		);
+
+		/// --------------- パイプラインの設定 --------------- ///
+		pipeline_->SetPipelineStateForCommandList(_dxCommand);
+		pDxManager_->HeapBindToCommandList();
+
+		/// --------------- バッファの設定 --------------- ///
+		voxelTerrain->SetupGraphicBuffers(cmdList, { CBV_VOXEL_TERRAIN_INFO, CBV_MATERIAL, SRV_CHUNK_ARRAY }, pAssetCollection_);
+
+		_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(_dxCommand->GetCommandList(), CBV_VIEW_PROJECTION);
+		//_camera->GetCameraPosBuffer().BindForGraphicsCommandList(_dxCommand->GetCommandList(), CBV_CAMERA_POSITION);
+		cBufPos.BindForGraphicsCommandList(_dxCommand->GetCommandList(), CBV_CAMERA_POSITION);
+
+		D3D12_GPU_DESCRIPTOR_HANDLE frontSRVHandle = pDxManager_->GetDxSRVHeap()->GetSRVStartGPUHandle();
+		cmdList->SetGraphicsRootDescriptorTable(
+			SRV_VOXEL_TERRAIN_TEXTURE3D, frontSRVHandle
+		);
+
+		/// --------------- ディスパッチ --------------- ///
+		cmdList->DispatchMesh(
+			voxelTerrain->GetChunkCountXZ().x,
+			1,
+			voxelTerrain->GetChunkCountXZ().y
+		);
+
+
+		GPUTimeStamp::GetInstance().EndTimeStamp(
+			GPUTimeStampID::VoxelTerrainRegularCell
+		);
+	}
+
+
+	if(voxelTerrain->isRenderingWireframe_) {
+		if(voxelTerrain->canMeshShaderRendering_) {
+			wireframeSubtractBlendPipeline_->SetPipelineStateForCommandList(_dxCommand);
+		} else {
+			wireframePipeline_->SetPipelineStateForCommandList(_dxCommand);
+		}
+
+		pDxManager_->HeapBindToCommandList();
+
+		/// --------------- バッファの設定 --------------- ///
+		voxelTerrain->SetupGraphicBuffers(cmdList, { CBV_VOXEL_TERRAIN_INFO, CBV_MATERIAL, SRV_CHUNK_ARRAY }, pAssetCollection_);
+
+		_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(_dxCommand->GetCommandList(), CBV_VIEW_PROJECTION);
+		//_camera->GetCameraPosBuffer().BindForGraphicsCommandList(_dxCommand->GetCommandList(), CBV_CAMERA_POSITION);
+		cBufPos.BindForGraphicsCommandList(_dxCommand->GetCommandList(), CBV_CAMERA_POSITION);
+		D3D12_GPU_DESCRIPTOR_HANDLE frontSRVHandle = pDxManager_->GetDxSRVHeap()->GetSRVStartGPUHandle();
+		cmdList->SetGraphicsRootDescriptorTable(
+			SRV_VOXEL_TERRAIN_TEXTURE3D, frontSRVHandle
+		);
+
+		/// --------------- ディスパッチ --------------- ///
+		cmdList->DispatchMesh(
+			voxelTerrain->GetChunkCountXZ().x,
+			1,
+			voxelTerrain->GetChunkCountXZ().y
+		);
+	}
+
+}
+
+void VoxelTerrainRenderingPipeline::DrawCubic(VoxelTerrain* vt, CameraComponent* camera, DxCommand* dxCommand) {
+	auto cmdList = dxCommand->GetCommandList();
 
 	/// --------------- パイプラインの設定 --------------- ///
-	pipeline_->SetPipelineStateForCommandList(_dxCommand);
+	cubicPipeline_->SetPipelineStateForCommandList(dxCommand);
 	pDxManager_->HeapBindToCommandList();
 
 	/// --------------- バッファの設定 --------------- ///
-	voxelTerrain->SetupGraphicBuffers(cmdList, { CBV_VOXEL_TERRAIN_INFO, CBV_MATERIAL, SRV_CHUNK_ARRAY }, pAssetCollection_);
+	vt->SetupGraphicBuffers(cmdList, { CBV_VOXEL_TERRAIN_INFO, CBV_MATERIAL, SRV_CHUNK_ARRAY }, pAssetCollection_);
 
-	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(_dxCommand->GetCommandList(), CBV_VIEW_PROJECTION);
-	//_camera->GetCameraPosBuffer().BindForGraphicsCommandList(_dxCommand->GetCommandList(), CBV_CAMERA_POSITION);
-	cBufPos.BindForGraphicsCommandList(_dxCommand->GetCommandList(), CBV_CAMERA_POSITION);
+	camera->GetViewProjectionBuffer().BindForGraphicsCommandList(dxCommand->GetCommandList(), CBV_VIEW_PROJECTION);
+	cBufPos.BindForGraphicsCommandList(dxCommand->GetCommandList(), CBV_CAMERA_POSITION);
 
 	D3D12_GPU_DESCRIPTOR_HANDLE frontSRVHandle = pDxManager_->GetDxSRVHeap()->GetSRVStartGPUHandle();
 	cmdList->SetGraphicsRootDescriptorTable(
 		SRV_VOXEL_TERRAIN_TEXTURE3D, frontSRVHandle
 	);
-	//cmdList->SetGraphicsRootDescriptorTable(
-	//	SRV_TEXTURES, frontSRVHandle
-	//);
 
-
-	/// --------------- ディスパッチ --------------- ///
 	cmdList->DispatchMesh(
-		voxelTerrain->GetChunkCountXZ().x,
+		vt->GetChunkCountXZ().x,
 		1,
-		voxelTerrain->GetChunkCountXZ().y
+		vt->GetChunkCountXZ().y
 	);
-
-
-	GPUTimeStamp::GetInstance().EndTimeStamp(
-		GPUTimeStampID::VoxelTerrainRegularCell
-	);
-
-
-	wireframePipeline_->SetPipelineStateForCommandList(_dxCommand);
-	pDxManager_->HeapBindToCommandList();
-
-	/// --------------- バッファの設定 --------------- ///
-	voxelTerrain->SetupGraphicBuffers(cmdList, { CBV_VOXEL_TERRAIN_INFO, CBV_MATERIAL, SRV_CHUNK_ARRAY }, pAssetCollection_);
-
-	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(_dxCommand->GetCommandList(), CBV_VIEW_PROJECTION);
-	//_camera->GetCameraPosBuffer().BindForGraphicsCommandList(_dxCommand->GetCommandList(), CBV_CAMERA_POSITION);
-	cBufPos.BindForGraphicsCommandList(_dxCommand->GetCommandList(), CBV_CAMERA_POSITION);
-	cmdList->SetGraphicsRootDescriptorTable(
-		SRV_VOXEL_TERRAIN_TEXTURE3D, frontSRVHandle
-	);
-	//cmdList->SetGraphicsRootDescriptorTable(
-	//	SRV_TEXTURES, frontSRVHandle
-	//);
-
-	/// --------------- ディスパッチ --------------- ///
-	cmdList->DispatchMesh(
-		voxelTerrain->GetChunkCountXZ().x,
-		1,
-		voxelTerrain->GetChunkCountXZ().y
-	);
-
 }
 
-void ONEngine::VoxelTerrainRenderingPipeline::CreatePipeline(GraphicsPipeline* _pipeline, Shader& _shader, DxManager* _dxm, D3D12_FILL_MODE _fillMode, D3D12_BLEND_DESC _blendMode) {
+void VoxelTerrainRenderingPipeline::CreatePipeline(GraphicsPipeline* _pipeline, Shader& _shader, DxManager* _dxm, D3D12_FILL_MODE _fillMode, D3D12_BLEND_DESC _blendMode) {
 	_pipeline->SetShader(&_shader);
 
 	_pipeline->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 0); // VoxelTerrainInfo

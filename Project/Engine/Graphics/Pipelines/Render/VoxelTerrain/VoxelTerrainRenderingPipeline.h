@@ -9,6 +9,7 @@
 #include "Engine/Graphics/Buffer/VertexBuffer.h"
 #include "Engine/Graphics/Buffer/IndexBuffer.h"
 #include "Engine/Graphics/Buffer/Data/GPUMaterial.h"
+#include <d3d12.h>
 
 /// /////////////////////////////////////////////////
 /// Terrainの描画pipeline
@@ -44,6 +45,7 @@ public:
 	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxm) override;
 	void Draw(class ECSGroup* _ecs, class CameraComponent* _camera, DxCommand* _dxCommand) override;
 
+	void DrawCubic(class VoxelTerrain* vt, CameraComponent* camera, DxCommand* dxCommand);
 
 	void CreatePipeline(GraphicsPipeline* _pipeline, Shader& _shader, DxManager* _dxm, D3D12_FILL_MODE _fillMode, D3D12_BLEND_DESC _blendMode);
 
@@ -56,7 +58,9 @@ private:
 	class AssetCollection* pAssetCollection_;
 	class DxManager* pDxManager_;
 
+	std::unique_ptr<GraphicsPipeline> wireframeSubtractBlendPipeline_;
 	std::unique_ptr<GraphicsPipeline> wireframePipeline_;
+	std::unique_ptr<GraphicsPipeline> cubicPipeline_;
 
 };
 

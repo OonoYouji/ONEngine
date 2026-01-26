@@ -164,14 +164,14 @@ void main(
         bool isPZ = (localPos.z >= chunkSize.z - step.x);
     
         int mask = asPayload.transitionMask;
-        if(isNX && mask & TRANSITION_NX) isBoundary = true;
-        if(isPX && mask & TRANSITION_PX) isBoundary = true;
-        if(isNZ && mask & TRANSITION_NZ) isBoundary = true;
-        if(isPZ && mask & TRANSITION_PZ) isBoundary = true;
-        if(isNX && isNZ && mask & TRANSITION_NXZ) isBoundary = true;
-        if(isPX && isPZ && mask & TRANSITION_PXZ) isBoundary = true;
-        if(isNX && isPZ && mask & TRANSITION_NXPZ) isBoundary = true;
-        if(isPX && isNZ && mask & TRANSITION_PXNZ) isBoundary = true;
+        // if(isNX && mask & TRANSITION_NX) isBoundary = true;
+        // if(isPX && mask & TRANSITION_PX) isBoundary = true;
+        // if(isNZ && mask & TRANSITION_NZ) isBoundary = true;
+        // if(isPZ && mask & TRANSITION_PZ) isBoundary = true;
+        // if(isNX && isNZ && mask & TRANSITION_NXZ) isBoundary = true;
+        // if(isPX && isPZ && mask & TRANSITION_PXZ) isBoundary = true;
+        // if(isNX && isPZ && mask & TRANSITION_NXPZ) isBoundary = true;
+        // if(isPX && isNZ && mask & TRANSITION_PXNZ) isBoundary = true;
     } 
 
 	float cubeDensities[8];

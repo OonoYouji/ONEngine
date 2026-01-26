@@ -26,7 +26,9 @@ void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _
 
 	ImGui::SeparatorText("DebugRendering");
 	Editor::ImMathf::Checkbox("Can MeshShader Rendering", &_voxelTerrain->canMeshShaderRendering_);
+	Editor::ImMathf::Checkbox("Is Rendering Wireframe", &_voxelTerrain->isRenderingWireframe_);
 	Editor::ImMathf::Checkbox("Is Rendering Transvoxel", &_voxelTerrain->isRenderingTransvoxel_);
+	Editor::ImMathf::Checkbox("Is Rendering Cubic", &_voxelTerrain->isRenderingCubic_);
 	//Editor::ImMathf::Checkbox("Can VertexShader Rendering", &_voxelTerrain->canVertexShaderRendering_);
 	static bool showChunkBounds = true;
 	Editor::ImMathf::Checkbox("Show Chunk Bounds", &showChunkBounds);

@@ -158,10 +158,16 @@ void main(
 				if (inputInfo.mouseLeftButton == 1) {
 					if (inputInfo.keyboardLShift == 1) {
 						// ----- 押し下げ ----- //
-						voxelColor.a = 0.0f;
+						voxelColor.a -= 0.03f;
+                        if(voxelColor.a < 0.0f) {
+                            voxelColor.a = 0.0f;
+                        }
 					} else {
 						// ----- 押し上げ ----- //
-						voxelColor.a = 1.0f;
+						voxelColor.a += 0.03f;
+                        if(voxelColor.a > 1.0f) {
+                            voxelColor.a = 1.0f;
+                        }
 					}
 	
 					voxelTextures[chunk.textureId][voxelPos] = voxelColor;
