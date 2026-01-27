@@ -68,9 +68,9 @@ void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _
 
 	/// editor用
 	{
-		static float radius = 5.0f;
-		Editor::ImMathf::DragFloat("Brush Radius", &radius, 0.1f, 1.0f, 100.0f);
-		_voxelTerrain->cBufferEditInfo_.SetMappedData({ radius });
+		static int radius = 5.0f;
+		Editor::ImMathf::DragInt("Brush Radius", &radius, 0.1f, 1.0f, 100.0f);
+		_voxelTerrain->cBufferEditInfo_.SetMappedData({ uint32_t(radius) });
 	}
 
 
@@ -418,4 +418,12 @@ void VoxelTerrain::CopyEditorTextureToChunkTexture(DxCommand* _dxCommand) {
 		chunk.uavTexture.GetDxResource().CreateBarrier(uavTextureBefore, _dxCommand);
 		chunk.pTexture->GetDxResource().CreateBarrier(srvTextureBefore, _dxCommand);
 	}
+}
+
+uint32_t VoxelTerrain::GetBrushRadius() const {
+	if(!cBufferEditInfo_.Get()) {
+		return 0;
+	}
+
+	return cBufferEditInfo_.GetMappingData().brushRadius;
 }

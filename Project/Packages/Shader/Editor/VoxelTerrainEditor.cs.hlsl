@@ -9,7 +9,11 @@ struct InputInfo {
 };
 
 struct EditorInfo {
-	float brushRadius;
+	uint32_t brushRadius;
+};
+
+struct ChunkID {
+    uint value;
 };
 
 
@@ -22,6 +26,7 @@ ConstantBuffer<ViewProjection> viewProjection : register(b1);
 ConstantBuffer<Camera> camera : register(b2);
 ConstantBuffer<InputInfo> inputInfo : register(b3);
 ConstantBuffer<EditorInfo> editorInfo : register(b4);
+ConstantBuffer<ChunkID> chunkID : register(b5);
 
 StructuredBuffer<Chunk> chunks : register(t0);
 Texture2D<float4> worldPositionTexture : register(t1);
@@ -72,17 +77,12 @@ uint3 CaclVoxelPos(uint3 _center, int _value, uint _radius) {
 }
 
 
-[numthreads(256, 1, 1)]
+[shader("compute")]
+[numthreads(4, 4, 4)]
 void main(
     uint3 DTid : SV_DispatchThreadID,
 	uint3 Gid : SV_GroupThreadID,
     uint groupIndex : SV_GroupIndex) {
-	
-    /// 超過していたら抜ける
-	uint chunkIndex = DTid.x;
-	if (voxelTerrainInfo.maxChunkCount <= chunkIndex) {
-		return;
-	}
 
     /// マウスのスクリーン座標をUVに変換してワールド座標をサンプリング
 	float2 mouseUV = inputInfo.screenMousePos / kScreenSize;
@@ -92,9 +92,9 @@ void main(
 	float3 terrainLocalMousePos = mouseWorldPos.xyz - voxelTerrainInfo.terrainOrigin;
 	/// チャンクの原点を計算
 	float3 chunkOrigin = float3(
-		(chunkIndex % voxelTerrainInfo.chunkCountXZ.x) * voxelTerrainInfo.chunkSize.x,
+		(chunkID.value % voxelTerrainInfo.chunkCountXZ.x) * voxelTerrainInfo.chunkSize.x,
 		0,
-		(chunkIndex / voxelTerrainInfo.chunkCountXZ.x) * voxelTerrainInfo.chunkSize.z
+		(chunkID.value / voxelTerrainInfo.chunkCountXZ.x) * voxelTerrainInfo.chunkSize.z
 	);
 
 	/// マウス位置 + 半径 での球とチャンクの当たり判定
@@ -109,7 +109,7 @@ void main(
 	/// ---------------------------------------------------
 
 	/// 対応するチャンクの情報
-	Chunk chunk = chunks[chunkIndex];
+	Chunk chunk = chunks[chunkID.value];
 	/// マウスのチャンク内でのローカル位置
 	float3 chunkLocalMousePos = terrainLocalMousePos - chunkOrigin;
 	
@@ -121,59 +121,46 @@ void main(
 	posY = abs(posY);
 	posY *= voxelTerrainInfo.textureSize.y;
 	chunkLocalMousePos.y = posY;
-	//if (inputInfo.keyboardLShift == 1) {
-	//	chunkLocalMousePos += toCameraDire;
-	//} else {
-	//	chunkLocalMousePos -= toCameraDire;
-	//}
+	
+	uint32_t radius = (uint32_t) editorInfo.brushRadius;
+	int3 lpos = int32_t3(DTid - radius);
+	int lengthSq = lpos.x * lpos.x + lpos.y * lpos.y + lpos.z * lpos.z;
+	if (lengthSq > radius * radius) {
+        return;
+	}
+
+	/// ボクセル位置の色を取得
+	int3 voxelPos = chunkLocalMousePos + lpos;
+	
+	/// 範囲外チェック
+	if (!CheckInside(voxelPos, int3(0, 1, 0), int3(voxelTerrainInfo.textureSize) - int3(0, 1, 0))) {
+        return;
+	}
 
 	
-	int radius = (int) (editorInfo.brushRadius);
-	for (int z = -radius; z < radius; ++z) {
-		for (int y = -radius; y < radius; ++y) {
-			for (int x = -radius; x < radius; ++x) {
-		
-				int3 lpos = int3(x, y, z);
-				int lengthSq = x * x + y * y + z * z;
-				if (lengthSq > radius * radius) {
-					continue;
-				}
-
-				/// ボクセル位置の色を取得
-				int3 voxelPos = chunkLocalMousePos + lpos;
-				
-				/// 範囲外チェック
-				if (!CheckInside(voxelPos, int3(0, 1, 0), int3(voxelTerrainInfo.textureSize) - int3(0, 1, 0))) {
-					continue;
-				}
-
-	
-				float4 voxelColor = voxelTextures[chunk.textureId][voxelPos];
-				if (voxelColor.a != 0.0f) {
-					voxelTextures[chunk.textureId][voxelPos] = float4(0, 1, 0, voxelColor.a);
-				}
+	float4 voxelColor = voxelTextures[chunk.textureId][voxelPos];
+	if (voxelColor.a != 0.0f) {
+		voxelTextures[chunk.textureId][voxelPos] = float4(0, 1, 0, voxelColor.a);
+	}
 	
 	
-				/// 操作次第で色を変更
-				if (inputInfo.mouseLeftButton == 1) {
-					if (inputInfo.keyboardLShift == 1) {
-						// ----- 押し下げ ----- //
-						voxelColor.a -= 0.03f;
-                        if(voxelColor.a < 0.0f) {
-                            voxelColor.a = 0.0f;
-                        }
-					} else {
-						// ----- 押し上げ ----- //
-						voxelColor.a += 0.03f;
-                        if(voxelColor.a > 1.0f) {
-                            voxelColor.a = 1.0f;
-                        }
-					}
-	
-					voxelTextures[chunk.textureId][voxelPos] = voxelColor;
-				}
-			}
+	/// 操作次第で色を変更
+	if (inputInfo.mouseLeftButton == 1) {
+		if (inputInfo.keyboardLShift == 1) {
+			// ----- 押し下げ ----- //
+			voxelColor.a -= 0.03f;
+            if(voxelColor.a < 0.0f) {
+                voxelColor.a = 0.0f;
+            }
+		} else {
+			// ----- 押し上げ ----- //
+			voxelColor.a += 0.03f;
+            if(voxelColor.a > 1.0f) {
+                voxelColor.a = 1.0f;
+            }
 		}
+    
+		voxelTextures[chunk.textureId][voxelPos] = voxelColor;
 	}
 
 }

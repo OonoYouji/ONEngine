@@ -115,7 +115,7 @@ struct InputInfo {
 
 /// @brief VoxelTerrainの編集用データ
 struct EditInfo {
-	float brushRadius;
+	uint32_t brushRadius;
 };
 
 
@@ -231,6 +231,9 @@ public:
 
 	bool CanMeshShaderRendering() const { return canMeshShaderRendering_; }
 	bool IsEditMode() const { return isEditMode_; }
+
+
+	uint32_t GetBrushRadius() const;
 
 private:
 	/// ===========================================

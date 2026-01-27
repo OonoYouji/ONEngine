@@ -17,96 +17,96 @@ using namespace ONEngine;
 namespace {
 
 
-	/// @brief ViewProjection行列から視錐台を作成する
-	/// @param _matVP ViewProjection行列
-	/// @return Frustum
-	Frustum CreateFrustumFromMatrix(const Matrix4x4& _matVP) {
-		Frustum frustum;
+/// @brief ViewProjection行列から視錐台を作成する
+/// @param _matVP ViewProjection行列
+/// @return Frustum
+Frustum CreateFrustumFromMatrix(const Matrix4x4& _matVP) {
+	Frustum frustum;
 
-		// Left
-		frustum.planes[0].normal.x = _matVP.m[0][3] + _matVP.m[0][0];
-		frustum.planes[0].normal.y = _matVP.m[1][3] + _matVP.m[1][0];
-		frustum.planes[0].normal.z = _matVP.m[2][3] + _matVP.m[2][0];
-		frustum.planes[0].d = _matVP.m[3][3] + _matVP.m[3][0];
+	// Left
+	frustum.planes[0].normal.x = _matVP.m[0][3] + _matVP.m[0][0];
+	frustum.planes[0].normal.y = _matVP.m[1][3] + _matVP.m[1][0];
+	frustum.planes[0].normal.z = _matVP.m[2][3] + _matVP.m[2][0];
+	frustum.planes[0].d = _matVP.m[3][3] + _matVP.m[3][0];
 
-		// Right
-		frustum.planes[1].normal.x = _matVP.m[0][3] - _matVP.m[0][0];
-		frustum.planes[1].normal.y = _matVP.m[1][3] - _matVP.m[1][0];
-		frustum.planes[1].normal.z = _matVP.m[2][3] - _matVP.m[2][0];
-		frustum.planes[1].d = _matVP.m[3][3] - _matVP.m[3][0];
+	// Right
+	frustum.planes[1].normal.x = _matVP.m[0][3] - _matVP.m[0][0];
+	frustum.planes[1].normal.y = _matVP.m[1][3] - _matVP.m[1][0];
+	frustum.planes[1].normal.z = _matVP.m[2][3] - _matVP.m[2][0];
+	frustum.planes[1].d = _matVP.m[3][3] - _matVP.m[3][0];
 
-		// Bottom
-		frustum.planes[2].normal.x = _matVP.m[0][3] + _matVP.m[0][1];
-		frustum.planes[2].normal.y = _matVP.m[1][3] + _matVP.m[1][1];
-		frustum.planes[2].normal.z = _matVP.m[2][3] + _matVP.m[2][1];
-		frustum.planes[2].d = _matVP.m[3][3] + _matVP.m[3][1];
+	// Bottom
+	frustum.planes[2].normal.x = _matVP.m[0][3] + _matVP.m[0][1];
+	frustum.planes[2].normal.y = _matVP.m[1][3] + _matVP.m[1][1];
+	frustum.planes[2].normal.z = _matVP.m[2][3] + _matVP.m[2][1];
+	frustum.planes[2].d = _matVP.m[3][3] + _matVP.m[3][1];
 
-		// Top
-		frustum.planes[3].normal.x = _matVP.m[0][3] - _matVP.m[0][1];
-		frustum.planes[3].normal.y = _matVP.m[1][3] - _matVP.m[1][1];
-		frustum.planes[3].normal.z = _matVP.m[2][3] - _matVP.m[2][1];
-		frustum.planes[3].d = _matVP.m[3][3] - _matVP.m[3][1];
+	// Top
+	frustum.planes[3].normal.x = _matVP.m[0][3] - _matVP.m[0][1];
+	frustum.planes[3].normal.y = _matVP.m[1][3] - _matVP.m[1][1];
+	frustum.planes[3].normal.z = _matVP.m[2][3] - _matVP.m[2][1];
+	frustum.planes[3].d = _matVP.m[3][3] - _matVP.m[3][1];
 
-		// Near
-		frustum.planes[4].normal.x = _matVP.m[0][2];
-		frustum.planes[4].normal.y = _matVP.m[1][2];
-		frustum.planes[4].normal.z = _matVP.m[2][2];
-		frustum.planes[4].d = _matVP.m[3][2];
+	// Near
+	frustum.planes[4].normal.x = _matVP.m[0][2];
+	frustum.planes[4].normal.y = _matVP.m[1][2];
+	frustum.planes[4].normal.z = _matVP.m[2][2];
+	frustum.planes[4].d = _matVP.m[3][2];
 
-		// Far
-		frustum.planes[5].normal.x = _matVP.m[0][3] - _matVP.m[0][2];
-		frustum.planes[5].normal.y = _matVP.m[1][3] - _matVP.m[1][2];
-		frustum.planes[5].normal.z = _matVP.m[2][3] - _matVP.m[2][2];
-		frustum.planes[5].d = _matVP.m[3][3] - _matVP.m[3][2];
+	// Far
+	frustum.planes[5].normal.x = _matVP.m[0][3] - _matVP.m[0][2];
+	frustum.planes[5].normal.y = _matVP.m[1][3] - _matVP.m[1][2];
+	frustum.planes[5].normal.z = _matVP.m[2][3] - _matVP.m[2][2];
+	frustum.planes[5].d = _matVP.m[3][3] - _matVP.m[3][2];
 
-		// 法線を正規化
-		for (auto& p : frustum.planes) {
-			p.normal = p.normal.Normalize();
-			p.d /= p.normal.Length(); // Normalize 内で0除算済みでも安全のため
-		}
-
-		return frustum;
+	// 法線を正規化
+	for(auto& p : frustum.planes) {
+		p.normal = p.normal.Normalize();
+		p.d /= p.normal.Length(); // Normalize 内で0除算済みでも安全のため
 	}
 
+	return frustum;
+}
 
-	/// @brief 視錐台の情報をImGuiで表示する
-	/// @param _frustum 表示元のデータ
-	void ImGuiShowFrustum(const Frustum& _frustum) {
-		if (ImGui::CollapsingHeader("Frustum")) {
-			const char* names[6] = { "Left", "Right", "Bottom", "Top", "Near", "Far" };
-			std::string clipboardText;
 
-			for (int i = 0; i < 6; ++i) {
-				ImGui::Text("%s plane:", names[i]);
-				ImGui::Text("  Normal: %.3f, %.3f, %.3f",
-					_frustum.planes[i].normal.x,
-					_frustum.planes[i].normal.y,
-					_frustum.planes[i].normal.z);
-				ImGui::Text("  Distance: %.3f", _frustum.planes[i].d);
+/// @brief 視錐台の情報をImGuiで表示する
+/// @param _frustum 表示元のデータ
+void ImGuiShowFrustum(const Frustum& _frustum) {
+	if(ImGui::CollapsingHeader("Frustum")) {
+		const char* names[6] = { "Left", "Right", "Bottom", "Top", "Near", "Far" };
+		std::string clipboardText;
 
-				// クリップボード用文字列を作成
-				clipboardText += names[i];
-				clipboardText += " plane: ";
-				clipboardText += "Normal(";
-				clipboardText += std::to_string(_frustum.planes[i].normal.x) + ", ";
-				clipboardText += std::to_string(_frustum.planes[i].normal.y) + ", ";
-				clipboardText += std::to_string(_frustum.planes[i].normal.z) + "), ";
-				clipboardText += "Distance(" + std::to_string(_frustum.planes[i].d) + ")\n";
-			}
+		for(int i = 0; i < 6; ++i) {
+			ImGui::Text("%s plane:", names[i]);
+			ImGui::Text("  Normal: %.3f, %.3f, %.3f",
+						_frustum.planes[i].normal.x,
+						_frustum.planes[i].normal.y,
+						_frustum.planes[i].normal.z);
+			ImGui::Text("  Distance: %.3f", _frustum.planes[i].d);
 
-			// Clipboardコピー用ボタン
-			if (ImGui::Button("Copy Frustum Data to Clipboard")) {
-				ImGui::SetClipboardText(clipboardText.c_str());
-			}
+			// クリップボード用文字列を作成
+			clipboardText += names[i];
+			clipboardText += " plane: ";
+			clipboardText += "Normal(";
+			clipboardText += std::to_string(_frustum.planes[i].normal.x) + ", ";
+			clipboardText += std::to_string(_frustum.planes[i].normal.y) + ", ";
+			clipboardText += std::to_string(_frustum.planes[i].normal.z) + "), ";
+			clipboardText += "Distance(" + std::to_string(_frustum.planes[i].d) + ")\n";
+		}
+
+		// Clipboardコピー用ボタン
+		if(ImGui::Button("Copy Frustum Data to Clipboard")) {
+			ImGui::SetClipboardText(clipboardText.c_str());
 		}
 	}
+}
 
 
 }	/// namespace
 
 
 void ComponentDebug::CameraDebug(CameraComponent* _camera) {
-	if (!_camera) {
+	if(!_camera) {
 		return;
 	}
 
@@ -122,7 +122,7 @@ void ComponentDebug::CameraDebug(CameraComponent* _camera) {
 
 	ImGui::Spacing();
 
-	if (ImGui::Button("main camera setting")) {
+	if(ImGui::Button("main camera setting")) {
 		_camera->SetIsMainCameraRequest(true);
 	}
 
@@ -130,24 +130,24 @@ void ComponentDebug::CameraDebug(CameraComponent* _camera) {
 	/// frustum debug
 	ImGui::Checkbox("Draw Frustum", &_camera->isDrawFrustum_);
 
-	if (ImGui::CollapsingHeader("Frustum Debug")) {
+	if(ImGui::CollapsingHeader("Frustum Debug")) {
 		Frustum frustum = CreateFrustumFromMatrix(_camera->GetViewProjection().matVP);
 		ImGuiShowFrustum(frustum);
 	}
 
-	if (ImGui::CollapsingHeader("Matrix Debug")) {
+	if(ImGui::CollapsingHeader("Matrix Debug")) {
 
 		/// 行列のデバッグ表示
 		const ViewProjection& vp = _camera->GetViewProjection();
 		ImGui::Text("View Matrix:");
-		for (int i = 0; i < 4; ++i) {
+		for(int i = 0; i < 4; ++i) {
 			ImGui::Text("%.3f %.3f %.3f %.3f", vp.matView.m[i][0], vp.matView.m[i][1], vp.matView.m[i][2], vp.matView.m[i][3]);
 		}
 
 		/// View行列をClipboardにコピーする
-		if (ImGui::Button("Copy View Matrix to Clipboard")) {
+		if(ImGui::Button("Copy View Matrix to Clipboard")) {
 			std::string viewMatrixStr;
-			for (int i = 0; i < 4; ++i) {
+			for(int i = 0; i < 4; ++i) {
 				viewMatrixStr += std::format("{:.6f} {:.6f} {:.6f} {:.6f}\n", vp.matView.m[i][0], vp.matView.m[i][1], vp.matView.m[i][2], vp.matView.m[i][3]);
 			}
 			ImGui::SetClipboardText(viewMatrixStr.c_str());
@@ -155,14 +155,14 @@ void ComponentDebug::CameraDebug(CameraComponent* _camera) {
 
 
 		ImGui::Text("Projection Matrix:");
-		for (int i = 0; i < 4; ++i) {
+		for(int i = 0; i < 4; ++i) {
 			ImGui::Text("%.3f %.3f %.3f %.3f", vp.matProjection.m[i][0], vp.matProjection.m[i][1], vp.matProjection.m[i][2], vp.matProjection.m[i][3]);
 		}
 
 		/// Projection行列をClipboardにコピーする
-		if (ImGui::Button("Copy Projection Matrix to Clipboard")) {
+		if(ImGui::Button("Copy Projection Matrix to Clipboard")) {
 			std::string projectionMatrixStr;
-			for (int i = 0; i < 4; ++i) {
+			for(int i = 0; i < 4; ++i) {
 				projectionMatrixStr += std::format("{:.6f} {:.6f} {:.6f} {:.6f}\n", vp.matProjection.m[i][0], vp.matProjection.m[i][1], vp.matProjection.m[i][2], vp.matProjection.m[i][3]);
 			}
 			ImGui::SetClipboardText(projectionMatrixStr.c_str());
@@ -212,14 +212,14 @@ CameraComponent::~CameraComponent() {}
 
 void CameraComponent::UpdateViewProjection() {
 	GameEntity* entity = GetOwner();
-	if (!entity) {
+	if(!entity) {
 		return; // エンティティが存在しない場合は何もしない
 	}
 
 	entity->UpdateTransform(); /// transformの更新し忘れ防止
 	matView_ = entity->GetTransform()->GetMatWorld().Inverse();
 
-	if (cameraType_ == static_cast<int>(CameraType::Type3D)) {
+	if(cameraType_ == static_cast<int>(CameraType::Type3D)) {
 		/// 3Dカメラの場合
 		matProjection_ = CameraMath::MakePerspectiveFovMatrix(
 			fovY_, EngineConfig::kWindowSize.x / EngineConfig::kWindowSize.y,
@@ -240,6 +240,38 @@ void CameraComponent::UpdateViewProjection() {
 	viewProjection_.SetMappedData(ViewProjection(matView_ * matProjection_, matView_, matProjection_));
 	Vector4 cameraPos = Math::ConvertToVector4(entity->GetPosition(), 1.0f);
 	cameraPosBuffer_.SetMappedData(cameraPos);
+}
+
+bool CameraComponent::IsVisible(const Vector3& center, const Vector3& size) const {
+	Vector3 min = center - (size / 2.0f);
+	Vector3 max = center + (size / 2.0f);
+	Frustum frustum = CreateFrustumFromMatrix(GetViewProjection().matVP);
+
+	Vector3 vertices[8] = {
+		min,
+		Vector3(max.x, min.y, min.z),
+		Vector3(min.x, max.y, min.z),
+		Vector3(max.x, max.y, min.z),
+		Vector3(min.x, min.y, max.z),
+		Vector3(max.x, min.y, max.z),
+		Vector3(min.x, max.y, max.z),
+		max
+	};
+
+	for(int i = 0; i < 6; ++i) {
+		bool allOutside = true;
+		for(int v = 0; v < 8; ++v) {
+			float d = Vector3::Dot(frustum.planes[i].normal, vertices[v]) + frustum.planes[i].d;
+			if(d >= 0) {
+				allOutside = false;
+				break;
+			}
+		}
+		if(allOutside) {
+			return false;
+		}
+	}
+	return true;
 }
 
 void CameraComponent::MakeViewProjection(DxDevice* _dxDevice) {

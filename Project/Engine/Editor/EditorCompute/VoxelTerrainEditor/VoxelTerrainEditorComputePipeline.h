@@ -17,6 +17,7 @@ class VoxelTerrainEditorComputePipeline : public IEditorCompute {
 		CBV_CAMERA,
 		CBV_INPUT_INFO,
 		CBV_EDITOR_INFO,
+		C32BIT_CHUNK_ID,
 		SRV_CHUNKS,
 		SRV_WORLD_TEXTURE,
 		UAV_VOXEL_TEXTURES
