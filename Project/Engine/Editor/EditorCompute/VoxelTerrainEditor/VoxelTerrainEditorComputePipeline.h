@@ -3,6 +3,7 @@
 /// engine
 #include "../Interface/IEditorCompute.h"
 #include "Engine/Asset/Assets/Texture/Texture.h"
+#include "Engine/Graphics/Buffer/StructuredBuffer.h"
 
 /// /////////////////////////////////////////////////
 /// ボクセル地形を編集するためのパイプラインを起動するクラス
@@ -18,6 +19,7 @@ class VoxelTerrainEditorComputePipeline : public IEditorCompute {
 		CBV_INPUT_INFO,
 		CBV_EDITOR_INFO,
 		C32BIT_CHUNK_ID,
+		UAV_MOUSE_POS,
 		SRV_CHUNKS,
 		SRV_WORLD_TEXTURE,
 		UAV_VOXEL_TEXTURES
@@ -52,6 +54,7 @@ private:
 	/// n = maxEditCount_
 	ONEngine::Texture editedTexture_;
 
+	ONEngine::StructuredBuffer<ONEngine::Vector4> uavMousePosBuffer_;
 };
 
 } /// Editor

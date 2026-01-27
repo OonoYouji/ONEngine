@@ -16,6 +16,10 @@ struct ChunkID {
     uint value;
 };
 
+struct MousePos {
+    float4 worldPos;
+};
+
 
 /// ///////////////////////////////////////////////////
 /// buffers
@@ -28,9 +32,10 @@ ConstantBuffer<InputInfo> inputInfo : register(b3);
 ConstantBuffer<EditorInfo> editorInfo : register(b4);
 ConstantBuffer<ChunkID> chunkID : register(b5);
 
+RWStructuredBuffer<MousePos> mousePosBuffer : register(u0);
 StructuredBuffer<Chunk> chunks : register(t0);
 Texture2D<float4> worldPositionTexture : register(t1);
-RWTexture3D<float4> voxelTextures[] : register(u0);
+RWTexture3D<float4> voxelTextures[] : register(u1);
 SamplerState textureSampler : register(s0);
 
 /// ///////////////////////////////////////////////////
@@ -87,6 +92,9 @@ void main(
     /// マウスのスクリーン座標をUVに変換してワールド座標をサンプリング
 	float2 mouseUV = inputInfo.screenMousePos / kScreenSize;
 	float4 mouseWorldPos = worldPositionTexture.Sample(textureSampler, mouseUV);
+    if(DTid.x == 0 && DTid.y == 0 && DTid.z == 0) {
+        mousePosBuffer[0].worldPos = mouseWorldPos;
+    }
 	
 	/// 地形のローカル座標に変換
 	float3 terrainLocalMousePos = mouseWorldPos.xyz - voxelTerrainInfo.terrainOrigin;
