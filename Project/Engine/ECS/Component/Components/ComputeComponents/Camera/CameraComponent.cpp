@@ -61,8 +61,8 @@ Frustum CreateFrustumFromMatrix(const Matrix4x4& _matVP) {
 
 	// 法線を正規化
 	for(auto& p : frustum.planes) {
-		p.normal = p.normal.Normalize();
 		p.d /= p.normal.Length(); // Normalize 内で0除算済みでも安全のため
+		p.normal = p.normal.Normalize();
 	}
 
 	return frustum;

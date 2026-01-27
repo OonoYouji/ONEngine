@@ -92,9 +92,7 @@ void main(
     /// マウスのスクリーン座標をUVに変換してワールド座標をサンプリング
 	float2 mouseUV = inputInfo.screenMousePos / kScreenSize;
 	float4 mouseWorldPos = worldPositionTexture.Sample(textureSampler, mouseUV);
-    if(DTid.x == 0 && DTid.y == 0 && DTid.z == 0) {
-        mousePosBuffer[0].worldPos = mouseWorldPos;
-    }
+    mousePosBuffer[0].worldPos = mouseWorldPos;
 	
 	/// 地形のローカル座標に変換
 	float3 terrainLocalMousePos = mouseWorldPos.xyz - voxelTerrainInfo.terrainOrigin;
@@ -109,7 +107,7 @@ void main(
 	if (!CheckSphereAABB(
 		mouseWorldPos.xyz, editorInfo.brushRadius,
 		chunkOrigin, chunkOrigin + voxelTerrainInfo.chunkSize)) {
-		return;
+		// return;
 	}
 
 	/// ---------------------------------------------------
@@ -122,8 +120,9 @@ void main(
 	float3 chunkLocalMousePos = terrainLocalMousePos - chunkOrigin;
 	
 	/// ローカル位置をカメラ方向に -1 して１つ前のボクセル位置にする
-	float3 toCameraDire = normalize(camera.position.xyz - mouseWorldPos.xyz);
+	// float3 toCameraDire = normalize(camera.position.xyz - mouseWorldPos.xyz);
 	
+    /// Y軸を反転させ左手座標系からテクスチャ座標系に
 	float posY = chunkLocalMousePos.y / voxelTerrainInfo.textureSize.y;
 	posY -= 1.0f;
 	posY = abs(posY);
@@ -131,7 +130,7 @@ void main(
 	chunkLocalMousePos.y = posY;
 	
 	uint32_t radius = (uint32_t) editorInfo.brushRadius;
-	int3 lpos = int32_t3(DTid - radius);
+	int3 lpos = int32_t3(DTid - int3(radius, radius, radius));
 	int lengthSq = lpos.x * lpos.x + lpos.y * lpos.y + lpos.z * lpos.z;
 	if (lengthSq > radius * radius) {
         return;
