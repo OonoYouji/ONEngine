@@ -63,13 +63,32 @@ void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _
 	Editor::ImMathf::DragInt3("Texture Size", &_voxelTerrain->textureSize_, 1, 1, 256);
 	Editor::ImMathf::DragFloat("ISOLevel", &_voxelTerrain->isoLevel_, 0.05f, 0.0f, 1.0f);
 
+	if(ImGui::CollapsingHeader("LODInfo")) {
+		bool useLOD = _voxelTerrain->lodInfo_.useLOD;
+		if(Editor::ImMathf::Checkbox("Use LOD", &useLOD)) {
+			_voxelTerrain->lodInfo_.useLOD = useLOD;
+		}
+
+		if(useLOD) {
+			Editor::ImMathf::DragFloat("LOD Distance 0", &_voxelTerrain->lodInfo_.lodDistance0, 1.0f, 0.0f, 1000.0f);
+			Editor::ImMathf::DragFloat("LOD Distance 1", &_voxelTerrain->lodInfo_.lodDistance1, 1.0f, 0.0f, 1000.0f);
+			Editor::ImMathf::DragFloat("LOD Distance 2", &_voxelTerrain->lodInfo_.lodDistance2, 1.0f, 0.0f, 1000.0f);
+			Editor::ImMathf::DragFloat("Max Draw Distance", &_voxelTerrain->lodInfo_.maxDrawDistance, 10.0f, 0.0f, 5000.0f);
+
+			int lod = static_cast<int>(_voxelTerrain->lodInfo_.lod);
+			if(Editor::ImMathf::DragInt("LOD", &lod, 1, 0, 3)) {
+				_voxelTerrain->lodInfo_.lod = static_cast<uint32_t>(lod);
+			}
+		}
+	}
+
 
 	Editor::ImMathf::MaterialEdit("Material", &_voxelTerrain->material_, _ac, false);
 
 	/// editor用
 	{
-		static int radius = 5.0f;
-		Editor::ImMathf::DragInt("Brush Radius", &radius, 0.1f, 1.0f, 100.0f);
+		static int radius = 5;
+		Editor::ImMathf::DragInt("Brush Radius", &radius, 1, 1, 100);
 		_voxelTerrain->cBufferEditInfo_.SetMappedData({ uint32_t(radius) });
 	}
 
@@ -150,6 +169,13 @@ void ONEngine::from_json(const nlohmann::json& _j, VoxelTerrain& _voxelTerrain) 
 
 	_voxelTerrain.material_ = _j.value("material", Material{});
 	_voxelTerrain.chunks_ = _j.value("chunks", std::vector<Chunk>{});
+
+	_voxelTerrain.lodInfo_.useLOD = _j.value("useLOD", 1);
+	_voxelTerrain.lodInfo_.lodDistance0 = _j.value("lod0Distance", 50.0f);
+	_voxelTerrain.lodInfo_.lodDistance1 = _j.value("lod1Distance", 100.0f);
+	_voxelTerrain.lodInfo_.lodDistance2 = _j.value("lod2Distance", 200.0f);
+	_voxelTerrain.lodInfo_.maxDrawDistance = _j.value("maxDrawDistance", 1000.0f);
+	_voxelTerrain.lodInfo_.lod = _j.value("lod", 1);
 }
 
 void ONEngine::to_json(nlohmann::json& _j, const VoxelTerrain& _voxelTerrain) {
@@ -163,7 +189,14 @@ void ONEngine::to_json(nlohmann::json& _j, const VoxelTerrain& _voxelTerrain) {
 		{ "chunkCountXZ", _voxelTerrain.chunkCountXZ_ },
 		{ "isoLevel", _voxelTerrain.isoLevel_ },
 		{ "material", _voxelTerrain.material_ },
-		{ "chunks", _voxelTerrain.chunks_ }
+		{ "chunks", _voxelTerrain.chunks_ },
+
+		{ "useLOD", _voxelTerrain.lodInfo_.useLOD },
+		{ "lod0Distance", _voxelTerrain.lodInfo_.lodDistance0 },
+		{ "lod1Distance", _voxelTerrain.lodInfo_.lodDistance1 },
+		{ "lod2Distance", _voxelTerrain.lodInfo_.lodDistance2 },
+		{ "maxDrawDistance", _voxelTerrain.lodInfo_.maxDrawDistance },
+		{ "lod", _voxelTerrain.lodInfo_.lod }
 	};
 }
 
@@ -225,6 +258,7 @@ void VoxelTerrain::CreateBuffers(DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap, Ass
 	cBufferTerrainInfo_.Create(_dxDevice);
 	sBufferChunks_.Create(chunkCount, _dxDevice, _dxSRVHeap);
 	cBufferMaterial_.Create(_dxDevice);
+	cBufferLODInfo_.Create(_dxDevice);
 
 
 	/// ChunkArrayの設定
@@ -239,13 +273,17 @@ void VoxelTerrain::CreateBuffers(DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap, Ass
 	}
 }
 
-void VoxelTerrain::SetupGraphicBuffers(ID3D12GraphicsCommandList* _cmdList, const std::array<UINT, 3> _rootParamIndices, AssetCollection* _assetCollection) {
+void VoxelTerrain::SetupGraphicBuffers(ID3D12GraphicsCommandList* _cmdList, const std::array<UINT, 4> _rootParamIndices, AssetCollection* _assetCollection) {
 	maxChunkCount_ = static_cast<UINT>(chunkCountXZ_.x * chunkCountXZ_.y);
 
 	/// VoxelTerrainInfoの設定
 	Vector3 terrainOrigin = GetOwner()->GetTransform()->GetPosition();
 	cBufferTerrainInfo_.SetMappedData(GPUData::VoxelTerrainInfo{ terrainOrigin, 0, textureSize_, 0, chunkSize_, 0, chunkCountXZ_, maxChunkCount_, isoLevel_ });
 	cBufferTerrainInfo_.BindForGraphicsCommandList(_cmdList, _rootParamIndices[0]);
+
+	/// LODの設定
+	cBufferLODInfo_.SetMappedData(lodInfo_);
+	cBufferLODInfo_.BindForGraphicsCommandList(_cmdList, _rootParamIndices[3]);
 
 	/// Materialの設定
 	SettingMaterial();
@@ -327,6 +365,7 @@ void VoxelTerrain::CreateEditorBuffers(DxDevice* _dxDevice, DxSRVHeap* _dxSRVHea
 	cBufferInputInfo_.Create(_dxDevice);
 	cBufferEditInfo_.Create(_dxDevice);
 	sBufferEditorChunks_.Create(chunkCount, _dxDevice, _dxSRVHeap);
+	cBufferTerrainInfo_.Create(_dxDevice);
 }
 
 void VoxelTerrain::SetupEditorBuffers(ID3D12GraphicsCommandList* _cmdList, const std::array<UINT, 4> _rootParamIndices, AssetCollection* _assetCollection, const GPUData::InputInfo& _inputInfo) {

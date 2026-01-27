@@ -26,10 +26,6 @@ struct Payload {
 };
 
 
-struct CommandInfo {
-	int3 dispatchSize;
-};
-
 /// ---------------------------------------------------
 /// VoxelTerrain Common Buffers
 /// ---------------------------------------------------
@@ -37,5 +33,23 @@ struct CommandInfo {
 ConstantBuffer<VoxelTerrainInfo> voxelTerrainInfo : register(b0);
 ConstantBuffer<ViewProjection>   viewProjection   : register(b1);
 ConstantBuffer<Camera>           camera           : register(b2);
+ConstantBuffer<LODInfo>          lodInfo          : register(b3);
 
 StructuredBuffer<Chunk> chunks : register(t0);
+
+
+
+uint32_t GetLOD(float32_t distanceToCamera) {
+    if (distanceToCamera < lodInfo.lodDistance1) {
+        return 0;
+    } else if (distanceToCamera < lodInfo.lodDistance2) {
+        return 1;
+    } else if (distanceToCamera < lodInfo.lodDistance3) {
+        return 2;
+    } 
+    return 3;
+}
+
+uint32_t GetSubChunkSize(uint32_t lodLevel) {
+    return 2u << lodLevel;
+}

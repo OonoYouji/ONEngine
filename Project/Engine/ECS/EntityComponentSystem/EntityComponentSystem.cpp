@@ -518,7 +518,7 @@ void ONEngine::MonoInternalMethods::InternalSetBatch(MonoReflectionType* _typeRe
 
 	size_t elementSize = ComponentApplyFuncs::GetBatchElementSize(monoClass);
 	for(size_t i = 0; i < _count; i++) {
-		void* element = mono_array_addr_with_size(_batchArray, elementSize, i);
+		void* element = mono_array_addr_with_size(_batchArray, static_cast<int>(elementSize), i);
 		func(element, ecsGroup);
 	}
 

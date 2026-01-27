@@ -16,6 +16,13 @@ struct SubChunk {
 	uint32_t3 subChunkSize;
 };
 
+struct LODInfo {
+    uint32_t usedLod;
+    float32_t lodDistance1;
+    float32_t lodDistance2;
+    float32_t lodDistance3;
+};
+
 // 頂点オフセット (0-7) - 中心を原点とする版
 static const float3 kCornerOffsets[8] = {
 	float3(-0.5, -0.5, -0.5), float3(0.5, -0.5, -0.5),
