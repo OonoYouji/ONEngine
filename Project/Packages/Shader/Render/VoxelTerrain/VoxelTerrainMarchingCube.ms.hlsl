@@ -99,7 +99,7 @@ float3 GetGradient(float3 _localPos, uint _chunkId) {
 }
 
 // 頂点補間
-VertexOut VertexInterp(float3 p1, float3 p2, float3 _chunkOrigin,float3 subChunkSize, float d1, float d2, uint _chunkId) {
+VertexOut VertexInterp(float3 p1, float3 p2, float3 chunkOrigin,float3 subChunkSize, float d1, float d2, uint chunkId) {
 	VertexOut vOut;
 	
 	// 補間係数の計算（ゼロ除算対策）
@@ -113,7 +113,7 @@ VertexOut VertexInterp(float3 p1, float3 p2, float3 _chunkOrigin,float3 subChunk
 	
 	float3 localPos = lerp(p1, p2, t);
 	
-	vOut.worldPosition = float4(localPos + _chunkOrigin, 1.0f);
+	vOut.worldPosition = float4(localPos + chunkOrigin, 1.0f);
     vOut.worldPosition.xz += (subChunkSize / 2.0).xz; 
 
 	vOut.position = mul(vOut.worldPosition, viewProjection.matVP);
@@ -121,15 +121,15 @@ VertexOut VertexInterp(float3 p1, float3 p2, float3 _chunkOrigin,float3 subChunk
 	// 高さベースの色付け
 	// float worldY = vOut.worldPosition.y;
 	// vOut.color = lerp(float4(0.3, 0.8, 0.3, 1), float4(0.6, 0.5, 0.3, 1), worldY / 512.0f);
-    vOut.color = DebugColor(_chunkId);
+    vOut.color = DebugColor(chunkId);
 	
 	return vOut;
 }
 
 
-float3 GetNormal(float3 _p0, float3 _p1, float3 _p2) {
-	float3 u = _p1 - _p0;
-	float3 v = _p2 - _p0;
+float3 GetNormal(float3 p0, float3 p1, float3 p2) {
+	float3 u = p1 - p0;
+	float3 v = p2 - p0;
 	return normalize(cross(u, v));
 }
 

@@ -17,10 +17,12 @@ struct SubChunk {
 };
 
 struct LODInfo {
-    uint32_t usedLod;
+    uint32_t useLod;
     float32_t lodDistance1;
     float32_t lodDistance2;
     float32_t lodDistance3;
+    float32_t maxDrawDistance;
+    uint32_t lod;
 };
 
 // 頂点オフセット (0-7) - 中心を原点とする版

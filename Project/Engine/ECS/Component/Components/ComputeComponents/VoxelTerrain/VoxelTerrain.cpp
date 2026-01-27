@@ -75,6 +75,8 @@ void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _
 			Editor::ImMathf::DragFloat("LOD Distance 2", &_voxelTerrain->lodInfo_.lodDistance2, 1.0f, 0.0f, 1000.0f);
 			Editor::ImMathf::DragFloat("Max Draw Distance", &_voxelTerrain->lodInfo_.maxDrawDistance, 10.0f, 0.0f, 5000.0f);
 
+		} else {
+
 			int lod = static_cast<int>(_voxelTerrain->lodInfo_.lod);
 			if(Editor::ImMathf::DragInt("LOD", &lod, 1, 0, 3)) {
 				_voxelTerrain->lodInfo_.lod = static_cast<uint32_t>(lod);

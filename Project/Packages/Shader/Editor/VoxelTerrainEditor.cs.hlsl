@@ -107,7 +107,7 @@ void main(
 	if (!CheckSphereAABB(
 		mouseWorldPos.xyz, editorInfo.brushRadius,
 		chunkOrigin, chunkOrigin + voxelTerrainInfo.chunkSize)) {
-		// return;
+		return;
 	}
 
 	/// ---------------------------------------------------
