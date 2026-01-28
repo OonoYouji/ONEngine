@@ -1,4 +1,4 @@
-﻿#include "VoxelTerrain.hlsli"
+#include "VoxelTerrain.hlsli"
 #include "../VoxelTerrainTest/Table.hlsli"
 
 // ---------------------------------------------------
@@ -133,16 +133,33 @@ float3 GetNormal(float3 p0, float3 p1, float3 p2) {
 	return normalize(cross(u, v));
 }
 
+float32_t3 GetBasePos(uint32_t id, uint32_t3 size, uint32_t3 step) {
+    // uint32_t3 size = voxelTerrainInfo.chunkSize;
+    uint32_t3 gridPos = uint32_t3(
+        id % size.x,
+        (id / size.x) % size.y,
+        id / (size.x * size.y)
+    );
+
+    return float32_t3(gridPos * step);
+}
+
+
+struct ThreadSharedData {
+    float densities[8];
+    uint cubeIndex;
+    uint triCount;
+};
+
 
 // ---------------------------------------------------
 // マーチングキューブ法の1ボクセルが表示する最大頂点は 15頂点 なので
 // 2*4*2= 16
 // 16*15=240頂点, 16*5=80三角形
-// 3以降は頂点の個数が増えすぎるため使えない
 // ---------------------------------------------------
 [shader("mesh")]
 [outputtopology("triangle")]
-[numthreads(2, 4, 2)]
+[numthreads(16, 1, 1)]
 void main(
 	uint3 DTid : SV_DispatchThreadID,
 	in payload Payload asPayload,
@@ -150,7 +167,7 @@ void main(
 	out indices uint3 indis[80]) {
 
 	uint3 step = asPayload.subChunkSize;
-	float3 basePos = float3(DTid * step);
+	float3 basePos = GetBasePos(DTid.x, asPayload.chunkSize, step);
 
     uint32_t3 chunkSize = uint32_t3(voxelTerrainInfo.chunkSize);
     uint32_t transitionCode = 0;
@@ -172,8 +189,8 @@ void main(
 	}
 
 	[unroll]
-	for (int i = 0; i < 15; i += 3) {
-		triCount += (TriTable[cubeIndex][i] != -1) ? 1 : 0;
+	for (int i = 0; i < 5; i++) {
+		triCount += (TriTable[cubeIndex][i * 3] != -1) ? 1 : 0;
 	}
 
     uint outputTriOffset = WavePrefixSum(triCount);

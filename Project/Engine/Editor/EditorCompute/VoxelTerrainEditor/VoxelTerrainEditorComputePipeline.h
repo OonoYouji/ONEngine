@@ -55,6 +55,7 @@ private:
 	ONEngine::Texture editedTexture_;
 
 	ONEngine::StructuredBuffer<ONEngine::Vector4> uavMousePosBuffer_;
+	ONEngine::Vector4 mousePos_;
 };
 
 } /// Editor

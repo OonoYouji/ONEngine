@@ -64,6 +64,6 @@ void main(
 	}
 
 	/// 分割された個数でディスパッチ
-	asPayload.dispatchSize = dispatchSize;
+	// asPayload.dispatchSize = dispatchSize;
 	DispatchMesh(dispatchSize.x, dispatchSize.y, dispatchSize.z, asPayload);
 }

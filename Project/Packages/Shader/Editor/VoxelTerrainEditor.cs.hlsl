@@ -81,21 +81,27 @@ uint3 CaclVoxelPos(uint3 _center, int _value, uint _radius) {
 	return _center + int3(x, y, z);
 }
 
+groupshared float2 gMouseUV;
+groupshared float4 gMouseWorldPosition;
 
 [shader("compute")]
-[numthreads(4, 4, 4)]
+[numthreads(10, 10, 10)]
 void main(
     uint3 DTid : SV_DispatchThreadID,
 	uint3 Gid : SV_GroupThreadID,
     uint groupIndex : SV_GroupIndex) {
 
-    /// マウスのスクリーン座標をUVに変換してワールド座標をサンプリング
-	float2 mouseUV = inputInfo.screenMousePos / kScreenSize;
-	float4 mouseWorldPos = worldPositionTexture.Sample(textureSampler, mouseUV);
-    mousePosBuffer[0].worldPos = mouseWorldPos;
+    if(groupIndex == 0) {
+        /// マウスのスクリーン座標をUVに変換してワールド座標をサンプリング
+	    gMouseUV = inputInfo.screenMousePos / kScreenSize;
+	    gMouseWorldPosition = worldPositionTexture.Sample(textureSampler, gMouseUV);
+        mousePosBuffer[0].worldPos = gMouseWorldPosition;
+    }
 	
+    GroupMemoryBarrierWithGroupSync();
+
 	/// 地形のローカル座標に変換
-	float3 terrainLocalMousePos = mouseWorldPos.xyz - voxelTerrainInfo.terrainOrigin;
+	float3 terrainLocalMousePos = gMouseWorldPosition.xyz - voxelTerrainInfo.terrainOrigin;
 	/// チャンクの原点を計算
 	float3 chunkOrigin = float3(
 		(chunkID.value % voxelTerrainInfo.chunkCountXZ.x) * voxelTerrainInfo.chunkSize.x,
@@ -103,12 +109,12 @@ void main(
 		(chunkID.value / voxelTerrainInfo.chunkCountXZ.x) * voxelTerrainInfo.chunkSize.z
 	);
 
-	/// マウス位置 + 半径 での球とチャンクの当たり判定
-	if (!CheckSphereAABB(
-		mouseWorldPos.xyz, editorInfo.brushRadius,
-		chunkOrigin, chunkOrigin + voxelTerrainInfo.chunkSize)) {
-		return;
-	}
+	// /// マウス位置 + 半径 での球とチャンクの当たり判定
+	// if (!CheckSphereAABB(
+	// 	gMouseWorldPosition.xyz, editorInfo.brushRadius,
+	// 	chunkOrigin, chunkOrigin + voxelTerrainInfo.chunkSize)) {
+	// 	return;
+	// }
 
 	/// ---------------------------------------------------
 	/// ここから実際に編集する処理
@@ -153,15 +159,16 @@ void main(
 	
 	/// 操作次第で色を変更
 	if (inputInfo.mouseLeftButton == 1) {
+        float val = 0.05f;
 		if (inputInfo.keyboardLShift == 1) {
 			// ----- 押し下げ ----- //
-			voxelColor.a -= 0.03f;
+			voxelColor.a -= val;
             if(voxelColor.a < 0.0f) {
                 voxelColor.a = 0.0f;
             }
 		} else {
 			// ----- 押し上げ ----- //
-			voxelColor.a += 0.03f;
+			voxelColor.a += val;
             if(voxelColor.a > 1.0f) {
                 voxelColor.a = 1.0f;
             }

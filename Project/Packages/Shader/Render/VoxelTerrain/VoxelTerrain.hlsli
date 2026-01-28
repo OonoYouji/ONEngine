@@ -20,7 +20,8 @@ struct Payload {
 	uint3 subChunkSize;
 	uint chunkDivision;
 
-	uint3 dispatchSize;
+	// uint3 dispatchSize;
+    uint32_t3 chunkSize;
 	uint lodLevel;
     uint32_t transitionMask;
 };

@@ -48,13 +48,16 @@ void main(
 			uint32_t subChunkSize = GetSubChunkSize(asPayload.lodLevel);
 			asPayload.chunkIndex = IndexOfMeshGroup(groupId, uint3(voxelTerrainInfo.chunkCountXZ.x, 1, voxelTerrainInfo.chunkCountXZ.y));
 			asPayload.subChunkSize = uint3(subChunkSize, subChunkSize, subChunkSize);
-			dispatchSize = voxelTerrainInfo.textureSize / asPayload.subChunkSize / uint32_t3(2,4,2); // numthreads に合わせて分割
-            
+			dispatchSize = voxelTerrainInfo.textureSize / asPayload.subChunkSize; // numthreads に合わせて分割
+            dispatchSize.x = (dispatchSize.x * dispatchSize.y * dispatchSize.z) / 16;
+            dispatchSize.y = 1;
+            dispatchSize.z = 1;
+
             asPayload.transitionMask = GetTransitionMask(center, float3(voxelTerrainInfo.chunkSize), asPayload.lodLevel, camera.position.xyz);
 		}
 	}
 
 	/// 分割された個数でディスパッチ
-	asPayload.dispatchSize = dispatchSize;
+	asPayload.chunkSize = voxelTerrainInfo.textureSize / asPayload.subChunkSize;
 	DispatchMesh(dispatchSize.x, dispatchSize.y, dispatchSize.z, asPayload);
 }

@@ -6,6 +6,7 @@
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Core/DirectX12/GPUTimeStamp/GPUTimeStamp.h"
 #include "Engine/Core/Utility/Utility.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Collision/CollisionCheck/CollisionCheck.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/VoxelTerrain/VoxelTerrain.h"
@@ -185,12 +186,18 @@ void VoxelTerrainEditorComputePipeline::Execute(ONEngine::EntityComponentSystem*
 			continue;
 		}
 
+		//if(!ONEngine::CollisionCheck::CubeVsSphere(
+		//	chunkAABB.center, chunkAABB.size,
+		//	{ mousePos_.x, mousePos_.y, mousePos_.z }, voxelTerrain->GetBrushRadius())) {
+		//	continue;
+		//}
+
 		/// --------------- 32bit定数の設定 --------------- ///
 		cmdList->SetComputeRoot32BitConstant(
 			C32BIT_CHUNK_ID, chunkId, 0
 		);
 		/// --------------- ディスパッチ --------------- ///
-		const uint32_t numthreads = 4;
+		const uint32_t numthreads = 10;
 		uint32_t brushSize = voxelTerrain->GetBrushRadius();
 		cmdList->Dispatch(
 			ONEngine::Math::DivideAndRoundUp(brushSize * 2, numthreads),
@@ -208,9 +215,9 @@ void VoxelTerrainEditorComputePipeline::Execute(ONEngine::EntityComponentSystem*
 	);
 
 	/// マウスの位置をUAVからReadbackする
-	ONEngine::Vector4 mousePos = uavMousePosBuffer_.Readback(_dxCommand, 0);
+	mousePos_ = uavMousePosBuffer_.Readback(_dxCommand, 0);
 	ONEngine::Gizmo::DrawWireSphere(
-		ONEngine::Vector3(mousePos.x, mousePos.y, mousePos.z),
+		ONEngine::Vector3(mousePos_.x, mousePos_.y, mousePos_.z),
 		static_cast<float>(voxelTerrain->GetBrushRadius()),
 		ONEngine::Vector4(0, 0, 0, 1) /// 黒色
 	);
