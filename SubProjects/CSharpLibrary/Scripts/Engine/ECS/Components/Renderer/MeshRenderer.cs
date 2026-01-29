@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 
 class MeshRenderer : Component {
 	public struct BatchData {
-		public ulong nativeHandle;
+		public uint compId;
 		public Vector4 color;
 		public uint postEffectFlags;
 	}
