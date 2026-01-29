@@ -7,11 +7,22 @@
 namespace ONEngine {
 
 class AssetCollection;
+class DxManager;
 
 /// ///////////////////////////////////////////////////
 /// 地形のチャンク間を滑らかに接続するためのレンダリングパイプライン
 /// ///////////////////////////////////////////////////
 class VoxelTerrainTransvoxelRenderingPipeline : public IRenderingPipeline {
+
+	enum ROOT_PARAM {
+		CBV_VOXEL_TERRAIN_INFO = 0,
+		CBV_VIEW_PROJECTION,
+		CBV_CAMERA_POSITION,
+		CBV_MATERIAL,
+		SRV_CHUNK_ARRAY,
+		SRV_VOXEL_TERRAIN_TEXTURE3D,
+	};
+
 public:
 	/// ===================================================
 	/// public : methods
@@ -28,7 +39,8 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	AssetCollection* assetCollection_;
+	AssetCollection* pAssetCollection_;
+	DxManager* pDxManager_;
 
 };
 

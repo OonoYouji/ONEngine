@@ -8,7 +8,6 @@ using System.Runtime.CompilerServices;
 class MeshRenderer : Component {
 	public struct BatchData {
 		public ulong nativeHandle;
-		public string meshPath;
 		public Vector4 color;
 		public uint postEffectFlags;
 	}
@@ -21,10 +20,10 @@ class MeshRenderer : Component {
 
 	public string meshPath {
 		get {
-			return batchData.meshPath;
+			return InternalGetMeshName(nativeHandle);
 		}
 		set {
-			batchData.meshPath = value;
+			InternalSetMeshName(nativeHandle, value);
 		}
 	}
 
@@ -50,11 +49,11 @@ class MeshRenderer : Component {
 	/// internal methods
 	/// -------------------------------------------
 
-	//[MethodImpl(MethodImplOptions.InternalCall)]
-	//static extern string InternalGetMeshName(ulong _nativeHandle);
+	[MethodImpl(MethodImplOptions.InternalCall)]
+	static extern string InternalGetMeshName(ulong _nativeHandle);
 
-	//[MethodImpl(MethodImplOptions.InternalCall)]
-	//static extern void InternalSetMeshName(ulong _nativeHandle, string _meshName);
+	[MethodImpl(MethodImplOptions.InternalCall)]
+	static extern void InternalSetMeshName(ulong _nativeHandle, string _meshName);
 
 	//[MethodImpl(MethodImplOptions.InternalCall)]
 	//static extern Vector4 InternalGetColor(ulong _nativeHandle);

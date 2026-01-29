@@ -5,6 +5,7 @@ using namespace ONEngine;
 /// engine
 #include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/Core/DirectX12/DescriptorHeap/DescriptorHeapSize.h"
+#include "../GPUTimeStamp/GPUTimeStamp.h"
 
 DxManager::DxManager() = default;
 DxManager::~DxManager() = default;
@@ -35,9 +36,13 @@ void DxManager::Initialize() {
 	dxDescriptorHeaps_[DescriptorHeapType_DSV] = std::make_unique<DxDSVHeap>(dxDevice_.get(), DescriptorHeapLimits::DSV);
 	dxDescriptorHeaps_[DescriptorHeapType_CBV_SRV_UAV] = std::make_unique<DxSRVHeap>(dxDevice_.get(), DescriptorHeapLimits::CBV_SRV_UAV, MAX_TEXTURE_COUNT);
 
-	for (auto& heap : dxDescriptorHeaps_) {
+	for(auto& heap : dxDescriptorHeaps_) {
 		heap->Initialize();
 	}
+
+	GPUTimeStamp::GetInstance().Initialize(
+		dxDevice_.get(), dxCommand_.get()
+	);
 
 }
 
@@ -88,6 +93,6 @@ DxDepthStencil* DxManager::GetDxDepthStencil(const std::string& _name) const {
 		size_t index = depthStencilNameMap_.at(_name);
 		return dxDepthStencils_[index].get();
 	}
-	
+
 	return nullptr;
 }

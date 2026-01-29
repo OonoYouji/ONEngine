@@ -70,6 +70,8 @@ public:
 
 	/* ----- append structure buffer methods ----- */
 
+	T Readback(DxCommand* dxCommand, uint32_t index);
+
 	/// @brief AppendBufferのカウンタをリセットする
 	/// @param _dxCommand DxCommandへのポインタ
 	void ResetCounter(DxCommand* _dxCommand);
@@ -149,17 +151,17 @@ inline StructuredBuffer<T>::StructuredBuffer() {
 
 template<typename T>
 inline StructuredBuffer<T>::~StructuredBuffer() {
-	if (pDxSRVHeap_) {
+	if(pDxSRVHeap_) {
 
-		if (srvHandle_.has_value()) {
+		if(srvHandle_.has_value()) {
 			pDxSRVHeap_->Free(srvHandle_->heapIndex);
 		}
 
-		if (uavHandle_.has_value()) {
+		if(uavHandle_.has_value()) {
 			pDxSRVHeap_->Free(uavHandle_->heapIndex);
 		}
 
-		if (appendHandle_.has_value()) {
+		if(appendHandle_.has_value()) {
 			pDxSRVHeap_->Free(appendHandle_->heapIndex);
 		}
 	}
@@ -170,7 +172,7 @@ template<typename T>
 inline void StructuredBuffer<T>::Create(uint32_t _size, DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap) {
 
 	/// 生成済みならこのhandleを解放する
-	if (srvHandle_.has_value()) {
+	if(srvHandle_.has_value()) {
 		_dxSRVHeap->Free(srvHandle_->heapIndex);
 	}
 
@@ -211,7 +213,7 @@ template<typename T>
 inline void StructuredBuffer<T>::CreateUAV(uint32_t _size, DxDevice* _dxDevice, DxCommand* _dxCommand, DxSRVHeap* _dxSRVHeap) {
 
 	/// 生成済みならこのhandleを解放する
-	if (uavHandle_.has_value()) {
+	if(uavHandle_.has_value()) {
 		_dxSRVHeap->Free(uavHandle_->heapIndex);
 	}
 
@@ -243,6 +245,21 @@ inline void StructuredBuffer<T>::CreateUAV(uint32_t _size, DxDevice* _dxDevice, 
 
 	/// resource create
 	_dxDevice->GetDevice()->CreateUnorderedAccessView(bufferResource_.Get(), nullptr, &desc, uavHandle_->cpuHandle);
+
+
+	{	/// カウンタ読み取り用リードバックバッファ(非同期読み込み用)
+		D3D12_RESOURCE_DESC readbackDesc = CD3DX12_RESOURCE_DESC::Buffer(totalSize_);
+		D3D12_HEAP_PROPERTIES readbackHeapProperties = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_READBACK);
+		readbackResource_.CreateCommittedResource(
+			_dxDevice,
+			&readbackHeapProperties,
+			D3D12_HEAP_FLAG_NONE,
+			&readbackDesc,
+			D3D12_RESOURCE_STATE_COPY_DEST,
+			nullptr
+		);
+	}
+
 }
 
 template<typename T>
@@ -282,7 +299,8 @@ inline void StructuredBuffer<T>::CreateAppendBuffer(uint32_t _size, DxDevice* _d
 	{	/// カウンタ読み取り用リードバックバッファ(非同期読み込み用)
 		D3D12_RESOURCE_DESC readbackDesc = CD3DX12_RESOURCE_DESC::Buffer(sizeof(UINT));
 		D3D12_HEAP_PROPERTIES readbackHeapProperties = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_READBACK);
-		readbackResource_.CreateCommittedResource(_dxDevice,
+		readbackResource_.CreateCommittedResource(
+			_dxDevice,
 			&readbackHeapProperties,
 			D3D12_HEAP_FLAG_NONE,
 			&readbackDesc,
@@ -386,14 +404,45 @@ inline void StructuredBuffer<T>::CreateSRVAndUAV(uint32_t _size, DxDevice* _dxDe
 
 	_dxDevice->GetDevice()->CreateUnorderedAccessView(bufferResource_.Get(), nullptr, &uavDesc, uavHandle_->cpuHandle);
 
-	// マッピング
-	//bufferResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mappedData_));
-	//mappedDataArray_ = { mappedData_, bufferSize_ };
-
 	// デスクリプタヒープのポインタを保存
 	pDxSRVHeap_ = _dxSRVHeap;
 }
 
+
+template<typename T>
+inline T StructuredBuffer<T>::Readback(DxCommand* dxCommand, uint32_t index) {
+	CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(
+		bufferResource_.Get(),
+		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+		D3D12_RESOURCE_STATE_COPY_SOURCE
+	);
+
+	auto cmdList = dxCommand->GetCommandList();
+	cmdList->ResourceBarrier(1, &barrier);
+
+	cmdList->CopyResource(
+		readbackResource_.Get(),
+		bufferResource_.Get()
+	);
+
+	dxCommand->CommandExecuteAndWait();
+	dxCommand->CommandReset();
+	dxCommand->WaitForGpuComplete();
+
+
+	void* mapped = nullptr;
+	D3D12_RANGE readRange{ 0, totalSize_ };
+
+	readbackResource_.Get()->Map(0, &readRange, &mapped);
+	T* data = reinterpret_cast<T*>(mapped);
+	readbackResource_.Get()->Unmap(0, nullptr);
+
+	if(index >= bufferSize_) {
+		index = 0;
+	}
+
+	return data[index];
+}
 
 template<typename T>
 inline void StructuredBuffer<T>::ResetCounter(DxCommand* _dxCommand) {
@@ -420,7 +469,6 @@ inline uint32_t StructuredBuffer<T>::ReadCounter(DxCommand* _dxCommand) {
 	/// DefaultHeapのCounterリソースからReadbackHeapにコピー
 	cmdList->CopyResource(readbackResource_.Get(), counterResource_.Get());
 
-	/// コマンドリストを閉じて実行し、フェンス待ちなどが必要（ここでは省略）
 	_dxCommand->CommandExecuteAndWait();
 	_dxCommand->CommandReset();
 	_dxCommand->WaitForGpuComplete();

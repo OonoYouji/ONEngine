@@ -37,27 +37,33 @@ void main(
 
 		float3 diff = nearPoint - camera.position.xyz;
 		float lengthToCamera = length(diff);
-		if (lengthToCamera <= lodInfo.maxDrawDistance) {
+		if (lengthToCamera <= 1000.0f) {
+			uint subChunkSizeValue;
 
-            if(lodInfo.useLod != 0) {
-                asPayload.lodLevel = GetLOD(lengthToCamera);
-            } else {
-                asPayload.lodLevel = lodInfo.lod;
-            }
+			/// LOD レベルを lengthToCamera の値に基づいて設定
+			if (lengthToCamera < 50.0f) {
+				asPayload.lodLevel = 0; // 高詳細度
+				subChunkSizeValue = 2;
+			} else if (lengthToCamera < 100.0f) {
+				asPayload.lodLevel = 1; // 中詳細度
+				subChunkSizeValue = 4;
+			} else if (lengthToCamera < 200.0f) {
+				asPayload.lodLevel = 2; // 低詳細度
+				subChunkSizeValue = 8;
+			} else {
+				asPayload.lodLevel = 3; // 低詳細度
+				subChunkSizeValue = 16;
+			}
 
-			uint32_t subChunkSize = GetSubChunkSize(asPayload.lodLevel);
 			asPayload.chunkIndex = IndexOfMeshGroup(groupId, uint3(voxelTerrainInfo.chunkCountXZ.x, 1, voxelTerrainInfo.chunkCountXZ.y));
-			asPayload.subChunkSize = uint3(subChunkSize, subChunkSize, subChunkSize);
-			dispatchSize = voxelTerrainInfo.textureSize / asPayload.subChunkSize; // numthreads に合わせて分割
-            dispatchSize.x = (dispatchSize.x * dispatchSize.y * dispatchSize.z) / 16;
-            dispatchSize.y = 1;
-            dispatchSize.z = 1;
-
+			asPayload.subChunkSize = uint3(subChunkSizeValue, subChunkSizeValue, subChunkSizeValue);
+			dispatchSize = voxelTerrainInfo.textureSize / asPayload.subChunkSize / uint32_t3(2,2,2); // numthreads に合わせて分割
+            
             asPayload.transitionMask = GetTransitionMask(center, float3(voxelTerrainInfo.chunkSize), asPayload.lodLevel, camera.position.xyz);
 		}
 	}
 
 	/// 分割された個数でディスパッチ
-	asPayload.chunkSize = voxelTerrainInfo.textureSize / asPayload.subChunkSize;
+	// asPayload.dispatchSize = dispatchSize;
 	DispatchMesh(dispatchSize.x, dispatchSize.y, dispatchSize.z, asPayload);
 }

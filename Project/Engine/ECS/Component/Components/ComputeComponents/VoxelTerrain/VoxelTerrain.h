@@ -69,17 +69,14 @@ struct Chunk {
 /// @brief デバッグ関数用に前方宣言をする
 class VoxelTerrain;
 class DxManager;
+class AssetCollection;
 
 namespace ComponentDebug {
-void VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _dxm);
+void VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _dxm, AssetCollection* _ac);
 }
 
 void from_json(const nlohmann::json& _j, std::vector<Chunk>& _chunk);
 void to_json(nlohmann::json& _j, const std::vector<Chunk>& _chunk);
-
-
-void from_json(const nlohmann::json& _j, VoxelTerrain& _voxelTerrain);
-void to_json(nlohmann::json& _j, const VoxelTerrain& _voxelTerrain);
 
 /// ///////////////////////////////////////////////////
 /// GPU用のデータ構造体
@@ -96,6 +93,7 @@ struct VoxelTerrainInfo {
 	float pad2;
 	Vector2Int chunkCountXZ; /// XZ平面でのチャンク数
 	uint32_t maxChunkCount;
+	float isoLevel;
 };
 
 /// @brief チャンクごとのGPU用データ
@@ -113,7 +111,7 @@ struct InputInfo {
 
 /// @brief VoxelTerrainの編集用データ
 struct EditInfo {
-	float brushRadius;
+	uint32_t brushRadius;
 };
 
 
@@ -122,17 +120,27 @@ struct MarchingCube {
 	float voxelSize;
 };
 
+struct LODInfo {
+	uint32_t useLOD;
+	float lodDistance0;
+	float lodDistance1;
+	float lodDistance2;
+	
+	/// カメラとの距離がこれ以上の時は描画しない
+	float maxDrawDistance;
 
+	/// useLOD = falseのときの解像度倍率
+	uint32_t lod;
+};
 
 }
-
 
 /// ///////////////////////////////////////////////////
 /// ボクセルで表現された地形
 /// ///////////////////////////////////////////////////
 class VoxelTerrain : public IComponent {
 	/// --------------- friend function --------------- ///
-	friend void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _dxm);
+	friend void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _dxm, AssetCollection* _ac);
 	friend void from_json(const nlohmann::json& _j, VoxelTerrain& _voxelTerrain);
 	friend void to_json(nlohmann::json& _j, const VoxelTerrain& _voxelTerrain);
 
@@ -140,6 +148,7 @@ class VoxelTerrain : public IComponent {
 	friend class VoxelTerrainRenderingPipeline;
 	friend class VoxelTerrainVertexShaderRenderingPipeline;
 	friend class VoxelTerrainVertexCreatePipeline;
+	friend class VoxelTerrainTransvoxelRenderingPipeline;
 public:
 	/// ===========================================
 	/// public : static objects
@@ -173,8 +182,8 @@ public:
 
 	/// @brief GraphicsPipeline用のバッファ設定を行う
 	/// @param _cmdList GraphicsCommandListのポインタ
-	/// @param _rootParamIndices [0]: VoxelTerrainInfo, [1]: ChunkArray
-	void SetupGraphicBuffers(ID3D12GraphicsCommandList* _cmdList, const std::array<UINT, 3> _rootParamIndices, class AssetCollection* _assetCollection);
+	/// @param _rootParamIndices [0]: VoxelTerrainInfo, [1]: ChunkArray, [2]: Material, [3]: LODInfo
+	void SetupGraphicBuffers(ID3D12GraphicsCommandList* _cmdList, const std::array<UINT, 4> _rootParamIndices, class AssetCollection* _assetCollection);
 
 	/// テクスチャのステートを変更する
 	void TransitionTextureStates(class DxCommand* _dxCommand, class AssetCollection* _assetCollection, D3D12_RESOURCE_STATES _afterState);
@@ -229,6 +238,9 @@ public:
 	bool CanMeshShaderRendering() const { return canMeshShaderRendering_; }
 	bool IsEditMode() const { return isEditMode_; }
 
+
+	uint32_t GetBrushRadius() const;
+
 private:
 	/// ===========================================
 	/// private : objects
@@ -246,14 +258,16 @@ private:
 	StructuredBuffer<GPUData::Chunk> sBufferChunks_;
 	StructuredBuffer<GPUData::Chunk> sBufferEditorChunks_;
 	ConstantBuffer<GPUMaterial> cBufferMaterial_;
+	ConstantBuffer<GPUData::LODInfo> cBufferLODInfo_;
 
 	Vector3Int chunkSize_;
 	Vector3Int textureSize_;
 	Vector2Int chunkCountXZ_;
 	UINT maxChunkCount_;
+	float isoLevel_ = 0.5f;
 
 	Material material_;
-
+	GPUData::LODInfo lodInfo_;
 
 	/// --------------- エディタ用 --------------- ///
 	ConstantBuffer<GPUData::InputInfo> cBufferInputInfo_;
@@ -266,6 +280,9 @@ private:
 
 	bool canMeshShaderRendering_ = true;
 	bool canVertexShaderRendering_ = false;
+	bool isRenderingWireframe_ = true;
+	bool isRenderingTransvoxel_ = false;
+	bool isRenderingCubic_ = false;
 
 };
 

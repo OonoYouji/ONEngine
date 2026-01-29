@@ -67,7 +67,7 @@ InspectorWindow::InspectorWindow(const std::string& _windowName, DxManager* _dxm
 	RegisterComponent<GrassField>([&](IComponent* _comp) { ComponentDebug::GrassFieldDebug(static_cast<GrassField*>(_comp), pAssetCollection_); });
 	RegisterComponent<CameraComponent>([&](IComponent* _comp) { ComponentDebug::CameraDebug(static_cast<CameraComponent*>(_comp)); });
 	RegisterComponent<ShadowCaster>([&](IComponent* _comp) { ComponentDebug::ShadowCasterDebug(static_cast<ShadowCaster*>(_comp)); });
-	RegisterComponent<VoxelTerrain>([&](IComponent* _comp) { ComponentDebug::VoxelTerrainDebug(static_cast<VoxelTerrain*>(_comp), pDxManager_); });
+	RegisterComponent<VoxelTerrain>([&](IComponent* _comp) { ComponentDebug::VoxelTerrainDebug(static_cast<VoxelTerrain*>(_comp), pDxManager_, pAssetCollection_); });
 
 	/// renderer
 	RegisterComponent<MeshRenderer>([&](IComponent* _comp) { ComponentDebug::MeshRendererDebug(static_cast<MeshRenderer*>(_comp), pAssetCollection_); });

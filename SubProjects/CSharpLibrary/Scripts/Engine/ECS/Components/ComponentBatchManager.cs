@@ -54,7 +54,7 @@ static class ComponentBatchManager {
 				var batchData = comp.GetBatchData();
 
 				batch[i].nativeHandle = comp.nativeHandle;
-				batch[i].meshPath = batchData.meshPath;
+				//batch[i].meshPath = batchData.meshPath;
 				batch[i].color = batchData.color;
 				batch[i].postEffectFlags = batchData.postEffectFlags;
 			}
@@ -70,6 +70,8 @@ static class ComponentBatchManager {
 			for (int i = 0; i < count; i++) {
 				var comp = array.Get(i);
 				batch[i].nativeHandle = comp.nativeHandle;
+				batch[i].color = comp.color;
+				batch[i].postEffectFlags = comp.postEffectFlags;
 			}
 			return batch;
 		});
@@ -164,9 +166,7 @@ static class ComponentBatchManager {
 				var comp = array.Get(i);
 
 				// Handleは変更せず、描画パラメータのみ更新
-				// comp.nativeHandle = batch[i].nativeHandle;
-
-				comp.meshPath = batch[i].meshPath;
+				comp.nativeHandle = batch[i].nativeHandle;
 				comp.color = batch[i].color;
 				comp.postEffectFlags = batch[i].postEffectFlags;
 			}

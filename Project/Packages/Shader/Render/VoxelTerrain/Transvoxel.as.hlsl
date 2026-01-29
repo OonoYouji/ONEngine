@@ -1,91 +1,82 @@
 ﻿#include "Transvoxel.hlsli"
 
 
-
-uint GetChunkLOD(uint3 groupId) {
-    // LOD計算のロジックをここに実装
-    // 例: 距離に基づくLOD計算
-	return 0; // 仮の戻り値
+// -----------------------------------------------------------------------------
+// チャンクの中心点を取得する
+// -----------------------------------------------------------------------------
+float32_t3 GetChunkCenter(float32_t3 chunkOrigin) {
+    return chunkOrigin + float32_t3(voxelTerrainInfo.chunkSize) * 0.5f;   
 }
 
-uint GetNeighborLOD(uint3 neighborGroupId) {
-	// 隣接チャンクのLODを取得するロジックをここに実装
-	return 0; // 仮の戻り値
+float32_t3 GetChunkOrigin(uint32_t3 groupID) {
+    return float3(groupID) * voxelTerrainInfo.chunkSize + float3(voxelTerrainInfo.terrainOrigin);
 }
 
-// ---------------------------------------------------
-// Amplification Shader
-// ---------------------------------------------------
+
+// -----------------------------------------------------------------------------
+// Amplification Shader Main
+// -----------------------------------------------------------------------------
 [shader("amplification")]
-[numthreads(1, 1, 1)]
+[numthreads(1, 1, 1)] // 例: 1スレッド = 1チャンク
 void main(
-    uint3 DTid : SV_DispatchThreadID,
-    uint3 groupId : SV_GroupID,
-    uint groupIndex : SV_GroupIndex) {
-    // チャンク原点
-	uint3 chunkOrigin = groupId * voxelTerrainInfo.chunkSize;
+    uint32_t3 dtid : SV_DispatchThreadID,
+    uint32_t3 gtid : SV_GroupThreadID,
+    uint32_t3 gid : SV_GroupID) {
 
-    // 自チャンク LOD
-	uint myLOD = GetChunkLOD(groupId);
+    bool isVisible = false;
+    uint32_t myLOD = 0;
+    uint32_t myMask = 0;
 
-    // 隣接チャンク LOD取得（簡易例）
-	uint neighborLOD_XP = GetNeighborLOD(groupId + uint3(1, 0, 0));
-	uint neighborLOD_XN = GetNeighborLOD(groupId - uint3(1, 0, 0));
-	uint neighborLOD_ZP = GetNeighborLOD(groupId + uint3(0, 0, 1));
-	uint neighborLOD_ZN = GetNeighborLOD(groupId - uint3(0, 0, 1));
-	uint neighborLOD_YP = GetNeighborLOD(groupId + uint3(0, 1, 0));
-	uint neighborLOD_YN = GetNeighborLOD(groupId - uint3(0, 1, 0));
+    Payload p;
+	float32_t3 chunkOrigin = GetChunkOrigin(gid);
+    p.chunkOrigin = chunkOrigin;
+    uint3 dispatchSize = uint32_t3(0,0,0);
 
-	Payload payload;
+    /// カリングの判定
+    AABB aabb;
+    aabb.min = chunkOrigin;
+    aabb.max = chunkOrigin + float3(voxelTerrainInfo.chunkSize);
+    if(IsVisible(aabb, CreateFrustumFromMatrix(viewProjection.matVP))) {
 
-    // 境界面ごとに必要なTransvoxel Dispatchを決定
-    [unroll]
-	for (uint face = 0; face < 6; ++face) {
-		bool needTransvoxel = false;
-		uint neighborLOD = 0;
-		switch (face) {
-			case 0:
-				neighborLOD = neighborLOD_XP;
-				needTransvoxel = (myLOD > neighborLOD);
-				break;
-			case 1:
-				neighborLOD = neighborLOD_XN;
-				needTransvoxel = (myLOD > neighborLOD);
-				break;
-			case 2:
-				neighborLOD = neighborLOD_ZP;
-				needTransvoxel = (myLOD > neighborLOD);
-				break;
-			case 3:
-				neighborLOD = neighborLOD_ZN;
-				needTransvoxel = (myLOD > neighborLOD);
-				break;
-			case 4:
-				neighborLOD = neighborLOD_YP;
-				needTransvoxel = (myLOD > neighborLOD);
-				break;
-			case 5:
-				neighborLOD = neighborLOD_YN;
-				needTransvoxel = (myLOD > neighborLOD);
-				break;
-		}
+        /// LODレベルの計算
+        float32_t3 chunkCenter = GetChunkCenter(chunkOrigin);
+        float32_t3 nearPos = float32_t3(
+            clamp(camera.position.x, aabb.min.x, aabb.max.x),
+            clamp(camera.position.y, aabb.min.y, aabb.max.y),
+            clamp(camera.position.z, aabb.min.z, aabb.max.z)
+        );
 
-		if (needTransvoxel) {
-			payload.face = face;
-			payload.myLOD = myLOD;
-			payload.neighborLOD = neighborLOD;
-			payload.chunkOrigin = chunkOrigin;
-			payload.cellCount = voxelTerrainInfo.chunkSize.x >> myLOD; // X面セル数例
-		}
-	}
+        if(distance(nearPos, camera.position.xyz) <= 1000.0f) {
+            isVisible = true;
 
-	
-	uint3 dispatchSize = uint3(payload.cellCount, payload.cellCount, 1);
-	if (payload.cellCount == 0) {
-		dispatchSize = uint3(0, 0, 0);
-	}
-	
-	// DispatchMesh: 1スレッド=1境界セル
-	DispatchMesh(dispatchSize.x, dispatchSize.y, dispatchSize.z, payload);
+            myLOD = CalculateLOD(nearPos, camera.position.xyz);
 
+            /// トランジションマスクの計算
+            myMask = GetTransitionMask(chunkCenter, float32_t3(voxelTerrainInfo.chunkSize), myLOD, camera.position.xyz);
+            p.chunkID = IndexOfMeshGroup(gid, uint3(voxelTerrainInfo.chunkCountXZ.x, 1, voxelTerrainInfo.chunkCountXZ.y));
+            p.LODLevel = myLOD;
+            p.transitionMask = myMask;
+
+            uint32_t lodLevel = p.LODLevel;
+            uint32_t subChunkSize;
+
+            /// LOD レベルを lengthToCamera の値に基づいて設定
+		    if (lodLevel == 0) {
+		    	subChunkSize = 2;
+		    } else if (lodLevel == 1) {
+		    	subChunkSize = 4;
+		    } else if (lodLevel == 2) {
+		    	subChunkSize = 8;
+		    } else {
+		    	subChunkSize = 16;
+		    }
+            
+            if(myMask != 0) {
+                p.subChunkSize = uint3(subChunkSize, subChunkSize, subChunkSize);
+                dispatchSize = voxelTerrainInfo.textureSize / p.subChunkSize;
+            }
+        }
+    }
+    
+    DispatchMesh(dispatchSize.x, dispatchSize.y, dispatchSize.z, p);
 }

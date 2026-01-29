@@ -90,9 +90,11 @@ void ONEngine::InternalSetMeshName(uint64_t _nativeHandle, MonoString* _meshName
 
 	/// stringに変換&設定
 	char* meshName = mono_string_to_utf8(_meshName);
-	std::string meshNameStr(meshName);
-	renderer->SetMeshPath(meshNameStr);
-	mono_free(meshName);
+	if(meshName) {
+		std::string meshNameStr(meshName);
+		renderer->SetMeshPath(meshNameStr);
+		mono_free(meshName);
+	}
 }
 
 Vector4 ONEngine::InternalGetMeshColor(uint64_t _nativeHandle) {
@@ -144,7 +146,6 @@ void ComponentDebug::MeshRendererDebug(MeshRenderer* _mr, AssetCollection* _asse
 	/// param get
 	Vector4& color = _mr->material_.baseColor;
 	std::string& meshPath = _mr->meshPath_;
-	//std::string& texturePath = _mr->texturePath_;
 
 	/// edit
 	if (Editor::ImGuiColorEdit("color", &color)) {

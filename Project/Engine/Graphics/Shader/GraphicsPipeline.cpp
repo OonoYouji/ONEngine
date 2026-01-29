@@ -1,4 +1,4 @@
-#include "GraphicsPipeline.h"
+﻿#include "GraphicsPipeline.h"
 
 using namespace ONEngine;
 
@@ -11,28 +11,6 @@ using namespace ONEngine;
 #include "Engine/Core/DirectX12/Command/DxCommand.h"
 #include "Engine/Core/Utility/Tools/Assert.h"
 #include "Engine/Core/Utility/Tools/Log.h"
-
-//namespace {
-//	std::string HrToString(HRESULT hr) {
-//		char* errorMsg = nullptr;
-//
-//		FormatMessageA(
-//			FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-//			nullptr,
-//			hr,
-//			MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-//			reinterpret_cast<LPSTR>(&errorMsg),
-//			0,
-//			nullptr
-//		);
-//
-//		std::string errorString = errorMsg ? errorMsg : "Unknown error";
-//		LocalFree(errorMsg); // メモリを解放
-//
-//		return errorString;
-//	}
-//}
-
 
 GraphicsPipeline::GraphicsPipeline() {
 

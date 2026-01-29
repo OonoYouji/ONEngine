@@ -20,6 +20,8 @@ public class Player : MonoScript {
 	[SerializeField] float lastRotationY_ = 0.0f;
 	bool prevIsOperating_ = false;
 	bool isOperating_ = false;
+	float moveTimer = 0.0f;
+	bool isMove_ = false;
 
 
 	/// ---------------------------------------------------
@@ -40,6 +42,7 @@ public class Player : MonoScript {
 	/// 新しいカメラの動き方のための変数
 	Vector3 cameraDirection = Vector3.forward;
 
+
 	public override void Initialize() {
 		camera = ecsGroup.FindEntity("Camera"); // カメラエンティティを取得
 		if (camera == null) {
@@ -56,6 +59,9 @@ public class Player : MonoScript {
 		Debug.Log("-----");
 
 		Move();
+		if(isMove_) {
+			MoveAnime();
+		}
 		//Jump();
 
 		CameraFollow();
@@ -103,6 +109,22 @@ public class Player : MonoScript {
 		t.position += velocity;
 		RotateFromMoveDirection(velocity.Normalized());
 
+		if(velocity.Length() > 0.1f) {
+			isMove_ = true;
+		} else {
+			isMove_ = false;
+		}
+
+	}
+
+	void MoveAnime() {
+		moveTimer += Time.deltaTime * 10f;
+
+		float scaleY = Mathf.Sin(moveTimer) * 0.05f + 1.0f;
+		Vector3 scale = transform.scale;
+		scale.y = scaleY;
+
+		transform.scale = scale;
 	}
 
 
