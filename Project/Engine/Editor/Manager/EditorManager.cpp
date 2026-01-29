@@ -35,7 +35,7 @@ void EditorManager::Initialize(ONEngine::DxManager* _dxm, ONEngine::ShaderCompil
 	AddEditorCompute(_dxm, _sc, std::make_unique<TerrainVertexCreator>());
 	AddEditorCompute(_dxm, _sc, std::make_unique<TerrainVertexEditorCompute>());
 	AddEditorCompute(_dxm, _sc, std::make_unique<RiverMeshGeneratePipeline>());
-	AddEditorCompute(_dxm, _sc, std::make_unique<RiverTerrainAbjustPipeline>());
+	AddEditorCompute(_dxm, _sc, std::make_unique<RiverTerrainAdjustPipeline>());
 	AddEditorCompute(_dxm, _sc, std::make_unique<GrassArrangementPipeline>());
 	AddEditorCompute(_dxm, _sc, std::make_unique<VoxelTerrainEditorComputePipeline>());
 }

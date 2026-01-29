@@ -7,6 +7,7 @@
 #include "../../Interface/IComponent.h"
 #include "Engine/Graphics/Buffer/ConstantBuffer.h"
 #include "Engine/Graphics/Buffer/Data/ViewProjection.h"
+#include <Engine/Core/Utility/Math/Vector3.h>
 
 
 /// ----- 前方宣言 ----- ///
@@ -52,6 +53,9 @@ public:
 
 	/// @brief ViewProjection行列の更新
 	void UpdateViewProjection();
+
+
+	bool IsVisible(const Vector3& center, const Vector3& size) const;
 
 private:
 	/// ===================================================

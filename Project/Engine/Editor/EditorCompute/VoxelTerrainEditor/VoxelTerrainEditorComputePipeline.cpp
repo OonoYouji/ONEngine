@@ -4,6 +4,9 @@
 #include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
+#include "Engine/Core/DirectX12/GPUTimeStamp/GPUTimeStamp.h"
+#include "Engine/Core/Utility/Utility.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Collision/CollisionCheck/CollisionCheck.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/VoxelTerrain/VoxelTerrain.h"
@@ -32,17 +35,19 @@ void VoxelTerrainEditorComputePipeline::Initialize(ONEngine::ShaderCompiler* _sh
 		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 3); // CBV_INPUT_INFO
 		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 4); // CBV_EDITOR_INFO
 
+		pipeline_->Add32BitConstant(D3D12_SHADER_VISIBILITY_ALL, 5, 1); // C32BIT_CHUNK_ID
+
 		/// Descriptor Range
+		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_UAV); // UAV_MOUSE_POS_BUFFER
 		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // SRV_CHUNKS
 		pipeline_->AddDescriptorRange(1, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // SRV_WORLD_TEXTURE
-		pipeline_->AddDescriptorRange(0, ONEngine::MAX_TEXTURE_COUNT * 2, D3D12_DESCRIPTOR_RANGE_TYPE_UAV); // UAV_VOXEL_TEXTURES
+		pipeline_->AddDescriptorRange(1, ONEngine::MAX_TEXTURE_COUNT * 2, D3D12_DESCRIPTOR_RANGE_TYPE_UAV); // UAV_VOXEL_TEXTURES
 
-		/// SRV
-		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 0); // SRV_CHUNKS
-		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 1); // SRV_WORLD_TEXTURE
-
-		/// UAV
-		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 2); // UAV_VOXEL_TEXTURES
+		/// SRV, UAV
+		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 0); // UAV_VOXEL_TEXTURES
+		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 1); // SRV_CHUNKS
+		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 2); // SRV_WORLD_TEXTURE
+		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 3); // UAV_MOUSE_POS_BUFFER
 
 		pipeline_->AddStaticSampler(D3D12_SHADER_VISIBILITY_ALL, 0);
 
@@ -52,13 +57,14 @@ void VoxelTerrainEditorComputePipeline::Initialize(ONEngine::ShaderCompiler* _sh
 	{	/// member objects
 		editCount_ = 0;
 		maxEditCount_ = 100;
-		//editedTexture_.CreateUAVTexture3D(
-		//	ONEngine::VoxelTerrain::kChunkCount.x * ONEngine::VoxelTerrain::kDefaultChunkSize.x * maxEditCount_,
-		//	ONEngine::VoxelTerrain::kDefaultChunkSize.y,
-		//	ONEngine::VoxelTerrain::kChunkCount.y * ONEngine::VoxelTerrain::kDefaultChunkSize.z,
-		//	pDxManager_->GetDxDevice(), pDxManager_->GetDxSRVHeap(),
-		//	DXGI_FORMAT_R8G8B8A8_UNORM
-		//);
+
+		uavMousePosBuffer_.CreateUAV(
+			1,
+			pDxManager_->GetDxDevice(),
+			pDxManager_->GetDxCommand(),
+			pDxManager_->GetDxSRVHeap()
+		);
+
 	}
 
 }
@@ -110,6 +116,9 @@ void VoxelTerrainEditorComputePipeline::Execute(ONEngine::EntityComponentSystem*
 	/// ---------------------------------------------------
 	/// ここから パイプラインの設定、実行
 	/// ---------------------------------------------------
+	ONEngine::GPUTimeStamp::GetInstance().BeginTimeStamp(
+		ONEngine::GPUTimeStampID::VoxelTerrainEditorCompute
+	);
 
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 
@@ -153,20 +162,65 @@ void VoxelTerrainEditorComputePipeline::Execute(ONEngine::EntityComponentSystem*
 		worldTexture->GetSRVHandle().gpuHandle
 	);
 
+
+	uavMousePosBuffer_.UAVBindForComputeCommandList(
+		cmdList, UAV_MOUSE_POS
+	);
+
 	/// UAV VoxelTextures
 	cmdList->SetComputeRootDescriptorTable(
 		UAV_VOXEL_TEXTURES, pDxManager_->GetDxSRVHeap()->GetSRVStartGPUHandle()
 	);
 
-	const UINT TGSize = 256;
-	const ONEngine::Vector2Int& voxelChunkCount = voxelTerrain->GetChunkCountXZ();
-	cmdList->Dispatch(
-		ONEngine::Math::DivideAndRoundUp(voxelChunkCount.x * voxelChunkCount.y, TGSize),
-		1, 1
-	);
+
+	for(uint32_t chunkId = 0; chunkId < voxelTerrain->MaxChunkCount(); ++chunkId) {
+		ONEngine::Cube chunkAABB;
+		chunkAABB.center.x = (static_cast<float>(chunkId % voxelTerrain->GetChunkCountXZ().x)) * static_cast<float>(voxelTerrain->GetChunkSize().x);
+		chunkAABB.center.y = static_cast<float>(voxelTerrain->GetChunkSize().y) * 0.5f;
+		chunkAABB.center.z = (static_cast<float>(chunkId / voxelTerrain->GetChunkCountXZ().x)) * static_cast<float>(voxelTerrain->GetChunkSize().z);
+		chunkAABB.size.x = static_cast<float>(voxelTerrain->GetChunkSize().x);
+		chunkAABB.size.y = static_cast<float>(voxelTerrain->GetChunkSize().y);
+		chunkAABB.size.z = static_cast<float>(voxelTerrain->GetChunkSize().z);
+
+		if(!cameraComp->IsVisible(chunkAABB.center, chunkAABB.size)) {
+			continue;
+		}
+
+		//if(!ONEngine::CollisionCheck::CubeVsSphere(
+		//	chunkAABB.center, chunkAABB.size,
+		//	{ mousePos_.x, mousePos_.y, mousePos_.z }, voxelTerrain->GetBrushRadius())) {
+		//	continue;
+		//}
+
+		/// --------------- 32bit定数の設定 --------------- ///
+		cmdList->SetComputeRoot32BitConstant(
+			C32BIT_CHUNK_ID, chunkId, 0
+		);
+		/// --------------- ディスパッチ --------------- ///
+		const uint32_t numthreads = 10;
+		uint32_t brushSize = voxelTerrain->GetBrushRadius();
+		cmdList->Dispatch(
+			ONEngine::Math::DivideAndRoundUp(brushSize * 2, numthreads),
+			ONEngine::Math::DivideAndRoundUp(brushSize * 2, numthreads),
+			ONEngine::Math::DivideAndRoundUp(brushSize * 2, numthreads)
+		);
+	}
 
 	/// 編集したのであればSRVに対してコピーを行う
 	voxelTerrain->CopyEditorTextureToChunkTexture(_dxCommand);
+
+
+	ONEngine::GPUTimeStamp::GetInstance().EndTimeStamp(
+		ONEngine::GPUTimeStampID::VoxelTerrainEditorCompute
+	);
+
+	/// マウスの位置をUAVからReadbackする
+	mousePos_ = uavMousePosBuffer_.Readback(_dxCommand, 0);
+	ONEngine::Gizmo::DrawWireSphere(
+		ONEngine::Vector3(mousePos_.x, mousePos_.y, mousePos_.z),
+		static_cast<float>(voxelTerrain->GetBrushRadius()),
+		ONEngine::Vector4(0, 0, 0, 1) /// 黒色
+	);
 
 }
 

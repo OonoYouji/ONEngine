@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// directX
 #include <d3d12.h>
@@ -39,7 +39,7 @@ struct Node {
 };
 
 /// @brief 頂点のウェイト情報
-struct VertexWeightDara {
+struct VertexWeightData {
 	float weight;
 	uint32_t vertexIndex;
 };
@@ -47,7 +47,7 @@ struct VertexWeightDara {
 /// @brief ジョイントのウェイトデータ
 struct JointWeightData {
 	Matrix4x4 matBindPoseInverse;
-	std::vector<VertexWeightDara> vertexWeights;
+	std::vector<VertexWeightData> vertexWeights;
 };
 
 /// @brief 頂点の影響情報

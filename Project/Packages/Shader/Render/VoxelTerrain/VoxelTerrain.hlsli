@@ -20,26 +20,11 @@ struct Payload {
 	uint3 subChunkSize;
 	uint chunkDivision;
 
-	uint3 dispatchSize;
+	// uint3 dispatchSize;
+    uint32_t3 chunkSize;
 	uint lodLevel;
+    uint32_t transitionMask;
 };
-
-
-struct CommandInfo {
-	int3 dispatchSize;
-};
-
-
-
-/// ---------------------------------------------------
-/// functions
-/// ---------------------------------------------------
-
-uint IndexOfMeshGroup(uint3 _groupID, uint3 _dim) {
-	return _groupID.x
-         + _groupID.y * _dim.x
-         + _groupID.z * (_dim.x * _dim.y);
-}
 
 
 /// ---------------------------------------------------
@@ -49,5 +34,23 @@ uint IndexOfMeshGroup(uint3 _groupID, uint3 _dim) {
 ConstantBuffer<VoxelTerrainInfo> voxelTerrainInfo : register(b0);
 ConstantBuffer<ViewProjection>   viewProjection   : register(b1);
 ConstantBuffer<Camera>           camera           : register(b2);
+ConstantBuffer<LODInfo>          lodInfo          : register(b3);
 
 StructuredBuffer<Chunk> chunks : register(t0);
+
+
+
+uint32_t GetLOD(float32_t distanceToCamera) {
+    if (distanceToCamera < lodInfo.lodDistance1) {
+        return 0;
+    } else if (distanceToCamera < lodInfo.lodDistance2) {
+        return 1;
+    } else if (distanceToCamera < lodInfo.lodDistance3) {
+        return 2;
+    } 
+    return 3;
+}
+
+uint32_t GetSubChunkSize(uint32_t lodLevel) {
+    return 2u << lodLevel;
+}

@@ -53,8 +53,7 @@ static class ComponentBatchManager {
 				var comp = array.Get(i);
 				var batchData = comp.GetBatchData();
 
-				batch[i].nativeHandle = comp.nativeHandle;
-				batch[i].meshPath = batchData.meshPath;
+				batch[i].compId = comp.compId;
 				batch[i].color = batchData.color;
 				batch[i].postEffectFlags = batchData.postEffectFlags;
 			}
@@ -69,7 +68,9 @@ static class ComponentBatchManager {
 			// C++側での検索キーとなる nativeHandle (または compId) を設定する
 			for (int i = 0; i < count; i++) {
 				var comp = array.Get(i);
-				batch[i].nativeHandle = comp.nativeHandle;
+				batch[i].compId = comp.compId;
+				//batch[i].color = comp.color;
+				//batch[i].postEffectFlags = comp.postEffectFlags;
 			}
 			return batch;
 		});
@@ -137,7 +138,7 @@ static class ComponentBatchManager {
 	}
 
 
-	// データの適用 (省略されていた部分)
+	// データの適用
 	static public void ApplyBatch(Type _componentType, Array _batch, IComponentArray _array) {
 		if (_componentType == typeof(Transform)) {
 			var array = (ComponentArray<Transform>)_array;
@@ -164,9 +165,7 @@ static class ComponentBatchManager {
 				var comp = array.Get(i);
 
 				// Handleは変更せず、描画パラメータのみ更新
-				// comp.nativeHandle = batch[i].nativeHandle;
-
-				comp.meshPath = batch[i].meshPath;
+				//comp.compId = batch[i].compId;
 				comp.color = batch[i].color;
 				comp.postEffectFlags = batch[i].postEffectFlags;
 			}

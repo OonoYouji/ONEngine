@@ -33,7 +33,6 @@ struct TransformBatch {
 
 struct MeshRendererBatch {
 	uint32_t compId;
-	std::string meshPath;
 	Vector4 color;
 	uint32_t postEffectFlags;
 };
@@ -63,9 +62,10 @@ void ComponentApplyFuncs::ApplyMeshRenderer(void* _element, ECSGroup* _ecsGroup)
 		return;
 	}
 
-	//if(MeshRenderer* mr = array->GetComponent(data->compId)) {
-
-	//}
+	if(MeshRenderer* mr = array->GetComponent(data->compId)) {
+		mr->SetColor(data->color);
+		mr->SetPostEffectFlags(data->postEffectFlags);
+	}
 }
 
 void ONEngine::ComponentApplyFuncs::FetchTransform(void* _element, ECSGroup* _ecsGroup) {
