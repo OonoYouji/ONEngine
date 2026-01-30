@@ -13,6 +13,8 @@
 /// ///////////////////////////////////////////////////
 namespace ONEngine {
 
+static constexpr size_t kComponentCapacity = 1024;
+
 class IComponentArray {
 	friend class ComponentCollection;
 public:
@@ -91,8 +93,7 @@ private:
 template <IsComponent Comp>
 inline ComponentArray<Comp>::ComponentArray() {
 	/// n個のコンポーネントを格納できるように予約
-	const size_t initialCapacity = 1024;
-	components_.reserve(initialCapacity);
+	components_.reserve(kComponentCapacity);
 }
 
 template <IsComponent Comp>

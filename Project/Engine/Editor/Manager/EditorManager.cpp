@@ -11,7 +11,7 @@
 #include "Engine/Editor/EditorCompute/TerrainEditor/TerrainDataOutput.h"
 #include "Engine/Editor/EditorCompute/TerrainEditor/TerrainVertexCreator.h"
 #include "Engine/Editor/EditorCompute/TerrainEditor/TerrainVertexEditorCompute.h"
-#include "Engine/Editor/EditorCompute/TerrainEditor/RiverTerrainAbjustPipeline.h"
+#include "Engine/Editor/EditorCompute/TerrainEditor/RiverTerrainAdjustPipeline.h"
 #include "Engine/Editor/EditorCompute/River/RiverMeshGeneratePipeline.h"
 #include "Engine/Editor/EditorCompute/Grass/GrassArrangementPipeline.h"
 #include "Engine/Editor/EditorCompute/VoxelTerrainEditor/VoxelTerrainEditorComputePipeline.h"

@@ -165,7 +165,7 @@ void AssetLoader<Model>::LoadAnimation(Model* _model, const std::string& _filepa
 
 	///!< アニメーションが存在しない場合は何もしない
 	if (scene->mAnimations == 0) {
-		Console::Log("[warring] type:Animation, path:\"" + _filepath + "\"");
+		Console::Log("[warning] type:Animation, path:\"" + _filepath + "\"");
 		return; ///< アニメーションが存在しない場合は何もしない
 	}
 

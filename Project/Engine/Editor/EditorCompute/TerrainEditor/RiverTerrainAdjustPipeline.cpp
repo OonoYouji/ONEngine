@@ -1,4 +1,4 @@
-﻿#include "RiverTerrainAbjustPipeline.h"
+﻿#include "RiverTerrainAdjustPipeline.h"
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
