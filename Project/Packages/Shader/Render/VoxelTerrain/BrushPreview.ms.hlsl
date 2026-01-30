@@ -1,16 +1,9 @@
-#include "VoxelTerrain.hlsli"
+#include "BrushPreview.hlsli"
 #include "../VoxelTerrainTest/Table.hlsli"
-
-// ---------------------------------------------------
-// Buffers
-// ---------------------------------------------------
 
 Texture3D<float4> voxelChunkTextures[] : register(t1);
 SamplerState texSampler : register(s0);
 
-// ---------------------------------------------------
-// Functions
-// ---------------------------------------------------
 
 // 密度取得
 float GetDensity(float3 _localPos, uint _chunkId) {
@@ -118,11 +111,6 @@ VertexOut VertexInterp(float3 p1, float3 p2, float3 chunkOrigin,float3 subChunkS
 
 	vOut.position = mul(vOut.worldPosition, viewProjection.matVP);
 	
-	// 高さベースの色付け
-	// float worldY = vOut.worldPosition.y;
-	// vOut.color = lerp(float4(0.3, 0.8, 0.3, 1), float4(0.6, 0.5, 0.3, 1), worldY / 512.0f);
-    vOut.color = DebugColor(chunkId);
-	
 	return vOut;
 }
 
@@ -145,18 +133,6 @@ float32_t3 GetBasePos(uint32_t id, uint32_t3 size, uint32_t3 step) {
 }
 
 
-struct ThreadSharedData {
-    float densities[8];
-    uint cubeIndex;
-    uint triCount;
-};
-
-
-// ---------------------------------------------------
-// マーチングキューブ法の1ボクセルが表示する最大頂点は 15頂点 なので
-// 2*4*2= 16
-// 16*15=240頂点, 16*5=80三角形
-// ---------------------------------------------------
 [shader("mesh")]
 [outputtopology("triangle")]
 [numthreads(16, 1, 1)]

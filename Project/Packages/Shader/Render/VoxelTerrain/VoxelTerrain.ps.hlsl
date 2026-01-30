@@ -42,7 +42,6 @@ PSOutput main(VertexOut input) {
 	output.normal = float4(N, 1);
 	output.flags = float4(material.intValues.x, material.intValues.y, 0, 1);
 
-	// アルファテスト (元のロジックを維持)
 	if (output.color.a <= 0.001f) {
 		discard;
 	}
