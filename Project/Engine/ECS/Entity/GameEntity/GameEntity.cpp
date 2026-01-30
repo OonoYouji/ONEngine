@@ -1,4 +1,4 @@
-#include "GameEntity.h"
+﻿#include "GameEntity.h"
 
 using namespace ONEngine;
 
@@ -15,7 +15,7 @@ GameEntity::~GameEntity() {}
 
 void GameEntity::Awake() {
 	name_ = typeid(*this).name();
-	name_.erase(0, 10);
+	name_ = name_.substr(strlen("class ONEngine::"));
 	prefabName_ = "";
 
 	pEcsGroup_->LoadComponent(this);
