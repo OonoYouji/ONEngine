@@ -149,6 +149,7 @@ class VoxelTerrain : public IComponent {
 	friend class VoxelTerrainVertexShaderRenderingPipeline;
 	friend class VoxelTerrainVertexCreatePipeline;
 	friend class VoxelTerrainTransvoxelRenderingPipeline;
+	friend class VoxelTerrainBrushPreviewRenderingPipeline;
 public:
 	/// ===========================================
 	/// public : static objects

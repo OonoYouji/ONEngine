@@ -1,7 +1,7 @@
 #include "BrushPreview.hlsli"
 #include "../VoxelTerrainTest/Table.hlsli"
 
-Texture3D<float4> voxelChunkTextures[] : register(t1);
+Texture3D<float4> voxelChunkTextures[] : register(t2);
 SamplerState texSampler : register(s0);
 
 

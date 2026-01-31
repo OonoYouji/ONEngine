@@ -1,5 +1,27 @@
 #include "BrushPreview.hlsli"
 
+struct BrushInfo {
+    float32_t2 mouseUV;
+    uint32_t brushRadius;
+    float32_t brushStrength;
+};
+
+ConstantBuffer<BrushInfo> BrushInfo : register(b5);
+Texture2D<float4> WorldPositionTexture : register(t1);
+SamplerState textureSampler : register(s1);
+
+
+bool CheckInside(float3 mousePoint, uint32_t radius, AABB aabb) {
+    float3 closestPoint = float3(
+        clamp(mousePoint.x, aabb.min.x, aabb.max.x),
+        clamp(mousePoint.y, aabb.min.y, aabb.max.y),
+        clamp(mousePoint.z, aabb.min.z, aabb.max.z)
+    );
+
+    float distanceSq = dot(closestPoint - mousePoint, closestPoint - mousePoint);
+    return distanceSq <= (radius * radius);
+}
+
 /// ---------------------------------------------------
 /// Main
 /// ---------------------------------------------------
@@ -22,35 +44,39 @@ void main(
 	aabb.min = asPayload.chunkOrigin;
 	aabb.max = asPayload.chunkOrigin + float3(voxelTerrainInfo.chunkSize);
 	if (IsVisible(aabb, CreateFrustumFromMatrix(viewProjection.matVP))) {
-		/// ---------------------------------------------------
-		/// LODレベルを決め、サブチャンクの大きさを設定、高~低解像度に対応する
-		/// ---------------------------------------------------
-		
-		float3 center = (aabb.min + aabb.max) * 0.5;
-		float3 nearPoint = float3(
-			clamp(camera.position.x, aabb.min.x, aabb.max.x),
-			clamp(camera.position.y, aabb.min.y, aabb.max.y),
-			clamp(camera.position.z, aabb.min.z, aabb.max.z)
-		);
+        
+        float3 mousePoint = WorldPositionTexture.SampleLevel(textureSampler, BrushInfo.mouseUV, 0).xyz;
+        if(CheckInside(mousePoint, BrushInfo.brushRadius, aabb)) {
+		    /// ---------------------------------------------------
+		    /// LODレベルを決め、サブチャンクの大きさを設定、高~低解像度に対応する
+		    /// ---------------------------------------------------
+    
+		    float3 center = (aabb.min + aabb.max) * 0.5;
+		    float3 nearPoint = float3(
+		    	clamp(camera.position.x, aabb.min.x, aabb.max.x),
+		    	clamp(camera.position.y, aabb.min.y, aabb.max.y),
+		    	clamp(camera.position.z, aabb.min.z, aabb.max.z)
+		    );
 
-		float3 diff = nearPoint - camera.position.xyz;
-		float lengthToCamera = length(diff);
-		if (lengthToCamera <= lodInfo.maxDrawDistance) {
+		    float3 diff = nearPoint - camera.position.xyz;
+		    float lengthToCamera = length(diff);
+		    if (lengthToCamera <= lodInfo.maxDrawDistance) {
 
-            if(lodInfo.useLod != 0) {
-                asPayload.lodLevel = GetLOD(lengthToCamera);
-            } else {
-                asPayload.lodLevel = lodInfo.lod;
-            }
+                if(lodInfo.useLod != 0) {
+                    asPayload.lodLevel = GetLOD(lengthToCamera);
+                } else {
+                    asPayload.lodLevel = lodInfo.lod;
+                }
 
-			uint32_t subChunkSize = GetSubChunkSize(asPayload.lodLevel);
-			asPayload.chunkIndex = IndexOfMeshGroup(groupId, uint3(voxelTerrainInfo.chunkCountXZ.x, 1, voxelTerrainInfo.chunkCountXZ.y));
-			asPayload.subChunkSize = uint3(subChunkSize, subChunkSize, subChunkSize);
-			dispatchSize = voxelTerrainInfo.textureSize / asPayload.subChunkSize; // numthreads に合わせて分割
-            dispatchSize.x = (dispatchSize.x * dispatchSize.y * dispatchSize.z) / 16;
-            dispatchSize.y = 1;
-            dispatchSize.z = 1;
-		}
+		    	uint32_t subChunkSize = GetSubChunkSize(asPayload.lodLevel);
+		    	asPayload.chunkIndex = IndexOfMeshGroup(groupId, uint3(voxelTerrainInfo.chunkCountXZ.x, 1, voxelTerrainInfo.chunkCountXZ.y));
+		    	asPayload.subChunkSize = uint3(subChunkSize, subChunkSize, subChunkSize);
+		    	dispatchSize = voxelTerrainInfo.textureSize / asPayload.subChunkSize; // numthreads に合わせて分割
+                dispatchSize.x = (dispatchSize.x * dispatchSize.y * dispatchSize.z) / 16;
+                dispatchSize.y = 1;
+                dispatchSize.z = 1;
+		    }
+        }
 	}
 
 	/// 分割された個数でディスパッチ

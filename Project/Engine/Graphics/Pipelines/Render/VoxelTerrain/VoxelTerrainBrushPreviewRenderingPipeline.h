@@ -4,11 +4,14 @@
 /// engine
 #include "../../Interface/IRenderingPipeline.h"
 
+#include "Engine/Core/Utility/Utility.h"
+#include "Engine/Graphics/Buffer/ConstantBuffer.h"
 
 
 namespace ONEngine {
 
 class AssetCollection;
+class DxManager;
 
 
 /// ///////////////////////////////////////////////////
@@ -22,6 +25,16 @@ class VoxelTerrainBrushPreviewRenderingPipeline : public IRenderingPipeline {
 		CBV_CAMERA_POSITION,
 		CBV_LOD_INFO,
 		CBV_MATERIAL,
+		CBV_BRUSH_INFO,
+		SRV_CHUNKS,
+		SRV_WORLD_POSITION_TEXTURE,
+		SRV_VOXEL_TERRAIN_TEXTURE3D,
+	};
+
+	struct BrushInfo {
+		Vector2 mouseScreenPos;
+		uint32_t brushRadius;
+		float brushStrength;
 	};
 
 
@@ -33,8 +46,10 @@ public:
 	VoxelTerrainBrushPreviewRenderingPipeline(AssetCollection* assetCollection);
 	~VoxelTerrainBrushPreviewRenderingPipeline() override;
 
-	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxm) override;
+	void Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) override;
 	void Draw(class ECSGroup* _ecs, class CameraComponent* _camera, DxCommand* _dxCommand) override;
+
+	bool CheckVoxelTerrainBufferEnabled(class VoxelTerrain* vt);
 
 private:
 	/// ===================================================
@@ -42,7 +57,9 @@ private:
 	/// ===================================================
 
 	AssetCollection* pAssetCollection_ = nullptr;
+	DxManager* pDxm_ = nullptr;
 
+	ConstantBuffer<BrushInfo> cBufferBrushInfo_;
 };
 
 } /// namespace ONEngine
