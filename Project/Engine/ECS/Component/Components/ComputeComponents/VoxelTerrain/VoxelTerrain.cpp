@@ -464,6 +464,48 @@ void VoxelTerrain::CopyEditorTextureToChunkTexture(DxCommand* _dxCommand) {
 	}
 }
 
+void VoxelTerrain::CopyEditorTextureToChunkTexture(DxCommand* dxCommand, const std::vector<int>& copyChunkIDs) {
+	D3D12_RESOURCE_STATES srvTextureBefore = chunks_[0].pTexture->GetDxResource().GetCurrentState();
+	D3D12_RESOURCE_STATES uavTextureBefore = chunks_[0].uavTexture.GetDxResource().GetCurrentState();
+	auto cmdList = dxCommand->GetCommandList();
+
+	auto EnableChunkID = [&](int chunkID) -> bool {
+		return chunkID >= 0 && static_cast<size_t>(chunkID) < chunks_.size();
+	};
+
+	/// テクスチャの状態遷移
+	for(const int chunkID : copyChunkIDs) {
+		if(!EnableChunkID(chunkID)) {
+			continue;
+		}
+
+		chunks_[chunkID].uavTexture.GetDxResource().CreateBarrier(D3D12_RESOURCE_STATE_COPY_SOURCE, dxCommand);
+		chunks_[chunkID].pTexture->GetDxResource().CreateBarrier(D3D12_RESOURCE_STATE_COPY_DEST, dxCommand);
+	}
+
+	/// 実際に使用するSRVをUAVテクスチャにコピーする
+	for(const int chunkID : copyChunkIDs) {
+		if(!EnableChunkID(chunkID)) {
+			continue;
+		}
+
+		cmdList->CopyResource(
+			chunks_[chunkID].pTexture->GetDxResource().Get(),
+			chunks_[chunkID].uavTexture.GetDxResource().Get()
+		);
+	}
+	
+	/// テクスチャの状態遷移
+	for(const int chunkID : copyChunkIDs) {
+		if(!EnableChunkID(chunkID)) {
+			continue;
+		}
+
+		chunks_[chunkID].uavTexture.GetDxResource().CreateBarrier(uavTextureBefore, dxCommand);
+		chunks_[chunkID].pTexture->GetDxResource().CreateBarrier(srvTextureBefore, dxCommand);
+	}
+}
+
 uint32_t VoxelTerrain::GetBrushRadius() const {
 	if(!cBufferEditInfo_.Get()) {
 		return 0;

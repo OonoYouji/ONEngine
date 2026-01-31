@@ -235,6 +235,7 @@ public:
 	/// @param _dxDevice DxDeviceのポインタ
 	/// @param _assetCollection 
 	void CopyEditorTextureToChunkTexture(DxCommand* _dxCommand);
+	void CopyEditorTextureToChunkTexture(DxCommand* dxCommand, const std::vector<int>& copyChunkIDs);
 
 
 	bool CanMeshShaderRendering() const { return canMeshShaderRendering_; }

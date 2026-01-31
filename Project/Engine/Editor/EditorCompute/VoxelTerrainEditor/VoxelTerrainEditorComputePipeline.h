@@ -1,9 +1,16 @@
 ﻿#pragma once
 
+#include <vector>
+
 /// engine
 #include "../Interface/IEditorCompute.h"
 #include "Engine/Asset/Assets/Texture/Texture.h"
 #include "Engine/Graphics/Buffer/StructuredBuffer.h"
+#include "Engine/Graphics/Buffer/ConstantBuffer.h"
+
+namespace ONEngine {
+class VoxelTerrain;
+}
 
 /// /////////////////////////////////////////////////
 /// ボクセル地形を編集するためのパイプラインを起動するクラス
@@ -25,6 +32,12 @@ class VoxelTerrainEditorComputePipeline : public IEditorCompute {
 		UAV_VOXEL_TEXTURES
 	};
 
+	enum CALC_MOUSE_POS_ROOT_PARAM {
+		C_MOUSE_POS_CBV_INPUT_INFO,
+		C_MOUSE_POS_UAV_MOUSE_POS,
+		C_MOUSE_POS_SRV_WORLD_TEXTURE
+	};
+
 public:
 	/// =========================================
 	/// public : methods
@@ -36,8 +49,9 @@ public:
 	void Initialize(ONEngine::ShaderCompiler* _shaderCompiler, ONEngine::DxManager* _dxm) override;
 	void Execute(ONEngine::EntityComponentSystem* _ecs, ONEngine::DxCommand* _dxCommand, ONEngine::AssetCollection* _assetCollection) override;
 
-	void EditStart();
-	void EditEnd();
+	void ExecuteCalculateMouseWorldPos(ONEngine::DxCommand* dxCommand, ONEngine::AssetCollection* assetCollection);
+	
+	std::vector<int> GetEditedChunkIDs(ONEngine::VoxelTerrain* vt);
 
 private:
 	/// =========================================
@@ -46,16 +60,11 @@ private:
 
 	ONEngine::DxManager* pDxManager_ = nullptr;
 
-	uint32_t editCount_;
-	uint32_t maxEditCount_;
-
-	/// 地形が編集される毎に地形テクスチャのコピーを保存しておくためのテクスチャ
-	/// 複数回のUndo/Redoに対応するためこのテクスチャは地形のn倍の大きさで用意しておく
-	/// n = maxEditCount_
-	ONEngine::Texture editedTexture_;
+	std::unique_ptr<ONEngine::ComputePipeline> calculationMouseWorldPosPipeline_ = nullptr;
 
 	ONEngine::StructuredBuffer<ONEngine::Vector4> uavMousePosBuffer_;
-	ONEngine::Vector4 mousePos_;
+	ONEngine::ConstantBuffer<ONEngine::Vector2> cBufferMouseUV_;
+	ONEngine::Vector4 mouseWorldPos_ = ONEngine::Vector4::Zero;
 };
 
 } /// Editor
