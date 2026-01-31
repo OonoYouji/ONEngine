@@ -10,6 +10,7 @@ struct InputInfo {
 
 struct EditorInfo {
 	uint32_t brushRadius;
+    float32_t brushStrength;
 };
 
 struct ChunkID {
@@ -159,7 +160,7 @@ void main(
 	
 	/// 操作次第で色を変更
 	if (inputInfo.mouseLeftButton == 1) {
-        float val = 0.05f;
+        float val = editorInfo.brushStrength;
 		if (inputInfo.keyboardLShift == 1) {
 			// ----- 押し下げ ----- //
 			voxelColor.a -= val;

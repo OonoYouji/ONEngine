@@ -112,6 +112,7 @@ struct InputInfo {
 /// @brief VoxelTerrainの編集用データ
 struct EditInfo {
 	uint32_t brushRadius;
+	float strength;
 };
 
 
@@ -241,6 +242,7 @@ public:
 
 
 	uint32_t GetBrushRadius() const;
+	float GetBrushStrength() const;
 
 private:
 	/// ===========================================

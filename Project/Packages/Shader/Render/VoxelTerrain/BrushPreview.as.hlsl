@@ -1,12 +1,7 @@
 #include "BrushPreview.hlsli"
 
-struct BrushInfo {
-    float32_t2 mouseUV;
-    uint32_t brushRadius;
-    float32_t brushStrength;
-};
 
-ConstantBuffer<BrushInfo> BrushInfo : register(b5);
+
 Texture2D<float4> WorldPositionTexture : register(t1);
 SamplerState textureSampler : register(s1);
 
@@ -75,6 +70,8 @@ void main(
                 dispatchSize.x = (dispatchSize.x * dispatchSize.y * dispatchSize.z) / 16;
                 dispatchSize.y = 1;
                 dispatchSize.z = 1;
+
+                asPayload.brushWorldPos = mousePoint;
 		    }
         }
 	}

@@ -50,7 +50,7 @@ void VoxelTerrainBrushPreviewRenderingPipeline::Initialize(ShaderCompiler* _shad
 		pipeline_->AddStaticSampler(StaticSampler::ClampSampler(), D3D12_SHADER_VISIBILITY_ALL, 0);
 		pipeline_->AddStaticSampler(StaticSampler::ClampSampler(), D3D12_SHADER_VISIBILITY_ALL, 1);
 
-		pipeline_->SetBlendDesc(BlendMode::Normal());
+		pipeline_->SetBlendDesc(BlendMode::None());
 		pipeline_->SetDepthStencilDesc(DefaultDepthStencilDesc());
 		pipeline_->SetCullMode(D3D12_CULL_MODE_BACK);
 		pipeline_->SetFillMode(D3D12_FILL_MODE_SOLID);
@@ -95,7 +95,7 @@ void VoxelTerrainBrushPreviewRenderingPipeline::Draw(ECSGroup* _ecs, CameraCompo
 		BrushInfo{
 			mouseUV,
 			vt->GetBrushRadius(),
-			0.3f
+			vt->GetBrushStrength()
 		}
 	);
 

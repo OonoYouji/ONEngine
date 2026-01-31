@@ -15,14 +15,22 @@ struct Payload {
 
     uint32_t3 chunkSize;
 	uint lodLevel;
+    float32_t3 brushWorldPos;
 };
 
+
+struct BrushInfo {
+    float32_t2 mouseUV;
+    uint32_t brushRadius;
+    float32_t brushStrength;
+};
 
 
 ConstantBuffer<VoxelTerrainInfo> voxelTerrainInfo : register(b0);
 ConstantBuffer<ViewProjection>   viewProjection   : register(b1);
 ConstantBuffer<Camera>           camera           : register(b2);
 ConstantBuffer<LODInfo>          lodInfo          : register(b3);
+ConstantBuffer<BrushInfo>        BrushInfo        : register(b5);
 
 StructuredBuffer<Chunk> chunks : register(t0);
 

@@ -16,7 +16,7 @@ PSOutput main(VertexOut input) {
 	// 1. 法線の正規化
 	float3 N = normalize(input.normal);
 
-	output.color = material.baseColor * float4(0.5f, 0.5f, 0.5f, 0.25f);
+	output.color = float4(0.7, 0.1, 0.1, 0.5);
 	output.worldPos = input.worldPosition;
 	output.normal = float4(N, 1);
 	output.flags = float4(material.intValues.x, material.intValues.y, 0, 1);

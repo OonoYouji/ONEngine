@@ -90,8 +90,11 @@ void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _
 	/// editor用
 	{
 		static int radius = 5;
+		static float strength = 0.5f;
 		Editor::ImMathf::DragInt("Brush Radius", &radius, 1, 1, 100);
-		_voxelTerrain->cBufferEditInfo_.SetMappedData({ uint32_t(radius) });
+		Editor::ImMathf::DragFloat("Strength", &strength, 0.01f, 0.0f, 1.0f);
+
+		_voxelTerrain->cBufferEditInfo_.SetMappedData({ uint32_t(radius), strength });
 	}
 
 
@@ -467,4 +470,11 @@ uint32_t VoxelTerrain::GetBrushRadius() const {
 	}
 
 	return cBufferEditInfo_.GetMappingData().brushRadius;
+}
+
+float ONEngine::VoxelTerrain::GetBrushStrength() const {
+	if(!cBufferEditInfo_.Get()) {
+		return 0.0f;
+	}
+	return cBufferEditInfo_.GetMappingData().strength;
 }
