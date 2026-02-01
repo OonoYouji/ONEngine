@@ -162,16 +162,7 @@ void main(
 	uint3 step = asPayload.subChunkSize;
 	float3 basePos = GetBasePos(DTid.x, asPayload.chunkSize, step);
     
-
     float3 worldBasePos = basePos + asPayload.chunkOrigin;
-    // bool isBrushInside = false;
-    // if(CheckInside(
-    //     asPayload.brushWorldPos, BrushInfo.brushRadius, 
-    //     worldBasePos, 
-    //     worldBasePos + float3(step))) {
-    //     isBrushInside = true;
-    // }
-
 
     uint32_t3 chunkSize = uint32_t3(voxelTerrainInfo.chunkSize);
     uint32_t transitionCode = 0;
@@ -180,34 +171,29 @@ void main(
 	uint cubeIndex = 0;
 	uint triCount = 0;
 	
-    // if(isBrushInside) {
-
-	    [unroll]
-	    for (int i = 0; i < 8; ++i) {
-	    	float3 samplePos = basePos + (kCornerOffsets[i] * float3(step));
-
-	    	float d = 0.0f;
-            if(CheckInside(
-                asPayload.brushWorldPos, BrushInfo.brushRadius, 
-                samplePos + asPayload.chunkOrigin)) {
-                d = BrushInfo.brushStrength;
-            } else {
-                d = GetDensity(samplePos, asPayload.chunkIndex);
-            }
-            
-
-	    	cubeDensities[i] = d;
-
-	    	if (d < voxelTerrainInfo.isoLevel) {
-	    		cubeIndex |= (1u << i);
-	    	}
-	    }
-
-	    [unroll]
-	    for (int i = 0; i < 5; i++) {
-	    	triCount += (TriTable[cubeIndex][i * 3] != -1) ? 1 : 0;
-	    }
-    // } 
+	[unroll]
+	for (int i = 0; i < 8; ++i) {
+		float3 samplePos = basePos + (kCornerOffsets[i] * float3(step));
+        
+		float d = 0.0f;
+        if(CheckInside(
+            asPayload.brushWorldPos, BrushInfo.brushRadius, 
+            samplePos + asPayload.chunkOrigin)) {
+            d = BrushInfo.brushStrength;
+        } else {
+            d = GetDensity(samplePos, asPayload.chunkIndex);
+        }
+        
+		cubeDensities[i] = d;
+		if (d < voxelTerrainInfo.isoLevel) {
+			cubeIndex |= (1u << i);
+		}
+	}
+    
+	[unroll]
+	for (int i = 0; i < 5; i++) {
+		triCount += (TriTable[cubeIndex][i * 3] != -1) ? 1 : 0;
+	}
 
     uint outputTriOffset = WavePrefixSum(triCount);
     uint totalTriCount = WaveActiveSum(triCount);

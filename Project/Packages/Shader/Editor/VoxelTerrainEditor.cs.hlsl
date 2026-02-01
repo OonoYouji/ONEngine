@@ -108,52 +108,21 @@ uint32_t3 GetNewChunkCoord(int32_t3 brushCoord, uint32_t3 chunkCoord) {
 }
 
 
-
 [shader("compute")]
 [numthreads(10, 10, 10)]
 void main(
-    uint3 DTid : SV_DispatchThreadID,
-	uint3 Gid : SV_GroupThreadID,
-    uint groupIndex : SV_GroupIndex) {
-
-    /// このThreadが担当するボクセルがブラシ範囲内かチェック
-    /// 角丸にするための処理
-    int32_t3 brushCoord = (int3(DTid) - int3(editorInfo.brushRadius, editorInfo.brushRadius, editorInfo.brushRadius));;
-    int lengthSq = brushCoord.x * brushCoord.x + brushCoord.y * brushCoord.y + brushCoord.z * brushCoord.z;
-    if (lengthSq > editorInfo.brushRadius * editorInfo.brushRadius) {
-        return;
-    }
-
+    uint3 DTid : SV_DispatchThreadID) {
 
 
 	/// 地形のローカル座標に変換
     float3 mouseWorldPos = mousePosBuffer[0].worldPos.xyz;
 	float3 terrainLocalMousePos = mouseWorldPos - voxelTerrainInfo.terrainOrigin;
-
-    /// マウスが指しているチャンクのID計算
-    uint32_t3 chunkCoord = uint32_t3(terrainLocalMousePos / voxelTerrainInfo.chunkSize);
-    uint chunkID = chunkCoord.x + (chunkCoord.z * voxelTerrainInfo.chunkCountXZ.y);
-    float3 chunkOrigin = float3(
-        chunkCoord.x * voxelTerrainInfo.chunkSize.x,
-        0,
-        chunkCoord.z * voxelTerrainInfo.chunkSize.z
-    );
-
-    float3 chunkLocalMousePos = terrainLocalMousePos - chunkOrigin;
-    int3 voxelPos = int3(chunkLocalMousePos) + brushCoord;
-
-    /// brushCoordがチャンク外ならIDを更新する
-    if(OutsideChunk(voxelPos, uint32_t3(voxelTerrainInfo.chunkSize))) {
-        chunkCoord = GetNewChunkCoord(brushCoord, chunkCoord);
-        chunkOrigin = float3(
-            (chunkCoord.x) * voxelTerrainInfo.chunkSize.x,
-            0,
-            (chunkCoord.z) * voxelTerrainInfo.chunkSize.z
-        );
-        chunkID = chunkCoord.x + (chunkCoord.z * voxelTerrainInfo.chunkCountXZ.y);
-        chunkLocalMousePos = terrainLocalMousePos - chunkOrigin;
-        voxelPos = int3(chunkLocalMousePos) + brushCoord;
-    }
+	/// チャンクの原点を計算
+	float3 chunkOrigin = float3(
+		(chunkID.value % voxelTerrainInfo.chunkCountXZ.x) * voxelTerrainInfo.chunkSize.x,
+		0,
+		(chunkID.value / voxelTerrainInfo.chunkCountXZ.x) * voxelTerrainInfo.chunkSize.z
+	);
 
 	/// ---------------------------------------------------
 	/// ここから実際に編集する処理
@@ -161,6 +130,7 @@ void main(
 
 	/// 対応するチャンクの情報
 	/// マウスのチャンク内でのローカル位置
+	float3 chunkLocalMousePos = terrainLocalMousePos - chunkOrigin;
 	
     /// Y軸を反転させ左手座標系からテクスチャ座標系に
 	float posY = chunkLocalMousePos.y / voxelTerrainInfo.textureSize.y;
@@ -169,16 +139,24 @@ void main(
 	posY *= voxelTerrainInfo.textureSize.y;
 	chunkLocalMousePos.y = posY;
 	
+	uint32_t radius = (uint32_t) editorInfo.brushRadius;
+	int3 lpos = int32_t3(DTid - int3(radius, radius, radius));
+	if (lpos.x * lpos.x + lpos.y * lpos.y + lpos.z * lpos.z > radius * radius) {
+        return;
+	}
+
+	/// ボクセル位置の色を取得
+	int3 voxelPos = chunkLocalMousePos + lpos;
+	
 	/// 範囲外チェック
 	if (!CheckInside(voxelPos, int3(0, 1, 0), int3(voxelTerrainInfo.textureSize) - int3(0, 1, 0))) {
         return;
 	}
 
 	
-	Chunk chunk = chunks[chunkID];
-	float4 voxelColor = voxelTextures[chunk.textureId][voxelPos];
+	float4 voxelColor = voxelTextures[chunks[chunkID.value].textureId][voxelPos];
 	if (voxelColor.a != 0.0f) {
-		voxelTextures[chunk.textureId][voxelPos] = float4(0, 1, 0, voxelColor.a);
+		voxelTextures[chunks[chunkID.value].textureId][voxelPos] = float4(0, 1, 0, voxelColor.a);
 	}
 	
 	
@@ -199,7 +177,7 @@ void main(
             }
 		}
     
-		voxelTextures[chunk.textureId][voxelPos] = voxelColor;
+		voxelTextures[chunks[chunkID.value].textureId][voxelPos] = voxelColor;
 	}
 
 }

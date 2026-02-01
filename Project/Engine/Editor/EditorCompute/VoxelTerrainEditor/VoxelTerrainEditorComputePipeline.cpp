@@ -197,12 +197,32 @@ void VoxelTerrainEditorComputePipeline::Execute(ONEngine::EntityComponentSystem*
 	);
 
 	/// mousePosを中心に3x3のチャンクを編集する
-	const ONEngine::Vector3Int kNumthreads = { 10, 10, 10 };
-	cmdList->Dispatch(
-		ONEngine::Math::DivideAndRoundUp(voxelTerrain->GetBrushRadius() * 2, kNumthreads.x),
-		ONEngine::Math::DivideAndRoundUp(voxelTerrain->GetBrushRadius() * 2, kNumthreads.y),
-		ONEngine::Math::DivideAndRoundUp(voxelTerrain->GetBrushRadius() * 2, kNumthreads.z)
-	);
+	for(uint32_t chunkId = 0; chunkId < voxelTerrain->MaxChunkCount(); ++chunkId) {
+		ONEngine::Cube chunkAABB;
+		chunkAABB.center.x = (static_cast<float>(chunkId % voxelTerrain->GetChunkCountXZ().x)) * static_cast<float>(voxelTerrain->GetChunkSize().x);
+		chunkAABB.center.y = static_cast<float>(voxelTerrain->GetChunkSize().y) * 0.5f;
+		chunkAABB.center.z = (static_cast<float>(chunkId / voxelTerrain->GetChunkCountXZ().x)) * static_cast<float>(voxelTerrain->GetChunkSize().z);
+		chunkAABB.size.x = static_cast<float>(voxelTerrain->GetChunkSize().x);
+		chunkAABB.size.y = static_cast<float>(voxelTerrain->GetChunkSize().y);
+		chunkAABB.size.z = static_cast<float>(voxelTerrain->GetChunkSize().z);
+
+		if(!cameraComp->IsVisible(chunkAABB.center, chunkAABB.size)) {
+			continue;
+		}
+
+		/// --------------- 32bit定数の設定 --------------- ///
+		cmdList->SetComputeRoot32BitConstant(
+			C32BIT_CHUNK_ID, chunkId, 0
+		);
+		/// --------------- ディスパッチ --------------- ///
+		const uint32_t numthreads = 10;
+		uint32_t brushSize = voxelTerrain->GetBrushRadius();
+		cmdList->Dispatch(
+			ONEngine::Math::DivideAndRoundUp(brushSize * 2, numthreads),
+			ONEngine::Math::DivideAndRoundUp(brushSize * 2, numthreads),
+			ONEngine::Math::DivideAndRoundUp(brushSize * 2, numthreads)
+		);
+	}
 
 	mouseWorldPos_ = uavMousePosBuffer_.Readback(_dxCommand, 0);
 	std::vector<int> editedChunkIDs = GetEditedChunkIDs(voxelTerrain);
