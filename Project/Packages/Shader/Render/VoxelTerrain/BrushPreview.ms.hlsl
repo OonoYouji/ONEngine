@@ -1,16 +1,9 @@
-#include "VoxelTerrain.hlsli"
+#include "BrushPreview.hlsli"
 #include "../VoxelTerrainTest/Table.hlsli"
 
-// ---------------------------------------------------
-// Buffers
-// ---------------------------------------------------
-
-Texture3D<float4> voxelChunkTextures[] : register(t1);
+Texture3D<float4> voxelChunkTextures[] : register(t2);
 SamplerState texSampler : register(s0);
 
-// ---------------------------------------------------
-// Functions
-// ---------------------------------------------------
 
 // 密度取得
 float GetDensity(float3 _localPos, uint _chunkId) {
@@ -118,11 +111,6 @@ VertexOut VertexInterp(float3 p1, float3 p2, float3 chunkOrigin,float3 subChunkS
 
 	vOut.position = mul(vOut.worldPosition, viewProjection.matVP);
 	
-	// 高さベースの色付け
-	// float worldY = vOut.worldPosition.y;
-	// vOut.color = lerp(float4(0.3, 0.8, 0.3, 1), float4(0.6, 0.5, 0.3, 1), worldY / 512.0f);
-    vOut.color = DebugColor(chunkId);
-	
 	return vOut;
 }
 
@@ -145,18 +133,23 @@ float32_t3 GetBasePos(uint32_t id, uint32_t3 size, uint32_t3 step) {
 }
 
 
-struct ThreadSharedData {
-    float densities[8];
-    uint cubeIndex;
-    uint triCount;
-};
+bool CheckInside(float3 mousePoint, uint32_t radius, float3 aabbMin, float3 aabbMax) {
+    float3 closestPoint = float3(
+        clamp(mousePoint.x, aabbMin.x, aabbMax.x),
+        clamp(mousePoint.y, aabbMin.y, aabbMax.y),
+        clamp(mousePoint.z, aabbMin.z, aabbMax.z)
+    );
 
+    float distanceSq = dot(closestPoint - mousePoint, closestPoint - mousePoint);
+    return distanceSq <= (radius * radius);
+}
 
-// ---------------------------------------------------
-// マーチングキューブ法の1ボクセルが表示する最大頂点は 15頂点 なので
-// 2*4*2= 16
-// 16*15=240頂点, 16*5=80三角形
-// ---------------------------------------------------
+bool CheckInside(float3 mousePoint, uint32_t radius, float3 samplePos) {
+    float3 diff = samplePos - mousePoint;
+    float distanceSq = dot(diff, diff);
+    return distanceSq <= (radius * radius);
+}
+
 [shader("mesh")]
 [outputtopology("triangle")]
 [numthreads(16, 1, 1)]
@@ -168,6 +161,8 @@ void main(
 
 	uint3 step = asPayload.subChunkSize;
 	float3 basePos = GetBasePos(DTid.x, asPayload.chunkSize, step);
+    
+    float3 worldBasePos = basePos + asPayload.chunkOrigin;
 
     uint32_t3 chunkSize = uint32_t3(voxelTerrainInfo.chunkSize);
     uint32_t transitionCode = 0;
@@ -179,15 +174,22 @@ void main(
 	[unroll]
 	for (int i = 0; i < 8; ++i) {
 		float3 samplePos = basePos + (kCornerOffsets[i] * float3(step));
-    
-		float d = GetDensity(samplePos, asPayload.chunkIndex);
+        
+		float d = 0.0f;
+        if(CheckInside(
+            asPayload.brushWorldPos, BrushInfo.brushRadius, 
+            samplePos + asPayload.chunkOrigin)) {
+            d = BrushInfo.brushStrength;
+        } else {
+            d = GetDensity(samplePos, asPayload.chunkIndex);
+        }
+        
 		cubeDensities[i] = d;
-    
 		if (d < voxelTerrainInfo.isoLevel) {
 			cubeIndex |= (1u << i);
 		}
 	}
-
+    
 	[unroll]
 	for (int i = 0; i < 5; i++) {
 		triCount += (TriTable[cubeIndex][i * 3] != -1) ? 1 : 0;

@@ -112,6 +112,7 @@ struct InputInfo {
 /// @brief VoxelTerrainの編集用データ
 struct EditInfo {
 	uint32_t brushRadius;
+	float strength;
 };
 
 
@@ -149,6 +150,7 @@ class VoxelTerrain : public IComponent {
 	friend class VoxelTerrainVertexShaderRenderingPipeline;
 	friend class VoxelTerrainVertexCreatePipeline;
 	friend class VoxelTerrainTransvoxelRenderingPipeline;
+	friend class VoxelTerrainBrushPreviewRenderingPipeline;
 public:
 	/// ===========================================
 	/// public : static objects
@@ -233,6 +235,7 @@ public:
 	/// @param _dxDevice DxDeviceのポインタ
 	/// @param _assetCollection 
 	void CopyEditorTextureToChunkTexture(DxCommand* _dxCommand);
+	void CopyEditorTextureToChunkTexture(DxCommand* dxCommand, const std::vector<int>& copyChunkIDs);
 
 
 	bool CanMeshShaderRendering() const { return canMeshShaderRendering_; }
@@ -240,6 +243,7 @@ public:
 
 
 	uint32_t GetBrushRadius() const;
+	float GetBrushStrength() const;
 
 private:
 	/// ===========================================

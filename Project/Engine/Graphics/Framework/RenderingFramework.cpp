@@ -25,11 +25,11 @@ void RenderingFramework::Initialize(DxManager* _dxm, WindowManager* _windowManag
 	pWindowManager_ = _windowManager;
 	pEntityComponentSystem_ = _pEntityComponentSystem;
 
-	assetCollection_ = std::make_unique<AssetCollection>();
-	renderingPipelineCollection_ = std::make_unique<RenderingPipelineCollection>(shaderCompiler_.get(), pDxManager_, pEntityComponentSystem_, assetCollection_.get());
+	pAssetCollection_ = std::make_unique<AssetCollection>();
+	renderingPipelineCollection_ = std::make_unique<RenderingPipelineCollection>(shaderCompiler_.get(), pDxManager_, pEntityComponentSystem_, pAssetCollection_.get());
 
 	renderingPipelineCollection_->Initialize();
-	assetCollection_->Initialize(pDxManager_);
+	pAssetCollection_->Initialize(pDxManager_);
 
 
 	/// ----- RenderTextureの初期化 ----- ///
@@ -41,14 +41,14 @@ void RenderingFramework::Initialize(DxManager* _dxm, WindowManager* _windowManag
 		renderTextures_[i]->Initialize(
 			RenderInfo::kRenderTargetDir + RenderInfo::kRenderTargetNames[i],
 			clearColor, EngineConfig::kWindowSize,
-			pDxManager_, assetCollection_.get()
+			pDxManager_, pAssetCollection_.get()
 		);
 	}
 
 
 	/// PostProcess用UAVTextureの初期化
 	std::unique_ptr<UAVTexture> uavTexture = std::make_unique<UAVTexture>();
-	uavTexture->Initialize("postProcessResult", pDxManager_, assetCollection_.get());
+	uavTexture->Initialize("postProcessResult", pDxManager_, pAssetCollection_.get());
 
 
 #ifdef DEBUG_MODE
@@ -218,7 +218,7 @@ void RenderingFramework::DxCommandExeAndReset() {
 }
 
 AssetCollection* RenderingFramework::GetAssetCollection() const {
-	return assetCollection_.get();
+	return pAssetCollection_.get();
 }
 
 #ifdef DEBUG_MODE

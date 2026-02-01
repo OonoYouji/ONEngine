@@ -29,6 +29,7 @@ using namespace ONEngine;
 #include "../Render/VoxelTerrain/VoxelTerrainVertexShaderRenderingPipeline.h"
 #include "../Render/VoxelTerrain/VoxelTerrainRenderingPipeline.h"
 #include "../Render/VoxelTerrain/VoxelTerrainTransvoxelRenderingPipeline.h"
+#include "../Render/VoxelTerrain/VoxelTerrainBrushPreviewRenderingPipeline.h"
 
 /// post process
 #include "../PostProcess/PerObject/Light/PostProcessLighting.h"
@@ -67,6 +68,7 @@ void RenderingPipelineCollection::Initialize() {
 #ifdef DEBUG_MODE
 	/// Debug用にスケルトンを描画するパイプラインを追加
 	Generate3DRenderingPipeline<SkinMeshSkeletonRenderingPipeline>();
+	Generate3DRenderingPipeline<VoxelTerrainBrushPreviewRenderingPipeline>(pAssetCollection_);
 #endif // DEBUG_MODE
 	Generate3DRenderingPipeline<EffectRenderingPipeline>(pAssetCollection_);
 	Generate3DRenderingPipeline<GrassRenderingPipeline>(pAssetCollection_);
