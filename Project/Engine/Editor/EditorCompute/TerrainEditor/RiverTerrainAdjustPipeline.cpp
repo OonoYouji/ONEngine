@@ -16,7 +16,7 @@ void RiverTerrainAdjustPipeline::Initialize(ONEngine::ShaderCompiler* _shaderCom
 	{	/// shader
 		ONEngine::Shader shader;
 		shader.Initialize(_shaderCompiler);
-		shader.CompileShader(L"./Packages/Shader/Editor/RiverTerrainAbjust.cs.hlsl", L"cs_6_6", ONEngine::Shader::Type::cs);
+		shader.CompileShader(L"./Packages/Shader/Editor/RiverTerrainAdjust.cs.hlsl", L"cs_6_6", ONEngine::Shader::Type::cs);
 
 		pipeline_ = std::make_unique<ONEngine::ComputePipeline>();
 		pipeline_->SetShader(&shader);

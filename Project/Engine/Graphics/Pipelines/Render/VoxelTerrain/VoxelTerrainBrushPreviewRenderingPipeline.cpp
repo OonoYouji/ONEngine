@@ -50,7 +50,13 @@ void VoxelTerrainBrushPreviewRenderingPipeline::Initialize(ShaderCompiler* _shad
 		pipeline_->AddStaticSampler(StaticSampler::ClampSampler(), D3D12_SHADER_VISIBILITY_ALL, 0);
 		pipeline_->AddStaticSampler(StaticSampler::ClampSampler(), D3D12_SHADER_VISIBILITY_ALL, 1);
 
-		pipeline_->SetBlendDesc(BlendMode::None());
+		auto blend = BlendMode::Normal();
+		//blend.RenderTarget[0].RenderTargetWriteMask = 0;
+		//blend.RenderTarget[1].RenderTargetWriteMask = 0;
+		//blend.RenderTarget[2].RenderTargetWriteMask = 0;
+		//blend.RenderTarget[3].RenderTargetWriteMask = 0;
+
+		pipeline_->SetBlendDesc(blend);
 		pipeline_->SetDepthStencilDesc(DefaultDepthStencilDesc());
 		pipeline_->SetCullMode(D3D12_CULL_MODE_BACK);
 		pipeline_->SetFillMode(D3D12_FILL_MODE_SOLID);

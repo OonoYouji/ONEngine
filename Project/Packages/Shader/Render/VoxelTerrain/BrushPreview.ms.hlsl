@@ -171,17 +171,17 @@ void main(
 	uint cubeIndex = 0;
 	uint triCount = 0;
 	
+    bool isInside = false;
 	[unroll]
 	for (int i = 0; i < 8; ++i) {
 		float3 samplePos = basePos + (kCornerOffsets[i] * float3(step));
         
-		float d = 0.0f;
+		float d = GetDensity(samplePos, asPayload.chunkIndex);
         if(CheckInside(
             asPayload.brushWorldPos, BrushInfo.brushRadius, 
             samplePos + asPayload.chunkOrigin)) {
-            d = BrushInfo.brushStrength;
-        } else {
-            d = GetDensity(samplePos, asPayload.chunkIndex);
+            d += BrushInfo.brushStrength;
+            isInside = true;
         }
         
 		cubeDensities[i] = d;
@@ -190,10 +190,12 @@ void main(
 		}
 	}
     
-	[unroll]
-	for (int i = 0; i < 5; i++) {
-		triCount += (TriTable[cubeIndex][i * 3] != -1) ? 1 : 0;
-	}
+    if(isInside) {
+	    [unroll]
+	    for (int i = 0; i < 5; i++) {
+	    	triCount += (TriTable[cubeIndex][i * 3] != -1) ? 1 : 0;
+	    }
+    }
 
     uint outputTriOffset = WavePrefixSum(triCount);
     uint totalTriCount = WaveActiveSum(triCount);
