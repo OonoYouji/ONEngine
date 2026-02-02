@@ -6,7 +6,7 @@
 
 # ビルド手順
 - "GenerateProject.ps1"をPowerShellで起動
-- 生成された"ONEngine.sln"を起動、visual studio 2022でビルド
+- 生成された"ONEngine.sln"を起動、visual studio 2026でビルド
 
 
 # 注意点
