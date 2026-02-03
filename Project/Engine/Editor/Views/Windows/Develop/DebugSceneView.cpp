@@ -17,6 +17,7 @@
 #include "Engine/Scene/SceneManager.h"
 #include "Engine/Script/MonoScriptEngine.h"
 #include "Engine/Core/DirectX12/GPUTimeStamp/GPUTimeStamp.h"
+#include "Engine/Core/Utility/Time/CPUTimeStamp.h"
 
 /// editor
 #include "Engine/Editor/EditorUtils.h"
@@ -206,6 +207,18 @@ void Editor::DebugSceneView::ShowDebugSceneView(const ImVec2& imagePos, const Im
 			{ "TransitionCell", Format("%f ms", transitionCellTime), IM_COL32(255, 255, 255, 255) },
 			{ "EditorCompute", Format("%f ms", editorComputeTime), IM_COL32(255, 255, 255, 255) },
 			{ "BrushPreview", Format("%f ms", editorComputeBrushPreview), IM_COL32(255, 255, 255, 255) },
+		};
+		sections.push_back(renderer);
+	}
+
+	{
+		/// C#スクリプト セクション
+		double scriptUpdateTime = ONEngine::CPUTimeStamp::GetInstance().GetElapsedTimeMicroseconds(ONEngine::CPUTimeStampID::CSharpScriptUpdate); // マイクロ秒
+		OverlaySection renderer;
+		renderer.name = "C#スクリプト";
+		renderer.opened = true;
+		renderer.items = {
+			{ "C# Script Update", Format("%f ms", scriptUpdateTime), IM_COL32(255, 255, 255, 255) }
 		};
 		sections.push_back(renderer);
 	}

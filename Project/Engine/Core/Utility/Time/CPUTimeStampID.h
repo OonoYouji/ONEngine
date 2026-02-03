@@ -1,0 +1,13 @@
+﻿#pragma once
+
+namespace ONEngine {
+
+/// ///////////////////////////////////////////////////
+/// CPU上のタイムスタンプID
+/// ///////////////////////////////////////////////////
+enum class CPUTimeStampID {
+	CSharpScriptUpdate,
+	Count, /// 要素数カウント用
+};
+
+} /// namespace ONEngine
