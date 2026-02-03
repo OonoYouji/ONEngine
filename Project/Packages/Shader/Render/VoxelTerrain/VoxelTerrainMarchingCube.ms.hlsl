@@ -169,9 +169,6 @@ void main(
 	uint3 step = asPayload.subChunkSize;
 	float3 basePos = GetBasePos(DTid.x, asPayload.chunkSize, step);
 
-    uint32_t3 chunkSize = uint32_t3(voxelTerrainInfo.chunkSize);
-    uint32_t transitionCode = 0;
-    
 	float cubeDensities[8];
 	uint cubeIndex = 0;
 	uint triCount = 0;
