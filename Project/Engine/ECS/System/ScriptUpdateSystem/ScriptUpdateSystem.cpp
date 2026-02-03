@@ -14,6 +14,7 @@ using namespace ONEngine;
 #include "Engine/ECS/Component/Components/ComputeComponents/Script/Script.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 #include "Engine/Script/MonoScriptEngine.h"
+#include "Engine/Core/Utility/Time/CPUTimeStamp.h"
 
 ScriptUpdateSystem::ScriptUpdateSystem(ECSGroup* _ecs) {
 	MonoScriptEngine& monoEngine = MonoScriptEngine::GetInstance();
@@ -60,6 +61,7 @@ void ScriptUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
 		Console::LogInfo("[mono] GC Heap Size : " + std::to_string(heapSize / 1024) + "KB");
 		Console::LogInfo("[mono] GC Used Size : " + std::to_string(usedSize / 1024) + "KB");
 	}
+	CPUTimeStamp::GetInstance().BeginTimeStamp(CPUTimeStampID::CSharpScriptUpdate);
 #endif // DEBUG_MODE
 
 	/// C#側に未追加にエンティティとコンポーネントを追加する
@@ -70,6 +72,7 @@ void ScriptUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
 
 
 #ifdef DEBUG_MODE
+	CPUTimeStamp::GetInstance().EndTimeStamp(CPUTimeStampID::CSharpScriptUpdate);
 	auto endTime = std::chrono::high_resolution_clock::now();
 	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime).count();
 	Console::LogInfo("[ScriptUpdateSystem] RuntimeUpdate took " + std::to_string(duration) + " microseconds");
