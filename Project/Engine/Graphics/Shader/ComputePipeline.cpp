@@ -101,6 +101,16 @@ void ComputePipeline::AddStaticSampler(D3D12_SHADER_VISIBILITY _shaderVisibility
 	staticSamplers_.push_back(sampler);
 }
 
+void ComputePipeline::AddStaticSampler(const D3D12_STATIC_SAMPLER_DESC& _samplerDesc, D3D12_SHADER_VISIBILITY _shaderVisibility, uint32_t _shaderRegister) {
+	/// ----- Static Samplerを追加 ----- ///
+
+	D3D12_STATIC_SAMPLER_DESC sampler = _samplerDesc;
+	sampler.ShaderRegister = _shaderRegister;
+	sampler.ShaderVisibility = _shaderVisibility;
+
+	staticSamplers_.push_back(sampler);
+}
+
 void ComputePipeline::SetFillMode(D3D12_FILL_MODE _fillMode) {
 	rasterizerDesc_.FillMode = _fillMode;
 }

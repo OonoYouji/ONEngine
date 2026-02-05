@@ -62,6 +62,8 @@ public:
 	/// @param _shaderRegister   shaderのregister(s0)の0の部分
 	/// @param _isComparisonSampler 比較サンプラーにするかどうか
 	void AddStaticSampler(D3D12_SHADER_VISIBILITY _shaderVisibility, uint32_t _shaderRegister, bool _isComparisonSampler = false);
+	void AddStaticSampler(const D3D12_STATIC_SAMPLER_DESC& _samplerDesc, D3D12_SHADER_VISIBILITY _shaderVisibility, uint32_t _shaderRegister);
+
 
 	/// @brief fill modeを設定する
 	/// @param _fillMode 設定するfill mode
