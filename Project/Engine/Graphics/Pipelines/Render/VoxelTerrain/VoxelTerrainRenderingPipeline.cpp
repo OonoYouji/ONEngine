@@ -119,9 +119,9 @@ void VoxelTerrainRenderingPipeline::Draw(ECSGroup* _ecs, CameraComponent* _camer
 		cBufPos.BindForGraphicsCommandList(_dxCommand->GetCommandList(), CBV_CAMERA_POSITION);
 
 		D3D12_GPU_DESCRIPTOR_HANDLE frontSRVHandle = pDxManager_->GetDxSRVHeap()->GetSRVStartGPUHandle();
-		cmdList->SetGraphicsRootDescriptorTable(
-			SRV_VOXEL_TERRAIN_TEXTURE3D, frontSRVHandle
-		);
+		cmdList->SetGraphicsRootDescriptorTable(SRV_VOXEL_TERRAIN_TEXTURE3D, frontSRVHandle);
+		cmdList->SetGraphicsRootDescriptorTable(SRV_TEXTURES, frontSRVHandle);
+
 
 		/// --------------- ディスパッチ --------------- ///
 		cmdList->DispatchMesh(
@@ -153,9 +153,8 @@ void VoxelTerrainRenderingPipeline::Draw(ECSGroup* _ecs, CameraComponent* _camer
 		//_camera->GetCameraPosBuffer().BindForGraphicsCommandList(_dxCommand->GetCommandList(), CBV_CAMERA_POSITION);
 		cBufPos.BindForGraphicsCommandList(_dxCommand->GetCommandList(), CBV_CAMERA_POSITION);
 		D3D12_GPU_DESCRIPTOR_HANDLE frontSRVHandle = pDxManager_->GetDxSRVHeap()->GetSRVStartGPUHandle();
-		cmdList->SetGraphicsRootDescriptorTable(
-			SRV_VOXEL_TERRAIN_TEXTURE3D, frontSRVHandle
-		);
+		cmdList->SetGraphicsRootDescriptorTable(SRV_VOXEL_TERRAIN_TEXTURE3D, frontSRVHandle);
+		cmdList->SetGraphicsRootDescriptorTable(SRV_TEXTURES, frontSRVHandle);
 
 		/// --------------- ディスパッチ --------------- ///
 		cmdList->DispatchMesh(
@@ -203,15 +202,15 @@ void VoxelTerrainRenderingPipeline::CreatePipeline(GraphicsPipeline* _pipeline, 
 
 	_pipeline->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // Chunk array
 	_pipeline->AddDescriptorRange(1, MAX_TEXTURE_COUNT, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // VoxelTerrain Texture3D
-	//_pipeline->AddDescriptorRange(3000, MAX_TEXTURE_COUNT, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // Textures
+	_pipeline->AddDescriptorRange(2050, MAX_TEXTURE_COUNT, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // Textures
 
 	_pipeline->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 0); // Chunk array
 	_pipeline->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 1); // VoxelTerrain Texture3D
-	//_pipeline->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 2); // Textures
+	_pipeline->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 2); // Textures
 
 
 	_pipeline->AddStaticSampler(StaticSampler::ClampSampler(), D3D12_SHADER_VISIBILITY_ALL, 0);
-	//_pipeline->AddStaticSampler(D3D12_SHADER_VISIBILITY_ALL, 1);
+	_pipeline->AddStaticSampler(D3D12_SHADER_VISIBILITY_PIXEL, 1);
 
 
 	_pipeline->SetBlendDesc(_blendMode);

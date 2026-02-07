@@ -203,7 +203,7 @@ public:
 	const Vector3Int& GetChunkSize() const;
 
 
-	void SettingMaterial();
+	void SettingMaterial(AssetCollection* assetCollection);
 	void SettingTerrainInfo();
 
 

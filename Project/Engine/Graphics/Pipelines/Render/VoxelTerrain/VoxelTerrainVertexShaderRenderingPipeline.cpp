@@ -70,7 +70,7 @@ void VoxelTerrainVertexShaderRenderingPipeline::Draw(ECSGroup* _ecs, CameraCompo
 	}
 
 
-	vt->SettingMaterial();
+	vt->SettingMaterial(pAssetCollection_);
 
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 	auto cmdList = _dxCommand->GetCommandList();
