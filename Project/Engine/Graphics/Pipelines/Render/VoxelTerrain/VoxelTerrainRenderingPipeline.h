@@ -27,7 +27,7 @@ class VoxelTerrainRenderingPipeline : public IRenderingPipeline {
 		CBV_MATERIAL,
 		SRV_CHUNK_ARRAY,
 		SRV_VOXEL_TERRAIN_TEXTURE3D,
-		//SRV_TEXTURES,
+		SRV_TEXTURES,
 	};
 
 	struct CommandInfo {

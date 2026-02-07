@@ -1,11 +1,12 @@
 #include "VoxelTerrain.hlsli"
 #include "../VoxelTerrainTest/Table.hlsli"
+#include "../../Texture.hlsli"
 
 // ---------------------------------------------------
 // Buffers
 // ---------------------------------------------------
 
-Texture3D<float4> voxelChunkTextures[] : register(t1);
+Texture3D<float4> voxelChunkTextures[kMaxTextureCount] : register(t1);
 SamplerState texSampler : register(s0);
 
 // ---------------------------------------------------
