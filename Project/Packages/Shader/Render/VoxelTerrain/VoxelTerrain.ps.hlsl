@@ -41,6 +41,7 @@ float4 SampleTriplanar(Texture2D<float4> tex, float3 worldPos, float3 normal, fl
 float3 SampleTriplanarNormal(Texture2D<float4> tex, float3 worldPos, float3 N, float tiling)
 {
     float3 blend = abs(N);
+    blend = normalize(max(blend, 0.00001));
     blend /= (blend.x + blend.y + blend.z);
 
     float2 uvX = worldPos.yz * tiling;
@@ -51,26 +52,37 @@ float3 SampleTriplanarNormal(Texture2D<float4> tex, float3 worldPos, float3 N, f
     float3 nY = tex.Sample(textureSampler, uvY).xyz * 2 - 1;
     float3 nZ = tex.Sample(textureSampler, uvZ).xyz * 2 - 1;
 
-    // ----- X projection -----
-    float3 worldNX = float3(
-        nX.z,
-        nX.y,
-        nX.x
-    );
+    // ----- Projection basis -----
 
-    // ----- Y projection -----
-    float3 worldNY = float3(
-        nY.x,
-        nY.z,
-        nY.y
-    );
+    // X projection
+    float3 tX = float3(0, 0, 1);
+    float3 bX = float3(0, 1, 0);
+    float3 nBaseX = float3(1, 0, 0);
 
-    // ----- Z projection -----
-    float3 worldNZ = float3(
-        nZ.x,
-        nZ.y,
-        nZ.z
-    );
+    float3 worldNX =
+        nX.x * tX +
+        nX.y * bX +
+        nX.z * nBaseX;
+
+    // Y projection
+    float3 tY = float3(1, 0, 0);
+    float3 bY = float3(0, 0, 1);
+    float3 nBaseY = float3(0, 1, 0);
+
+    float3 worldNY =
+        nY.x * tY +
+        nY.y * bY +
+        nY.z * nBaseY;
+
+    // Z projection
+    float3 tZ = float3(1, 0, 0);
+    float3 bZ = float3(0, 1, 0);
+    float3 nBaseZ = float3(0, 0, 1);
+
+    float3 worldNZ =
+        nZ.x * tZ +
+        nZ.y * bZ +
+        nZ.z * nBaseZ;
 
     float3 result =
         worldNX * blend.x +
@@ -79,6 +91,7 @@ float3 SampleTriplanarNormal(Texture2D<float4> tex, float3 worldPos, float3 N, f
 
     return normalize(result);
 }
+
 
 
 

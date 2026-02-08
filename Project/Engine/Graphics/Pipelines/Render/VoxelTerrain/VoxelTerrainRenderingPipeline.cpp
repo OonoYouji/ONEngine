@@ -115,8 +115,8 @@ void VoxelTerrainRenderingPipeline::Draw(ECSGroup* _ecs, CameraComponent* _camer
 		voxelTerrain->SetupGraphicBuffers(cmdList, { CBV_VOXEL_TERRAIN_INFO, CBV_MATERIAL, SRV_CHUNK_ARRAY, CBV_LOD_INFO }, pAssetCollection_);
 
 		_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(_dxCommand->GetCommandList(), CBV_VIEW_PROJECTION);
-		//_camera->GetCameraPosBuffer().BindForGraphicsCommandList(_dxCommand->GetCommandList(), CBV_CAMERA_POSITION);
-		cBufPos.BindForGraphicsCommandList(_dxCommand->GetCommandList(), CBV_CAMERA_POSITION);
+		_camera->GetCameraPosBuffer().BindForGraphicsCommandList(_dxCommand->GetCommandList(), CBV_CAMERA_POSITION);
+		//cBufPos.BindForGraphicsCommandList(_dxCommand->GetCommandList(), CBV_CAMERA_POSITION);
 
 		D3D12_GPU_DESCRIPTOR_HANDLE frontSRVHandle = pDxManager_->GetDxSRVHeap()->GetSRVStartGPUHandle();
 		cmdList->SetGraphicsRootDescriptorTable(SRV_VOXEL_TERRAIN_TEXTURE3D, frontSRVHandle);
@@ -150,8 +150,8 @@ void VoxelTerrainRenderingPipeline::Draw(ECSGroup* _ecs, CameraComponent* _camer
 		voxelTerrain->SetupGraphicBuffers(cmdList, { CBV_VOXEL_TERRAIN_INFO, CBV_MATERIAL, SRV_CHUNK_ARRAY, CBV_LOD_INFO }, pAssetCollection_);
 
 		_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(_dxCommand->GetCommandList(), CBV_VIEW_PROJECTION);
-		//_camera->GetCameraPosBuffer().BindForGraphicsCommandList(_dxCommand->GetCommandList(), CBV_CAMERA_POSITION);
-		cBufPos.BindForGraphicsCommandList(_dxCommand->GetCommandList(), CBV_CAMERA_POSITION);
+		_camera->GetCameraPosBuffer().BindForGraphicsCommandList(_dxCommand->GetCommandList(), CBV_CAMERA_POSITION);
+		//cBufPos.BindForGraphicsCommandList(_dxCommand->GetCommandList(), CBV_CAMERA_POSITION);
 		D3D12_GPU_DESCRIPTOR_HANDLE frontSRVHandle = pDxManager_->GetDxSRVHeap()->GetSRVStartGPUHandle();
 		cmdList->SetGraphicsRootDescriptorTable(SRV_VOXEL_TERRAIN_TEXTURE3D, frontSRVHandle);
 		cmdList->SetGraphicsRootDescriptorTable(SRV_TEXTURES, frontSRVHandle);
