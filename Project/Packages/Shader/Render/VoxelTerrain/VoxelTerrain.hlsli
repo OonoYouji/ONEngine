@@ -52,5 +52,5 @@ uint32_t GetLOD(float32_t distanceToCamera) {
 }
 
 uint32_t GetSubChunkSize(uint32_t lodLevel) {
-    return 1u << lodLevel;
+    return 2u << lodLevel;
 }
