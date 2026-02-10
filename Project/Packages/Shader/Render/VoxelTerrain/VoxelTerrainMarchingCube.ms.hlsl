@@ -85,7 +85,6 @@ float3 CalculateNormal(float3 pos, uint chunkId, float step)
 {
     float eps = step; 
 
-    // 中央差分
     float dx = GetDensity(pos + float3(eps, 0, 0), chunkId) - GetDensity(pos - float3(eps, 0, 0), chunkId);
     float dy = GetDensity(pos + float3(0, eps, 0), chunkId) - GetDensity(pos - float3(0, eps, 0), chunkId);
     float dz = GetDensity(pos + float3(0, 0, eps), chunkId) - GetDensity(pos - float3(0, 0, eps), chunkId);
@@ -93,9 +92,11 @@ float3 CalculateNormal(float3 pos, uint chunkId, float step)
     float3 grad = float3(dx, dy, dz);
     float sqLen = dot(grad, grad);
 
-    if (sqLen < 1.0e-10f) return float3(0, 1, 0);
+    if (sqLen < 1.0e-10f) {
+        return float3(0, 1, 0);
+    }
 
-    return normalize(grad);
+    return normalize(-grad);
 }
 
 
@@ -122,11 +123,6 @@ VertexOut VertexInterp(float3 p1, float3 p2, float3 chunkOrigin,float3 subChunkS
 	vOut.position = mul(vOut.worldPosition, viewProjection.matVP);
 
     vOut.normal = CalculateNormal(localPos, chunkId, subChunkSize.x);
-	
-	// 高さベースの色付け
-	// float worldY = vOut.worldPosition.y;
-	// vOut.color = lerp(float4(0.3, 0.8, 0.3, 1), float4(0.6, 0.5, 0.3, 1), worldY / 512.0f);
-    vOut.color = DebugColor(chunkId);
 	
 	return vOut;
 }
