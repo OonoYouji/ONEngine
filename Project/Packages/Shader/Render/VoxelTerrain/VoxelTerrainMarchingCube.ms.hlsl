@@ -83,8 +83,9 @@ float GetDensity(float3 _localPos, uint _chunkId) {
 
 float3 CalculateNormal(float3 pos, uint chunkId, float step)
 {
-    float eps = step * 1.0f; 
+    float eps = step; 
 
+    // 中央差分
     float dx = GetDensity(pos + float3(eps, 0, 0), chunkId) - GetDensity(pos - float3(eps, 0, 0), chunkId);
     float dy = GetDensity(pos + float3(0, eps, 0), chunkId) - GetDensity(pos - float3(0, eps, 0), chunkId);
     float dz = GetDensity(pos + float3(0, 0, eps), chunkId) - GetDensity(pos - float3(0, 0, eps), chunkId);
@@ -92,13 +93,9 @@ float3 CalculateNormal(float3 pos, uint chunkId, float step)
     float3 grad = float3(dx, dy, dz);
     float sqLen = dot(grad, grad);
 
-    if (sqLen < 1.0e-10f) 
-    {
-        return float3(0, 1, 0); 
-    }
+    if (sqLen < 1.0e-10f) return float3(0, 1, 0);
 
-    // 密度が高い方が「中」なので、勾配の逆方向が法線
-    return normalize(-grad);
+    return normalize(grad);
 }
 
 

@@ -107,7 +107,7 @@ PSOutput main(VertexOut input) {
 
 
     float3 triplanarNormal = SampleTriplanarNormal(textures[material.intValues.w], worldPos, N, tiling);
-    output.normal = float4(triplanarNormal, 1);
+    output.normal = float4(-N, 1);
 
 	output.worldPos = input.worldPosition;
 	output.flags = float4(material.intValues.x, material.intValues.y, 0, 1);

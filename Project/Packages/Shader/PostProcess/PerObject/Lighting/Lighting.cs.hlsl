@@ -32,6 +32,15 @@ float3 LambertDiffuse(float3 albedo, float3 N, float3 L)
 }
 
 //////////////////////////////////////////////////////////////
+// Half Lambert Diffuse
+//////////////////////////////////////////////////////////////
+float3 HalfLambertDiffuse(float3 albedo, float3 N, float3 L)
+{
+    float halfLambert = dot(N, L) * 0.5 + 0.5;
+    return albedo * (halfLambert * halfLambert);
+}
+
+//////////////////////////////////////////////////////////////
 // Blinn-Phong Specular
 //////////////////////////////////////////////////////////////
 float3 BlinnPhongSpecular(float3 N, float3 L, float3 V)
@@ -106,15 +115,10 @@ void main(uint3 DTid : SV_DispatchThreadID)
     // Lighting
     //////////////////////////////////////////////////////////
     float3 L = normalize(-light.direction);
-    float3 V = normalize(camera.position.xyz - worldPos);
+    float3 diffuse = HalfLambertDiffuse(albedo, N, L);
 
-    // Diffuse
-    float3 diffuse = LambertDiffuse(albedo, N, L);
+    float3 lighting = diffuse * light.color.rgb * light.intensity;
 
-    // Specular
-    float3 specular = BlinnPhongSpecular(N, L, V);
-
-    float3 lighting = (diffuse + specular) * light.color.rgb * light.intensity;
 
     //////////////////////////////////////////////////////////
     // Environment Reflection
