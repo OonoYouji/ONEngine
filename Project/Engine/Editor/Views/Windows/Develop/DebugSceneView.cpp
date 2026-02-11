@@ -64,9 +64,22 @@ void DebugSceneView::ShowImGui() {
 	/// ----------------------------------------
 
 	std::array<const ONEngine::Texture*, 2> buttons = {
-		&textures[pAssetCollection_->GetTextureIndex("./Packages/Textures/ImGui/play.png")],
-		&textures[pAssetCollection_->GetTextureIndex("./Packages/Textures/ImGui/pause.png")]
+		pAssetCollection_->GetTexture("./Packages/Textures/ImGui/play.png"),
+		pAssetCollection_->GetTexture("./Packages/Textures/ImGui/pause.png")
 	};
+
+	{	/// dds用
+		std::array<std::string, 2> paths = {
+			"./Packages/Textures/ImGui/play.dds",
+			"./Packages/Textures/ImGui/pause.dds"
+		};
+		for(uint8_t i = 0; i < 2; ++i) {
+			if(!buttons[i]) {
+				buttons[i] = pAssetCollection_->GetTexture(paths[i]);
+			}
+		}
+	}
+
 
 	ImVec2 buttonSize = ImVec2(12.0f, 12.0f);
 	bool isGameDebug = ONEngine::DebugConfig::isDebugging;
