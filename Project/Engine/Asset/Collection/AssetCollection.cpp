@@ -203,7 +203,7 @@ Texture* AssetCollection::GetTexture(const std::string& _filepath) {
 	return GetBundle<Texture>(AssetType::Texture)->container->Get(_filepath);
 }
 
-size_t AssetCollection::GetTextureIndex(const std::string& _filepath) const {
+int32_t AssetCollection::GetTextureIndex(const std::string& _filepath) const {
 	return GetBundle<Texture>(AssetType::Texture)->container->GetIndex(_filepath);
 }
 

@@ -97,7 +97,10 @@ void TerrainVertexCreator::Execute(ONEngine::EntityComponentSystem* _ecs, ONEngi
 		pTerrain->GetRwIndices().UAVBindForComputeCommandList(cmdList, UAV_INDICES);
 
 		const ONEngine::Texture* vertexTexture = _assetCollection->GetTexture("./Packages/Textures/Terrain/TerrainVertex.png");
+		if(!vertexTexture) vertexTexture = _assetCollection->GetTexture("./Packages/Textures/Terrain/TerrainVertex.dds");
+
 		const ONEngine::Texture* blendTexture = _assetCollection->GetTexture("./Packages/Textures/Terrain/TerrainSplatBlend.png");
+		if(!blendTexture) blendTexture = _assetCollection->GetTexture("./Packages/Textures/Terrain/TerrainSplatBlend.dds");
 
 		if (vertexTexture) { cmdList->SetComputeRootDescriptorTable(SRV_VERTEX_TEXTURE, vertexTexture->GetSRVGPUHandle()); }
 		if (blendTexture) { cmdList->SetComputeRootDescriptorTable(SRV_SPLAT_BLEND_TEXTURE, blendTexture->GetSRVGPUHandle()); }

@@ -147,7 +147,7 @@ public:
 	/// ゲッタ テクスチャ
 	const Texture* GetTexture(const std::string& _filepath) const;
 	Texture* GetTexture(const std::string& _filepath);
-	size_t GetTextureIndex(const std::string& _filepath) const;
+	int32_t GetTextureIndex(const std::string& _filepath) const;
 	const std::string& GetTexturePath(size_t _index) const;
 	const std::vector<Texture>& GetTextures() const;
 
