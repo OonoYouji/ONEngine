@@ -10,7 +10,7 @@ struct VertexOut {
 	float4 position : SV_POSITION;
 	float4 worldPosition : POSITION0;
 	float3 normal : NORMAL0;
-	float4 color : COLOR0;
+	// float4 color : COLOR0;
 };
 
 
@@ -20,10 +20,14 @@ struct Payload {
 	uint3 subChunkSize;
 	uint chunkDivision;
 
-	// uint3 dispatchSize;
     uint32_t3 chunkSize;
 	uint lodLevel;
     uint32_t transitionMask;
+
+    /// 追加
+    uint32_t step;
+    float32_t3 localPos; /// voxel terrain 内のローカル座標
+    
 };
 
 

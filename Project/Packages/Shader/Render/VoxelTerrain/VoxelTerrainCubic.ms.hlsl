@@ -174,7 +174,7 @@ void main(
 
         verts[vOffset + i].worldPosition = float4(worldPos, 1.0f);
         verts[vOffset + i].position = mul(float4(worldPos, 1.0f), viewProjection.matVP);
-        verts[vOffset + i].color = DebugColor(asPayload.chunkIndex);
+        // verts[vOffset + i].color = DebugColor(asPayload.chunkIndex);
         verts[vOffset + i].normal = normalize(offset);
     }
     

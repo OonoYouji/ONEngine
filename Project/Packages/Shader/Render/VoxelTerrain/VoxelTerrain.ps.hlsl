@@ -40,45 +40,47 @@ float4 SampleTriplanar(Texture2D<float4> tex, float3 worldPos, float3 normal, fl
 
 float3 SampleTriplanarNormal(Texture2D<float4> tex, float3 worldPos, float3 N, float tiling)
 {
+    // 各軸のブレンド率を計算
     float3 blend = abs(N);
     blend /= (blend.x + blend.y + blend.z);
 
+    // UVのサンプリング
     float2 uvX = worldPos.yz * tiling;
     float2 uvY = worldPos.xz * tiling;
     float2 uvZ = worldPos.xy * tiling;
 
-    float3 nX = tex.Sample(textureSampler, uvX).xyz * 2 - 1;
-    float3 nY = tex.Sample(textureSampler, uvY).xyz * 2 - 1;
-    float3 nZ = tex.Sample(textureSampler, uvZ).xyz * 2 - 1;
+    // 法線マップからサンプリング (0~1 -> -1~1)
+    // Z成分を再構成（もし法線マップが2チャンネルなら）するか、xyzを使用
+    float3 nX = tex.Sample(textureSampler, uvX).xyz * 2.0 - 1.0;
+    float3 nY = tex.Sample(textureSampler, uvY).xyz * 2.0 - 1.0;
+    float3 nZ = tex.Sample(textureSampler, uvZ).xyz * 2.0 - 1.0;
 
-    // ----- X projection -----
-    float3 worldNX = float3(
-        nX.z,
-        nX.y,
-        nX.x
-    );
+    // 各平面における法線の向きを、元の法線 N の符号に合わせて修正
+    // これを行わないと、反対側の面で法線が逆向きに計算されてしまいます
+    float3 axisSign = sign(N);
+    
+    // 各軸の法線を接線空間からワールド空間的に変換
+    // 符号 (axisSign) を掛けることで、裏側の面でも正しく摂動が乗るようになります
+    nX.z *= axisSign.x;
+    nY.z *= axisSign.y;
+    nZ.z *= axisSign.z;
 
-    // ----- Y projection -----
-    float3 worldNY = float3(
-        nY.x,
-        nY.z,
-        nY.y
-    );
+    // 合成 (UDN Blend 簡易版)
+    // 元の法線 N に対して、各平面のディテール (xy成分) をブレンド
+    float3 worldNX = float3(nX.z, nX.y, nX.x); // X面
+    float3 worldNY = float3(nY.x, nY.z, nY.y); // Y面
+    float3 worldNZ = float3(nZ.x, nZ.y, nZ.z); // Z面
 
-    // ----- Z projection -----
-    float3 worldNZ = float3(
-        nZ.x,
-        nZ.y,
-        nZ.z
-    );
-
-    float3 result =
+    // 最終的な法線の合成と正規化
+    float3 result = normalize(
         worldNX * blend.x +
         worldNY * blend.y +
-        worldNZ * blend.z;
+        worldNZ * blend.z
+    );
 
-    return normalize(result);
+    return result;
 }
+
 
 
 

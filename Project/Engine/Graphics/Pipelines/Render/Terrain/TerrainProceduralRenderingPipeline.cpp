@@ -159,8 +159,14 @@ void TerrainProceduralRenderingPipeline::PreDraw(ECSGroup* _ecs, CameraComponent
 
 		/// 使用するテクスチャを取得、バインドする
 		const Texture* vertexTexture = pAssetCollection_->GetTexture("./Packages/Textures/Terrain/TerrainVertex.png");
+		if(!vertexTexture) vertexTexture = pAssetCollection_->GetTexture("./Packages/Textures/Terrain/TerrainVertex.dds");
+
 		const Texture* splatBlendTexture = pAssetCollection_->GetTexture("./Packages/Textures/Terrain/TerrainSplatBlend.png");
+		if(!splatBlendTexture) splatBlendTexture = pAssetCollection_->GetTexture("./Packages/Textures/Terrain/TerrainSplatBlend.dds");
+
 		const Texture* arrangementTexture = pAssetCollection_->GetTexture("./Packages/Textures/Terrain/TreeArrangement.png");
+		if(!arrangementTexture) arrangementTexture = pAssetCollection_->GetTexture("./Packages/Textures/Terrain/TreeArrangement.dds");
+
 		cmdList->SetComputeRootDescriptorTable(ARR_SRV_VERTEX_TEXTURE, vertexTexture->GetSRVGPUHandle());
 		cmdList->SetComputeRootDescriptorTable(ARR_SRV_SPLAT_BLEND_TEXTURE, splatBlendTexture->GetSRVGPUHandle());
 		cmdList->SetComputeRootDescriptorTable(ARR_SRV_TREE_ARRANGEMENT_TEXTURE, arrangementTexture->GetSRVGPUHandle());
@@ -293,8 +299,12 @@ void TerrainProceduralRenderingPipeline::Draw(ECSGroup* _ecs, CameraComponent* _
 	renderingInstanceAppendBuffer_.SRVBindForGraphicsCommandList(cmdList, GP_SRV_RENDERING_INSTANCE); // GP_SRV_INSNTANCE_DATA
 
 	/// pixel: texture id
-	uint32_t texId = static_cast<uint32_t>(pAssetCollection_->GetTextureIndex("./Packages/Textures/Terrain/Tree.png"));
-	textureIdBuffer_.SetMappedData({ texId });
+	int32_t texId = pAssetCollection_->GetTextureIndex("./Packages/Textures/Terrain/Tree.png");
+	if(texId == -1) {
+		texId = pAssetCollection_->GetTextureIndex("./Packages/Textures/Terrain/Tree.dds");
+	}
+
+	textureIdBuffer_.SetMappedData({ static_cast<uint32_t>(texId) });
 	textureIdBuffer_.BindForGraphicsCommandList(cmdList, GP_CBV_TEXTURE_ID);
 	/// pixel: テクスチャをバインド
 	cmdList->SetGraphicsRootDescriptorTable(GP_SRV_TEXTURES, (*textures.begin()).GetSRVGPUHandle());
