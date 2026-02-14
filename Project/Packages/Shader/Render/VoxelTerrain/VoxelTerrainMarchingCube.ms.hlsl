@@ -164,27 +164,48 @@ void main(
 
     uint32_t3 chunkSize = uint32_t3(voxelTerrainInfo.chunkSize);
     uint32_t transitionCode = 0;
+
+    bool isBoundary = false;
+    if(asPayload.transitionMask != 0) {
+        uint32_t3 localPos = uint32_t3(basePos);
+        bool isNX = (localPos.x == 0);
+        bool isPX = (localPos.x >= chunkSize.x - step.x);
+        bool isNZ = (localPos.z == 0);
+        bool isPZ = (localPos.z >= chunkSize.z - step.x);
+    
+        int mask = asPayload.transitionMask;
+        if(isNX && mask & TRANSITION_NX) isBoundary = true;
+        if(isPX && mask & TRANSITION_PX) isBoundary = true;
+        if(isNZ && mask & TRANSITION_NZ) isBoundary = true;
+        if(isPZ && mask & TRANSITION_PZ) isBoundary = true;
+        if(isNX && isNZ && mask & TRANSITION_NXZ) isBoundary = true;
+        if(isPX && isPZ && mask & TRANSITION_PXZ) isBoundary = true;
+        if(isNX && isPZ && mask & TRANSITION_NXPZ) isBoundary = true;
+        if(isPX && isNZ && mask & TRANSITION_PXNZ) isBoundary = true;
+    } 
     
 	float cubeDensities[8];
 	uint cubeIndex = 0;
 	uint triCount = 0;
-	
-	[unroll]
-	for (int i = 0; i < 8; ++i) {
-		float3 samplePos = basePos + (kCornerOffsets[i] * float3(step));
-    
-		float d = GetDensity(samplePos, asPayload.chunkIndex);
-		cubeDensities[i] = d;
-    
-		if (d < voxelTerrainInfo.isoLevel) {
-			cubeIndex |= (1u << i);
-		}
-	}
 
-	[unroll]
-	for (int i = 0; i < 5; i++) {
-		triCount += (TriTable[cubeIndex][i * 3] != -1) ? 1 : 0;
-	}
+    if(!isBoundary) {
+	    [unroll]
+	    for (int i = 0; i < 8; ++i) {
+	    	float3 samplePos = basePos + (kCornerOffsets[i] * float3(step));
+
+	    	float d = GetDensity(samplePos, asPayload.chunkIndex);
+	    	cubeDensities[i] = d;
+    
+	    	if (d < voxelTerrainInfo.isoLevel) {
+	    		cubeIndex |= (1u << i);
+	    	}
+	    }
+
+	    [unroll]
+	    for (int i = 0; i < 15; i += 3) {
+	    	triCount += (TriTable[cubeIndex][i] != -1) ? 1 : 0;
+	    }
+    }
 
     uint outputTriOffset = WavePrefixSum(triCount);
     uint totalTriCount = WaveActiveSum(triCount);
