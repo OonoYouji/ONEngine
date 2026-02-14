@@ -232,14 +232,6 @@ VertexOut GetVertex(float3 p1, float3 p2, float3 chunkOrigin, float3 subChunkSiz
 
 	vOut.worldPosition = float4(mappedPos + chunkOrigin, 1.0f);
 	vOut.position = mul(vOut.worldPosition, viewProjection.matVP);
-    // float3 red = float3(1,0,0);
-    // float3 blue = float3(0,0,1);
-    // vOut.color = float4(lerp(red, blue, t), 1.0);
-	// if(isDefault) {
-    //     vOut.color = float4(0,1,0,1); // 補間成功は緑
-    // }
-
-    // vOut.color = CaseCodeToColor(id);
     
     return vOut;
 }

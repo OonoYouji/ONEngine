@@ -30,7 +30,7 @@ void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _
 	Editor::ImMathf::Checkbox("Is Rendering Transvoxel", &_voxelTerrain->isRenderingTransvoxel_);
 	Editor::ImMathf::Checkbox("Is Rendering Cubic", &_voxelTerrain->isRenderingCubic_);
 	//Editor::ImMathf::Checkbox("Can VertexShader Rendering", &_voxelTerrain->canVertexShaderRendering_);
-	static bool showChunkBounds = true;
+	static bool showChunkBounds = false;
 	Editor::ImMathf::Checkbox("Show Chunk Bounds", &showChunkBounds);
 	if(showChunkBounds) {
 		const Vector3Int& chunkSizeInt = _voxelTerrain->GetChunkSize();

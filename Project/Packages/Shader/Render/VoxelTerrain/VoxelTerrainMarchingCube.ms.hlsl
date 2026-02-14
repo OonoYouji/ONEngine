@@ -135,7 +135,6 @@ float3 GetNormal(float3 p0, float3 p1, float3 p2) {
 }
 
 float32_t3 GetBasePos(uint32_t id, uint32_t3 size, uint32_t3 step) {
-    // uint32_t3 size = voxelTerrainInfo.chunkSize;
     uint32_t3 gridPos = uint32_t3(
         id % size.x,
         (id / size.x) % size.y,
@@ -190,7 +189,6 @@ void main(
     uint outputTriOffset = WavePrefixSum(triCount);
     uint totalTriCount = WaveActiveSum(triCount);
 
-    // GroupMemoryBarrier();
     SetMeshOutputCounts(totalTriCount * 3, totalTriCount);
     if(triCount == 0) {
         return;
@@ -202,8 +200,6 @@ void main(
         uint vIndex = currentTriIndex * 3;
         uint pIndex = currentTriIndex;
 
-		VertexOut outVerts[3];
-
 		for (int v = 0; v < 3; v++) {
 			int edgeIndex = TriTable[cubeIndex][(t * 3) + v];
 			
@@ -213,19 +209,8 @@ void main(
 			float3 p1 = basePos + (kCornerOffsets[idx1] * float3(step));
 			float3 p2 = basePos + (kCornerOffsets[idx2] * float3(step));
 			
-			outVerts[v] = VertexInterp(p1, p2, asPayload.chunkOrigin, float32_t3(asPayload.subChunkSize), cubeDensities[idx1], cubeDensities[idx2], asPayload.chunkIndex);
-			verts[vIndex + v] = outVerts[v];
+			verts[vIndex + v] = VertexInterp(p1, p2, asPayload.chunkOrigin, float32_t3(asPayload.subChunkSize), cubeDensities[idx1], cubeDensities[idx2], asPayload.chunkIndex);
 		}
-		
-		// float3 normal = GetNormal(
-		// 	outVerts[0].worldPosition.xyz,
-		// 	outVerts[1].worldPosition.xyz,
-		// 	outVerts[2].worldPosition.xyz
-		// );
-		
-		// verts[vIndex + 0].normal = normal;
-		// verts[vIndex + 1].normal = normal;
-		// verts[vIndex + 2].normal = normal;
 		
 		indis[pIndex] = uint3(
 			vIndex + 0,
