@@ -39,6 +39,6 @@ jobs:
         ./Project/GenerateProject.ps1
 
     # 4. ONEngine ビルド
-    # /restore オプションを追加して、ビルド時にNuGetパッケージ等の復元を確実に行わせます
+    # /p:PlatformToolset=v143 を追加して、CI上では強制的にVS2022コンパイラを使用させます
     - name: Build ONEngine
-      run: msbuild ${{ env.SOLUTION_FILE_PATH }} /p:Platform=x64 /p:Configuration=${{ env.CONFIGURATION }} /restore
+      run: msbuild ${{ env.SOLUTION_FILE_PATH }} /p:Platform=x64 /p:Configuration=${{ env.CONFIGURATION }} /p:PlatformToolset=v143 /restore
