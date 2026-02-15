@@ -3,6 +3,10 @@ struct LODInfo {
     float32_t lodDistance1;
     float32_t lodDistance2;
     float32_t lodDistance3;
+    int32_t lodLevel0;
+    int32_t lodLevel1;
+    int32_t lodLevel2;
+    int32_t lodLevel3;
     float32_t maxDrawDistance;
     uint32_t lod;
 };
@@ -29,13 +33,13 @@ static const uint32_t TRANSITION_PXNZ = 0x200; // +X -Z
 uint32_t GetLOD(float32_t distanceToCamera)
 {
     if (distanceToCamera < lodInfo.lodDistance1) {
-        return 0;
+        return lodInfo.lodLevel0;
     } else if (distanceToCamera < lodInfo.lodDistance2) {
-        return 1;
+        return lodInfo.lodLevel1;
     } else if (distanceToCamera < lodInfo.lodDistance3) {
-        return 2;
+        return lodInfo.lodLevel2;
     } 
-    return 3;
+    return lodInfo.lodLevel3;
 }
 
 uint32_t CalculateLOD(float32_t3 worldPos, float32_t3 cameraPos)

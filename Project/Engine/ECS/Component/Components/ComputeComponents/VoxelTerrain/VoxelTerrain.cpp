@@ -13,7 +13,7 @@
 #include "Engine/Core/DirectX12/GPUTimeStamp/GPUTimeStamp.h"
 
 /// editor
-#include "Engine/Editor/Math/AssetDebugger.h"
+#include "Engine/Editor/EditorUtils.h"
 
 using namespace ONEngine;
 
@@ -74,6 +74,13 @@ void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _
 			Editor::ImMathf::DragFloat("LOD Distance 1", &_voxelTerrain->lodInfo_.lodDistance1, 1.0f, 0.0f, 1000.0f);
 			Editor::ImMathf::DragFloat("LOD Distance 2", &_voxelTerrain->lodInfo_.lodDistance2, 1.0f, 0.0f, 1000.0f);
 			Editor::ImMathf::DragFloat("Max Draw Distance", &_voxelTerrain->lodInfo_.maxDrawDistance, 10.0f, 0.0f, 5000.0f);
+
+			const int minLodLevel = 0;
+			const int maxLodLevel = 5;
+			Editor::SliderInt("LOD Level 0", _voxelTerrain->lodInfo_.lodLevel0, minLodLevel, maxLodLevel);
+			Editor::SliderInt("LOD Level 1", _voxelTerrain->lodInfo_.lodLevel1, minLodLevel, maxLodLevel);
+			Editor::SliderInt("LOD Level 2", _voxelTerrain->lodInfo_.lodLevel2, minLodLevel, maxLodLevel);
+			Editor::SliderInt("LOD Level 3", _voxelTerrain->lodInfo_.lodLevel3, minLodLevel, maxLodLevel);
 
 		} else {
 
@@ -179,6 +186,10 @@ void ONEngine::from_json(const nlohmann::json& _j, VoxelTerrain& _voxelTerrain) 
 	_voxelTerrain.lodInfo_.lodDistance0 = _j.value("lod0Distance", 50.0f);
 	_voxelTerrain.lodInfo_.lodDistance1 = _j.value("lod1Distance", 100.0f);
 	_voxelTerrain.lodInfo_.lodDistance2 = _j.value("lod2Distance", 200.0f);
+	_voxelTerrain.lodInfo_.lodLevel0 = _j.value("lodLevel0", 0);
+	_voxelTerrain.lodInfo_.lodLevel1 = _j.value("lodLevel1", 1);
+	_voxelTerrain.lodInfo_.lodLevel2 = _j.value("lodLevel2", 2);
+	_voxelTerrain.lodInfo_.lodLevel3 = _j.value("lodLevel3", 3);
 	_voxelTerrain.lodInfo_.maxDrawDistance = _j.value("maxDrawDistance", 1000.0f);
 	_voxelTerrain.lodInfo_.lod = _j.value("lod", 1);
 }
@@ -200,6 +211,10 @@ void ONEngine::to_json(nlohmann::json& _j, const VoxelTerrain& _voxelTerrain) {
 		{ "lod0Distance", _voxelTerrain.lodInfo_.lodDistance0 },
 		{ "lod1Distance", _voxelTerrain.lodInfo_.lodDistance1 },
 		{ "lod2Distance", _voxelTerrain.lodInfo_.lodDistance2 },
+		{ "lodLevel0", _voxelTerrain.lodInfo_.lodLevel0 },
+		{ "lodLevel1", _voxelTerrain.lodInfo_.lodLevel1 },
+		{ "lodLevel2", _voxelTerrain.lodInfo_.lodLevel2 },
+		{ "lodLevel3", _voxelTerrain.lodInfo_.lodLevel3 },
 		{ "maxDrawDistance", _voxelTerrain.lodInfo_.maxDrawDistance },
 		{ "lod", _voxelTerrain.lodInfo_.lod }
 	};
@@ -355,7 +370,7 @@ void VoxelTerrain::SettingMaterial(AssetCollection* assetCollection) {
 		.entityId = GetOwner()->GetId(),
 		.baseTextureId = baseTextureId,
 		.normalTextureId = normalTextureId
-	});
+								   });
 }
 
 void VoxelTerrain::SettingTerrainInfo() {
@@ -508,7 +523,7 @@ void VoxelTerrain::CopyEditorTextureToChunkTexture(DxCommand* dxCommand, const s
 			chunks_[chunkID].uavTexture.GetDxResource().Get()
 		);
 	}
-	
+
 	/// テクスチャの状態遷移
 	for(const int chunkID : copyChunkIDs) {
 		if(!EnableChunkID(chunkID)) {

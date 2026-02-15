@@ -126,6 +126,10 @@ struct LODInfo {
 	float lodDistance0;
 	float lodDistance1;
 	float lodDistance2;
+	int32_t lodLevel0;
+	int32_t lodLevel1;
+	int32_t lodLevel2;
+	int32_t lodLevel3;
 	
 	/// カメラとの距離がこれ以上の時は描画しない
 	float maxDrawDistance;
