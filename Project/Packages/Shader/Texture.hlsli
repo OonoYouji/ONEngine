@@ -1,0 +1,1 @@
+static const uint32_t kMaxTextureCount = 2048;

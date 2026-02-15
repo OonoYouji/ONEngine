@@ -1,4 +1,4 @@
-#include "TerrainRenderingPipeline.h"
+﻿#include "TerrainRenderingPipeline.h"
 
 using namespace ONEngine;
 
@@ -138,7 +138,12 @@ void TerrainRenderingPipeline::Draw(class ECSGroup* _ecs, CameraComponent* _came
 	const auto& textures = pAssetCollection_->GetTextures();
 	for (uint32_t i = 0; i < pTerrain_->GetSplatTexPaths().size(); i++) {
 		const std::string& path = pTerrain_->GetSplatTexPaths()[i];
-		size_t index = pAssetCollection_->GetTextureIndex(path);
+		int32_t index = pAssetCollection_->GetTextureIndex(path);
+		if(index == -1) {
+			/// .ddsファイルのパスに変更
+			index = pAssetCollection_->GetTextureIndex(FileSystem::FileNameWithoutExtension(path) + ".dds");
+		}
+
 		cmdList->SetGraphicsRootDescriptorTable(
 			static_cast<UINT>(ROOT_PARAM_TEX_GRASS + i),
 			textures[index].GetSRVGPUHandle()

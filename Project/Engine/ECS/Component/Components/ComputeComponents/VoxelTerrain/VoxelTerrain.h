@@ -203,7 +203,7 @@ public:
 	const Vector3Int& GetChunkSize() const;
 
 
-	void SettingMaterial();
+	void SettingMaterial(AssetCollection* assetCollection);
 	void SettingTerrainInfo();
 
 
@@ -284,7 +284,7 @@ private:
 
 	bool canMeshShaderRendering_ = true;
 	bool canVertexShaderRendering_ = false;
-	bool isRenderingWireframe_ = true;
+	bool isRenderingWireframe_ = false;
 	bool isRenderingTransvoxel_ = false;
 	bool isRenderingCubic_ = false;
 

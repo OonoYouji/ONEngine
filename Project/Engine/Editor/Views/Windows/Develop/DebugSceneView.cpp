@@ -17,6 +17,7 @@
 #include "Engine/Scene/SceneManager.h"
 #include "Engine/Script/MonoScriptEngine.h"
 #include "Engine/Core/DirectX12/GPUTimeStamp/GPUTimeStamp.h"
+#include "Engine/Core/Utility/Time/CPUTimeStamp.h"
 
 /// editor
 #include "Engine/Editor/EditorUtils.h"
@@ -63,9 +64,22 @@ void DebugSceneView::ShowImGui() {
 	/// ----------------------------------------
 
 	std::array<const ONEngine::Texture*, 2> buttons = {
-		&textures[pAssetCollection_->GetTextureIndex("./Packages/Textures/ImGui/play.png")],
-		&textures[pAssetCollection_->GetTextureIndex("./Packages/Textures/ImGui/pause.png")]
+		pAssetCollection_->GetTexture("./Packages/Textures/ImGui/play.png"),
+		pAssetCollection_->GetTexture("./Packages/Textures/ImGui/pause.png")
 	};
+
+	{	/// dds用
+		std::array<std::string, 2> paths = {
+			"./Packages/Textures/ImGui/play.dds",
+			"./Packages/Textures/ImGui/pause.dds"
+		};
+		for(uint8_t i = 0; i < 2; ++i) {
+			if(!buttons[i]) {
+				buttons[i] = pAssetCollection_->GetTexture(paths[i]);
+			}
+		}
+	}
+
 
 	ImVec2 buttonSize = ImVec2(12.0f, 12.0f);
 	bool isGameDebug = ONEngine::DebugConfig::isDebugging;
@@ -206,6 +220,18 @@ void Editor::DebugSceneView::ShowDebugSceneView(const ImVec2& imagePos, const Im
 			{ "TransitionCell", Format("%f ms", transitionCellTime), IM_COL32(255, 255, 255, 255) },
 			{ "EditorCompute", Format("%f ms", editorComputeTime), IM_COL32(255, 255, 255, 255) },
 			{ "BrushPreview", Format("%f ms", editorComputeBrushPreview), IM_COL32(255, 255, 255, 255) },
+		};
+		sections.push_back(renderer);
+	}
+
+	{
+		/// C#スクリプト セクション
+		double scriptUpdateTime = ONEngine::CPUTimeStamp::GetInstance().GetElapsedTimeMicroseconds(ONEngine::CPUTimeStampID::CSharpScriptUpdate); // マイクロ秒
+		OverlaySection renderer;
+		renderer.name = "C#スクリプト";
+		renderer.opened = true;
+		renderer.items = {
+			{ "C# Script Update", Format("%f ms", scriptUpdateTime), IM_COL32(255, 255, 255, 255) }
 		};
 		sections.push_back(renderer);
 	}

@@ -30,7 +30,7 @@ void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _
 	Editor::ImMathf::Checkbox("Is Rendering Transvoxel", &_voxelTerrain->isRenderingTransvoxel_);
 	Editor::ImMathf::Checkbox("Is Rendering Cubic", &_voxelTerrain->isRenderingCubic_);
 	//Editor::ImMathf::Checkbox("Can VertexShader Rendering", &_voxelTerrain->canVertexShaderRendering_);
-	static bool showChunkBounds = true;
+	static bool showChunkBounds = false;
 	Editor::ImMathf::Checkbox("Show Chunk Bounds", &showChunkBounds);
 	if(showChunkBounds) {
 		const Vector3Int& chunkSizeInt = _voxelTerrain->GetChunkSize();
@@ -85,7 +85,7 @@ void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _
 	}
 
 
-	Editor::ImMathf::MaterialEdit("Material", &_voxelTerrain->material_, _ac, false);
+	Editor::ImMathf::MaterialEdit("Material", &_voxelTerrain->material_, _ac, true);
 
 	/// editor用
 	{
@@ -291,7 +291,7 @@ void VoxelTerrain::SetupGraphicBuffers(ID3D12GraphicsCommandList* _cmdList, cons
 	cBufferLODInfo_.BindForGraphicsCommandList(_cmdList, _rootParamIndices[3]);
 
 	/// Materialの設定
-	SettingMaterial();
+	SettingMaterial(_assetCollection);
 	cBufferMaterial_.BindForGraphicsCommandList(_cmdList, _rootParamIndices[1]);
 
 	/// ChunkArrayの設定
@@ -335,13 +335,27 @@ const Vector3Int& VoxelTerrain::GetChunkSize() const {
 	return chunkSize_;
 }
 
-void ONEngine::VoxelTerrain::SettingMaterial() {
+void VoxelTerrain::SettingMaterial(AssetCollection* assetCollection) {
+	int32_t baseTextureId = 0;
+	if(material_.HasBaseTexture()) {
+		baseTextureId = assetCollection->GetTextureFromGuid(
+			material_.GetBaseTextureGuid())->GetSRVDescriptorIndex();
+	}
+
+	int32_t normalTextureId = 0;
+	if(material_.HasNormalTexture()) {
+		normalTextureId = assetCollection->GetTextureFromGuid(
+			material_.GetNormalTextureGuid())->GetSRVDescriptorIndex();
+	}
+
 	/// Materialの設定
 	cBufferMaterial_.SetMappedData({
 		.baseColor = material_.baseColor,
 		.postEffectFlags = material_.postEffectFlags,
 		.entityId = GetOwner()->GetId(),
-								   });
+		.baseTextureId = baseTextureId,
+		.normalTextureId = normalTextureId
+	});
 }
 
 void VoxelTerrain::SettingTerrainInfo() {
