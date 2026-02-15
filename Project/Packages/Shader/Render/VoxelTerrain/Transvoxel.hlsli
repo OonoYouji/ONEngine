@@ -2,6 +2,7 @@
 
 #include "../../ConstantBufferData/ViewProjection.hlsli"
 #include "VoxelTerrainCommon.hlsli"
+#include "LODInfo.hlsli"
 
 static const float kIsoLevel = 0.5f;
 
@@ -27,8 +28,8 @@ struct Payload {
 
 
 
-ConstantBuffer<VoxelTerrainInfo> voxelTerrainInfo : register(b0);
-ConstantBuffer<ViewProjection> viewProjection : register(b1);
-ConstantBuffer<Camera> camera : register(b2);
+ConstantBuffer<VoxelTerrainInfo>    voxelTerrainInfo    : register(b0);
+ConstantBuffer<ViewProjection>      viewProjection      : register(b1);
+ConstantBuffer<Camera>              camera              : register(b2);
 
-StructuredBuffer<Chunk> chunks : register(t0);
+StructuredBuffer<Chunk>             chunks              : register(t0);

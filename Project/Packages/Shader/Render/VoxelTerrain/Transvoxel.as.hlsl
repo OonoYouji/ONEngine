@@ -28,7 +28,7 @@ void main(
     uint32_t myMask = 0;
 
     Payload p;
-	float32_t3 chunkOrigin = GetChunkOrigin(gid);
+	float32_t3 chunkOrigin = float3(gid) * voxelTerrainInfo.chunkSize + float3(voxelTerrainInfo.terrainOrigin);
     p.chunkOrigin = chunkOrigin;
     uint3 dispatchSize = uint32_t3(0,0,0);
 
@@ -46,11 +46,17 @@ void main(
             clamp(camera.position.z, aabb.min.z, aabb.max.z)
         );
 
-        if(distance(nearPos, camera.position.xyz) <= 1000.0f) {
+        
+        float3 diff = nearPos - camera.position.xyz;
+		float lengthToCamera = length(diff);
+        if(lengthToCamera <= lodInfo.maxDrawDistance) {
             isVisible = true;
 
-            myLOD = CalculateLOD(nearPos, camera.position.xyz);
-
+            if(lodInfo.useLod != 0) {
+                myLOD = GetLOD(lengthToCamera);
+            } else {
+                myLOD = lodInfo.lod;
+            }
             /// トランジションマスクの計算
             myMask = GetTransitionMask(chunkCenter, float32_t3(voxelTerrainInfo.chunkSize), myLOD, camera.position.xyz);
             p.chunkID = IndexOfMeshGroup(gid, uint3(voxelTerrainInfo.chunkCountXZ.x, 1, voxelTerrainInfo.chunkCountXZ.y));
@@ -58,24 +64,20 @@ void main(
             p.transitionMask = myMask;
 
             uint32_t lodLevel = p.LODLevel;
-            uint32_t subChunkSize;
+			uint32_t subChunkSize = GetSubChunkSize(myLOD);
 
-            /// LOD レベルを lengthToCamera の値に基づいて設定
-		    if (lodLevel == 0) {
-		    	subChunkSize = 2;
-		    } else if (lodLevel == 1) {
-		    	subChunkSize = 4;
-		    } else if (lodLevel == 2) {
-		    	subChunkSize = 8;
-		    } else {
-		    	subChunkSize = 16;
-		    }
-            
             if(myMask != 0) {
                 p.subChunkSize = uint3(subChunkSize, subChunkSize, subChunkSize);
                 dispatchSize = voxelTerrainInfo.textureSize / p.subChunkSize;
+                /// numthreads に合わせて分割
+                // dispatchSize.x = (dispatchSize.x * dispatchSize.y * dispatchSize.z) / 8;
+                // dispatchSize.y = 1;
+                // dispatchSize.z = 1;
+
+                p.transitionMask = GetTransitionMask(chunkCenter, float3(voxelTerrainInfo.chunkSize), p.LODLevel, camera.position.xyz);
             }
         }
+
     }
     
     DispatchMesh(dispatchSize.x, dispatchSize.y, dispatchSize.z, p);

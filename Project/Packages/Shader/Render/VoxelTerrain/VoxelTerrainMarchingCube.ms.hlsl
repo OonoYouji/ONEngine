@@ -165,6 +165,7 @@ void main(
     uint32_t3 chunkSize = uint32_t3(voxelTerrainInfo.chunkSize);
     uint32_t transitionCode = 0;
 
+    /// チャンクの境界面のボクセルかつ、となりのチャンクと自身のLOD差がある場合は非表示にする
     bool isBoundary = false;
     if(asPayload.transitionMask != 0) {
         uint32_t3 localPos = uint32_t3(basePos);

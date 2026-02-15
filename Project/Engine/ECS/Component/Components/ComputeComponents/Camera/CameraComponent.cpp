@@ -178,6 +178,7 @@ void ONEngine::from_json(const nlohmann::json& _j, CameraComponent& _c) {
 	_c.farClip_ = _j.value("farClip", 1000.0f);
 	_c.cameraType_ = _j.value("cameraType", static_cast<int>(CameraType::Type3D));
 	_c.isDrawFrustum_ = _j.value("isDrawFrustum", false);
+	//_c.enable = _j.value("enable", 1);
 }
 
 void ONEngine::to_json(nlohmann::json& _j, const CameraComponent& _c) {
