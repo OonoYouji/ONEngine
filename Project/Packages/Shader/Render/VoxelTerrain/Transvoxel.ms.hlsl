@@ -243,19 +243,6 @@ void main(
         for (int j = 9; j < 13; ++j) {
             cellParams[j] = GetMappedDensity(j, dirIndex, basePos, step.x, chunkID);
         }
-
-        // if(caseCode != 0 && caseCode != 511) {
-        //     /// 平面: 0 0000 0111
-        //     caseCode = 7;
-
-        //     for(int i=0; i<13; ++i) {
-        //         cellParams[i] = 0.0f;
-        //     }
-
-        //     cellParams[0] = 1;
-        //     cellParams[1] = 1;
-        //     cellParams[2] = 1;
-        // }
     }
     
     // テーブル参照
@@ -311,16 +298,26 @@ void main(
         
         float3 virtualPos = lerp(posA, posB, t);
         
-        // 回転適用
-        float3 mappedPos;
-        mappedPos[0] = virtualPos[kPermutation[dirIndex][0]];
-        mappedPos[1] = virtualPos[kPermutation[dirIndex][1]];
-        mappedPos[2] = virtualPos[kPermutation[dirIndex][2]];
+        // ---------------------------------------------------
+        // 1. 反転処理を戻す (Un-Invert)
+        // ---------------------------------------------------
+        // サンプリング時に「反転」された軸は、ここでもう一度反転して元に戻す
+        float3 unInvertedPos = virtualPos;
+        if (kInvert[dirIndex][0]) unInvertedPos[0] = 1.0 - unInvertedPos[0];
+        if (kInvert[dirIndex][1]) unInvertedPos[1] = 1.0 - unInvertedPos[1];
+        if (kInvert[dirIndex][2]) unInvertedPos[2] = 1.0 - unInvertedPos[2];
         
-        // 反転処理（復活）
-        if (kInvert[dirIndex][0]) mappedPos[0] = 1.0 - mappedPos[0];
-        if (kInvert[dirIndex][1]) mappedPos[1] = 1.0 - mappedPos[1];
-        if (kInvert[dirIndex][2]) mappedPos[2] = 1.0 - mappedPos[2];
+        // ---------------------------------------------------
+        // 2. 回転処理を戻す (Un-Permute)
+        // ---------------------------------------------------
+        // サンプリング時: Canonical.x = Local[Permutation.x]
+        // 頂点生成時:     Local[Permutation.x] = Canonical.x  (これを行いたい)
+        
+        float3 mappedPos;
+        // Permutationテーブルを使って、値を正しい軸(Local軸)に配り直す
+        mappedPos[kPermutation[dirIndex][0]] = unInvertedPos[0];
+        mappedPos[kPermutation[dirIndex][1]] = unInvertedPos[1];
+        mappedPos[kPermutation[dirIndex][2]] = unInvertedPos[2];
         
         // ワールド座標に変換
         float32_t3 fstep = float32_t3(step.x, step.y, step.z);
