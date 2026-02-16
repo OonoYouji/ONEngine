@@ -113,6 +113,8 @@ void VoxelTerrainRenderingPipeline::Draw(ECSGroup* _ecs, CameraComponent* _camer
 
 		/// --------------- バッファの設定 --------------- ///
 		voxelTerrain->SetupGraphicBuffers(cmdList, { CBV_VOXEL_TERRAIN_INFO, CBV_MATERIAL, SRV_CHUNK_ARRAY, CBV_LOD_INFO }, pAssetCollection_);
+		voxelTerrain->cBufferCliffMaterial_.BindForGraphicsCommandList(cmdList, CBV_CLIFF_MATERIAL);
+
 
 		_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(_dxCommand->GetCommandList(), CBV_VIEW_PROJECTION);
 		//_camera->GetCameraPosBuffer().BindForGraphicsCommandList(_dxCommand->GetCommandList(), CBV_CAMERA_POSITION);
@@ -199,6 +201,7 @@ void VoxelTerrainRenderingPipeline::CreatePipeline(GraphicsPipeline* _pipeline, 
 	_pipeline->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 2); // CameraPosition
 	_pipeline->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 3); // LODInfo
 	_pipeline->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 4); // Material
+	_pipeline->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 5); // CliffMaterial
 
 	_pipeline->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // Chunk array
 	_pipeline->AddDescriptorRange(1, MAX_TEXTURE_COUNT, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // VoxelTerrain Texture3D

@@ -265,8 +265,9 @@ private:
 	ConstantBuffer<GPUData::VoxelTerrainInfo> cBufferTerrainInfo_;
 	StructuredBuffer<GPUData::Chunk> sBufferChunks_;
 	StructuredBuffer<GPUData::Chunk> sBufferEditorChunks_;
-	ConstantBuffer<GPUMaterial> cBufferMaterial_;
 	ConstantBuffer<GPUData::LODInfo> cBufferLODInfo_;
+	ConstantBuffer<GPUMaterial> cBufferMaterial_;
+	ConstantBuffer<GPUMaterial> cBufferCliffMaterial_;
 
 	Vector3Int chunkSize_;
 	Vector3Int textureSize_;
@@ -275,6 +276,7 @@ private:
 	float isoLevel_ = 0.5f;
 
 	Material material_;
+	Material cliffMaterial_;
 	GPUData::LODInfo lodInfo_;
 
 	/// --------------- エディタ用 --------------- ///

@@ -93,6 +93,7 @@ void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _
 
 
 	Editor::ImMathf::MaterialEdit("Material", &_voxelTerrain->material_, _ac, true);
+	Editor::ImMathf::MaterialEdit("CliffMaterial", &_voxelTerrain->cliffMaterial_, _ac, true);
 
 	/// editor用
 	{
@@ -180,6 +181,7 @@ void ONEngine::from_json(const nlohmann::json& _j, VoxelTerrain& _voxelTerrain) 
 	_voxelTerrain.isoLevel_ = _j.value("isoLevel", 0.5f);
 
 	_voxelTerrain.material_ = _j.value("material", Material{});
+	_voxelTerrain.cliffMaterial_ = _j.value("cliffMaterial", Material{});
 	_voxelTerrain.chunks_ = _j.value("chunks", std::vector<Chunk>{});
 
 	_voxelTerrain.lodInfo_.useLOD = _j.value("useLOD", 1);
@@ -205,6 +207,7 @@ void ONEngine::to_json(nlohmann::json& _j, const VoxelTerrain& _voxelTerrain) {
 		{ "chunkCountXZ", _voxelTerrain.chunkCountXZ_ },
 		{ "isoLevel", _voxelTerrain.isoLevel_ },
 		{ "material", _voxelTerrain.material_ },
+		{ "cliffMaterial", _voxelTerrain.cliffMaterial_ },
 		{ "chunks", _voxelTerrain.chunks_ },
 
 		{ "useLOD", _voxelTerrain.lodInfo_.useLOD },
@@ -278,6 +281,7 @@ void VoxelTerrain::CreateBuffers(DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap, Ass
 	cBufferTerrainInfo_.Create(_dxDevice);
 	sBufferChunks_.Create(chunkCount, _dxDevice, _dxSRVHeap);
 	cBufferMaterial_.Create(_dxDevice);
+	cBufferCliffMaterial_.Create(_dxDevice);
 	cBufferLODInfo_.Create(_dxDevice);
 
 
@@ -351,26 +355,54 @@ const Vector3Int& VoxelTerrain::GetChunkSize() const {
 }
 
 void VoxelTerrain::SettingMaterial(AssetCollection* assetCollection) {
-	int32_t baseTextureId = 0;
-	if(material_.HasBaseTexture()) {
-		baseTextureId = assetCollection->GetTextureFromGuid(
-			material_.GetBaseTextureGuid())->GetSRVDescriptorIndex();
+	{	/// DefaultMaterialの設定
+		int32_t baseTextureId = 0;
+		if(material_.HasBaseTexture()) {
+			baseTextureId = assetCollection->GetTextureFromGuid(
+				material_.GetBaseTextureGuid())->GetSRVDescriptorIndex();
+		}
+
+		int32_t normalTextureId = 0;
+		if(material_.HasNormalTexture()) {
+			normalTextureId = assetCollection->GetTextureFromGuid(
+				material_.GetNormalTextureGuid())->GetSRVDescriptorIndex();
+		}
+
+		/// Materialの設定
+		cBufferMaterial_.SetMappedData(
+			{
+				.baseColor = material_.baseColor,
+				.postEffectFlags = material_.postEffectFlags,
+				.entityId = GetOwner()->GetId(),
+				.baseTextureId = baseTextureId,
+				.normalTextureId = normalTextureId
+			}
+		);
 	}
 
-	int32_t normalTextureId = 0;
-	if(material_.HasNormalTexture()) {
-		normalTextureId = assetCollection->GetTextureFromGuid(
-			material_.GetNormalTextureGuid())->GetSRVDescriptorIndex();
+	{	/// CliffMaterialの設定
+		int32_t baseTextureId = 0;
+		if(cliffMaterial_.HasBaseTexture()) {
+			baseTextureId = assetCollection->GetTextureFromGuid(
+				cliffMaterial_.GetBaseTextureGuid())->GetSRVDescriptorIndex();
+		}
+		int32_t normalTextureId = 0;
+		if(cliffMaterial_.HasNormalTexture()) {
+			normalTextureId = assetCollection->GetTextureFromGuid(
+				cliffMaterial_.GetNormalTextureGuid())->GetSRVDescriptorIndex();
+		}
+
+		cBufferCliffMaterial_.SetMappedData(
+			{
+				.baseColor = cliffMaterial_.baseColor,
+				.postEffectFlags = cliffMaterial_.postEffectFlags,
+				.entityId = GetOwner()->GetId(),
+				.baseTextureId = baseTextureId,
+				.normalTextureId = normalTextureId
+			}
+		);
 	}
 
-	/// Materialの設定
-	cBufferMaterial_.SetMappedData({
-		.baseColor = material_.baseColor,
-		.postEffectFlags = material_.postEffectFlags,
-		.entityId = GetOwner()->GetId(),
-		.baseTextureId = baseTextureId,
-		.normalTextureId = normalTextureId
-								   });
 }
 
 void VoxelTerrain::SettingTerrainInfo() {

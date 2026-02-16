@@ -10,6 +10,7 @@ struct PSOutput {
 };
 
 ConstantBuffer<ConstantBufferMaterial> material : register(b4);
+ConstantBuffer<ConstantBufferMaterial> cliffMaterial : register(b5);
 Texture2D<float4> textures[kMaxTextureCount] : register(t2050);
 SamplerState textureSampler : register(s1);
 
@@ -90,13 +91,18 @@ PSOutput main(VertexOut input) {
 	float3 N = normalize(input.normal);
     float3 worldPos = input.worldPosition.xyz;
 
+    float cliffFactor = saturate((1.0 - abs(N.y) - 0.2) * 2.0);
+
     const float tiling = 0.1f; // スケール調整
 	float4 terrainColor = SampleTriplanar(textures[material.intValues.z], worldPos, N, tiling);
-	output.color = material.baseColor * terrainColor;
+    float4 cliffColor = SampleTriplanar(textures[cliffMaterial.intValues.z], worldPos, N, tiling);
+    terrainColor = lerp(material.baseColor * terrainColor, cliffMaterial.baseColor * cliffColor, cliffFactor);
+	output.color = terrainColor;
 
-
-    float3 triplanarNormal = SampleTriplanarNormal(textures[material.intValues.w], worldPos, N, tiling);
-    output.normal = float4(triplanarNormal, 1);
+    float3 terrainNormal = SampleTriplanarNormal(textures[material.intValues.w], worldPos, N, tiling);
+    float3 cliffNormal = SampleTriplanarNormal(textures[cliffMaterial.intValues.w], worldPos, N, tiling);
+    float3 blendedNormal = normalize(lerp(terrainNormal, cliffNormal, cliffFactor));
+    output.normal = float4(blendedNormal, 1);
 
 	output.worldPos = input.worldPosition;
 	output.flags = float4(material.intValues.x, material.intValues.y, 0, 1);

@@ -90,7 +90,6 @@ namespace {
 
 
 bool ImMathf::MaterialEdit(const std::string& _label, ONEngine::Material* _material, ONEngine::AssetCollection* _assetCollection, bool _isEditNormalTexture) {
-
 	/// nullptr check
 	if (!_material) {
 		return false;
@@ -100,6 +99,8 @@ bool ImMathf::MaterialEdit(const std::string& _label, ONEngine::Material* _mater
 	if (!ImGui::CollapsingHeader(_label.c_str())) {
 		return false;
 	}
+
+	ImGui::PushID(_label.c_str());
 
 	bool edit = false;
 
@@ -174,5 +175,6 @@ bool ImMathf::MaterialEdit(const std::string& _label, ONEngine::Material* _mater
 
 	ImGui::Unindent();
 
+	ImGui::PopID();
 	return edit;
 }
