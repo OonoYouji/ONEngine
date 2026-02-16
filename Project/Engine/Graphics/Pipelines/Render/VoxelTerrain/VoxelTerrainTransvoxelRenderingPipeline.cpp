@@ -52,8 +52,8 @@ void VoxelTerrainTransvoxelRenderingPipeline::Initialize(ShaderCompiler* _shader
 		pipeline_->AddStaticSampler(StaticSampler::ClampSampler(), D3D12_SHADER_VISIBILITY_ALL, 0);
 
 		pipeline_->SetBlendDesc(BlendMode::None());
-		//pipeline_->SetFillMode(D3D12_FILL_MODE_WIREFRAME);
 		pipeline_->SetFillMode(D3D12_FILL_MODE_SOLID);
+		pipeline_->SetFillMode(D3D12_FILL_MODE_WIREFRAME);
 		pipeline_->SetCullMode(D3D12_CULL_MODE_NONE);
 		pipeline_->SetDepthStencilDesc(DefaultDepthStencilDesc());
 

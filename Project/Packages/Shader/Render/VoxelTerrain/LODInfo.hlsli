@@ -49,7 +49,7 @@ uint32_t CalculateLOD(float32_t3 worldPos, float32_t3 cameraPos)
 
 uint32_t GetSubChunkSize(uint32_t lodLevel)
 {
-    return 2u << lodLevel;
+    return 1u << lodLevel;
 }
 
 // -----------------------------------------------------------------------------

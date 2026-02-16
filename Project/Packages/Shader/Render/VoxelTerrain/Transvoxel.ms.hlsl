@@ -243,6 +243,17 @@ void main(
         for (int j = 9; j < 13; ++j) {
             cellParams[j] = GetMappedDensity(j, dirIndex, basePos, step.x, chunkID);
         }
+
+        // if(caseCode != 0 && caseCode != 511) {
+            // caseCode = 7;
+            // for(int i=0; i<13; ++i) {
+            //     cellParams[i] = 0.0f;
+            // }
+            // cellParams[0] = 1.0f;
+            // cellParams[1] = 1.0f;
+            // cellParams[2] = 1.0f;
+        // }
+        
     }
     
     // テーブル参照
@@ -264,14 +275,15 @@ void main(
         triangleCount = geometryCounts & 0x0F;
     }
     
-    uint vertOffset = WavePrefixSum(vertexCount);
-    uint totalVerts = WaveActiveSum(vertexCount);
+    // uint vertOffset = WavePrefixSum(vertexCount);
+    // uint totalVerts = WaveActiveSum(vertexCount);
 
-    uint triOffset  = WavePrefixSum(triangleCount);
-    uint totalTris  = WaveActiveSum(triangleCount);
+    // uint triOffset  = WavePrefixSum(triangleCount);
+    // uint totalTris  = WaveActiveSum(triangleCount);
 
-    SetMeshOutputCounts(totalVerts, totalTris);
-    if (totalVerts == 0 || totalTris == 0) {
+    GroupMemoryBarrierWithGroupSync();
+    SetMeshOutputCounts(vertexCount, triangleCount);
+    if (vertexCount == 0 || triangleCount == 0) {
         return;
     }
     
@@ -323,7 +335,7 @@ void main(
         float32_t3 fstep = float32_t3(step.x, step.y, step.z);
         float3 worldPos = basePos + (mappedPos * fstep);
         
-        verts[vertOffset + v] = ProcessTransvoxelVertex(worldPos, chunkOrigin, chunkID);
+        verts[v] = ProcessTransvoxelVertex(worldPos, chunkOrigin, chunkID);
     }
 
     // インデックス生成
@@ -332,6 +344,6 @@ void main(
         uint i1 = transitionCellData[cellClass].vertexIndex[t * 3 + 1];
         uint i2 = transitionCellData[cellClass].vertexIndex[t * 3 + 2];
         
-        tris[triOffset + t] = uint3(i0, i1, i2);
+        tris[t] = uint3(i0, i1, i2);
     }
 }
