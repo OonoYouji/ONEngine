@@ -26,7 +26,7 @@ struct Payload {
 
     /// 追加
     uint32_t step;
-    float32_t3 localPos; /// voxel terrain 内のローカル座標
+    float32_t3 startPos; /// 開始位置
     
 };
 
