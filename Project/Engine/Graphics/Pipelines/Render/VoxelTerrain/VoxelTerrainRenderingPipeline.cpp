@@ -117,8 +117,8 @@ void VoxelTerrainRenderingPipeline::Draw(ECSGroup* _ecs, CameraComponent* _camer
 
 
 		_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(_dxCommand->GetCommandList(), CBV_VIEW_PROJECTION);
-		//_camera->GetCameraPosBuffer().BindForGraphicsCommandList(_dxCommand->GetCommandList(), CBV_CAMERA_POSITION);
-		cBufPos.BindForGraphicsCommandList(_dxCommand->GetCommandList(), CBV_CAMERA_POSITION);
+		_camera->GetCameraPosBuffer().BindForGraphicsCommandList(_dxCommand->GetCommandList(), CBV_CAMERA_POSITION);
+		//cBufPos.BindForGraphicsCommandList(_dxCommand->GetCommandList(), CBV_CAMERA_POSITION);
 
 		D3D12_GPU_DESCRIPTOR_HANDLE frontSRVHandle = pDxManager_->GetDxSRVHeap()->GetSRVStartGPUHandle();
 		cmdList->SetGraphicsRootDescriptorTable(SRV_VOXEL_TERRAIN_TEXTURE3D, frontSRVHandle);

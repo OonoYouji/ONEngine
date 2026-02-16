@@ -19,7 +19,7 @@ PSOutput main(VertexOut input) {
 	output.color = float4(0.7, 0.1, 0.1, 0.5);
 	output.worldPos = input.worldPosition;
 	output.normal = float4(N, 1);
-	output.flags = float4(material.intValues.x, material.intValues.y, 0, 1);
+	output.flags = float4(PostEffectFlags_Lighting, material.intValues.y, 0, 1);
 
 	if (output.color.a <= 0.001f) {
 		discard;
