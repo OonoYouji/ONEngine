@@ -45,17 +45,17 @@ void VoxelTerrainRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, 
 		CreatePipeline(wireframePipeline_.get(), shader, _dxm, D3D12_FILL_MODE_WIREFRAME, BlendMode::Normal());
 	}
 
-	{
-		Shader shader;
-		shader.Initialize(_shaderCompiler);
+	//{
+	//	Shader shader;
+	//	shader.Initialize(_shaderCompiler);
 
-		shader.CompileShader(L"./Packages/Shader/Render/VoxelTerrain/VoxelTerrainCubic.as.hlsl", L"as_6_5", Shader::Type::as);
-		shader.CompileShader(L"./Packages/Shader/Render/VoxelTerrain/VoxelTerrainCubic.ms.hlsl", L"ms_6_5", Shader::Type::ms);
-		shader.CompileShader(L"./Packages/Shader/Render/VoxelTerrain/VoxelTerrain.ps.hlsl", L"ps_6_0", Shader::Type::ps);
-		cubicPipeline_ = std::make_unique<GraphicsPipeline>();
+	//	shader.CompileShader(L"./Packages/Shader/Render/VoxelTerrain/VoxelTerrainCubic.as.hlsl", L"as_6_5", Shader::Type::as);
+	//	shader.CompileShader(L"./Packages/Shader/Render/VoxelTerrain/VoxelTerrainCubic.ms.hlsl", L"ms_6_5", Shader::Type::ms);
+	//	shader.CompileShader(L"./Packages/Shader/Render/VoxelTerrain/VoxelTerrain.ps.hlsl", L"ps_6_0", Shader::Type::ps);
+	//	cubicPipeline_ = std::make_unique<GraphicsPipeline>();
 
-		CreatePipeline(cubicPipeline_.get(), shader, _dxm, D3D12_FILL_MODE_SOLID, BlendMode::Normal());
-	}
+	//	CreatePipeline(cubicPipeline_.get(), shader, _dxm, D3D12_FILL_MODE_SOLID, BlendMode::Normal());
+	//}
 
 	cBufPos.Create(_dxm->GetDxDevice());
 	cBufPos.SetMappedData(Vector4(180.0f, 465.0f, 182.0f, 1.0f));

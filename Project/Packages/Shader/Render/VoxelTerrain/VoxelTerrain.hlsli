@@ -15,19 +15,14 @@ struct VertexOut {
 
 
 struct Payload {
-	uint chunkIndex;
-	float3 chunkOrigin;
 	uint3 subChunkSize;
-	uint chunkDivision;
 
     uint32_t3 chunkSize;
-	uint lodLevel;
     uint32_t transitionMask;
 
     /// 追加
     uint32_t step;
     float32_t3 startPos; /// 開始位置
-    
 };
 
 

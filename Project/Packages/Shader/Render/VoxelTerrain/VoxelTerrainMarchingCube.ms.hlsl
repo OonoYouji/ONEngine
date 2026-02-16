@@ -18,7 +18,7 @@ float3 GetVoxelSize() {
 }
 
 // 密度取得
-float GetDensity(float3 worldPos, uint _chunkId) {
+float GetDensity(float3 worldPos) {
 	float voxelSize = 1.0f;
     
     // テクスチャサイズを float3 として取得
@@ -49,13 +49,13 @@ float GetDensity(float3 worldPos, uint _chunkId) {
 
 
 
-float3 CalculateNormal(float3 pos, uint chunkId, float step)
+float3 CalculateNormal(float3 pos, float step)
 {
     float eps = step; 
 
-    float dx = GetDensity(pos + float3(eps, 0, 0), chunkId) - GetDensity(pos - float3(eps, 0, 0), chunkId);
-    float dy = GetDensity(pos + float3(0, eps, 0), chunkId) - GetDensity(pos - float3(0, eps, 0), chunkId);
-    float dz = GetDensity(pos + float3(0, 0, eps), chunkId) - GetDensity(pos - float3(0, 0, eps), chunkId);
+    float dx = GetDensity(pos + float3(eps, 0, 0)) - GetDensity(pos - float3(eps, 0, 0));
+    float dy = GetDensity(pos + float3(0, eps, 0)) - GetDensity(pos - float3(0, eps, 0));
+    float dz = GetDensity(pos + float3(0, 0, eps)) - GetDensity(pos - float3(0, 0, eps));
 
     float3 grad = float3(dx, dy, dz);
     float sqLen = dot(grad, grad);
@@ -69,7 +69,7 @@ float3 CalculateNormal(float3 pos, uint chunkId, float step)
 
 
 // 頂点補間
-VertexOut VertexInterp(float3 p1, float3 p2, float3 chunkOrigin,float3 subChunkSize, float d1, float d2, uint chunkId) {
+VertexOut VertexInterp(float3 p1, float3 p2, float3 subChunkSize, float d1, float d2) {
 	VertexOut vOut;
 	
 	// 補間係数の計算（ゼロ除算対策）
@@ -90,7 +90,7 @@ VertexOut VertexInterp(float3 p1, float3 p2, float3 chunkOrigin,float3 subChunkS
 
 	vOut.position = mul(vOut.worldPosition, viewProjection.matVP);
 
-    vOut.normal = CalculateNormal(localPos, chunkId, subChunkSize.x);
+    vOut.normal = CalculateNormal(worldPos, subChunkSize.x);
 	
 	return vOut;
 }
@@ -156,7 +156,7 @@ void main(
 	    for (int i = 0; i < 8; ++i) {
 	    	float3 samplePos = worldPos + (kCornerOffsets[i] * float3(step));
 
-	    	float d = GetDensity(samplePos, asPayload.chunkIndex);
+	    	float d = GetDensity(samplePos);
 	    	cubeDensities[i] = d;
     
 	    	if (d < voxelTerrainInfo.isoLevel) {
@@ -193,7 +193,7 @@ void main(
 			float3 p1 = worldPos + (kCornerOffsets[idx1] * float3(step));
 			float3 p2 = worldPos + (kCornerOffsets[idx2] * float3(step));
 			
-			verts[vIndex + v] = VertexInterp(p1, p2, asPayload.chunkOrigin, float32_t3(asPayload.subChunkSize), cubeDensities[idx1], cubeDensities[idx2], asPayload.chunkIndex);
+			verts[vIndex + v] = VertexInterp(p1, p2, float32_t3(asPayload.subChunkSize), cubeDensities[idx1], cubeDensities[idx2]);
 		}
 		
 		indis[pIndex] = uint3(
