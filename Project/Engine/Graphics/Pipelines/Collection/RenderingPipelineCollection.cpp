@@ -38,6 +38,7 @@ using namespace ONEngine;
 #include "../PostProcess/Screen/Grayscale/PostProcessGrayscale.h"
 #include "../PostProcess/Screen/RadialBlur/PostProcessRadialBlur.h"
 #include "../PostProcess/Screen/Shadow/PostProcessShadowApply.h"
+#include "../PostProcess/Screen/Fog/PostProcessFog.h"
 #include "../PostProcess/PerObject/TerrainBrush/PostProcessTerrainBrush.h"
 
 RenderingPipelineCollection::RenderingPipelineCollection(ShaderCompiler* _shaderCompiler, DxManager* _dxm, EntityComponentSystem* _pEntityComponentSystem, AssetCollection* _assetCollection)
@@ -88,6 +89,7 @@ void RenderingPipelineCollection::Initialize() {
 	GeneratePostProcessPipeline<PostProcessGrayscale>();
 	GeneratePostProcessPipeline<PostProcessRadialBlur>();
 	GeneratePostProcessPipeline<PostProcessShadowApply>();
+	GeneratePostProcessPipeline<PostProcessFog>();
 }
 
 void RenderingPipelineCollection::PreDrawEntities(CameraComponent* _3dCamera, CameraComponent* _2dCamera) {

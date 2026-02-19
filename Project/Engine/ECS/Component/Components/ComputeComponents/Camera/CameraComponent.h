@@ -44,6 +44,14 @@ class CameraComponent : public IComponent {
 	friend void from_json(const nlohmann::json& _j, CameraComponent& _c);
 	friend void to_json(nlohmann::json& _j, const CameraComponent& _c);
 public:
+
+	struct FogParams {
+		Vector3 color;   // フォグの色
+		float fogStart; // フォグの開始距離
+		float fogEnd;   // フォグの終了距離
+	};
+
+public:
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
@@ -74,6 +82,7 @@ private:
 
 	ConstantBuffer<ViewProjection> viewProjection_;
 	ConstantBuffer<Vector4> cameraPosBuffer_;
+	ConstantBuffer<FogParams> cBufferFogParams_;
 
 	float fovY_;
 	float nearClip_;
@@ -87,6 +96,9 @@ private:
 	bool isDrawFrustum_;
 
 	Vector2 orthographicSize_;
+
+	/// fog parameters
+	FogParams fogParams_;
 
 public:
 	/// ====================================================
@@ -107,6 +119,7 @@ public:
 	ConstantBuffer<ViewProjection>& GetViewProjectionBuffer();
 
 	ConstantBuffer<Vector4>& GetCameraPosBuffer();
+	ConstantBuffer<FogParams>& GetFogParamsBuffer();
 
 	const Matrix4x4& GetViewMatrix() const;
 	const Matrix4x4& GetProjectionMatrix() const;

@@ -9,8 +9,8 @@
 #include "Engine/Core/Config/EngineConfig.h"
 #include "Engine/Core/Utility/Math/Math.h"
 #include "Engine/Core/Utility/Math/Primitive.h"
-#include "Engine/Editor/Commands/ImGuiCommand/ImGuiCommand.h"
 #include "Engine/ECS/Entity/GameEntity/GameEntity.h"
+#include "Engine/Editor/EditorUtils.h"
 
 using namespace ONEngine;
 
@@ -169,6 +169,18 @@ void ComponentDebug::CameraDebug(CameraComponent* _camera) {
 		}
 	}
 
+
+	if(ImGui::CollapsingHeader("FogParams")) {
+		Vector3& color = _camera->fogParams_.color;
+		float& fogStart = _camera->fogParams_.fogStart;
+		float& fogEnd = _camera->fogParams_.fogEnd;
+
+		ImGui::ColorEdit3("Fog Color Edit", &color.x);
+		Editor::DragFloat("Fog Start", fogStart, 0.1f, 0.0f, 1000.0f);
+		Editor::DragFloat("Fog End", fogEnd, 0.1f, 0.0f, 1000.0f);
+
+	}
+
 }
 
 void ONEngine::from_json(const nlohmann::json& _j, CameraComponent& _c) {
@@ -178,7 +190,11 @@ void ONEngine::from_json(const nlohmann::json& _j, CameraComponent& _c) {
 	_c.farClip_ = _j.value("farClip", 1000.0f);
 	_c.cameraType_ = _j.value("cameraType", static_cast<int>(CameraType::Type3D));
 	_c.isDrawFrustum_ = _j.value("isDrawFrustum", false);
-	//_c.enable = _j.value("enable", 1);
+	_c.fogParams_ = {
+		.color = _j.value("fogColor", Vector3::One),
+		.fogStart = _j.value("fogStart", 0.0f),
+		.fogEnd = _j.value("fogEnd", 1000.0f)
+	};
 }
 
 void ONEngine::to_json(nlohmann::json& _j, const CameraComponent& _c) {
@@ -190,7 +206,10 @@ void ONEngine::to_json(nlohmann::json& _j, const CameraComponent& _c) {
 		{ "farClip", _c.farClip_ },
 		{ "cameraType", _c.cameraType_ },
 		{ "isMainCamera", _c.isMainCameraRequest_ },
-		{ "isDrawFrustum", _c.isDrawFrustum_ }
+		{ "isDrawFrustum", _c.isDrawFrustum_ },
+		{ "fogColor", _c.fogParams_.color },
+		{ "fogStart", _c.fogParams_.fogStart},
+		{ "fogEnd", _c.fogParams_.fogEnd }
 	};
 }
 
@@ -241,6 +260,7 @@ void CameraComponent::UpdateViewProjection() {
 	viewProjection_.SetMappedData(ViewProjection(matView_ * matProjection_, matView_, matProjection_));
 	Vector4 cameraPos = Math::ConvertToVector4(entity->GetPosition(), 1.0f);
 	cameraPosBuffer_.SetMappedData(cameraPos);
+	cBufferFogParams_.SetMappedData(fogParams_);
 }
 
 bool CameraComponent::IsVisible(const Vector3& center, const Vector3& size) const {
@@ -284,6 +304,9 @@ void CameraComponent::MakeViewProjection(DxDevice* _dxDevice) {
 	cameraPosBuffer_.Create(_dxDevice);
 	Vector4 cameraPos = Math::ConvertToVector4(GetOwner()->GetPosition(), 1.0f);
 	cameraPosBuffer_.SetMappedData(cameraPos);
+
+	cBufferFogParams_.Create(_dxDevice);
+	cBufferFogParams_.SetMappedData(FogParams{ });
 }
 
 
@@ -356,6 +379,10 @@ ConstantBuffer<ViewProjection>& CameraComponent::GetViewProjectionBuffer() {
 
 ConstantBuffer<Vector4>& CameraComponent::GetCameraPosBuffer() {
 	return cameraPosBuffer_;
+}
+
+ConstantBuffer<CameraComponent::FogParams>& ONEngine::CameraComponent::GetFogParamsBuffer() {
+	return cBufferFogParams_;
 }
 
 const Matrix4x4& CameraComponent::GetViewMatrix() const {
