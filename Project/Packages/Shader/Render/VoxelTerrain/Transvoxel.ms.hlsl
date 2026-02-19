@@ -244,15 +244,17 @@ void main(
             cellParams[j] = GetMappedDensity(j, dirIndex, basePos, step.x, chunkID);
         }
 
-        // if(caseCode != 0 && caseCode != 511) {
-            // caseCode = 7;
-            // for(int i=0; i<13; ++i) {
-            //     cellParams[i] = 0.0f;
-            // }
-            // cellParams[0] = 1.0f;
-            // cellParams[1] = 1.0f;
-            // cellParams[2] = 1.0f;
-        // }
+        if(caseCode != 0 && caseCode != 511) {
+            caseCode = 7;
+            for(int i=0; i<13; ++i) {
+                cellParams[i] = 0.0f;
+            }
+            cellParams[0] = 1.0f;
+            cellParams[1] = 1.0f;
+            cellParams[2] = 1.0f;
+            cellParams[11] = 1.0f;
+            cellParams[12] = 1.0f;
+        }
         
     }
     
