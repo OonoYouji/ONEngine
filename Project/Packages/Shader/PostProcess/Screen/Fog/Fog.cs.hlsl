@@ -2,9 +2,9 @@
 #include "../../../ConstantBufferData/ViewProjection.hlsli"
 
 struct FogParams {
-    float3 fogColor;  // フォグの色（空や背景色に合わせると自然です）
-    float fogStart;   // フォグがかかり始める距離
-    float fogEnd;     // フォグが完全に不透明（FogColor）になる距離
+    float3 fogColor;      // フォグ色
+    float fogStart;       // フォグ開始距離（オフセットとして使用）
+    float fogEnd;         // フォグ到達距離（濃さ）
 };
 
 /// Buffers
@@ -16,31 +16,48 @@ Texture2D<float4>           gWorldPositionTexture    : register(t1);
 RWTexture2D<float4>         gOutputTexture           : register(u0);
 SamplerState                gTextureSampler          : register(s0);
 
-/// static variables
-static const float32_t2 screenSize = float32_t2(1920.0f, 1080.0f);
+static const float2 screenSize = float2(1920.0f, 1080.0f);
 
-/// main
+/// 軽量ノイズ
+float HashNoise(float2 p)
+{
+    return frac(sin(dot(p, float2(12.9898, 78.233))) * 43758.5453);
+}
+
 [shader("compute")]
 [numthreads(16, 16, 1)]
-void main(uint32_t3 DTid : SV_DispatchThreadID) {
-// 画面外の処理をスキップ
+void main(uint3 DTid : SV_DispatchThreadID)
+{
     if (DTid.x >= (uint)screenSize.x || DTid.y >= (uint)screenSize.y) return;
 
-    // ピクセル座標を直接指定してロードする (エラー回避 & 高速)
-    float4 color = gColorTexture[DTid.xy];
-    float4 worldPos = gWorldPositionTexture[DTid.xy];
+    float2 uv = DTid.xy / screenSize;
 
-    // ① カメラからピクセルまでの距離を計算
-    float dist = length(worldPos.xyz - gCamera.position.xyz);
+    float4 color    = gColorTexture.Sample(gTextureSampler, uv);
+    float3 worldPos = gWorldPositionTexture.Sample(gTextureSampler, uv).xyz;
 
-    // ② 距離と Start/End を使ってフォグの強さを計算 (リニアフォグ)
-    // ゼロ除算を防ぐため、念のため max で微小な値を入れると安全です
-    float fogRange = max(gFogParams.fogEnd - gFogParams.fogStart, 0.0001f);
-    float fogFactor = saturate((dist - gFogParams.fogStart) / fogRange);
+    //========================
+    // 距離フォグ（指数）
+    //========================
+    float dist = length(worldPos - gCamera.position.xyz);
 
-    // ③ 変数名を構造体に合わせる (gFogParams.color -> gFogParams.fogColor)
+    // fogStart までは霧なし
+    float d = max(dist - gFogParams.fogStart, 0.0f);
+
+    // 距離に強い指数フォグ
+    float fogFactor = 1.0f - exp(-d / max(gFogParams.fogEnd, 0.0001f));
+
+    //========================
+    // ノイズでわずかなムラ（控えめ）
+    //========================
+    float noise = HashNoise(worldPos.xz * 0.03);
+    fogFactor *= lerp(0.95f, 1.05f, noise);
+
+    fogFactor = saturate(fogFactor);
+
+    //========================
+    // 最終合成
+    //========================
     float3 finalColor = lerp(color.rgb, gFogParams.fogColor, fogFactor);
 
-    // 出力
     gOutputTexture[DTid.xy] = float4(finalColor, color.a);
 }

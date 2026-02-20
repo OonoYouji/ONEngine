@@ -42,13 +42,6 @@ void PostProcessFog::Execute(const std::string& _textureName, DxCommand* _dxComm
 		return;
 	}
 
-#ifdef DEBUG_MODE
-	if(_textureName.find_last_of("debug") != std::string::npos) {
-		currentGroup = _entityComponentSystem->GetECSGroup("Debug");
-	}
-#endif
-
-
 	CameraComponent* mainCamera = currentGroup->GetMainCamera();
 	if(!mainCamera) {
 		ONEngine::Console::LogError("PostProcessFog::Execute: main camera is null");
@@ -62,6 +55,18 @@ void PostProcessFog::Execute(const std::string& _textureName, DxCommand* _dxComm
 
 	mainCamera->GetCameraPosBuffer().BindForComputeCommandList(cmdList, CBV_CAMERA_POS);
 	mainCamera->GetFogParamsBuffer().BindForComputeCommandList(cmdList, CBV_FOG_PARAMS);
+
+#ifdef DEBUG_MODE
+	if(_textureName.find_last_of("debug") != std::string::npos) {
+		if(ECSGroup* debugGroup = _entityComponentSystem->GetECSGroup("Debug")) {
+			if(CameraComponent* debugCamera = debugGroup->GetMainCamera()) {
+				debugCamera->GetCameraPosBuffer().BindForComputeCommandList(cmdList, CBV_CAMERA_POS);
+			}
+		}
+	}
+#endif
+
+
 
 	auto& textures = _assetCollection->GetTextures();
 

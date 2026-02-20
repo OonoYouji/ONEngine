@@ -178,7 +178,6 @@ void ComponentDebug::CameraDebug(CameraComponent* _camera) {
 		ImGui::ColorEdit3("Fog Color Edit", &color.x);
 		Editor::DragFloat("Fog Start", fogStart, 0.1f, 0.0f, 1000.0f);
 		Editor::DragFloat("Fog End", fogEnd, 0.1f, 0.0f, 1000.0f);
-
 	}
 
 }
