@@ -4,8 +4,6 @@
 #include "VoxelTerrainCommon.hlsli"
 #include "LODInfo.hlsli"
 
-static const float kIsoLevel = 0.5f;
-
 struct VertexOut {
     float4 position : SV_POSITION;
     float4 worldPosition : POSITION0;

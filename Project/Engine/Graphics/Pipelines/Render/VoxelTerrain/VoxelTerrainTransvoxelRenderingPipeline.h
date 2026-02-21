@@ -43,6 +43,8 @@ private:
 	AssetCollection* pAssetCollection_;
 	DxManager* pDxManager_;
 
+	std::unique_ptr<GraphicsPipeline> debugPipeline_;
+
 };
 
 

@@ -8,19 +8,6 @@
 Texture3D<float4> voxelChunkTextures[] : register(t1);
 SamplerState texSampler : register(s0);
 
-// [解説] チャンクIDからワールド座標の原点を計算する関数
-float32_t3 GetChunkPos(uint32_t chunkID) {
-    uint32_t x = chunkID % voxelTerrainInfo.chunkCountXZ.x;
-    uint32_t z = chunkID / voxelTerrainInfo.chunkCountXZ.x;
-    
-    return float32_t3(x, 0, z) * float32_t3(voxelTerrainInfo.chunkSize) + float32_t3(voxelTerrainInfo.terrainOrigin);
-}
-
-float32_t3 GetChunkCenter(uint32_t chunkID) {
-    float32_t3 chunkPos = GetChunkPos(chunkID);
-    return chunkPos + float32_t3(voxelTerrainInfo.chunkSize) / 2;
-}
-
 // [解説] 3Dテクスチャから密度値(SDF等)をサンプリングする関数
 float32_t GetDensity(float32_t3 samplePos, uint32_t chunkID) {
     float voxelSize = 1.0f;
@@ -70,22 +57,6 @@ float32_t GetDensity(float32_t3 samplePos, uint32_t chunkID) {
 
     float32_t4 rgba = voxelChunkTextures[chunks[idx].textureId].SampleLevel(texSampler, uvw, 0);
     return rgba.a;
-}
-
-// 法線計算用ヘルパー
-float3 CalculateNormal(float3 worldPos, uint chunkID)
-{
-    float delta = 0.01;
-    float3 grad;
-    
-    grad.x = GetDensity(worldPos + float3(delta, 0, 0), chunkID) - 
-             GetDensity(worldPos - float3(delta, 0, 0), chunkID);
-    grad.y = GetDensity(worldPos + float3(0, delta, 0), chunkID) - 
-             GetDensity(worldPos - float3(0, delta, 0), chunkID);
-    grad.z = GetDensity(worldPos + float3(0, 0, delta), chunkID) - 
-             GetDensity(worldPos - float3(0, 0, delta), chunkID);
-    
-    return normalize(-grad);
 }
 
 // -----------------------------------------------------------------------------
@@ -181,43 +152,6 @@ float GetMappedDensity(int index, uint dirIndex, float3 basePos, float step, uin
     return GetDensity(samplePos, chunkID);
 }
 
-VertexOut ProcessTransvoxelVertex(float3 worldPos, float3 chunkOrigin, uint chunkID) {
-    VertexOut vOut;
-    
-    vOut.worldPosition = float4(worldPos + chunkOrigin, 1.0);
-    vOut.position = mul(vOut.worldPosition, viewProjection.matVP);
-    vOut.normal = CalculateNormal(worldPos, chunkID);
-    vOut.normal = float3(0, 1, 0);
-    vOut.color = float4(1.0, 1.0, 1.0, 1.0); 
-    
-    return vOut;
-}
-
-float32_t3 GetBasePos(uint32_t id, uint32_t3 size, uint32_t3 step) {
-    uint32_t3 gridPos = uint32_t3(
-        id % size.x,
-        (id / size.x) % size.y,
-        id / (size.x * size.y)
-    );
-
-    return float32_t3(gridPos * step);
-}
-
-
-
-// デバッグ用：色付き頂点を出力
-VertexOut ProcessDebugVertex(float3 worldPos, float4 color, float3 chunkOrigin) {
-    VertexOut vOut;
-    vOut.worldPosition = float4(worldPos + chunkOrigin, 1.0);
-    vOut.position = mul(vOut.worldPosition, viewProjection.matVP);
-    vOut.normal = float3(0, 1, 0); // デバッグ用なので上向き固定
-    vOut.color = color;
-    return vOut;
-}
-
-
-
-
 [shader("mesh")]
 [outputtopology("triangle")]
 [numthreads(1, 1, 1)]
@@ -232,7 +166,6 @@ void main(
     uint32_t3   chunkSize   = uint32_t3(voxelTerrainInfo.chunkSize);
 
     uint3       step        = payload.subChunkSize;
-	// float3      basePos     = GetBasePos(DTid.x, chunkSize, step);
     float3      basePos     = float32_t3(DTid * step);
     uint32_t3   localPos    = uint32_t3(basePos);
 
@@ -282,31 +215,6 @@ void main(
             cellParams[j] = GetMappedDensity(j, dirIndex, basePos, step.x, chunkID);
         }
 
-        // if(caseCode != 0 && caseCode != 511) {
-        //     float targetHeight = 0.25f; 
-
-        //     // X方向 (dirIndex == 0 または 1) の場合
-        //     if (dirIndex == 0 || dirIndex == 1) {
-
-        //         caseCode = 11; // 1 (Node0) + 2 (Node1) + 8 (Node3) = 11
-        //         for(int i = 0; i < 13; ++i) {
-        //             float3 pos = kTransitionCornerOffsets[i];
-        //             cellParams[i] = voxelTerrainInfo.isoLevel + (0.6f - (pos.x + pos.y + pos.z));
-        //         }
-
-        //     }
-        //     // Z方向 (dirIndex == 4 または 5) の場合
-        //     else if (dirIndex == 4 || dirIndex == 5) {
-        //         // ローカルZ=0 のノード(0, 3, 6)を固体にする
-        //         caseCode = 7; // 1 + 2 + 4 = 7
-                
-        //         for(int i = 0; i < 13; ++i) {
-        //             float nodeY = kTransitionCornerOffsets[i].z;
-        //             cellParams[i] = voxelTerrainInfo.isoLevel + (targetHeight - nodeY);
-        //         }
-        //     }
-        // }
-        
     }
     
     // テーブル参照
@@ -332,67 +240,76 @@ void main(
     // 【デバッグ用】13個のサンプリングポイントを可視化する処理
     // -------------------------------------------------------------
     
+    // サンプリング点13個 × 三角形1つ(3頂点) = 39頂点 / 13ポリゴン
+    uint debugVertexCount = 0;
+    uint debugTriangleCount = 0;
+    if (caseCode != 0 && caseCode != 511) {
+        debugVertexCount = 9 * 8;    // 72頂点
+        debugTriangleCount = 9 * 12; // 108ポリゴン
+    }
+
     GroupMemoryBarrierWithGroupSync();
-    SetMeshOutputCounts(vertexCount, triangleCount);
-    if (vertexCount == 0 || triangleCount == 0) {
-        return;
-    }
-    
-    // 頂点生成
-    for (uint v = 0; v < vertexCount; ++v) {
-        // データの直接参照（エッジテーブルは不要）
-        uint vData = tTransitionVertexData[caseCode * kTransitionVertexDataStride + v];
-        uint idxA = (vData >> 0) & 0x0F;
-        uint idxB = (vData >> 4) & 0x0F;
-        
-        float valA = cellParams[idxA];
-        float valB = cellParams[idxB];
-        
-        float3 posA = kTransitionCornerOffsets[idxA];
-        float3 posB = kTransitionCornerOffsets[idxB];
-        
-        // 等値面補間
-        float t = 0.5;
-        float diff = valB - valA;
-        if (abs(diff) > 1e-5) {
-            t = (voxelTerrainInfo.isoLevel - valA) / diff;
+    SetMeshOutputCounts(debugVertexCount, debugTriangleCount);
+
+    if (transitionCode != 0) {
+        float3 fstep = float3(step.x, step.y, step.z);
+        // デバッグ用の箱のサイズ（大きすぎる/小さすぎる場合はここを調整）
+        float debugSize = step.x * 0.1f; 
+
+        for (int i = 0; i < 9; ++i) {
+            
+            // 1. サンプリング位置の計算 (回転・反転の考慮)
+            float3 localOffset = kTransitionCornerOffsets[i];
+
+            if (kInvert[dirIndex][0]) localOffset[0] = 1.0 - localOffset[0];
+            if (kInvert[dirIndex][1]) localOffset[1] = 1.0 - localOffset[1];
+            if (kInvert[dirIndex][2]) localOffset[2] = 1.0 - localOffset[2];
+
+            float3 mappedOffset;
+            mappedOffset[0] = localOffset[kPermutation[dirIndex][0]];
+            mappedOffset[1] = localOffset[kPermutation[dirIndex][1]];
+            mappedOffset[2] = localOffset[kPermutation[dirIndex][2]];
+
+            // basePos は既にワールド座標のはずなので、そのままオフセットを足すだけ
+            float3 sampleWorldPos = basePos + (mappedOffset * fstep);
+
+            // 2. 密度の判定
+            float d = cellParams[i];
+            bool isSolid = (d < voxelTerrainInfo.isoLevel); // ★MC法と同じ条件
+
+            // 固体なら赤、空気なら青
+            float4 ptColor = isSolid ? float4(1.0, 0.0, 0.0, 1.0) : float4(0.0, 0.0, 1.0, 1.0);
+
+            // 3. 小さな箱(Cube)の頂点を8つ生成
+            uint vBase = i * 8;
+            float3 offsets[8] = {
+                float3(-1, -1, -1), float3( 1, -1, -1), float3( 1,  1, -1), float3(-1,  1, -1),
+                float3(-1, -1,  1), float3( 1, -1,  1), float3( 1,  1,  1), float3(-1,  1,  1)
+            };
+
+            for(int v = 0; v < 8; ++v) {
+                VertexOut vOut;
+                // ワールド座標に直接オフセットを足す（chunkOriginは足さない！）
+                vOut.worldPosition = float4(chunkOrigin + sampleWorldPos + (offsets[v] * debugSize), 1.0);
+                vOut.position = mul(vOut.worldPosition, viewProjection.matVP);
+                vOut.normal = normalize(offsets[v]); // 法線も適当に散らす
+                vOut.color = ptColor;
+                verts[vBase + v] = vOut;
+            }
+
+            // 4. 箱のインデックス(12ポリゴン)を生成
+            uint tBase = i * 12;
+            
+            // 前面・背面
+            tris[tBase + 0] = uint3(vBase+0, vBase+1, vBase+2); tris[tBase + 1] = uint3(vBase+0, vBase+2, vBase+3);
+            tris[tBase + 2] = uint3(vBase+5, vBase+4, vBase+7); tris[tBase + 3] = uint3(vBase+5, vBase+7, vBase+6);
+            // 左面・右面
+            tris[tBase + 4] = uint3(vBase+4, vBase+0, vBase+3); tris[tBase + 5] = uint3(vBase+4, vBase+3, vBase+7);
+            tris[tBase + 6] = uint3(vBase+1, vBase+5, vBase+6); tris[tBase + 7] = uint3(vBase+1, vBase+6, vBase+2);
+            // 上面・下面
+            tris[tBase + 8] = uint3(vBase+3, vBase+2, vBase+6); tris[tBase + 9] = uint3(vBase+3, vBase+6, vBase+7);
+            tris[tBase + 10]= uint3(vBase+4, vBase+5, vBase+1); tris[tBase + 11]= uint3(vBase+4, vBase+1, vBase+0);
         }
-        t = saturate(t);
-        
-        float3 virtualPos = lerp(posA, posB, t);
-        
-        // ---------------------------------------------------
-        // 1. 反転処理を戻す (Un-Invert)
-        // ---------------------------------------------------
-        float3 unInvertedPos = virtualPos;
-        if (kInvert[dirIndex][0]) unInvertedPos[0] = 1.0 - unInvertedPos[0];
-        if (kInvert[dirIndex][1]) unInvertedPos[1] = 1.0 - unInvertedPos[1];
-        if (kInvert[dirIndex][2]) unInvertedPos[2] = 1.0 - unInvertedPos[2];
-        
-        // ---------------------------------------------------
-        // 2. 回転処理を戻す (Un-Permute)
-        // ---------------------------------------------------
-        
-        float3 mappedPos = unInvertedPos;
-        // Permutationテーブルを使って、値を正しい軸(Local軸)に配り直す
-        mappedPos[0] = unInvertedPos[kPermutation[dirIndex][0]];
-        mappedPos[1] = unInvertedPos[kPermutation[dirIndex][1]];
-        mappedPos[2] = unInvertedPos[kPermutation[dirIndex][2]];
-        
-        // mappedPos = float3(0, kTransitionCornerOffsets[idxA].y, kTransitionCornerOffsets[idxA].z);
-        // ワールド座標に変換
-        float32_t3 fstep = float32_t3(step.x, step.y, step.z);
-        float3 worldPos = basePos + (mappedPos * fstep);
-
-        verts[v] = ProcessTransvoxelVertex(worldPos, chunkOrigin, chunkID);
     }
 
-    // インデックス生成
-    for (uint t = 0; t < triangleCount; ++t) {
-        uint i0 = transitionCellData[cellClass].vertexIndex[t * 3 + 0];
-        uint i1 = transitionCellData[cellClass].vertexIndex[t * 3 + 1];
-        uint i2 = transitionCellData[cellClass].vertexIndex[t * 3 + 2];
-        
-        tris[t] = uint3(i0, i1, i2);
-    }
 }
