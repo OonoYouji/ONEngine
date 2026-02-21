@@ -40,6 +40,7 @@ using namespace ONEngine;
 #include "../PostProcess/Screen/Shadow/PostProcessShadowApply.h"
 #include "../PostProcess/Screen/Fog/PostProcessFog.h"
 #include "../PostProcess/PerObject/TerrainBrush/PostProcessTerrainBrush.h"
+#include "../PostProcess/PerObject/VoxelTerrainBrush/PostProcessVoxelTerrainBrush.h"
 
 RenderingPipelineCollection::RenderingPipelineCollection(ShaderCompiler* _shaderCompiler, DxManager* _dxm, EntityComponentSystem* _pEntityComponentSystem, AssetCollection* _assetCollection)
 	: pShaderCompiler_(_shaderCompiler), pDxManager_(_dxm), pEntityComponentSystem_(_pEntityComponentSystem), pAssetCollection_(_assetCollection) {
@@ -83,6 +84,7 @@ void RenderingPipelineCollection::Initialize() {
 	GeneratePostProcessPipeline<PostProcessLighting>();
 	GeneratePostProcessPipeline<PostProcessGrayscalePerObject>();
 	GeneratePostProcessPipeline<PostProcessTerrainBrush>();
+	GeneratePostProcessPipeline<PostProcessVoxelTerrainBrush>();
 	GeneratePostProcessPipeline<PostProcessGaussianBlurPerObject>();
 
 	/// ----- スクリーンにかける用のポストエフェクトのパイプラインを生成 ----- ///

@@ -1,12 +1,13 @@
 
 struct Brush {
+    float4 brushColor;
     float2 position;
     float radius;
 };
 
 static const float2     kTextureSize            = float2(1920.0f, 1080.0f);
 static const float2     kScreenSize             = float2(1280.0f, 720.0f);
-static const float4     kBrushColor             = float4(0, 0, 0, 1);
+// static const float4     kBrushColor             = float4(0.1, 0.1, 0.7, 1.0f);
 
 /// constant buffer
 ConstantBuffer<Brush>   brush                   : register(b0);
@@ -38,7 +39,7 @@ void main(uint3 DTid : SV_DispatchThreadID) {
     /// ブラシの影響範囲内かどうか
     float  dist     = distance(position.xyz, mousePos.xyz);
     if (dist < brush.radius) {
-		gOutputTexture[DTid.xy] = color * kBrushColor;
+		gOutputTexture[DTid.xy] = color * brush.brushColor;
     } else {
         gOutputTexture[DTid.xy] = color; /// 元の色をそのまま出力
     }

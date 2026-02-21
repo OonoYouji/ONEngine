@@ -1,25 +1,26 @@
-﻿#include "PostProcessTerrainBrush.h"
-
-using namespace ONEngine;
+﻿#include "PostProcessVoxelTerrainBrush.h"
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
-#include "Engine/Core/Utility/Input/Input.h"
+#include "Engine/Core/Utility/Utility.h"
 #include "Engine/Asset/Collection/AssetCollection.h"
-#include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Terrain.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/VoxelTerrain/VoxelTerrain.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 
-PostProcessTerrainBrush::PostProcessTerrainBrush() = default;
-PostProcessTerrainBrush::~PostProcessTerrainBrush() = default;
+
+namespace ONEngine {
+
+PostProcessVoxelTerrainBrush::PostProcessVoxelTerrainBrush() = default;
+PostProcessVoxelTerrainBrush::~PostProcessVoxelTerrainBrush() = default;
 
 
-void PostProcessTerrainBrush::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {
+void PostProcessVoxelTerrainBrush::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {
 
 	{	/// shader compile
 
 		Shader shader;
 		shader.Initialize(_shaderCompiler);
-		shader.CompileShader(L"Packages/Shader/PostProcess/PerObject/TerrainBrush/TerrainBrush.cs.hlsl", L"cs_6_6", Shader::Type::cs);
+		shader.CompileShader(L"Packages/Shader/PostProcess/PerObject/VoxelTerrainBrush/VoxelTerrainBrush.cs.hlsl", L"cs_6_6", Shader::Type::cs);
 
 		pipeline_ = std::make_unique<ComputePipeline>();
 		pipeline_->SetShader(&shader);
@@ -49,47 +50,54 @@ void PostProcessTerrainBrush::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 
 }
 
-void PostProcessTerrainBrush::Execute(
+void PostProcessVoxelTerrainBrush::Execute(
 	const std::string& _textureName, DxCommand* _dxCommand,
 	AssetCollection* _assetCollection, EntityComponentSystem* _ecs) {
 
 	/// TerrainComponentの有無チェック
-	ComponentArray<Terrain>* terrainArray = _ecs->GetCurrentGroup()->GetComponentArray<Terrain>();
+	ComponentArray<VoxelTerrain>* voxelTerrainArray = _ecs->GetCurrentGroup()->GetComponentArray<VoxelTerrain>();
 	/// 両方とも存在しない、もしくは使用中のコンポーネントが無い場合は処理しない
-	if ((!terrainArray || terrainArray->GetUsedComponents().empty())) {
+	if(!CheckComponentArrayEnable(voxelTerrainArray)) {
 		return;
 	}
 
 	/// 地形が編集モード中なのかチェック
-	Terrain* editTerrain = nullptr;
-	for (const auto& terrain : terrainArray->GetUsedComponents()) {
-		if (terrain->GetEditorInfo().editMode != static_cast<int32_t>(Terrain::EditMode::None)) {
-			editTerrain = terrain;
+	VoxelTerrain* vt = nullptr;
+	for(const auto& terrain : voxelTerrainArray->GetUsedComponents()) {
+		if(CheckComponentEnable(terrain)) {
+			vt = terrain;
 			break;
 		}
 	}
 
 	/// 編集モードでなければ処理しない
-	if (!editTerrain) {
+	if(!CheckComponentEnable(vt)) {
 		return;
 	}
 
 	/// brush data
 	const Vector2 mousePos = Input::GetImGuiImageMousePosNormalized("Scene");
 	/// 範囲外なら処理しない
-	if (!Math::Inside(mousePos, Vector2::Zero, Vector2::HD)) {
+	if(!Math::Inside(mousePos, Vector2::Zero, Vector2::HD)) {
 		return;
 	}
 
-	float brushRadius = 0.0f;
-	if (editTerrain) {
-		brushRadius = editTerrain->GetEditorInfo().brushRadius;
-	}
+	float brushRadius = vt->GetBrushRadius();
 
+	float blinkSpeed = 2.0f;
+	float minAlpha = 0.2f;
+	float maxAlpha = 0.8f;
 
+	float phase = std::fmod(Time::GetTime() * blinkSpeed, 2.0f);
+	float t = (phase < 1.0f) ? phase : 2.0f - phase;
+
+	float easedT = ONEngine::Ease::InOut::Sine(t);
+
+	Vector4 defaultColor = { 0.5725f, 0.7412f, 0.9451f, 1.0f };
+	defaultColor.w = minAlpha + (maxAlpha - minAlpha) * easedT; /// ここに計算したアルファ値を代入
 
 	brushBuffer_.SetMappedData(
-		Brush{ mousePos, brushRadius }
+		Brush{ defaultColor, mousePos, brushRadius }
 	);
 
 	/// texture index
@@ -123,3 +131,5 @@ void PostProcessTerrainBrush::Execute(
 	);
 
 }
+
+} /// namespace ONEngine
