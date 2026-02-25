@@ -41,6 +41,10 @@ float GetDensity(float3 worldPos) {
     if (uvw.y < 0.0f) { return 0.0f; } // 空
     if (uvw.y > 1.0f) { return 1.0f; } // 地下    
 
+    // Y方向の範囲外処理（空は空気、地下は固体）
+    if (uvw.y < 0.0f) { return 0.0f; } // 空
+    if (uvw.y > 1.0f) { return 1.0f; } // 地下    
+
     // UVWをクランプして安全性を確保
 	uvw = saturate(uvw);
     

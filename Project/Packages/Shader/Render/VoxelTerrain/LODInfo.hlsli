@@ -82,7 +82,7 @@ uint32_t GetTransitionMask(float32_t3 chunkCenter, float32_t3 chunkSize, uint32_
         float32_t3 nNearPos = clamp(cameraPos, nMin, nMax);
         
         uint32_t lodNX = CalculateLOD(nNearPos, cameraPos);
-        if (lodNX > myLOD) mask |= TRANSITION_NX;
+        if (lodNX < myLOD) mask |= TRANSITION_NX;
     }
 
     // ------------------------------------------------------
@@ -96,7 +96,7 @@ uint32_t GetTransitionMask(float32_t3 chunkCenter, float32_t3 chunkSize, uint32_
         float32_t3 nNearPos = clamp(cameraPos, nMin, nMax);
         
         uint32_t lodPX = CalculateLOD(nNearPos, cameraPos);
-        if (lodPX > myLOD) mask |= TRANSITION_PX;
+        if (lodPX < myLOD) mask |= TRANSITION_PX;
     }
 
     // ------------------------------------------------------
@@ -110,7 +110,7 @@ uint32_t GetTransitionMask(float32_t3 chunkCenter, float32_t3 chunkSize, uint32_
         float32_t3 nNearPos = clamp(cameraPos, nMin, nMax);
         
         uint32_t lodNZ = CalculateLOD(nNearPos, cameraPos);
-        if (lodNZ > myLOD) mask |= TRANSITION_NZ;
+        if (lodNZ < myLOD) mask |= TRANSITION_NZ;
     }
 
     // ------------------------------------------------------
@@ -124,7 +124,7 @@ uint32_t GetTransitionMask(float32_t3 chunkCenter, float32_t3 chunkSize, uint32_
         float32_t3 nNearPos = clamp(cameraPos, nMin, nMax);
         
         uint32_t lodPZ = CalculateLOD(nNearPos, cameraPos);
-        if (lodPZ > myLOD) mask |= TRANSITION_PZ;
+        if (lodPZ < myLOD) mask |= TRANSITION_PZ;
     }
 
     // ------------------------------------------------------
@@ -138,7 +138,7 @@ uint32_t GetTransitionMask(float32_t3 chunkCenter, float32_t3 chunkSize, uint32_
         float32_t3 nNearPos = clamp(cameraPos, nMin, nMax);
         
         uint32_t lodPXZ = CalculateLOD(nNearPos, cameraPos);
-        if (lodPXZ > myLOD) mask |= TRANSITION_PXZ;
+        if (lodPXZ < myLOD) mask |= TRANSITION_PXZ;
     }
 
     // ------------------------------------------------------
@@ -152,7 +152,7 @@ uint32_t GetTransitionMask(float32_t3 chunkCenter, float32_t3 chunkSize, uint32_
         float32_t3 nNearPos = clamp(cameraPos, nMin, nMax);
         
         uint32_t lodNXZ = CalculateLOD(nNearPos, cameraPos);
-        if (lodNXZ > myLOD) mask |= TRANSITION_NXZ;
+        if (lodNXZ < myLOD) mask |= TRANSITION_NXZ;
     }
 
     // ------------------------------------------------------
@@ -166,7 +166,7 @@ uint32_t GetTransitionMask(float32_t3 chunkCenter, float32_t3 chunkSize, uint32_
         float32_t3 nNearPos = clamp(cameraPos, nMin, nMax);
         
         uint32_t lodNXPZ = CalculateLOD(nNearPos, cameraPos);
-        if (lodNXPZ > myLOD) mask |= TRANSITION_NXPZ;
+        if (lodNXPZ < myLOD) mask |= TRANSITION_NXPZ;
     }
 
     // ------------------------------------------------------
@@ -180,7 +180,7 @@ uint32_t GetTransitionMask(float32_t3 chunkCenter, float32_t3 chunkSize, uint32_
         float32_t3 nNearPos = clamp(cameraPos, nMin, nMax);
         
         uint32_t lodPXNZ = CalculateLOD(nNearPos, cameraPos);
-        if (lodPXNZ > myLOD) mask |= TRANSITION_PXNZ;
+        if (lodPXNZ < myLOD) mask |= TRANSITION_PXNZ;
     }
 
     return mask;

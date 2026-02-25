@@ -65,17 +65,10 @@ void main(
 
             uint32_t lodLevel = p.LODLevel;
 			uint32_t subChunkSize = GetSubChunkSize(myLOD);
-
-            if(myMask != 0) {
-                p.subChunkSize = uint3(subChunkSize, subChunkSize, subChunkSize);
-                dispatchSize = voxelTerrainInfo.textureSize / p.subChunkSize;
-                /// numthreads に合わせて分割
-                // dispatchSize.x = (dispatchSize.x * dispatchSize.y * dispatchSize.z) / 8;
-                // dispatchSize.y = 1;
-                // dispatchSize.z = 1;
-
-                p.transitionMask = GetTransitionMask(chunkCenter, float3(voxelTerrainInfo.chunkSize), p.LODLevel, camera.position.xyz);
-            }
+            
+            // Transition cell は常にディスパッチサイズを設定
+            p.subChunkSize = uint3(subChunkSize, subChunkSize, subChunkSize);
+            dispatchSize = voxelTerrainInfo.textureSize / p.subChunkSize;
         }
 
     }
