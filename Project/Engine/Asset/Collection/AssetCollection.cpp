@@ -6,9 +6,10 @@
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Core/Utility/Utility.h"
-#include "Engine/Core/Utility/Math/Math.h"
+#include "Engine/Core/Threading/ThreadPool.h"
 
-using namespace ONEngine;
+namespace ONEngine {
+
 
 AssetCollection::AssetCollection() = default;
 AssetCollection::~AssetCollection() = default;
@@ -43,22 +44,50 @@ void AssetCollection::Initialize(DxManager* _dxm) {
 	materialBundle->loader = std::make_unique<AssetLoader<Material>>();
 	materialBundle->container = std::make_unique<AssetContainer<Material>>(MAX_MATERIAL_COUNT);
 
-	/// Packages内のファイルがすべて読み込む
-	LoadResources(GetResourceFilePaths("./Packages/"));
-	LoadResources(GetResourceFilePaths("./Assets/"));
+	LoadResourcesAsync(GetResourceFilePaths("./Packages/"));
+	LoadResourcesAsync(GetResourceFilePaths("./Assets/"));
+
+	WaitAllLoads();
 }
 
 void AssetCollection::LoadResources(const std::vector<std::string>& _filePaths) {
-	for (auto& path : _filePaths) {
+	for(auto& path : _filePaths) {
 		AssetType type = GetAssetTypeFromExtension(FileSystem::FileExtension(path));
-		if (type != AssetType::None) {
+		if(type != AssetType::None) {
 			Load(path, type);
 		}
 	}
 }
 
+/// [非同期化による追加] スレッドプールを利用した複数ファイルの非同期ロード
+void AssetCollection::LoadResourcesAsync(const std::vector<std::string>& _filePaths) {
+	for(auto& path : _filePaths) {
+		AssetType type = GetAssetTypeFromExtension(FileSystem::FileExtension(path));
+		if(type != AssetType::None) {
+			if(auto* bundle = GetBaseBundle(type)) {
+				auto future = ThreadPool::Instance().Enqueue([bundle, path]() {
+					bundle->Load(path);
+				});
+
+				pendingTasks_.push_back(std::move(future));
+			}
+		}
+	}
+}
+
+/// [非同期化による追加] 投げた非同期ロードがすべて終わるまで待機
+void AssetCollection::WaitAllLoads() {
+	for(auto& task : pendingTasks_) {
+		if(task.valid()) {
+			task.wait();
+		}
+	}
+	// 待機が完了したらリストをクリアする
+	pendingTasks_.clear();
+}
+
 void AssetCollection::UnloadResources(const std::vector<std::string>& _filePaths) {
-	for (auto& path : _filePaths) {
+	for(auto& path : _filePaths) {
 		UnloadAssetByPath(path);
 	}
 }
@@ -67,13 +96,13 @@ void AssetCollection::UnloadAssetByPath(const std::string& _filepath) {
 	/// アセットの削除
 	const std::string extension = FileSystem::FileExtension(_filepath);
 	const AssetType type = GetAssetTypeFromExtension(extension);
-	if (auto* bundle = GetBaseBundle(type)) {
+	if(auto* bundle = GetBaseBundle(type)) {
 		bundle->Remove(_filepath);
 	}
 }
 
 void AssetCollection::Load(const std::string& _filepath, AssetType _type) {
-	if (auto* bundle = GetBaseBundle(_type)) {
+	if(auto* bundle = GetBaseBundle(_type)) {
 		bundle->Load(_filepath);
 	}
 }
@@ -100,12 +129,12 @@ void AssetCollection::AddAsset<Material>(const std::string& _filepath, Material&
 }
 
 bool AssetCollection::IsAsset(const Guid& _guid) const {
-	if (!_guid.CheckValid()) {
+	if(!_guid.CheckValid()) {
 		return false;
 	}
 
-	for (const auto& bundle : assetBundles_) {
-		if (bundle && bundle->Contains(_guid)) {
+	for(const auto& bundle : assetBundles_) {
+		if(bundle && bundle->Contains(_guid)) {
 			return true;
 		}
 	}
@@ -116,7 +145,7 @@ bool AssetCollection::HasAsset(const std::string& _filepath) {
 	const std::string extension = FileSystem::FileExtension(_filepath);
 	AssetType type = GetAssetTypeFromExtension(extension);
 
-	if (auto* bundle = GetBaseBundle(type)) {
+	if(auto* bundle = GetBaseBundle(type)) {
 		return bundle->Contains(_filepath);
 	}
 
@@ -127,7 +156,7 @@ bool AssetCollection::ReloadAsset(const std::string& _filepath) {
 	const std::string extension = FileSystem::FileExtension(_filepath);
 	AssetType type = GetAssetTypeFromExtension(extension);
 
-	if (auto* bundle = GetBaseBundle(type)) {
+	if(auto* bundle = GetBaseBundle(type)) {
 		bundle->Reload(_filepath);
 	}
 
@@ -136,12 +165,12 @@ bool AssetCollection::ReloadAsset(const std::string& _filepath) {
 
 std::vector<std::string> AssetCollection::GetResourceFilePaths(const std::string& _directoryPath) const {
 	std::vector<std::string> resourcePaths;
-	for (const auto& entry : std::filesystem::recursive_directory_iterator(_directoryPath)) {
-		if (entry.is_regular_file()) {
+	for(const auto& entry : std::filesystem::recursive_directory_iterator(_directoryPath)) {
+		if(entry.is_regular_file()) {
 			std::string path = entry.path().string();
 			FileSystem::ReplaceAll(&path, "\\", "/");
 			AssetType type = GetAssetTypeFromExtension(FileSystem::FileExtension(path));
-			if (type != AssetType::None) {
+			if(type != AssetType::None) {
 				resourcePaths.push_back(path);
 			}
 		}
@@ -150,12 +179,12 @@ std::vector<std::string> AssetCollection::GetResourceFilePaths(const std::string
 }
 
 IAssetBundle* ONEngine::AssetCollection::GetBaseBundle(AssetType _type) const {
-	if (_type == AssetType::None) {
+	if(_type == AssetType::None) {
 		return nullptr;
 	}
 
 	size_t index = static_cast<size_t>(_type);
-	if (index >= assetBundles_.size() || !assetBundles_[index]) {
+	if(index >= assetBundles_.size() || !assetBundles_[index]) {
 		return nullptr;
 	}
 
@@ -166,7 +195,7 @@ const Guid& AssetCollection::GetAssetGuidFromPath(const std::string& _filepath) 
 	const std::string extension = FileSystem::FileExtension(_filepath);
 	AssetType type = GetAssetTypeFromExtension(extension);
 
-	if (auto* bundle = GetBaseBundle(type)) {
+	if(auto* bundle = GetBaseBundle(type)) {
 		return bundle->GetGuid(_filepath);
 	}
 
@@ -174,12 +203,12 @@ const Guid& AssetCollection::GetAssetGuidFromPath(const std::string& _filepath) 
 }
 
 AssetType AssetCollection::GetAssetTypeFromGuid(const Guid& _guid) const {
-	if (!_guid.CheckValid()) {
+	if(!_guid.CheckValid()) {
 		return AssetType::None;
 	}
 
-	for (size_t i = 0; i < assetBundles_.size(); ++i) {
-		if (assetBundles_[i] && assetBundles_[i]->Contains(_guid)) {
+	for(size_t i = 0; i < assetBundles_.size(); ++i) {
+		if(assetBundles_[i] && assetBundles_[i]->Contains(_guid)) {
 			return static_cast<AssetType>(i);
 		}
 	}
@@ -225,7 +254,7 @@ const std::string& AssetCollection::GetTexturePath(const Guid& _guid) const {
 }
 
 Texture* AssetCollection::GetTextureFromGuid(const Guid& _guid) const {
-	if (!_guid.CheckValid()) return nullptr;
+	if(!_guid.CheckValid()) return nullptr;
 	auto* container = GetBundle<Texture>(AssetType::Texture)->container.get();
 	return container->Get(container->GetIndex(_guid));
 }
@@ -238,3 +267,5 @@ AudioClip* AssetCollection::GetAudioClip(const std::string& _filepath) {
 	return GetBundle<AudioClip>(AssetType::Audio)->container->Get(_filepath);
 }
 
+
+} /// namespace ONEngine

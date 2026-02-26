@@ -2,12 +2,15 @@
 
 using namespace ONEngine;
 
+/// std
+#include <chrono>
+
 /// engine
 #include "Engine/Core/Utility/Input/Input.h"
 #include "Engine/Core/Utility/Time/Time.h"
 #include "Engine/Core/Config/EngineConfig.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Script/Script.h"
-
+#include "Engine/Core/Threading/ThreadPool.h"
 
 GameFramework::GameFramework() {}
 GameFramework::~GameFramework() {
@@ -19,6 +22,7 @@ GameFramework::~GameFramework() {
 	Time::Finalize();
 	Input::Finalize();
 	Console::Finalize();
+	ThreadPool::Instance().Shutdown();
 
 	imGuiManager_->Finalize();
 	/// engineの終了処理
@@ -27,9 +31,11 @@ GameFramework::~GameFramework() {
 
 void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 
+	/// 初期化にかかる時間の計測開始
+	auto startTime = std::chrono::high_resolution_clock::now();
+
 	/// ログ出力の初期化
 	Console::Initialize();
-
 
 	/// --------------------------------------------------
 	/// 各クラスのインスタンスを生成する
@@ -48,10 +54,10 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 	/// 各クラスの初期化を行う
 	/// --------------------------------------------------
 
-	/// directX12の初期化
 	dxManager_->Initialize();
-	/// windowの初期化
+	ThreadPool::Instance().Initialize(dxManager_->GetDxDevice());
 	windowManager_->Initialize();
+
 	/// main windowの生成
 #ifdef DEBUG_MODE
 	UINT style = WS_OVERLAPPEDWINDOW;
@@ -84,6 +90,16 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 
 	editorManager_->Initialize(dxManager_.get(), renderingFramework_->GetShaderCompiler());
 	SetEntityComponentSystemPtr(entityComponentSystem_->GetECSGroup("GameScene"), entityComponentSystem_->GetECSGroup("Debug"));
+
+
+	/// 初期化にかかった時間の計測終了と出力
+	auto endTime = std::chrono::high_resolution_clock::now();
+	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime).count();
+	Console::Log("################################################################################");
+	Console::Log("#");
+	Console::Log("# Initialization completed in " + std::to_string(duration) + " ms");
+	Console::Log("#");
+	Console::Log("################################################################################");
 
 }
 
