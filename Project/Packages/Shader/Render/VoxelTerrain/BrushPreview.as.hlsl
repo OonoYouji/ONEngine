@@ -1,4 +1,4 @@
-#include "BrushPreview.hlsli"
+﻿#include "BrushPreview.hlsli"
 
 
 
@@ -58,7 +58,7 @@ void main(
 		    if (lengthToCamera <= lodInfo.maxDrawDistance) {
 
                 if(lodInfo.useLod != 0) {
-                    asPayload.lodLevel = GetLOD(lengthToCamera);
+                    asPayload.lodLevel = 1;
                 } else {
                     asPayload.lodLevel = lodInfo.lod;
                 }

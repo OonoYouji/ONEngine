@@ -93,10 +93,13 @@ void VoxelTerrainBrushPreviewRenderingPipeline::Draw(ECSGroup* _ecs, CameraCompo
 		return;
 	}
 
+	if(!vt->isEditMode_) {
+		return;
+	}
 
 
-	Vector2 mousePos = Input::GetImGuiImageMousePosNormalized("Scene");
-	Vector2 mouseUV = mousePos / Vector2::HD;
+	const Vector2& mousePos = Input::GetImGuiImageMousePosNormalized("Scene");
+	const Vector2& mouseUV = mousePos / Vector2::HD;
 	cBufferBrushInfo_.SetMappedData(
 		BrushInfo{
 			mouseUV,

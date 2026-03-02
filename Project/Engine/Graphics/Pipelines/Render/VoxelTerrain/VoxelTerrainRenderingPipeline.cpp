@@ -45,17 +45,17 @@ void VoxelTerrainRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, 
 		CreatePipeline(wireframePipeline_.get(), shader, _dxm, D3D12_FILL_MODE_WIREFRAME, BlendMode::Normal());
 	}
 
-	{
-		Shader shader;
-		shader.Initialize(_shaderCompiler);
+	//{
+	//	Shader shader;
+	//	shader.Initialize(_shaderCompiler);
 
-		shader.CompileShader(L"./Packages/Shader/Render/VoxelTerrain/VoxelTerrainCubic.as.hlsl", L"as_6_5", Shader::Type::as);
-		shader.CompileShader(L"./Packages/Shader/Render/VoxelTerrain/VoxelTerrainCubic.ms.hlsl", L"ms_6_5", Shader::Type::ms);
-		shader.CompileShader(L"./Packages/Shader/Render/VoxelTerrain/VoxelTerrain.ps.hlsl", L"ps_6_0", Shader::Type::ps);
-		cubicPipeline_ = std::make_unique<GraphicsPipeline>();
+	//	shader.CompileShader(L"./Packages/Shader/Render/VoxelTerrain/VoxelTerrainCubic.as.hlsl", L"as_6_5", Shader::Type::as);
+	//	shader.CompileShader(L"./Packages/Shader/Render/VoxelTerrain/VoxelTerrainCubic.ms.hlsl", L"ms_6_5", Shader::Type::ms);
+	//	shader.CompileShader(L"./Packages/Shader/Render/VoxelTerrain/VoxelTerrain.ps.hlsl", L"ps_6_0", Shader::Type::ps);
+	//	cubicPipeline_ = std::make_unique<GraphicsPipeline>();
 
-		CreatePipeline(cubicPipeline_.get(), shader, _dxm, D3D12_FILL_MODE_SOLID, BlendMode::Normal());
-	}
+	//	CreatePipeline(cubicPipeline_.get(), shader, _dxm, D3D12_FILL_MODE_SOLID, BlendMode::Normal());
+	//}
 
 	cBufPos.Create(_dxm->GetDxDevice());
 	cBufPos.SetMappedData(Vector4(180.0f, 465.0f, 182.0f, 1.0f));
@@ -113,10 +113,12 @@ void VoxelTerrainRenderingPipeline::Draw(ECSGroup* _ecs, CameraComponent* _camer
 
 		/// --------------- バッファの設定 --------------- ///
 		voxelTerrain->SetupGraphicBuffers(cmdList, { CBV_VOXEL_TERRAIN_INFO, CBV_MATERIAL, SRV_CHUNK_ARRAY, CBV_LOD_INFO }, pAssetCollection_);
+		voxelTerrain->cBufferCliffMaterial_.BindForGraphicsCommandList(cmdList, CBV_CLIFF_MATERIAL);
+
 
 		_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(_dxCommand->GetCommandList(), CBV_VIEW_PROJECTION);
-		_camera->GetCameraPosBuffer().BindForGraphicsCommandList(_dxCommand->GetCommandList(), CBV_CAMERA_POSITION);
-		//cBufPos.BindForGraphicsCommandList(_dxCommand->GetCommandList(), CBV_CAMERA_POSITION);
+		//_camera->GetCameraPosBuffer().BindForGraphicsCommandList(_dxCommand->GetCommandList(), CBV_CAMERA_POSITION);
+		cBufPos.BindForGraphicsCommandList(_dxCommand->GetCommandList(), CBV_CAMERA_POSITION);
 
 		D3D12_GPU_DESCRIPTOR_HANDLE frontSRVHandle = pDxManager_->GetDxSRVHeap()->GetSRVStartGPUHandle();
 		cmdList->SetGraphicsRootDescriptorTable(SRV_VOXEL_TERRAIN_TEXTURE3D, frontSRVHandle);
@@ -150,8 +152,8 @@ void VoxelTerrainRenderingPipeline::Draw(ECSGroup* _ecs, CameraComponent* _camer
 		voxelTerrain->SetupGraphicBuffers(cmdList, { CBV_VOXEL_TERRAIN_INFO, CBV_MATERIAL, SRV_CHUNK_ARRAY, CBV_LOD_INFO }, pAssetCollection_);
 
 		_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(_dxCommand->GetCommandList(), CBV_VIEW_PROJECTION);
-		_camera->GetCameraPosBuffer().BindForGraphicsCommandList(_dxCommand->GetCommandList(), CBV_CAMERA_POSITION);
-		//cBufPos.BindForGraphicsCommandList(_dxCommand->GetCommandList(), CBV_CAMERA_POSITION);
+		//_camera->GetCameraPosBuffer().BindForGraphicsCommandList(_dxCommand->GetCommandList(), CBV_CAMERA_POSITION);
+		cBufPos.BindForGraphicsCommandList(_dxCommand->GetCommandList(), CBV_CAMERA_POSITION);
 		D3D12_GPU_DESCRIPTOR_HANDLE frontSRVHandle = pDxManager_->GetDxSRVHeap()->GetSRVStartGPUHandle();
 		cmdList->SetGraphicsRootDescriptorTable(SRV_VOXEL_TERRAIN_TEXTURE3D, frontSRVHandle);
 		cmdList->SetGraphicsRootDescriptorTable(SRV_TEXTURES, frontSRVHandle);
@@ -199,6 +201,7 @@ void VoxelTerrainRenderingPipeline::CreatePipeline(GraphicsPipeline* _pipeline, 
 	_pipeline->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 2); // CameraPosition
 	_pipeline->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 3); // LODInfo
 	_pipeline->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 4); // Material
+	_pipeline->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 5); // CliffMaterial
 
 	_pipeline->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // Chunk array
 	_pipeline->AddDescriptorRange(1, MAX_TEXTURE_COUNT, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // VoxelTerrain Texture3D

@@ -8,7 +8,7 @@ struct PSOutput {
 	float4 flags : SV_Target3;
 };
 
-ConstantBuffer<ConstantBufferMaterial> material : register(b3);
+ConstantBuffer<ConstantBufferMaterial> material : register(b4);
 
 PSOutput main(VertexOut input) {
 	PSOutput output;

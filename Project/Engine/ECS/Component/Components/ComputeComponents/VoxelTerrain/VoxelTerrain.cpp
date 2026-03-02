@@ -13,7 +13,7 @@
 #include "Engine/Core/DirectX12/GPUTimeStamp/GPUTimeStamp.h"
 
 /// editor
-#include "Engine/Editor/Math/AssetDebugger.h"
+#include "Engine/Editor/EditorUtils.h"
 
 using namespace ONEngine;
 
@@ -28,7 +28,7 @@ void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _
 	Editor::ImMathf::Checkbox("Can MeshShader Rendering", &_voxelTerrain->canMeshShaderRendering_);
 	Editor::ImMathf::Checkbox("Is Rendering Wireframe", &_voxelTerrain->isRenderingWireframe_);
 	Editor::ImMathf::Checkbox("Is Rendering Transvoxel", &_voxelTerrain->isRenderingTransvoxel_);
-	Editor::ImMathf::Checkbox("Is Rendering Cubic", &_voxelTerrain->isRenderingCubic_);
+	//Editor::ImMathf::Checkbox("Is Rendering Cubic", &_voxelTerrain->isRenderingCubic_);
 	//Editor::ImMathf::Checkbox("Can VertexShader Rendering", &_voxelTerrain->canVertexShaderRendering_);
 	static bool showChunkBounds = false;
 	Editor::ImMathf::Checkbox("Show Chunk Bounds", &showChunkBounds);
@@ -75,6 +75,13 @@ void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _
 			Editor::ImMathf::DragFloat("LOD Distance 2", &_voxelTerrain->lodInfo_.lodDistance2, 1.0f, 0.0f, 1000.0f);
 			Editor::ImMathf::DragFloat("Max Draw Distance", &_voxelTerrain->lodInfo_.maxDrawDistance, 10.0f, 0.0f, 5000.0f);
 
+			const int minLodLevel = 0;
+			const int maxLodLevel = 5;
+			Editor::SliderInt("LOD Level 0", _voxelTerrain->lodInfo_.lodLevel0, minLodLevel, maxLodLevel);
+			Editor::SliderInt("LOD Level 1", _voxelTerrain->lodInfo_.lodLevel1, minLodLevel, maxLodLevel);
+			Editor::SliderInt("LOD Level 2", _voxelTerrain->lodInfo_.lodLevel2, minLodLevel, maxLodLevel);
+			Editor::SliderInt("LOD Level 3", _voxelTerrain->lodInfo_.lodLevel3, minLodLevel, maxLodLevel);
+
 		} else {
 
 			int lod = static_cast<int>(_voxelTerrain->lodInfo_.lod);
@@ -86,6 +93,7 @@ void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _
 
 
 	Editor::ImMathf::MaterialEdit("Material", &_voxelTerrain->material_, _ac, true);
+	Editor::ImMathf::MaterialEdit("CliffMaterial", &_voxelTerrain->cliffMaterial_, _ac, true);
 
 	/// editor用
 	{
@@ -173,12 +181,17 @@ void ONEngine::from_json(const nlohmann::json& _j, VoxelTerrain& _voxelTerrain) 
 	_voxelTerrain.isoLevel_ = _j.value("isoLevel", 0.5f);
 
 	_voxelTerrain.material_ = _j.value("material", Material{});
+	_voxelTerrain.cliffMaterial_ = _j.value("cliffMaterial", Material{});
 	_voxelTerrain.chunks_ = _j.value("chunks", std::vector<Chunk>{});
 
 	_voxelTerrain.lodInfo_.useLOD = _j.value("useLOD", 1);
 	_voxelTerrain.lodInfo_.lodDistance0 = _j.value("lod0Distance", 50.0f);
 	_voxelTerrain.lodInfo_.lodDistance1 = _j.value("lod1Distance", 100.0f);
 	_voxelTerrain.lodInfo_.lodDistance2 = _j.value("lod2Distance", 200.0f);
+	_voxelTerrain.lodInfo_.lodLevel0 = _j.value("lodLevel0", 0);
+	_voxelTerrain.lodInfo_.lodLevel1 = _j.value("lodLevel1", 1);
+	_voxelTerrain.lodInfo_.lodLevel2 = _j.value("lodLevel2", 2);
+	_voxelTerrain.lodInfo_.lodLevel3 = _j.value("lodLevel3", 3);
 	_voxelTerrain.lodInfo_.maxDrawDistance = _j.value("maxDrawDistance", 1000.0f);
 	_voxelTerrain.lodInfo_.lod = _j.value("lod", 1);
 }
@@ -194,12 +207,17 @@ void ONEngine::to_json(nlohmann::json& _j, const VoxelTerrain& _voxelTerrain) {
 		{ "chunkCountXZ", _voxelTerrain.chunkCountXZ_ },
 		{ "isoLevel", _voxelTerrain.isoLevel_ },
 		{ "material", _voxelTerrain.material_ },
+		{ "cliffMaterial", _voxelTerrain.cliffMaterial_ },
 		{ "chunks", _voxelTerrain.chunks_ },
 
 		{ "useLOD", _voxelTerrain.lodInfo_.useLOD },
 		{ "lod0Distance", _voxelTerrain.lodInfo_.lodDistance0 },
 		{ "lod1Distance", _voxelTerrain.lodInfo_.lodDistance1 },
 		{ "lod2Distance", _voxelTerrain.lodInfo_.lodDistance2 },
+		{ "lodLevel0", _voxelTerrain.lodInfo_.lodLevel0 },
+		{ "lodLevel1", _voxelTerrain.lodInfo_.lodLevel1 },
+		{ "lodLevel2", _voxelTerrain.lodInfo_.lodLevel2 },
+		{ "lodLevel3", _voxelTerrain.lodInfo_.lodLevel3 },
 		{ "maxDrawDistance", _voxelTerrain.lodInfo_.maxDrawDistance },
 		{ "lod", _voxelTerrain.lodInfo_.lod }
 	};
@@ -263,6 +281,7 @@ void VoxelTerrain::CreateBuffers(DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap, Ass
 	cBufferTerrainInfo_.Create(_dxDevice);
 	sBufferChunks_.Create(chunkCount, _dxDevice, _dxSRVHeap);
 	cBufferMaterial_.Create(_dxDevice);
+	cBufferCliffMaterial_.Create(_dxDevice);
 	cBufferLODInfo_.Create(_dxDevice);
 
 
@@ -336,26 +355,54 @@ const Vector3Int& VoxelTerrain::GetChunkSize() const {
 }
 
 void VoxelTerrain::SettingMaterial(AssetCollection* assetCollection) {
-	int32_t baseTextureId = 0;
-	if(material_.HasBaseTexture()) {
-		baseTextureId = assetCollection->GetTextureFromGuid(
-			material_.GetBaseTextureGuid())->GetSRVDescriptorIndex();
+	{	/// DefaultMaterialの設定
+		int32_t baseTextureId = 0;
+		if(material_.HasBaseTexture()) {
+			baseTextureId = assetCollection->GetTextureFromGuid(
+				material_.GetBaseTextureGuid())->GetSRVDescriptorIndex();
+		}
+
+		int32_t normalTextureId = 0;
+		if(material_.HasNormalTexture()) {
+			normalTextureId = assetCollection->GetTextureFromGuid(
+				material_.GetNormalTextureGuid())->GetSRVDescriptorIndex();
+		}
+
+		/// Materialの設定
+		cBufferMaterial_.SetMappedData(
+			{
+				.baseColor = material_.baseColor,
+				.postEffectFlags = material_.postEffectFlags,
+				.entityId = GetOwner()->GetId(),
+				.baseTextureId = baseTextureId,
+				.normalTextureId = normalTextureId
+			}
+		);
 	}
 
-	int32_t normalTextureId = 0;
-	if(material_.HasNormalTexture()) {
-		normalTextureId = assetCollection->GetTextureFromGuid(
-			material_.GetNormalTextureGuid())->GetSRVDescriptorIndex();
+	{	/// CliffMaterialの設定
+		int32_t baseTextureId = 0;
+		if(cliffMaterial_.HasBaseTexture()) {
+			baseTextureId = assetCollection->GetTextureFromGuid(
+				cliffMaterial_.GetBaseTextureGuid())->GetSRVDescriptorIndex();
+		}
+		int32_t normalTextureId = 0;
+		if(cliffMaterial_.HasNormalTexture()) {
+			normalTextureId = assetCollection->GetTextureFromGuid(
+				cliffMaterial_.GetNormalTextureGuid())->GetSRVDescriptorIndex();
+		}
+
+		cBufferCliffMaterial_.SetMappedData(
+			{
+				.baseColor = cliffMaterial_.baseColor,
+				.postEffectFlags = cliffMaterial_.postEffectFlags,
+				.entityId = GetOwner()->GetId(),
+				.baseTextureId = baseTextureId,
+				.normalTextureId = normalTextureId
+			}
+		);
 	}
 
-	/// Materialの設定
-	cBufferMaterial_.SetMappedData({
-		.baseColor = material_.baseColor,
-		.postEffectFlags = material_.postEffectFlags,
-		.entityId = GetOwner()->GetId(),
-		.baseTextureId = baseTextureId,
-		.normalTextureId = normalTextureId
-	});
 }
 
 void VoxelTerrain::SettingTerrainInfo() {
@@ -508,7 +555,7 @@ void VoxelTerrain::CopyEditorTextureToChunkTexture(DxCommand* dxCommand, const s
 			chunks_[chunkID].uavTexture.GetDxResource().Get()
 		);
 	}
-	
+
 	/// テクスチャの状態遷移
 	for(const int chunkID : copyChunkIDs) {
 		if(!EnableChunkID(chunkID)) {

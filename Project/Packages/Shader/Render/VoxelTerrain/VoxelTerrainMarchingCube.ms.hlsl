@@ -18,61 +18,33 @@ float3 GetVoxelSize() {
 }
 
 // 密度取得
-float GetDensity(float3 _localPos, uint _chunkId) {
+float GetDensity(float3 worldPos) {
 	float voxelSize = 1.0f;
     
     // テクスチャサイズを float3 として取得
 	float3 textureSize = float3(voxelTerrainInfo.textureSize);
     
+    uint32_t2 chunkLocalID = uint32_t2(worldPos.xz) / uint32_t2(voxelTerrainInfo.chunkSize.xz);
+	uint chunkId = chunkLocalID.x + chunkLocalID.y * uint(voxelTerrainInfo.chunkCountXZ.x);
+
     // ローカル座標をUVW座標に変換（各軸で異なるサイズを使用）
-	float3 uvw = _localPos / (textureSize * voxelSize);
+    float32_t3 chunkOrigin = float32_t3(
+        chunkLocalID.x * voxelTerrainInfo.chunkSize.x, 
+        0,
+        chunkLocalID.y * voxelTerrainInfo.chunkSize.z
+    );
+
+	float3 uvw = (worldPos - chunkOrigin) / (textureSize * voxelSize);
 	uvw.y = 1.0f - uvw.y;
     
-	uint chunkId = _chunkId;
-    
-    // チャンクのグリッド座標を計算
-	int chunkX = int(chunkId) % int(voxelTerrainInfo.chunkCountXZ.x);
-	int chunkZ = int(chunkId) / int(voxelTerrainInfo.chunkCountXZ.x);
-    
-    // X方向の境界処理
-	if (uvw.x < 0.0f) {
-		if (chunkX > 0) {
-			chunkId = _chunkId - 1;
-			uvw.x += 1.0f;
-		} else {
-			return 0.0f;
-		}
-	} else if (uvw.x > 1.0f) {
-		if (chunkX < int(voxelTerrainInfo.chunkCountXZ.x) - 1) {
-			chunkId = _chunkId + 1;
-			uvw.x -= 1.0f;
-		} else {
-			return 0.0f;
-		}
-	}
-    
-    // Z方向の境界処理
-	if (uvw.z < 0.0f) {
-		if (chunkZ > 0) {
-			chunkId -= uint(voxelTerrainInfo.chunkCountXZ.x);
-			uvw.z += 1.0f;
-		} else {
-			return 0.0f;
-		}
-	} else if (uvw.z > 1.0f) {
-		if (chunkZ < int(voxelTerrainInfo.chunkCountXZ.y) - 1) {
-			chunkId += uint(voxelTerrainInfo.chunkCountXZ.x);
-			uvw.z -= 1.0f;
-		} else {
-			return 0.0f;
-		}
-	}
-    
-    // Y方向の境界処理
-	if (uvw.y < 0.0f || uvw.y > 1.0f) {
-		return 1.0f;
-	}
-    
+    // Y方向の範囲外処理（空は空気、地下は固体）
+    if (uvw.y < 0.0f) { return 0.0f; } // 空
+    if (uvw.y > 1.0f) { return 1.0f; } // 地下    
+
+    // Y方向の範囲外処理（空は空気、地下は固体）
+    if (uvw.y < 0.0f) { return 0.0f; } // 空
+    if (uvw.y > 1.0f) { return 1.0f; } // 地下    
+
     // UVWをクランプして安全性を確保
 	uvw = saturate(uvw);
     
@@ -81,13 +53,13 @@ float GetDensity(float3 _localPos, uint _chunkId) {
 
 
 
-float3 CalculateNormal(float3 pos, uint chunkId, float step)
+float3 CalculateNormal(float3 pos, float step)
 {
     float eps = step; 
 
-    float dx = GetDensity(pos + float3(eps, 0, 0), chunkId) - GetDensity(pos - float3(eps, 0, 0), chunkId);
-    float dy = GetDensity(pos + float3(0, eps, 0), chunkId) - GetDensity(pos - float3(0, eps, 0), chunkId);
-    float dz = GetDensity(pos + float3(0, 0, eps), chunkId) - GetDensity(pos - float3(0, 0, eps), chunkId);
+    float dx = GetDensity(pos + float3(eps, 0, 0)) - GetDensity(pos - float3(eps, 0, 0));
+    float dy = GetDensity(pos + float3(0, eps, 0)) - GetDensity(pos - float3(0, eps, 0));
+    float dz = GetDensity(pos + float3(0, 0, eps)) - GetDensity(pos - float3(0, 0, eps));
 
     float3 grad = float3(dx, dy, dz);
     float sqLen = dot(grad, grad);
@@ -101,7 +73,7 @@ float3 CalculateNormal(float3 pos, uint chunkId, float step)
 
 
 // 頂点補間
-VertexOut VertexInterp(float3 p1, float3 p2, float3 chunkOrigin,float3 subChunkSize, float d1, float d2, uint chunkId) {
+VertexOut VertexInterp(float3 p1, float3 p2, float3 subChunkSize, float d1, float d2) {
 	VertexOut vOut;
 	
 	// 補間係数の計算（ゼロ除算対策）
@@ -115,23 +87,16 @@ VertexOut VertexInterp(float3 p1, float3 p2, float3 chunkOrigin,float3 subChunkS
 	
 	float3 localPos = lerp(p1, p2, t);
 	float3 voxelSize = GetVoxelSize();
-	float3 worldPos = (localPos * voxelSize) + chunkOrigin;
+	float3 worldPos = (localPos * voxelSize);
 	worldPos.xz += (subChunkSize * voxelSize * 0.5f).xz;
 
 	vOut.worldPosition = float4(worldPos, 1.0f);
 
 	vOut.position = mul(vOut.worldPosition, viewProjection.matVP);
 
-    vOut.normal = CalculateNormal(localPos, chunkId, subChunkSize.x);
+    vOut.normal = CalculateNormal(worldPos, subChunkSize.x);
 	
 	return vOut;
-}
-
-
-float3 GetNormal(float3 p0, float3 p1, float3 p2) {
-	float3 u = p1 - p0;
-	float3 v = p2 - p0;
-	return normalize(cross(u, v));
 }
 
 float32_t3 GetBasePos(uint32_t id, uint32_t3 size, uint32_t3 step) {
@@ -160,31 +125,54 @@ void main(
 	out indices uint3 indis[80]) {
 
 	uint3 step = asPayload.subChunkSize;
-	float3 basePos = GetBasePos(DTid.x, asPayload.chunkSize, step);
+	float32_t3 worldPos = GetBasePos(DTid.x, asPayload.chunkSize, step);
+    worldPos += asPayload.startPos;
 
     uint32_t3 chunkSize = uint32_t3(voxelTerrainInfo.chunkSize);
     uint32_t transitionCode = 0;
+
+    /// チャンクの境界面のボクセルかつ、となりのチャンクと自身のLOD差がある場合は非表示にする
+    bool isBoundary = false;
+    if(asPayload.transitionMask != 0) {
+        uint32_t3 localPos = uint32_t3(worldPos - asPayload.startPos);
+        bool isNX = (localPos.x == 0);
+        bool isPX = (localPos.x >= chunkSize.x - step.x);
+        bool isNZ = (localPos.z == 0);
+        bool isPZ = (localPos.z >= chunkSize.z - step.x);
+    
+        int mask = asPayload.transitionMask;
+        if(isNX && mask & TRANSITION_NX) isBoundary = true;
+        if(isPX && mask & TRANSITION_PX) isBoundary = true;
+        if(isNZ && mask & TRANSITION_NZ) isBoundary = true;
+        if(isPZ && mask & TRANSITION_PZ) isBoundary = true;
+        if(isNX && isNZ && mask & TRANSITION_NXZ) isBoundary = true;
+        if(isPX && isPZ && mask & TRANSITION_PXZ) isBoundary = true;
+        if(isNX && isPZ && mask & TRANSITION_NXPZ) isBoundary = true;
+        if(isPX && isNZ && mask & TRANSITION_PXNZ) isBoundary = true;
+    } 
     
 	float cubeDensities[8];
 	uint cubeIndex = 0;
 	uint triCount = 0;
-	
-	[unroll]
-	for (int i = 0; i < 8; ++i) {
-		float3 samplePos = basePos + (kCornerOffsets[i] * float3(step));
-    
-		float d = GetDensity(samplePos, asPayload.chunkIndex);
-		cubeDensities[i] = d;
-    
-		if (d < voxelTerrainInfo.isoLevel) {
-			cubeIndex |= (1u << i);
-		}
-	}
 
-	[unroll]
-	for (int i = 0; i < 5; i++) {
-		triCount += (TriTable[cubeIndex][i * 3] != -1) ? 1 : 0;
-	}
+    if(!isBoundary) {
+	    [unroll]
+	    for (int i = 0; i < 8; ++i) {
+	    	float3 samplePos = worldPos + (kCornerOffsets[i] * float3(step));
+
+	    	float d = GetDensity(samplePos);
+	    	cubeDensities[i] = d;
+    
+	    	if (d < voxelTerrainInfo.isoLevel) {
+	    		cubeIndex |= (1u << i);
+	    	}
+	    }
+
+	    [unroll]
+	    for (int i = 0; i < 15; i += 3) {
+	    	triCount += (TriTable[cubeIndex][i] != -1) ? 1 : 0;
+	    }
+    }
 
     uint outputTriOffset = WavePrefixSum(triCount);
     uint totalTriCount = WaveActiveSum(triCount);
@@ -206,10 +194,10 @@ void main(
 			int idx1 = kEdgeConnection[edgeIndex].x;
 			int idx2 = kEdgeConnection[edgeIndex].y;
 			
-			float3 p1 = basePos + (kCornerOffsets[idx1] * float3(step));
-			float3 p2 = basePos + (kCornerOffsets[idx2] * float3(step));
+			float3 p1 = worldPos + (kCornerOffsets[idx1] * float3(step));
+			float3 p2 = worldPos + (kCornerOffsets[idx2] * float3(step));
 			
-			verts[vIndex + v] = VertexInterp(p1, p2, asPayload.chunkOrigin, float32_t3(asPayload.subChunkSize), cubeDensities[idx1], cubeDensities[idx2], asPayload.chunkIndex);
+			verts[vIndex + v] = VertexInterp(p1, p2, float32_t3(asPayload.subChunkSize), cubeDensities[idx1], cubeDensities[idx2]);
 		}
 		
 		indis[pIndex] = uint3(

@@ -21,6 +21,7 @@
 
 /// tools
 #include "Tools/Assert.h"
+#include "Tools/Ease.h"
 #include "Tools/Log.h"
 #include "Tools/Random.h"
 #include "Tools/Gizmo.h"

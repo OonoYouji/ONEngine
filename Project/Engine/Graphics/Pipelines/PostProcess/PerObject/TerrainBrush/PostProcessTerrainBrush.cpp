@@ -7,7 +7,6 @@ using namespace ONEngine;
 #include "Engine/Core/Utility/Input/Input.h"
 #include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Terrain.h"
-#include "Engine/ECS/Component/Components/ComputeComponents/VoxelTerrain/VoxelTerrain.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 
 PostProcessTerrainBrush::PostProcessTerrainBrush() = default;

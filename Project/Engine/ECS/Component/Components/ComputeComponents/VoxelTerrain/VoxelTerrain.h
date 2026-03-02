@@ -126,6 +126,10 @@ struct LODInfo {
 	float lodDistance0;
 	float lodDistance1;
 	float lodDistance2;
+	int32_t lodLevel0;
+	int32_t lodLevel1;
+	int32_t lodLevel2;
+	int32_t lodLevel3;
 	
 	/// カメラとの距離がこれ以上の時は描画しない
 	float maxDrawDistance;
@@ -261,8 +265,9 @@ private:
 	ConstantBuffer<GPUData::VoxelTerrainInfo> cBufferTerrainInfo_;
 	StructuredBuffer<GPUData::Chunk> sBufferChunks_;
 	StructuredBuffer<GPUData::Chunk> sBufferEditorChunks_;
-	ConstantBuffer<GPUMaterial> cBufferMaterial_;
 	ConstantBuffer<GPUData::LODInfo> cBufferLODInfo_;
+	ConstantBuffer<GPUMaterial> cBufferMaterial_;
+	ConstantBuffer<GPUMaterial> cBufferCliffMaterial_;
 
 	Vector3Int chunkSize_;
 	Vector3Int textureSize_;
@@ -271,6 +276,7 @@ private:
 	float isoLevel_ = 0.5f;
 
 	Material material_;
+	Material cliffMaterial_;
 	GPUData::LODInfo lodInfo_;
 
 	/// --------------- エディタ用 --------------- ///

@@ -9,7 +9,6 @@ workspace "ONEngine"
     filter "system:windows"
         systemversion "latest"      -- 最新のWindows SDKを使用
         
-        -- ★ Visual Studio 2026 のツールセットを指定
         -- (まだリリースの過渡期で v145 がない場合は "v144" や "ClangCL" に変更してください)
         toolset "v145"
 

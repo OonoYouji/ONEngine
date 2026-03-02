@@ -68,27 +68,22 @@ float GetDensity(float3 _localPos, uint _chunkId) {
 }
 
 
-// 勾配(法線)取得の修正版
-float3 GetGradient(float3 _localPos, uint _chunkId) {
-	// ボクセルサイズに合わせたステップ幅
-	// stepを小さくしすぎると数値誤差が大きくなるので注意
-	float step = 0.5f;
-	
-	// 中心差分法で勾配を計算
-	float dx = GetDensity(_localPos + float3(step, 0, 0), _chunkId) - GetDensity(_localPos - float3(step, 0, 0), _chunkId);
-	float dy = GetDensity(_localPos + float3(0, step, 0), _chunkId) - GetDensity(_localPos - float3(0, step, 0), _chunkId);
-	float dz = GetDensity(_localPos + float3(0, 0, step), _chunkId) - GetDensity(_localPos - float3(0, 0, step), _chunkId);
+float3 CalculateNormal(float3 pos, uint chunkId, float step)
+{
+    float eps = step; 
 
-	float3 grad = float3(dx, dy, dz);
-	float len = length(grad);
-	
-	// 勾配がほぼゼロの場合（平坦な領域）
-	if (len < 0.00001f) {
-		return float3(0, 1, 0); // デフォルトで上向き
-	}
-	
-	// 正規化して返す（符号に注意）
-	return -normalize(grad);
+    float dx = GetDensity(pos + float3(eps, 0, 0), chunkId) - GetDensity(pos - float3(eps, 0, 0), chunkId);
+    float dy = GetDensity(pos + float3(0, eps, 0), chunkId) - GetDensity(pos - float3(0, eps, 0), chunkId);
+    float dz = GetDensity(pos + float3(0, 0, eps), chunkId) - GetDensity(pos - float3(0, 0, eps), chunkId);
+
+    float3 grad = float3(dx, dy, dz);
+    float sqLen = dot(grad, grad);
+
+    if (sqLen < 1.0e-10f) {
+        return float3(0, 1, 0);
+    }
+
+    return normalize(-grad);
 }
 
 // 頂点補間
@@ -110,15 +105,9 @@ VertexOut VertexInterp(float3 p1, float3 p2, float3 chunkOrigin,float3 subChunkS
     vOut.worldPosition.xz += (subChunkSize / 2.0).xz; 
 
 	vOut.position = mul(vOut.worldPosition, viewProjection.matVP);
+    vOut.normal = CalculateNormal(localPos, chunkId, subChunkSize.x);
 	
 	return vOut;
-}
-
-
-float3 GetNormal(float3 p0, float3 p1, float3 p2) {
-	float3 u = p1 - p0;
-	float3 v = p2 - p0;
-	return normalize(cross(u, v));
 }
 
 float32_t3 GetBasePos(uint32_t id, uint32_t3 size, uint32_t3 step) {
@@ -131,7 +120,6 @@ float32_t3 GetBasePos(uint32_t id, uint32_t3 size, uint32_t3 step) {
 
     return float32_t3(gridPos * step);
 }
-
 
 bool CheckInside(float3 mousePoint, uint32_t radius, float3 aabbMin, float3 aabbMax) {
     float3 closestPoint = float3(
@@ -200,7 +188,6 @@ void main(
     uint outputTriOffset = WavePrefixSum(triCount);
     uint totalTriCount = WaveActiveSum(triCount);
 
-    // GroupMemoryBarrier();
     SetMeshOutputCounts(totalTriCount * 3, totalTriCount);
     if(triCount == 0) {
         return;
@@ -212,8 +199,6 @@ void main(
         uint vIndex = currentTriIndex * 3;
         uint pIndex = currentTriIndex;
 
-		VertexOut outVerts[3];
-
 		for (int v = 0; v < 3; v++) {
 			int edgeIndex = TriTable[cubeIndex][(t * 3) + v];
 			
@@ -223,19 +208,8 @@ void main(
 			float3 p1 = basePos + (kCornerOffsets[idx1] * float3(step));
 			float3 p2 = basePos + (kCornerOffsets[idx2] * float3(step));
 			
-			outVerts[v] = VertexInterp(p1, p2, asPayload.chunkOrigin, float32_t3(asPayload.subChunkSize), cubeDensities[idx1], cubeDensities[idx2], asPayload.chunkIndex);
-			verts[vIndex + v] = outVerts[v];
+			verts[vIndex + v] = VertexInterp(p1, p2, asPayload.chunkOrigin, float32_t3(asPayload.subChunkSize), cubeDensities[idx1], cubeDensities[idx2], asPayload.chunkIndex);
 		}
-		
-		float3 normal = GetNormal(
-			outVerts[0].worldPosition.xyz,
-			outVerts[1].worldPosition.xyz,
-			outVerts[2].worldPosition.xyz
-		);
-		
-		verts[vIndex + 0].normal = normal;
-		verts[vIndex + 1].normal = normal;
-		verts[vIndex + 2].normal = normal;
 		
 		indis[pIndex] = uint3(
 			vIndex + 0,
