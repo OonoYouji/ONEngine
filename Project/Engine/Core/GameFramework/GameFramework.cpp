@@ -40,14 +40,14 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 	/// --------------------------------------------------
 	/// 各クラスのインスタンスを生成する
 	/// --------------------------------------------------
-	dxManager_             = std::make_unique<DxManager>();
-	windowManager_         = std::make_unique<WindowManager>(dxManager_.get());
+	dxManager_ = std::make_unique<DxManager>();
+	windowManager_ = std::make_unique<WindowManager>(dxManager_.get());
 	entityComponentSystem_ = std::make_unique<EntityComponentSystem>(dxManager_.get());
-	renderingFramework_    = std::make_unique<RenderingFramework>();
-	sceneManager_          = std::make_unique<SceneManager>(entityComponentSystem_.get());
+	renderingFramework_ = std::make_unique<RenderingFramework>();
+	sceneManager_ = std::make_unique<SceneManager>(entityComponentSystem_.get());
 
-	editorManager_         = std::make_unique<Editor::EditorManager>(entityComponentSystem_.get());
-	imGuiManager_          = std::make_unique<Editor::ImGuiManager>(dxManager_.get(), windowManager_.get(), entityComponentSystem_.get(), editorManager_.get(), sceneManager_.get());
+	editorManager_ = std::make_unique<Editor::EditorManager>(entityComponentSystem_.get());
+	imGuiManager_ = std::make_unique<Editor::ImGuiManager>(dxManager_.get(), windowManager_.get(), entityComponentSystem_.get(), editorManager_.get(), sceneManager_.get());
 
 
 	/// --------------------------------------------------
@@ -106,7 +106,7 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 void GameFramework::Run() {
 
 	/// game loopが終了するまで回す
-	while (true) {
+	while(true) {
 
 		/// 更新処理
 		Input::Update();
@@ -121,7 +121,7 @@ void GameFramework::Run() {
 		entityComponentSystem_->OutsideOfUpdate();
 
 		///!< ゲームデバッグモードの場合は更新処理を行う
-		if (DebugConfig::isDebugging) {
+		if(DebugConfig::isDebugging) {
 			sceneManager_->Update();
 			entityComponentSystem_->Update();
 		}
@@ -137,7 +137,7 @@ void GameFramework::Run() {
 		renderingFramework_->Draw();
 
 		/// 破棄されたら終了
-		if (windowManager_->GetMainWindow()->GetProcessMessage()) {
+		if(windowManager_->GetMainWindow()->GetProcessMessage()) {
 			break;
 		}
 	}
