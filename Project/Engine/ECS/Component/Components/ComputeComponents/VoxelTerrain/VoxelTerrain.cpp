@@ -2,6 +2,7 @@
 
 /// externals
 #include <imgui.h>
+#include <magic_enum/magic_enum.hpp>
 
 /// engine
 #include "Engine/Asset/Collection/AssetCollection.h"
@@ -123,15 +124,42 @@ void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* vt, DxManager* _dxm, AssetC
 	}
 
 	if(vt->isEditEnabled_) {
-
 		/// 編集モードの切り替え
 		if(Input::TriggerKey(DIK_ESCAPE)) { vt->editMode_ = VoxelTerrain::EditMode::UNKOWN; }
 		if(Input::PressKey(DIK_LCONTROL) && Input::TriggerKey(DIK_1)) { vt->editMode_ = VoxelTerrain::EditMode::ADJACENT; }
 		if(Input::PressKey(DIK_LCONTROL) && Input::TriggerKey(DIK_2)) { vt->editMode_ = VoxelTerrain::EditMode::AREA; }
 
+		// magic_enum を使って、現在のモード名を取得 (プレビュー用)
+		std::string_view currentModeName = magic_enum::enum_name(VoxelTerrain::EditMode(vt->editMode_));
 
-		static int radius = 5, prevRadius = 5;
-		static float strength = 0.5f, prevStrength = 0.5f;
+		// コンボボックスの描画
+		// プレビュー部分には現在選択されているモード名を表示
+		if(ImGui::BeginCombo("Edit Mode", currentModeName.data())) {
+
+			// 列挙型のすべての値と名前を取得
+			constexpr auto& enumValues = magic_enum::enum_values<VoxelTerrain::EditMode>();
+			constexpr auto& enumNames = magic_enum::enum_names<VoxelTerrain::EditMode>();
+
+			for(size_t i = 0; i < enumValues.size(); ++i) {
+				bool isSelected = (vt->editMode_ == enumValues[i]);
+
+				// ドロップダウンリストの各項目を描画
+				if(ImGui::Selectable(enumNames[i].data(), isSelected)) {
+					// 選択されたらモードを更新
+					vt->editMode_ = enumValues[i];
+				}
+
+				// 現在選択中のアイテムをフォーカス（見やすくするImGuiの標準的な処理）
+				if(isSelected) {
+					ImGui::SetItemDefaultFocus();
+				}
+			}
+			ImGui::EndCombo();
+		}
+
+
+		static int   radius = 5, prevRadius = 0;
+		static float strength = 0.5f, prevStrength = 0.0f;
 
 		/// ブラシサイズの変更
 		Editor::ImMathf::DragInt("Brush Radius", &radius, 1, 1, 100);
@@ -176,6 +204,7 @@ void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* vt, DxManager* _dxm, AssetC
 					ImGuiWindowFlags_AlwaysAutoResize
 				);
 
+				ImGui::Text("Edit Mode: %s", currentModeName.data());
 				ImGui::Text("Brush Radius: %d", radius);
 				ImGui::Text("Strength: %.2f", strength);
 				ImGui::End();
