@@ -163,6 +163,12 @@ public:
 	inline static const Vector3Int kDefaultChunkSize = Vector3Int(16, 128, 16);
 	inline static const Vector2Int kChunkCount = Vector2Int(32, 32);
 
+	/// 地形の編集モード
+	enum EditMode {
+		UNKOWN,   /// 不明なモード
+		ADJACENT, /// 隣接編集モード
+		AREA,     /// 範囲編集モード
+	};
 
 public:
 	/// ===========================================
@@ -243,7 +249,8 @@ public:
 
 
 	bool CanMeshShaderRendering() const { return canMeshShaderRendering_; }
-	bool IsEditMode() const { return isEditMode_; }
+	bool IsEditEnabled() const { return isEditEnabled_; }
+	int GetEditMode() const { return editMode_; }
 
 
 	uint32_t GetBrushRadius() const;
@@ -282,7 +289,8 @@ private:
 	/// --------------- エディタ用 --------------- ///
 	ConstantBuffer<GPUData::InputInfo> cBufferInputInfo_;
 	ConstantBuffer<GPUData::EditInfo>  cBufferEditInfo_;
-	bool isEditMode_ = false;
+	bool isEditEnabled_ = false;
+	int editMode_ = 0;
 
 
 	ConstantBuffer<GPUData::MarchingCube> cBufferMarchingCubeInfo_;

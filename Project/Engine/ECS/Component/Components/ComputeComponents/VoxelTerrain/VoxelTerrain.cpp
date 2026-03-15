@@ -104,6 +104,11 @@ void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* vt, DxManager* _dxm, AssetC
 		エディタ モードの切り替え
 		・左Ctrl + E : 編集モードの切り替え
 
+		編集モードの切り替え
+		・左Ctrl + 1 : 隣接編集モード
+		・左Ctrl + 2 : 範囲編集モード
+		・ESC : 編集モードの終了
+
 		ブラシサイズの変更
 		・左Shift + マウスホイール : ブラシサイズの変更
 
@@ -112,12 +117,19 @@ void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* vt, DxManager* _dxm, AssetC
 	*/
 
 
-	Editor::ImMathf::Checkbox("IsEditMode", &vt->isEditMode_);
+	Editor::ImMathf::Checkbox("IsEditMode", &vt->isEditEnabled_);
 	if(Input::PressKey(DIK_LCONTROL) && Input::TriggerKey(DIK_E)) {
-		vt->isEditMode_ = !vt->isEditMode_;
+		vt->isEditEnabled_ = !vt->isEditEnabled_;
 	}
 
-	if(vt->isEditMode_) {
+	if(vt->isEditEnabled_) {
+
+		/// 編集モードの切り替え
+		if(Input::TriggerKey(DIK_ESCAPE)) { vt->editMode_ = VoxelTerrain::EditMode::UNKOWN; }
+		if(Input::PressKey(DIK_LCONTROL) && Input::TriggerKey(DIK_1)) { vt->editMode_ = VoxelTerrain::EditMode::ADJACENT; }
+		if(Input::PressKey(DIK_LCONTROL) && Input::TriggerKey(DIK_2)) { vt->editMode_ = VoxelTerrain::EditMode::AREA; }
+
+
 		static int radius = 5, prevRadius = 5;
 		static float strength = 0.5f, prevStrength = 0.5f;
 

@@ -75,6 +75,12 @@ void PostProcessVoxelTerrainBrush::Execute(
 		return;
 	}
 
+	if(vt->GetEditMode() != VoxelTerrain::EditMode::ADJACENT) {
+		return;
+	}
+
+
+
 	/// brush data
 	const Vector2 mousePos = Input::GetImGuiImageMousePosNormalized("Scene");
 	/// 範囲外なら処理しない

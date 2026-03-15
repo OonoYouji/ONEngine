@@ -12,7 +12,7 @@
 #include "Engine/ECS/Component/Components/ComputeComponents/VoxelTerrain/VoxelTerrain.h"
 #include "Engine/Graphics/Framework/RenderInfo.h"
 
-using namespace Editor;
+namespace Editor {
 
 VoxelTerrainEditorComputePipeline::VoxelTerrainEditorComputePipeline() = default;
 VoxelTerrainEditorComputePipeline::~VoxelTerrainEditorComputePipeline() = default;
@@ -21,38 +21,22 @@ void VoxelTerrainEditorComputePipeline::Initialize(ONEngine::ShaderCompiler* _sh
 
 	pDxManager_ = _dxm;
 
-	{	/// Shader
+	{	/// 範囲モードのパイプライン
 		ONEngine::Shader shader;
 		shader.Initialize(_shaderCompiler);
-		shader.CompileShader(L"./Packages/Shader/Editor/VoxelTerrainEditor.cs.hlsl", L"cs_6_6", ONEngine::Shader::Type::cs);
+		shader.CompileShader(L"./Packages/Shader/Editor/VoxelTerrain/AreaMode.cs.hlsl", L"cs_6_6", ONEngine::Shader::Type::cs);
 
 		pipeline_ = std::make_unique<ONEngine::ComputePipeline>();
-		pipeline_->SetShader(&shader);
+		CreatePipeline(pipeline_.get(), shader, _dxm);
+	}
 
-		/// CBV
-		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 0); // CBV_TERRAIN_INFO
-		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 1); // CBV_VIEW_PROJECTION
-		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 2); // CBV_CAMERA
-		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 3); // CBV_INPUT_INFO
-		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 4); // CBV_EDITOR_INFO
+	{	/// 隣接モードのパイプライン
+		ONEngine::Shader shader;
+		shader.Initialize(_shaderCompiler);
+		shader.CompileShader(L"./Packages/Shader/Editor/VoxelTerrain/AdjacentMode.cs.hlsl", L"cs_6_6", ONEngine::Shader::Type::cs);
 
-		pipeline_->Add32BitConstant(D3D12_SHADER_VISIBILITY_ALL, 5, 1); // C32BIT_CHUNK_ID
-
-		/// Descriptor Range
-		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_UAV); // UAV_MOUSE_POS_BUFFER
-		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // SRV_CHUNKS
-		pipeline_->AddDescriptorRange(1, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // SRV_WORLD_TEXTURE
-		pipeline_->AddDescriptorRange(1, ONEngine::MAX_TEXTURE_COUNT * 2, D3D12_DESCRIPTOR_RANGE_TYPE_UAV); // UAV_VOXEL_TEXTURES
-
-		/// SRV, UAV
-		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 0); // UAV_VOXEL_TEXTURES
-		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 1); // SRV_CHUNKS
-		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 2); // SRV_WORLD_TEXTURE
-		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 3); // UAV_MOUSE_POS_BUFFER
-
-		pipeline_->AddStaticSampler(D3D12_SHADER_VISIBILITY_ALL, 0);
-
-		pipeline_->CreatePipeline(_dxm->GetDxDevice());
+		adjacentModePipeline_ = std::make_unique<ONEngine::ComputePipeline>();
+		CreatePipeline(adjacentModePipeline_.get(), shader, _dxm);
 	}
 
 	{
@@ -74,7 +58,6 @@ void VoxelTerrainEditorComputePipeline::Initialize(ONEngine::ShaderCompiler* _sh
 		calculationMouseWorldPosPipeline_->AddStaticSampler(D3D12_SHADER_VISIBILITY_ALL, 0);
 
 		calculationMouseWorldPosPipeline_->CreatePipeline(_dxm->GetDxDevice());
-
 	}
 
 
@@ -142,12 +125,14 @@ void VoxelTerrainEditorComputePipeline::Execute(ONEngine::EntityComponentSystem*
 		ONEngine::GPUTimeStampID::VoxelTerrainEditorCompute
 	);
 
+	/// =========================================
+	/// マウスのワールド座標を計算するためのパイプラインを実行
+	/// =========================================
 	ExecuteCalculateMouseWorldPos(_dxCommand, _assetCollection);
 
-	pipeline_->SetPipelineStateForCommandList(_dxCommand);
+
 
 	auto cmdList = _dxCommand->GetCommandList();
-
 	ONEngine::GPUData::InputInfo inputInfo{};
 	inputInfo.mouseLeftButton = ONEngine::Input::PressMouse(ONEngine::Mouse::Left);
 	inputInfo.keyboardKShift = ONEngine::Input::PressKey(DIK_LSHIFT);
@@ -158,15 +143,9 @@ void VoxelTerrainEditorComputePipeline::Execute(ONEngine::EntityComponentSystem*
 		return;
 	}
 
-	if(!voxelTerrain->IsEditMode()) {
+	if(!voxelTerrain->IsEditEnabled()) {
 		return;
 	}
-
-	voxelTerrain->SetupEditorBuffers(
-		cmdList,
-		{ CBV_INPUT_INFO, CBV_TERRAIN_INFO, CBV_EDITOR_INFO, SRV_CHUNKS },
-		_assetCollection, inputInfo
-	);
 
 
 	ONEngine::CameraComponent* cameraComp = _ecs->GetECSGroup("Debug")->GetMainCamera();
@@ -176,20 +155,39 @@ void VoxelTerrainEditorComputePipeline::Execute(ONEngine::EntityComponentSystem*
 		return;
 	}
 
+
+	/// =========================================
+	/// バッファの設定
+	/// =========================================
+
+	switch(voxelTerrain->GetEditMode()) {
+	case ONEngine::VoxelTerrain::EditMode::ADJACENT:
+		adjacentModePipeline_->SetPipelineStateForCommandList(_dxCommand);
+		break;
+	case ONEngine::VoxelTerrain::EditMode::AREA:
+		pipeline_->SetPipelineStateForCommandList(_dxCommand);
+		break;
+	default:
+		ONEngine::Console::LogWarning("VoxelTerrainEditorComputePipeline::Execute: Unknown edit mode");
+		return;
+	}
+
+
+	voxelTerrain->SetupEditorBuffers(
+		cmdList,
+		{ CBV_INPUT_INFO, CBV_TERRAIN_INFO, CBV_EDITOR_INFO, SRV_CHUNKS },
+		_assetCollection, inputInfo
+	);
+
 	cameraComp->GetViewProjectionBuffer().BindForComputeCommandList(cmdList, CBV_VIEW_PROJECTION);
 	cameraComp->GetCameraPosBuffer().BindForComputeCommandList(cmdList, CBV_CAMERA);
 
 	/// WorldTexture
 	const ONEngine::Texture* worldTexture = _assetCollection->GetTexture("./Assets/Scene/RenderTexture/debugWorldPosition");
-	cmdList->SetComputeRootDescriptorTable(
-		SRV_WORLD_TEXTURE,
-		worldTexture->GetSRVHandle().gpuHandle
-	);
+	cmdList->SetComputeRootDescriptorTable(SRV_WORLD_TEXTURE, worldTexture->GetSRVHandle().gpuHandle);
 
-
-	uavMousePosBuffer_.UAVBindForComputeCommandList(
-		cmdList, UAV_MOUSE_POS
-	);
+	/// MousePosition
+	uavMousePosBuffer_.UAVBindForComputeCommandList(cmdList, UAV_MOUSE_POS);
 
 	/// UAV VoxelTextures
 	cmdList->SetComputeRootDescriptorTable(
@@ -224,6 +222,11 @@ void VoxelTerrainEditorComputePipeline::Execute(ONEngine::EntityComponentSystem*
 		);
 	}
 
+
+	/// =========================================
+	/// マウスの座標を元に編集したチャンクIDを取得し、SRVに対してコピーを行う
+	/// =========================================
+
 	mouseWorldPos_ = uavMousePosBuffer_.Readback(_dxCommand, 0);
 	std::vector<int> editedChunkIDs = GetEditedChunkIDs(voxelTerrain);
 
@@ -234,6 +237,35 @@ void VoxelTerrainEditorComputePipeline::Execute(ONEngine::EntityComponentSystem*
 		ONEngine::GPUTimeStampID::VoxelTerrainEditorCompute
 	);
 
+}
+
+void VoxelTerrainEditorComputePipeline::CreatePipeline(ONEngine::ComputePipeline* pipeline, ONEngine::Shader& shader, ONEngine::DxManager* dxm) {
+	pipeline->SetShader(&shader);
+
+	/// CBV
+	pipeline->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 0); // CBV_TERRAIN_INFO
+	pipeline->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 1); // CBV_VIEW_PROJECTION
+	pipeline->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 2); // CBV_CAMERA
+	pipeline->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 3); // CBV_INPUT_INFO
+	pipeline->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 4); // CBV_EDITOR_INFO
+
+	pipeline->Add32BitConstant(D3D12_SHADER_VISIBILITY_ALL, 5, 1); // C32BIT_CHUNK_ID
+
+	/// Descriptor Range
+	pipeline->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_UAV); // UAV_MOUSE_POS_BUFFER
+	pipeline->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // SRV_CHUNKS
+	pipeline->AddDescriptorRange(1, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // SRV_WORLD_TEXTURE
+	pipeline->AddDescriptorRange(1, ONEngine::MAX_TEXTURE_COUNT * 2, D3D12_DESCRIPTOR_RANGE_TYPE_UAV); // UAV_VOXEL_TEXTURES
+
+	/// SRV, UAV
+	pipeline->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 0); // UAV_VOXEL_TEXTURES
+	pipeline->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 1); // SRV_CHUNKS
+	pipeline->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 2); // SRV_WORLD_TEXTURE
+	pipeline->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 3); // UAV_MOUSE_POS_BUFFER
+
+	pipeline->AddStaticSampler(D3D12_SHADER_VISIBILITY_ALL, 0);
+
+	pipeline->CreatePipeline(dxm->GetDxDevice());
 }
 
 void VoxelTerrainEditorComputePipeline::ExecuteCalculateMouseWorldPos(ONEngine::DxCommand* dxCommand, ONEngine::AssetCollection* assetCollection) {
@@ -303,4 +335,6 @@ std::vector<int> Editor::VoxelTerrainEditorComputePipeline::GetEditedChunkIDs(ON
 	}
 
 	return result;
+}
+
 }
