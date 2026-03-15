@@ -25,11 +25,11 @@ void RenderingFramework::Initialize(DxManager* _dxm, WindowManager* _windowManag
 	pWindowManager_ = _windowManager;
 	pEntityComponentSystem_ = _pEntityComponentSystem;
 
-	pAssetCollection_ = std::make_unique<AssetCollection>();
-	renderingPipelineCollection_ = std::make_unique<RenderingPipelineCollection>(shaderCompiler_.get(), pDxManager_, pEntityComponentSystem_, pAssetCollection_.get());
+	assetCollection_ = std::make_unique<AssetCollection>();
+	renderingPipelineCollection_ = std::make_unique<RenderingPipelineCollection>(shaderCompiler_.get(), pDxManager_, pEntityComponentSystem_, assetCollection_.get());
 
 	renderingPipelineCollection_->Initialize();
-	pAssetCollection_->Initialize(pDxManager_);
+	assetCollection_->Initialize(pDxManager_);
 
 
 	/// ----- RenderTextureの初期化 ----- ///
@@ -41,19 +41,19 @@ void RenderingFramework::Initialize(DxManager* _dxm, WindowManager* _windowManag
 		renderTextures_[i]->Initialize(
 			RenderInfo::kRenderTargetDir + RenderInfo::kRenderTargetNames[i],
 			clearColor, EngineConfig::kWindowSize,
-			pDxManager_, pAssetCollection_.get()
+			pDxManager_, assetCollection_.get()
 		);
 	}
 
 
 	/// PostProcess用UAVTextureの初期化
 	std::unique_ptr<UAVTexture> uavTexture = std::make_unique<UAVTexture>();
-	uavTexture->Initialize("postProcessResult", pDxManager_, pAssetCollection_.get());
+	uavTexture->Initialize("postProcessResult", pDxManager_, assetCollection_.get());
 
 
 #ifdef DEBUG_MODE
 #else
-	copyImagePipeline_ = std::make_unique<CopyImageRenderingPipeline>(pAssetCollection_.get());
+	copyImagePipeline_ = std::make_unique<CopyImageRenderingPipeline>(assetCollection_.get());
 	copyImagePipeline_->Initialize(shaderCompiler_.get(), pDxManager_);
 	releaseBuildSubWindow_ = pWindowManager_->GenerateWindow(L"test", Vector2::HD, WindowManager::WindowType::Sub);
 	pWindowManager_->HideGameWindow(releaseBuildSubWindow_);
@@ -218,7 +218,7 @@ void RenderingFramework::DxCommandExeAndReset() {
 }
 
 AssetCollection* RenderingFramework::GetAssetCollection() const {
-	return pAssetCollection_.get();
+	return assetCollection_.get();
 }
 
 #ifdef DEBUG_MODE

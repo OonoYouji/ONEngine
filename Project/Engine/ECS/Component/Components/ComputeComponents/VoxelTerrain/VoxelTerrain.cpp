@@ -17,24 +17,24 @@
 
 using namespace ONEngine;
 
-void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _dxm, AssetCollection* _ac) {
-	if(!_voxelTerrain) {
+void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* vt, DxManager* _dxm, AssetCollection* _ac) {
+	if(!vt) {
 		Console::LogError("VoxelTerrainDebug: _voxelTerrain is nullptr");
 		return;
 	}
 
 
 	ImGui::SeparatorText("DebugRendering");
-	Editor::ImMathf::Checkbox("Can MeshShader Rendering", &_voxelTerrain->canMeshShaderRendering_);
-	Editor::ImMathf::Checkbox("Is Rendering Wireframe", &_voxelTerrain->isRenderingWireframe_);
-	Editor::ImMathf::Checkbox("Is Rendering Transvoxel", &_voxelTerrain->isRenderingTransvoxel_);
+	Editor::ImMathf::Checkbox("Can MeshShader Rendering", &vt->canMeshShaderRendering_);
+	Editor::ImMathf::Checkbox("Is Rendering Wireframe", &vt->isRenderingWireframe_);
+	Editor::ImMathf::Checkbox("Is Rendering Transvoxel", &vt->isRenderingTransvoxel_);
 	//Editor::ImMathf::Checkbox("Is Rendering Cubic", &_voxelTerrain->isRenderingCubic_);
 	//Editor::ImMathf::Checkbox("Can VertexShader Rendering", &_voxelTerrain->canVertexShaderRendering_);
 	static bool showChunkBounds = false;
 	Editor::ImMathf::Checkbox("Show Chunk Bounds", &showChunkBounds);
 	if(showChunkBounds) {
-		const Vector3Int& chunkSizeInt = _voxelTerrain->GetChunkSize();
-		const Vector2Int& chunkCount = _voxelTerrain->GetChunkCountXZ();
+		const Vector3Int& chunkSizeInt = vt->GetChunkSize();
+		const Vector2Int& chunkCount = vt->GetChunkCountXZ();
 		for(int x = 0; x < chunkCount.x; ++x) {
 			for(int z = 0; z < chunkCount.y; ++z) {
 				// 各チャンクの位置を計算
@@ -58,70 +58,136 @@ void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _
 	ImGui::Separator();
 
 	/// チャンクのデバッグ表示
-	Editor::ImMathf::DragInt2("Chunk Count XZ", &_voxelTerrain->chunkCountXZ_, 1, 1, 32);
-	Editor::ImMathf::DragInt3("Chunk Size", &_voxelTerrain->chunkSize_, 1, 1, 1024);
-	Editor::ImMathf::DragInt3("Texture Size", &_voxelTerrain->textureSize_, 1, 1, 256);
-	Editor::ImMathf::DragFloat("ISOLevel", &_voxelTerrain->isoLevel_, 0.05f, 0.0f, 1.0f);
+	Editor::ImMathf::DragInt2("Chunk Count XZ", &vt->chunkCountXZ_, 1, 1, 32);
+	Editor::ImMathf::DragInt3("Chunk Size", &vt->chunkSize_, 1, 1, 1024);
+	Editor::ImMathf::DragInt3("Texture Size", &vt->textureSize_, 1, 1, 256);
+	Editor::ImMathf::DragFloat("ISOLevel", &vt->isoLevel_, 0.05f, 0.0f, 1.0f);
 
 	if(ImGui::CollapsingHeader("LODInfo")) {
-		bool useLOD = _voxelTerrain->lodInfo_.useLOD;
+		bool useLOD = vt->lodInfo_.useLOD;
 		if(Editor::ImMathf::Checkbox("Use LOD", &useLOD)) {
-			_voxelTerrain->lodInfo_.useLOD = useLOD;
+			vt->lodInfo_.useLOD = useLOD;
 		}
 
 		if(useLOD) {
-			Editor::ImMathf::DragFloat("LOD Distance 0", &_voxelTerrain->lodInfo_.lodDistance0, 1.0f, 0.0f, 1000.0f);
-			Editor::ImMathf::DragFloat("LOD Distance 1", &_voxelTerrain->lodInfo_.lodDistance1, 1.0f, 0.0f, 1000.0f);
-			Editor::ImMathf::DragFloat("LOD Distance 2", &_voxelTerrain->lodInfo_.lodDistance2, 1.0f, 0.0f, 1000.0f);
-			Editor::ImMathf::DragFloat("Max Draw Distance", &_voxelTerrain->lodInfo_.maxDrawDistance, 10.0f, 0.0f, 5000.0f);
+			Editor::ImMathf::DragFloat("LOD Distance 0", &vt->lodInfo_.lodDistance0, 1.0f, 0.0f, 1000.0f);
+			Editor::ImMathf::DragFloat("LOD Distance 1", &vt->lodInfo_.lodDistance1, 1.0f, 0.0f, 1000.0f);
+			Editor::ImMathf::DragFloat("LOD Distance 2", &vt->lodInfo_.lodDistance2, 1.0f, 0.0f, 1000.0f);
+			Editor::ImMathf::DragFloat("Max Draw Distance", &vt->lodInfo_.maxDrawDistance, 10.0f, 0.0f, 5000.0f);
 
 			const int minLodLevel = 0;
 			const int maxLodLevel = 5;
-			Editor::SliderInt("LOD Level 0", _voxelTerrain->lodInfo_.lodLevel0, minLodLevel, maxLodLevel);
-			Editor::SliderInt("LOD Level 1", _voxelTerrain->lodInfo_.lodLevel1, minLodLevel, maxLodLevel);
-			Editor::SliderInt("LOD Level 2", _voxelTerrain->lodInfo_.lodLevel2, minLodLevel, maxLodLevel);
-			Editor::SliderInt("LOD Level 3", _voxelTerrain->lodInfo_.lodLevel3, minLodLevel, maxLodLevel);
+			Editor::SliderInt("LOD Level 0", vt->lodInfo_.lodLevel0, minLodLevel, maxLodLevel);
+			Editor::SliderInt("LOD Level 1", vt->lodInfo_.lodLevel1, minLodLevel, maxLodLevel);
+			Editor::SliderInt("LOD Level 2", vt->lodInfo_.lodLevel2, minLodLevel, maxLodLevel);
+			Editor::SliderInt("LOD Level 3", vt->lodInfo_.lodLevel3, minLodLevel, maxLodLevel);
 
 		} else {
 
-			int lod = static_cast<int>(_voxelTerrain->lodInfo_.lod);
+			int lod = static_cast<int>(vt->lodInfo_.lod);
 			if(Editor::ImMathf::DragInt("LOD", &lod, 1, 0, 3)) {
-				_voxelTerrain->lodInfo_.lod = static_cast<uint32_t>(lod);
+				vt->lodInfo_.lod = static_cast<uint32_t>(lod);
 			}
 		}
 	}
 
 
-	Editor::ImMathf::MaterialEdit("Material", &_voxelTerrain->material_, _ac, true);
-	Editor::ImMathf::MaterialEdit("CliffMaterial", &_voxelTerrain->cliffMaterial_, _ac, true);
+	Editor::ImMathf::MaterialEdit("Material", &vt->material_, _ac, true);
+	Editor::ImMathf::MaterialEdit("CliffMaterial", &vt->cliffMaterial_, _ac, true);
 
-	/// editor用
-	{
-		static int radius = 5;
-		static float strength = 0.5f;
+
+
+	/// ===========================================
+	/// エディタ用 項目
+	/// ===========================================
+	/*
+		エディタ モードの切り替え
+		・左Ctrl + E : 編集モードの切り替え
+
+		ブラシサイズの変更
+		・左Shift + マウスホイール : ブラシサイズの変更
+
+		ブラシの強さの変更
+		・左Alt + マウスホイール : ブラシの強さの変更
+	*/
+
+
+	Editor::ImMathf::Checkbox("IsEditMode", &vt->isEditMode_);
+	if(Input::PressKey(DIK_LCONTROL) && Input::TriggerKey(DIK_E)) {
+		vt->isEditMode_ = !vt->isEditMode_;
+	}
+
+	if(vt->isEditMode_) {
+		static int radius = 5, prevRadius = 5;
+		static float strength = 0.5f, prevStrength = 0.5f;
+
+		/// ブラシサイズの変更
 		Editor::ImMathf::DragInt("Brush Radius", &radius, 1, 1, 100);
-		Editor::ImMathf::DragFloat("Strength", &strength, 0.01f, 0.0f, 1.0f);
+		if(Input::PressKey(DIK_LSHIFT) && Input::GetMouseWheel() != 0.0f) {
+			int delta = static_cast<int>(Input::GetMouseWheel());
+			delta = (delta > 0) ? 1 : -1;
+			radius += delta;
+			radius = std::clamp(radius, 1, 100);
+		}
 
-		_voxelTerrain->cBufferEditInfo_.SetMappedData({ uint32_t(radius), strength });
+		/// ブラシの強さの変更
+		Editor::ImMathf::DragFloat("Strength", &strength, 0.01f, 0.0f, 1.0f);
+		if(Input::PressKey(DIK_LALT) && Input::GetMouseWheel() != 0.0f) {
+			float delta = Input::GetMouseWheel();
+			delta = (delta > 0) ? 0.01f : -0.01f;
+			strength += delta;
+			strength = std::clamp(strength, 0.0f, 1.0f);
+		}
+
+		/// ブラシサイズや強さが変更されたとき
+		if(radius != prevRadius || strength != prevStrength) {
+
+			/// CBufferにブラシサイズと強さを設定
+			vt->cBufferEditInfo_.SetMappedData({ uint32_t(radius), strength });
+			prevRadius = radius;
+			prevStrength = strength;
+
+
+			{
+				/// マウスの位置にブラシの情報を表示
+				ImVec2 mousePos = ImGui::GetMousePos();
+				float offset = 20.0f; // マウス位置から少し離すオフセット
+				mousePos.x += offset;
+
+				ImGui::SetNextWindowPos(mousePos);
+				ImGui::Begin(
+					"MouseText",
+					nullptr,
+					ImGuiWindowFlags_NoDecoration |
+					ImGuiWindowFlags_NoMove |
+					ImGuiWindowFlags_NoBackground |
+					ImGuiWindowFlags_AlwaysAutoResize
+				);
+
+				ImGui::Text("Brush Radius: %d", radius);
+				ImGui::Text("Strength: %.2f", strength);
+				ImGui::End();
+			}
+
+		}
 	}
 
 
 
-	/// ----- Gizmoでチャンクの枠線を描画 ----- ///
-	Editor::ImMathf::Checkbox("IsEditMode", &_voxelTerrain->isEditMode_);
+
 
 
 	ImGui::SeparatorText("TextureExport");
 
 	/// テクスチャを初期の状態で保存する
 	if(ImGui::Button("地形を初期状態に戻す")) {
-		for(size_t i = 0; i < _voxelTerrain->maxChunkCount_; i++) {
+		for(size_t i = 0; i < vt->maxChunkCount_; i++) {
 			const std::wstring filename = L"./Packages/Textures/Terrain/Chunk/" + std::to_wstring(i) + L".dds";
 			SaveTextureToDDS(
 				filename,
-				_voxelTerrain->textureSize_.x,
-				_voxelTerrain->textureSize_.y,
-				_voxelTerrain->textureSize_.z,
+				vt->textureSize_.x,
+				vt->textureSize_.y,
+				vt->textureSize_.z,
 				true
 			);
 		}
@@ -132,10 +198,10 @@ void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _
 	/// 出力用
 	if(ImGui::Button("地形を保存する")) {
 		std::wstring filepath = L"";
-		for(size_t i = 0; i < _voxelTerrain->chunks_.size(); i++) {
+		for(size_t i = 0; i < vt->chunks_.size(); i++) {
 			filepath = L"./Packages/Textures/Terrain/Chunk/" + std::to_wstring(i) + L".dds";
 
-			const Chunk& chunk = _voxelTerrain->chunks_[i];
+			const Chunk& chunk = vt->chunks_[i];
 			chunk.pTexture->OutputTexture3D(filepath, _dxm->GetDxDevice(), _dxm->GetDxCommand());
 			Console::Log("Chunk " + std::to_string(i) + ": Texture3D GUID = " + chunk.texture3DId.ToString());
 		}
@@ -470,7 +536,8 @@ void VoxelTerrain::CreateChunkTextureUAV(DxCommand* _dxCommand, DxDevice* _dxDev
 	//	const uint32_t vertexCount = 80000;
 	//	chunk.rwVertices.CreateUAV(vertexCount, _dxDevice, _dxCommand, _dxSRVHeap);
 	//	chunk.rwVertexCounter.CreateUAV(vertexCount, _dxDevice, _dxCommand, _dxSRVHeap);
-	//	chunk.vbv.Create(vertexCount, _dxDevice, _dxCommand);
+	//	chunk.vbv.Create(1, _dxDevice, _dxCommand);
+	//	chunk.vbv.Resize(1);
 	//}
 
 
