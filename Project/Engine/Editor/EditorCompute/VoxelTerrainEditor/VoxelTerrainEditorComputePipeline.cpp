@@ -117,6 +117,14 @@ void VoxelTerrainEditorComputePipeline::Execute(ONEngine::EntityComponentSystem*
 		return;
 	}
 
+	/// マウスが動いていないなら編集処理は行わない
+	const ONEngine::Vector2& mouseMove = ONEngine::Input::GetMouseVelocity();
+	if(std::abs(mouseMove.x) < 0.01f && std::abs(mouseMove.y) < 0.01f) {
+		if(!ONEngine::Input::TriggerMouse(ONEngine::Mouse::Left)) {
+			return;
+		}
+	}
+
 
 	/// ---------------------------------------------------
 	/// ここから パイプラインの設定、実行
@@ -129,8 +137,6 @@ void VoxelTerrainEditorComputePipeline::Execute(ONEngine::EntityComponentSystem*
 	/// マウスのワールド座標を計算するためのパイプラインを実行
 	/// =========================================
 	ExecuteCalculateMouseWorldPos(_dxCommand, _assetCollection);
-
-
 
 	auto cmdList = _dxCommand->GetCommandList();
 	ONEngine::GPUData::InputInfo inputInfo{};
