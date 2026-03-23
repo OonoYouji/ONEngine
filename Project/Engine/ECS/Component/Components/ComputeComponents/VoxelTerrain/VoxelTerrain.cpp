@@ -1,7 +1,11 @@
 ﻿#include "VoxelTerrain.h"
 
+/// std
+#include <algorithm>
+
 /// externals
 #include <imgui.h>
+#include <magic_enum/magic_enum.hpp>
 
 /// engine
 #include "Engine/Asset/Collection/AssetCollection.h"
@@ -104,6 +108,11 @@ void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* vt, DxManager* _dxm, AssetC
 		エディタ モードの切り替え
 		・左Ctrl + E : 編集モードの切り替え
 
+		編集モードの切り替え
+		・1 : 隣接編集モード
+		・2 : 範囲編集モード
+		・ESC : 編集モードの終了
+
 		ブラシサイズの変更
 		・左Shift + マウスホイール : ブラシサイズの変更
 
@@ -112,14 +121,62 @@ void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* vt, DxManager* _dxm, AssetC
 	*/
 
 
-	Editor::ImMathf::Checkbox("IsEditMode", &vt->isEditMode_);
+	Editor::ImMathf::Checkbox("IsEditMode", &vt->isEditEnabled_);
 	if(Input::PressKey(DIK_LCONTROL) && Input::TriggerKey(DIK_E)) {
-		vt->isEditMode_ = !vt->isEditMode_;
+		vt->isEditEnabled_ = !vt->isEditEnabled_;
 	}
 
-	if(vt->isEditMode_) {
-		static int radius = 5, prevRadius = 5;
-		static float strength = 0.5f, prevStrength = 0.5f;
+	if(vt->isEditEnabled_) {
+		static bool isEdit = false;
+
+		/// 編集モードの切り替え
+		if(Input::TriggerKey(DIK_ESCAPE)) {
+			vt->editMode_ = VoxelTerrain::EditMode::UNKOWN;
+			isEdit = true;
+		}
+
+		if(Input::TriggerKey(DIK_1)) {
+			vt->editMode_ = VoxelTerrain::EditMode::ADJACENT;
+			isEdit = true;
+		}
+
+		if(Input::TriggerKey(DIK_2)) {
+			vt->editMode_ = VoxelTerrain::EditMode::AREA;
+			isEdit = true;
+		}
+
+
+
+		/// ---------------------------------------------------
+		/// 編集モードのコンボボックス
+		/// ---------------------------------------------------
+		std::string_view currentModeName = magic_enum::enum_name(VoxelTerrain::EditMode(vt->editMode_));
+		if(ImGui::BeginCombo("Edit Mode", currentModeName.data())) {
+			// 列挙型のすべての値と名前を取得
+			constexpr auto& enumValues = magic_enum::enum_values<VoxelTerrain::EditMode>();
+			constexpr auto& enumNames = magic_enum::enum_names<VoxelTerrain::EditMode>();
+
+			for(size_t i = 0; i < enumValues.size(); ++i) {
+				bool isSelected = (vt->editMode_ == enumValues[i]);
+
+				/// 選択したモードに変更
+				if(ImGui::Selectable(enumNames[i].data(), isSelected)) {
+					vt->editMode_ = enumValues[i];
+				}
+
+				if(isSelected) {
+					ImGui::SetItemDefaultFocus();
+				}
+			}
+			ImGui::EndCombo();
+		}
+
+
+		/// ---------------------------------------------------
+		/// ブラシサイズと強さの変更
+		/// ---------------------------------------------------
+		static int   radius = 5, prevRadius = 0;
+		static float strength = 0.5f, prevStrength = 0.0f;
 
 		/// ブラシサイズの変更
 		Editor::ImMathf::DragInt("Brush Radius", &radius, 1, 1, 100);
@@ -128,6 +185,7 @@ void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* vt, DxManager* _dxm, AssetC
 			delta = (delta > 0) ? 1 : -1;
 			radius += delta;
 			radius = std::clamp(radius, 1, 100);
+			isEdit = true;
 		}
 
 		/// ブラシの強さの変更
@@ -137,38 +195,44 @@ void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* vt, DxManager* _dxm, AssetC
 			delta = (delta > 0) ? 0.01f : -0.01f;
 			strength += delta;
 			strength = std::clamp(strength, 0.0f, 1.0f);
+			isEdit = true;
 		}
+
 
 		/// ブラシサイズや強さが変更されたとき
 		if(radius != prevRadius || strength != prevStrength) {
-
-			/// CBufferにブラシサイズと強さを設定
 			vt->cBufferEditInfo_.SetMappedData({ uint32_t(radius), strength });
 			prevRadius = radius;
 			prevStrength = strength;
+		}
 
 
-			{
-				/// マウスの位置にブラシの情報を表示
-				ImVec2 mousePos = ImGui::GetMousePos();
-				float offset = 20.0f; // マウス位置から少し離すオフセット
-				mousePos.x += offset;
-
-				ImGui::SetNextWindowPos(mousePos);
-				ImGui::Begin(
-					"MouseText",
-					nullptr,
-					ImGuiWindowFlags_NoDecoration |
-					ImGuiWindowFlags_NoMove |
-					ImGuiWindowFlags_NoBackground |
-					ImGuiWindowFlags_AlwaysAutoResize
-				);
-
-				ImGui::Text("Brush Radius: %d", radius);
-				ImGui::Text("Strength: %.2f", strength);
-				ImGui::End();
+		if(isEdit) {
+			/// マウスを動かしたら表示を消す
+			const Vector2& mouseVelocity = Input::GetMouseVelocity();
+			if(std::abs(mouseVelocity.x) > 0.01f && std::abs(mouseVelocity.y) > 0.01f) {
+				isEdit = false;
 			}
 
+			/// マウスの位置にブラシの情報を表示
+			ImVec2 mousePos = ImGui::GetMousePos();
+			float offset = 20.0f; // マウス位置から少し離すオフセット
+			mousePos.x += offset;
+
+			ImGui::SetNextWindowPos(mousePos);
+			ImGui::Begin(
+				"MouseText",
+				nullptr,
+				ImGuiWindowFlags_NoDecoration |
+				ImGuiWindowFlags_NoMove |
+				ImGuiWindowFlags_NoBackground |
+				ImGuiWindowFlags_AlwaysAutoResize
+			);
+
+			ImGui::Text("Edit Mode: %s", currentModeName.data());
+			ImGui::Text("Radius: %d", radius);
+			ImGui::Text("Strength: %.2f", strength);
+			ImGui::End();
 		}
 	}
 
@@ -198,12 +262,18 @@ void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* vt, DxManager* _dxm, AssetC
 	/// 出力用
 	if(ImGui::Button("地形を保存する")) {
 		std::wstring filepath = L"";
-		for(size_t i = 0; i < vt->chunks_.size(); i++) {
-			filepath = L"./Packages/Textures/Terrain/Chunk/" + std::to_wstring(i) + L".dds";
+		for(size_t i = 0; i < vt->editedChunkIDs_.size(); i++) {
+			int id = vt->editedChunkIDs_[i];
+			if(id < 0 || id >= static_cast<int>(vt->chunks_.size())) {
+				Console::LogError("Invalid chunk ID: " + std::to_string(id));
+				continue;
+			}
 
-			const Chunk& chunk = vt->chunks_[i];
+			filepath = L"./Packages/Textures/Terrain/Chunk/" + std::to_wstring(id) + L".dds";
+
+			const Chunk& chunk = vt->chunks_[id];
 			chunk.pTexture->OutputTexture3D(filepath, _dxm->GetDxDevice(), _dxm->GetDxCommand());
-			Console::Log("Chunk " + std::to_string(i) + ": Texture3D GUID = " + chunk.texture3DId.ToString());
+			Console::Log("Chunk " + std::to_string(id) + ": Texture3D GUID = " + chunk.texture3DId.ToString());
 		}
 	}
 
@@ -500,7 +570,7 @@ void VoxelTerrain::CreateEditorBuffers(DxDevice* _dxDevice, DxSRVHeap* _dxSRVHea
 	cBufferTerrainInfo_.Create(_dxDevice);
 }
 
-void VoxelTerrain::SetupEditorBuffers(ID3D12GraphicsCommandList* _cmdList, const std::array<UINT, 4> _rootParamIndices, AssetCollection* _assetCollection, const GPUData::InputInfo& _inputInfo) {
+void VoxelTerrain::SetupEditorBuffers(ID3D12GraphicsCommandList* _cmdList, const std::array<UINT, 4> _rootParamIndices, const GPUData::InputInfo& _inputInfo) {
 	/// InputInfoの設定
 	cBufferInputInfo_.SetMappedData(_inputInfo);
 	cBufferInputInfo_.BindForComputeCommandList(_cmdList, _rootParamIndices[0]);
@@ -632,6 +702,14 @@ void VoxelTerrain::CopyEditorTextureToChunkTexture(DxCommand* dxCommand, const s
 		chunks_[chunkID].uavTexture.GetDxResource().CreateBarrier(uavTextureBefore, dxCommand);
 		chunks_[chunkID].pTexture->GetDxResource().CreateBarrier(srvTextureBefore, dxCommand);
 	}
+}
+
+void VoxelTerrain::PushBackEditChunkID(const std::vector<int>& editChunkID) {
+	editedChunkIDs_.insert(editedChunkIDs_.end(), editChunkID.begin(), editChunkID.end());
+
+	/// 昇順ソートの後、重複IDを削除
+	std::sort(editedChunkIDs_.begin(), editedChunkIDs_.end());
+	editedChunkIDs_.erase(std::unique(editedChunkIDs_.begin(), editedChunkIDs_.end()), editedChunkIDs_.end());
 }
 
 uint32_t VoxelTerrain::GetBrushRadius() const {

@@ -55,7 +55,7 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 	/// --------------------------------------------------
 
 	dxManager_->Initialize();
-	ThreadPool::Instance().Initialize(dxManager_->GetDxDevice());
+	ThreadPool::Instance().Initialize(dxManager_->GetDxDevice(), 4);
 	windowManager_->Initialize();
 
 	/// main windowの生成

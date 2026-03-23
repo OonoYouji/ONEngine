@@ -40,7 +40,7 @@ void VoxelTerrainRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, 
 		pipeline_ = std::make_unique<GraphicsPipeline>();
 		CreatePipeline(pipeline_.get(), shader, _dxm, D3D12_FILL_MODE_SOLID, BlendMode::Normal());
 		wireframeSubtractBlendPipeline_ = std::make_unique<GraphicsPipeline>();
-		CreatePipeline(wireframeSubtractBlendPipeline_.get(), shader, _dxm, D3D12_FILL_MODE_WIREFRAME, BlendMode::Subtract());
+		CreatePipeline(wireframeSubtractBlendPipeline_.get(), shader, _dxm, D3D12_FILL_MODE_WIREFRAME, BlendMode::Normal());
 		wireframePipeline_ = std::make_unique<GraphicsPipeline>();
 		CreatePipeline(wireframePipeline_.get(), shader, _dxm, D3D12_FILL_MODE_WIREFRAME, BlendMode::Normal());
 	}

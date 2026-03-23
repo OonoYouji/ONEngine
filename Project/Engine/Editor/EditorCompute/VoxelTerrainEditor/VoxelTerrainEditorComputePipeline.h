@@ -49,8 +49,14 @@ public:
 	void Initialize(ONEngine::ShaderCompiler* _shaderCompiler, ONEngine::DxManager* _dxm) override;
 	void Execute(ONEngine::EntityComponentSystem* _ecs, ONEngine::DxCommand* _dxCommand, ONEngine::AssetCollection* _assetCollection) override;
 
+	/// @brief エディタ用のパイプラインを生成する。 基本的なBuffer等は同一なので関数でまとめる
+	/// @param pipeline 対象のパイプライン
+	/// @param shader エディタ用のシェーダー
+	/// @param dxm DxManagerのポインタ
+	void CreatePipeline(ONEngine::ComputePipeline* pipeline, ONEngine::Shader& shader, ONEngine::DxManager* dxm);
+
 	void ExecuteCalculateMouseWorldPos(ONEngine::DxCommand* dxCommand, ONEngine::AssetCollection* assetCollection);
-	
+
 	std::vector<int> GetEditedChunkIDs(ONEngine::VoxelTerrain* vt);
 
 private:
@@ -60,6 +66,7 @@ private:
 
 	ONEngine::DxManager* pDxManager_ = nullptr;
 
+	std::unique_ptr<ONEngine::ComputePipeline> adjacentModePipeline_ = nullptr;
 	std::unique_ptr<ONEngine::ComputePipeline> calculationMouseWorldPosPipeline_ = nullptr;
 
 	ONEngine::StructuredBuffer<ONEngine::Vector4> uavMousePosBuffer_;

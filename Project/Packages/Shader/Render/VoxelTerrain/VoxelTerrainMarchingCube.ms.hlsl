@@ -38,23 +38,15 @@ float GetDensity(float3 worldPos) {
 	uvw.y = 1.0f - uvw.y;
     
     // Y方向の範囲外処理（空は空気、地下は固体）
-    if (uvw.y < 0.0f) { return 0.0f; } // 空
-    if (uvw.y > 1.0f) { return 1.0f; } // 地下    
+    if (uvw.y <= 0.0f) { return 1.0f; } // 空
+    if (uvw.y >= 1.0f) { return 1.0f; } // 地下    
 
-    // Y方向の範囲外処理（空は空気、地下は固体）
-    if (uvw.y < 0.0f) { return 0.0f; } // 空
-    if (uvw.y > 1.0f) { return 1.0f; } // 地下    
-
-    // UVWをクランプして安全性を確保
-	uvw = saturate(uvw);
-    
 	return voxelChunkTextures[chunks[chunkId].textureId].SampleLevel(texSampler, uvw, 0).a;
 }
 
 
 
-float3 CalculateNormal(float3 pos, float step)
-{
+float3 CalculateNormal(float3 pos, float step) {
     float eps = step; 
 
     float dx = GetDensity(pos + float3(eps, 0, 0)) - GetDensity(pos - float3(eps, 0, 0));
@@ -132,30 +124,30 @@ void main(
     uint32_t transitionCode = 0;
 
     /// チャンクの境界面のボクセルかつ、となりのチャンクと自身のLOD差がある場合は非表示にする
-    bool isBoundary = false;
-    if(asPayload.transitionMask != 0) {
-        uint32_t3 localPos = uint32_t3(worldPos - asPayload.startPos);
-        bool isNX = (localPos.x == 0);
-        bool isPX = (localPos.x >= chunkSize.x - step.x);
-        bool isNZ = (localPos.z == 0);
-        bool isPZ = (localPos.z >= chunkSize.z - step.x);
+    // bool isBoundary = false;
+    // if(asPayload.transitionMask != 0) {
+    //     uint32_t3 localPos = uint32_t3(worldPos - asPayload.startPos);
+    //     bool isNX = (localPos.x == 0);
+    //     bool isPX = (localPos.x >= chunkSize.x - step.x);
+    //     bool isNZ = (localPos.z == 0);
+    //     bool isPZ = (localPos.z >= chunkSize.z - step.x);
     
-        int mask = asPayload.transitionMask;
-        if(isNX && mask & TRANSITION_NX) isBoundary = true;
-        if(isPX && mask & TRANSITION_PX) isBoundary = true;
-        if(isNZ && mask & TRANSITION_NZ) isBoundary = true;
-        if(isPZ && mask & TRANSITION_PZ) isBoundary = true;
-        if(isNX && isNZ && mask & TRANSITION_NXZ) isBoundary = true;
-        if(isPX && isPZ && mask & TRANSITION_PXZ) isBoundary = true;
-        if(isNX && isPZ && mask & TRANSITION_NXPZ) isBoundary = true;
-        if(isPX && isNZ && mask & TRANSITION_PXNZ) isBoundary = true;
-    } 
+    //     int mask = asPayload.transitionMask;
+    //     if(isNX && mask & TRANSITION_NX) isBoundary = true;
+    //     if(isPX && mask & TRANSITION_PX) isBoundary = true;
+    //     if(isNZ && mask & TRANSITION_NZ) isBoundary = true;
+    //     if(isPZ && mask & TRANSITION_PZ) isBoundary = true;
+    //     if(isNX && isNZ && mask & TRANSITION_NXZ) isBoundary = true;
+    //     if(isPX && isPZ && mask & TRANSITION_PXZ) isBoundary = true;
+    //     if(isNX && isPZ && mask & TRANSITION_NXPZ) isBoundary = true;
+    //     if(isPX && isNZ && mask & TRANSITION_PXNZ) isBoundary = true;
+    // } 
     
 	float cubeDensities[8];
 	uint cubeIndex = 0;
 	uint triCount = 0;
 
-    if(!isBoundary) {
+    // if(!isBoundary) {
 	    [unroll]
 	    for (int i = 0; i < 8; ++i) {
 	    	float3 samplePos = worldPos + (kCornerOffsets[i] * float3(step));
@@ -172,16 +164,12 @@ void main(
 	    for (int i = 0; i < 15; i += 3) {
 	    	triCount += (TriTable[cubeIndex][i] != -1) ? 1 : 0;
 	    }
-    }
+    // }
 
     uint outputTriOffset = WavePrefixSum(triCount);
     uint totalTriCount = WaveActiveSum(triCount);
 
     SetMeshOutputCounts(totalTriCount * 3, totalTriCount);
-    if(triCount == 0) {
-        return;
-    }
-
 	
 	for (uint t = 0; t < triCount; t++) {
         uint currentTriIndex = outputTriOffset + t;

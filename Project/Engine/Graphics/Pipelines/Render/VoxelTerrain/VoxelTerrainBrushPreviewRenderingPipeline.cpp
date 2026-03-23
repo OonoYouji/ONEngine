@@ -93,10 +93,13 @@ void VoxelTerrainBrushPreviewRenderingPipeline::Draw(ECSGroup* _ecs, CameraCompo
 		return;
 	}
 
-	if(!vt->isEditMode_) {
+	if(!vt->isEditEnabled_) {
 		return;
 	}
 
+	if(vt->GetEditMode() != VoxelTerrain::EditMode::AREA) {
+		return;
+	}
 
 	const Vector2& mousePos = Input::GetImGuiImageMousePosNormalized("Scene");
 	const Vector2& mouseUV = mousePos / Vector2::HD;

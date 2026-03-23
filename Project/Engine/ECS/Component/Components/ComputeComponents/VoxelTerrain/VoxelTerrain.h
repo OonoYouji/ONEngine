@@ -163,6 +163,12 @@ public:
 	inline static const Vector3Int kDefaultChunkSize = Vector3Int(16, 128, 16);
 	inline static const Vector2Int kChunkCount = Vector2Int(32, 32);
 
+	/// 地形の編集モード
+	enum EditMode {
+		UNKOWN,   /// 不明なモード
+		ADJACENT, /// 隣接編集モード
+		AREA,     /// 範囲編集モード
+	};
 
 public:
 	/// ===========================================
@@ -226,7 +232,7 @@ public:
 	/// @param _rootParamIndices 設定するルートパラメータのインデックス配列 (0:InputInfo, 1:TerrainInfo, 2:EditInfo, 3:Chunks)
 	/// @param _inputInfo InputInfo構造体
 	/// @param _editInfo EditInfo構造体
-	void SetupEditorBuffers(ID3D12GraphicsCommandList* _cmdList, const std::array<UINT, 4> _rootParamIndices, class AssetCollection* _assetCollection, const GPUData::InputInfo& _inputInfo);
+	void SetupEditorBuffers(ID3D12GraphicsCommandList* _cmdList, const std::array<UINT, 4> _rootParamIndices, const GPUData::InputInfo& _inputInfo);
 
 	/// @brief チャンク用のTexture3D UAVを作成する
 	/// @param _dxDevice DxDeviceのポインタ
@@ -243,8 +249,10 @@ public:
 
 
 	bool CanMeshShaderRendering() const { return canMeshShaderRendering_; }
-	bool IsEditMode() const { return isEditMode_; }
+	bool IsEditEnabled() const { return isEditEnabled_; }
+	int GetEditMode() const { return editMode_; }
 
+	void PushBackEditChunkID(const std::vector<int>& editChunkID);
 
 	uint32_t GetBrushRadius() const;
 	float GetBrushStrength() const;
@@ -282,7 +290,9 @@ private:
 	/// --------------- エディタ用 --------------- ///
 	ConstantBuffer<GPUData::InputInfo> cBufferInputInfo_;
 	ConstantBuffer<GPUData::EditInfo>  cBufferEditInfo_;
-	bool isEditMode_ = false;
+	bool isEditEnabled_ = false;
+	int editMode_ = EditMode::ADJACENT;
+	std::vector<int> editedChunkIDs_;
 
 
 	ConstantBuffer<GPUData::MarchingCube> cBufferMarchingCubeInfo_;

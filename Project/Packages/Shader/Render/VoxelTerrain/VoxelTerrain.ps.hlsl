@@ -99,10 +99,10 @@ PSOutput main(VertexOut input) {
     terrainColor = lerp(material.baseColor * terrainColor, cliffMaterial.baseColor * cliffColor, cliffFactor);
 	output.color = terrainColor;
 
-    float3 terrainNormal = SampleTriplanarNormal(textures[material.intValues.w], worldPos, N, tiling);
-    float3 cliffNormal = SampleTriplanarNormal(textures[cliffMaterial.intValues.w], worldPos, N, tiling);
-    float3 blendedNormal = normalize(lerp(terrainNormal, cliffNormal, cliffFactor));
-    output.normal = float4(blendedNormal, 1);
+    // float3 terrainNormal = SampleTriplanarNormal(textures[material.intValues.w], worldPos, N, tiling);
+    // float3 cliffNormal = SampleTriplanarNormal(textures[cliffMaterial.intValues.w], worldPos, N, tiling);
+    // float3 blendedNormal = normalize(lerp(terrainNormal, cliffNormal, cliffFactor));
+    output.normal = float4(N, 1);
 
 	output.worldPos = input.worldPosition;
 	output.flags = float4(material.intValues.x, material.intValues.y, 0, 1);
