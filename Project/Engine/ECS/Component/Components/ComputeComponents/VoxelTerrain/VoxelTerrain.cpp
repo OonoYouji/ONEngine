@@ -106,8 +106,8 @@ void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* vt, DxManager* _dxm, AssetC
 		・左Ctrl + E : 編集モードの切り替え
 
 		編集モードの切り替え
-		・左Ctrl + 1 : 隣接編集モード
-		・左Ctrl + 2 : 範囲編集モード
+		・1 : 隣接編集モード
+		・2 : 範囲編集モード
 		・ESC : 編集モードの終了
 
 		ブラシサイズの変更
@@ -124,18 +124,31 @@ void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* vt, DxManager* _dxm, AssetC
 	}
 
 	if(vt->isEditEnabled_) {
+		static bool isEdit = false;
+
 		/// 編集モードの切り替え
-		if(Input::TriggerKey(DIK_ESCAPE)) { vt->editMode_ = VoxelTerrain::EditMode::UNKOWN; }
-		if(Input::PressKey(DIK_LCONTROL) && Input::TriggerKey(DIK_1)) { vt->editMode_ = VoxelTerrain::EditMode::ADJACENT; }
-		if(Input::PressKey(DIK_LCONTROL) && Input::TriggerKey(DIK_2)) { vt->editMode_ = VoxelTerrain::EditMode::AREA; }
+		if(Input::TriggerKey(DIK_ESCAPE)) {
+			vt->editMode_ = VoxelTerrain::EditMode::UNKOWN;
+			isEdit = true;
+		}
 
-		// magic_enum を使って、現在のモード名を取得 (プレビュー用)
+		if(Input::TriggerKey(DIK_1)) {
+			vt->editMode_ = VoxelTerrain::EditMode::ADJACENT;
+			isEdit = true;
+		}
+
+		if(Input::TriggerKey(DIK_2)) {
+			vt->editMode_ = VoxelTerrain::EditMode::AREA;
+			isEdit = true;
+		}
+
+
+
+		/// ---------------------------------------------------
+		/// 編集モードのコンボボックス
+		/// ---------------------------------------------------
 		std::string_view currentModeName = magic_enum::enum_name(VoxelTerrain::EditMode(vt->editMode_));
-
-		// コンボボックスの描画
-		// プレビュー部分には現在選択されているモード名を表示
 		if(ImGui::BeginCombo("Edit Mode", currentModeName.data())) {
-
 			// 列挙型のすべての値と名前を取得
 			constexpr auto& enumValues = magic_enum::enum_values<VoxelTerrain::EditMode>();
 			constexpr auto& enumNames = magic_enum::enum_names<VoxelTerrain::EditMode>();
@@ -143,13 +156,12 @@ void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* vt, DxManager* _dxm, AssetC
 			for(size_t i = 0; i < enumValues.size(); ++i) {
 				bool isSelected = (vt->editMode_ == enumValues[i]);
 
-				// ドロップダウンリストの各項目を描画
+				/// 選択したモードに変更
 				if(ImGui::Selectable(enumNames[i].data(), isSelected)) {
-					// 選択されたらモードを更新
 					vt->editMode_ = enumValues[i];
+					isEdit = true;
 				}
 
-				// 現在選択中のアイテムをフォーカス（見やすくするImGuiの標準的な処理）
 				if(isSelected) {
 					ImGui::SetItemDefaultFocus();
 				}
@@ -158,6 +170,9 @@ void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* vt, DxManager* _dxm, AssetC
 		}
 
 
+		/// ---------------------------------------------------
+		/// ブラシサイズと強さの変更
+		/// ---------------------------------------------------
 		static int   radius = 5, prevRadius = 0;
 		static float strength = 0.5f, prevStrength = 0.0f;
 
@@ -179,37 +194,42 @@ void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* vt, DxManager* _dxm, AssetC
 			strength = std::clamp(strength, 0.0f, 1.0f);
 		}
 
+
 		/// ブラシサイズや強さが変更されたとき
 		if(radius != prevRadius || strength != prevStrength) {
-
-			/// CBufferにブラシサイズと強さを設定
 			vt->cBufferEditInfo_.SetMappedData({ uint32_t(radius), strength });
 			prevRadius = radius;
 			prevStrength = strength;
+			isEdit = true;
+		}
 
 
-			{
-				/// マウスの位置にブラシの情報を表示
-				ImVec2 mousePos = ImGui::GetMousePos();
-				float offset = 20.0f; // マウス位置から少し離すオフセット
-				mousePos.x += offset;
-
-				ImGui::SetNextWindowPos(mousePos);
-				ImGui::Begin(
-					"MouseText",
-					nullptr,
-					ImGuiWindowFlags_NoDecoration |
-					ImGuiWindowFlags_NoMove |
-					ImGuiWindowFlags_NoBackground |
-					ImGuiWindowFlags_AlwaysAutoResize
-				);
-
-				ImGui::Text("Edit Mode: %s", currentModeName.data());
-				ImGui::Text("Brush Radius: %d", radius);
-				ImGui::Text("Strength: %.2f", strength);
-				ImGui::End();
+		if(isEdit) {
+			/// マウスを動かしたら表示を消す
+			const Vector2& mouseVelocity = Input::GetMouseVelocity();
+			if(std::abs(mouseVelocity.x) > 0.01f && std::abs(mouseVelocity.y) > 0.01f) {
+				isEdit = false;
 			}
 
+			/// マウスの位置にブラシの情報を表示
+			ImVec2 mousePos = ImGui::GetMousePos();
+			float offset = 20.0f; // マウス位置から少し離すオフセット
+			mousePos.x += offset;
+
+			ImGui::SetNextWindowPos(mousePos);
+			ImGui::Begin(
+				"MouseText",
+				nullptr,
+				ImGuiWindowFlags_NoDecoration |
+				ImGuiWindowFlags_NoMove |
+				ImGuiWindowFlags_NoBackground |
+				ImGuiWindowFlags_AlwaysAutoResize
+			);
+
+			ImGui::Text("Edit Mode: %s", currentModeName.data());
+			ImGui::Text("Radius: %d", radius);
+			ImGui::Text("Strength: %.2f", strength);
+			ImGui::End();
 		}
 	}
 

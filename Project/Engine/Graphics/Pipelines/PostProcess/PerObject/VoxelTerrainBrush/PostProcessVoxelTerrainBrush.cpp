@@ -75,6 +75,10 @@ void PostProcessVoxelTerrainBrush::Execute(
 		return;
 	}
 
+	if(!vt->IsEditEnabled()) {
+		return;
+	}
+	
 	if(vt->GetEditMode() != VoxelTerrain::EditMode::ADJACENT) {
 		return;
 	}

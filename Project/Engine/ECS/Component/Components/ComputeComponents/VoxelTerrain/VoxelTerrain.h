@@ -290,7 +290,7 @@ private:
 	ConstantBuffer<GPUData::InputInfo> cBufferInputInfo_;
 	ConstantBuffer<GPUData::EditInfo>  cBufferEditInfo_;
 	bool isEditEnabled_ = false;
-	int editMode_ = 0;
+	int editMode_ = EditMode::ADJACENT;
 
 
 	ConstantBuffer<GPUData::MarchingCube> cBufferMarchingCubeInfo_;
