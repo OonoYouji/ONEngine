@@ -1,5 +1,8 @@
 ﻿#include "VoxelTerrain.h"
 
+/// std
+#include <algorithm>
+
 /// externals
 #include <imgui.h>
 #include <magic_enum/magic_enum.hpp>
@@ -561,7 +564,7 @@ void VoxelTerrain::CreateEditorBuffers(DxDevice* _dxDevice, DxSRVHeap* _dxSRVHea
 	cBufferTerrainInfo_.Create(_dxDevice);
 }
 
-void VoxelTerrain::SetupEditorBuffers(ID3D12GraphicsCommandList* _cmdList, const std::array<UINT, 4> _rootParamIndices, AssetCollection* _assetCollection, const GPUData::InputInfo& _inputInfo) {
+void VoxelTerrain::SetupEditorBuffers(ID3D12GraphicsCommandList* _cmdList, const std::array<UINT, 4> _rootParamIndices, const GPUData::InputInfo& _inputInfo) {
 	/// InputInfoの設定
 	cBufferInputInfo_.SetMappedData(_inputInfo);
 	cBufferInputInfo_.BindForComputeCommandList(_cmdList, _rootParamIndices[0]);
@@ -693,6 +696,14 @@ void VoxelTerrain::CopyEditorTextureToChunkTexture(DxCommand* dxCommand, const s
 		chunks_[chunkID].uavTexture.GetDxResource().CreateBarrier(uavTextureBefore, dxCommand);
 		chunks_[chunkID].pTexture->GetDxResource().CreateBarrier(srvTextureBefore, dxCommand);
 	}
+}
+
+void VoxelTerrain::PushBackEditChunkID(const std::vector<int>& editChunkID) {
+	editedChunkIDs_.insert(editedChunkIDs_.end(), editChunkID.begin(), editChunkID.end());
+
+	/// 昇順ソートの後、重複IDを削除
+	std::sort(editedChunkIDs_.begin(), editedChunkIDs_.end());
+	editedChunkIDs_.erase(std::unique(editedChunkIDs_.begin(), editedChunkIDs_.end()), editedChunkIDs_.end());
 }
 
 uint32_t VoxelTerrain::GetBrushRadius() const {

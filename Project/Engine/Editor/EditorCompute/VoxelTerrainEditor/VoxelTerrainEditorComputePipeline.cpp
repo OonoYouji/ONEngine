@@ -182,7 +182,7 @@ void VoxelTerrainEditorComputePipeline::Execute(ONEngine::EntityComponentSystem*
 	voxelTerrain->SetupEditorBuffers(
 		cmdList,
 		{ CBV_INPUT_INFO, CBV_TERRAIN_INFO, CBV_EDITOR_INFO, SRV_CHUNKS },
-		_assetCollection, inputInfo
+		inputInfo
 	);
 
 	cameraComp->GetViewProjectionBuffer().BindForComputeCommandList(cmdList, CBV_VIEW_PROJECTION);
@@ -235,6 +235,7 @@ void VoxelTerrainEditorComputePipeline::Execute(ONEngine::EntityComponentSystem*
 
 	mouseWorldPos_ = uavMousePosBuffer_.Readback(_dxCommand, 0);
 	std::vector<int> editedChunkIDs = GetEditedChunkIDs(voxelTerrain);
+	voxelTerrain->PushBackEditChunkID(editedChunkIDs);
 
 	/// 編集したのであればSRVに対してコピーを行う
 	voxelTerrain->CopyEditorTextureToChunkTexture(_dxCommand, editedChunkIDs);

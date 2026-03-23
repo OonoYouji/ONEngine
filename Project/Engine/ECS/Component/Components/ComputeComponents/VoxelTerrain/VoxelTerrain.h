@@ -232,7 +232,7 @@ public:
 	/// @param _rootParamIndices 設定するルートパラメータのインデックス配列 (0:InputInfo, 1:TerrainInfo, 2:EditInfo, 3:Chunks)
 	/// @param _inputInfo InputInfo構造体
 	/// @param _editInfo EditInfo構造体
-	void SetupEditorBuffers(ID3D12GraphicsCommandList* _cmdList, const std::array<UINT, 4> _rootParamIndices, class AssetCollection* _assetCollection, const GPUData::InputInfo& _inputInfo);
+	void SetupEditorBuffers(ID3D12GraphicsCommandList* _cmdList, const std::array<UINT, 4> _rootParamIndices, const GPUData::InputInfo& _inputInfo);
 
 	/// @brief チャンク用のTexture3D UAVを作成する
 	/// @param _dxDevice DxDeviceのポインタ
@@ -252,6 +252,7 @@ public:
 	bool IsEditEnabled() const { return isEditEnabled_; }
 	int GetEditMode() const { return editMode_; }
 
+	void PushBackEditChunkID(const std::vector<int>& editChunkID);
 
 	uint32_t GetBrushRadius() const;
 	float GetBrushStrength() const;
@@ -291,6 +292,7 @@ private:
 	ConstantBuffer<GPUData::EditInfo>  cBufferEditInfo_;
 	bool isEditEnabled_ = false;
 	int editMode_ = EditMode::ADJACENT;
+	std::vector<int> editedChunkIDs_;
 
 
 	ConstantBuffer<GPUData::MarchingCube> cBufferMarchingCubeInfo_;
