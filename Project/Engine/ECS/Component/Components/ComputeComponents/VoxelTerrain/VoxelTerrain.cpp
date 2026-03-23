@@ -262,12 +262,13 @@ void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* vt, DxManager* _dxm, AssetC
 	/// 出力用
 	if(ImGui::Button("地形を保存する")) {
 		std::wstring filepath = L"";
-		for(size_t i = 0; i < vt->chunks_.size(); i++) {
-			filepath = L"./Packages/Textures/Terrain/Chunk/" + std::to_wstring(i) + L".dds";
+		for(size_t i = 0; i < vt->editedChunkIDs_.size(); i++) {
+			size_t id = vt->editedChunkIDs_[i];
+			filepath = L"./Packages/Textures/Terrain/Chunk/" + std::to_wstring(id) + L".dds";
 
-			const Chunk& chunk = vt->chunks_[i];
+			const Chunk& chunk = vt->chunks_[id];
 			chunk.pTexture->OutputTexture3D(filepath, _dxm->GetDxDevice(), _dxm->GetDxCommand());
-			Console::Log("Chunk " + std::to_string(i) + ": Texture3D GUID = " + chunk.texture3DId.ToString());
+			Console::Log("Chunk " + std::to_string(id) + ": Texture3D GUID = " + chunk.texture3DId.ToString());
 		}
 	}
 
