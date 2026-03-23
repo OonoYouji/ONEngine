@@ -159,7 +159,6 @@ void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* vt, DxManager* _dxm, AssetC
 				/// 選択したモードに変更
 				if(ImGui::Selectable(enumNames[i].data(), isSelected)) {
 					vt->editMode_ = enumValues[i];
-					isEdit = true;
 				}
 
 				if(isSelected) {
@@ -183,6 +182,7 @@ void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* vt, DxManager* _dxm, AssetC
 			delta = (delta > 0) ? 1 : -1;
 			radius += delta;
 			radius = std::clamp(radius, 1, 100);
+			isEdit = true;
 		}
 
 		/// ブラシの強さの変更
@@ -192,6 +192,7 @@ void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* vt, DxManager* _dxm, AssetC
 			delta = (delta > 0) ? 0.01f : -0.01f;
 			strength += delta;
 			strength = std::clamp(strength, 0.0f, 1.0f);
+			isEdit = true;
 		}
 
 
@@ -200,7 +201,6 @@ void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* vt, DxManager* _dxm, AssetC
 			vt->cBufferEditInfo_.SetMappedData({ uint32_t(radius), strength });
 			prevRadius = radius;
 			prevStrength = strength;
-			isEdit = true;
 		}
 
 

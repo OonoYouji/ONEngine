@@ -53,8 +53,7 @@ float GetDensity(float3 worldPos) {
 
 
 
-float3 CalculateNormal(float3 pos, float step)
-{
+float3 CalculateNormal(float3 pos, float step) {
     float eps = step; 
 
     float dx = GetDensity(pos + float3(eps, 0, 0)) - GetDensity(pos - float3(eps, 0, 0));
@@ -178,10 +177,6 @@ void main(
     uint totalTriCount = WaveActiveSum(triCount);
 
     SetMeshOutputCounts(totalTriCount * 3, totalTriCount);
-    if(triCount == 0) {
-        return;
-    }
-
 	
 	for (uint t = 0; t < triCount; t++) {
         uint currentTriIndex = outputTriOffset + t;
