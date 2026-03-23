@@ -263,7 +263,12 @@ void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* vt, DxManager* _dxm, AssetC
 	if(ImGui::Button("地形を保存する")) {
 		std::wstring filepath = L"";
 		for(size_t i = 0; i < vt->editedChunkIDs_.size(); i++) {
-			size_t id = vt->editedChunkIDs_[i];
+			int id = vt->editedChunkIDs_[i];
+			if(id < 0 || id >= static_cast<int>(vt->chunks_.size())) {
+				Console::LogError("Invalid chunk ID: " + std::to_string(id));
+				continue;
+			}
+
 			filepath = L"./Packages/Textures/Terrain/Chunk/" + std::to_wstring(id) + L".dds";
 
 			const Chunk& chunk = vt->chunks_[id];
