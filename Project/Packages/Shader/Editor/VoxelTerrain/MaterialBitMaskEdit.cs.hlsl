@@ -49,45 +49,45 @@ void main(
 	}
 
     float4 voxelColor = voxelTextures[chunks[chunkID.value].textureId][voxelPos];
-	float threshold = 0.01f; // 隣接とみなすアルファ値の閾値
-	bool hasAdjacent = false;
+	// float threshold = 0.01f; // 隣接とみなすアルファ値の閾値
+	// bool hasAdjacent = false;
 
-	// 自身がすでに閾値以上の場合は編集可能とする（削る処理などのため）
-	if (voxelColor.a >= threshold) {
-		hasAdjacent = true;
-	} else {
-		// 6方向（上下左右前後）のオフセット
-		int3 offsets[6] = {
-			int3( 1,  0,  0), int3(-1,  0,  0),
-			int3( 0,  1,  0), int3( 0, -1,  0),
-			int3( 0,  0,  1), int3( 0,  0, -1)
-		};
+	// // 自身がすでに閾値以上の場合は編集可能とする（削る処理などのため）
+	// if (voxelColor.a >= threshold) {
+	// 	hasAdjacent = true;
+	// } else {
+	// 	// 6方向（上下左右前後）のオフセット
+	// 	int3 offsets[6] = {
+	// 		int3( 1,  0,  0), int3(-1,  0,  0),
+	// 		int3( 0,  1,  0), int3( 0, -1,  0),
+	// 		int3( 0,  0,  1), int3( 0,  0, -1)
+	// 	};
 
-		// 6方向のいずれかの隣接ボクセルが閾値以上かチェック
-		for (int i = 0; i < 6; ++i) {
-			int3 nPos = voxelPos + offsets[i];
+	// 	// 6方向のいずれかの隣接ボクセルが閾値以上かチェック
+	// 	for (int i = 0; i < 6; ++i) {
+	// 		int3 nPos = voxelPos + offsets[i];
 			
-			// 【追加】Y軸はテクスチャ座標系で反転しているため、Yが大きい方向が「下」になります [cite: 51]。
-			// チャンクの一番下（底面境界）を参照した場合は、強制メッシュ化されるため隣接扱いとします。
-			if (nPos.y >= voxelTerrainInfo.textureSize.y - 1) {
-				hasAdjacent = true;
-				break;
-			}
+	// 		// 【追加】Y軸はテクスチャ座標系で反転しているため、Yが大きい方向が「下」になります [cite: 51]。
+	// 		// チャンクの一番下（底面境界）を参照した場合は、強制メッシュ化されるため隣接扱いとします。
+	// 		if (nPos.y >= voxelTerrainInfo.textureSize.y - 1) {
+	// 			hasAdjacent = true;
+	// 			break;
+	// 		}
 
-			// 隣接ボクセルがチャンクのテクスチャ範囲内にあるか安全のためにチェック
-			if (CheckInside(nPos, int3(0, 0, 0), int3(voxelTerrainInfo.textureSize) - int3(1, 1, 1))) {
-				if (voxelTextures[chunks[chunkID.value].textureId][nPos].a >= threshold) {
-					hasAdjacent = true;
-					break; // 1つでも隣接していればOK
-				}
-			}
-		}
-	}
+	// 		// 隣接ボクセルがチャンクのテクスチャ範囲内にあるか安全のためにチェック
+	// 		if (CheckInside(nPos, int3(0, 0, 0), int3(voxelTerrainInfo.textureSize) - int3(1, 1, 1))) {
+	// 			if (voxelTextures[chunks[chunkID.value].textureId][nPos].a >= threshold) {
+	// 				hasAdjacent = true;
+	// 				break; // 1つでも隣接していればOK
+	// 			}
+	// 		}
+	// 	}
+	// }
 
-	// 隣接するボクセルが存在しない（かつ自身も空）なら編集処理をスキップ
-	if (!hasAdjacent) {
-		return;
-	}
+	// // 隣接するボクセルが存在しない（かつ自身も空）なら編集処理をスキップ
+	// if (!hasAdjacent) {
+	// 	return;
+	// }
 	/// ---------------------------------------------------
 	
 	/// 操作次第で色を変更

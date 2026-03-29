@@ -109,14 +109,37 @@ void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* vt, DxManager* _dxm, AssetC
 		/// 地形の描画に用いるテクスチャが "DXGI_FORMAT_R8G8B8A8_UNORM" で作られているので最大8枚
 		//int32_t& bit = vt->usedTextureIds_.usedBit;
 
-		for(int i = 0; i < 8; ++i) {
+		for(int i = 0; i < 3; ++i) {
 			ImGui::PushID(i);
 
-			/// ----- テクスチャIDの編集 ----- ///
-			int32_t& id = vt->usedTextureIds_.ids[i];
-			ImGui::SetNextItemWidth(100);
-			ImGui::InputInt("TextureID", &id);
+			Guid& guid = vt->usedTextureGuids_[i];
 
+			/// ----- テクスチャIDの編集 ----- ///
+
+			if(guid.CheckValid()) {
+				Editor::ImMathf::DrawTexturePreview(_ac->GetTexture(_ac->GetTexturePath(guid)));
+			} else {
+				Editor::ImMathf::DrawTextureDropSpace("BaseTex");
+			}
+			if(ImGui::BeginDragDropTarget()) {
+				if(const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("AssetData")) {
+					if(payload->Data) {
+						Editor::AssetPayload* assetPayload = *static_cast<Editor::AssetPayload**>(payload->Data);
+						const std::string path = assetPayload->filePath;
+						if(ONEngine::CheckAssetType(ONEngine::FileSystem::FileExtension(path), ONEngine::AssetType::Texture)) {
+							const ONEngine::Guid& dropGuid = assetPayload->guid;
+							guid = dropGuid;
+						}
+					}
+				}
+				ImGui::EndDragDropTarget();
+			}
+
+
+			if(guid.CheckValid()) {
+				int32_t& id = vt->usedTextureIds_.ids[i];
+				id = _ac->GetTextureIndexFromGuid(guid);
+			}
 
 			ImGui::PopID();
 		}
@@ -193,11 +216,11 @@ void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* vt, DxManager* _dxm, AssetC
 		/// ---------------------------------------------------
 		/// ブラシサイズと強さの変更
 		/// ---------------------------------------------------
-		static int   radius = 5, prevRadius = 0;
-		static float strength = 0.5f, prevStrength = 0.0f;
+		static int   radius = 5;
+		static float strength = 0.5f;
 
 		/// ブラシサイズの変更
-		Editor::ImMathf::DragInt("Brush Radius", &radius, 1, 1, 100);
+		Editor::DragInt("Brush Radius", radius, 1, 1, 100);
 		if(Input::PressKey(DIK_LSHIFT) && Input::GetMouseWheel() != 0.0f) {
 			int delta = static_cast<int>(Input::GetMouseWheel());
 			delta = (delta > 0) ? 1 : -1;
@@ -207,7 +230,7 @@ void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* vt, DxManager* _dxm, AssetC
 		}
 
 		/// ブラシの強さの変更
-		Editor::ImMathf::DragFloat("Strength", &strength, 0.01f, 0.0f, 1.0f);
+		Editor::DragFloat("Strength", strength, 0.01f, 0.0f, 1.0f);
 		if(Input::PressKey(DIK_LALT) && Input::GetMouseWheel() != 0.0f) {
 			float delta = Input::GetMouseWheel();
 			delta = (delta > 0) ? 0.01f : -0.01f;
@@ -216,16 +239,14 @@ void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* vt, DxManager* _dxm, AssetC
 			isEdit = true;
 		}
 
+		isEdit |= Editor::SliderInt("MaterialID", vt->materialId_, 0, 2);
+
+
 
 		/// ブラシサイズや強さが変更されたとき
-		if(radius != prevRadius || strength != prevStrength) {
-			vt->cBufferEditInfo_.SetMappedData({ uint32_t(radius), strength });
-			prevRadius = radius;
-			prevStrength = strength;
-		}
-
-
 		if(isEdit) {
+			vt->cBufferEditInfo_.SetMappedData({ uint32_t(radius), strength, uint32_t(vt->materialId_) });
+
 			/// マウスを動かしたら表示を消す
 			const Vector2& mouseVelocity = Input::GetMouseVelocity();
 			if(std::abs(mouseVelocity.x) > 0.01f && std::abs(mouseVelocity.y) > 0.01f) {
@@ -357,10 +378,13 @@ void ONEngine::from_json(const nlohmann::json& _j, VoxelTerrain& vt) {
 	vt.chunks_ = _j.value("chunks", std::vector<Chunk>{});
 
 	//vt.usedTextureIds_.usedBit = _j.value("usedTextureIds.usedBit", 0);
-	for(int i = 0; i < 8; ++i) {
+	for(int i = 0; i < 3; ++i) {
 		const std::string str = "usedTextureIds.id" + std::to_string(i);
 		vt.usedTextureIds_.ids[i] = _j.value(str, 0);
+		const std::string guidKey = "usedTextureGuids" + std::to_string(i);
+		vt.usedTextureGuids_[i] = _j.value(guidKey, Guid::kInvalid);
 	}
+
 
 	vt.lodInfo_.useLOD = _j.value("useLOD", 1);
 	vt.lodInfo_.lodDistance0 = _j.value("lod0Distance", 50.0f);
@@ -401,9 +425,12 @@ void ONEngine::to_json(nlohmann::json& _j, const VoxelTerrain& _voxelTerrain) {
 	};
 
 	//_j["usedTextureIds.usedBit"] = _voxelTerrain.usedTextureIds_.usedBit;
-	for(int i = 0; i < 8; ++i) {
+	for(int i = 0; i < 3; ++i) {
 		const std::string str = "usedTextureIds.id" + std::to_string(i);
 		_j[str] = _voxelTerrain.usedTextureIds_.ids[i];
+
+		const std::string guidStr = "usedTextureGuids" + std::to_string(i);
+		_j[guidStr] = _voxelTerrain.usedTextureGuids_[i];
 	}
 }
 
@@ -417,6 +444,9 @@ VoxelTerrain::VoxelTerrain() {
 	chunkCountXZ_ = Vector2Int{ 10, 10 };
 	chunkSize_ = Vector3Int{ 16, 128, 16 };
 	maxChunkCount_ = static_cast<UINT>(chunkCountXZ_.x * chunkCountXZ_.y);
+	for(int i = 0; i < 3; ++i) {
+		usedTextureGuids_[i] = Guid::kInvalid;
+	}
 }
 
 VoxelTerrain::~VoxelTerrain() {

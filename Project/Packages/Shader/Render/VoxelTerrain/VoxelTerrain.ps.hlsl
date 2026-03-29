@@ -10,7 +10,7 @@ struct PSOutput {
 };
 
 struct UsedTextureIds {
-    int32_t textureIds[8];  /// 使用するテクスチャIDの配列
+    int32_t textureIds[3];  /// 使用するテクスチャIDの配列
 };
 
 ConstantBuffer<ConstantBufferMaterial> material       : register(b4);
@@ -98,16 +98,12 @@ PSOutput main(VertexOut input) {
     const float tiling       = 0.1f; // スケール調整
 	float32_t4  terrainColor = SampleTriplanar(textures[material.intValues.z],      worldPos, N, tiling);
     float32_t4  cliffColor   = SampleTriplanar(textures[cliffMaterial.intValues.z], worldPos, N, tiling);
-    terrainColor    = lerp(material.baseColor * terrainColor, cliffMaterial.baseColor * cliffColor, cliffFactor);
 
-    /// usedTextureIds を参照して、テクスチャを切り替える
-    /// input.colorの r成分に参照テクスチャのIDを、g成分にweightを入れる
-    for (uint32_t i = 0; i < 8; ++i) {
-        if ((uint32_t(input.color.r) & (1u << i)) != 0) {
-            float32_t3 sampledColor = SampleTriplanar(textures[usedTextureIds.textureIds[i]], worldPos, N, tiling).rbg;
-            terrainColor.rgb += sampledColor * input.color.g; // weightを掛けて加算
-        }
-    }
+    float4 splatColor = float4(0,0,0,1);
+    splatColor += SampleTriplanar(textures[usedTextureIds.textureIds[0]], worldPos, N, tiling) * input.color.r;
+    splatColor += SampleTriplanar(textures[usedTextureIds.textureIds[1]], worldPos, N, tiling) * input.color.g;
+    splatColor += SampleTriplanar(textures[usedTextureIds.textureIds[2]], worldPos, N, tiling) * input.color.b;
+    terrainColor = lerp(splatColor, cliffColor, cliffFactor);
 
 	output.color    = terrainColor;
     output.normal   = float4(N, 1);

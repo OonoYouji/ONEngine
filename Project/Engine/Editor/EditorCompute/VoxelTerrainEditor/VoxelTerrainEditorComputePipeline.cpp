@@ -187,9 +187,9 @@ void VoxelTerrainEditorComputePipeline::Execute(ONEngine::EntityComponentSystem*
 	case ONEngine::VoxelTerrain::EditMode::AREA:
 		pipeline_->SetPipelineStateForCommandList(_dxCommand);
 		break;
-	case ONEngine::VoxelTerrain::EditMode::BIT_MASK:
-		materialBitMaskEditPipeline_->SetPipelineStateForCommandList(_dxCommand);
-		break;
+	//case ONEngine::VoxelTerrain::EditMode::BIT_MASK:
+	//	materialBitMaskEditPipeline_->SetPipelineStateForCommandList(_dxCommand);
+	//	break;
 	case ONEngine::VoxelTerrain::EditMode::TEXTURE_WEIGHT:
 		materialTextureWeightEditPipeline_->SetPipelineStateForCommandList(_dxCommand);
 		break;

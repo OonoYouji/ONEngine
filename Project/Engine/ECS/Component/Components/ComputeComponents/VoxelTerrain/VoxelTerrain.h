@@ -113,6 +113,7 @@ struct InputInfo {
 struct EditInfo {
 	uint32_t brushRadius;
 	float strength;
+	uint32_t materialId_; /// 0~2
 };
 
 
@@ -140,7 +141,7 @@ struct LODInfo {
 
 /// @brief PSで使用するテクスチャのIDをまとめるもの
 struct UsedTextureIds {
-	int32_t ids[8];
+	int32_t ids[3];
 };
 
 }
@@ -173,7 +174,7 @@ public:
 		UNKOWN,         /// 不明なモード
 		ADJACENT,       /// 隣接編集モード
 		AREA,           /// 範囲編集モード
-		BIT_MASK,       /// Bit編集モード
+		//BIT_MASK,       /// Bit編集モード
 		TEXTURE_WEIGHT, /// テクスチャ比重編集モード
 		COUNT
 	};
@@ -302,6 +303,7 @@ private:
 	Material cliffMaterial_;
 	GPUData::LODInfo lodInfo_;
 	GPUData::UsedTextureIds usedTextureIds_;
+	std::array<Guid, 3> usedTextureGuids_;
 
 	/// --------------- エディタ用 --------------- ///
 	ConstantBuffer<GPUData::InputInfo> cBufferInputInfo_;
@@ -309,6 +311,7 @@ private:
 	ConstantBuffer<uint32_t>           cBufferBitMask_;
 	bool isEditEnabled_ = false;
 	int editMode_ = EditMode::ADJACENT;
+	int materialId_ = 0;
 	std::vector<int> editedChunkIDs_;
 	int editBitMask_ = 0;
 

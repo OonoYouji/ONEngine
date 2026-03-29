@@ -12,6 +12,7 @@ struct InputInfo {
 struct EditorInfo {
 	uint32_t brushRadius;
     float32_t brushStrength;
+    uint32_t materialId;
 };
 
 struct ChunkID {
