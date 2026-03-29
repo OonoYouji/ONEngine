@@ -1,4 +1,8 @@
-﻿#include "Common.hlsli"
+#include "Common.hlsli"
+
+/// /////////////////////////////////////////////////////////////////////////////\
+/// マテリアルの編集、ボクセルのRをテクスチャID、Gをテクスチャの重みとして使用するモード
+/// /////////////////////////////////////////////////////////////////////////////
 
 [shader("compute")]
 [numthreads(10, 10, 10)]
@@ -86,25 +90,15 @@ void main(
 	}
 	/// ---------------------------------------------------
 	
-	if (voxelColor.a != 0.0f) {
-		voxelTextures[chunks[chunkID.value].textureId][voxelPos] = float4(0, 1, 0, voxelColor.a);
-	}
-	
 	/// 操作次第で色を変更
 	if (inputInfo.mouseLeftButton == 1) {
         float val = editorInfo.brushStrength;
 		if (inputInfo.keyboardLShift == 1) {
-			// ----- 押し下げ ----- //
-			voxelColor.a -= val;
-			if(voxelColor.a < 0.0f) {
-                voxelColor.a = 0.0f;
-			}
+			// ----- 消す ----- //
+            voxelColor.r = float(uint(~bitMask.value) & uint(voxelColor.r));
 		} else {
-			// ----- 押し上げ ----- //
-			voxelColor.a += val;
-            if(voxelColor.a > 1.0f) {
-                voxelColor.a = 1.0f;
-			}
+			// ----- 塗る ----- //
+            voxelColor.r = float(uint(bitMask.value) | uint(voxelColor.r));
 		}
     
 		voxelTextures[chunks[chunkID.value].textureId][voxelPos] = voxelColor;

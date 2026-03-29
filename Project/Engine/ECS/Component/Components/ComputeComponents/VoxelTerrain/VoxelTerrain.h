@@ -138,6 +138,11 @@ struct LODInfo {
 	uint32_t lod;
 };
 
+/// @brief PSで使用するテクスチャのIDをまとめるもの
+struct UsedTextureIds {
+	int32_t ids[8];
+};
+
 }
 
 /// ///////////////////////////////////////////////////
@@ -165,9 +170,12 @@ public:
 
 	/// 地形の編集モード
 	enum EditMode {
-		UNKOWN,   /// 不明なモード
-		ADJACENT, /// 隣接編集モード
-		AREA,     /// 範囲編集モード
+		UNKOWN,         /// 不明なモード
+		ADJACENT,       /// 隣接編集モード
+		AREA,           /// 範囲編集モード
+		BIT_MASK,       /// Bit編集モード
+		TEXTURE_WEIGHT, /// テクスチャ比重編集モード
+		COUNT
 	};
 
 public:
@@ -194,8 +202,14 @@ public:
 
 	/// @brief GraphicsPipeline用のバッファ設定を行う
 	/// @param _cmdList GraphicsCommandListのポインタ
-	/// @param _rootParamIndices [0]: VoxelTerrainInfo, [1]: ChunkArray, [2]: Material, [3]: LODInfo
-	void SetupGraphicBuffers(ID3D12GraphicsCommandList* _cmdList, const std::array<UINT, 4> _rootParamIndices, class AssetCollection* _assetCollection);
+	/// @param _rootParamIndices 
+	/// [0]: VoxelTerrainInfo, 
+	/// [1]: ChunkArray, 
+	/// [2]: Material,
+	/// [3]: LODInfo,
+	/// [4]: CliffMaterial,
+	/// [5]: UsedTextureIds
+	void SetupGraphicBuffers(ID3D12GraphicsCommandList* _cmdList, const std::array<UINT, 6> _rootParamIndices, class AssetCollection* _assetCollection);
 
 	/// テクスチャのステートを変更する
 	void TransitionTextureStates(class DxCommand* _dxCommand, class AssetCollection* _assetCollection, D3D12_RESOURCE_STATES _afterState);
@@ -232,7 +246,7 @@ public:
 	/// @param _rootParamIndices 設定するルートパラメータのインデックス配列 (0:InputInfo, 1:TerrainInfo, 2:EditInfo, 3:Chunks)
 	/// @param _inputInfo InputInfo構造体
 	/// @param _editInfo EditInfo構造体
-	void SetupEditorBuffers(ID3D12GraphicsCommandList* _cmdList, const std::array<UINT, 4> _rootParamIndices, const GPUData::InputInfo& _inputInfo);
+	void SetupEditorBuffers(ID3D12GraphicsCommandList* _cmdList, const std::array<UINT, 5> _rootParamIndices, const GPUData::InputInfo& _inputInfo);
 
 	/// @brief チャンク用のTexture3D UAVを作成する
 	/// @param _dxDevice DxDeviceのポインタ
@@ -271,11 +285,12 @@ private:
 
 	/// --------------- Buffer --------------- ///
 	ConstantBuffer<GPUData::VoxelTerrainInfo> cBufferTerrainInfo_;
-	StructuredBuffer<GPUData::Chunk> sBufferChunks_;
-	StructuredBuffer<GPUData::Chunk> sBufferEditorChunks_;
-	ConstantBuffer<GPUData::LODInfo> cBufferLODInfo_;
-	ConstantBuffer<GPUMaterial> cBufferMaterial_;
-	ConstantBuffer<GPUMaterial> cBufferCliffMaterial_;
+	StructuredBuffer<GPUData::Chunk>          sBufferChunks_;
+	StructuredBuffer<GPUData::Chunk>          sBufferEditorChunks_;
+	ConstantBuffer<GPUData::LODInfo>          cBufferLODInfo_;
+	ConstantBuffer<GPUMaterial>               cBufferMaterial_;
+	ConstantBuffer<GPUMaterial>               cBufferCliffMaterial_;
+	ConstantBuffer<GPUData::UsedTextureIds>   cBufferUsedTextureIds_;
 
 	Vector3Int chunkSize_;
 	Vector3Int textureSize_;
@@ -286,13 +301,16 @@ private:
 	Material material_;
 	Material cliffMaterial_;
 	GPUData::LODInfo lodInfo_;
+	GPUData::UsedTextureIds usedTextureIds_;
 
 	/// --------------- エディタ用 --------------- ///
 	ConstantBuffer<GPUData::InputInfo> cBufferInputInfo_;
 	ConstantBuffer<GPUData::EditInfo>  cBufferEditInfo_;
+	ConstantBuffer<uint32_t>           cBufferBitMask_;
 	bool isEditEnabled_ = false;
 	int editMode_ = EditMode::ADJACENT;
 	std::vector<int> editedChunkIDs_;
+	int editBitMask_ = 0;
 
 
 	ConstantBuffer<GPUData::MarchingCube> cBufferMarchingCubeInfo_;

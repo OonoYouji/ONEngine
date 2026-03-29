@@ -25,6 +25,7 @@ class VoxelTerrainEditorComputePipeline : public IEditorCompute {
 		CBV_CAMERA,
 		CBV_INPUT_INFO,
 		CBV_EDITOR_INFO,
+		CBV_BIT_MASK,
 		C32BIT_CHUNK_ID,
 		UAV_MOUSE_POS,
 		SRV_CHUNKS,
@@ -66,7 +67,12 @@ private:
 
 	ONEngine::DxManager* pDxManager_ = nullptr;
 
+	/// ----- Editor用Pipeline ----- ///
 	std::unique_ptr<ONEngine::ComputePipeline> adjacentModePipeline_ = nullptr;
+	std::unique_ptr<ONEngine::ComputePipeline> materialBitMaskEditPipeline_ = nullptr;
+	std::unique_ptr<ONEngine::ComputePipeline> materialTextureWeightEditPipeline_ = nullptr;
+
+	/// ----- 前準備用Pipeline ----- ///
 	std::unique_ptr<ONEngine::ComputePipeline> calculationMouseWorldPosPipeline_ = nullptr;
 
 	ONEngine::StructuredBuffer<ONEngine::Vector4> uavMousePosBuffer_;

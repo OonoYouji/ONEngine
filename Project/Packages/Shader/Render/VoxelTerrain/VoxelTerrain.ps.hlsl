@@ -9,8 +9,13 @@ struct PSOutput {
 	float4 flags : SV_Target3;
 };
 
-ConstantBuffer<ConstantBufferMaterial> material : register(b4);
-ConstantBuffer<ConstantBufferMaterial> cliffMaterial : register(b5);
+struct UsedTextureIds {
+    int32_t textureIds[8];  /// 使用するテクスチャIDの配列
+};
+
+ConstantBuffer<ConstantBufferMaterial> material       : register(b4);
+ConstantBuffer<ConstantBufferMaterial> cliffMaterial  : register(b5);
+ConstantBuffer<UsedTextureIds>         usedTextureIds : register(b6);
 Texture2D<float4> textures[kMaxTextureCount] : register(t2050);
 SamplerState textureSampler : register(s1);
 
@@ -33,10 +38,7 @@ float4 SampleTriplanar(Texture2D<float4> tex, float3 worldPos, float3 normal, fl
     float4 texY = tex.Sample(textureSampler, uvY);
     float4 texZ = tex.Sample(textureSampler, uvZ);
 
-    return
-        texX * blend.x +
-        texY * blend.y +
-        texZ * blend.z;
+    return texX * blend.x + texY * blend.y + texZ * blend.z;
 }
 
 float3 SampleTriplanarNormal(Texture2D<float4> tex, float3 worldPos, float3 N, float tiling)
@@ -93,19 +95,24 @@ PSOutput main(VertexOut input) {
 
     float cliffFactor = saturate((1.0 - abs(N.y) - 0.2) * 2.0);
 
-    const float tiling = 0.1f; // スケール調整
-	float4 terrainColor = SampleTriplanar(textures[material.intValues.z], worldPos, N, tiling);
-    float4 cliffColor = SampleTriplanar(textures[cliffMaterial.intValues.z], worldPos, N, tiling);
-    terrainColor = lerp(material.baseColor * terrainColor, cliffMaterial.baseColor * cliffColor, cliffFactor);
-	output.color = terrainColor;
+    const float tiling       = 0.1f; // スケール調整
+	float32_t4  terrainColor = SampleTriplanar(textures[material.intValues.z],      worldPos, N, tiling);
+    float32_t4  cliffColor   = SampleTriplanar(textures[cliffMaterial.intValues.z], worldPos, N, tiling);
+    terrainColor    = lerp(material.baseColor * terrainColor, cliffMaterial.baseColor * cliffColor, cliffFactor);
 
-    // float3 terrainNormal = SampleTriplanarNormal(textures[material.intValues.w], worldPos, N, tiling);
-    // float3 cliffNormal = SampleTriplanarNormal(textures[cliffMaterial.intValues.w], worldPos, N, tiling);
-    // float3 blendedNormal = normalize(lerp(terrainNormal, cliffNormal, cliffFactor));
-    output.normal = float4(N, 1);
+    /// usedTextureIds を参照して、テクスチャを切り替える
+    /// input.colorの r成分に参照テクスチャのIDを、g成分にweightを入れる
+    for (uint32_t i = 0; i < 8; ++i) {
+        if ((uint32_t(input.color.r) & (1u << i)) != 0) {
+            float32_t3 sampledColor = SampleTriplanar(textures[usedTextureIds.textureIds[i]], worldPos, N, tiling).rbg;
+            terrainColor.rgb += sampledColor * input.color.g; // weightを掛けて加算
+        }
+    }
 
+	output.color    = terrainColor;
+    output.normal   = float4(N, 1);
 	output.worldPos = input.worldPosition;
-	output.flags = float4(material.intValues.x, material.intValues.y, 0, 1);
+	output.flags    = float4(material.intValues.x, material.intValues.y, 0, 1);
 
 	if (output.color.a <= 0.001f) {
 		discard;
