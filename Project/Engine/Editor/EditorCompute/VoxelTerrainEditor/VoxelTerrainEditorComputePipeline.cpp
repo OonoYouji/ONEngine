@@ -25,7 +25,6 @@ void VoxelTerrainEditorComputePipeline::Initialize(ONEngine::ShaderCompiler* _sh
 		ONEngine::Shader shader;
 		shader.Initialize(_shaderCompiler);
 		shader.CompileShader(L"./Packages/Shader/Editor/VoxelTerrain/AreaMode.cs.hlsl", L"cs_6_6", ONEngine::Shader::Type::cs);
-
 		pipeline_ = std::make_unique<ONEngine::ComputePipeline>();
 		CreatePipeline(pipeline_.get(), shader, _dxm);
 	}
@@ -34,9 +33,24 @@ void VoxelTerrainEditorComputePipeline::Initialize(ONEngine::ShaderCompiler* _sh
 		ONEngine::Shader shader;
 		shader.Initialize(_shaderCompiler);
 		shader.CompileShader(L"./Packages/Shader/Editor/VoxelTerrain/AdjacentMode.cs.hlsl", L"cs_6_6", ONEngine::Shader::Type::cs);
-
 		adjacentModePipeline_ = std::make_unique<ONEngine::ComputePipeline>();
 		CreatePipeline(adjacentModePipeline_.get(), shader, _dxm);
+	}
+
+	{	/// BitMask編集モード
+		ONEngine::Shader shader;
+		shader.Initialize(_shaderCompiler);
+		shader.CompileShader(L"./Packages/Shader/Editor/VoxelTerrain/MaterialBitMaskEdit.cs.hlsl", L"cs_6_6", ONEngine::Shader::Type::cs);
+		materialBitMaskEditPipeline_ = std::make_unique<ONEngine::ComputePipeline>();
+		CreatePipeline(materialBitMaskEditPipeline_.get(), shader, _dxm);
+	}
+
+	{	/// テクスチャWeight編集モード
+		ONEngine::Shader shader;
+		shader.Initialize(_shaderCompiler);
+		shader.CompileShader(L"./Packages/Shader/Editor/VoxelTerrain/MaterialTextureWeight.cs.hlsl", L"cs_6_6", ONEngine::Shader::Type::cs);
+		materialTextureWeightEditPipeline_ = std::make_unique<ONEngine::ComputePipeline>();
+		CreatePipeline(materialTextureWeightEditPipeline_.get(), shader, _dxm);
 	}
 
 	{
@@ -173,6 +187,12 @@ void VoxelTerrainEditorComputePipeline::Execute(ONEngine::EntityComponentSystem*
 	case ONEngine::VoxelTerrain::EditMode::AREA:
 		pipeline_->SetPipelineStateForCommandList(_dxCommand);
 		break;
+	//case ONEngine::VoxelTerrain::EditMode::BIT_MASK:
+	//	materialBitMaskEditPipeline_->SetPipelineStateForCommandList(_dxCommand);
+	//	break;
+	case ONEngine::VoxelTerrain::EditMode::TEXTURE_WEIGHT:
+		materialTextureWeightEditPipeline_->SetPipelineStateForCommandList(_dxCommand);
+		break;
 	default:
 		ONEngine::Console::LogWarning("VoxelTerrainEditorComputePipeline::Execute: Unknown edit mode");
 		return;
@@ -181,7 +201,7 @@ void VoxelTerrainEditorComputePipeline::Execute(ONEngine::EntityComponentSystem*
 
 	voxelTerrain->SetupEditorBuffers(
 		cmdList,
-		{ CBV_INPUT_INFO, CBV_TERRAIN_INFO, CBV_EDITOR_INFO, SRV_CHUNKS },
+		{ CBV_INPUT_INFO, CBV_TERRAIN_INFO, CBV_EDITOR_INFO, SRV_CHUNKS, CBV_BIT_MASK },
 		inputInfo
 	);
 
@@ -255,8 +275,9 @@ void VoxelTerrainEditorComputePipeline::CreatePipeline(ONEngine::ComputePipeline
 	pipeline->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 2); // CBV_CAMERA
 	pipeline->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 3); // CBV_INPUT_INFO
 	pipeline->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 4); // CBV_EDITOR_INFO
+	pipeline->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 5); // CBV_EDITOR_INFO
 
-	pipeline->Add32BitConstant(D3D12_SHADER_VISIBILITY_ALL, 5, 1); // C32BIT_CHUNK_ID
+	pipeline->Add32BitConstant(D3D12_SHADER_VISIBILITY_ALL, 6, 1); // C32BIT_CHUNK_ID
 
 	/// Descriptor Range
 	pipeline->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_UAV); // UAV_MOUSE_POS_BUFFER

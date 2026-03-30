@@ -26,6 +26,7 @@ class VoxelTerrainRenderingPipeline : public IRenderingPipeline {
 		CBV_LOD_INFO,
 		CBV_MATERIAL,
 		CBV_CLIFF_MATERIAL,
+		CBV_USED_TEXTURE_IDS,
 		SRV_CHUNK_ARRAY,
 		SRV_VOXEL_TERRAIN_TEXTURE3D,
 		SRV_TEXTURES,

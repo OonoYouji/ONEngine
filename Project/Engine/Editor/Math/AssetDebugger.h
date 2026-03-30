@@ -5,6 +5,8 @@
 
 /// engine
 #include "Engine/Asset/Assets/Mateiral/Material.h"
+#include "Engine/Asset/Assets/Texture/Texture.h"
+#include "Engine/Editor/Math/AssetPayload.h"
 
 namespace ONEngine {
 class AssetCollection;
@@ -17,13 +19,32 @@ namespace Editor {
 /// ////////////////////////////////////////////////////////
 namespace ImMathf {
 
-	/// @brief Materialの編集UIの表示
-	/// @param _label ヘッダーの名前
-	/// @param _material 編集対象のMaterialポインタ
-	/// @param _assetCollection AssetCollectionポインタ
-	/// @param _isEditNormalTexture ノーマルマップの編集を行うかどうか
-	/// @return true: 編集が行われた, false: 編集されなかった
-	bool MaterialEdit(const std::string& _label, ONEngine::Material* _material, ONEngine::AssetCollection* _assetCollection, bool _isEditNormalTexture = true);
+void DrawTextureDropSpace(const std::string& areaName = "DropArea");
+
+/// テクスチャのプレビュー表示
+void DrawTexturePreview(const ONEngine::Texture* texture);
+
+/// @brief テクスチャボタンの表示
+/// @param texture ボタンとして描画したいテクスチャのポインタ
+/// @return true: ボタンを押した false: ボタンを押していない
+bool TextureButton(const std::string& label, const ONEngine::Texture* texture);
+
+/// テクスチャのドロップ処理
+bool HandleTextureDrop(ONEngine::Material* material);
+
+/// 法線テクスチャのドロップ処理
+bool HandleNormalTextureDrop(ONEngine::Material* material);
+
+
+
+
+/// @brief Materialの編集UIの表示
+/// @param _label ヘッダーの名前
+/// @param _material 編集対象のMaterialポインタ
+/// @param _assetCollection AssetCollectionポインタ
+/// @param _isEditNormalTexture ノーマルマップの編集を行うかどうか
+/// @return true: 編集が行われた, false: 編集されなかった
+bool MaterialEdit(const std::string& label, ONEngine::Material* material, ONEngine::AssetCollection* assetCollection, bool isEditNormalTexture = true);
 
 }
 

@@ -79,7 +79,7 @@ void PostProcessVoxelTerrainBrush::Execute(
 		return;
 	}
 	
-	if(vt->GetEditMode() != VoxelTerrain::EditMode::ADJACENT) {
+	if(vt->GetEditMode() == VoxelTerrain::EditMode::AREA) {
 		return;
 	}
 
