@@ -41,6 +41,16 @@ void DrawTexturePreview(const ONEngine::Texture* _texture) {
 }
 
 
+bool TextureButton(const std::string& label, const ONEngine::Texture* texture) {
+	if(!texture) {
+		return false;
+	}
+	ONEngine::Vector2 aspectRatio = texture->GetTextureSize();
+	aspectRatio /= (std::max)(aspectRatio.x, aspectRatio.y);
+	ImTextureID texId = reinterpret_cast<ImTextureID>(texture->GetSRVGPUHandle().ptr);
+	return ImGui::ImageButton(label.c_str(), texId, ImVec2(64.0f * aspectRatio.x, 64.0f * aspectRatio.y));
+}
+
 /// テクスチャのドロップ処理
 bool HandleTextureDrop(ONEngine::Material* _material) {
 	bool edit = false;

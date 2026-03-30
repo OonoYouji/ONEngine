@@ -105,22 +105,46 @@ void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* vt, DxManager* _dxm, AssetC
 	/// ===========================================
 	if(ImGui::CollapsingHeader("UsedTextureID")) {
 
-		/// 各ビットにどのテクスチャを参照するのか決める。
-		/// 地形の描画に用いるテクスチャが "DXGI_FORMAT_R8G8B8A8_UNORM" で作られているので最大8枚
-		//int32_t& bit = vt->usedTextureIds_.usedBit;
-
-		for(int i = 0; i < 3; ++i) {
+		const int kMaxLoop = 3;
+		for(int i = 0; i < kMaxLoop; ++i) {
 			ImGui::PushID(i);
 
 			Guid& guid = vt->usedTextureGuids_[i];
+			bool isSelected = (vt->materialId_ == i);
 
-			/// ----- テクスチャIDの編集 ----- ///
-
+			/// Guidが有効であれば
 			if(guid.CheckValid()) {
-				Editor::ImMathf::DrawTexturePreview(_ac->GetTexture(_ac->GetTexturePath(guid)));
+				/// Textureのプレビューかつボタンを表示、
+				/// 選択中のTextureは強調表示する。
+				if(isSelected) {
+					ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.25f, 0.25f, 0.25f, 1.0f));
+				}
+
+				/// テクスチャのプレビュー表示
+				if(Editor::ImMathf::TextureButton("##button", _ac->GetTexture(_ac->GetTexturePath(guid)))) {
+					vt->materialId_ = i;
+				}
+
+				if(isSelected) {
+					ImGui::PopStyleColor();
+				}
+
+				/// ----- 枠で強調表示 ----- ///
+				if(isSelected) {
+					ImDrawList* dl = ImGui::GetWindowDrawList();
+					dl->AddRect(
+						ImGui::GetItemRectMin(), ImGui::GetItemRectMax(),
+						IM_COL32(255, 255, 0, 255),
+						4.0f, 0, 3.0f
+					);
+				}
+
 			} else {
+				/// Guidが無効値であればドラッグスペースを表示する
 				Editor::ImMathf::DrawTextureDropSpace("BaseTex");
 			}
+
+			/// ----- ドラッグ&ドロップ ----- ///
 			if(ImGui::BeginDragDropTarget()) {
 				if(const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("AssetData")) {
 					if(payload->Data) {
@@ -142,6 +166,11 @@ void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* vt, DxManager* _dxm, AssetC
 			}
 
 			ImGui::PopID();
+
+			if(i != kMaxLoop - 1) {
+				ImGui::SameLine();
+			}
+
 		}
 	}
 
@@ -182,7 +211,7 @@ void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* vt, DxManager* _dxm, AssetC
 
 		for(int i = 0; i < VoxelTerrain::EditMode::COUNT; ++i) {
 			if(Input::TriggerKey(DIK_1 + i)) {
-				vt->editMode_ = VoxelTerrain::EditMode::ADJACENT;
+				vt->editMode_ = i + 1;
 				isEdit = true;
 			}
 		}
@@ -606,6 +635,14 @@ void VoxelTerrain::SettingMaterial(AssetCollection* assetCollection) {
 		);
 	}
 
+
+	{	/// その他三つのテクスチャを設定
+		for(int i = 0; i < 3; ++i) {
+			const Guid& guid = usedTextureGuids_[i];
+			if(!guid.CheckValid()) { continue; }
+			usedTextureIds_.ids[i] = assetCollection->GetTextureFromGuid(guid)->GetSRVDescriptorIndex();
+		}
+	}
 }
 
 void VoxelTerrain::SettingTerrainInfo() {
