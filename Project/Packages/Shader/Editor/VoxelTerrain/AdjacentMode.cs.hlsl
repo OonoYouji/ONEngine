@@ -86,10 +86,6 @@ void main(
 	}
 	/// ---------------------------------------------------
 	
-	if (voxelColor.a != 0.0f) {
-		voxelTextures[chunks[chunkID.value].textureId][voxelPos] = float4(0, 1, 0, voxelColor.a);
-	}
-	
 	/// 操作次第で色を変更
 	if (inputInfo.mouseLeftButton == 1) {
         float val = editorInfo.brushStrength;

@@ -138,7 +138,7 @@ void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* vt, DxManager* _dxm, AssetC
 
 			if(guid.CheckValid()) {
 				int32_t& id = vt->usedTextureIds_.ids[i];
-				id = _ac->GetTextureIndexFromGuid(guid);
+				id = _ac->GetTextureFromGuid(guid)->GetSRVDescriptorIndex();
 			}
 
 			ImGui::PopID();
@@ -272,23 +272,6 @@ void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* vt, DxManager* _dxm, AssetC
 			ImGui::Text("Radius: %d", radius);
 			ImGui::Text("Strength: %.2f", strength);
 			ImGui::End();
-		}
-
-
-		for(int i = 0; i < 8; ++i) {
-			ImGui::PushID(i);
-			bool isUsed = (vt->editBitMask_ >> i) & 1;
-			if(ImGui::Checkbox("##used", &isUsed)) {
-				if(isUsed) {
-					/// ON
-					vt->editBitMask_ |= (1 << i);
-				} else {
-					/// OFF
-					vt->editBitMask_ ^= (1 << i);
-				}
-			}
-			if(i != 7) ImGui::SameLine();
-			ImGui::PopID();
 		}
 
 	}

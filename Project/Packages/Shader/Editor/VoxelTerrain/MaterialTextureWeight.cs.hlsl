@@ -37,9 +37,16 @@ void main(
 	
 	uint32_t radius = (uint32_t) editorInfo.brushRadius;
 	int3 lpos = int32_t3(DTid - int3(radius, radius, radius));
-	if (lpos.x * lpos.x + lpos.y * lpos.y + lpos.z * lpos.z > radius * radius) {
-        return;
-	}
+
+    // 距離計算
+    float dist = length((float3)lpos);
+
+    // 範囲外はそのまま除外
+    if (dist > radius) { return; }
+
+    // 中心:1.0 → 外周:0.0
+    float falloff = 1.0f - (dist / radius);
+    float val = editorInfo.brushStrength * falloff;
 
 	/// ボクセル位置を取得
 	int3 voxelPos = chunkLocalMousePos + lpos;
@@ -52,7 +59,6 @@ void main(
     float4 voxelColor = voxelTextures[chunks[chunkID.value].textureId][voxelPos];
 	/// 操作次第で色を変更
 	if (inputInfo.mouseLeftButton == 1) {
-        float val = editorInfo.brushStrength;
         uint id = editorInfo.materialId;
 		if (inputInfo.keyboardLShift == 1) {
 			// ----- 押し下げ ----- //
