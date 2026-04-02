@@ -2,12 +2,15 @@
 
 using namespace ONEngine;
 
+/// std
+#include <chrono>
+
 /// engine
 #include "Engine/Core/Utility/Input/Input.h"
 #include "Engine/Core/Utility/Time/Time.h"
 #include "Engine/Core/Config/EngineConfig.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Script/Script.h"
-
+#include "Engine/Core/Threading/ThreadPool.h"
 
 GameFramework::GameFramework() {}
 GameFramework::~GameFramework() {
@@ -19,6 +22,7 @@ GameFramework::~GameFramework() {
 	Time::Finalize();
 	Input::Finalize();
 	Console::Finalize();
+	ThreadPool::Instance().Shutdown();
 
 	imGuiManager_->Finalize();
 	/// engineの終了処理
@@ -27,31 +31,33 @@ GameFramework::~GameFramework() {
 
 void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 
+	/// 初期化にかかる時間の計測開始
+	auto startTime = std::chrono::high_resolution_clock::now();
+
 	/// ログ出力の初期化
 	Console::Initialize();
-
 
 	/// --------------------------------------------------
 	/// 各クラスのインスタンスを生成する
 	/// --------------------------------------------------
-	dxManager_             = std::make_unique<DxManager>();
-	windowManager_         = std::make_unique<WindowManager>(dxManager_.get());
+	dxManager_ = std::make_unique<DxManager>();
+	windowManager_ = std::make_unique<WindowManager>(dxManager_.get());
 	entityComponentSystem_ = std::make_unique<EntityComponentSystem>(dxManager_.get());
-	renderingFramework_    = std::make_unique<RenderingFramework>();
-	sceneManager_          = std::make_unique<SceneManager>(entityComponentSystem_.get());
+	renderingFramework_ = std::make_unique<RenderingFramework>();
+	sceneManager_ = std::make_unique<SceneManager>(entityComponentSystem_.get());
 
-	editorManager_         = std::make_unique<Editor::EditorManager>(entityComponentSystem_.get());
-	imGuiManager_          = std::make_unique<Editor::ImGuiManager>(dxManager_.get(), windowManager_.get(), entityComponentSystem_.get(), editorManager_.get(), sceneManager_.get());
+	editorManager_ = std::make_unique<Editor::EditorManager>(entityComponentSystem_.get());
+	imGuiManager_ = std::make_unique<Editor::ImGuiManager>(dxManager_.get(), windowManager_.get(), entityComponentSystem_.get(), editorManager_.get(), sceneManager_.get());
 
 
 	/// --------------------------------------------------
 	/// 各クラスの初期化を行う
 	/// --------------------------------------------------
 
-	/// directX12の初期化
 	dxManager_->Initialize();
-	/// windowの初期化
+	ThreadPool::Instance().Initialize(dxManager_->GetDxDevice(), 4);
 	windowManager_->Initialize();
+
 	/// main windowの生成
 #ifdef DEBUG_MODE
 	UINT style = WS_OVERLAPPEDWINDOW;
@@ -85,12 +91,22 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 	editorManager_->Initialize(dxManager_.get(), renderingFramework_->GetShaderCompiler());
 	SetEntityComponentSystemPtr(entityComponentSystem_->GetECSGroup("GameScene"), entityComponentSystem_->GetECSGroup("Debug"));
 
+
+	/// 初期化にかかった時間の計測終了と出力
+	auto endTime = std::chrono::high_resolution_clock::now();
+	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime).count();
+	Console::Log("################################################################################");
+	Console::Log("#");
+	Console::Log("# Initialization completed in " + std::to_string(duration) + " ms");
+	Console::Log("#");
+	Console::Log("################################################################################");
+
 }
 
 void GameFramework::Run() {
 
 	/// game loopが終了するまで回す
-	while (true) {
+	while(true) {
 
 		/// 更新処理
 		Input::Update();
@@ -105,7 +121,7 @@ void GameFramework::Run() {
 		entityComponentSystem_->OutsideOfUpdate();
 
 		///!< ゲームデバッグモードの場合は更新処理を行う
-		if (DebugConfig::isDebugging) {
+		if(DebugConfig::isDebugging) {
 			sceneManager_->Update();
 			entityComponentSystem_->Update();
 		}
@@ -121,7 +137,7 @@ void GameFramework::Run() {
 		renderingFramework_->Draw();
 
 		/// 破棄されたら終了
-		if (windowManager_->GetMainWindow()->GetProcessMessage()) {
+		if(windowManager_->GetMainWindow()->GetProcessMessage()) {
 			break;
 		}
 	}

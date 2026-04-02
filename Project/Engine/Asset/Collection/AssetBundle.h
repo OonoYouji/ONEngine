@@ -2,11 +2,13 @@
 
 /// std
 #include <memory>
+#include <future>
 
 /// engine
 #include "Engine/Asset/Assets/IAsset.h"
 #include "Engine/Asset/Assets/IAssetLoader.h"
 #include "Engine/Asset/Collection/Container/AssetContainer.h"
+#include "Engine/Core/Threading/ThreadPool.h" 
 
 namespace ONEngine {
 
@@ -15,6 +17,7 @@ public:
 	virtual ~IAssetBundle() = default;
 
 	virtual void Load(const std::string& _filepath) = 0;
+	virtual std::future<void> LoadAsync(const std::string& _filepath) = 0;
 	virtual void Reload(const std::string& _filepath) = 0;
 	virtual const Guid& GetGuid(const std::string& _filepath) const = 0;
 	virtual void Remove(const std::string& _filepath) = 0;
@@ -34,11 +37,22 @@ public:
 
 	void Load(const std::string& _filepath) override {
 		if(container->GetIndex(_filepath) == -1) {
-			auto texture = loader->Load(_filepath);
-			if(texture.has_value()) {
-				container->Add(_filepath, std::move(texture.value()));
+			auto asset = loader->Load(_filepath);
+			if(asset.has_value()) {
+				container->Add(_filepath, std::move(asset.value()));
 			}
 		}
+	}
+
+	std::future<void> LoadAsync(const std::string& _filepath) override {
+		return ThreadPool::Instance().Enqueue([this, _filepath]() {
+			if(container->GetIndex(_filepath) == -1) {
+				auto asset = loader->Load(_filepath);
+				if(asset.has_value()) {
+					container->Add(_filepath, std::move(asset.value()));
+				}
+			}
+		});
 	}
 
 	void Reload(const std::string& _filepath) override {
@@ -51,7 +65,6 @@ public:
 			}
 		}
 	}
-
 
 	const Guid& GetGuid(const std::string& _filepath) const override {
 		return container->GetGuid(_filepath);

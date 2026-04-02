@@ -18,6 +18,7 @@ class VoxelTerrainTransvoxelRenderingPipeline : public IRenderingPipeline {
 		CBV_VOXEL_TERRAIN_INFO = 0,
 		CBV_VIEW_PROJECTION,
 		CBV_CAMERA_POSITION,
+		CBV_LOD_INFO,
 		CBV_MATERIAL,
 		SRV_CHUNK_ARRAY,
 		SRV_VOXEL_TERRAIN_TEXTURE3D,
@@ -41,6 +42,8 @@ private:
 
 	AssetCollection* pAssetCollection_;
 	DxManager* pDxManager_;
+
+	std::unique_ptr<GraphicsPipeline> debugPipeline_;
 
 };
 

@@ -7,6 +7,7 @@
 #include <fstream>
 #include <filesystem>
 #include <cstdint>
+#include <shared_mutex> 
 
 /// engine
 #include "Engine/Asset/Assets/IAsset.h"
@@ -22,7 +23,6 @@ class IAssetContainer {
 public:
 	virtual ~IAssetContainer() = default;
 };
-
 
 /// ///////////////////////////////////////////////////
 /// リソースのコンテナクラス
@@ -47,73 +47,38 @@ public:
 
 	/// --------------- 取得用 --------------- ///
 
-	/// @brief stringのキーから取得
-	/// @param _key mapのキー
-	/// @return 見つかったらポインタ、見つからなかったらnullptr
 	T* Get(const std::string& _key);
-
-	/// @brief 
-	/// @param _index 
-	/// @return 
 	T* Get(int32_t _index);
-
-	/// @brief 先頭の要素を返す
-	/// @return 先頭の要素へのポインタ
 	T* GetFirst();
 
-
-	/// @brief vectorのインデックスからキーを取得
-	/// @param _index 配列のインデックス
-	/// @return _indexに対応するキー文字列
 	const std::string& GetKey(int32_t _index) const;
-	
 
-	/// @brief mapのキーからvectorのインデックスを取得
-	/// @param _key マップのキー
-	/// @return _keyに対応する配列のインデックス
 	int32_t GetIndex(const std::string& _key) const;
-
-	/// @brief Guidからvectorのインデックスを取得
-	/// @param _guid 要素のGuid
-	/// @return 存在すればインデックス、存在しなければ-1
 	int32_t GetIndex(const Guid& _guid) const;
 
-
-	/// @brief すべての要素を取得
 	const std::vector<T>& GetValues() const;
 	std::vector<T>& GetValues();
-	
 
-	/// @brief すべてのIndexMapを取得
 	const std::unordered_map<std::string, int32_t>& GetIndexMap() const;
 
-
-	/// @brief mapのキーからGuidを取得
-	/// @param _key マップのキー
-	/// @return 見つかったGuidへの参照
 	const Guid& GetGuid(const std::string& _key) const;
-
-	/// @brief vectorのインデックスからGuidを取得
-	/// @param _index 配列のインデックス
-	/// @return 見つかったGuidへの参照
 	const Guid& GetGuid(int32_t _index) const;
-
 
 private:
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
 
+	mutable std::shared_mutex mtx_;
+
 	std::unordered_map<std::string, int32_t> indexMap_;
 	std::unordered_map<int32_t, std::string> reverseIndexMap_;
 
-	std::unordered_map<Guid, int32_t> guidToIndexMap_; /// Guidからvalues_のIndexを取得するためのマップ
-	std::unordered_map<int32_t, Guid> indexToGuidMap_; /// values_のIndexからGuidを取得するためのマップ
+	std::unordered_map<Guid, int32_t> guidToIndexMap_;
+	std::unordered_map<int32_t, Guid> indexToGuidMap_;
 
 	std::vector<T> values_;
-
 };
-
 
 /// ///////////////////////////////////////////////////
 /// methods
@@ -129,21 +94,19 @@ inline AssetContainer<T>::~AssetContainer() {}
 
 template<IsAsset T>
 inline T* AssetContainer<T>::Add(const std::string& _key, T _t) {
-	/// すでに同じキーが存在する場合は、値を更新
-	if (indexMap_.contains(_key)) {
+	std::unique_lock<std::shared_mutex> lock(mtx_);
+
+	if(indexMap_.contains(_key)) {
 		uint32_t index = indexMap_[_key];
-		values_[index] = _t;
+		values_[index] = std::move(_t);
 		return &values_[index];
 	}
 
-	/// 新しいキーの場合は、値を追加
 	uint32_t index = static_cast<uint32_t>(indexMap_.size());
 	indexMap_[_key] = index;
 	reverseIndexMap_[index] = _key;
 
-	
-	/// _keyのファイルがあるなら.metaファイルを読み込んでGuidを登録する
-	if (std::filesystem::exists(_key + ".meta")) {
+	if(std::filesystem::exists(_key + ".meta")) {
 		MetaFile metaFile;
 		metaFile.LoadFromFile(_key + ".meta");
 		Guid& guid = metaFile.guid;
@@ -151,7 +114,6 @@ inline T* AssetContainer<T>::Add(const std::string& _key, T _t) {
 		indexToGuidMap_[index] = guid;
 		_t.guid = guid;
 	} else {
-		/// .metaファイルがない場合は新しくMetaファイルを作成しGuidを登録、保存する
 		MetaFile metaFile = GenerateMetaFile(_key);
 		Guid& guid = metaFile.guid;
 		guidToIndexMap_[guid] = index;
@@ -159,14 +121,14 @@ inline T* AssetContainer<T>::Add(const std::string& _key, T _t) {
 		_t.guid = guid;
 	}
 
-	values_[index] = _t;
+	values_[index] = std::move(_t);
 	return &values_[index];
 }
 
 template<IsAsset T>
 inline void AssetContainer<T>::Remove(const std::string& _key) {
+	std::unique_lock<std::shared_mutex> lock(mtx_);
 
-	/// 参照する方法を消して使えないようにする
 	if(indexMap_.contains(_key)) {
 		uint32_t index = indexMap_[_key];
 		indexMap_.erase(_key);
@@ -176,8 +138,8 @@ inline void AssetContainer<T>::Remove(const std::string& _key) {
 
 template<IsAsset T>
 inline void AssetContainer<T>::Remove(int32_t _index) {
+	std::unique_lock<std::shared_mutex> lock(mtx_);
 
-	/// 参照する方法を消して使えないようにする
 	if(reverseIndexMap_.contains(_index)) {
 		std::string key = reverseIndexMap_[_index];
 		indexMap_.erase(key);
@@ -187,88 +149,93 @@ inline void AssetContainer<T>::Remove(int32_t _index) {
 
 template<IsAsset T>
 inline T* AssetContainer<T>::Get(const std::string& _key) {
-	/// ----- IndexMapを_keyで参照して T型の Assetを返す ----- ///
-	if (indexMap_.contains(_key)) {
+	std::shared_lock<std::shared_mutex> lock(mtx_);
+
+	if(indexMap_.contains(_key)) {
 		uint32_t index = indexMap_[_key];
 		return &values_[index];
 	}
-
 	return nullptr;
 }
 
 template<IsAsset T>
 inline T* AssetContainer<T>::Get(int32_t _index) {
-	/// ----- Indexで直接参照してアセットを返す ----- ///
+	std::shared_lock<std::shared_mutex> lock(mtx_);
 
-	if( _index < values_.size()) {
+	if(_index < values_.size()) {
 		return &values_[_index];
 	}
-
 	return nullptr;
 }
 
 template<IsAsset T>
 inline T* AssetContainer<T>::GetFirst() {
+	std::shared_lock<std::shared_mutex> lock(mtx_);
 	return &values_.front();
 }
 
 template<IsAsset T>
 inline const std::string& AssetContainer<T>::GetKey(int32_t _index) const {
+	std::shared_lock<std::shared_mutex> lock(mtx_);
+
 	if(reverseIndexMap_.contains(_index)) {
 		return reverseIndexMap_.at(_index);
 	}
-
-	/// 空文字を返す(const&で返すためstaticで用意)
 	static const std::string emptyString;
 	return emptyString;
 }
 
 template<IsAsset T>
 inline int32_t AssetContainer<T>::GetIndex(const std::string& _key) const {
+	std::shared_lock<std::shared_mutex> lock(mtx_);
+
 	if(indexMap_.contains(_key)) {
 		return indexMap_.at(_key);
 	}
-
-	/// 存在しない場合は無効なインデックスを返す
 	return -1;
 }
 
 template<IsAsset T>
 inline int32_t AssetContainer<T>::GetIndex(const Guid& _guid) const {
+	std::shared_lock<std::shared_mutex> lock(mtx_);
+
 	if(guidToIndexMap_.contains(_guid)) {
 		return guidToIndexMap_.at(_guid);
 	}
-
-	/// 存在しない場合は無効なインデックスを返す
 	return -1;
 }
 
 template<IsAsset T>
 inline const std::vector<T>& AssetContainer<T>::GetValues() const {
+	std::shared_lock<std::shared_mutex> lock(mtx_);
 	return values_;
 }
 
 template<IsAsset T>
 inline std::vector<T>& AssetContainer<T>::GetValues() {
+	std::shared_lock<std::shared_mutex> lock(mtx_);
 	return values_;
 }
 
 template<IsAsset T>
 inline const std::unordered_map<std::string, int32_t>& AssetContainer<T>::GetIndexMap() const {
+	std::shared_lock<std::shared_mutex> lock(mtx_);
 	return indexMap_;
 }
 
 template<IsAsset T>
 inline const Guid& AssetContainer<T>::GetGuid(const std::string& _key) const {
-	if (indexMap_.contains(_key)) {
+	std::shared_lock<std::shared_mutex> lock(mtx_);
+
+	if(indexMap_.contains(_key)) {
 		return indexToGuidMap_.at(indexMap_.at(_key));
 	}
-
 	return Guid::kInvalid;
 }
 
 template<IsAsset T>
 inline const Guid& AssetContainer<T>::GetGuid(int32_t _index) const {
+	std::shared_lock<std::shared_mutex> lock(mtx_);
 	return indexToGuidMap_.at(_index);
 }
 

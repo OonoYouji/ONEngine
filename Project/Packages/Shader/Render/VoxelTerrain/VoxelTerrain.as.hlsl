@@ -17,17 +17,20 @@ void main(
 	Payload asPayload;
 		
 	/// チャンクの原点を計算
-	asPayload.chunkOrigin = float3(groupId) * voxelTerrainInfo.chunkSize + uint3(voxelTerrainInfo.terrainOrigin);
+	float32_t3 chunkOrigin = float32_t3(groupId) * voxelTerrainInfo.chunkSize + uint3(voxelTerrainInfo.terrainOrigin);
+
+    /// 
+    float32_t3 startPos = float32_t3(DTid) * voxelTerrainInfo.chunkSize;
+    asPayload.startPos = startPos;
 
 	/// カリング判定、可視ならディスパッチサイズを設定
 	AABB aabb;
-	aabb.min = asPayload.chunkOrigin;
-	aabb.max = asPayload.chunkOrigin + float3(voxelTerrainInfo.chunkSize);
+	aabb.min = chunkOrigin;
+	aabb.max = chunkOrigin + float3(voxelTerrainInfo.chunkSize);
 	if (IsVisible(aabb, CreateFrustumFromMatrix(viewProjection.matVP))) {
 		/// ---------------------------------------------------
 		/// LODレベルを決め、サブチャンクの大きさを設定、高~低解像度に対応する
 		/// ---------------------------------------------------
-		
 		float3 center = (aabb.min + aabb.max) * 0.5;
 		float3 nearPoint = float3(
 			clamp(camera.position.x, aabb.min.x, aabb.max.x),
@@ -35,25 +38,26 @@ void main(
 			clamp(camera.position.z, aabb.min.z, aabb.max.z)
 		);
 
-		float3 diff = nearPoint - camera.position.xyz;
-		float lengthToCamera = length(diff);
+		float lengthToCamera = length(nearPoint - camera.position.xyz);
 		if (lengthToCamera <= lodInfo.maxDrawDistance) {
 
+            int lodLevel = 0;
             if(lodInfo.useLod != 0) {
-                asPayload.lodLevel = GetLOD(lengthToCamera);
+                lodLevel = GetLOD(lengthToCamera);
             } else {
-                asPayload.lodLevel = lodInfo.lod;
+                lodLevel = lodInfo.lod;
             }
 
-			uint32_t subChunkSize = GetSubChunkSize(asPayload.lodLevel);
-			asPayload.chunkIndex = IndexOfMeshGroup(groupId, uint3(voxelTerrainInfo.chunkCountXZ.x, 1, voxelTerrainInfo.chunkCountXZ.y));
+			uint32_t subChunkSize = GetSubChunkSize(lodLevel);
 			asPayload.subChunkSize = uint3(subChunkSize, subChunkSize, subChunkSize);
-			dispatchSize = voxelTerrainInfo.textureSize / asPayload.subChunkSize; // numthreads に合わせて分割
+			dispatchSize = voxelTerrainInfo.textureSize / asPayload.subChunkSize;
+            /// numthreads に合わせて分割
             dispatchSize.x = (dispatchSize.x * dispatchSize.y * dispatchSize.z) / 16;
             dispatchSize.y = 1;
             dispatchSize.z = 1;
 
-            asPayload.transitionMask = GetTransitionMask(center, float3(voxelTerrainInfo.chunkSize), asPayload.lodLevel, camera.position.xyz);
+            asPayload.transitionMask = GetTransitionMask(center, float3(voxelTerrainInfo.chunkSize), lodLevel, camera.position.xyz);
+            
 		}
 	}
 

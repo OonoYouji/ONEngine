@@ -4,19 +4,19 @@
 #include <memory>
 #include <unordered_map>
 #include <optional>
+#include <future>
+#include <vector>
 
 /// engine
 #include "Engine/Asset/AssetType.h"
 #include "Engine/Asset/Collection/Container/AssetContainer.h"
+#include "AssetBundle.h"
 
 #include "Engine/Asset/Assets/Mesh/ModelLoader.h"
 #include "Engine/Asset/Assets/Texture/TextureLoader.h"
 #include "Engine/Asset/Assets/AudioClip/AudioClipLoader.h"
 #include "Engine/Asset/Assets/Mateiral/MaterialLoader.h"
-
-#include "AssetBundle.h"
-#include <Engine/Asset/Guid/Guid.h>
-
+#include "Engine/Asset/Guid/Guid.h"
 
 /// @brief TがIAssetを継承しているかのコンセプト
 namespace ONEngine {
@@ -45,6 +45,9 @@ public:
 	/// 読み込み
 	void Load(const std::string& _filepath, AssetType _type);
 	void LoadResources(const std::vector<std::string>& _filepaths);
+
+	void LoadResourcesAsync(const std::vector<std::string>& _filepaths);
+	void WaitAllLoads();
 
 	/// アンロード
 	void UnloadResources(const std::vector<std::string>& _filepaths);
@@ -118,6 +121,8 @@ private:
 
 	std::vector<std::unique_ptr<IAssetBundle>> assetBundles_;
 
+	std::vector<std::future<void>> pendingTasks_;
+
 
 public:
 	/// ===================================================
@@ -167,8 +172,6 @@ public:
 	Texture* GetTextureFromGuid(const Guid& _guid) const;
 
 
-
-
 	/// ゲッタ オーディオクリップ
 	const AudioClip* GetAudioClip(const std::string& _filepath) const;
 	AudioClip* GetAudioClip(const std::string& _filepath);
@@ -204,12 +207,5 @@ inline const std::string& AssetCollection::GetAssetPath(const Guid& _guid) const
 	return container->GetKey(index);
 }
 
-//template<IsAsset T>
-//inline void AssetCollection::AddAsset(const std::string& _filepath, T&& _asset) {
-//	auto* bundle = GetBundle<T>(GetAssetTypeFromGuid(_asset.guid));
-//	if (bundle) {
-//		bundle->container->Add(_filepath, std::move(_asset));
-//	}
-//}
 
 } /// ONEngine
