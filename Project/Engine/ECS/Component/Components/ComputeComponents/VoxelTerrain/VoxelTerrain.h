@@ -174,7 +174,7 @@ public:
 		UNKOWN,         /// 不明なモード
 		ADJACENT,       /// 隣接編集モード
 		AREA,           /// 範囲編集モード
-		//BIT_MASK,       /// Bit編集モード
+		SMOOTH,         /// 滑らかにするモード
 		TEXTURE_WEIGHT, /// テクスチャ比重編集モード
 		COUNT
 	};

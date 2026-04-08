@@ -21,37 +21,60 @@ void VoxelTerrainEditorComputePipeline::Initialize(ONEngine::ShaderCompiler* _sh
 
 	pDxManager_ = _dxm;
 
-	{	/// 範囲モードのパイプライン
+
+	const std::vector<std::wstring> shaderPaths = {
+		L"AreaMode.cs.hlsl",
+		L"AdjacentMode.cs.hlsl",
+		L"SmoothMode.cs.hlsl",
+		//L"MaterialBitMaskEdit.cs.hlsl",
+		L"MaterialTextureWeight.cs.hlsl",
+	};
+
+
+	const size_t size = shaderPaths.size();
+	editPipelines_.resize(size);
+
+	for(size_t i = 0; i < size; ++i) {
 		ONEngine::Shader shader;
 		shader.Initialize(_shaderCompiler);
-		shader.CompileShader(L"./Packages/Shader/Editor/VoxelTerrain/AreaMode.cs.hlsl", L"cs_6_6", ONEngine::Shader::Type::cs);
-		pipeline_ = std::make_unique<ONEngine::ComputePipeline>();
-		CreatePipeline(pipeline_.get(), shader, _dxm);
+		shader.CompileShader(L"./Packages/Shader/Editor/VoxelTerrain/" + shaderPaths[i], L"cs_6_6", ONEngine::Shader::Type::cs);
+		editPipelines_[i] = std::make_unique<ONEngine::ComputePipeline>();
+		CreatePipeline(editPipelines_[i].get(), shader, _dxm);
 	}
 
-	{	/// 隣接モードのパイプライン
-		ONEngine::Shader shader;
-		shader.Initialize(_shaderCompiler);
-		shader.CompileShader(L"./Packages/Shader/Editor/VoxelTerrain/AdjacentMode.cs.hlsl", L"cs_6_6", ONEngine::Shader::Type::cs);
-		adjacentModePipeline_ = std::make_unique<ONEngine::ComputePipeline>();
-		CreatePipeline(adjacentModePipeline_.get(), shader, _dxm);
-	}
 
-	{	/// BitMask編集モード
-		ONEngine::Shader shader;
-		shader.Initialize(_shaderCompiler);
-		shader.CompileShader(L"./Packages/Shader/Editor/VoxelTerrain/MaterialBitMaskEdit.cs.hlsl", L"cs_6_6", ONEngine::Shader::Type::cs);
-		materialBitMaskEditPipeline_ = std::make_unique<ONEngine::ComputePipeline>();
-		CreatePipeline(materialBitMaskEditPipeline_.get(), shader, _dxm);
-	}
 
-	{	/// テクスチャWeight編集モード
-		ONEngine::Shader shader;
-		shader.Initialize(_shaderCompiler);
-		shader.CompileShader(L"./Packages/Shader/Editor/VoxelTerrain/MaterialTextureWeight.cs.hlsl", L"cs_6_6", ONEngine::Shader::Type::cs);
-		materialTextureWeightEditPipeline_ = std::make_unique<ONEngine::ComputePipeline>();
-		CreatePipeline(materialTextureWeightEditPipeline_.get(), shader, _dxm);
-	}
+	//{	/// 範囲モードのパイプライン
+	//	ONEngine::Shader shader;
+	//	shader.Initialize(_shaderCompiler);
+	//	shader.CompileShader(L"./Packages/Shader/Editor/VoxelTerrain/AreaMode.cs.hlsl", L"cs_6_6", ONEngine::Shader::Type::cs);
+	//	pipeline_ = std::make_unique<ONEngine::ComputePipeline>();
+	//	CreatePipeline(pipeline_.get(), shader, _dxm);
+	//}
+
+	//{	/// 隣接モードのパイプライン
+	//	ONEngine::Shader shader;
+	//	shader.Initialize(_shaderCompiler);
+	//	shader.CompileShader(L"./Packages/Shader/Editor/VoxelTerrain/AdjacentMode.cs.hlsl", L"cs_6_6", ONEngine::Shader::Type::cs);
+	//	adjacentModePipeline_ = std::make_unique<ONEngine::ComputePipeline>();
+	//	CreatePipeline(adjacentModePipeline_.get(), shader, _dxm);
+	//}
+
+	//{	/// BitMask編集モード
+	//	ONEngine::Shader shader;
+	//	shader.Initialize(_shaderCompiler);
+	//	shader.CompileShader(L"./Packages/Shader/Editor/VoxelTerrain/MaterialBitMaskEdit.cs.hlsl", L"cs_6_6", ONEngine::Shader::Type::cs);
+	//	materialBitMaskEditPipeline_ = std::make_unique<ONEngine::ComputePipeline>();
+	//	CreatePipeline(materialBitMaskEditPipeline_.get(), shader, _dxm);
+	//}
+
+	//{	/// テクスチャWeight編集モード
+	//	ONEngine::Shader shader;
+	//	shader.Initialize(_shaderCompiler);
+	//	shader.CompileShader(L"./Packages/Shader/Editor/VoxelTerrain/MaterialTextureWeight.cs.hlsl", L"cs_6_6", ONEngine::Shader::Type::cs);
+	//	materialTextureWeightEditPipeline_ = std::make_unique<ONEngine::ComputePipeline>();
+	//	CreatePipeline(materialTextureWeightEditPipeline_.get(), shader, _dxm);
+	//}
 
 	{
 		ONEngine::Shader shader;
@@ -180,20 +203,11 @@ void VoxelTerrainEditorComputePipeline::Execute(ONEngine::EntityComponentSystem*
 	/// バッファの設定
 	/// =========================================
 
-	switch(voxelTerrain->GetEditMode()) {
-	case ONEngine::VoxelTerrain::EditMode::ADJACENT:
-		adjacentModePipeline_->SetPipelineStateForCommandList(_dxCommand);
-		break;
-	case ONEngine::VoxelTerrain::EditMode::AREA:
-		pipeline_->SetPipelineStateForCommandList(_dxCommand);
-		break;
-	//case ONEngine::VoxelTerrain::EditMode::BIT_MASK:
-	//	materialBitMaskEditPipeline_->SetPipelineStateForCommandList(_dxCommand);
-	//	break;
-	case ONEngine::VoxelTerrain::EditMode::TEXTURE_WEIGHT:
-		materialTextureWeightEditPipeline_->SetPipelineStateForCommandList(_dxCommand);
-		break;
-	default:
+	/// editModeを用いてパイプラインを参照、editModeのunkwon分を引いて合わせる
+	size_t index = voxelTerrain->GetEditMode() - 1;
+	if(index < editPipelines_.size()) {
+		editPipelines_[index]->SetPipelineStateForCommandList(_dxCommand);
+	} else {
 		ONEngine::Console::LogWarning("VoxelTerrainEditorComputePipeline::Execute: Unknown edit mode");
 		return;
 	}

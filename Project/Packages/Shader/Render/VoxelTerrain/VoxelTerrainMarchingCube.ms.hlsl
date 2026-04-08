@@ -98,7 +98,12 @@ VertexOut VertexInterp(float3 p1, float3 p2, float3 subChunkSize, float d1, floa
 
 	vOut.worldPosition = float4(worldPos, 1.0f);
 	vOut.position      = mul(vOut.worldPosition, viewProjection.matVP);
-    vOut.normal        = CalculateNormal(worldPos, subChunkSize.x);
+    // vOut.normal        = CalculateNormal(worldPos, subChunkSize.x);
+
+    float3 n1 = CalculateNormal(p1, subChunkSize.x);
+    float3 n2 = CalculateNormal(p2, subChunkSize.x);
+    vOut.normal = normalize(lerp(n1, n2, t));
+
     vOut.color         = GetVolumeTextureColor(worldPos);
 	
 	return vOut;
