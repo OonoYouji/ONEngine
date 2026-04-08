@@ -26,7 +26,6 @@ void VoxelTerrainEditorComputePipeline::Initialize(ONEngine::ShaderCompiler* _sh
 		L"AreaMode.cs.hlsl",
 		L"AdjacentMode.cs.hlsl",
 		L"SmoothMode.cs.hlsl",
-		//L"MaterialBitMaskEdit.cs.hlsl",
 		L"MaterialTextureWeight.cs.hlsl",
 	};
 
@@ -43,38 +42,6 @@ void VoxelTerrainEditorComputePipeline::Initialize(ONEngine::ShaderCompiler* _sh
 	}
 
 
-
-	//{	/// 範囲モードのパイプライン
-	//	ONEngine::Shader shader;
-	//	shader.Initialize(_shaderCompiler);
-	//	shader.CompileShader(L"./Packages/Shader/Editor/VoxelTerrain/AreaMode.cs.hlsl", L"cs_6_6", ONEngine::Shader::Type::cs);
-	//	pipeline_ = std::make_unique<ONEngine::ComputePipeline>();
-	//	CreatePipeline(pipeline_.get(), shader, _dxm);
-	//}
-
-	//{	/// 隣接モードのパイプライン
-	//	ONEngine::Shader shader;
-	//	shader.Initialize(_shaderCompiler);
-	//	shader.CompileShader(L"./Packages/Shader/Editor/VoxelTerrain/AdjacentMode.cs.hlsl", L"cs_6_6", ONEngine::Shader::Type::cs);
-	//	adjacentModePipeline_ = std::make_unique<ONEngine::ComputePipeline>();
-	//	CreatePipeline(adjacentModePipeline_.get(), shader, _dxm);
-	//}
-
-	//{	/// BitMask編集モード
-	//	ONEngine::Shader shader;
-	//	shader.Initialize(_shaderCompiler);
-	//	shader.CompileShader(L"./Packages/Shader/Editor/VoxelTerrain/MaterialBitMaskEdit.cs.hlsl", L"cs_6_6", ONEngine::Shader::Type::cs);
-	//	materialBitMaskEditPipeline_ = std::make_unique<ONEngine::ComputePipeline>();
-	//	CreatePipeline(materialBitMaskEditPipeline_.get(), shader, _dxm);
-	//}
-
-	//{	/// テクスチャWeight編集モード
-	//	ONEngine::Shader shader;
-	//	shader.Initialize(_shaderCompiler);
-	//	shader.CompileShader(L"./Packages/Shader/Editor/VoxelTerrain/MaterialTextureWeight.cs.hlsl", L"cs_6_6", ONEngine::Shader::Type::cs);
-	//	materialTextureWeightEditPipeline_ = std::make_unique<ONEngine::ComputePipeline>();
-	//	CreatePipeline(materialTextureWeightEditPipeline_.get(), shader, _dxm);
-	//}
 
 	{
 		ONEngine::Shader shader;
