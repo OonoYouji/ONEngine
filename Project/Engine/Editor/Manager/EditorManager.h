@@ -45,31 +45,31 @@ public:
 	/// public : methods
 	/// =========================================
 
-	EditorManager(ONEngine::EntityComponentSystem* _ecs);
+	EditorManager(ONEngine::EntityComponentSystem* ecs);
 	~EditorManager();
 
-	void Initialize(ONEngine::DxManager* _dxm, ONEngine::ShaderCompiler* _shaderCompiler);
+	void Initialize(ONEngine::DxManager* dxm, ONEngine::ShaderCompiler* sc);
 
-	void Update(ONEngine::AssetCollection* _assetCollection);
+	void Update(ONEngine::AssetCollection* ac);
 
 
 	/// ----- factory ----- ///
 
 	template<IsEditorCommand T, typename... Args>
-	std::unique_ptr<T> CloneCommand(Args&&... _args);
+	std::unique_ptr<T> CloneCommand(Args&&... args);
 
 
 	/// ----- command ----- ///
 
 	template<IsEditorCommand T, typename... Args>
-	void ExecuteCommand(Args&& ..._args);
+	void ExecuteCommand(Args&&... args);
 
 	void Undo();
 	void Redo();
 
 	/// ----- editor compute ----- ///
 
-	void AddEditorCompute(ONEngine::DxManager* _dxm, ONEngine::ShaderCompiler* _shaderCompiler, std::unique_ptr<IEditorCompute> _compute);
+	void AddEditorCompute(ONEngine::DxManager* dxm, ONEngine::ShaderCompiler* sc, std::unique_ptr<IEditorCompute> compute);
 
 
 private:
@@ -86,15 +86,12 @@ private:
 
 	/// ----- container -----///
 	std::unordered_map<std::string, std::unique_ptr<IEditCommand>> prototypeCommands_; ///< コマンドのコレクション
-
 	IEditCommand* runningCommand_; ///< 現在実行中のコマンド
 	std::deque<std::unique_ptr<IEditCommand>> commandStack_; ///< コマンドのスタック
 	std::deque<std::unique_ptr<IEditCommand>> redoStack_; ///< コマンドのリドゥスタック
 
-
 	/// ----- editor compute ----- ///
 	std::vector<std::unique_ptr<IEditorCompute>> editorComputes_;
-
 
 	/// ----- temp object ----- ///
 	std::string className_;
@@ -102,11 +99,11 @@ private:
 
 
 template<IsEditorCommand T, typename ...Args>
-inline std::unique_ptr<T> EditorManager::CloneCommand(Args&&... _args) {
+inline std::unique_ptr<T> EditorManager::CloneCommand(Args&&... args) {
 	className_ = typeid(T).name();
 	auto it = prototypeCommands_.find(className_);
-	if (it == prototypeCommands_.end()) {
-		prototypeCommands_[className_] = std::make_unique<T>(_args...);
+	if(it == prototypeCommands_.end()) {
+		prototypeCommands_[className_] = std::make_unique<T>(args...);
 	}
 
 	// コピーコンストラクタで T のインスタンスを複製
@@ -115,22 +112,22 @@ inline std::unique_ptr<T> EditorManager::CloneCommand(Args&&... _args) {
 }
 
 template<IsEditorCommand T, typename ...Args>
-inline void EditorManager::ExecuteCommand(Args && ..._args) {
-	std::unique_ptr<T> command = std::make_unique<T>(_args...);
+inline void EditorManager::ExecuteCommand(Args && ... args) {
+	std::unique_ptr<T> command = std::make_unique<T>(args...);
 	EDITOR_STATE state = command->Execute();
-	if (state == EDITOR_STATE_RUNNING) {
+	if(state == EDITOR_STATE_RUNNING) {
 		runningCommand_ = command.get();
 	}
 
 	commandStack_.push_back(std::move(command));
-	if (state == EDITOR_STATE_FINISH) {
+	if(state == EDITOR_STATE_FINISH) {
 		ONEngine::Console::Log("Command Executed: " + std::string(typeid(T).name()));
 	} else {
 		ONEngine::Console::Log("Command Failed: " + std::string(typeid(T).name()));
 	}
 
 	/// redoスタックにコマンドがあればクリアする
-	if (redoStack_.size() > 0) {
+	if(redoStack_.size() > 0) {
 		redoStack_.clear();
 	}
 }

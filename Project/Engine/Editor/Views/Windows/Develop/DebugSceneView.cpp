@@ -175,7 +175,7 @@ void DebugSceneView::ShowImGui() {
 	Editor::UpdatePivot(pEcs_);
 
 	if(isDrawSceneStats) {
-		ShowDebugSceneView(imagePos, imageSize);
+		ShowDebugSceneView(imagePos);
 	}
 
 	ImGui::End();
@@ -203,7 +203,7 @@ void DebugSceneView::SetGamePlay(bool _isGamePlay) {
 
 }
 
-void Editor::DebugSceneView::ShowDebugSceneView(const ImVec2& imagePos, const ImVec2& imageSize) {
+void Editor::DebugSceneView::ShowDebugSceneView(const ImVec2& imagePos) {
 	std::vector<OverlaySection> sections;
 
 	{

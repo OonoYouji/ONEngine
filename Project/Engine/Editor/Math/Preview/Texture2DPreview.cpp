@@ -11,7 +11,7 @@ void Editor::ShowTexture2DPreview(const std::string& _name, ONEngine::Texture* _
 	}
 
 	if(_texture) {
-		ONEngine::Vector2 aspectRatio = _texture->GetTextureSize();
+		ONEngine::Vector2 aspectRatio = _textureSize;
 		aspectRatio /= (std::max)(aspectRatio.x, aspectRatio.y);
 
 		ImTextureID texId = reinterpret_cast<ImTextureID>(_texture->GetSRVGPUHandle().ptr);

@@ -697,7 +697,7 @@ void VoxelTerrain::SetupEditorBuffers(ID3D12GraphicsCommandList* _cmdList, const
 	sBufferEditorChunks_.SRVBindForComputeCommandList(_cmdList, _rootParamIndices[3]);
 }
 
-void VoxelTerrain::CreateChunkTextureUAV(DxCommand* _dxCommand, DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap, AssetCollection* _assetCollection) {
+void VoxelTerrain::CreateChunkTextureUAV(DxCommand* _dxCommand, DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap) {
 
 	pDxSRVHeap_ = _dxSRVHeap;
 	for(auto& chunk : chunks_) {

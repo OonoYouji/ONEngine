@@ -387,8 +387,6 @@ void Texture::OutputTexture3D(const std::wstring& _filename, DxDevice* _dxDevice
 void Texture::ResizeTexture3D(const Vector2& _newSize, UINT _newDepth, DxDevice* _dxDevice, DxCommand* _dxCommand, DxSRVHeap* _dxSRVHeap) {
 	Assert(dxResource_.Get());
 
-	ID3D12Device* device = _dxDevice->GetDevice();
-
 	// 旧リソース情報
 	D3D12_RESOURCE_DESC oldDesc = dxResource_.Get()->GetDesc();
 
