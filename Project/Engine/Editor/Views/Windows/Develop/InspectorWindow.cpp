@@ -104,10 +104,6 @@ void InspectorWindow::ShowImGui() {
 		return;
 	}
 
-
-
-
-
 	SelectionType type = ImGuiSelection::GetSelectionType();
 	inspectorFunctions_[static_cast<size_t>(type)]();
 
@@ -126,18 +122,10 @@ void InspectorWindow::EntityInspector() {
 	if(!selectedEntity) { return; }
 
 
-
 	ShowEntityMenuBar(selectedEntity);
 	ShowEntityBasicInfo(selectedEntity);
-
 	ImGui::Separator();
-
 	ShowEntityComponents(selectedEntity);
-
-	/// ----------------------------
-	/// componentの追加
-	/// ----------------------------
-
 	ShowAddComponentPopup(selectedEntity);
 
 }
@@ -215,115 +203,8 @@ void InspectorWindow::ShowEntityBasicInfo(ONEngine::GameEntity* entity) {
 /// エンティティのコンポーネントを表示する
 ///  
 void InspectorWindow::ShowEntityComponents(ONEngine::GameEntity* entity) {
-	std::string label = "", compName = "";
-
-	// Unity風の型別カラー（アルファを少し下げて馴染ませる）
-	auto GetTypeColor = [](ComponentType type) -> ImVec4 {
-		switch(type) {
-		case ComponentType::Compute:  return ImVec4(0.15f, 0.30f, 0.45f, 0.70f);
-		case ComponentType::Renderer: return ImVec4(0.20f, 0.40f, 0.25f, 0.70f);
-		case ComponentType::Collider: return ImVec4(0.50f, 0.30f, 0.15f, 0.70f);
-		default:                      return ImGui::GetStyleColorVec4(ImGuiCol_Header);
-		}
-	};
-
 	for(auto itr = entity->GetComponents().begin(); itr != entity->GetComponents().end(); ) {
-		IComponent* comp = itr->second;
-		compName = GetComponentTypeName(comp);
-		label = compName + "##" + std::to_string(reinterpret_cast<uintptr_t>(comp));
-
-		ImGui::PushID(label.c_str());
-
-		// --- スタイルのカスタマイズ ---
-		ComponentType compType = componentUIBindings_.contains(itr->first) ? componentUIBindings_[itr->first].type : ComponentType::Compute;
-		ImVec4 baseColor = GetTypeColor(compType);
-
-		ImGui::PushStyleColor(ImGuiCol_Header, baseColor);
-		ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(baseColor.x + 0.05f, baseColor.y + 0.05f, baseColor.z + 0.05f, 0.8f));
-		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4, 4));
-
-		// --- 1. ヘッダー描画 (TreeNodeEx) ---
-		ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_DefaultOpen;
-		bool isHeaderOpen = ImGui::TreeNodeEx("##header", flags, "");
-
-		// --- 2. アウトラインのないチェックボックスの実装 ---
-		ImGui::SameLine();
-		ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 2.0f); // 位置の微調整
-
-		// 枠線を透明にする
-		ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0, 0, 0, 0));
-		ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, ImVec4(1, 1, 1, 0.1f)); // ホバー時のみうっすら
-		ImGui::PushStyleColor(ImGuiCol_FrameBgActive, ImVec4(1, 1, 1, 0.2f));
-		ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0, 0, 0, 0)); // 枠線を完全に消す
-
-		bool enabled = comp->enable;
-		if(ImGui::Checkbox("##enabled", &enabled)) {
-			comp->enable = enabled;
-		}
-		ImGui::PopStyleColor(4);
-
-		// --- 3. アイコンと名前の描画 ---
-		ImGui::SameLine();
-		if(!enabled) ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.5f, 0.5f, 0.5f, 0.8f)); // 無効時の色
-
-		ImGui::TextDisabled("(?)"); // アイコン
-		ImGui::SameLine();
-		ImGui::TextUnformatted(compName.c_str());
-
-		if(!enabled) ImGui::PopStyleColor();
-
-		// --- 4. 右端の設定ボタン (ギア) ---
-		float button_size = ImGui::GetFrameHeight();
-		ImGui::SameLine(ImGui::GetContentRegionAvail().x + ImGui::GetCursorPosX() - button_size - 4.0f);
-		if(ImGui::Button("::", ImVec2(button_size, button_size))) {
-			ImGui::OpenPopup("CompPopup");
-		}
-
-		ImGui::PopStyleVar(); // FramePadding
-		ImGui::PopStyleColor(2); // Header, HeaderHovered
-
-		// --- ドラッグソース ---
-		if(ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
-			ImGui::SetDragDropPayload("Component", &comp, sizeof(IComponent*));
-			ImGui::Text("%s", compName.c_str());
-			ImGui::EndDragDropSource();
-		}
-
-		// --- コンテンツ領域 ---
-		if(isHeaderOpen) {
-			// ポップアップメニュー
-			if(ImGui::BeginPopup("CompPopup")) {
-				if(ImGui::MenuItem("Reset")) { comp->Reset(); }
-				ImGui::Separator();
-				if(ImGui::MenuItem("Remove Component")) {
-					auto resultItr = entity->GetComponents().begin();
-					pEditorManager_->ExecuteCommand<RemoveComponentCommand>(entity, compName, &resultItr);
-					itr = resultItr;
-					ImGui::EndPopup();
-					ImGui::TreePop();
-					ImGui::PopID();
-					if(itr == entity->GetComponents().end()) break;
-					continue;
-				}
-				ImGui::EndPopup();
-			}
-
-			// 中身の描画
-			ImGui::Indent(22.0f); // Unityの階層に近い深さ
-			if(!enabled) ImGui::BeginDisabled(); // チェックがOFFなら操作不可にする
-
-			if(componentUIBindings_.contains(itr->first)) {
-				componentUIBindings_[itr->first].function(comp);
-			}
-
-			if(!enabled) ImGui::EndDisabled();
-			ImGui::Unindent(22.0f);
-
-			ImGui::TreePop();
-		}
-
-		ImGui::PopID();
-		++itr;
+		DrawComponentNode(entity, itr);
 	}
 }
 
@@ -362,11 +243,143 @@ void InspectorWindow::ShowAddComponentPopup(ONEngine::GameEntity* entity) {
 	}
 }
 
+
+///
+/// コンポーネントタイプごとに色を取得する
+///
+ImVec4 InspectorWindow::GetComponentBaseColor(ComponentType type) const {
+	switch(type) {
+	case ComponentType::Compute:  return ImVec4(0.15f, 0.30f, 0.45f, 0.70f);
+	case ComponentType::Renderer: return ImVec4(0.20f, 0.40f, 0.25f, 0.70f);
+	case ComponentType::Collider: return ImVec4(0.50f, 0.30f, 0.15f, 0.70f);
+	default:                      return ImGui::GetStyleColorVec4(ImGuiCol_Header);
+	}
+	return ImVec4();
+}
+
+
 ///
 /// コンポーネントのエディタ表示 
 ///
-void InspectorWindow::DrawComponentNode() {
+void InspectorWindow::DrawComponentNode(ONEngine::GameEntity* entity, auto& itr) {
+	IComponent* comp = itr->second;
+	std::string compName = GetComponentTypeName(comp);
+	std::string label = compName + "##" + std::to_string(reinterpret_cast<uintptr_t>(comp));
 
+	ImGui::PushID(label.c_str());
+
+	// 色の決定
+	ComponentType compType = componentUIBindings_.contains(itr->first) ? componentUIBindings_[itr->first].type : ComponentType::Compute;
+	ImVec4 baseColor = GetComponentBaseColor(compType);
+
+	// 1. ヘッダーの描画（開いているかどうかを取得）
+	bool isHeaderOpen = DrawComponentHeaderUI(comp, compName, baseColor);
+
+	// ドラッグ＆ドロップソースの処理
+	if(ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
+		ImGui::SetDragDropPayload("Component", &comp, sizeof(IComponent*));
+		ImGui::Text("%s", compName.c_str());
+		ImGui::EndDragDropSource();
+	}
+
+	bool isDeleted = false;
+
+	// ヘッダーが開かれている場合の中身の処理
+	if(isHeaderOpen) {
+		// 2. ポップアップメニューの処理 (削除されたかどうかのフラグを受け取る)
+		isDeleted = HandleComponentPopupMenu(entity, comp, compName, itr);
+
+		// 3. 削除されていなければ中身のプロパティを描画
+		if(!isDeleted) {
+			DrawComponentInnerContent(comp, itr->first, comp->enable);
+		}
+
+		// TreeNodeExを開いた場合は必ずTreePopを呼ぶ
+		ImGui::TreePop();
+	}
+
+	ImGui::PopID();
+
+	// 削除されていなければイテレータを次に進める
+	if(!isDeleted) {
+		++itr;
+	}
+}
+
+bool InspectorWindow::DrawComponentHeaderUI(ONEngine::IComponent* comp, const std::string& compName, ImVec4 baseColor) {
+	ImGui::PushStyleColor(ImGuiCol_Header, baseColor);
+	ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(baseColor.x + 0.05f, baseColor.y + 0.05f, baseColor.z + 0.05f, 0.8f));
+	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4, 4));
+
+	// TreeNode
+	ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_DefaultOpen;
+	bool isHeaderOpen = ImGui::TreeNodeEx("##header", flags, "");
+
+	ImGui::SameLine();
+	ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 2.0f);
+
+	// チェックボックス
+	ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0, 0, 0, 0));
+	ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, ImVec4(1, 1, 1, 0.1f));
+	ImGui::PushStyleColor(ImGuiCol_FrameBgActive, ImVec4(1, 1, 1, 0.2f));
+	ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0, 0, 0, 0));
+
+	bool enabled = comp->enable;
+	if(ImGui::Checkbox("##enabled", &enabled)) {
+		comp->enable = enabled;
+	}
+	ImGui::PopStyleColor(4);
+
+	// アイコンと名前
+	ImGui::SameLine();
+	if(!enabled) ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.5f, 0.5f, 0.5f, 0.8f));
+	ImGui::TextDisabled("(?)");
+	ImGui::SameLine();
+	ImGui::TextUnformatted(compName.c_str());
+	if(!enabled) ImGui::PopStyleColor();
+
+	// 設定ボタン (ギア)
+	float button_size = ImGui::GetFrameHeight();
+	ImGui::SameLine(ImGui::GetContentRegionAvail().x + ImGui::GetCursorPosX() - button_size - 4.0f);
+	if(ImGui::Button("::", ImVec2(button_size, button_size))) {
+		ImGui::OpenPopup("CompPopup");
+	}
+
+	ImGui::PopStyleVar();
+	ImGui::PopStyleColor(2);
+
+	return isHeaderOpen;
+}
+
+bool InspectorWindow::HandleComponentPopupMenu(ONEngine::GameEntity* entity, ONEngine::IComponent* comp, const std::string& compName, auto& itr) {
+	bool isDeleted = false;
+
+	if(ImGui::BeginPopup("CompPopup")) {
+		if(ImGui::MenuItem("Reset")) { comp->Reset(); }
+		ImGui::Separator();
+
+		if(ImGui::MenuItem("Remove Component")) {
+			auto resultItr = entity->GetComponents().begin();
+			pEditorManager_->ExecuteCommand<RemoveComponentCommand>(entity, compName, &resultItr);
+			itr = resultItr;
+			isDeleted = true;
+		}
+		ImGui::EndPopup();
+	}
+
+	return isDeleted;
+}
+
+void InspectorWindow::DrawComponentInnerContent(ONEngine::IComponent* comp, size_t componentTypeId, bool enabled) {
+	ImGui::Indent(22.0f);
+	if(!enabled) ImGui::BeginDisabled();
+
+	if(componentUIBindings_.contains(componentTypeId)) {
+		componentUIBindings_[componentTypeId].function(comp);
+	}
+
+	if(!enabled) ImGui::EndDisabled();
+	ImGui::Unindent(22.0f);
 }
 
 void InspectorWindow::AssetInspector() {

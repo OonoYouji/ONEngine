@@ -5,6 +5,9 @@
 #include <functional>
 #include <map>
 
+/// externals
+#include <imgui.h>
+
 /// engine
 #include "Engine/ECS/Entity/GameEntity/GameEntity.h"
 #include "Engine/ECS/Component/Collection/ComponentHash.h"
@@ -94,8 +97,24 @@ public:
 	/// @param entity 対象のエンティティ
 	void ShowAddComponentPopup(ONEngine::GameEntity* entity);
 
-	void DrawComponentNode();
+	/// @brief コンポーネントタイプごとの色を取得する
+	/// @param type 対象のタイプ
+	/// @return 色
+	ImVec4 GetComponentBaseColor(ComponentType type) const;
 
+	/// @brief コンポーネントのエディタ表示
+	/// @param entity コンポーネントの親エンティティ
+	/// @param itr 
+	void DrawComponentNode(ONEngine::GameEntity* entity, auto& itr);
+
+	/// ヘッダー部分のUIを描画し、開いているかどうかを返す
+	bool DrawComponentHeaderUI(ONEngine::IComponent* comp, const std::string& compName, ImVec4 baseColor);
+
+	/// ポップアップメニューの処理を行い、コンポーネントが削除されたら true を返す
+	bool HandleComponentPopupMenu(ONEngine::GameEntity* entity, ONEngine::IComponent* comp, const std::string& compName, auto& itr);
+
+	/// コンポーネントの内部パラメータ群を描画する
+	void DrawComponentInnerContent(ONEngine::IComponent* comp, size_t componentTypeId, bool enabled);
 
 
 	///	--------------------------------------------------------------------------------------------------
