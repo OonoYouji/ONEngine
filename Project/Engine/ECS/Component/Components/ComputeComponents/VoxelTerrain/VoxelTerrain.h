@@ -253,7 +253,7 @@ public:
 	/// @param _dxDevice DxDeviceのポインタ
 	/// @param _dxSRVHeap DxSRVHeapのポインタ
 	/// @param _assetCollection AssetCollectionのポインタ
-	void CreateChunkTextureUAV(DxCommand* _dxCommand, DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap, class AssetCollection* _assetCollection);
+	void CreateChunkTextureUAV(DxCommand* _dxCommand, DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap);
 
 	/// @brief 編集したエディタ用テクスチャをチャンク用テクスチャにコピーする
 	/// @param _dxCommand DxCommandのポインタ

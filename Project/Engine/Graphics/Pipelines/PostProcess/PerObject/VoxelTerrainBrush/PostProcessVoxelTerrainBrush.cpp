@@ -92,7 +92,7 @@ void PostProcessVoxelTerrainBrush::Execute(
 		return;
 	}
 
-	float brushRadius = vt->GetBrushRadius();
+	float brushRadius = static_cast<float>(vt->GetBrushRadius());
 
 	float blinkSpeed = 2.0f;
 	float minAlpha = 0.2f;

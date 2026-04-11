@@ -22,29 +22,29 @@ using namespace Editor;
 EditorManager::EditorManager(ONEngine::EntityComponentSystem* _ecs) : pEcs_(_ecs) {}
 EditorManager::~EditorManager() = default;
 
-void EditorManager::Initialize(ONEngine::DxManager* _dxm, ONEngine::ShaderCompiler* _sc) {
-	pDxManager_ = _dxm;
+void EditorManager::Initialize(ONEngine::DxManager* dxm, ONEngine::ShaderCompiler* sc) {
+	pDxManager_ = dxm;
 	runningCommand_ = nullptr;
 
 	/// EditCommandへEditorManagerのポインタを渡す
 	EditCommand::pEditorManager_ = this;
 
 	/// editor compute の登録
-	AddEditorCompute(_dxm, _sc, std::make_unique<GameEntityPickingPipeline>());
-	AddEditorCompute(_dxm, _sc, std::make_unique<TerrainDataOutput>());
-	AddEditorCompute(_dxm, _sc, std::make_unique<TerrainVertexCreator>());
-	AddEditorCompute(_dxm, _sc, std::make_unique<TerrainVertexEditorCompute>());
-	AddEditorCompute(_dxm, _sc, std::make_unique<RiverMeshGeneratePipeline>());
-	AddEditorCompute(_dxm, _sc, std::make_unique<RiverTerrainAdjustPipeline>());
-	AddEditorCompute(_dxm, _sc, std::make_unique<GrassArrangementPipeline>());
-	AddEditorCompute(_dxm, _sc, std::make_unique<VoxelTerrainEditorComputePipeline>());
+	AddEditorCompute(dxm, sc, std::make_unique<GameEntityPickingPipeline>());
+	AddEditorCompute(dxm, sc, std::make_unique<TerrainDataOutput>());
+	AddEditorCompute(dxm, sc, std::make_unique<TerrainVertexCreator>());
+	AddEditorCompute(dxm, sc, std::make_unique<TerrainVertexEditorCompute>());
+	AddEditorCompute(dxm, sc, std::make_unique<RiverMeshGeneratePipeline>());
+	AddEditorCompute(dxm, sc, std::make_unique<RiverTerrainAdjustPipeline>());
+	AddEditorCompute(dxm, sc, std::make_unique<GrassArrangementPipeline>());
+	AddEditorCompute(dxm, sc, std::make_unique<VoxelTerrainEditorComputePipeline>());
 }
 
-void EditorManager::Update(ONEngine::AssetCollection* _assetCollection) {
+void EditorManager::Update(ONEngine::AssetCollection* ac) {
 
 	/// エディタのコマンドを実行する
 	for (auto& compute : editorComputes_) {
-		compute->Execute(pEcs_, pDxManager_->GetDxCommand(), _assetCollection);
+		compute->Execute(pEcs_, pDxManager_->GetDxCommand(), ac);
 	}
 
 	if (runningCommand_) {
@@ -97,8 +97,8 @@ void EditorManager::Redo() {
 
 }
 
-void EditorManager::AddEditorCompute(ONEngine::DxManager* _dxm, ONEngine::ShaderCompiler* _shaderCompiler, std::unique_ptr<IEditorCompute> _compute) {
-	_compute->Initialize(_shaderCompiler, _dxm);
+void EditorManager::AddEditorCompute(ONEngine::DxManager* dxm, ONEngine::ShaderCompiler* sc, std::unique_ptr<IEditorCompute> compute) {
+	compute->Initialize(sc, dxm);
 
-	editorComputes_.push_back(std::move(_compute));
+	editorComputes_.push_back(std::move(compute));
 }

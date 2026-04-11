@@ -46,7 +46,7 @@ public:
 	void SetGamePlay(bool _isGamePlay);
 
 
-	void ShowDebugSceneView(const ImVec2& imagePos, const ImVec2& imageSize);
+	void ShowDebugSceneView(const ImVec2& imagePos);
 
 
 	/// @brief シーンの統計情報の描画
