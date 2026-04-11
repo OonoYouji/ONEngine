@@ -21,7 +21,6 @@
 #include "Engine/Editor/Manager/EditorManager.h"
 #include "Engine/Editor/Math/ImGuiMath.h"
 #include "Engine/Editor/Math/ImGuiSelection.h"
-#include "InspectorWindow.h"
 
 
 namespace Editor {
@@ -270,6 +269,9 @@ void HierarchyWindow::DrawEntity(ONEngine::GameEntity* entity) {
 }
 
 
+///
+/// 親子関係の解除/ルートへの移動
+///
 void HierarchyWindow::HandleRootDragDrop() {
 	ImVec2 windowSize = ImGui::GetContentRegionAvail();
 	windowSize.y = 12.0f;
@@ -289,6 +291,10 @@ void HierarchyWindow::HandleRootDragDrop() {
 	}
 }
 
+
+///
+/// エンティティ同士の親子関係の構築
+///
 void HierarchyWindow::HandleEntityDragDrop(ONEngine::GameEntity* entity) {
 	// ドラッグ開始（Source）
 	if(ImGui::BeginDragDropSource()) {
@@ -318,6 +324,9 @@ void HierarchyWindow::HandleEntityDragDrop(ONEngine::GameEntity* entity) {
 	}
 }
 
+///
+/// エンティティの右クリックメニューの処理
+///
 void HierarchyWindow::DrawEntityContextMenu(ONEngine::GameEntity* entity, bool selected) {
 	if(ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
 		ImGui::OpenPopup("EntityContextMenu");
@@ -352,6 +361,9 @@ void HierarchyWindow::DrawEntityContextMenu(ONEngine::GameEntity* entity, bool s
 	}
 }
 
+///
+/// ノードごとのショートカット入力
+///
 void HierarchyWindow::HandleEntityShortcuts(ONEngine::GameEntity* entity, bool selected) {
 	if(selected) {
 		if(ONEngine::Input::PressKey(DIK_LCONTROL) || ONEngine::Input::PressKey(DIK_RCONTROL)) {
