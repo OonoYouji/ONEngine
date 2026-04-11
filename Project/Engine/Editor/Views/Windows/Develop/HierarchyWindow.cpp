@@ -231,35 +231,69 @@ void HierarchyWindow::ShowInvalidParentPopup() {
 /// 
 void HierarchyWindow::DrawEntity(ONEngine::GameEntity* entity) {
 	bool hasChildren = !entity->GetChildren().empty();
-	ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanFullWidth;
-	bool nodeOpen = false;
+
+	ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanFullWidth | ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_FramePadding;
 
 	ImGui::PushID(entity->GetId());
 
 	bool isSelected = (ImGuiSelection::GetSelectedObject().CheckValid() && ImGuiSelection::GetSelectedObject() == entity->GetGuid());
 
-	// ノードの描画 または リネーム入力
+	if(isSelected) {
+		flags |= ImGuiTreeNodeFlags_Selected;
+	}
+	if(!hasChildren) {
+		flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
+	}
+
+	/// ===================================================
+	/// 1. 開閉ボタン（矢印）と行ベースの描画
+	/// ===================================================
+	// ラベルを空文字列 ("") にして、矢印と背景の選択ハイライトだけを描画させる
+	bool nodeOpen = ImGui::TreeNodeEx((void*)entity, flags, "");
+
+	HandleEntityDragDrop(entity);
+	DrawEntityContextMenu(entity, isSelected);
+
+	// 行がクリックされたら選択状態にする（矢印をクリックして開閉しただけの時は除外）
+	if(ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen()) {
+		ImGuiSelection::SetSelectedObject(entity->GetGuid(), SelectionType::Entity);
+	}
+
+	/// ===================================================
+	/// 2. アクティブ / 非アクティブ のチェックボックス
+	/// ===================================================
+	ImGui::SameLine();
+
+	bool isActive = entity->active;
+	if(ImGui::Checkbox("##Active", &isActive)) {
+		entity->active = isActive;
+	}
+
+	/// ===================================================
+	/// 3. 名前の表示 または リネーム入力欄
+	/// ===================================================
+	ImGui::SameLine();
+
 	if(renameEntityGuid_.CheckValid() && renameEntityGuid_ == entity->GetGuid()) {
 		EntityRename(entity);
 	} else {
-		if(isSelected) flags |= ImGuiTreeNodeFlags_Selected;
-		if(!hasChildren) flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
+		// 通常の名前表示
+		ImGui::Text("%s", entity->GetName().c_str());
 
-		nodeOpen = ImGui::TreeNodeEx((void*)entity, flags, "%s", entity->GetName().c_str());
-
+		// テキスト部分をクリックした際も選択状態にする（直感的なUXのため）
 		if(ImGui::IsItemClicked()) {
 			ImGuiSelection::SetSelectedObject(entity->GetGuid(), SelectionType::Entity);
 		}
 	}
 
-	// --- 分割した機能の呼び出し ---
-	HandleEntityDragDrop(entity);
-	DrawEntityContextMenu(entity, isSelected);
+	/// ===================================================
+	/// 4. ショートカット処理の呼び出し
+	/// ===================================================
 	HandleEntityShortcuts(entity, isSelected);
 
 	ImGui::PopID();
 
-	// 子エンティティの再帰的描画
+	/// 子エンティティの再帰的描画
 	if(hasChildren && nodeOpen) {
 		for(auto* child : entity->GetChildren()) {
 			DrawEntity(child);
