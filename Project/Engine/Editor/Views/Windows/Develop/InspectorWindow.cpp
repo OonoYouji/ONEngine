@@ -224,19 +224,83 @@ void InspectorWindow::ShowAddComponentPopup(ONEngine::GameEntity* entity) {
 
 	ImGui::Unindent(indentSize);
 
+	if(ImGui::BeginPopup("AddComponent")) {
 
+		/// ==============================================
+		/// 1. 検索バーの描画と入力処理
+		/// ==============================================
+		static char searchBuffer[256] = ""; // 検索用バッファ
 
-	if(ImGui::BeginPopup("AddComponent", ImGuiWindowFlags_AlwaysVerticalScrollbar)) {
+		// ポップアップが開かれた瞬間にバッファをクリアし、フォーカスを当てる
+		if(ImGui::IsWindowAppearing()) {
+			memset(searchBuffer, 0, sizeof(searchBuffer));
+			ImGui::SetKeyboardFocusHere();
+		}
 
-		ImVec2 buttonSize = ImVec2(128.0f, 24.0f);
+		// Hint付きの入力フィールド（何も入力されていない時に薄い文字を出す）
+		ImGui::InputTextWithHint("##SearchComp", "Search Component...", searchBuffer, IM_ARRAYSIZE(searchBuffer));
+		ImGui::Separator();
+
+		// 入力された検索文字列を小文字に変換（大文字小文字を区別しない検索のため）
+		std::string searchStr = searchBuffer;
+		std::transform(searchStr.begin(), searchStr.end(), searchStr.begin(), [](unsigned char c) { return std::tolower(c); });
+		bool isSearching = !searchStr.empty();
+
+		/// ==============================================
+		/// 2. コンポーネントをTypeごとに分類する
+		/// ==============================================
+		std::map<ComponentType, std::vector<std::string>> categorizedComponents;
 		for(const auto& uiBinding : componentUIBindings_) {
-			const std::string& name = uiBinding.second.name;
-			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
-			if(ImGui::Button(name.c_str(), buttonSize)) {
-				pEditorManager_->ExecuteCommand<AddComponentCommand>(entity, name);
-			}
+			categorizedComponents[uiBinding.second.type].push_back(uiBinding.second.name);
+		}
 
-			ImGui::PopStyleColor();
+		auto GetTypeString = [](ComponentType type) -> std::string {
+			switch(type) {
+			case ComponentType::Compute:  return "Compute";
+			case ComponentType::Renderer: return "Renderer";
+			case ComponentType::Collider: return "Collider";
+			default:                      return "Other";
+			}
+		};
+
+		/// ==============================================
+		/// 3. メニューまたは検索結果の描画
+		/// ==============================================
+		for(auto& [type, names] : categorizedComponents) {
+			std::sort(names.begin(), names.end());
+
+			if(isSearching) {
+				// ----------------------------------------
+				// 検索中：カテゴリを無視してマッチしたものをフラット表示
+				// ----------------------------------------
+				for(const auto& name : names) {
+					// コンポーネント名も小文字に変換して比較
+					std::string lowerName = name;
+					std::transform(lowerName.begin(), lowerName.end(), lowerName.begin(), [](unsigned char c) { return std::tolower(c); });
+
+					// 検索文字列が含まれていたら表示
+					if(lowerName.find(searchStr) != std::string::npos) {
+						if(ImGui::MenuItem(name.c_str())) {
+							pEditorManager_->ExecuteCommand<AddComponentCommand>(entity, name);
+							ImGui::CloseCurrentPopup(); // 追加したらポップアップを閉じる
+						}
+					}
+				}
+			} else {
+				// ----------------------------------------
+				// 検索していない時：カテゴリごとにサブメニュー化
+				// ----------------------------------------
+				std::string typeName = GetTypeString(type);
+				if(ImGui::BeginMenu(typeName.c_str())) {
+					for(const auto& name : names) {
+						if(ImGui::MenuItem(name.c_str())) {
+							pEditorManager_->ExecuteCommand<AddComponentCommand>(entity, name);
+							ImGui::CloseCurrentPopup(); // 追加したらポップアップを閉じる
+						}
+					}
+					ImGui::EndMenu();
+				}
+			}
 		}
 
 		ImGui::EndPopup();
