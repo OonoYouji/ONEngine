@@ -1,6 +1,5 @@
 ﻿#include "InspectorWindow.h"
 
-
 /// std
 #include <format>
 
@@ -43,7 +42,6 @@
 #include "Engine/ECS/Component/Components/RendererComponents/Primitive/Line3DRenderer.h"
 #include "Engine/ECS/Component/Components/RendererComponents/ScreenPostEffectTag/ScreenPostEffectTag.h"
 
-
 using namespace ONEngine;
 
 namespace Editor {
@@ -58,33 +56,33 @@ InspectorWindow::InspectorWindow(const std::string& windowName, DxManager* dxm, 
 	/// ---------------------------------------------------
 
 	/// compute
-	RegisterComponent<Transform>([&](IComponent* comp) { ComponentDebug::TransformDebug(static_cast<Transform*>(comp)); });
-	RegisterComponent<DirectionalLight>([&](IComponent* comp) { DirectionalLightDebug(static_cast<DirectionalLight*>(comp)); });
-	RegisterComponent<AudioSource>([&](IComponent* comp) { ComponentDebug::AudioSourceDebug(static_cast<AudioSource*>(comp)); });
-	RegisterComponent<Variables>([&](IComponent* comp) { ComponentDebug::VariablesDebug(static_cast<Variables*>(comp)); });
-	RegisterComponent<Effect>([&](IComponent* comp) { ComponentDebug::EffectDebug(static_cast<Effect*>(comp)); });
-	RegisterComponent<Script>([&](IComponent* comp) { ComponentDebug::ScriptDebug(static_cast<Script*>(comp)); });
-	RegisterComponent<Terrain>([&](IComponent* comp) { ComponentDebug::TerrainDebug(static_cast<Terrain*>(comp), pEcs_, pAssetCollection_); });
-	RegisterComponent<TerrainCollider>([&](IComponent* comp) { ComponentDebug::TerrainColliderDebug(static_cast<TerrainCollider*>(comp)); });
-	RegisterComponent<GrassField>([&](IComponent* comp) { ComponentDebug::GrassFieldDebug(static_cast<GrassField*>(comp), pAssetCollection_); });
-	RegisterComponent<CameraComponent>([&](IComponent* comp) { ComponentDebug::CameraDebug(static_cast<CameraComponent*>(comp)); });
-	RegisterComponent<ShadowCaster>([&](IComponent* comp) { ComponentDebug::ShadowCasterDebug(static_cast<ShadowCaster*>(comp)); });
-	RegisterComponent<VoxelTerrain>([&](IComponent* comp) { ComponentDebug::VoxelTerrainDebug(static_cast<VoxelTerrain*>(comp), pDxManager_, pAssetCollection_); });
+	RegisterComponent<Transform>(ComponentType::Compute, [&](IComponent* comp) { ComponentDebug::TransformDebug(static_cast<Transform*>(comp)); });
+	RegisterComponent<DirectionalLight>(ComponentType::Compute, [&](IComponent* comp) { DirectionalLightDebug(static_cast<DirectionalLight*>(comp)); });
+	RegisterComponent<AudioSource>(ComponentType::Compute, [&](IComponent* comp) { ComponentDebug::AudioSourceDebug(static_cast<AudioSource*>(comp)); });
+	RegisterComponent<Variables>(ComponentType::Compute, [&](IComponent* comp) { ComponentDebug::VariablesDebug(static_cast<Variables*>(comp)); });
+	RegisterComponent<Effect>(ComponentType::Compute, [&](IComponent* comp) { ComponentDebug::EffectDebug(static_cast<Effect*>(comp)); });
+	RegisterComponent<Script>(ComponentType::Compute, [&](IComponent* comp) { ComponentDebug::ScriptDebug(static_cast<Script*>(comp)); });
+	RegisterComponent<Terrain>(ComponentType::Compute, [&](IComponent* comp) { ComponentDebug::TerrainDebug(static_cast<Terrain*>(comp), pEcs_, pAssetCollection_); });
+	RegisterComponent<TerrainCollider>(ComponentType::Compute, [&](IComponent* comp) { ComponentDebug::TerrainColliderDebug(static_cast<TerrainCollider*>(comp)); });
+	RegisterComponent<GrassField>(ComponentType::Compute, [&](IComponent* comp) { ComponentDebug::GrassFieldDebug(static_cast<GrassField*>(comp), pAssetCollection_); });
+	RegisterComponent<CameraComponent>(ComponentType::Compute, [&](IComponent* comp) { ComponentDebug::CameraDebug(static_cast<CameraComponent*>(comp)); });
+	RegisterComponent<ShadowCaster>(ComponentType::Compute, [&](IComponent* comp) { ComponentDebug::ShadowCasterDebug(static_cast<ShadowCaster*>(comp)); });
+	RegisterComponent<VoxelTerrain>(ComponentType::Compute, [&](IComponent* comp) { ComponentDebug::VoxelTerrainDebug(static_cast<VoxelTerrain*>(comp), pDxManager_, pAssetCollection_); });
 
 	/// renderer
-	RegisterComponent<MeshRenderer>([&](IComponent* comp) { ComponentDebug::MeshRendererDebug(static_cast<MeshRenderer*>(comp), pAssetCollection_); });
-	RegisterComponent<CustomMeshRenderer>([&](IComponent* comp) { CustomMeshRendererDebug(static_cast<CustomMeshRenderer*>(comp)); });
-	RegisterComponent<DissolveMeshRenderer>([&](IComponent* comp) { ShowGUI(static_cast<DissolveMeshRenderer*>(comp), pAssetCollection_); });
-	RegisterComponent<SpriteRenderer>([&](IComponent* comp) { ComponentDebug::SpriteDebug(static_cast<SpriteRenderer*>(comp), pAssetCollection_); });
-	RegisterComponent<Line2DRenderer>([&]([[maybe_unused]] IComponent* comp) {});
-	RegisterComponent<Line3DRenderer>([&]([[maybe_unused]] IComponent* comp) {});
-	RegisterComponent<SkinMeshRenderer>([&](IComponent* comp) { ComponentDebug::SkinMeshRendererDebug(static_cast<SkinMeshRenderer*>(comp)); });
-	RegisterComponent<ScreenPostEffectTag>([&](IComponent* comp) { ComponentDebug::ScreenPostEffectTagDebug(static_cast<ScreenPostEffectTag*>(comp)); });
-	RegisterComponent<Skybox>([&](IComponent* comp) { ComponentDebug::SkyboxDebug(static_cast<Skybox*>(comp)); });
+	RegisterComponent<MeshRenderer>(ComponentType::Renderer, [&](IComponent* comp) { ComponentDebug::MeshRendererDebug(static_cast<MeshRenderer*>(comp), pAssetCollection_); });
+	RegisterComponent<CustomMeshRenderer>(ComponentType::Renderer, [&](IComponent* comp) { CustomMeshRendererDebug(static_cast<CustomMeshRenderer*>(comp)); });
+	RegisterComponent<DissolveMeshRenderer>(ComponentType::Renderer, [&](IComponent* comp) { ShowGUI(static_cast<DissolveMeshRenderer*>(comp), pAssetCollection_); });
+	RegisterComponent<SpriteRenderer>(ComponentType::Renderer, [&](IComponent* comp) { ComponentDebug::SpriteDebug(static_cast<SpriteRenderer*>(comp), pAssetCollection_); });
+	RegisterComponent<Line2DRenderer>(ComponentType::Renderer, [&]([[maybe_unused]] IComponent* comp) {});
+	RegisterComponent<Line3DRenderer>(ComponentType::Renderer, [&]([[maybe_unused]] IComponent* comp) {});
+	RegisterComponent<SkinMeshRenderer>(ComponentType::Renderer, [&](IComponent* comp) { ComponentDebug::SkinMeshRendererDebug(static_cast<SkinMeshRenderer*>(comp)); });
+	RegisterComponent<ScreenPostEffectTag>(ComponentType::Renderer, [&](IComponent* comp) { ComponentDebug::ScreenPostEffectTagDebug(static_cast<ScreenPostEffectTag*>(comp)); });
+	RegisterComponent<Skybox>(ComponentType::Renderer, [&](IComponent* comp) { ComponentDebug::SkyboxDebug(static_cast<Skybox*>(comp)); });
 
 	/// collider
-	RegisterComponent<SphereCollider>([&](IComponent* comp) { ComponentDebug::SphereColliderDebug(static_cast<SphereCollider*>(comp)); });
-	RegisterComponent<BoxCollider>([&](IComponent* comp) { ComponentDebug::BoxColliderDebug(static_cast<BoxCollider*>(comp)); });
+	RegisterComponent<SphereCollider>(ComponentType::Collider, [&](IComponent* comp) { ComponentDebug::SphereColliderDebug(static_cast<SphereCollider*>(comp)); });
+	RegisterComponent<BoxCollider>(ComponentType::Collider, [&](IComponent* comp) { ComponentDebug::BoxColliderDebug(static_cast<BoxCollider*>(comp)); });
 
 
 
@@ -105,6 +103,10 @@ void InspectorWindow::ShowImGui() {
 		ImGui::End();
 		return;
 	}
+
+
+
+
 
 	SelectionType type = ImGuiSelection::GetSelectionType();
 	inspectorFunctions_[static_cast<size_t>(type)]();
@@ -213,100 +215,114 @@ void InspectorWindow::ShowEntityBasicInfo(ONEngine::GameEntity* entity) {
 /// エンティティのコンポーネントを表示する
 ///  
 void InspectorWindow::ShowEntityComponents(ONEngine::GameEntity* entity) {
-
-	/// for文の中で毎回生成するのは良くないので事前に用意
 	std::string label = "", compName = "";
 
-	for(auto itr = entity->GetComponents().begin(); itr != entity->GetComponents().end(); ) {
-		std::pair<size_t, IComponent*> component = *itr;
-		compName = GetComponentTypeName(component.second);
-		label = compName + "##" + std::to_string(reinterpret_cast<uintptr_t>(component.second));
+	// Unity風の型別カラー（アルファを少し下げて馴染ませる）
+	auto GetTypeColor = [](ComponentType type) -> ImVec4 {
+		switch(type) {
+		case ComponentType::Compute:  return ImVec4(0.15f, 0.30f, 0.45f, 0.70f);
+		case ComponentType::Renderer: return ImVec4(0.20f, 0.40f, 0.25f, 0.70f);
+		case ComponentType::Collider: return ImVec4(0.50f, 0.30f, 0.15f, 0.70f);
+		default:                      return ImGui::GetStyleColorVec4(ImGuiCol_Header);
+		}
+	};
 
-		/// Idの追加(string)
+	for(auto itr = entity->GetComponents().begin(); itr != entity->GetComponents().end(); ) {
+		IComponent* comp = itr->second;
+		compName = GetComponentTypeName(comp);
+		label = compName + "##" + std::to_string(reinterpret_cast<uintptr_t>(comp));
+
 		ImGui::PushID(label.c_str());
 
-		/// チェックボックスでenable/disableを切り替え
-		bool enabled = component.second->enable;
-		if(ImGui::Checkbox(("##" + label).c_str(), &enabled)) {
-			component.second->enable = enabled;
+		// --- スタイルのカスタマイズ ---
+		ComponentType compType = componentUIBindings_.contains(itr->first) ? componentUIBindings_[itr->first].type : ComponentType::Compute;
+		ImVec4 baseColor = GetTypeColor(compType);
+
+		ImGui::PushStyleColor(ImGuiCol_Header, baseColor);
+		ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(baseColor.x + 0.05f, baseColor.y + 0.05f, baseColor.z + 0.05f, 0.8f));
+		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4, 4));
+
+		// --- 1. ヘッダー描画 (TreeNodeEx) ---
+		ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_DefaultOpen;
+		bool isHeaderOpen = ImGui::TreeNodeEx("##header", flags, "");
+
+		// --- 2. アウトラインのないチェックボックスの実装 ---
+		ImGui::SameLine();
+		ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 2.0f); // 位置の微調整
+
+		// 枠線を透明にする
+		ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0, 0, 0, 0));
+		ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, ImVec4(1, 1, 1, 0.1f)); // ホバー時のみうっすら
+		ImGui::PushStyleColor(ImGuiCol_FrameBgActive, ImVec4(1, 1, 1, 0.2f));
+		ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0, 0, 0, 0)); // 枠線を完全に消す
+
+		bool enabled = comp->enable;
+		if(ImGui::Checkbox("##enabled", &enabled)) {
+			comp->enable = enabled;
+		}
+		ImGui::PopStyleColor(4);
+
+		// --- 3. アイコンと名前の描画 ---
+		ImGui::SameLine();
+		if(!enabled) ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.5f, 0.5f, 0.5f, 0.8f)); // 無効時の色
+
+		ImGui::TextDisabled("(?)"); // アイコン
+		ImGui::SameLine();
+		ImGui::TextUnformatted(compName.c_str());
+
+		if(!enabled) ImGui::PopStyleColor();
+
+		// --- 4. 右端の設定ボタン (ギア) ---
+		float button_size = ImGui::GetFrameHeight();
+		ImGui::SameLine(ImGui::GetContentRegionAvail().x + ImGui::GetCursorPosX() - button_size - 4.0f);
+		if(ImGui::Button("::", ImVec2(button_size, button_size))) {
+			ImGui::OpenPopup("CompPopup");
 		}
 
-		ImGui::SameLine();
+		ImGui::PopStyleVar(); // FramePadding
+		ImGui::PopStyleColor(2); // Header, HeaderHovered
 
-
-		/// アクティブ/非アクティブで表示を変える
-		if(!enabled) {
-			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.75f, 0.75f, 0.75f, 1.0f)); // 白色
-		}
-
-		/// component debug
-		ImGui::Separator();
-		ImGui::SameLine();
-
-
-		/// ==============================================
-		/// Componentのデバッグ表示ヘッダー
-		/// ==============================================
-		bool isHeaderOpen = ImGui::CollapsingHeader(label.c_str(), ImGuiTreeNodeFlags_DefaultOpen);
-
-		/// ==============================================
-		/// ドラッグソースの開始
-		/// ==============================================
+		// --- ドラッグソース ---
 		if(ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
-			ImGui::SetDragDropPayload("Component", &component.second, sizeof(IComponent*));
+			ImGui::SetDragDropPayload("Component", &comp, sizeof(IComponent*));
 			ImGui::Text("%s", compName.c_str());
 			ImGui::EndDragDropSource();
 		}
 
-		/// ==============================================
-		/// 実際のComponentごとのデバッグ表示
-		/// ==============================================
+		// --- コンテンツ領域 ---
 		if(isHeaderOpen) {
-			/// 右クリックでポップアップメニューを開く
-			if(ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
-				ImGui::OpenPopup(label.c_str());
-			}
-
-			ImGui::Indent(34.0f);
-			if(componentDebugFuncs_.contains(component.first)) {
-				componentDebugFuncs_[component.first](component.second);
-			}
-			ImGui::Unindent(34.0f);
-		}
-
-
-
-		if(!enabled) {
-			ImGui::PopStyleColor();
-		}
-
-
-		if(ImGui::BeginPopupContextItem(label.c_str())) {
-			if(ImGui::MenuItem("delete")) {
-				auto resultItr = entity->GetComponents().begin();
-				pEditorManager_->ExecuteCommand<RemoveComponentCommand>(entity, compName, &resultItr);
-				itr = resultItr; // イテレータを更新
-
-				/// endじゃないかチェック
-				if(itr == entity->GetComponents().end()) {
+			// ポップアップメニュー
+			if(ImGui::BeginPopup("CompPopup")) {
+				if(ImGui::MenuItem("Reset")) { comp->Reset(); }
+				ImGui::Separator();
+				if(ImGui::MenuItem("Remove Component")) {
+					auto resultItr = entity->GetComponents().begin();
+					pEditorManager_->ExecuteCommand<RemoveComponentCommand>(entity, compName, &resultItr);
+					itr = resultItr;
 					ImGui::EndPopup();
+					ImGui::TreePop();
 					ImGui::PopID();
-					break; // もしendに到達したらループを抜ける
+					if(itr == entity->GetComponents().end()) break;
+					continue;
 				}
-
+				ImGui::EndPopup();
 			}
 
-			if(ImGui::MenuItem("reset")) {
-				IComponent* comp = entity->GetComponent(compName);
-				comp->Reset();
+			// 中身の描画
+			ImGui::Indent(22.0f); // Unityの階層に近い深さ
+			if(!enabled) ImGui::BeginDisabled(); // チェックがOFFなら操作不可にする
+
+			if(componentUIBindings_.contains(itr->first)) {
+				componentUIBindings_[itr->first].function(comp);
 			}
 
-			ImGui::EndPopup();
+			if(!enabled) ImGui::EndDisabled();
+			ImGui::Unindent(22.0f);
+
+			ImGui::TreePop();
 		}
 
-		/// Idの削除
 		ImGui::PopID();
-
 		++itr;
 	}
 }
@@ -332,10 +348,11 @@ void InspectorWindow::ShowAddComponentPopup(ONEngine::GameEntity* entity) {
 	if(ImGui::BeginPopup("AddComponent", ImGuiWindowFlags_AlwaysVerticalScrollbar)) {
 
 		ImVec2 buttonSize = ImVec2(128.0f, 24.0f);
-		for(const auto& name : componentNames_) {
+		for(const auto& uiBinding : componentUIBindings_) {
+			const std::string& name = uiBinding.second.name;
 			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
-			if(ImGui::Button(name.second.c_str(), buttonSize)) {
-				pEditorManager_->ExecuteCommand<AddComponentCommand>(entity, name.second);
+			if(ImGui::Button(name.c_str(), buttonSize)) {
+				pEditorManager_->ExecuteCommand<AddComponentCommand>(entity, name);
 			}
 
 			ImGui::PopStyleColor();
@@ -343,6 +360,13 @@ void InspectorWindow::ShowAddComponentPopup(ONEngine::GameEntity* entity) {
 
 		ImGui::EndPopup();
 	}
+}
+
+///
+/// コンポーネントのエディタ表示 
+///
+void InspectorWindow::DrawComponentNode() {
+
 }
 
 void InspectorWindow::AssetInspector() {
