@@ -44,45 +44,47 @@
 #include "Engine/ECS/Component/Components/RendererComponents/ScreenPostEffectTag/ScreenPostEffectTag.h"
 
 
-using namespace Editor;
 using namespace ONEngine;
 
-InspectorWindow::InspectorWindow(const std::string& _windowName, DxManager* _dxm, EntityComponentSystem* _ecs, AssetCollection* _assetCollection, EditorManager* _editorManager)
-	: pEcs_(_ecs), pDxManager_(_dxm), pAssetCollection_(_assetCollection), pEditorManager_(_editorManager) {
-	windowName_ = _windowName;
+namespace Editor {
+
+
+InspectorWindow::InspectorWindow(const std::string& windowName, DxManager* dxm, EntityComponentSystem* ecs, AssetCollection* assetCollection, EditorManager* editorManager)
+	: pEcs_(ecs), pDxManager_(dxm), pAssetCollection_(assetCollection), pEditorManager_(editorManager) {
+	windowName_ = windowName;
 
 	/// ---------------------------------------------------
 	/// 各ComponentのImGui関数登録
 	/// ---------------------------------------------------
 
 	/// compute
-	RegisterComponent<Transform>([&](IComponent* _comp) { ComponentDebug::TransformDebug(static_cast<Transform*>(_comp)); });
-	RegisterComponent<DirectionalLight>([&](IComponent* _comp) { DirectionalLightDebug(static_cast<DirectionalLight*>(_comp)); });
-	RegisterComponent<AudioSource>([&](IComponent* _comp) { ComponentDebug::AudioSourceDebug(static_cast<AudioSource*>(_comp)); });
-	RegisterComponent<Variables>([&](IComponent* _comp) { ComponentDebug::VariablesDebug(static_cast<Variables*>(_comp)); });
-	RegisterComponent<Effect>([&](IComponent* _comp) { ComponentDebug::EffectDebug(static_cast<Effect*>(_comp)); });
-	RegisterComponent<Script>([&](IComponent* _comp) { ComponentDebug::ScriptDebug(static_cast<Script*>(_comp)); });
-	RegisterComponent<Terrain>([&](IComponent* _comp) { ComponentDebug::TerrainDebug(static_cast<Terrain*>(_comp), pEcs_, pAssetCollection_); });
-	RegisterComponent<TerrainCollider>([&](IComponent* _comp) { ComponentDebug::TerrainColliderDebug(static_cast<TerrainCollider*>(_comp)); });
-	RegisterComponent<GrassField>([&](IComponent* _comp) { ComponentDebug::GrassFieldDebug(static_cast<GrassField*>(_comp), pAssetCollection_); });
-	RegisterComponent<CameraComponent>([&](IComponent* _comp) { ComponentDebug::CameraDebug(static_cast<CameraComponent*>(_comp)); });
-	RegisterComponent<ShadowCaster>([&](IComponent* _comp) { ComponentDebug::ShadowCasterDebug(static_cast<ShadowCaster*>(_comp)); });
-	RegisterComponent<VoxelTerrain>([&](IComponent* _comp) { ComponentDebug::VoxelTerrainDebug(static_cast<VoxelTerrain*>(_comp), pDxManager_, pAssetCollection_); });
+	RegisterComponent<Transform>([&](IComponent* comp) { ComponentDebug::TransformDebug(static_cast<Transform*>(comp)); });
+	RegisterComponent<DirectionalLight>([&](IComponent* comp) { DirectionalLightDebug(static_cast<DirectionalLight*>(comp)); });
+	RegisterComponent<AudioSource>([&](IComponent* comp) { ComponentDebug::AudioSourceDebug(static_cast<AudioSource*>(comp)); });
+	RegisterComponent<Variables>([&](IComponent* comp) { ComponentDebug::VariablesDebug(static_cast<Variables*>(comp)); });
+	RegisterComponent<Effect>([&](IComponent* comp) { ComponentDebug::EffectDebug(static_cast<Effect*>(comp)); });
+	RegisterComponent<Script>([&](IComponent* comp) { ComponentDebug::ScriptDebug(static_cast<Script*>(comp)); });
+	RegisterComponent<Terrain>([&](IComponent* comp) { ComponentDebug::TerrainDebug(static_cast<Terrain*>(comp), pEcs_, pAssetCollection_); });
+	RegisterComponent<TerrainCollider>([&](IComponent* comp) { ComponentDebug::TerrainColliderDebug(static_cast<TerrainCollider*>(comp)); });
+	RegisterComponent<GrassField>([&](IComponent* comp) { ComponentDebug::GrassFieldDebug(static_cast<GrassField*>(comp), pAssetCollection_); });
+	RegisterComponent<CameraComponent>([&](IComponent* comp) { ComponentDebug::CameraDebug(static_cast<CameraComponent*>(comp)); });
+	RegisterComponent<ShadowCaster>([&](IComponent* comp) { ComponentDebug::ShadowCasterDebug(static_cast<ShadowCaster*>(comp)); });
+	RegisterComponent<VoxelTerrain>([&](IComponent* comp) { ComponentDebug::VoxelTerrainDebug(static_cast<VoxelTerrain*>(comp), pDxManager_, pAssetCollection_); });
 
 	/// renderer
-	RegisterComponent<MeshRenderer>([&](IComponent* _comp) { ComponentDebug::MeshRendererDebug(static_cast<MeshRenderer*>(_comp), pAssetCollection_); });
-	RegisterComponent<CustomMeshRenderer>([&](IComponent* _comp) { CustomMeshRendererDebug(static_cast<CustomMeshRenderer*>(_comp)); });
-	RegisterComponent<DissolveMeshRenderer>([&](IComponent* _comp) { ShowGUI(static_cast<DissolveMeshRenderer*>(_comp), pAssetCollection_); });
-	RegisterComponent<SpriteRenderer>([&](IComponent* _comp) { ComponentDebug::SpriteDebug(static_cast<SpriteRenderer*>(_comp), pAssetCollection_); });
-	RegisterComponent<Line2DRenderer>([&]([[maybe_unused]] IComponent* _comp) {});
-	RegisterComponent<Line3DRenderer>([&]([[maybe_unused]] IComponent* _comp) {});
-	RegisterComponent<SkinMeshRenderer>([&](IComponent* _comp) { ComponentDebug::SkinMeshRendererDebug(static_cast<SkinMeshRenderer*>(_comp)); });
-	RegisterComponent<ScreenPostEffectTag>([&](IComponent* _comp) { ComponentDebug::ScreenPostEffectTagDebug(static_cast<ScreenPostEffectTag*>(_comp)); });
-	RegisterComponent<Skybox>([&](IComponent* _comp) { ComponentDebug::SkyboxDebug(static_cast<Skybox*>(_comp)); });
+	RegisterComponent<MeshRenderer>([&](IComponent* comp) { ComponentDebug::MeshRendererDebug(static_cast<MeshRenderer*>(comp), pAssetCollection_); });
+	RegisterComponent<CustomMeshRenderer>([&](IComponent* comp) { CustomMeshRendererDebug(static_cast<CustomMeshRenderer*>(comp)); });
+	RegisterComponent<DissolveMeshRenderer>([&](IComponent* comp) { ShowGUI(static_cast<DissolveMeshRenderer*>(comp), pAssetCollection_); });
+	RegisterComponent<SpriteRenderer>([&](IComponent* comp) { ComponentDebug::SpriteDebug(static_cast<SpriteRenderer*>(comp), pAssetCollection_); });
+	RegisterComponent<Line2DRenderer>([&]([[maybe_unused]] IComponent* comp) {});
+	RegisterComponent<Line3DRenderer>([&]([[maybe_unused]] IComponent* comp) {});
+	RegisterComponent<SkinMeshRenderer>([&](IComponent* comp) { ComponentDebug::SkinMeshRendererDebug(static_cast<SkinMeshRenderer*>(comp)); });
+	RegisterComponent<ScreenPostEffectTag>([&](IComponent* comp) { ComponentDebug::ScreenPostEffectTagDebug(static_cast<ScreenPostEffectTag*>(comp)); });
+	RegisterComponent<Skybox>([&](IComponent* comp) { ComponentDebug::SkyboxDebug(static_cast<Skybox*>(comp)); });
 
 	/// collider
-	RegisterComponent<SphereCollider>([&](IComponent* _comp) { ComponentDebug::SphereColliderDebug(static_cast<SphereCollider*>(_comp)); });
-	RegisterComponent<BoxCollider>([&](IComponent* _comp) { ComponentDebug::BoxColliderDebug(static_cast<BoxCollider*>(_comp)); });
+	RegisterComponent<SphereCollider>([&](IComponent* comp) { ComponentDebug::SphereColliderDebug(static_cast<SphereCollider*>(comp)); });
+	RegisterComponent<BoxCollider>([&](IComponent* comp) { ComponentDebug::BoxColliderDebug(static_cast<BoxCollider*>(comp)); });
 
 
 
@@ -115,49 +117,70 @@ void InspectorWindow::EntityInspector() {
 
 	/// guidの取得、無効値なら抜ける
 	const Guid& selectionGuid = ImGuiSelection::GetSelectedObject();
-	if(!selectionGuid.CheckValid()) {
-		return;
-	}
+	if(!selectionGuid.CheckValid()) { return; }
 
-	/// アセットなら抜ける
-	bool isAsset = pAssetCollection_->IsAsset(selectionGuid);
-	if(isAsset) {
-		return;
-	}
+	/// 選択しているエンティティの検索、見つからなければ即時終了
+	GameEntity* selectedEntity = GetSelectedEntity(selectionGuid);
+	if(!selectedEntity) { return; }
 
-	GameEntity* selectedEntity = nullptr;
+
+
+	ShowEntityMenuBar(selectedEntity);
+	ShowEntityBasicInfo(selectedEntity);
+
+	ImGui::Separator();
+
+	ShowEntityComponents(selectedEntity);
+
+	/// ----------------------------
+	/// componentの追加
+	/// ----------------------------
+
+	ShowAddComponentPopup(selectedEntity);
+
+}
+
+///
+/// 選択しているエンティティを検索、選択していなければnullptrを返す
+///
+GameEntity* InspectorWindow::GetSelectedEntity(const ONEngine::Guid& entityGuid) {
+	/// 選択しているオブジェクトがGroup違いの場合もあるのですべてのGroupを探索する。
+	/// Guidの被りはない想定なので見つかったら即返す。
+
+	GameEntity* res = nullptr;
 	for(auto& group : pEcs_->GetECSGroups()) {
-		selectedEntity = group.second->GetEntityFromGuid(selectionGuid);
-		if(selectedEntity) {
-			break;
-		}
+		res = group.second->GetEntityFromGuid(entityGuid);
+		if(res) { return res; }
 	}
 
-	if(!selectedEntity) {
-		return;
-	}
+	return nullptr;
+}
 
-	/// ----------------------------
-	/// 適当な編集の機能
-	/// ----------------------------
+///
+/// 選択しているエンティティのメニューバー表示を行う 
+///
+void InspectorWindow::ShowEntityMenuBar(ONEngine::GameEntity* entity) {
 	if(ImGui::BeginMenuBar()) {
+
+		/// エンティティの保存、読み込み
 		if(ImGui::BeginMenu("File")) {
 			if(ImGui::MenuItem("Save")) {
-				pEditorManager_->ExecuteCommand<EntityDataOutputCommand>(selectedEntity);
+				pEditorManager_->ExecuteCommand<EntityDataOutputCommand>(entity);
 			}
 
 			if(ImGui::MenuItem("Load")) {
-				pEditorManager_->ExecuteCommand<EntityDataInputCommand>(selectedEntity);
+				pEditorManager_->ExecuteCommand<EntityDataInputCommand>(entity);
 			}
 
 			ImGui::EndMenu();
 		}
 
+		/// プレハブへの適用、プレハブがあれば
 		if(ImGui::MenuItem("Apply Prefab")) {
 
-			if(!selectedEntity->GetPrefabName().empty()) {
-				pEditorManager_->ExecuteCommand<CreatePrefabCommand>(selectedEntity);
-				pEcs_->ReloadPrefab(selectedEntity->GetPrefabName());
+			if(!entity->GetPrefabName().empty()) {
+				pEditorManager_->ExecuteCommand<CreatePrefabCommand>(entity);
+				pEcs_->ReloadPrefab(entity->GetPrefabName());
 			} else {
 				Console::LogError("This entity is not a prefab instance.");
 			}
@@ -166,29 +189,38 @@ void InspectorWindow::EntityInspector() {
 
 		ImGui::EndMenuBar();
 	}
+}
 
-	/// ----------------------------
-	/// entityの基本情報表示
-	/// ----------------------------
+/// 
+/// エンティティの基本情報を表示する
+/// 
+void InspectorWindow::ShowEntityBasicInfo(ONEngine::GameEntity* entity) {
 
-	if(!selectedEntity->GetPrefabName().empty()) {
+	/// プレハブがあるならプレハブ名を表示
+	if(!entity->GetPrefabName().empty()) {
 		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.75f, 0, 0, 1));
-		ImGuiInputTextReadOnly("entity prefab name", selectedEntity->GetPrefabName());
+		ImGuiInputTextReadOnly("entity prefab name", entity->GetPrefabName());
 		ImGui::PopStyleColor();
 	}
 
-	ImGuiInputTextReadOnly("entity name", selectedEntity->GetName());
-	ImGuiInputTextReadOnly("entity id", "Entity ID: " + std::to_string(selectedEntity->GetId()));
-	ImMathf::Checkbox("entity active", &selectedEntity->active);
+	/// その他エンティティの基本情報
+	ImGuiInputTextReadOnly("entity name", entity->GetName());
+	ImGuiInputTextReadOnly("entity id", "Entity ID: " + std::to_string(entity->GetId()));
+	ImMathf::Checkbox("entity active", &entity->active);
+}
 
-	ImGui::Separator();
-	/// ----------------------------
-	/// componentのデバッグ
-	/// ----------------------------
-	for(auto itr = selectedEntity->GetComponents().begin(); itr != selectedEntity->GetComponents().end(); ) {
+///
+/// エンティティのコンポーネントを表示する
+///  
+void InspectorWindow::ShowEntityComponents(ONEngine::GameEntity* entity) {
+
+	/// for文の中で毎回生成するのは良くないので事前に用意
+	std::string label = "", compName = "";
+
+	for(auto itr = entity->GetComponents().begin(); itr != entity->GetComponents().end(); ) {
 		std::pair<size_t, IComponent*> component = *itr;
-		std::string componentName = GetComponentTypeName(component.second);
-		std::string label = componentName + "##" + std::to_string(reinterpret_cast<uintptr_t>(component.second));
+		compName = GetComponentTypeName(component.second);
+		label = compName + "##" + std::to_string(reinterpret_cast<uintptr_t>(component.second));
 
 		/// Idの追加(string)
 		ImGui::PushID(label.c_str());
@@ -200,7 +232,6 @@ void InspectorWindow::EntityInspector() {
 		}
 
 		ImGui::SameLine();
-
 
 
 		/// アクティブ/非アクティブで表示を変える
@@ -223,7 +254,7 @@ void InspectorWindow::EntityInspector() {
 		/// ==============================================
 		if(ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
 			ImGui::SetDragDropPayload("Component", &component.second, sizeof(IComponent*));
-			ImGui::Text("%s", componentName.c_str());
+			ImGui::Text("%s", compName.c_str());
 			ImGui::EndDragDropSource();
 		}
 
@@ -252,12 +283,12 @@ void InspectorWindow::EntityInspector() {
 
 		if(ImGui::BeginPopupContextItem(label.c_str())) {
 			if(ImGui::MenuItem("delete")) {
-				auto resultItr = selectedEntity->GetComponents().begin();
-				pEditorManager_->ExecuteCommand<RemoveComponentCommand>(selectedEntity, componentName, &resultItr);
+				auto resultItr = entity->GetComponents().begin();
+				pEditorManager_->ExecuteCommand<RemoveComponentCommand>(entity, compName, &resultItr);
 				itr = resultItr; // イテレータを更新
 
 				/// endじゃないかチェック
-				if(itr == selectedEntity->GetComponents().end()) {
+				if(itr == entity->GetComponents().end()) {
 					ImGui::EndPopup();
 					ImGui::PopID();
 					break; // もしendに到達したらループを抜ける
@@ -266,7 +297,7 @@ void InspectorWindow::EntityInspector() {
 			}
 
 			if(ImGui::MenuItem("reset")) {
-				IComponent* comp = selectedEntity->GetComponent(componentName);
+				IComponent* comp = entity->GetComponent(compName);
 				comp->Reset();
 			}
 
@@ -278,32 +309,33 @@ void InspectorWindow::EntityInspector() {
 
 		++itr;
 	}
+}
 
-	/// ----------------------------
-	/// componentの追加
-	/// ----------------------------
+///
+/// エンティティに対してコンポーネントを追加するためのポップアップ
+///
+void InspectorWindow::ShowAddComponentPopup(ONEngine::GameEntity* entity) {
 	ImGui::Separator();
-	for(int i = 0; i < 4; ++i) {
-		ImGui::Indent();
-	}
 
-	if(ImGui::Button("Add Component")) {
+	const float indentSize = 4 * ImGui::GetStyle().IndentSpacing;
+	ImGui::Indent(indentSize);
+
+	const ImVec2 openPopupButtonSize = ImVec2(256.0f, 32.0f);
+	if(ImGui::Button("Add Component", openPopupButtonSize)) {
 		ImGui::OpenPopup("AddComponent");
 	}
 
-	for(int i = 0; i < 4; ++i) {
-		ImGui::Unindent();
-	}
+	ImGui::Unindent(indentSize);
 
 
-	/// popup window
+
 	if(ImGui::BeginPopup("AddComponent", ImGuiWindowFlags_AlwaysVerticalScrollbar)) {
 
-		ImVec2 buttonSize = ImVec2(128.f, 0.f);
+		ImVec2 buttonSize = ImVec2(128.0f, 24.0f);
 		for(const auto& name : componentNames_) {
 			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
 			if(ImGui::Button(name.second.c_str(), buttonSize)) {
-				pEditorManager_->ExecuteCommand<AddComponentCommand>(selectedEntity, name.second);
+				pEditorManager_->ExecuteCommand<AddComponentCommand>(entity, name.second);
 			}
 
 			ImGui::PopStyleColor();
@@ -311,8 +343,6 @@ void InspectorWindow::EntityInspector() {
 
 		ImGui::EndPopup();
 	}
-
-
 }
 
 void InspectorWindow::AssetInspector() {
@@ -344,21 +374,22 @@ void InspectorWindow::AssetInspector() {
 
 }
 
-void InspectorWindow::TextureAssetInspector(Texture* _texture) {
+void InspectorWindow::TextureAssetInspector(Texture* tex) {
 	/// ----- テクスチャのインスペクター表示 ----- /
 
 	/// previewのための枠を確保
 	ImGui::Text("Texture Preview:");
 	ImVec2 availSize = ImGui::GetContentRegionAvail();
-	const Vector2& textureSize = _texture->GetTextureSize();
+	const Vector2& textureSize = tex->GetTextureSize();
 	ImVec2 displaySize = ImMathf::CalculateAspectFitSize(textureSize, availSize);
 
 	/// Guidの表示
-	ImGuiInputTextReadOnly("Texture Guid", _texture->guid.ToString());
+	ImGuiInputTextReadOnly("Texture Guid", tex->guid.ToString());
 
 	/// 枠を表示
 	ImGui::BeginChild("TextureFrame", displaySize, true, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
-	ImGui::Image((ImTextureID)(uintptr_t)_texture->GetSRVGPUHandle().ptr, displaySize);
+	ImGui::Image((ImTextureID)(uintptr_t)tex->GetSRVGPUHandle().ptr, displaySize);
 	ImGui::EndChild();
 }
 
+} /// namespace Editor

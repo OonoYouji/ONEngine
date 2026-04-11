@@ -16,6 +16,7 @@ namespace ONEngine {
 /// 前方宣言
 class IComponent;
 class Texture;
+class GameEntity;
 }
 
 
@@ -31,11 +32,11 @@ public:
 	/// ===================================================
 
 	InspectorWindow(
-		const std::string& _windowName, 
-		ONEngine::DxManager* _dxm,
-		ONEngine::EntityComponentSystem* _ecs, 
-		ONEngine::AssetCollection* _assetCollection, 
-		EditorManager* _editorManager
+		const std::string& windowName, 
+		ONEngine::DxManager* dxm,
+		ONEngine::EntityComponentSystem* ecs, 
+		ONEngine::AssetCollection* assetCollection, 
+		EditorManager* editorManager
 	);
 	~InspectorWindow() {}
 
@@ -50,6 +51,27 @@ public:
 
 	/// @brief EntityのInspector表示処理
 	void EntityInspector();
+
+	/// @brief 選択しているエンティティを検索
+	/// @return 選択しているエンティティ、選択していなければnullptr
+	ONEngine::GameEntity* GetSelectedEntity(const ONEngine::Guid& entityGuid);
+
+	/// @brief 選択しているエンティティのメニューバーを表示する
+	/// @param entity 選択中のエンティティのポインタ、nullptrでクラッシュ
+	void ShowEntityMenuBar(ONEngine::GameEntity* entity);
+
+	/// @brief エンティティの基本情報の表示を行う
+	/// @param entity 表示対象のエンティティ
+	void ShowEntityBasicInfo(ONEngine::GameEntity* entity);
+
+	/// @brief エンティティのコンポーネントの表示を行う
+	/// @param entity 表示対象のエンティティ
+	void ShowEntityComponents(ONEngine::GameEntity* entity);
+
+	/// @brief コンポーネントの追加用ポップアップ表示
+	/// @param entity 対象のエンティティ
+	void ShowAddComponentPopup(ONEngine::GameEntity* entity);
+
 
 	/// @brief アセットInspector表示処理
 	void AssetInspector();
