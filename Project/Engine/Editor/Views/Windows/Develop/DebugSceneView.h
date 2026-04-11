@@ -54,6 +54,16 @@ public:
 		const ImVec2& imagePos,
 		const std::vector<OverlaySection>& sections
 	);
+private:
+	/// ===================================================
+	/// private : methods
+	/// ===================================================
+
+	/// ----- 追加するリファクタリング用関数 ----- ///
+	void HandleCameraFocus();
+	void DrawToolbar();
+	void DrawSceneTexture(ImVec2& outImagePos, ImVec2& outImageSize);
+	void DrawGizmoAndOverlays(const ImVec2& imagePos, const ImVec2& imageSize);
 
 
 private:
@@ -69,6 +79,7 @@ private:
 
 	int manipulateOperation_;
 	int manipulateMode_;
+	bool isDrawSceneStats_ = true;
 
 	OverlaySection sceneStatsSection_;
 
