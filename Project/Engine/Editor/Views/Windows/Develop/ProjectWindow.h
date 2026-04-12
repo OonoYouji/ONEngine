@@ -83,7 +83,7 @@ private:
 	std::string windowName_;
 
 	std::vector<std::filesystem::path> rootPaths_;
-	std::filesystem::path rootPath_;
+	//std::filesystem::path rootPath_;
 	std::filesystem::path currentPath_;   // 今見ているフォルダ
 	std::unordered_map<std::string, bool> dirOpenState_; // ツリーの開閉状態
 	std::filesystem::file_time_type lastWriteTime_;
