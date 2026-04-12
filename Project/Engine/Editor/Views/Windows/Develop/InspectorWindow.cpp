@@ -5,6 +5,7 @@
 
 /// external
 #include <imgui.h>
+#include <magic_enum/magic_enum.hpp>
 
 /// engine
 #include "Engine/Asset/Collection/AssetCollection.h"
@@ -61,15 +62,16 @@ InspectorWindow::InspectorWindow(const std::string& windowName, DxManager* dxm, 
 	RegisterComponent<AudioSource>(ComponentType::Compute, [&](IComponent* comp) { ComponentDebug::AudioSourceDebug(static_cast<AudioSource*>(comp)); });
 	RegisterComponent<Variables>(ComponentType::Compute, [&](IComponent* comp) { ComponentDebug::VariablesDebug(static_cast<Variables*>(comp)); });
 	RegisterComponent<Effect>(ComponentType::Compute, [&](IComponent* comp) { ComponentDebug::EffectDebug(static_cast<Effect*>(comp)); });
-	RegisterComponent<Script>(ComponentType::Compute, [&](IComponent* comp) { ComponentDebug::ScriptDebug(static_cast<Script*>(comp)); });
 	RegisterComponent<Terrain>(ComponentType::Compute, [&](IComponent* comp) { ComponentDebug::TerrainDebug(static_cast<Terrain*>(comp), pEcs_, pAssetCollection_); });
 	RegisterComponent<TerrainCollider>(ComponentType::Compute, [&](IComponent* comp) { ComponentDebug::TerrainColliderDebug(static_cast<TerrainCollider*>(comp)); });
 	RegisterComponent<GrassField>(ComponentType::Compute, [&](IComponent* comp) { ComponentDebug::GrassFieldDebug(static_cast<GrassField*>(comp), pAssetCollection_); });
 	RegisterComponent<CameraComponent>(ComponentType::Compute, [&](IComponent* comp) { ComponentDebug::CameraDebug(static_cast<CameraComponent*>(comp)); });
 	RegisterComponent<ShadowCaster>(ComponentType::Compute, [&](IComponent* comp) { ComponentDebug::ShadowCasterDebug(static_cast<ShadowCaster*>(comp)); });
-	RegisterComponent<VoxelTerrain>(ComponentType::Compute, [&](IComponent* comp) { ComponentDebug::VoxelTerrainDebug(static_cast<VoxelTerrain*>(comp), pDxManager_, pAssetCollection_); });
+
+	RegisterComponent<Script>(ComponentType::Script, [&](IComponent* comp) { ComponentDebug::ScriptDebug(static_cast<Script*>(comp)); });
 
 	/// renderer
+	RegisterComponent<VoxelTerrain>(ComponentType::Renderer, [&](IComponent* comp) { ComponentDebug::VoxelTerrainDebug(static_cast<VoxelTerrain*>(comp), pDxManager_, pAssetCollection_); });
 	RegisterComponent<MeshRenderer>(ComponentType::Renderer, [&](IComponent* comp) { ComponentDebug::MeshRendererDebug(static_cast<MeshRenderer*>(comp), pAssetCollection_); });
 	RegisterComponent<CustomMeshRenderer>(ComponentType::Renderer, [&](IComponent* comp) { CustomMeshRendererDebug(static_cast<CustomMeshRenderer*>(comp)); });
 	RegisterComponent<DissolveMeshRenderer>(ComponentType::Renderer, [&](IComponent* comp) { ShowGUI(static_cast<DissolveMeshRenderer*>(comp), pAssetCollection_); });
@@ -254,15 +256,6 @@ void InspectorWindow::ShowAddComponentPopup(ONEngine::GameEntity* entity) {
 			categorizedComponents[uiBinding.second.type].push_back(uiBinding.second.name);
 		}
 
-		auto GetTypeString = [](ComponentType type) -> std::string {
-			switch(type) {
-			case ComponentType::Compute:  return "Compute";
-			case ComponentType::Renderer: return "Renderer";
-			case ComponentType::Collider: return "Collider";
-			default:                      return "Other";
-			}
-		};
-
 		/// ==============================================
 		/// 3. メニューまたは検索結果の描画
 		/// ==============================================
@@ -290,7 +283,7 @@ void InspectorWindow::ShowAddComponentPopup(ONEngine::GameEntity* entity) {
 				// ----------------------------------------
 				// 検索していない時：カテゴリごとにサブメニュー化
 				// ----------------------------------------
-				std::string typeName = GetTypeString(type);
+				std::string typeName{ magic_enum::enum_name(type) };
 				if(ImGui::BeginMenu(typeName.c_str())) {
 					for(const auto& name : names) {
 						if(ImGui::MenuItem(name.c_str())) {
