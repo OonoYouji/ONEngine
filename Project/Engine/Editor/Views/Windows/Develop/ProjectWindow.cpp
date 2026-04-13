@@ -5,6 +5,7 @@
 #include <iostream>
 #include <format>
 #include <unordered_set>
+#include <algorithm>
 
 /// external
 #include <imgui.h>
@@ -17,7 +18,7 @@
 #include "Engine/Editor/Math/AssetPayload.h"
 #include "Engine/Editor/Math/ImGuiMath.h"
 #include "Engine/Editor/Math/ImGuiSelection.h"
-
+#include "Engine/Asset/AssetType.h"
 
 using namespace Editor;
 
@@ -28,43 +29,29 @@ const std::filesystem::path kRootPath = std::filesystem::absolute("./");
 
 
 /// @brief 指定した基準パスに対する、与えられた絶対パスの相対パスを計算して文字列で返す。
-/// @param absolutePath 相対パスに変換する絶対パス（std::filesystem::path の const 参照）。
-/// @param basePath 相対パスの基準となるパス（std::filesystem::path の const 参照）。
-/// @return 計算された相対パスを std::string として返す。
 std::string GetRelativePath(const std::filesystem::path& _absolutePath, const std::filesystem::path& _basePath = kRootPath) {
 	std::filesystem::path relativePath = std::filesystem::relative(_absolutePath, _basePath);
 	std::string relativeStr = relativePath.string();
 
-	/// すでに "./" または "." で始まっていなければ付ける
 	if(!relativeStr.empty() && relativeStr[0] != '.') {
 		relativeStr = "./" + relativeStr;
 	} else if(relativeStr == ".") {
-		// 基準パスそのものの場合は "./" に統一
 		relativeStr = "./";
 	}
+
+	std::replace(relativeStr.begin(), relativeStr.end(), '\\', '/');
 
 	return relativeStr;
 }
 
+}
 
-}	/// namespace
-
-
-
-ProjectWindow::ProjectWindow(ONEngine::AssetCollection* _assetCollection, EditorManager* /*_editorManager*/)
+ProjectWindow::ProjectWindow(ONEngine::AssetCollection* _assetCollection)
 	: pAssetCollection_(_assetCollection) {
+	windowName_ = "Project";
 
-	/// デフォルトのウィンドウ名
-	windowName_ = "ImGuiProjectExplorer";
-
-	// 複数のルートディレクトリを設定
-	rootPaths_ = {
-		std::filesystem::absolute("./Assets"),
-		std::filesystem::absolute("./Packages"),
-		std::filesystem::absolute("../SubProjects/CSharpLibrary/Scripts")
-	};
-
-	currentPath_ = rootPaths_[0]; // 初期値として最初のルートディレクトリを設定
+	rootPaths_ = { "./Assets", "./Packages", "../SubProjects/CSharpLibrary/Scripts" };
+	currentPath_ = rootPaths_[0];
 
 	// ファイル監視を開始
 	std::vector<std::wstring> watchDirs;
@@ -73,556 +60,373 @@ ProjectWindow::ProjectWindow(ONEngine::AssetCollection* _assetCollection, Editor
 	}
 	fileWatcher_.Start(watchDirs);
 
-	// 各ルートディレクトリのキャッシュを更新
-	for(const auto& rootPath : rootPaths_) {
-		UpdateDirectoryCache(rootPath);
-		UpdateFileCache(rootPath);
+	for(const auto& path : rootPaths_) {
+		if(std::filesystem::exists(path)) {
+			UpdateDirectoryCache(path);
+		}
 	}
+	UpdateFileCache(currentPath_);
 }
 
-ProjectWindow::~ProjectWindow() {
-	fileWatcher_.Stop();
-}
+ProjectWindow::~ProjectWindow() {}
 
+
+///	-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/// プロジェクトウィンドウの基礎的な処理
+///	-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+///
+/// プロジェクトウィンドウの表示
+///
 void ProjectWindow::ShowImGui() {
-	if(!ImGui::Begin(windowName_.c_str())) {
-		ImGui::End();
-		return;
-	}
+	if(ImGui::Begin(windowName_.c_str())) {
+		ImGui::Columns(2);
 
-	/// ---------------------------------------------------
-	/// ファイル監視イベントの処理
-	/// ---------------------------------------------------
-	auto events = fileWatcher_.ConsumeEvents();
-	for(const auto& event : events) {
-		std::string eventType;
-		switch(event.action) {
-		case FileEvent::Action::Added:
-			eventType = "Added";
-			HandleFileAdded(event.path);
-			break;
-		case FileEvent::Action::Removed:
-			eventType = "Removed";
-			HandleFileRemoved(event.path);
-			break;
-		case FileEvent::Action::Modified:
-			eventType = "Modified";
-			HandleFileModified(event.path);
-			break;
-		}
-		ImGui::Text("%s: %s", eventType.c_str(), std::filesystem::path(event.path).filename().string().c_str());
-	}
-
-	/// ---------------------------------------------------
-	/// テーブルレイアウトの開始
-	/// ---------------------------------------------------
-	if(ImGui::BeginTable("ProjectTable##ProjectWindow", 2, ImGuiTableFlags_Resizable)) {
-		ImGui::TableSetupColumn("Tree", ImGuiTableColumnFlags_WidthFixed, 250.0f);
-		ImGui::TableSetupColumn("View", ImGuiTableColumnFlags_WidthStretch);
-
-		ImGui::TableNextRow();
-
-		/// ---------------------------------------------------
-		/// 左カラム : ディレクトリTree
-		/// ---------------------------------------------------
-		ImGui::TableSetColumnIndex(0);
-		ImGui::BeginChild("TreeRegion");
-
-		// rootPaths_ を最上位ノードとして表示
-		for(const auto& rootPath : rootPaths_) {
-			ImGuiTreeNodeFlags rootFlags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DefaultOpen;
-			if(rootPath == currentPath_) {
-				rootFlags |= ImGuiTreeNodeFlags_Selected;
-			}
-
-			bool rootNodeOpen = ImGui::TreeNodeEx(rootPath.filename().string().c_str(), rootFlags);
-			if(ImGui::IsItemClicked()) {
-				currentPath_ = rootPath;
-			}
-
-			if(rootNodeOpen) {
-				DrawDirectoryTree(rootPath); // 子ディレクトリを描画
-				ImGui::TreePop();
+		// 左側：フォルダツリー
+		if(ImGui::BeginChild("DirectoryTree")) {
+			for(const auto& root : rootPaths_) {
+				if(std::filesystem::exists(root)) {
+					DrawDirectoryTree(root);
+				}
 			}
 		}
-
 		ImGui::EndChild();
 
-		/// ---------------------------------------------------
-		/// 右カラム : ファイルビュー
-		/// ---------------------------------------------------
-		ImGui::TableSetColumnIndex(1);
-		ImGui::BeginChild("ViewRegion");
-		DrawFileView(currentPath_);
+		ImGui::NextColumn();
+
+		// 右側：ファイルビュー
+		if(ImGui::BeginChild("FileView")) {
+			DrawFileView(currentPath_);
+		}
 		ImGui::EndChild();
 
-		ImGui::EndTable();
+		ImGui::Columns(1);
 	}
 	ImGui::End();
 }
 
-void ProjectWindow::SetWindowName(const std::string& _windowName) {
-	windowName_ = _windowName;
+
+///	-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/// 以下、処理ごとの関数実装
+///	-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+///
+/// プロジェクトウィンドウのウィンドウ名を設定
+///
+void ProjectWindow::SetWindowName(const std::string& windowName) {
+	windowName_ = windowName;
 }
 
-void ProjectWindow::DrawDirectoryTree(const std::filesystem::path& _dir) {
-	/// ----- 引数のディレクトリを再帰的に表示していく ----- ///
+///
+/// プロジェクトのファイル構造をツリーで表示
+///
+void ProjectWindow::DrawDirectoryTree(const std::filesystem::path& directory) {
+	std::string dirStr = directory.string();
+	std::string dirName = directory.filename().string();
 
-	auto it = directoryCache_.find(_dir.string());
-	if(it == directoryCache_.end()) {
-		return;
+	// ルートパス自体（./Assets など）の名前が空（.）になる場合の対策
+	if(dirName == "." || dirName == "") {
+		dirName = directory.stem().string();
 	}
 
-	for(const auto& subDir : it->second) {
-		const std::filesystem::path& subDirectoryPath = subDir.path;
-		const std::string name = subDirectoryPath.filename().string();
+	ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
+	if(currentPath_ == directory) flags |= ImGuiTreeNodeFlags_Selected;
 
-		ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow;
-		if(subDirectoryPath == currentPath_) {
-			flags |= ImGuiTreeNodeFlags_Selected;
-		}
+	// 子ディレクトリがない場合は Leaf にする
+	bool hasSubDirs = directoryCache_.contains(dirStr) && !directoryCache_[dirStr].empty();
+	if(!hasSubDirs) flags |= ImGuiTreeNodeFlags_Leaf;
 
-		bool nodeOpen = ImGui::TreeNodeEx(name.c_str(), flags);
-		if(ImGui::IsItemClicked()) {
-			currentPath_ = subDirectoryPath;
-		}
+	bool isOpen = ImGui::TreeNodeEx(dirName.c_str(), flags);
 
-		if(nodeOpen) {
-			DrawDirectoryTree(subDirectoryPath);
-			ImGui::TreePop();
+	// クリックで中身を表示
+	if(ImGui::IsItemClicked()) {
+		currentPath_ = directory;
+		UpdateFileCache(currentPath_);
+	}
+
+	if(isOpen) {
+		if(directoryCache_.contains(dirStr)) {
+			for(const auto& item : directoryCache_[dirStr]) {
+				DrawDirectoryTree(item.path);
+			}
 		}
+		ImGui::TreePop();
 	}
 }
 
-void ProjectWindow::DrawFileView(const std::filesystem::path& dir) {
-
-	/// ========================================================================
-	/// 1. 固定ヘッダー部分 (スクロールしない)
-	/// ========================================================================
-
-	// --- 現在のルート判定処理 ---
-	const std::filesystem::path* pCurrentRoot = nullptr;
-	std::filesystem::path relativePathFromRoot;
-	for(const auto& root : rootPaths_) {
-		try {
-			std::filesystem::path rel = std::filesystem::relative(dir, root);
-			if(!rel.empty() && rel.string().find("..") == std::string::npos) {
-				pCurrentRoot = &root;
-				relativePathFromRoot = rel;
-				break;
-			}
-		} catch(...) { continue; }
+///
+/// ファイルのビュー表示
+///
+void ProjectWindow::DrawFileView(const std::filesystem::path& directory) {
+	std::string dirStr = directory.string();
+	if(!fileCache_.contains(dirStr)) {
+		UpdateFileCache(directory);
 	}
 
-	if(!pCurrentRoot) {
-		ImGui::Text("Path: %s", dir.string().c_str());
-	} else {
-		// --- 戻るボタン ---
-		bool isRoot = std::filesystem::equivalent(dir, *pCurrentRoot);
-		if(!isRoot) {
-			if(ImGui::ArrowButton("##Back", ImGuiDir_Left)) {
-				if(dir.has_parent_path()) {
-					currentPath_ = dir.parent_path();
-				}
-			}
-			ImGui::SameLine();
-		} else {
-			ImGui::Dummy(ImVec2(ImGui::GetFrameHeight(), ImGui::GetFrameHeight()));
-			ImGui::SameLine();
-		}
-
-		// --- パンくずリスト ---
-		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
-		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.3f, 0.3f, 0.3f, 0.5f));
-		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.4f, 0.4f, 0.4f, 0.5f));
-
-		std::string rootName = pCurrentRoot->filename().string();
-		if(ImGui::Button(rootName.c_str())) {
-			currentPath_ = *pCurrentRoot;
-		}
-
-		if(!isRoot && relativePathFromRoot != ".") {
-			std::filesystem::path accumulatePath = *pCurrentRoot;
-			for(const auto& part : relativePathFromRoot) {
-				ImGui::SameLine();
-				ImGui::Text("/");
-				ImGui::SameLine();
-				accumulatePath /= part;
-				if(ImGui::Button(part.string().c_str())) {
-					currentPath_ = accumulatePath;
-				}
-			}
-		}
-		ImGui::PopStyleColor(3);
-	}
-
-	// ヘッダーとファイルリストの境界線
-	ImGui::Separator();
-
-	/// ========================================================================
-	/// 2. ファイルリスト部分 (ここだけスクロールする)
-	/// ========================================================================
-
-	bool isChildVisible = ImGui::BeginChild("FileScrollingRegion", ImVec2(0, 0), false);
-
-	// ディレクトリ移動リクエスト管理用
 	bool requestChangeDir = false;
 	std::filesystem::path nextTargetDir;
 
-	if(isChildVisible) {
-		ImGui::Spacing();
+	DrawBreadcrumbs(directory, requestChangeDir, nextTargetDir);
+	DrawFileList(directory, requestChangeDir, nextTargetDir);
 
-		auto it = fileCache_.find(dir.string());
-		if(it != fileCache_.end()) {
-
-			float iconSize = 64.0f;
-			float availX = ImGui::GetContentRegionAvail().x;
-			// カラム幅計算: アイコンサイズ + パディング分 + 列間の隙間 を考慮
-			int columnCount = (std::max)(1, (int)(availX / (iconSize + 20.0f)));
-
-			ImGui::Columns(columnCount, nullptr, false);
-
-			for(const auto& file : it->second) {
-				const std::filesystem::path& filePath = file.path;
-				const std::string name = filePath.filename().string();
-
-				// パス変換
-				std::string key = filePath.string();
-				{
-					key = GetRelativePath(key);
-					ONEngine::FileSystem::ReplaceAll(&key, "\\", "/");
-				}
-
-				// .meta 除外
-				const std::string extension = filePath.extension().string();
-				if(extension == ".meta") {
-					continue;
-				}
-
-				ImGui::PushID(name.c_str());
-				ImGui::BeginGroup();
-
-				// ============================================================
-				// アイコンの描画
-				// ============================================================
-
-				ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4.0f, 4.0f));
-
-				if(file.isDirectory) {
-					ONEngine::Texture* texture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/FileIcons/FolderIcon.png");
-					if(!texture) {
-						texture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/FileIcons/FolderIcon.dds");
-					}
-
-					ImGui::ImageButton("##Folder", (ImTextureID)(uintptr_t)texture->GetSRVGPUHandle().ptr, { iconSize, iconSize });
-				} else {
-					ONEngine::Texture* texture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/FileIcons/FileIcon.png");
-					if(!texture) {
-						texture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/FileIcons/FileIcon.dds");
-					}
-
-					ONEngine::AssetType type = ONEngine::GetAssetTypeFromExtension(extension);
-					switch(type) {
-					case ONEngine::AssetType::Texture:
-						/*if(extension != ".dds") */texture = pAssetCollection_->GetTexture(key);
-						break;
-					case ONEngine::AssetType::Audio:
-						texture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/FileIcons/mp3Icon.png");
-						if(!texture) {
-							texture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/FileIcons/mp3Icon.dds");
-						}
-
-						break;
-					}
-					if(!texture) {
-						texture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/FileIcons/FileIcon.png");
-						if(!texture) {
-							texture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/FileIcons/FileIcon.dds");
-						}
-					}
-
-					ImGui::ImageButton(
-						"##File",
-						(ImTextureID)(uintptr_t)texture->GetSRVGPUHandle().ptr,
-						ImMathf::CalculateAspectFitSize(texture->GetTextureSize(), 64.0f)
-					);
-				}
-
-				ImGui::PopStyleVar(); // スタイルを戻す
-
-				// --- ドラッグ & ドロップ ---
-				if(ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
-					static AssetPayload payload;
-					payload.filePath = key;
-					payload.guid = pAssetCollection_->GetAssetGuidFromPath(payload.filePath);
-
-					// プレビュー表示
-					ONEngine::AssetType type = pAssetCollection_->GetAssetTypeFromGuid(payload.guid);
-					if(type == ONEngine::AssetType::Texture) {
-						ONEngine::Texture* tex = pAssetCollection_->GetTexture(payload.filePath);
-						if(tex) {
-							ONEngine::Vector2 aspectRatio = tex->GetTextureSize();
-							aspectRatio /= (std::max)(aspectRatio.x, aspectRatio.y);
-							ImTextureID texId = reinterpret_cast<ImTextureID>(tex->GetSRVGPUHandle().ptr);
-							ImGui::Image(texId, ImVec2(64.0f * aspectRatio.x, 64.0f * aspectRatio.y));
-						}
-					}
-					const AssetPayload* assetPtr = &payload;
-					ImGui::SetDragDropPayload("AssetData", &assetPtr, sizeof(AssetPayload*));
-					ImGui::EndDragDropSource();
-				}
-
-				// --- ダブルクリック処理 ---
-				if(ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
-					if(file.isDirectory) {
-						requestChangeDir = true;
-						nextTargetDir = filePath;
-					} else {
-						const ONEngine::Guid& guid = pAssetCollection_->GetAssetGuidFromPath(key);
-						ImGuiSelection::SetSelectedObject(guid, SelectionType::Asset);
-					}
-				}
-
-				// --- 右クリック ---
-				if(ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
-					ImGui::OpenPopup("FileContextMenu");
-				}
-				PopupContextMenu(filePath);
-
-				// ============================================================
-				// テキストの描画
-				// ============================================================
-				ImGui::TextWrapped("%s", name.c_str());
-
-				ImGui::EndGroup();
-				ImGui::PopID();
-				ImGui::NextColumn();
-
-				if(requestChangeDir) {
-					break;
-				}
-			}
-			ImGui::Columns(1);
-		}
-	}
-
-	ImGui::EndChild();
-
+	// ディレクトリ移動リクエストの処理（パンくずリスト・ダブルクリック共通）
 	if(requestChangeDir) {
 		currentPath_ = nextTargetDir;
+		UpdateFileCache(currentPath_);
 	}
 }
 
-void ProjectWindow::PopupContextMenu(const std::filesystem::path& _dir) {
+///
+/// パンくずリスト（階層ナビゲーション）の描画
+///
+void ProjectWindow::DrawBreadcrumbs(const std::filesystem::path& directory, bool& outRequestChangeDir, std::filesystem::path& outNextTargetDir) {
+	// --- パンくずリスト（Breadcrumb）の描画 ---
+	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0)); // ボタン背景を透明化
+	std::filesystem::path cumulativePath;
+	bool isFirst = true;
 
-	/// 右クリックメニュー
-	if(ImGui::BeginPopupContextItem("FileContextMenu")) {
+	for(const auto& part : directory) {
+		if(!isFirst) {
+			ImGui::SameLine(0, 4.0f);
+			ImGui::Text("/");
+			ImGui::SameLine(0, 4.0f);
+		}
 
-		/// ---------------------------------------------------
-		/// 新規ファイルの作成
-		/// ---------------------------------------------------
-		if(ImGui::BeginMenu("Create")) {
+		if(cumulativePath.empty()) {
+			cumulativePath = part;
+		} else {
+			cumulativePath /= part;
+		}
 
-			if(ImGui::MenuItem("Folder")) {
-				// 新規フォルダ名の決定（例: NewFolder, 重複チェック付き）
-				std::filesystem::path newFolderPath;
-				int counter = 1;
-				do {
-					newFolderPath = _dir / ("NewFolder" + std::to_string(counter));
-					counter++;
-				} while(std::filesystem::exists(newFolderPath));
+		// パスの一部をボタンとして描画（クリックでその階層へ移動）
+		if(ImGui::Button(part.string().c_str())) {
+			outRequestChangeDir = true;
+			outNextTargetDir = cumulativePath;
+		}
+		isFirst = false;
+	}
+	ImGui::PopStyleColor();
+	ImGui::Separator();
+	ImGui::Spacing();
+	// ----------------------------------------
+}
 
-				// フォルダを作成
-				try {
-					if(std::filesystem::create_directory(newFolderPath)) {
-						// 作成成功
-						std::cout << "Folder created: " << newFolderPath << std::endl;
+///
+/// ファイル一覧の描画（ClipperとTableによる最適化版）
+///
+void ProjectWindow::DrawFileList(const std::filesystem::path& directory, bool& outRequestChangeDir, std::filesystem::path& outNextTargetDir) {
+	std::string dirStr = directory.string();
+
+	if(!fileCache_.contains(dirStr) || fileCache_[dirStr].empty()) return;
+
+	auto& files = fileCache_[dirStr];
+
+	// 削除予約用の変数
+	std::filesystem::path pendingDeletePath;
+
+	// --- ファイル一覧の描画 ---
+	float iconSize = 64.0f;
+	float padding = 16.0f;
+	float cellSize = iconSize + padding;
+	float panelWidth = ImGui::GetContentRegionAvail().x;
+
+	// パネル幅から列数を計算
+	int columnCount = static_cast<int>(panelWidth / cellSize);
+	if(columnCount < 1) columnCount = 1;
+
+	// 総行数を計算（切り上げ）
+	int rowCount = (static_cast<int>(files.size()) + columnCount - 1) / columnCount;
+
+	if(ImGui::BeginTable("FileGrid", columnCount)) {
+		ImGuiListClipper clipper;
+		clipper.Begin(rowCount);
+
+		while(clipper.Step()) {
+			for(int row = clipper.DisplayStart; row < clipper.DisplayEnd; ++row) {
+				ImGui::TableNextRow();
+
+				for(int col = 0; col < columnCount; ++col) {
+					size_t index = static_cast<size_t>(row * columnCount + col);
+					if(index >= files.size()) break; // 最後の半端な列は抜ける
+
+					ImGui::TableSetColumnIndex(col);
+
+					auto& file = files[index];
+					std::string name = file.path.filename().string();
+
+					ImGui::PushID(static_cast<int>(index));
+
+					ImGui::BeginGroup();
+
+					// アイコン描画（キャッシュ済み）
+					ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4.0f, 4.0f));
+					if(file.displayTexture) {
+						ImGui::ImageButton("##Icon", (ImTextureID)(uintptr_t)file.displayTexture->GetSRVGPUHandle().ptr, { iconSize, iconSize });
 					} else {
-						// 作成失敗
-						std::cerr << "Failed to create folder: " << newFolderPath << std::endl;
+						ImGui::Button("Icon", { iconSize, iconSize });
 					}
-				} catch(const std::filesystem::filesystem_error& e) {
-					std::cerr << "Error creating folder: " << e.what() << std::endl;
+					ImGui::PopStyleVar();
+
+					// 名前描画
+					ImGui::TextWrapped("%s", name.c_str());
+
+					ImGui::EndGroup(); // グループ化ここまで
+
+					// --- D&D処理 ---
+					if(ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
+						static AssetPayload payload;
+						payload.filePath = file.relativePath; // キャッシュ済みの相対パスを利用
+						payload.guid = pAssetCollection_->GetAssetGuidFromPath(payload.filePath);
+
+						const AssetPayload* assetPtr = &payload;
+						ImGui::SetDragDropPayload("AssetData", &assetPtr, sizeof(AssetPayload*));
+
+						// ドラッグ中のプレビュー描画
+						if(file.displayTexture) {
+							ImGui::Image((ImTextureID)(uintptr_t)file.displayTexture->GetSRVGPUHandle().ptr, { 32.0f, 32.0f });
+							ImGui::SameLine();
+						}
+						ImGui::Text("%s", name.c_str());
+						ImGui::EndDragDropSource();
+					}
+
+					// --- クリック判定 ---
+					if(ImGui::IsItemHovered()) {
+						if(ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
+							if(file.isDirectory) {
+								outRequestChangeDir = true;
+								outNextTargetDir = file.path;
+							} else {
+								const ONEngine::Guid& guid = pAssetCollection_->GetAssetGuidFromPath(file.relativePath);
+								ImGuiSelection::SetSelectedObject(guid, SelectionType::Asset);
+							}
+						}
+						if(ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
+							ImGui::OpenPopup("FileContextMenu");
+						}
+					}
+
+					// コンテキストメニューの呼び出し（削除予約パスを渡す）
+					PopupContextMenu(file.path, pendingDeletePath);
+
+					ImGui::PopID();
 				}
 			}
+		}
+		ImGui::EndTable();
+	}
 
+	// 描画ループを完全に抜けた後で、安全に削除処理とキャッシュ更新を行う
+	if(!pendingDeletePath.empty()) {
+		try {
+			std::filesystem::remove_all(pendingDeletePath);
 
-			/// ---------------------------------------------------
-			/// アセット系
-			/// ---------------------------------------------------
-
-			if(ImGui::MenuItem("C# Script")) {
-				/// C#スクリプト作成の処理
+			// 元のファイルパスの末尾に ".meta" を付けたパスを作成
+			std::filesystem::path metaPath = pendingDeletePath.string() + ".meta";
+			if(std::filesystem::exists(metaPath)) {
+				std::filesystem::remove(metaPath);
 			}
 
-			if(ImGui::MenuItem("Material")) {
-				/// マテリアル作成の処理
-				ONEngine::GenerateMaterialFile(_dir.string() + "/New Material.mat", nullptr);
-			}
+			// 削除後、キャッシュを更新してUIに反映
+			UpdateFileCache(directory);
+			UpdateDirectoryCache(directory);
+		} catch(const std::exception& e) {
+			std::cerr << "Failed to delete file/folder: " << e.what() << std::endl;
+		}
+	}
+}
 
-
-			ImGui::EndMenu();
+///
+/// ファイルを右クリックしたときの処理
+///
+void ProjectWindow::PopupContextMenu(const std::filesystem::path& filepath, std::filesystem::path& outDeletedPath) {
+	if(ImGui::BeginPopup("FileContextMenu")) {
+		if(ImGui::MenuItem("Reload")) {
+			std::string path = GetRelativePath(filepath);
+			pAssetCollection_->ReloadAsset(path);
 		}
 
-
-		/// ---------------------------------------------------
-		/// ファイルの操作
-		/// ---------------------------------------------------
-
-		if(ImGui::MenuItem("Show in Explorer")) {
-			std::string folder = std::filesystem::absolute(_dir).string();
-			ShellExecuteA(nullptr, "open", "explorer.exe", folder.c_str(), nullptr, SW_SHOWNORMAL);
-		}
-
-		if(ImGui::MenuItem("Open")) {
-			std::string folder = std::filesystem::absolute(_dir).string();
-			ShellExecuteA(nullptr, "open", "explorer", folder.c_str(), nullptr, SW_SHOWNORMAL);
-		}
-
+		// --- 削除機能の追加 ---
+		ImGui::Separator();
+		// 赤色で少し危険な操作であることをアピール
+		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.4f, 0.4f, 1.0f));
 		if(ImGui::MenuItem("Delete")) {
-			/// 一度警告を出す
-
+			// ここでは削除せず、削除対象のパスを呼び出し元に伝えるだけ
+			outDeletedPath = filepath;
 		}
-
-		if(ImGui::MenuItem("Rename")) {
-			SetRenameMode(_dir);
-		}
-
-
+		ImGui::PopStyleColor();
+		// ----------------------
 
 		ImGui::EndPopup();
 	}
-
 }
 
-void ProjectWindow::SetRenameMode(const std::filesystem::path& _path) {
-	isRenaming_ = true;
-	renamingPath_ = _path;
-	renameBuffer_ = _path.filename().string();
-	justStartedRename_ = true;
-	ImGui::SetKeyboardFocusHere(0);
-}
-
-void ProjectWindow::HandleFileAdded(const std::filesystem::path& _path) {
-	if(std::filesystem::is_directory(_path)) {
-		// ディレクトリが追加された場合、親ディレクトリのキャッシュを更新
-		UpdateDirectoryCache(_path.parent_path());
-		// 新しいディレクトリの開閉状態を初期化
-		dirOpenState_[_path.string()] = false;
-	} else {
-		// ファイルが追加された場合、親ディレクトリのファイルキャッシュを更新
-		UpdateFileCache(_path.parent_path());
-
-		/// 新規アセットして登録
-		std::string path = GetRelativePath(_path);
-		ONEngine::FileSystem::ReplaceAll(&path, "\\", "/");
-		ONEngine::AssetType type = ONEngine::GetAssetTypeFromExtension(ONEngine::FileSystem::FileExtension(path));
-		if(type != ONEngine::AssetType::None) {
-			pAssetCollection_->Load(path, type);
-		}
-
-	}
-}
-
-void ProjectWindow::HandleFileRemoved(const std::filesystem::path& _path) {
-	if(std::filesystem::is_directory(_path)) {
-		// ディレクトリが削除された場合、親ディレクトリのファイルキャッシュを更新
-		UpdateDirectoryCache(_path.parent_path());
-		// 削除されたディレクトリのキャッシュを削除
-		directoryCache_.erase(_path.string());
-		dirOpenState_.erase(_path.string());
-
-	} else {
-		// ファイルが削除された場合、親ディレクトリのファイルキャッシュを更新
-		UpdateFileCache(_path.parent_path());
-		// 削除されたファイルのキャッシュを削除
-		fileCache_.erase(_path.string());
-
-		/// アセットコレクションからも削除
-		std::string path = GetRelativePath(_path);
-		ONEngine::FileSystem::ReplaceAll(&path, "\\", "/");
-		pAssetCollection_->UnloadAssetByPath(path);
-	}
-
-	// 現在のパスが削除された場合、ルートパスに戻す
-	if(_path == currentPath_) {
-		currentPath_ = rootPath_;
-	}
-}
-
-void ProjectWindow::HandleFileModified(const std::filesystem::path& _path) {
-	if(!std::filesystem::exists(_path)) {
-		return; // ファイルが存在しない場合は何もしない
-	}
-
-	/// パスのファイルを読み直す
-	const std::string extension = _path.extension().string();
-	ONEngine::AssetType type = ONEngine::GetAssetTypeFromExtension(extension);
-	if(type != ONEngine::AssetType::None) {
-		/// 絶対パスを相対パスに変換してから取得
-		std::string path = GetRelativePath(_path);
-		ONEngine::FileSystem::ReplaceAll(&path, "\\", "/");
-		pAssetCollection_->ReloadAsset(path);
-	}
-
-	// 親ディレクトリのキャッシュを更新
-	UpdateFileCache(_path.parent_path());
-}
-
-void ProjectWindow::UpdateDirectoryCache(const std::filesystem::path& _dir) {
-	/// ----- 引数のディレクトリ内のサブディレクトリをキャッシュに保存 ----- ///
-
-	if(!std::filesystem::exists(_dir)) {
-		directoryCache_.erase(_dir.string());
+///
+/// ディレクトリのキャッシュを更新する
+///
+void ProjectWindow::UpdateDirectoryCache(const std::filesystem::path& directory) {
+	if(!std::filesystem::exists(directory)) {
+		directoryCache_.erase(directory.string());
 		return;
 	}
 
 	std::vector<FileItem> subdirectories;
-	for(const auto& entry : std::filesystem::directory_iterator(_dir)) {
-		if(!entry.is_directory()) {
-			continue;
+	try {
+		for(const auto& entry : std::filesystem::directory_iterator(directory)) {
+			if(!entry.is_directory()) continue;
+
+			FileItem item;
+			item.path = entry.path();
+			item.isDirectory = true;
+			subdirectories.push_back(item);
+
+			UpdateDirectoryCache(entry.path());
 		}
+	} catch(...) {}
 
-		const std::filesystem::path& subdir = entry.path();
-		const std::wstring folderName = subdir.filename().wstring();
-
-		FileItem item;
-		item.path = subdir;
-		item.isDirectory = true;
-
-		subdirectories.push_back(item);
-		UpdateDirectoryCache(subdir); // 再帰
-	}
-
-	directoryCache_[_dir.string()] = std::move(subdirectories);
+	directoryCache_[directory.string()] = std::move(subdirectories);
 }
 
-
-void ProjectWindow::UpdateFileCache(const std::filesystem::path& _dir) {
-	/// ----- 引数のディレクトリ内のファイルをキャッシュに保存 ----- ///
-
-	if(!std::filesystem::exists(_dir)) {
-		fileCache_.erase(_dir.string());
+void ProjectWindow::UpdateFileCache(const std::filesystem::path& directory) {
+	if(!std::filesystem::exists(directory)) {
+		fileCache_.erase(directory.string());
 		return;
 	}
 
 	std::vector<FileItem> files;
-	for(const auto& entry : std::filesystem::directory_iterator(_dir)) {
-		FileItem item;
-		item.path = entry.path();
+	try {
+		for(const auto& entry : std::filesystem::directory_iterator(directory)) {
+			if(entry.path().extension() == ".meta") continue;
 
-		if(entry.is_regular_file()) {
-			item.isDirectory = false;
+			FileItem item;
+			item.path = entry.path();
+			item.isDirectory = entry.is_directory();
+			item.relativePath = GetRelativePath(entry.path());
+
+			// 拡張子を取得して小文字化
+			std::string ext = item.path.extension().string();
+			std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+			// --- アイコン決定ロジック ---
+			if(item.isDirectory) {
+				item.displayTexture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/FileIcons/FolderIcon.png");
+				if(!item.displayTexture) item.displayTexture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/FileIcons/FolderIcon.dds");
+			} else if(ONEngine::CheckAssetType(ext, ONEngine::AssetType::Texture)) {
+				item.displayTexture = pAssetCollection_->GetTexture(item.relativePath);
+			} else if(ONEngine::CheckAssetType(ext, ONEngine::AssetType::Audio)) {
+				item.displayTexture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/FileIcons/lets-icons-sound-none-256.png");
+			} else if(ext == ".cs") {
+				item.displayTexture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/FileIcons/ph-file-c-sharp-none-256.png");
+			}
+
+			// いずれにも当てはまらない、または読み込み失敗時のデフォルト
+			if(!item.displayTexture) {
+				item.displayTexture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/FileIcons/FileIcon.png");
+			}
+
 			files.push_back(item);
-		} else if(entry.is_directory()) {
-			// 再帰的にサブディレクトリを処理
-			item.isDirectory = true;
-			files.push_back(item);
-			UpdateFileCache(entry.path());
 		}
-	}
+	} catch(...) {}
 
-
-	fileCache_[_dir.string()] = std::move(files);
+	fileCache_[directory.string()] = std::move(files);
 }
-

@@ -36,7 +36,7 @@ void to_json(nlohmann::json& _j, const CameraComponent& _c);
 /// カメラのコンポーネント
 /// ///////////////////////////////////////////////////
 class CameraComponent : public IComponent {
-	/// ----- firend class ----- ///
+	/// ----- friend class ----- ///
 	friend class CameraUpdateSystem;
 
 	/// ----- friend function ----- ///
@@ -63,7 +63,15 @@ public:
 	void UpdateViewProjection();
 
 
+	/// @brief カメラのフラスタム内にあるか判定を撮る
+	/// @param center 対象の中心
+	/// @param size 対象の大きさ
+	/// @return true: カメラから見える、 false: カメラから見えない
 	bool IsVisible(const Vector3& center, const Vector3& size) const;
+
+	/// @brief カメラを特定方向に向ける
+	/// @param direction 向ける方向
+	void LookAt(const Vector3& direction);
 
 private:
 	/// ===================================================

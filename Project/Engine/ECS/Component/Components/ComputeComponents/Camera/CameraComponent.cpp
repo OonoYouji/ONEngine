@@ -207,7 +207,7 @@ void ONEngine::to_json(nlohmann::json& _j, const CameraComponent& _c) {
 		{ "isMainCamera", _c.isMainCameraRequest_ },
 		{ "isDrawFrustum", _c.isDrawFrustum_ },
 		{ "fogColor", _c.fogParams_.color },
-		{ "fogStart", _c.fogParams_.fogStart},
+		{ "fogStart", _c.fogParams_.fogStart },
 		{ "fogEnd", _c.fogParams_.fogEnd }
 	};
 }
@@ -294,6 +294,14 @@ bool CameraComponent::IsVisible(const Vector3& center, const Vector3& size) cons
 	return true;
 }
 
+void CameraComponent::LookAt(const Vector3& direction) {
+	Transform* transform = GetOwner()->GetComponent<Transform>();
+	if(!transform) { return; }
+
+	/// ディレクション方向に向ける
+	transform->rotate = Quaternion::LookAt(Vector3::Zero, direction);
+}
+
 void CameraComponent::MakeViewProjection(DxDevice* _dxDevice) {
 	viewProjection_.Create(_dxDevice);
 	viewProjection_.SetMappedData(ViewProjection(
@@ -305,7 +313,7 @@ void CameraComponent::MakeViewProjection(DxDevice* _dxDevice) {
 	cameraPosBuffer_.SetMappedData(cameraPos);
 
 	cBufferFogParams_.Create(_dxDevice);
-	cBufferFogParams_.SetMappedData(FogParams{ });
+	cBufferFogParams_.SetMappedData(FogParams{});
 }
 
 

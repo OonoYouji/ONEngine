@@ -34,6 +34,7 @@ class InspectorWindow : public IEditorWindow {
 		Compute,	/// Transformを筆頭に計算に使うようなコンポーネント
 		Renderer,	/// MeshRendererを筆頭に描画に用いるコンポーネント
 		Collider,	/// BoxColliderを筆頭に衝突判定に用いるコンポーネント
+		Script,		/// Script
 	};
 
 	using EditFunc = std::function<void(ONEngine::IComponent*)>;
