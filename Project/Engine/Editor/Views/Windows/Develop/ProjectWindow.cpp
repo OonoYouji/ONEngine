@@ -46,17 +46,20 @@ std::string GetRelativePath(const std::filesystem::path& _absolutePath, const st
 
 }
 
-ProjectWindow::ProjectWindow(ONEngine::AssetCollection* _assetCollection, class EditorManager* _editorManager)
+ProjectWindow::ProjectWindow(ONEngine::AssetCollection* _assetCollection)
 	: pAssetCollection_(_assetCollection) {
 	windowName_ = "Project";
 
-	// 【修正】表示したいルートフォルダを複数登録する
 	rootPaths_ = { "./Assets", "./Packages", "../SubProjects/CSharpLibrary/Scripts" };
-
-	// 初期表示は Assets にしておく
 	currentPath_ = rootPaths_[0];
 
-	// 【修正】すべてのルートディレクトリのキャッシュを初期化する
+	// ファイル監視を開始
+	std::vector<std::wstring> watchDirs;
+	for(const auto& path : rootPaths_) {
+		watchDirs.push_back(path.wstring());
+	}
+	fileWatcher_.Start(watchDirs);
+
 	for(const auto& path : rootPaths_) {
 		if(std::filesystem::exists(path)) {
 			UpdateDirectoryCache(path);
@@ -67,17 +70,20 @@ ProjectWindow::ProjectWindow(ONEngine::AssetCollection* _assetCollection, class 
 
 ProjectWindow::~ProjectWindow() {}
 
-void ProjectWindow::SetWindowName(const std::string& _windowName) {
-	windowName_ = _windowName;
-}
 
+///	-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/// プロジェクトウィンドウの基礎的な処理
+///	-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+///
+/// プロジェクトウィンドウの表示
+///
 void ProjectWindow::ShowImGui() {
 	if(ImGui::Begin(windowName_.c_str())) {
 		ImGui::Columns(2);
 
 		// 左側：フォルダツリー
 		if(ImGui::BeginChild("DirectoryTree")) {
-			// 【修正】登録されているすべてのルートを表示する
 			for(const auto& root : rootPaths_) {
 				if(std::filesystem::exists(root)) {
 					DrawDirectoryTree(root);
@@ -99,17 +105,32 @@ void ProjectWindow::ShowImGui() {
 	ImGui::End();
 }
 
-void ProjectWindow::DrawDirectoryTree(const std::filesystem::path& _dir) {
-	std::string dirStr = _dir.string();
-	std::string dirName = _dir.filename().string();
+
+///	-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/// 以下、処理ごとの関数実装
+///	-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+///
+/// プロジェクトウィンドウのウィンドウ名を設定
+///
+void ProjectWindow::SetWindowName(const std::string& windowName) {
+	windowName_ = windowName;
+}
+
+///
+/// プロジェクトのファイル構造をツリーで表示
+///
+void ProjectWindow::DrawDirectoryTree(const std::filesystem::path& directory) {
+	std::string dirStr = directory.string();
+	std::string dirName = directory.filename().string();
 
 	// ルートパス自体（./Assets など）の名前が空（.）になる場合の対策
 	if(dirName == "." || dirName == "") {
-		dirName = _dir.stem().string();
+		dirName = directory.stem().string();
 	}
 
 	ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
-	if(currentPath_ == _dir) flags |= ImGuiTreeNodeFlags_Selected;
+	if(currentPath_ == directory) flags |= ImGuiTreeNodeFlags_Selected;
 
 	// 子ディレクトリがない場合は Leaf にする
 	bool hasSubDirs = directoryCache_.contains(dirStr) && !directoryCache_[dirStr].empty();
@@ -119,7 +140,7 @@ void ProjectWindow::DrawDirectoryTree(const std::filesystem::path& _dir) {
 
 	// クリックで中身を表示
 	if(ImGui::IsItemClicked()) {
-		currentPath_ = _dir;
+		currentPath_ = directory;
 		UpdateFileCache(currentPath_);
 	}
 
@@ -132,12 +153,51 @@ void ProjectWindow::DrawDirectoryTree(const std::filesystem::path& _dir) {
 		ImGui::TreePop();
 	}
 }
-void ProjectWindow::DrawFileView(const std::filesystem::path& _dir) {
-	std::string dirStr = _dir.string();
+
+///
+/// ファイルのビュー表示
+///
+void ProjectWindow::DrawFileView(const std::filesystem::path& directory) {
+	std::string dirStr = directory.string();
 	if(!fileCache_.contains(dirStr)) {
-		UpdateFileCache(_dir);
+		UpdateFileCache(directory);
 	}
 
+	bool requestChangeDir = false;
+	std::filesystem::path nextTargetDir;
+
+	// --- パンくずリスト（Breadcrumb）の描画 ---
+	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0)); // ボタン背景を透明化
+	std::filesystem::path cumulativePath;
+	bool isFirst = true;
+
+	for(const auto& part : directory) {
+		if(!isFirst) {
+			ImGui::SameLine(0, 4.0f);
+			ImGui::Text("/");
+			ImGui::SameLine(0, 4.0f);
+		}
+
+		if(cumulativePath.empty()) {
+			cumulativePath = part;
+		} else {
+			cumulativePath /= part;
+		}
+
+		// パスの一部をボタンとして描画（クリックでその階層へ移動）
+		if(ImGui::Button(part.string().c_str())) {
+			requestChangeDir = true;
+			nextTargetDir = cumulativePath;
+		}
+		isFirst = false;
+	}
+	ImGui::PopStyleColor();
+	ImGui::Separator();
+	ImGui::Spacing();
+	// ----------------------------------------
+
+
+	// --- ファイル一覧の描画 ---
 	float iconSize = 64.0f;
 	float padding = 16.0f;
 	float cellSize = iconSize + padding;
@@ -147,9 +207,6 @@ void ProjectWindow::DrawFileView(const std::filesystem::path& _dir) {
 
 	ImGui::Columns(columnCount, nullptr, false);
 
-	bool requestChangeDir = false;
-	std::filesystem::path nextTargetDir;
-
 	for(auto& file : fileCache_[dirStr]) {
 		std::string name = file.path.filename().string();
 		std::string key = GetRelativePath(file.path);
@@ -158,7 +215,7 @@ void ProjectWindow::DrawFileView(const std::filesystem::path& _dir) {
 
 		ImGui::BeginGroup();
 
-		// --- アイコン描画 ---
+		// アイコン描画
 		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4.0f, 4.0f));
 		if(file.isDirectory) {
 			ONEngine::Texture* texture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/FileIcons/FolderIcon.png");
@@ -179,14 +236,13 @@ void ProjectWindow::DrawFileView(const std::filesystem::path& _dir) {
 		}
 		ImGui::PopStyleVar();
 
-		// --- 名前描画 ---
+		// 名前描画
 		ImGui::TextWrapped("%s", name.c_str());
 
 		ImGui::EndGroup(); // グループ化ここまで
 
-		// --- D&D処理 (元の正常な処理に復元 ＋ 判定位置の修正のみ) ---
+		// --- D&D処理 (元の正常な処理) ---
 		if(ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
-			// お客様の元の処理
 			static AssetPayload payload;
 			payload.filePath = key;
 			payload.guid = pAssetCollection_->GetAssetGuidFromPath(payload.filePath);
@@ -198,7 +254,7 @@ void ProjectWindow::DrawFileView(const std::filesystem::path& _dir) {
 			ImGui::EndDragDropSource();
 		}
 
-		// --- クリック判定 (EndGroupの後ろ) ---
+		// --- クリック判定 ---
 		if(ImGui::IsItemHovered()) {
 			if(ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
 				if(file.isDirectory) {
@@ -222,31 +278,38 @@ void ProjectWindow::DrawFileView(const std::filesystem::path& _dir) {
 
 	ImGui::Columns(1);
 
+	// ディレクトリ移動リクエストの処理（パンくずリスト・ダブルクリック共通）
 	if(requestChangeDir) {
 		currentPath_ = nextTargetDir;
 		UpdateFileCache(currentPath_);
 	}
 }
 
-void ProjectWindow::PopupContextMenu(const std::filesystem::path& _path) {
+///
+/// ファイルを右クリックしたときの処理
+///
+void ProjectWindow::PopupContextMenu(const std::filesystem::path& filepath) {
 	if(ImGui::BeginPopup("FileContextMenu")) {
 		if(ImGui::MenuItem("Reload")) {
-			std::string path = GetRelativePath(_path);
+			std::string path = GetRelativePath(filepath);
 			pAssetCollection_->ReloadAsset(path);
 		}
 		ImGui::EndPopup();
 	}
 }
 
-void ProjectWindow::UpdateDirectoryCache(const std::filesystem::path& _dir) {
-	if(!std::filesystem::exists(_dir)) {
-		directoryCache_.erase(_dir.string());
+///
+/// ディレクトリのキャッシュを更新する
+///
+void ProjectWindow::UpdateDirectoryCache(const std::filesystem::path& directory) {
+	if(!std::filesystem::exists(directory)) {
+		directoryCache_.erase(directory.string());
 		return;
 	}
 
 	std::vector<FileItem> subdirectories;
 	try {
-		for(const auto& entry : std::filesystem::directory_iterator(_dir)) {
+		for(const auto& entry : std::filesystem::directory_iterator(directory)) {
 			if(!entry.is_directory()) continue;
 
 			FileItem item;
@@ -258,18 +321,18 @@ void ProjectWindow::UpdateDirectoryCache(const std::filesystem::path& _dir) {
 		}
 	} catch(...) {}
 
-	directoryCache_[_dir.string()] = std::move(subdirectories);
+	directoryCache_[directory.string()] = std::move(subdirectories);
 }
 
-void ProjectWindow::UpdateFileCache(const std::filesystem::path& _dir) {
-	if(!std::filesystem::exists(_dir)) {
-		fileCache_.erase(_dir.string());
+void ProjectWindow::UpdateFileCache(const std::filesystem::path& directory) {
+	if(!std::filesystem::exists(directory)) {
+		fileCache_.erase(directory.string());
 		return;
 	}
 
 	std::vector<FileItem> files;
 	try {
-		for(const auto& entry : std::filesystem::directory_iterator(_dir)) {
+		for(const auto& entry : std::filesystem::directory_iterator(directory)) {
 			FileItem item;
 			item.path = entry.path();
 			item.isDirectory = entry.is_directory();
@@ -277,5 +340,5 @@ void ProjectWindow::UpdateFileCache(const std::filesystem::path& _dir) {
 		}
 	} catch(...) {}
 
-	fileCache_[_dir.string()] = std::move(files);
+	fileCache_[directory.string()] = std::move(files);
 }
