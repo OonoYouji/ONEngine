@@ -283,7 +283,16 @@ void ProjectWindow::DrawFileList(const std::filesystem::path& directory, bool& o
 						const AssetPayload* assetPtr = &payload;
 						ImGui::SetDragDropPayload("AssetData", &assetPtr, sizeof(AssetPayload*));
 
-						ImGui::Text("Dragging: %s", name.c_str());
+						// --- ドラッグ中のプレビュー描画 ---
+						if(file.displayTexture) {
+							// ドラッグ中は少し小さめのサイズ（例: 32x32）でアイコンを表示
+							ImGui::Image((ImTextureID)(uintptr_t)file.displayTexture->GetSRVGPUHandle().ptr, { 32.0f, 32.0f });
+							ImGui::SameLine(); // 画像の横にテキストを並べる
+						}
+						// ファイル名を表示
+						ImGui::Text("%s", name.c_str());
+						// --------------------------------
+
 						ImGui::EndDragDropSource();
 					}
 
@@ -352,9 +361,6 @@ void ProjectWindow::UpdateDirectoryCache(const std::filesystem::path& directory)
 	directoryCache_[directory.string()] = std::move(subdirectories);
 }
 
-///
-/// FileCacheの更新（キャッシュの事前計算を追加）
-///
 void ProjectWindow::UpdateFileCache(const std::filesystem::path& directory) {
 	if(!std::filesystem::exists(directory)) {
 		fileCache_.erase(directory.string());
@@ -364,33 +370,32 @@ void ProjectWindow::UpdateFileCache(const std::filesystem::path& directory) {
 	std::vector<FileItem> files;
 	try {
 		for(const auto& entry : std::filesystem::directory_iterator(directory)) {
-			// .meta ファイルの場合はスキップ
 			if(entry.path().extension() == ".meta") continue;
 
 			FileItem item;
 			item.path = entry.path();
 			item.isDirectory = entry.is_directory();
-			// 相対パスを事前に計算
 			item.relativePath = GetRelativePath(entry.path());
 
-			// --- 描画用のテクスチャを事前に取得・キャッシュ ---
+			// 拡張子を取得して小文字化
+			std::string ext = item.path.extension().string();
+			std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+			// --- アイコン決定ロジック ---
 			if(item.isDirectory) {
 				item.displayTexture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/FileIcons/FolderIcon.png");
-				if(!item.displayTexture) {
-					item.displayTexture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/FileIcons/FolderIcon.dds");
-				}
-			} else {
-				std::string ext = item.path.extension().string();
-				std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+				if(!item.displayTexture) item.displayTexture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/FileIcons/FolderIcon.dds");
+			} else if(ONEngine::CheckAssetType(ext, ONEngine::AssetType::Texture)) {
+				item.displayTexture = pAssetCollection_->GetTexture(item.relativePath);
+			} else if(ONEngine::CheckAssetType(ext, ONEngine::AssetType::Audio)) {
+				item.displayTexture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/FileIcons/lets-icons-sound-none-256.png");
+			} else if(ext == ".cs") {
+				item.displayTexture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/FileIcons/ph-file-c-sharp-none-256.png");
+			}
 
-				if(ONEngine::CheckAssetType(ext, ONEngine::AssetType::Texture)) {
-					item.displayTexture = pAssetCollection_->GetTexture(item.relativePath);
-				}
-
-				// テクスチャではない、または取得失敗時のフォールバック
-				if(!item.displayTexture) {
-					item.displayTexture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/FileIcons/FileIcon.png");
-				}
+			// いずれにも当てはまらない、または読み込み失敗時のデフォルト
+			if(!item.displayTexture) {
+				item.displayTexture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/FileIcons/FileIcon.png");
 			}
 
 			files.push_back(item);
