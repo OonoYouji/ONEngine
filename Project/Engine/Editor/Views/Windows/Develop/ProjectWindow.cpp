@@ -18,7 +18,7 @@
 #include "Engine/Editor/Math/AssetPayload.h"
 #include "Engine/Editor/Math/ImGuiMath.h"
 #include "Engine/Editor/Math/ImGuiSelection.h"
-
+#include "Engine/Asset/AssetType.h"
 
 using namespace Editor;
 
@@ -166,6 +166,20 @@ void ProjectWindow::DrawFileView(const std::filesystem::path& directory) {
 	bool requestChangeDir = false;
 	std::filesystem::path nextTargetDir;
 
+	DrawBreadcrumbs(directory, requestChangeDir, nextTargetDir);
+	DrawFileList(directory, requestChangeDir, nextTargetDir);
+
+	// ディレクトリ移動リクエストの処理（パンくずリスト・ダブルクリック共通）
+	if(requestChangeDir) {
+		currentPath_ = nextTargetDir;
+		UpdateFileCache(currentPath_);
+	}
+}
+
+///
+/// パンくずリスト（階層ナビゲーション）の描画
+///
+void ProjectWindow::DrawBreadcrumbs(const std::filesystem::path& directory, bool& outRequestChangeDir, std::filesystem::path& outNextTargetDir) {
 	// --- パンくずリスト（Breadcrumb）の描画 ---
 	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0)); // ボタン背景を透明化
 	std::filesystem::path cumulativePath;
@@ -186,8 +200,8 @@ void ProjectWindow::DrawFileView(const std::filesystem::path& directory) {
 
 		// パスの一部をボタンとして描画（クリックでその階層へ移動）
 		if(ImGui::Button(part.string().c_str())) {
-			requestChangeDir = true;
-			nextTargetDir = cumulativePath;
+			outRequestChangeDir = true;
+			outNextTargetDir = cumulativePath;
 		}
 		isFirst = false;
 	}
@@ -195,93 +209,107 @@ void ProjectWindow::DrawFileView(const std::filesystem::path& directory) {
 	ImGui::Separator();
 	ImGui::Spacing();
 	// ----------------------------------------
+}
 
+///
+/// ファイル一覧の描画（ClipperとTableによる最適化版）
+///
+void ProjectWindow::DrawFileList(const std::filesystem::path& directory, bool& outRequestChangeDir, std::filesystem::path& outNextTargetDir) {
+	std::string dirStr = directory.string();
 
-	// --- ファイル一覧の描画 ---
+	// キャッシュが存在しない・空の場合はスキップ
+	if(!fileCache_.contains(dirStr) || fileCache_[dirStr].empty()) return;
+
+	auto& files = fileCache_[dirStr];
+
 	float iconSize = 64.0f;
 	float padding = 16.0f;
 	float cellSize = iconSize + padding;
+
+	// パネル幅から列数を計算
 	float panelWidth = ImGui::GetContentRegionAvail().x;
-	int columnCount = (int)(panelWidth / cellSize);
+	int columnCount = static_cast<int>(panelWidth / cellSize);
 	if(columnCount < 1) columnCount = 1;
 
-	ImGui::Columns(columnCount, nullptr, false);
+	// 総行数を計算（切り上げ）
+	int rowCount = (files.size() + columnCount - 1) / columnCount;
 
-	for(auto& file : fileCache_[dirStr]) {
-		std::string name = file.path.filename().string();
-		std::string key = GetRelativePath(file.path);
+	// 古い Columns を廃止し、BeginTable を使用する
+	if(ImGui::BeginTable("FileGrid", columnCount)) {
 
-		ImGui::PushID(name.c_str());
+		// 魔法のクラス。これで「画面に見えている行」だけがループされるようになる
+		ImGuiListClipper clipper;
+		clipper.Begin(rowCount);
 
-		ImGui::BeginGroup();
+		while(clipper.Step()) {
+			// DisplayStartからDisplayEndまで（画面に映る行のみ）を処理
+			for(int row = clipper.DisplayStart; row < clipper.DisplayEnd; ++row) {
+				ImGui::TableNextRow(); // 次の行へ
 
-		// アイコン描画
-		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4.0f, 4.0f));
-		if(file.isDirectory) {
-			ONEngine::Texture* texture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/FileIcons/FolderIcon.png");
-			if(!texture) texture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/FileIcons/FolderIcon.dds");
+				for(int col = 0; col < columnCount; ++col) {
+					size_t index = row * columnCount + col;
+					if(index >= files.size()) break; // 最後の半端な列は抜ける
 
-			if(texture) {
-				ImGui::ImageButton("##Folder", (ImTextureID)(uintptr_t)texture->GetSRVGPUHandle().ptr, { iconSize, iconSize });
-			} else {
-				ImGui::Button("Folder", { iconSize, iconSize });
-			}
-		} else {
-			ONEngine::Texture* texture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/FileIcons/FileIcon.png");
-			if(texture) {
-				ImGui::ImageButton("##File", (ImTextureID)(uintptr_t)texture->GetSRVGPUHandle().ptr, { iconSize, iconSize });
-			} else {
-				ImGui::Button("File", { iconSize, iconSize });
-			}
-		}
-		ImGui::PopStyleVar();
+					ImGui::TableSetColumnIndex(col); // 描画する列を指定
 
-		// 名前描画
-		ImGui::TextWrapped("%s", name.c_str());
+					auto& file = files[index];
+					std::string name = file.path.filename().string();
 
-		ImGui::EndGroup(); // グループ化ここまで
+					// 確実に一意なIDを作るためにインデックスを使用
+					ImGui::PushID(static_cast<int>(index));
+					ImGui::BeginGroup();
 
-		// --- D&D処理 (元の正常な処理) ---
-		if(ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
-			static AssetPayload payload;
-			payload.filePath = key;
-			payload.guid = pAssetCollection_->GetAssetGuidFromPath(payload.filePath);
+					// --- アイコン描画（キャッシュ済みを使用するため超軽量！） ---
+					ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4.0f, 4.0f));
+					if(file.displayTexture) {
+						ImGui::ImageButton("##Icon", (ImTextureID)(uintptr_t)file.displayTexture->GetSRVGPUHandle().ptr, { iconSize, iconSize });
+					} else {
+						ImGui::Button("Icon", { iconSize, iconSize });
+					}
+					ImGui::PopStyleVar();
 
-			const AssetPayload* assetPtr = &payload;
-			ImGui::SetDragDropPayload("AssetData", &assetPtr, sizeof(AssetPayload*));
+					// --- 名前描画 ---
+					// Table内でのTextWrappedは、セルの幅に合わせて自動で美しく折り返されます
+					ImGui::TextWrapped("%s", name.c_str());
 
-			ImGui::Text("Dragging: %s", name.c_str());
-			ImGui::EndDragDropSource();
-		}
+					ImGui::EndGroup(); // グループ化ここまで
 
-		// --- クリック判定 ---
-		if(ImGui::IsItemHovered()) {
-			if(ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
-				if(file.isDirectory) {
-					requestChangeDir = true;
-					nextTargetDir = file.path;
-				} else {
-					const ONEngine::Guid& guid = pAssetCollection_->GetAssetGuidFromPath(key);
-					ImGuiSelection::SetSelectedObject(guid, SelectionType::Asset);
+					// --- D&D処理 ---
+					if(ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
+						static AssetPayload payload;
+						payload.filePath = file.relativePath; // キャッシュ済みの相対パスを利用
+						payload.guid = pAssetCollection_->GetAssetGuidFromPath(payload.filePath);
+
+						const AssetPayload* assetPtr = &payload;
+						ImGui::SetDragDropPayload("AssetData", &assetPtr, sizeof(AssetPayload*));
+
+						ImGui::Text("Dragging: %s", name.c_str());
+						ImGui::EndDragDropSource();
+					}
+
+					// --- クリック判定 ---
+					if(ImGui::IsItemHovered()) {
+						if(ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
+							if(file.isDirectory) {
+								outRequestChangeDir = true;
+								outNextTargetDir = file.path;
+							} else {
+								const ONEngine::Guid& guid = pAssetCollection_->GetAssetGuidFromPath(file.relativePath);
+								ImGuiSelection::SetSelectedObject(guid, SelectionType::Asset);
+							}
+						}
+						if(ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
+							ImGui::OpenPopup("FileContextMenu");
+						}
+					}
+
+					PopupContextMenu(file.path);
+
+					ImGui::PopID();
 				}
 			}
-			if(ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
-				ImGui::OpenPopup("FileContextMenu");
-			}
 		}
-
-		PopupContextMenu(file.path);
-
-		ImGui::PopID();
-		ImGui::NextColumn();
-	}
-
-	ImGui::Columns(1);
-
-	// ディレクトリ移動リクエストの処理（パンくずリスト・ダブルクリック共通）
-	if(requestChangeDir) {
-		currentPath_ = nextTargetDir;
-		UpdateFileCache(currentPath_);
+		ImGui::EndTable();
 	}
 }
 
@@ -324,6 +352,9 @@ void ProjectWindow::UpdateDirectoryCache(const std::filesystem::path& directory)
 	directoryCache_[directory.string()] = std::move(subdirectories);
 }
 
+///
+/// FileCacheの更新（キャッシュの事前計算を追加）
+///
 void ProjectWindow::UpdateFileCache(const std::filesystem::path& directory) {
 	if(!std::filesystem::exists(directory)) {
 		fileCache_.erase(directory.string());
@@ -333,9 +364,35 @@ void ProjectWindow::UpdateFileCache(const std::filesystem::path& directory) {
 	std::vector<FileItem> files;
 	try {
 		for(const auto& entry : std::filesystem::directory_iterator(directory)) {
+			// .meta ファイルの場合はスキップ
+			if(entry.path().extension() == ".meta") continue;
+
 			FileItem item;
 			item.path = entry.path();
 			item.isDirectory = entry.is_directory();
+			// 相対パスを事前に計算
+			item.relativePath = GetRelativePath(entry.path());
+
+			// --- 描画用のテクスチャを事前に取得・キャッシュ ---
+			if(item.isDirectory) {
+				item.displayTexture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/FileIcons/FolderIcon.png");
+				if(!item.displayTexture) {
+					item.displayTexture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/FileIcons/FolderIcon.dds");
+				}
+			} else {
+				std::string ext = item.path.extension().string();
+				std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+				if(ONEngine::CheckAssetType(ext, ONEngine::AssetType::Texture)) {
+					item.displayTexture = pAssetCollection_->GetTexture(item.relativePath);
+				}
+
+				// テクスチャではない、または取得失敗時のフォールバック
+				if(!item.displayTexture) {
+					item.displayTexture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/FileIcons/FileIcon.png");
+				}
+			}
+
 			files.push_back(item);
 		}
 	} catch(...) {}

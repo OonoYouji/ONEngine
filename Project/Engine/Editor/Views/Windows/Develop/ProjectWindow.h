@@ -8,6 +8,7 @@
 /// engine
 #include "../../EditorViewCollection.h"
 #include "Engine/Editor/Math/FileWatcher/FileWatcher.h"
+#include "Engine/Asset/Assets/Texture/Texture.h"
 
 
 namespace ONEngine {
@@ -22,6 +23,8 @@ public:
 	struct FileItem {
 		std::filesystem::path path;
 		bool isDirectory = false;
+		std::string relativePath;
+		ONEngine::Texture* displayTexture = nullptr;
 	};
 
 public:
@@ -56,6 +59,14 @@ public:
 
 private:
 	/// ===================================================
+	/// private : methods
+	/// ===================================================
+
+	void DrawBreadcrumbs(const std::filesystem::path& directory, bool& outRequestChangeDir, std::filesystem::path& outNextTargetDir);
+	void DrawFileList(const std::filesystem::path& directory, bool& outRequestChangeDir, std::filesystem::path& outNextTargetDir);
+
+private:
+	/// ===================================================
 	/// private : objects
 	/// ===================================================
 
@@ -78,12 +89,6 @@ private:
 	/// ファイルリストのキャッシュ
 	std::unordered_map<std::string, std::vector<FileItem>> fileCache_;
 
-
-	/// ----- 名前の変更に使う ----- ///
-	bool justStartedRename_;
-	bool isRenaming_ = false;
-	std::filesystem::path renamingPath_;
-	std::string renameBuffer_;
 
 	FileWatcher fileWatcher_;
 
