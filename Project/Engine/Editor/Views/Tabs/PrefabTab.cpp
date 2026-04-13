@@ -28,7 +28,7 @@ PrefabTab::PrefabTab(
 
 	AddView(std::make_unique<PrefabFileWindow>(_ecs, _assetCollection, inspector));
 	AddView(std::make_unique<PrefabViewWindow>(_ecs, _assetCollection));
-	AddView(std::make_unique<HierarchyWindow>("Hierarchy##Prefab", _ecs->GetECSGroup("Debug"), _editorManager, _sceneManager));
+	AddView(std::make_unique<HierarchyWindow>("Hierarchy##Prefab", _ecs, _ecs->GetECSGroup("Debug"), _editorManager, _sceneManager));
 	ProjectWindow* project = static_cast<ProjectWindow*>(AddView(std::make_unique<ProjectWindow>(_assetCollection)));
 
 	project->SetWindowName("Prefab Project");

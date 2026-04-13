@@ -29,7 +29,7 @@ DevelopTab::DevelopTab(
 	AddView(std::make_unique<ProjectWindow>(_assetCollection));
 	AddView(std::make_unique<GameSceneView>(_assetCollection, "GameScene"));
 	AddView(std::make_unique<NormalHierarchyWindow>("Hierarchy", _ecs, _editorManager, _sceneManager));
-	AddView(std::make_unique<HierarchyWindow>("DebugHierarchy", _ecs->GetECSGroup("Debug"), _editorManager, _sceneManager));
+	AddView(std::make_unique<HierarchyWindow>("DebugHierarchy", _ecs, _ecs->GetECSGroup("Debug"), _editorManager, _sceneManager));
 	AddView(std::make_unique<DebugSceneView>(_ecs, _assetCollection, _sceneManager, inspector));
 	AddView(std::make_unique<ConsoleWindow>());
 	AddView(std::make_unique<TexturePreviewWindow>(_assetCollection));

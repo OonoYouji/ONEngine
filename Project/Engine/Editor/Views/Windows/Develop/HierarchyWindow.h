@@ -29,7 +29,7 @@ public:
 	/// public : methods   
 	/// ===================================================
 
-	HierarchyWindow(const std::string& windowName, ONEngine::ECSGroup* ecsGroup, EditorManager* editorManager, ONEngine::SceneManager* sceneManager);
+	HierarchyWindow(const std::string& windowName, ONEngine::EntityComponentSystem* ecs, ONEngine::ECSGroup* ecsGroup, EditorManager* editorManager, ONEngine::SceneManager* sceneManager);
 	~HierarchyWindow() override = default;
 
 	/// @brief GUIの表示
@@ -95,6 +95,7 @@ protected:
 	/// ===================================================
 
 	/// ----- other class ----- ///
+	ONEngine::EntityComponentSystem* pEcs_ = nullptr;
 	ONEngine::ECSGroup* pEcsGroup_ = nullptr;
 	EditorManager* pEditorManager_ = nullptr;
 	ONEngine::SceneManager* pSceneManager_ = nullptr;

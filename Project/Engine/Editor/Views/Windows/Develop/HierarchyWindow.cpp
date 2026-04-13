@@ -21,16 +21,17 @@
 #include "Engine/Editor/Manager/EditorManager.h"
 #include "Engine/Editor/Math/ImGuiMath.h"
 #include "Engine/Editor/Math/ImGuiSelection.h"
-
+#include "Engine/Editor/Commands/ImGuiCommand/FocusEntityCommand.h"
 
 namespace Editor {
 
 HierarchyWindow::HierarchyWindow(
 	const std::string& windowName,
+	ONEngine::EntityComponentSystem* ecs,
 	ONEngine::ECSGroup* ecsGroup,
 	EditorManager* editorManager,
 	ONEngine::SceneManager* sceneManager)
-	: windowName_(windowName), pEcsGroup_(ecsGroup), pEditorManager_(editorManager),
+	: windowName_(windowName), pEcs_(ecs), pEcsGroup_(ecsGroup), pEditorManager_(editorManager),
 	pSceneManager_(sceneManager) {
 
 	newName_.reserve(1024);
@@ -228,7 +229,7 @@ void HierarchyWindow::ShowInvalidParentPopup() {
 
 ///
 /// エンティティのエディタ表示
-/// 
+/// 
 void HierarchyWindow::DrawEntity(ONEngine::GameEntity* entity) {
 	bool hasChildren = !entity->GetChildren().empty();
 
@@ -254,9 +255,17 @@ void HierarchyWindow::DrawEntity(ONEngine::GameEntity* entity) {
 	HandleEntityDragDrop(entity);
 	DrawEntityContextMenu(entity, isSelected);
 
-	// 行がクリックされたら選択状態にする（矢印をクリックして開閉しただけの時は除外）
-	if(ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen()) {
-		ImGuiSelection::SetSelectedObject(entity->GetGuid(), SelectionType::Entity);
+	// 行がホバーされているときの処理
+	if(ImGui::IsItemHovered()) {
+		// クリックで選択
+		if(ImGui::IsMouseClicked(ImGuiMouseButton_Left) && !ImGui::IsItemToggledOpen()) {
+			ImGuiSelection::SetSelectedObject(entity->GetGuid(), SelectionType::Entity);
+		}
+
+		// ダブルクリックでフォーカス
+		if(ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
+			EditCommand::Execute<FocusEntityCommand>(pEcs_, entity);
+		}
 	}
 
 	/// ===================================================
@@ -280,9 +289,17 @@ void HierarchyWindow::DrawEntity(ONEngine::GameEntity* entity) {
 		// 通常の名前表示
 		ImGui::Text("%s", entity->GetName().c_str());
 
-		// テキスト部分をクリックした際も選択状態にする（直感的なUXのため）
-		if(ImGui::IsItemClicked()) {
-			ImGuiSelection::SetSelectedObject(entity->GetGuid(), SelectionType::Entity);
+		// テキスト部分がホバーされているときの処理
+		if(ImGui::IsItemHovered()) {
+			// クリックで選択（直感的なUXのため）
+			if(ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
+				ImGuiSelection::SetSelectedObject(entity->GetGuid(), SelectionType::Entity);
+			}
+			// ★追加：テキスト部分のダブルクリックでフォーカス
+			if(ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
+				// 例: pEditorManager_->ExecuteCommand<FocusEntityCommand>(entity);
+				// （Fキーを押した際と同じ関数やコマンドをここに記述してください）
+			}
 		}
 	}
 
@@ -414,7 +431,7 @@ void HierarchyWindow::HandleEntityShortcuts(ONEngine::GameEntity* entity, bool s
 /// /////////////////////////////////////////////////////////////////////////
 
 NormalHierarchyWindow::NormalHierarchyWindow(const std::string& windowName, ONEngine::EntityComponentSystem* _ecs, EditorManager* editorManager, ONEngine::SceneManager* sceneManager)
-	: HierarchyWindow(windowName, nullptr, editorManager, sceneManager) {
+	: HierarchyWindow(windowName, _ecs, nullptr, editorManager, sceneManager) {
 	pEcs_ = _ecs;
 }
 
