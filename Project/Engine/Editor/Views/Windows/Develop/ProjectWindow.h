@@ -47,7 +47,7 @@ public:
 
 	/// @brief 右クリックしたときに表示するポップアップメニュー
 	/// @param directory 右クリックしたディレクトリのパス
-	void PopupContextMenu(const std::filesystem::path& directory);
+	void PopupContextMenu(const std::filesystem::path& directory, std::filesystem::path& outDeletedPath);
 
 	/// @brief DirectoryCacheの更新
 	/// @param directory 更新対象のディレクトリパス

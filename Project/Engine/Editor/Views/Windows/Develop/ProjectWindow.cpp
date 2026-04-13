@@ -217,49 +217,48 @@ void ProjectWindow::DrawBreadcrumbs(const std::filesystem::path& directory, bool
 void ProjectWindow::DrawFileList(const std::filesystem::path& directory, bool& outRequestChangeDir, std::filesystem::path& outNextTargetDir) {
 	std::string dirStr = directory.string();
 
-	// キャッシュが存在しない・空の場合はスキップ
 	if(!fileCache_.contains(dirStr) || fileCache_[dirStr].empty()) return;
 
 	auto& files = fileCache_[dirStr];
 
+	// 削除予約用の変数
+	std::filesystem::path pendingDeletePath;
+
+	// --- ファイル一覧の描画 ---
 	float iconSize = 64.0f;
 	float padding = 16.0f;
 	float cellSize = iconSize + padding;
+	float panelWidth = ImGui::GetContentRegionAvail().x;
 
 	// パネル幅から列数を計算
-	float panelWidth = ImGui::GetContentRegionAvail().x;
 	int columnCount = static_cast<int>(panelWidth / cellSize);
 	if(columnCount < 1) columnCount = 1;
 
 	// 総行数を計算（切り上げ）
-	int rowCount = (files.size() + columnCount - 1) / columnCount;
+	int rowCount = (static_cast<int>(files.size()) + columnCount - 1) / columnCount;
 
-	// 古い Columns を廃止し、BeginTable を使用する
 	if(ImGui::BeginTable("FileGrid", columnCount)) {
-
-		// 魔法のクラス。これで「画面に見えている行」だけがループされるようになる
 		ImGuiListClipper clipper;
 		clipper.Begin(rowCount);
 
 		while(clipper.Step()) {
-			// DisplayStartからDisplayEndまで（画面に映る行のみ）を処理
 			for(int row = clipper.DisplayStart; row < clipper.DisplayEnd; ++row) {
-				ImGui::TableNextRow(); // 次の行へ
+				ImGui::TableNextRow();
 
 				for(int col = 0; col < columnCount; ++col) {
-					size_t index = row * columnCount + col;
+					size_t index = static_cast<size_t>(row * columnCount + col);
 					if(index >= files.size()) break; // 最後の半端な列は抜ける
 
-					ImGui::TableSetColumnIndex(col); // 描画する列を指定
+					ImGui::TableSetColumnIndex(col);
 
 					auto& file = files[index];
 					std::string name = file.path.filename().string();
 
-					// 確実に一意なIDを作るためにインデックスを使用
 					ImGui::PushID(static_cast<int>(index));
+
 					ImGui::BeginGroup();
 
-					// --- アイコン描画（キャッシュ済みを使用するため超軽量！） ---
+					// アイコン描画（キャッシュ済み）
 					ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4.0f, 4.0f));
 					if(file.displayTexture) {
 						ImGui::ImageButton("##Icon", (ImTextureID)(uintptr_t)file.displayTexture->GetSRVGPUHandle().ptr, { iconSize, iconSize });
@@ -268,8 +267,7 @@ void ProjectWindow::DrawFileList(const std::filesystem::path& directory, bool& o
 					}
 					ImGui::PopStyleVar();
 
-					// --- 名前描画 ---
-					// Table内でのTextWrappedは、セルの幅に合わせて自動で美しく折り返されます
+					// 名前描画
 					ImGui::TextWrapped("%s", name.c_str());
 
 					ImGui::EndGroup(); // グループ化ここまで
@@ -283,16 +281,12 @@ void ProjectWindow::DrawFileList(const std::filesystem::path& directory, bool& o
 						const AssetPayload* assetPtr = &payload;
 						ImGui::SetDragDropPayload("AssetData", &assetPtr, sizeof(AssetPayload*));
 
-						// --- ドラッグ中のプレビュー描画 ---
+						// ドラッグ中のプレビュー描画
 						if(file.displayTexture) {
-							// ドラッグ中は少し小さめのサイズ（例: 32x32）でアイコンを表示
 							ImGui::Image((ImTextureID)(uintptr_t)file.displayTexture->GetSRVGPUHandle().ptr, { 32.0f, 32.0f });
-							ImGui::SameLine(); // 画像の横にテキストを並べる
+							ImGui::SameLine();
 						}
-						// ファイル名を表示
 						ImGui::Text("%s", name.c_str());
-						// --------------------------------
-
 						ImGui::EndDragDropSource();
 					}
 
@@ -312,7 +306,8 @@ void ProjectWindow::DrawFileList(const std::filesystem::path& directory, bool& o
 						}
 					}
 
-					PopupContextMenu(file.path);
+					// コンテキストメニューの呼び出し（削除予約パスを渡す）
+					PopupContextMenu(file.path, pendingDeletePath);
 
 					ImGui::PopID();
 				}
@@ -320,17 +315,48 @@ void ProjectWindow::DrawFileList(const std::filesystem::path& directory, bool& o
 		}
 		ImGui::EndTable();
 	}
+
+	// 描画ループを完全に抜けた後で、安全に削除処理とキャッシュ更新を行う
+	if(!pendingDeletePath.empty()) {
+		try {
+			std::filesystem::remove_all(pendingDeletePath);
+
+			// 元のファイルパスの末尾に ".meta" を付けたパスを作成
+			std::filesystem::path metaPath = pendingDeletePath.string() + ".meta";
+			if(std::filesystem::exists(metaPath)) {
+				std::filesystem::remove(metaPath);
+			}
+
+			// 削除後、キャッシュを更新してUIに反映
+			UpdateFileCache(directory);
+			UpdateDirectoryCache(directory);
+		} catch(const std::exception& e) {
+			std::cerr << "Failed to delete file/folder: " << e.what() << std::endl;
+		}
+	}
 }
 
 ///
 /// ファイルを右クリックしたときの処理
 ///
-void ProjectWindow::PopupContextMenu(const std::filesystem::path& filepath) {
+void ProjectWindow::PopupContextMenu(const std::filesystem::path& filepath, std::filesystem::path& outDeletedPath) {
 	if(ImGui::BeginPopup("FileContextMenu")) {
 		if(ImGui::MenuItem("Reload")) {
 			std::string path = GetRelativePath(filepath);
 			pAssetCollection_->ReloadAsset(path);
 		}
+
+		// --- 削除機能の追加 ---
+		ImGui::Separator();
+		// 赤色で少し危険な操作であることをアピール
+		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.4f, 0.4f, 1.0f));
+		if(ImGui::MenuItem("Delete")) {
+			// ここでは削除せず、削除対象のパスを呼び出し元に伝えるだけ
+			outDeletedPath = filepath;
+		}
+		ImGui::PopStyleColor();
+		// ----------------------
+
 		ImGui::EndPopup();
 	}
 }
