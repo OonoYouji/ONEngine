@@ -100,7 +100,34 @@ void DxResource::CreateDefaultHeap(DxDevice* _dxDevice, DxCommand* _dxCommand, s
 	);
 }
 
+void ONEngine::DxResource::CreateUploadHeap(DxDevice* dxDevice, DxCommand* dxCommand, size_t sizeInByte, D3D12_RESOURCE_STATES initState) {
+	D3D12_HEAP_PROPERTIES heapProps{};
+	heapProps.Type = D3D12_HEAP_TYPE_UPLOAD;
 
+	D3D12_RESOURCE_DESC desc{};
+	desc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
+	desc.Width = sizeInByte;
+	desc.Height = 1;
+	desc.DepthOrArraySize = 1;
+	desc.MipLevels = 1;
+	desc.SampleDesc.Count = 1;
+	desc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+
+	HRESULT result = dxDevice->GetDevice()->CreateCommittedResource(
+		&heapProps,
+		D3D12_HEAP_FLAG_NONE,
+		&desc,
+		D3D12_RESOURCE_STATE_COMMON,
+		nullptr,
+		IID_PPV_ARGS(&resource_)
+	);
+	Assert(SUCCEEDED(result), "Default Heap Resource creation failed.");
+
+	CreateBarrier(
+		D3D12_RESOURCE_STATE_COMMON,
+		initState, dxCommand
+	);
+}
 
 void DxResource::CreateCommittedResource(DxDevice* _dxDevice, const D3D12_HEAP_PROPERTIES* _pHeapProperties, D3D12_HEAP_FLAGS _HeapFlags, const D3D12_RESOURCE_DESC* _pDesc, D3D12_RESOURCE_STATES _InitialResourceState, const D3D12_CLEAR_VALUE* _pOptimizedClearValue) {
 	currentState_ = _InitialResourceState;
