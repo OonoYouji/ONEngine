@@ -1,4 +1,4 @@
-#include "Grid.hlsli"
+﻿#include "Grid.hlsli"
 #include "../../Pixel.hlsli"
 
 // 指定したスケール(間隔)のグリッド線のアルファ値を計算する関数
@@ -58,13 +58,12 @@ Pixel main(PSInput input)
     gridColor.a *= fade;
 
     // 完全に透明なピクセルは描画を破棄して負荷を下げる
-    // if (gridColor.a <= 0.01f)
-    // {
-    //     discard;
-    // }
+	if (gridColor.a <= 0.01f) {
+		discard;
+	}
 
     Pixel output;
-    output.color = float4(1,0,0,1);
+	output.color = gridColor;
     output.worldPosition = float4(input.worldPosition, 1.0f);
     output.normal = float4(0.0f, 1.0f, 0.0f, 0.0f);
     output.flags = float4(0.0f, 0.0f, 0.0f, 0.0f);

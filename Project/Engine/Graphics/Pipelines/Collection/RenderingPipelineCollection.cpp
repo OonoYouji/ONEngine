@@ -60,8 +60,8 @@ void RenderingPipelineCollection::Initialize() {
 	Generate3DRenderingPipeline<SkyboxRenderingPipeline>(pAssetCollection_);
 	Generate3DRenderingPipeline<TerrainRenderingPipeline>(pAssetCollection_);
 	//Generate3DRenderingPipeline<VoxelTerrainVertexCreatePipeline>(pAssetCollection_);
-	Generate3DRenderingPipeline<VoxelTerrainRenderingPipeline>(pAssetCollection_);
-	Generate3DRenderingPipeline<VoxelTerrainTransvoxelRenderingPipeline>(pAssetCollection_);
+	//Generate3DRenderingPipeline<VoxelTerrainRenderingPipeline>(pAssetCollection_);
+	//Generate3DRenderingPipeline<VoxelTerrainTransvoxelRenderingPipeline>(pAssetCollection_);
 	//Generate3DRenderingPipeline<VoxelTerrainVertexShaderRenderingPipeline>(pAssetCollection_);
 	Generate3DRenderingPipeline<TerrainProceduralRenderingPipeline>(pAssetCollection_);
 	Generate3DRenderingPipeline<RiverRenderingPipeline>(pAssetCollection_);
@@ -71,7 +71,7 @@ void RenderingPipelineCollection::Initialize() {
 #ifdef DEBUG_MODE
 	/// Debug用にスケルトンを描画するパイプラインを追加
 	Generate3DRenderingPipeline<SkinMeshSkeletonRenderingPipeline>();
-	Generate3DRenderingPipeline<VoxelTerrainBrushPreviewRenderingPipeline>(pAssetCollection_);
+	//Generate3DRenderingPipeline<VoxelTerrainBrushPreviewRenderingPipeline>(pAssetCollection_);
 	Generate3DRenderingPipeline<GridRenderingPipeline>();
 #endif // DEBUG_MODE
 	Generate3DRenderingPipeline<EffectRenderingPipeline>(pAssetCollection_);
