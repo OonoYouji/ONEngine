@@ -78,7 +78,7 @@ inline void VertexBuffer<T>::Create(size_t _vertexSize, DxDevice* _dxDevice, DxC
 
 	Resize(_vertexSize);
 	/// vertex buffer
-	resource_.CreateDefaultHeap(_dxDevice, _dxCommand, tSize * vertices_.size(), D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER);
+	resource_.CreateUploadHeap(_dxDevice, _dxCommand, tSize * vertices_.size(), D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER);
 
 	vbv_.BufferLocation = resource_.Get()->GetGPUVirtualAddress();
 	vbv_.SizeInBytes = static_cast<UINT>(tSize * vertices_.size());
