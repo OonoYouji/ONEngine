@@ -59,19 +59,51 @@ void main(
     float4 voxelColor = voxelTextures[chunks[chunkID.value].textureId][voxelPos];
 	/// 操作次第で色を変更
 	if (inputInfo.mouseLeftButton == 1) {
-        uint id = editorInfo.materialId;
+		uint id = editorInfo.materialId;
+		float oldVal = voxelColor[id];
+		float newVal = oldVal;
+
 		if (inputInfo.keyboardLShift == 1) {
 			// ----- 押し下げ ----- //
-			voxelColor[id] -= val;
-			if(voxelColor[id] < 0.0f) {
-                voxelColor[id] = 0.0f;
-			}
+			// saturate関数で 0.0 ～ 1.0 にクランプします
+			newVal = saturate(oldVal - val);
 		} else {
 			// ----- 押し上げ ----- //
-			voxelColor[id] += val;
-            if(voxelColor[id] > 1.0f) {
-                voxelColor[id] = 1.0f;
+			newVal = saturate(oldVal + val);
+		}
+
+		// 値に変化があった場合のみ、他のチャンネルの整合性をとる
+		if (newVal != oldVal) {
+			float sumOthers = 0.0f;
+
+			// 1. 編集対象以外のチャンネルの合計値を計算
+			for (int i = 0; i < 3; ++i) {
+				if (i != id) {
+					sumOthers += voxelColor[i];
+				}
 			}
+
+			// 2. 他のチャンネルの値を、残りの枠(1.0 - newVal)に合わせてスケーリングする
+			if (sumOthers > 0.0001f) {
+				// 現在の比率を維持したまま乗算
+				float scale = (1.0f - newVal) / sumOthers;
+				for (int i = 0; i < 3; ++i) {
+					if (i != id) {
+						voxelColor[i] *= scale;
+					}
+				}
+			} else {
+				// 例外処理: 他のチャンネルがすべて0だった場合、均等に分配する
+				float distribute = (1.0f - newVal) / 2.0f;
+				for (int i = 0; i < 3; ++i) {
+					if (i != id) {
+						voxelColor[i] = distribute;
+					}
+				}
+			}
+
+			// 最後に編集対象のチャンネルに新しい値を代入
+			voxelColor[id] = newVal;
 		}
     
 		voxelTextures[chunks[chunkID.value].textureId][voxelPos] = voxelColor;
