@@ -10,7 +10,7 @@ using namespace ONEngine;
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 #include "Engine/Asset/Collection/AssetCollection.h"
 
-TerrainProceduralRenderingPipeline::TerrainProceduralRenderingPipeline(AssetCollection* _assetCollection)
+TerrainProceduralRenderingPipeline::TerrainProceduralRenderingPipeline(Asset::AssetCollection* _assetCollection)
 	: pAssetCollection_(_assetCollection) {
 }
 TerrainProceduralRenderingPipeline::~TerrainProceduralRenderingPipeline() {}
@@ -83,7 +83,7 @@ void TerrainProceduralRenderingPipeline::Initialize(ShaderCompiler* _shaderCompi
 
 		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); /// GP_SRV_INSNTANCE_DATA
 		pipeline_->AddDescriptorRange(1, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); /// GP_SRV_INSNTANCE_DATA
-		pipeline_->AddDescriptorRange(0, MAX_TEXTURE_COUNT, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); /// GP_SRV_TEXTURES
+		pipeline_->AddDescriptorRange(0, Asset::MAX_TEXTURE_COUNT, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); /// GP_SRV_TEXTURES
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_VERTEX, 0); /// GP_SRV_INSNTANCE_DATA
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_VERTEX, 1); /// GP_SRV_INSNTANCE_DATA
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 2); /// GP_SRV_TEXTURES
@@ -158,13 +158,13 @@ void TerrainProceduralRenderingPipeline::PreDraw(ECSGroup* _ecs, CameraComponent
 		instanceDataAppendBuffer_.AppendBindForComputeCommandList(cmdList, ARR_INSNTANCE_DATA); // UAV_INSTANCE_DATA
 
 		/// 使用するテクスチャを取得、バインドする
-		const Texture* vertexTexture = pAssetCollection_->GetTexture("./Packages/Textures/Terrain/TerrainVertex.png");
+		const Asset::Texture* vertexTexture = pAssetCollection_->GetTexture("./Packages/Textures/Terrain/TerrainVertex.png");
 		if(!vertexTexture) vertexTexture = pAssetCollection_->GetTexture("./Packages/Textures/Terrain/TerrainVertex.dds");
 
-		const Texture* splatBlendTexture = pAssetCollection_->GetTexture("./Packages/Textures/Terrain/TerrainSplatBlend.png");
+		const Asset::Texture* splatBlendTexture = pAssetCollection_->GetTexture("./Packages/Textures/Terrain/TerrainSplatBlend.png");
 		if(!splatBlendTexture) splatBlendTexture = pAssetCollection_->GetTexture("./Packages/Textures/Terrain/TerrainSplatBlend.dds");
 
-		const Texture* arrangementTexture = pAssetCollection_->GetTexture("./Packages/Textures/Terrain/TreeArrangement.png");
+		const Asset::Texture* arrangementTexture = pAssetCollection_->GetTexture("./Packages/Textures/Terrain/TreeArrangement.png");
 		if(!arrangementTexture) arrangementTexture = pAssetCollection_->GetTexture("./Packages/Textures/Terrain/TreeArrangement.dds");
 
 		cmdList->SetComputeRootDescriptorTable(ARR_SRV_VERTEX_TEXTURE, vertexTexture->GetSRVGPUHandle());
@@ -273,7 +273,7 @@ void TerrainProceduralRenderingPipeline::Draw(ECSGroup* _ecs, CameraComponent* _
 	/// -----------------------------------------------
 
 	/// model
-	const Model* model = pAssetCollection_->GetModel("./Packages/Models/BackgroundObjects/Tree3.obj");
+	const Asset::Model* model = pAssetCollection_->GetModel("./Packages/Models/BackgroundObjects/Tree3.obj");
 
 	/// textures
 	const auto& textures = pAssetCollection_->GetTextures();

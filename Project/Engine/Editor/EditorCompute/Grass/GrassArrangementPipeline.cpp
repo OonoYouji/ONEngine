@@ -27,7 +27,7 @@ void GrassArrangementPipeline::Initialize(ONEngine::ShaderCompiler* _shaderCompi
 		pipeline_->Add32BitConstant(D3D12_SHADER_VISIBILITY_ALL, 1, 2); // ROOT_PARAM_START_INDEX
 
 		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_UAV); // UAV_VERTICES
-		pipeline_->AddDescriptorRange(0, ONEngine::MAX_TEXTURE_COUNT, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // SRV_CONTROL_POINTS
+		pipeline_->AddDescriptorRange(0, ONEngine::Asset::MAX_TEXTURE_COUNT, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // SRV_CONTROL_POINTS
 
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 0); // ROOT_PARAM_CBV_PARAMS
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 1); // ROOT_PARAM_UAV_VERTICES
@@ -44,7 +44,7 @@ void GrassArrangementPipeline::Initialize(ONEngine::ShaderCompiler* _shaderCompi
 
 }
 
-void GrassArrangementPipeline::Execute(ONEngine::EntityComponentSystem* _ecs, ONEngine::DxCommand* _dxCommand, ONEngine::AssetCollection* _assetCollection) {
+void GrassArrangementPipeline::Execute(ONEngine::EntityComponentSystem* _ecs, ONEngine::DxCommand* _dxCommand, ONEngine::Asset::AssetCollection* _assetCollection) {
 
 	/// ==================================================
 	/// 早期リターン条件のチェック

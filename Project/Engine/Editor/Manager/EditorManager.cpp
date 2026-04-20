@@ -40,7 +40,7 @@ void EditorManager::Initialize(ONEngine::DxManager* dxm, ONEngine::ShaderCompile
 	AddEditorCompute(dxm, sc, std::make_unique<VoxelTerrainEditorComputePipeline>());
 }
 
-void EditorManager::Update(ONEngine::AssetCollection* ac) {
+void EditorManager::Update(ONEngine::Asset::AssetCollection* ac) {
 
 	/// エディタのコマンドを実行する
 	for (auto& compute : editorComputes_) {

@@ -11,9 +11,12 @@ namespace ONEngine {
 /// 前方宣言
 class DxManager;
 class EntityComponentSystem;
-class AssetCollection;
 class SceneManager;
 } /// ONEngine
+
+namespace ONEngine::Asset {
+class AssetCollection;
+} /// ONEngine::Asset
 
 
 
@@ -35,7 +38,7 @@ public:
 	EditorViewCollection(
 		ONEngine::DxManager* _dxm,
 		ONEngine::EntityComponentSystem* _ecs,
-		ONEngine::AssetCollection* _assetCollection,
+		ONEngine::Asset::AssetCollection* _assetCollection,
 		ImGuiManager* _imGuiManager,
 		EditorManager* _editorManager,
 		ONEngine::SceneManager* _sceneManager

@@ -13,6 +13,11 @@
 /// engine
 #include "../../Interface/IComponent.h"
 
+namespace ONEngine::Asset {
+class AudioClip;
+}
+
+
 namespace ONEngine {
 
 /// @brief 音の再生状態
@@ -54,7 +59,7 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	class AudioClip* pAudioClip_;
+	Asset::AudioClip* pAudioClip_;
 	std::string path_;
 	float volume_;
 	float pitch_;
@@ -77,25 +82,25 @@ public:
 	void SetVolume(float _volume);
 	void SetPitch(float _pitch);
 	void SetAudioPath(const std::string& _path);
-	void SetAudioClip(class AudioClip* _clip);
+	void SetAudioClip(Asset::AudioClip* _clip);
 
 	/// ----- getter ----- ///
 	float GetVolume() const;
 	float GetPitch() const;
 	const std::string& GetAudioPath() const;
-	class AudioClip* GetAudioClip() const;
+	Asset::AudioClip* GetAudioClip() const;
 	int GetState() const;
 
 };
 
 namespace ComponentDebug {
-	void AudioSourceDebug(AudioSource* _as);
+void AudioSourceDebug(AudioSource* _as);
 }
 
 namespace MonoInternalMethods {
-	void InternalGetParams(uint64_t _nativeHandle, float* _volume, float* _pitch);
-	void InternalSetParams(uint64_t _nativeHandle, float _volume, float _pitch);
-	void InternalPlayOneShot(uint64_t _nativeHandle, float _volume, float _pitch, MonoString* _path);
+void InternalGetParams(uint64_t _nativeHandle, float* _volume, float* _pitch);
+void InternalSetParams(uint64_t _nativeHandle, float _volume, float _pitch);
+void InternalPlayOneShot(uint64_t _nativeHandle, float _volume, float _pitch, MonoString* _path);
 }
 
 

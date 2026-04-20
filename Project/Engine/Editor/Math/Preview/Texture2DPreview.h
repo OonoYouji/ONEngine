@@ -6,6 +6,6 @@
 
 namespace Editor {
 
-void ShowTexture2DPreview(const std::string& _name, ONEngine::Texture* _texture, const ONEngine::Vector2& _textureSize, float _previewFactor);
+void ShowTexture2DPreview(const std::string& _name, ONEngine::Asset::Texture* _texture, const ONEngine::Vector2& _textureSize, float _previewFactor);
 
 } /// namespace Editor

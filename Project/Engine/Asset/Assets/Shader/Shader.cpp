@@ -1,6 +1,8 @@
 ﻿#include "Shader.h"
 
-namespace ONEngine {
+namespace ONEngine::Asset {
 
+Shader::Shader() = default;
+Shader::~Shader() = default;
 
-} /// namespace ONEngine
+} /// namespace ONEngine::Asset

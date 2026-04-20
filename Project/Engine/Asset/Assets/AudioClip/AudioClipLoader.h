@@ -3,7 +3,7 @@
 #include "../IAssetLoader.h"
 #include "AudioClip.h"
 
-namespace ONEngine {
+namespace ONEngine::Asset {
 
 template<>
 class AssetLoader<AudioClip> : public IAssetLoader {
@@ -20,4 +20,4 @@ public:
 
 };
 
-} /// namespace ONEngine
+} /// namespace ONEngine::Asset

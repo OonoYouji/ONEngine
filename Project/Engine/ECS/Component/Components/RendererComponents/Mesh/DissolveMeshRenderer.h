@@ -6,14 +6,19 @@
 /// engine
 #include "../../Interface/IComponent.h"
 #include "Engine/Asset/Guid/Guid.h"
-#include "Engine/Asset/Assets/Mateiral/Material.h"
+#include "Engine/Asset/Assets/Material/Material.h"
 #include "Engine/Graphics/Buffer/Data/GPUMaterial.h"
 
 namespace ONEngine {
-
-class AssetCollection;
 class DissolveMeshRenderer;
+}
 
+namespace ONEngine::Asset {
+class AssetCollection;
+}
+
+
+namespace ONEngine {
 
 /// ///////////////////////////////////////////////////
 /// ディゾルブの比較方法
@@ -23,12 +28,11 @@ enum class DissolveCompare {
 	GreaterEqual
 };
 
-
 /// ///////////////////////////////////////////////////
 /// メッシュをディゾルブ表現で表示するためのコンポーネント
 /// ///////////////////////////////////////////////////
 class DissolveMeshRenderer : public IRenderComponent {
-	friend void ShowGUI(DissolveMeshRenderer* _dmr, AssetCollection* _ac);
+	friend void ShowGUI(DissolveMeshRenderer* _dmr, Asset::AssetCollection* _ac);
 	friend void from_json(const nlohmann::json& _j, DissolveMeshRenderer& _dmr);
 	friend void to_json(nlohmann::json& _j, const DissolveMeshRenderer& _dmr);
 public:
@@ -45,7 +49,7 @@ private:
 	/// ===========================================
 
 	Guid meshGuid_;
-	Material material_;
+	Asset::Material material_;
 	Guid dissolveTexture_;
 
 	float dissolveThreshold_ = 0.5f;
@@ -60,10 +64,10 @@ public:
 	const Guid& GetMeshGuid() const;
 	const Guid& GetDissolveTextureGuid() const;
 
-	uint32_t GetDissolveTextureId(class AssetCollection* _ac) const;
+	uint32_t GetDissolveTextureId(Asset::AssetCollection* _ac) const;
 	float GetDissolveThreshold() const;
 
-	GPUMaterial GetGPUMaterial(class AssetCollection* _ac) const;
+	GPUMaterial GetGPUMaterial(Asset::AssetCollection* _ac) const;
 
 	uint32_t GetDissolveCompare() const;
 };

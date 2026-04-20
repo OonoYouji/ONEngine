@@ -10,11 +10,19 @@
 #include "Engine/Core/Utility/Math/Matrix4x4.h"
 
 namespace ONEngine {
+class ShaderCompiler;
+class DxManager;
+}
 
+namespace ONEngine::Asset {
 class AssetCollection;
+}
+
+namespace ONEngine {
 
 /// ///////////////////////////////////////////////////
 /// DissolveMeshRendererのデータを使い描画を行うパイプライン
+/// ///////////////////////////////////////////////////
 class DissolveMeshRenderingPipeline : public IRenderingPipeline {
 
 	enum ROOT_PARAM {
@@ -39,11 +47,11 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	DissolveMeshRenderingPipeline(AssetCollection* _ac);
+	DissolveMeshRenderingPipeline(Asset::AssetCollection* _ac);
 	~DissolveMeshRenderingPipeline() override = default;
 
-	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxm) override;
-	void Draw(class ECSGroup* _ecsGroup, class CameraComponent* _camera, DxCommand* _dxCommand) override;
+	void Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) override;
+	void Draw(ECSGroup* _ecsGroup, CameraComponent* _camera, DxCommand* _dxCommand) override;
 
 
 private:
@@ -51,7 +59,7 @@ private:
 	/// private : objects
 	/// ==================================================
 
-	AssetCollection* pAssetCollection_ = nullptr;
+	Asset::AssetCollection* pAssetCollection_ = nullptr;
 
 	const uint32_t kMaxRenderingMeshCount_ = 1024; ///< 最大描画メッシュ数
 

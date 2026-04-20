@@ -8,19 +8,26 @@
 
 /// engine
 #include "Engine/Core/Utility/Utility.h"
+#include "Engine/Asset/Meta/MetaFile.h"
 
 /// comment
 #pragma comment(lib, "mfplat.lib")
 #pragma comment(lib, "Mfreadwrite.lib")
 #pragma comment(lib, "mfuuid.lib")
 
-using namespace ONEngine;
+
+namespace ONEngine::Asset {
 
 std::optional<AudioClip> AssetLoader<AudioClip>::Load(const std::string& _filepath) {
 	/// ----- オーディオクリップの読み込み ----- ///
 
+	MetaFile meta;
+	if(!meta.LoadFromFile(_filepath + ".meta")) {
+		meta = GenerateMetaFile(_filepath);
+	}
+
 	/// ファイルが存在するのかチェックする
-	if (!std::filesystem::exists(_filepath)) {
+	if(!std::filesystem::exists(_filepath)) {
 		Console::LogError("[Load Failed] [AudioClip] - File not found: \"" + _filepath + "\"");
 		return std::nullopt;
 	}
@@ -32,7 +39,7 @@ std::optional<AudioClip> AssetLoader<AudioClip>::Load(const std::string& _filepa
 	/// SourceReaderの作成
 	ComPtr<IMFSourceReader> sourceReader;
 	result = MFCreateSourceReaderFromURL(filePathW.c_str(), nullptr, &sourceReader);
-	if (!SUCCEEDED(result)) {
+	if(!SUCCEEDED(result)) {
 		Console::LogError("[Load Failed] [AudioClip] - MFCreateSourceReaderFromURL failed: \"" + _filepath + "\"");
 		return std::nullopt;
 	}
@@ -43,7 +50,7 @@ std::optional<AudioClip> AssetLoader<AudioClip>::Load(const std::string& _filepa
 	audioType->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Audio);
 	audioType->SetGUID(MF_MT_SUBTYPE, MFAudioFormat_PCM);
 	result = sourceReader->SetCurrentMediaType((DWORD)MF_SOURCE_READER_FIRST_AUDIO_STREAM, nullptr, audioType.Get());
-	if (!SUCCEEDED(result)) {
+	if(!SUCCEEDED(result)) {
 		Console::LogError("[Load Failed] [AudioClip] - SetCurrentMediaType failed: \"" + _filepath + "\"");
 		return std::nullopt;
 	}
@@ -65,7 +72,7 @@ std::optional<AudioClip> AssetLoader<AudioClip>::Load(const std::string& _filepa
 	CoTaskMemFree(waveFormat);
 
 	/// PCMデータのバッファを構築
-	while (true) {
+	while(true) {
 		ComPtr<IMFSample> pSample;
 		DWORD streamIndex = 0;
 		DWORD flags = 0;
@@ -80,11 +87,11 @@ std::optional<AudioClip> AssetLoader<AudioClip>::Load(const std::string& _filepa
 		);
 
 		/// ストリームが終了したら抜ける
-		if (flags & MF_SOURCE_READERF_ENDOFSTREAM) {
+		if(flags & MF_SOURCE_READERF_ENDOFSTREAM) {
 			break;
 		}
 
-		if (pSample) {
+		if(pSample) {
 			ComPtr<IMFMediaBuffer> pBuffer;
 			/// サンプルに含まれるサウンドデータのバッファを一繋ぎにして取得
 			pSample->ConvertToContiguousBuffer(&pBuffer);
@@ -103,6 +110,7 @@ std::optional<AudioClip> AssetLoader<AudioClip>::Load(const std::string& _filepa
 	}
 
 	AudioClip audioClip;
+	audioClip.guid = meta.guid;
 	audioClip.soundData_ = std::move(soundData);
 
 	Console::Log("[Load] [AudioClip] - path:\"" + _filepath + "\"");
@@ -113,3 +121,5 @@ std::optional<AudioClip> AssetLoader<AudioClip>::Load(const std::string& _filepa
 std::optional<AudioClip> AssetLoader<AudioClip>::Reload(const std::string& _filepath, AudioClip* /*_src*/) {
 	return std::move(Load(_filepath));
 }
+
+} /// namespace ONEngine::Asset

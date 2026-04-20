@@ -10,7 +10,7 @@
 #include "Engine/Asset/Collection/Container/AssetContainer.h"
 #include "Engine/Core/Threading/ThreadPool.h" 
 
-namespace ONEngine {
+namespace ONEngine::Asset {
 
 class IAssetBundle {
 public:

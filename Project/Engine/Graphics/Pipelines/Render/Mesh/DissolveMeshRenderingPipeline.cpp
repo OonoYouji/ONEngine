@@ -11,7 +11,7 @@
 
 using namespace ONEngine;
 
-DissolveMeshRenderingPipeline::DissolveMeshRenderingPipeline(AssetCollection* _ac)
+DissolveMeshRenderingPipeline::DissolveMeshRenderingPipeline(Asset::AssetCollection* _ac)
 	: pAssetCollection_(_ac) {
 }
 
@@ -45,7 +45,7 @@ void DissolveMeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, 
 		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);  /// material
 		pipeline_->AddDescriptorRange(1, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);  /// dissolve params
 		pipeline_->AddDescriptorRange(2, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);  /// textureId
-		pipeline_->AddDescriptorRange(3, MAX_TEXTURE_COUNT, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); /// texture
+		pipeline_->AddDescriptorRange(3, Asset::MAX_TEXTURE_COUNT, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); /// texture
 
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_VERTEX, 0);      /// transform 
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 1);       /// material
@@ -100,14 +100,14 @@ void DissolveMeshRenderingPipeline::Draw(ECSGroup* _ecsGroup, CameraComponent* _
 
 	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(cmdList, CBV_VIEW_PROJECTION);
 
-	const Texture& frontTexture = pAssetCollection_->GetTextures().front();
+	const Asset::Texture& frontTexture = pAssetCollection_->GetTextures().front();
 	cmdList->SetGraphicsRootDescriptorTable(SRV_TEXTURE, frontTexture.GetSRVGPUHandle());
 
 	uint32_t transformIndex = 0;
 	uint32_t instanceIndex_ = 0;
 
 	for(const auto& [meshGuid, dmrList] : meshCompMap) {
-		const Model* model = pAssetCollection_->GetAsset<Model>(meshGuid);
+		const Asset::Model* model = pAssetCollection_->GetAsset<Asset::Model>(meshGuid);
 		if(!model) {
 			continue;
 		}

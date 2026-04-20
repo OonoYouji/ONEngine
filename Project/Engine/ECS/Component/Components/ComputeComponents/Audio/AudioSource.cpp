@@ -46,7 +46,7 @@ void AudioSource::SetAudioPath(const std::string& _path) {
 	path_ = _path;
 }
 
-void AudioSource::SetAudioClip(AudioClip* _clip) {
+void AudioSource::SetAudioClip(Asset::AudioClip* _clip) {
 	pAudioClip_ = _clip;
 }
 
@@ -62,7 +62,7 @@ const std::string& AudioSource::GetAudioPath() const {
 	return path_;
 }
 
-AudioClip* AudioSource::GetAudioClip() const {
+Asset::AudioClip* AudioSource::GetAudioClip() const {
 	return pAudioClip_;
 }
 

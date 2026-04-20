@@ -1,4 +1,4 @@
-#include "AddECSSystemFunction.h"
+﻿#include "AddECSSystemFunction.h"
 
 
 /// engine
@@ -25,7 +25,7 @@ using namespace ONEngine;
 /// ---------------------------------------------------
 /// ゲームように使用するシステム追加関数
 /// ---------------------------------------------------
-void ONEngine::GameECSGroupAddSystemFunction(ECSGroup* _ecs, DxManager* _dxm, AssetCollection* _assetCollection) {
+void ONEngine::GameECSGroupAddSystemFunction(ECSGroup* _ecs, DxManager* _dxm, Asset::AssetCollection* _assetCollection) {
 
 	/// 初期化に使うsystem
 	_ecs->AddSystem<TerrainColliderVertexGenerator>(_dxm);
@@ -56,7 +56,7 @@ void ONEngine::GameECSGroupAddSystemFunction(ECSGroup* _ecs, DxManager* _dxm, As
 /// ---------------------------------------------------
 /// DebugGroup用のシステム追加関数 (Debugでしか用いないシステムをここに追加する)
 /// ---------------------------------------------------
-void ONEngine::DebugECSGroupAddSystemFunction(ECSGroup* _ecs, DxManager* _dxm, AssetCollection* _assetCollection) {
+void ONEngine::DebugECSGroupAddSystemFunction(ECSGroup* _ecs, DxManager* _dxm, Asset::AssetCollection* _assetCollection) {
 
 	/// 初期化に使うsystem
 	_ecs->AddSystem<TerrainColliderVertexGenerator>(_dxm);

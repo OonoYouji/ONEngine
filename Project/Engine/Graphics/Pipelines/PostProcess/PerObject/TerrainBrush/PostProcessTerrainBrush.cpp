@@ -51,7 +51,7 @@ void PostProcessTerrainBrush::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 
 void PostProcessTerrainBrush::Execute(
 	const std::string& _textureName, DxCommand* _dxCommand,
-	AssetCollection* _assetCollection, EntityComponentSystem* _ecs) {
+	Asset::AssetCollection* _assetCollection, EntityComponentSystem* _ecs) {
 
 	/// TerrainComponentの有無チェック
 	ComponentArray<Terrain>* terrainArray = _ecs->GetCurrentGroup()->GetComponentArray<Terrain>();

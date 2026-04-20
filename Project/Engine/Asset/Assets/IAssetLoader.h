@@ -9,9 +9,12 @@
 #include "IAsset.h"
 
 namespace ONEngine {
-
 class DxManager;
 class AssetCollection;
+}
+
+
+namespace ONEngine::Asset {
 
 /// ///////////////////////////////////////////////////
 /// アセットの読み込み用クラスのインターフェイス

@@ -43,7 +43,7 @@ using namespace ONEngine;
 #include "../PostProcess/PerObject/TerrainBrush/PostProcessTerrainBrush.h"
 #include "../PostProcess/PerObject/VoxelTerrainBrush/PostProcessVoxelTerrainBrush.h"
 
-RenderingPipelineCollection::RenderingPipelineCollection(ShaderCompiler* _shaderCompiler, DxManager* _dxm, EntityComponentSystem* _pEntityComponentSystem, AssetCollection* _assetCollection)
+RenderingPipelineCollection::RenderingPipelineCollection(ShaderCompiler* _shaderCompiler, DxManager* _dxm, EntityComponentSystem* _pEntityComponentSystem, Asset::AssetCollection* _assetCollection)
 	: pShaderCompiler_(_shaderCompiler), pDxManager_(_dxm), pEntityComponentSystem_(_pEntityComponentSystem), pAssetCollection_(_assetCollection) {
 }
 

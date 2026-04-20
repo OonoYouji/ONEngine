@@ -8,11 +8,25 @@
 #include "Engine/Graphics/Shader/ComputePipeline.h"
 #include "Engine/Graphics/Shader/ShaderCompiler.h"
 
+
+
+namespace ONEngine {
+class DxManager;
+class DxCommand;
+class EntityComponentSystem;
+}
+
+namespace ONEngine::Asset {
+class AssetCollection;
+}
+
+
+
+namespace ONEngine {
+
 /// ///////////////////////////////////////////////////
 /// PostProcessのinterfaceクラス
 /// ///////////////////////////////////////////////////
-namespace ONEngine {
-
 class IPostProcessPipeline {
 public:
 	/// ===================================================
@@ -24,14 +38,14 @@ public:
 	/// @brief pipelineの初期化を行う
 	/// @param _shaderCompiler ShaderCompilerへのポインタ
 	/// @param _dxm DxManagerへのポインタ
-	virtual void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxm) = 0;
+	virtual void Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) = 0;
 
 	/// @brief post processの実行
 	virtual void Execute(
 		const std::string& _textureName,
-		class DxCommand* _dxCommand, 
-		class AssetCollection* _assetCollection,
-		class EntityComponentSystem* _pEntityComponentSystem
+		DxCommand* _dxCommand,
+		Asset::AssetCollection* _assetCollection,
+		EntityComponentSystem* _pEntityComponentSystem
 	) = 0;
 
 protected:

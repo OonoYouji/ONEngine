@@ -89,7 +89,7 @@ Skeleton ANIME_MATH::CreateSkeleton(const Node& _rootNode) {
 	return result;
 }
 
-SkinCluster ANIME_MATH::CreateSkinCluster(const Skeleton& _skeleton, Model* _model, DxManager* _dxm) {
+SkinCluster ANIME_MATH::CreateSkinCluster(const Skeleton& _skeleton, Asset::Model* _model, DxManager* _dxm) {
 	/// ----- スキンクラスターを作成 ----- ///
 
 	SkinCluster result{};
@@ -122,7 +122,7 @@ SkinCluster ANIME_MATH::CreateSkinCluster(const Skeleton& _skeleton, Model* _mod
 
 
 	/// resource create
-	Model::ModelMesh* frontMesh = _model->GetMeshes().front().get();
+	Asset::Model::ModelMesh* frontMesh = _model->GetMeshes().front().get();
 	result.influenceResource.CreateResource(dxDevice, sizeof(VertexInfluence) * frontMesh->GetVertices().size());
 
 	/// mapping

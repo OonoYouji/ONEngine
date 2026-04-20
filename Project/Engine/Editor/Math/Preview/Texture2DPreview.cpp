@@ -3,7 +3,7 @@
 /// externals
 #include <imgui.h>
 
-void Editor::ShowTexture2DPreview(const std::string& _name, ONEngine::Texture* _texture, const ONEngine::Vector2& _textureSize, float _previewFactor) {
+void Editor::ShowTexture2DPreview(const std::string& _name, ONEngine::Asset::Texture* _texture, const ONEngine::Vector2& _textureSize, float _previewFactor) {
 	if(_name != "") {
 		ImGui::Text("%s", _name.c_str());
 	} else {

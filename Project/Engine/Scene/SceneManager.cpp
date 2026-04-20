@@ -40,7 +40,7 @@ SceneManager::~SceneManager() {
 }
 
 
-void SceneManager::Initialize(AssetCollection* _assetCollection) {
+void SceneManager::Initialize(Asset::AssetCollection* _assetCollection) {
 	gSceneManager = this;
 
 	pAssetCollection_ = _assetCollection;

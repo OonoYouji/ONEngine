@@ -31,14 +31,14 @@ public:
 	/// @brief pipelineの初期化を行う
 	/// @param _shaderCompiler ShaderCompilerへのポインタ
 	/// @param _dxm DxManagerへのポインタ
-	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxm) override;
+	void Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) override;
 	
 	/// @brief post processの実行
 	void Execute(
 		const std::string& _textureName,
-		class DxCommand* _dxCommand,
-		class AssetCollection* _assetCollection,
-		class EntityComponentSystem* _ecs
+		DxCommand* _dxCommand,
+		Asset::AssetCollection* _assetCollection,
+		EntityComponentSystem* _ecs
 	) override;
 
 private:
@@ -46,7 +46,7 @@ private:
 	/// private : methods
 	/// ===================================================
 	
-	class DxManager* pDxManager_ = nullptr;
+	DxManager* pDxManager_ = nullptr;
 
 	ConstantBuffer<ShadowParameter> shadowParamBuffer_;
 

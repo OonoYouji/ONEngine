@@ -8,11 +8,15 @@
 #include "Engine/Graphics/Shader/ShaderCompiler.h"
 
 namespace ONEngine {
-class AssetCollection;
 class DxManager;
 class DxCommand;
 class EntityComponentSystem;
 }
+
+namespace ONEngine::Asset {
+class AssetCollection;
+}
+
 
 /// /////////////////////////////////////////////////
 /// コンピュートシェーダーを利用したエディターのパイプライン
@@ -29,7 +33,7 @@ public:
 	virtual ~IEditorCompute() = default;
 
 	virtual void Initialize(ONEngine::ShaderCompiler* _shaderCompiler, ONEngine::DxManager* _dxm) = 0;
-	virtual void Execute(ONEngine::EntityComponentSystem* _ecs, ONEngine::DxCommand* _dxCommand, ONEngine::AssetCollection* _assetCollection) = 0;
+	virtual void Execute(ONEngine::EntityComponentSystem* _ecs, ONEngine::DxCommand* _dxCommand, ONEngine::Asset::AssetCollection* _assetCollection) = 0;
 
 
 protected:

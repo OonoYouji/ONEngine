@@ -4,7 +4,7 @@
 #include "../IAssetLoader.h"
 #include "Material.h"
 
-namespace ONEngine {
+namespace ONEngine::Asset {
 
 template<>
 class AssetLoader<Material> : public IAssetLoader {
@@ -31,4 +31,4 @@ public:
 
 };
 
-} /// namespace ONEngine
+} /// namespace ONEngine::Asset

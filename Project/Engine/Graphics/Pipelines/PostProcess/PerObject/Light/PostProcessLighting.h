@@ -47,9 +47,9 @@ public:
 	/// @brief post processの実行
 	void Execute(
 		const std::string& _textureName,
-		class DxCommand* _dxCommand, 
-		class AssetCollection* _assetCollection,
-		class EntityComponentSystem* _pEntityComponentSystem
+		DxCommand* _dxCommand, 
+		Asset::AssetCollection* _assetCollection,
+		EntityComponentSystem* _pEntityComponentSystem
 	) override;
 
 private:

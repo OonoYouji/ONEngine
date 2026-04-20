@@ -8,6 +8,19 @@
 /// engine
 #include "RenderTexture.h"
 
+namespace ONEngine {
+class DxManager;
+class DxCommand;
+class DxDSVHeap;
+class DxDepthStencil;
+}
+
+namespace ONEngine::Asset {
+class AssetCollection;
+}
+
+
+
 /// @brief シーンのレンダリングテクスチャの種類
 enum SCENE_RTV {
 	SCENE_RTV_COLOR,
@@ -32,14 +45,14 @@ public:
 
 	void Initialize(
 		const std::string& _name, const Vector4& _clearColor, const Vector2& _textureSize,
-		class DxManager* _dxm, class AssetCollection* _assetCollection
+		DxManager* _dxm, Asset::AssetCollection* _assetCollection
 	);
 
 
-	void SetRenderTarget(class DxCommand* _dxCommand, class DxDSVHeap* _dxDSVHeap);
+	void SetRenderTarget(DxCommand* _dxCommand, DxDSVHeap* _dxDSVHeap);
 
-	void CreateBarrierRenderTarget(class DxCommand* _dxCommand);
-	void CreateBarrierPixelShaderResource(class DxCommand* _dxCommand);
+	void CreateBarrierRenderTarget(DxCommand* _dxCommand);
+	void CreateBarrierPixelShaderResource(DxCommand* _dxCommand);
 
 	const std::string& GetName(size_t _index) const;
 	const std::string& GetName() const;
@@ -53,7 +66,7 @@ private:
 	Vector4 clearColor_;
 
 	std::vector<std::unique_ptr<RenderTexture>> renderTextures_;
-	class DxDepthStencil* pDxDepthStencil_ = nullptr;
+	DxDepthStencil* pDxDepthStencil_ = nullptr;
 
 };
 

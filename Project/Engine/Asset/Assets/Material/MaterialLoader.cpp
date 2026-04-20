@@ -3,12 +3,23 @@
 /// std
 #include <fstream>
 
-using namespace ONEngine;
+/// engine
+#include "Engine/Asset/Meta/MetaFile.h"
+
+
+namespace ONEngine::Asset {
+
 
 std::optional<Material> AssetLoader<Material>::Load(const std::string& _filepath) {
+	/// Metaファイルを読み込む
+	MetaFile meta;
+	if(!meta.LoadFromFile(_filepath + ".meta")) {
+		meta = GenerateMetaFile(_filepath);
+	}
+
 	/// ファイルを開く
 	std::ifstream ifs(_filepath);
-	if (!ifs) {
+	if(!ifs) {
 		Console::LogError("[Load Failed] [Material] - File not found: \"" + _filepath + "\"");
 		return std::nullopt;
 	}
@@ -16,18 +27,16 @@ std::optional<Material> AssetLoader<Material>::Load(const std::string& _filepath
 
 	/// 読み込んだMaterialを格納するオブジェクト
 	Material material;
+	material.guid = meta.guid;
 
 	/// ----------------------------------------------
 	/// ファイルの読み込み
 	/// ----------------------------------------------
 	std::string line;
-	while (std::getline(ifs, line)) {
+	while(std::getline(ifs, line)) {
 		/// ----- 各文字列ごとに対応した処理を行う ----- ///
-		if (FileSystem::StartsWith(line, "guid: ")) {
-			/// ファイルの文字列をGuidに変換して格納
-			std::string guidStr = line.substr(6);
-			material.guid = Guid::FromString(guidStr);
-		}
+		/// guidはmetaファイルから読み込むように変更したが、ファイル内にもある場合はスキップするか上書きするか
+		/// ここではMetaファイルを正とする
 
 	}
 
@@ -42,3 +51,4 @@ std::optional<Material> AssetLoader<Material>::Reload(const std::string& _filepa
 	return std::move(Load(_filepath));
 }
 
+} /// namespace ONEngine::Asset

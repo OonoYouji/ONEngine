@@ -10,17 +10,23 @@
 #include "../../Interface/IComponent.h"
 #include "Engine/Graphics/Buffer/Data/GPUMaterial.h"
 #include "Engine/Asset/Guid/Guid.h"
-#include "Engine/Asset/Assets/Mateiral/Material.h"
+#include "Engine/Asset/Assets/Material/Material.h"
 
 
-/// ----- 前方宣言 ----- ///
+namespace ONEngine {
+class SpriteRenderer;
+}
+
+namespace ONEngine::Asset {
+class AssetCollection;
+}
+
+
 namespace ONEngine {
 
-class AssetCollection;
-class SpriteRenderer;
 
 namespace ComponentDebug {
-void SpriteDebug(SpriteRenderer* _sr, AssetCollection* _assetCollection);
+void SpriteDebug(SpriteRenderer* _sr, Asset::AssetCollection* _assetCollection);
 }
 
 /// json serialize
@@ -33,7 +39,7 @@ void from_json(const nlohmann::json& _j, SpriteRenderer& _sr);
 class SpriteRenderer final : public IComponent {
 	friend class SpriteUpdateSystem;
 
-	friend void ComponentDebug::SpriteDebug(SpriteRenderer* _sr, AssetCollection* _assetCollection);
+	friend void ComponentDebug::SpriteDebug(SpriteRenderer* _sr, Asset::AssetCollection* _assetCollection);
 	friend void to_json(nlohmann::json& _j, const SpriteRenderer& _sr);
 	friend void from_json(const nlohmann::json& _j, SpriteRenderer& _sr);
 public:
@@ -45,7 +51,7 @@ public:
 	~SpriteRenderer();
 
 	/// @brief 描画用データのセットアップ
-	void RenderingSetup(class AssetCollection* _assetCollection);
+	void RenderingSetup(Asset::AssetCollection* _assetCollection);
 
 private:
 	/// ===================================================
@@ -53,7 +59,7 @@ private:
 	/// ===================================================
 
 	GPUMaterial gpuMaterial_;
-	Material material_;
+	Asset::Material material_;
 
 public:
 	/// ===================================================

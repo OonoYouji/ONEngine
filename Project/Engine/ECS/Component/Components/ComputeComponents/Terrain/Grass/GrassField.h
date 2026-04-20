@@ -7,7 +7,7 @@
 #include <nlohmann/json.hpp>
 
 /// engine
-#include "Engine/Asset/Assets/Mateiral/Material.h"
+#include "Engine/Asset/Assets/Material/Material.h"
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/Graphics/Buffer/StructuredBuffer.h"
 #include "Engine/Graphics/Buffer/ConstantBuffer.h"
@@ -17,8 +17,21 @@
 #include "Engine/ECS/Component/Components/Interface/IComponent.h"
 
 namespace Editor {
-	class GrassArrangementPipeline;
+class GrassArrangementPipeline;
 }
+
+namespace ONEngine {
+class DxManager;
+class DxDevice;
+class DxCommand;
+class DxSRVHeap;
+class GrassField;
+}
+
+namespace ONEngine::Asset {
+class AssetCollection;
+}
+
 
 /// ////////////////////////////////////////////////////////
 /// 草のインスタンス情報 (シェーダーで利用)
@@ -32,16 +45,11 @@ struct GrassData {
 	float random01;
 };
 
-
-/// 下の関数で使うための前方宣言
-class GrassField;
-class AssetCollection;
-
 /// ////////////////////////////////////////////////////////
 /// Editor
 /// ////////////////////////////////////////////////////////
 namespace ComponentDebug {
-	void GrassFieldDebug(GrassField* _grassField, AssetCollection* _assetCollection);
+void GrassFieldDebug(GrassField* _grassField, Asset::AssetCollection* _assetCollection);
 }
 
 /// ////////////////////////////////////////////////////////
@@ -58,7 +66,7 @@ class GrassField : public IComponent {
 	friend class ::Editor::GrassArrangementPipeline;
 
 	/// privateメンバ変数の参照のためにフレンド宣言
-	friend void ComponentDebug::GrassFieldDebug(GrassField* _grassField, AssetCollection* _assetCollection);
+	friend void ComponentDebug::GrassFieldDebug(GrassField* _grassField, Asset::AssetCollection* _assetCollection);
 	friend void to_json(nlohmann::json& _j, const GrassField& _p);
 	friend void from_json(const nlohmann::json& _j, GrassField& _p);
 public:
@@ -76,12 +84,12 @@ public:
 	);
 
 	/// material_をBufferにMapする
-	void SetupRenderingData(class AssetCollection* _assetCollection);
+	void SetupRenderingData(Asset::AssetCollection* _assetCollection);
 	/// rwGrassInstanceBuffer_の開始インデックスを設定する
 	void StartIndexMapping(UINT _oneDrawInstanceCount);
 
 	/// rwGrassInstanceBuffer_のインスタンス数を読む
-	void AppendBufferReadCounter(class DxManager* _dxm, class DxCommand* _dxCommand);
+	void AppendBufferReadCounter(DxManager* _dxm, DxCommand* _dxCommand);
 
 private:
 	/// ===================================================
@@ -101,7 +109,7 @@ private:
 	bool isArranged_; ///< 配置済みかどうか
 	uint32_t instanceCount_; ///< 実際に配置された草の本数
 
-	Material material_;
+	Asset::Material material_;
 
 public:
 	/// ===================================================

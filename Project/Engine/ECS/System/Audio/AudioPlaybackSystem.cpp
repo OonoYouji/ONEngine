@@ -1,6 +1,5 @@
 ﻿#include "AudioPlaybackSystem.h"
 
-using namespace ONEngine;
 
 /// engine
 #include "Engine/ECS/EntityComponentSystem/ECSGroup.h"
@@ -8,9 +7,10 @@ using namespace ONEngine;
 #include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/Asset/Assets/AudioClip/AudioClip.h"
 
-using namespace AudioStructs;
 
-AudioPlaybackSystem::AudioPlaybackSystem(AssetCollection* _assetCollection)
+namespace ONEngine {
+
+AudioPlaybackSystem::AudioPlaybackSystem(Asset::AssetCollection* _assetCollection)
 	: pAssetCollection_(_assetCollection) {
 
 	HRESULT hr = S_FALSE;
@@ -32,13 +32,13 @@ void AudioPlaybackSystem::OutsideOfRuntimeUpdate(ECSGroup* /*_ecs*/) {}
 void AudioPlaybackSystem::RuntimeUpdate(ECSGroup* _ecs) {
 	/// AudioSourceコンポーネントの配列を取得、有効かチェック
 	ComponentArray<AudioSource>* asArray = _ecs->GetComponentArray<AudioSource>();
-	if (!asArray || asArray->GetUsedComponents().empty()) {
+	if(!asArray || asArray->GetUsedComponents().empty()) {
 		return;
 	}
 
-	for (auto& as : asArray->GetUsedComponents()) {
+	for(auto& as : asArray->GetUsedComponents()) {
 		/// 有効なAudioSourceのみ処理する
-		if (!as || !as->enable) {
+		if(!as || !as->enable) {
 			continue;
 		}
 
@@ -46,16 +46,16 @@ void AudioPlaybackSystem::RuntimeUpdate(ECSGroup* _ecs) {
 		SetAudioClip(as);
 
 		/// 音の再生リクエストチェック
-		if (as->isPlayingRequest_) {
+		if(as->isPlayingRequest_) {
 			/// 再生状態ではなければ再生する
-			if (as->state_ != static_cast<int>(AudioState::Playing)) {
+			if(as->state_ != static_cast<int>(AudioState::Playing)) {
 				PlayAudio(as);
 			}
 		}
 
 		/// 音の状態を取得
 		int state = GetAudioState(as);
-		if (state != as->state_) {
+		if(state != as->state_) {
 			/// 状態が変わった場合は更新する
 			as->state_ = state;
 		}
@@ -64,7 +64,7 @@ void AudioPlaybackSystem::RuntimeUpdate(ECSGroup* _ecs) {
 		/// OneShotAudioの再生リクエストチェック
 		for(auto& req : as->oneShotAudioRequests_) {
 			/// ワンショット再生
-			AudioClip* clip = pAssetCollection_->GetAudioClip(req.path);
+			Asset::AudioClip* clip = pAssetCollection_->GetAudioClip(req.path);
 			PlayOneShot(clip, req.volume, req.pitch, req.path);
 		}
 
@@ -76,8 +76,8 @@ void AudioPlaybackSystem::RuntimeUpdate(ECSGroup* _ecs) {
 }
 
 void AudioPlaybackSystem::SetAudioClip(AudioSource* _audioSource) {
-	AudioClip* clip = pAssetCollection_->GetAudioClip(_audioSource->path_);
-	if (clip) {
+	Asset::AudioClip* clip = pAssetCollection_->GetAudioClip(_audioSource->path_);
+	if(clip) {
 		_audioSource->pAudioClip_ = clip;
 	}
 }
@@ -91,7 +91,7 @@ void AudioPlaybackSystem::PlayAudio(AudioSource* _audioSource) {
 	sourceVoice = _audioSource->pAudioClip_->CreateSourceVoice(xAudio2_.Get());
 
 	/// 再生する波形データの設定
-	const SoundData& soundData = _audioSource->pAudioClip_->GetSoundData();
+	const Asset::AudioStructs::SoundData& soundData = _audioSource->pAudioClip_->GetSoundData();
 	XAUDIO2_BUFFER buffer{};
 	buffer.pAudioData = soundData.buffer.data();
 	buffer.AudioBytes = static_cast<UINT32>(soundData.buffer.size());
@@ -107,12 +107,12 @@ void AudioPlaybackSystem::PlayAudio(AudioSource* _audioSource) {
 	_audioSource->sourceVoices_.push_back(sourceVoice);
 }
 
-void AudioPlaybackSystem::PlayOneShot(AudioClip* _audioClip, float _volume, float _pitch, const std::string& /*_path*/) {
+void AudioPlaybackSystem::PlayOneShot(Asset::AudioClip* _audioClip, float _volume, float _pitch, const std::string& /*_path*/) {
 	IXAudio2SourceVoice* sourceVoice = nullptr;
 	sourceVoice = _audioClip->CreateSourceVoice(xAudio2_.Get());
 
 	/// 再生する波形データの設定
-	const SoundData& soundData = _audioClip->GetSoundData();
+	const Asset::AudioStructs::SoundData& soundData = _audioClip->GetSoundData();
 	XAUDIO2_BUFFER buffer{};
 	buffer.pAudioData = soundData.buffer.data();
 	buffer.AudioBytes = static_cast<UINT32>(soundData.buffer.size());
@@ -129,24 +129,24 @@ void AudioPlaybackSystem::PlayOneShot(AudioClip* _audioClip, float _volume, floa
 }
 
 int AudioPlaybackSystem::GetAudioState(AudioSource* _audioSource) {
-	AudioClip* clip = _audioSource->pAudioClip_;
-	if (!clip) {
+	Asset::AudioClip* clip = _audioSource->pAudioClip_;
+	if(!clip) {
 		// クリップが設定されていない場合は停止状態
 		return static_cast<int>(AudioState::Stopped);
 	}
 
 
 	std::list<IXAudio2SourceVoice*>& sourceVoices = _audioSource->sourceVoices_;
-	for (auto itr = sourceVoices.begin(); itr != sourceVoices.end();) {
+	for(auto itr = sourceVoices.begin(); itr != sourceVoices.end();) {
 		IXAudio2SourceVoice* sourceVoice = *itr;
-		if (!sourceVoice) {
+		if(!sourceVoice) {
 			itr = sourceVoices.erase(itr);
 			continue;
 		}
 
 		XAUDIO2_VOICE_STATE state;
 		sourceVoice->GetState(&state);
-		if (state.BuffersQueued == 0) {
+		if(state.BuffersQueued == 0) {
 			itr = sourceVoices.erase(itr);
 			continue;
 		}
@@ -161,4 +161,6 @@ int AudioPlaybackSystem::GetAudioState(AudioSource* _audioSource) {
 
 	/// 再生中の音声ソースがない場合は停止
 	return static_cast<int>(AudioState::Stopped);
+}
+
 }

@@ -7,7 +7,7 @@ using namespace ONEngine;
 #include "Engine/ECS/Component/Array/ComponentArray.h"
 #include "Engine/Asset/Collection/AssetCollection.h"
 
-SkinMeshUpdateSystem::SkinMeshUpdateSystem(DxManager* _dxm, AssetCollection* _assetCollection)
+SkinMeshUpdateSystem::SkinMeshUpdateSystem(DxManager* _dxm, Asset::AssetCollection* _assetCollection)
 	: pDxManager_(_dxm), pAssetCollection_(_assetCollection) {
 }
 
@@ -27,7 +27,7 @@ void SkinMeshUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
 
 		/// skin clusterが存在しないなら生成する
 		if (skinMesh->isChangingMesh_) {
-			Model* model = pAssetCollection_->GetModel(skinMesh->GetMeshPath());
+			Asset::Model* model = pAssetCollection_->GetModel(skinMesh->GetMeshPath());
 			if (!model) {
 				//!< nullの場合は適当なメッセージを出力してスキップ
 				Console::LogError("SkinMeshUpdateSystem::Update: Model not found for path: " + skinMesh->GetMeshPath());

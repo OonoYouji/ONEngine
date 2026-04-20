@@ -48,7 +48,7 @@ using namespace ONEngine;
 namespace Editor {
 
 
-InspectorWindow::InspectorWindow(const std::string& windowName, DxManager* dxm, EntityComponentSystem* ecs, AssetCollection* assetCollection, EditorManager* editorManager)
+InspectorWindow::InspectorWindow(const std::string& windowName, DxManager* dxm, EntityComponentSystem* ecs, Asset::AssetCollection* assetCollection, EditorManager* editorManager)
 	: pEcs_(ecs), pDxManager_(dxm), pAssetCollection_(assetCollection), pEditorManager_(editorManager) {
 	windowName_ = windowName;
 
@@ -442,33 +442,33 @@ void InspectorWindow::DrawComponentInnerContent(ONEngine::IComponent* comp, size
 void InspectorWindow::AssetInspector() {
 	/// Typeごとに表示を変える
 
-	AssetType type = pAssetCollection_->GetAssetTypeFromGuid(ImGuiSelection::GetSelectedObject());
+	Asset::AssetType type = pAssetCollection_->GetAssetTypeFromGuid(ImGuiSelection::GetSelectedObject());
 
 	switch(type) {
-	case AssetType::Texture:
+	case Asset::AssetType::Texture:
 	{
 		ImGui::Text("Texture Inspector");
-		Texture* texture = pAssetCollection_->GetTextureFromGuid(ImGuiSelection::GetSelectedObject());
+		ONEngine::Asset::Texture* texture = pAssetCollection_->GetTextureFromGuid(ImGuiSelection::GetSelectedObject());
 		if(texture) {
 			TextureAssetInspector(texture);
 		}
 
 	}
 	break;
-	case AssetType::Audio:
+	case Asset::AssetType::Audio:
 		ImGui::Text("Audio Inspector");
 		break;
-	case AssetType::Mesh:
+	case Asset::AssetType::Mesh:
 		ImGui::Text("Mesh Inspector");
 		break;
-	case AssetType::Material:
+	case Asset::AssetType::Material:
 		ImGui::Text("Material Inspector");
 		break;
 	}
 
 }
 
-void InspectorWindow::TextureAssetInspector(Texture* tex) {
+void InspectorWindow::TextureAssetInspector(ONEngine::Asset::Texture* tex) {
 	/// ----- テクスチャのインスペクター表示 ----- /
 
 	/// previewのための枠を確保

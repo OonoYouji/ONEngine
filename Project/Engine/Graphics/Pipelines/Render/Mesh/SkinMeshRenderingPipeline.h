@@ -11,6 +11,20 @@
 #include "Engine/Asset/Assets/Mesh/Skinning.h"
 #include "Engine/Graphics/Buffer/Data/GPUMaterial.h"
 
+
+namespace ONEngine {
+class DxManager;
+class ECSGroup;
+class CameraComponent;
+class DxCommand;
+}
+
+namespace ONEngine::Asset {
+class AssetCollection;
+}
+
+
+
 /// //////////////////////////////////////////////////////
 /// スキンアニメーションの描画パイプライン
 /// //////////////////////////////////////////////////////
@@ -32,18 +46,18 @@ public:
 	/// public : methods
 	/// ====================================================
 
-	SkinMeshRenderingPipeline(class AssetCollection* _assetCollection);
+	SkinMeshRenderingPipeline(Asset::AssetCollection* _assetCollection);
 	~SkinMeshRenderingPipeline() override = default;
 
-	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxm) override;
-	void Draw(class ECSGroup* _ecs, class CameraComponent* _camera, DxCommand* _dxCommand) override;
+	void Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) override;
+	void Draw(ECSGroup* _ecs, CameraComponent* _camera, DxCommand* _dxCommand) override;
 
 private:
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
 
-	class AssetCollection* pAssetCollection_ = nullptr;
+	Asset::AssetCollection* pAssetCollection_ = nullptr;
 
 	ConstantBuffer<Matrix4x4> transformBuffer_;
 	ConstantBuffer<GPUMaterial> materialBuffer_;

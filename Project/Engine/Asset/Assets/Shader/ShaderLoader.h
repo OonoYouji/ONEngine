@@ -3,8 +3,9 @@
 /// engine
 #include "../IAssetLoader.h"
 #include "Shader.h"
+#include "Engine/Asset/Meta/MetaFile.h"
 
-namespace ONEngine {
+namespace ONEngine::Asset {
 
 
 /// /////////////////////////////////////////////////
@@ -30,4 +31,4 @@ private:
 };
 
 
-} /// namespace ONEngine
+} /// namespace ONEngine::Asset

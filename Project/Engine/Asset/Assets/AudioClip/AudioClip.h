@@ -9,7 +9,7 @@
 /// engine
 #include "../IAsset.h"
 
-namespace ONEngine {
+namespace ONEngine::Asset {
 
 template<typename T>
 class AssetLoader;
@@ -74,4 +74,4 @@ private:
 void SoundDataUnload(AudioStructs::SoundData* _soundData);
 
 
-} /// ONEngine
+} /// namespace ONEngine::Asset

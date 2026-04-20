@@ -9,7 +9,8 @@
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/Graphics/Buffer/Data/UVTransform.h"
 
-namespace ONEngine {
+
+namespace ONEngine::Asset {
 
 /// ShowGuiMaterialように前方宣言
 class Material;
@@ -88,4 +89,4 @@ public:
 };
 
 
-} /// ONEngine
+} /// namespace ONEngine::Asset

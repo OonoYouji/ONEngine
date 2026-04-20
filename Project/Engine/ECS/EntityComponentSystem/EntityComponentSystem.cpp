@@ -116,7 +116,7 @@ EntityComponentSystem::EntityComponentSystem(DxManager* _pDxManager)
 
 EntityComponentSystem::~EntityComponentSystem() {}
 
-void EntityComponentSystem::Initialize(AssetCollection* _assetCollection) {
+void EntityComponentSystem::Initialize(Asset::AssetCollection* _assetCollection) {
 
 	/// ポインタの確保
 	pAssetCollection_ = _assetCollection;

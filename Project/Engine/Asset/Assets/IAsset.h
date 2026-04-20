@@ -3,7 +3,7 @@
 /// engine
 #include "Engine/Asset/Guid/Guid.h"
 
-namespace ONEngine {
+namespace ONEngine::Asset{
 
 /// ///////////////////////////////////////////////////
 /// Assetを共通化するためのインターフェース

@@ -18,6 +18,16 @@
 #include "Engine/Core/Utility/Math/Quaternion.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Transform/Transform.h"
 
+
+namespace ONEngine {
+class DxManager;
+}
+
+namespace ONEngine::Asset {
+class Model;
+}
+
+
 namespace ONEngine {
 
 /// @brief アニメーションのジョイント情報
@@ -103,10 +113,6 @@ struct Skeleton {
 };
 
 
-/// 前方宣言
-class Model;
-class DxManager;
-
 namespace ANIME_MATH {
 
 	/// @brief Vector3のキーフームを基に補間計算を行う
@@ -139,7 +145,7 @@ namespace ANIME_MATH {
 	/// @param _model ソースモデル
 	/// @param _dxm DxManagerのインスタンスへのポインタ
 	/// @return 構築されたスキンクラスター
-	SkinCluster CreateSkinCluster(const Skeleton& _skeleton, Model* _model, DxManager* _dxm);
+	SkinCluster CreateSkinCluster(const Skeleton& _skeleton, Asset::Model* _model, DxManager* _dxm);
 }
 
 

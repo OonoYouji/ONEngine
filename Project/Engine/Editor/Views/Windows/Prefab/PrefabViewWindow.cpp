@@ -15,7 +15,7 @@
 
 using namespace Editor;
 
-PrefabViewWindow::PrefabViewWindow(ONEngine::EntityComponentSystem* _ecs, ONEngine::AssetCollection* _assetCollection)
+PrefabViewWindow::PrefabViewWindow(ONEngine::EntityComponentSystem* _ecs, ONEngine::Asset::AssetCollection* _assetCollection)
 	: pEcs_(_ecs), pAssetCollection_(_assetCollection) {}
 
 void PrefabViewWindow::ShowImGui() {
@@ -55,7 +55,7 @@ void PrefabViewWindow::RenderView() {
 	/// ----- SceneのRTVTextureを描画 ----- ///
 
 	/// 描画する画像の取得
-	const ONEngine::Texture* texture = pAssetCollection_->GetTexture("./Assets/Scene/RenderTexture/prefabScene");
+	const ONEngine::Asset::Texture* texture = pAssetCollection_->GetTexture("./Assets/Scene/RenderTexture/prefabScene");
 	if (!texture) {
 		return;
 	}

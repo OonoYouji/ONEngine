@@ -11,6 +11,18 @@
 #include "Engine/Graphics/Buffer/Data/GPUMaterial.h"
 #include <d3d12.h>
 
+namespace ONEngine {
+class DxManager;
+class ECSGroup;
+class CameraComponent;
+class VoxelTerrain;
+}
+
+namespace ONEngine::Asset {
+class AssetCollection;
+}
+
+
 /// /////////////////////////////////////////////////
 /// Terrainの描画pipeline
 /// /////////////////////////////////////////////////
@@ -41,14 +53,14 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	VoxelTerrainRenderingPipeline(class AssetCollection* _assetCollection);
+	VoxelTerrainRenderingPipeline(Asset::AssetCollection* _assetCollection);
 	~VoxelTerrainRenderingPipeline();
 
 	/// --------------- override methods --------------- ///
-	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxm) override;
-	void Draw(class ECSGroup* _ecs, class CameraComponent* _camera, DxCommand* _dxCommand) override;
+	void Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) override;
+	void Draw(ECSGroup* _ecs, CameraComponent* _camera, DxCommand* _dxCommand) override;
 
-	void DrawCubic(class VoxelTerrain* vt, CameraComponent* camera, DxCommand* dxCommand);
+	void DrawCubic(VoxelTerrain* vt, CameraComponent* camera, DxCommand* dxCommand);
 
 	void CreatePipeline(GraphicsPipeline* _pipeline, Shader& _shader, DxManager* _dxm, D3D12_FILL_MODE _fillMode, D3D12_BLEND_DESC _blendMode);
 
@@ -58,8 +70,8 @@ private:
 	/// ===================================================
 
 	/// --------------- other class pointers --------------- ///
-	class AssetCollection* pAssetCollection_;
-	class DxManager* pDxManager_;
+	Asset::AssetCollection* pAssetCollection_;
+	DxManager* pDxManager_;
 
 	std::unique_ptr<GraphicsPipeline> wireframeSubtractBlendPipeline_;
 	std::unique_ptr<GraphicsPipeline> wireframePipeline_;

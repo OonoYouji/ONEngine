@@ -1,4 +1,4 @@
-#include "SpriteRenderingPipeline.h"
+﻿#include "SpriteRenderingPipeline.h"
 
 using namespace ONEngine;
 
@@ -14,7 +14,7 @@ using namespace ONEngine;
 
 
 
-SpriteRenderingPipeline::SpriteRenderingPipeline(AssetCollection* _assetCollection)
+SpriteRenderingPipeline::SpriteRenderingPipeline(Asset::AssetCollection* _assetCollection)
 	: pAssetCollection_(_assetCollection) {
 }
 SpriteRenderingPipeline::~SpriteRenderingPipeline() {}
@@ -44,7 +44,7 @@ void SpriteRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 0);                  ///< ROOT_PARAM_VIEW_PROJECTION : 0
 
 		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);  ///< ROOT_PARAM_MATERIAL
-		pipeline_->AddDescriptorRange(1, MAX_TEXTURE_COUNT, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); ///< ROOT_PARAM_TEXTURES
+		pipeline_->AddDescriptorRange(1, Asset::MAX_TEXTURE_COUNT, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); ///< ROOT_PARAM_TEXTURES
 		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);  ///< ROOT_PARAM_TRANSFORM
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 0);       ///< ROOT_PARAM_MATERIAL : 1
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 1);       ///< ROOT_PARAM_TEXTURES   : 2
@@ -162,7 +162,7 @@ void SpriteRenderingPipeline::Draw(class ECSGroup* _ecsGroup, CameraComponent* _
 
 	/// 先頭の texture gpu handle をセットする
 	auto& textures = pAssetCollection_->GetTextures();
-	const Texture* firstTexture = &textures.front();
+	const Asset::Texture* firstTexture = &textures.front();
 	cmdList->SetGraphicsRootDescriptorTable(ROOT_PARAM_TEXTURES, firstTexture->GetSRVGPUHandle());
 
 	materialsBuffer.SRVBindForGraphicsCommandList(cmdList, ROOT_PARAM_MATERIAL);

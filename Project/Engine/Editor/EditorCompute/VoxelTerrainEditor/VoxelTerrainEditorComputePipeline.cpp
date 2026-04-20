@@ -78,7 +78,7 @@ void VoxelTerrainEditorComputePipeline::Initialize(ONEngine::ShaderCompiler* _sh
 
 }
 
-void VoxelTerrainEditorComputePipeline::Execute(ONEngine::EntityComponentSystem* _ecs, ONEngine::DxCommand* _dxCommand, ONEngine::AssetCollection* _assetCollection) {
+void VoxelTerrainEditorComputePipeline::Execute(ONEngine::EntityComponentSystem* _ecs, ONEngine::DxCommand* _dxCommand, ONEngine::Asset::AssetCollection* _assetCollection) {
 
 	/// 早期リターンの条件チェック
 	ONEngine::ComponentArray<ONEngine::VoxelTerrain>* voxelTerrainArray = _ecs->GetCurrentGroup()->GetComponentArray<ONEngine::VoxelTerrain>();
@@ -190,7 +190,7 @@ void VoxelTerrainEditorComputePipeline::Execute(ONEngine::EntityComponentSystem*
 	cameraComp->GetCameraPosBuffer().BindForComputeCommandList(cmdList, CBV_CAMERA);
 
 	/// WorldTexture
-	const ONEngine::Texture* worldTexture = _assetCollection->GetTexture("./Assets/Scene/RenderTexture/debugWorldPosition");
+	const ONEngine::Asset::Texture* worldTexture = _assetCollection->GetTexture("./Assets/Scene/RenderTexture/debugWorldPosition");
 	cmdList->SetComputeRootDescriptorTable(SRV_WORLD_TEXTURE, worldTexture->GetSRVHandle().gpuHandle);
 
 	/// MousePosition
@@ -264,7 +264,7 @@ void VoxelTerrainEditorComputePipeline::CreatePipeline(ONEngine::ComputePipeline
 	pipeline->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_UAV); // UAV_MOUSE_POS_BUFFER
 	pipeline->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // SRV_CHUNKS
 	pipeline->AddDescriptorRange(1, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // SRV_WORLD_TEXTURE
-	pipeline->AddDescriptorRange(1, ONEngine::MAX_TEXTURE_COUNT * 2, D3D12_DESCRIPTOR_RANGE_TYPE_UAV); // UAV_VOXEL_TEXTURES
+	pipeline->AddDescriptorRange(1, ONEngine::Asset::MAX_TEXTURE_COUNT * 2, D3D12_DESCRIPTOR_RANGE_TYPE_UAV); // UAV_VOXEL_TEXTURES
 
 	/// SRV, UAV
 	pipeline->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 0); // UAV_VOXEL_TEXTURES
@@ -277,7 +277,7 @@ void VoxelTerrainEditorComputePipeline::CreatePipeline(ONEngine::ComputePipeline
 	pipeline->CreatePipeline(dxm->GetDxDevice());
 }
 
-void VoxelTerrainEditorComputePipeline::ExecuteCalculateMouseWorldPos(ONEngine::DxCommand* dxCommand, ONEngine::AssetCollection* assetCollection) {
+void VoxelTerrainEditorComputePipeline::ExecuteCalculateMouseWorldPos(ONEngine::DxCommand* dxCommand, ONEngine::Asset::AssetCollection* assetCollection) {
 	ONEngine::Vector2 mouseUV = ONEngine::Input::GetImGuiImageMousePosNormalized("Scene");
 	mouseUV /= ONEngine::Vector2::HD;
 

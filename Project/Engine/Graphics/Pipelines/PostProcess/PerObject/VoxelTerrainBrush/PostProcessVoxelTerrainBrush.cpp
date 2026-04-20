@@ -52,7 +52,7 @@ void PostProcessVoxelTerrainBrush::Initialize(ShaderCompiler* _shaderCompiler, D
 
 void PostProcessVoxelTerrainBrush::Execute(
 	const std::string& _textureName, DxCommand* _dxCommand,
-	AssetCollection* _assetCollection, EntityComponentSystem* _ecs) {
+	Asset::AssetCollection* _assetCollection, EntityComponentSystem* _ecs) {
 
 	/// TerrainComponentの有無チェック
 	ComponentArray<VoxelTerrain>* voxelTerrainArray = _ecs->GetCurrentGroup()->GetComponentArray<VoxelTerrain>();

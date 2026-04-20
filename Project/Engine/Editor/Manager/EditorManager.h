@@ -19,12 +19,15 @@
 #include "Engine/Editor/EditorCompute/Interface/IEditorCompute.h"
 
 namespace ONEngine {
-/// 前方宣言
 class DxManager;
 class EntityComponentSystem;
-class AssetCollection;
 class ShaderCompiler;
 }
+
+namespace ONEngine::Asset {
+class AssetCollection;
+}
+
 
 
 namespace Editor {
@@ -50,7 +53,7 @@ public:
 
 	void Initialize(ONEngine::DxManager* dxm, ONEngine::ShaderCompiler* sc);
 
-	void Update(ONEngine::AssetCollection* ac);
+	void Update(ONEngine::Asset::AssetCollection* ac);
 
 
 	/// ----- factory ----- ///

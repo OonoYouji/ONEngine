@@ -7,10 +7,13 @@
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/Graphics/Buffer/ConstantBuffer.h"
 
+namespace ONEngine::Asset {
+class AssetCollection;
+}
+
 
 namespace ONEngine {
 
-class AssetCollection;
 class DxManager;
 
 
@@ -43,7 +46,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	VoxelTerrainBrushPreviewRenderingPipeline(AssetCollection* assetCollection);
+	VoxelTerrainBrushPreviewRenderingPipeline(Asset::AssetCollection* assetCollection);
 	~VoxelTerrainBrushPreviewRenderingPipeline() override;
 
 	void Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) override;
@@ -56,7 +59,7 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	AssetCollection* pAssetCollection_ = nullptr;
+	Asset::AssetCollection* pAssetCollection_ = nullptr;
 	DxManager* pDxm_ = nullptr;
 
 	ConstantBuffer<BrushInfo> cBufferBrushInfo_;

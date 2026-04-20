@@ -10,11 +10,22 @@
 
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Grass/GrassField.h"
 
+namespace ONEngine {
+class DxManager;
+class ECSGroup;
+class CameraComponent;
+}
+
+namespace ONEngine::Asset {
+class AssetCollection;
+}
+
+
+namespace ONEngine {
+
 /// /////////////////////////////////////////////////
 /// 草を描画するパイプライン
 /// /////////////////////////////////////////////////
-namespace ONEngine {
-
 class GrassRenderingPipeline : public IRenderingPipeline {
 
 	enum ROOT_PARAM {
@@ -32,20 +43,20 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	GrassRenderingPipeline(class AssetCollection* _assetCollection);
+	GrassRenderingPipeline(Asset::AssetCollection* _assetCollection);
 	~GrassRenderingPipeline();
 
-	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxm) override;
-	void PreDraw(class ECSGroup* _ecs, class CameraComponent* _camera, DxCommand* _dxCommand) override;
-	void Draw(class ECSGroup* _ecs, class CameraComponent* _camera, DxCommand* _dxCommand) override;
+	void Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) override;
+	void PreDraw(ECSGroup* _ecs, CameraComponent* _camera, DxCommand* _dxCommand) override;
+	void Draw(ECSGroup* _ecs, CameraComponent* _camera, DxCommand* _dxCommand) override;
 
 private:
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
 
-	class DxManager* pDxManager_ = nullptr;
-	class AssetCollection* pAssetCollection_ = nullptr;
+	DxManager* pDxManager_ = nullptr;
+	Asset::AssetCollection* pAssetCollection_ = nullptr;
 };
 
 

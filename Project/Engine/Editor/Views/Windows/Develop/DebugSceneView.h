@@ -35,7 +35,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	DebugSceneView(ONEngine::EntityComponentSystem* _ecs, ONEngine::AssetCollection* _assetCollection, ONEngine::SceneManager* _sceneManager, class InspectorWindow* _inspector);
+	DebugSceneView(ONEngine::EntityComponentSystem* _ecs, ONEngine::Asset::AssetCollection* _assetCollection, ONEngine::SceneManager* _sceneManager, class InspectorWindow* _inspector);
 	~DebugSceneView() {}
 
 	/// @brief imgui windowの描画処理
@@ -73,7 +73,7 @@ private:
 
 	/// --------------- other class pointers --------------- ///
 	ONEngine::EntityComponentSystem* pEcs_;
-	ONEngine::AssetCollection*       pAssetCollection_;
+	ONEngine::Asset::AssetCollection*       pAssetCollection_;
 	ONEngine::SceneManager*          pSceneManager_;
 	class InspectorWindow*  pInspector_;
 

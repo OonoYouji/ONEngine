@@ -31,7 +31,7 @@ void PostProcessGrayscale::Initialize(ShaderCompiler* _shaderCompiler, DxManager
 
 }
 
-void PostProcessGrayscale::Execute(const std::string& _textureName, DxCommand* _dxCommand, AssetCollection* _assetCollection, [[maybe_unused]] EntityComponentSystem* _entityComponentSystem) {
+void PostProcessGrayscale::Execute(const std::string& _textureName, DxCommand* _dxCommand, Asset::AssetCollection* _assetCollection, [[maybe_unused]] EntityComponentSystem* _entityComponentSystem) {
 
 	/// 配列の取得とタグの確認
 	ComponentArray<ScreenPostEffectTag>* screenPostEffectTagArray = _entityComponentSystem->GetCurrentGroup()->GetComponentArray<ScreenPostEffectTag>();

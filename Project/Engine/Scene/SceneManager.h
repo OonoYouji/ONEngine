@@ -11,6 +11,15 @@
 /// engine
 #include "Loader/SceneIO.h"
 
+namespace ONEngine {
+class EntityComponentSystem;
+}
+
+namespace ONEngine::Asset {
+class AssetCollection;
+}
+
+
 
 /// ///////////////////////////////////////////////////
 /// シーンの管理を行うクラス
@@ -23,11 +32,11 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	SceneManager(class EntityComponentSystem* _entityCompnentSystem);
+	SceneManager(EntityComponentSystem* _entityCompnentSystem);
 	~SceneManager();
 
 	/// @brief このクラスの初期化
-	void Initialize(class AssetCollection* _assetCollection);
+	void Initialize(Asset::AssetCollection* _assetCollection);
 
 	/// @brief シーンの更新
 	void Update();
@@ -78,8 +87,8 @@ private:
 	/// ===================================================
 
 	/// ----- other class ----- ///
-	class EntityComponentSystem* pEcs_;
-	class AssetCollection* pAssetCollection_;
+	EntityComponentSystem* pEcs_;
+	Asset::AssetCollection* pAssetCollection_;
 
 	std::string currentScene_;
 	std::string nextScene_;
@@ -100,7 +109,7 @@ public:
 
 namespace MonoInternalMethods {
 
-	void InternalLoadScene(MonoString* _sceneName);
+void InternalLoadScene(MonoString* _sceneName);
 }
 
 } /// ONEngine

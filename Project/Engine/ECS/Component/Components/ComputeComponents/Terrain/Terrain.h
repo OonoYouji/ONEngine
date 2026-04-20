@@ -10,7 +10,7 @@
 
 /// engine
 #include "../../Interface/IComponent.h"
-#include "Engine/Asset/Assets/Mateiral/Material.h"
+#include "Engine/Asset/Assets/Material/Material.h"
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/Graphics/Buffer/StructuredBuffer.h"
 
@@ -19,24 +19,32 @@
 
 
 namespace Editor {
-	class TerrainVertexEditorCompute;
+class TerrainVertexEditorCompute;
 }
+
+namespace ONEngine {
+class Terrain;
+class EntityComponentSystem;
+class DxDevice;
+class DxCommand;
+class DxSRVHeap;
+}
+
+namespace ONEngine::Asset {
+class AssetCollection;
+}
+
 
 /// ComponentDebugで使用するための前方宣言
 namespace ONEngine {
 
-/// 前方宣言
-class Terrain;
-class EntityComponentSystem;
-class AssetCollection;
-
 static const uint32_t kMaxTerrainTextureNum = 4u;
 
 namespace ComponentDebug {
-void TerrainDebug(Terrain* _terrain, EntityComponentSystem* _ecs, AssetCollection* _assetCollection);
+void TerrainDebug(Terrain* _terrain, EntityComponentSystem* _ecs, Asset::AssetCollection* _assetCollection);
 
 /// テクスチャモードの編集
-bool TerrainTextureEditModeDebug(std::array<std::string, kMaxTerrainTextureNum>* _texturePaths, int32_t* _usedTextureIndex, AssetCollection* _assetCollection);
+bool TerrainTextureEditModeDebug(std::array<std::string, kMaxTerrainTextureNum>* _texturePaths, int32_t* _usedTextureIndex, Asset::AssetCollection* _assetCollection);
 } // namespace ComponentDebug
 
 /// Json変換
@@ -61,7 +69,7 @@ struct TerrainEditorInfo {
 class Terrain : public IComponent {
 	friend class ::Editor::TerrainVertexEditorCompute;
 
-	friend void ComponentDebug::TerrainDebug(Terrain* _terrain, EntityComponentSystem* _ecs, AssetCollection* _assetCollection);
+	friend void ComponentDebug::TerrainDebug(Terrain* _terrain, EntityComponentSystem* _ecs, Asset::AssetCollection* _assetCollection);
 	friend void from_json(const nlohmann::json& _j, Terrain& _t);
 	friend void to_json(nlohmann::json& _j, const Terrain& _t);
 public:
@@ -95,16 +103,16 @@ public:
 	~Terrain() override;
 
 	/// @brief VerticesとIndicesのUAVBufferを作成する
-	void CreateVerticesAndIndicesBuffers(class DxDevice* _dxDevice, class DxCommand* _dxCommand, class DxSRVHeap* _dxSrvHeap);
+	void CreateVerticesAndIndicesBuffers(DxDevice* _dxDevice, DxCommand* _dxCommand, DxSRVHeap* _dxSrvHeap);
 
 
 	/// @brief VBVとIBVのバリアを生成する(描画用に)
 	/// @param _dxCommand DxCommandへのポインタ
-	void CreateRenderingBarriers(class DxCommand* _dxCommand);
+	void CreateRenderingBarriers(DxCommand* _dxCommand);
 
 	/// @brief VBVとIBVのバリアを復元する(計算用に)
 	/// @param _dxCommand DxCommandへのポインタ
-	void RestoreResourceBarriers(class DxCommand* _dxCommand);
+	void RestoreResourceBarriers(DxCommand* _dxCommand);
 
 	/// @brief 描画用にVBVを生成する
 	D3D12_VERTEX_BUFFER_VIEW CreateVBV();
@@ -133,7 +141,7 @@ private:
 	uint32_t maxVertexNum_;
 	uint32_t maxIndexNum_;
 
-	Material material_;
+	Asset::Material material_;
 
 	/// ----- river ----- ///
 	River river_;

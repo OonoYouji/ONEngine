@@ -1,17 +1,46 @@
 ﻿#include "ShaderLoader.h"
 
-namespace ONEngine {
+/// externals
+#include <magic_enum/magic_enum.hpp>
+
+namespace ONEngine::Asset {
 
 AssetLoader<Shader>::AssetLoader() {}
 
 std::optional<Shader> AssetLoader<Shader>::Load(const std::string& filepath) {
 	/// ----- Shaderの読み込み処理 ----- ///
-	return std::nullopt;
+
+	MetaFile meta;
+	if (!meta.LoadFromFile(filepath + ".meta")) {
+		meta = GenerateMetaFile(filepath);
+	}
+
+	Shader shader;
+	shader.guid = meta.guid;
+
+	/// metaファイルから情報を取得
+	if (meta.properties.contains("shaderStage")) {
+		auto stage = magic_enum::enum_cast<ShaderStage>(meta.properties.at("shaderStage"));
+		if (stage.has_value()) {
+			shader.stage_ = stage.value();
+		}
+	}
+	if (meta.properties.contains("entryPoint")) {
+		shader.entryPoint_ = meta.properties.at("entryPoint");
+	}
+	if (meta.properties.contains("profile")) {
+		shader.profile_ = meta.properties.at("profile");
+	}
+	shader.path_ = filepath;
+
+	// ... shader compilation/loading logic ...
+
+	return shader;
 }
 
 std::optional<Shader> AssetLoader<Shader>::Reload(const std::string& filepath, Shader* src) {
 	/// ----- Shaderの再読み込み処理 ----- ///
-	return std::nullopt;
+	return Load(filepath);
 }
 
 

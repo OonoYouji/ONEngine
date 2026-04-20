@@ -11,8 +11,13 @@
 #include "../IAsset.h"
 #include "../../../Core/DirectX12/ComPtr/ComPtr.h"
 
-namespace ONEngine {
+namespace ONEngine::Asset {
+template<typename T>
+class AssetLoader;
+}
 
+
+namespace ONEngine::Asset {
 
 /// ///////////////////////////////////////////////////
 /// HLSLのステージを表す列挙型
@@ -30,6 +35,7 @@ enum class ShaderStage {
 /// HLSLのアセット化
 /// ///////////////////////////////////////////////////
 class Shader : public IAsset {
+	friend class AssetLoader<Shader>;
 public:
 	/// ===================================================
 	/// public : methods

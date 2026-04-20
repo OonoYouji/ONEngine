@@ -18,7 +18,7 @@ using namespace Editor;
 EditorViewCollection::EditorViewCollection(
 	ONEngine::DxManager* _dxm,
 	ONEngine::EntityComponentSystem* _ecs,
-	ONEngine::AssetCollection* _assetCollection,
+	ONEngine::Asset::AssetCollection* _assetCollection,
 	ImGuiManager* _imGuiManager,
 	EditorManager* _editorManager,
 	ONEngine::SceneManager* _sceneManager)

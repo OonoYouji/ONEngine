@@ -10,7 +10,7 @@
 #include "Mesh.h"
 #include "Skinning.h"
 
-namespace ONEngine {
+namespace ONEngine::Asset {
 
 /// ///////////////////////////////////////////////////
 /// Meshの集合体、モデルデータ (アニメーションがある場合も含む)
@@ -94,4 +94,4 @@ public:
 
 };
 
-} /// ONEngine
+} /// ONEngine::Asset

@@ -3,7 +3,7 @@
 /// std
 #include <string>
 
-namespace ONEngine {
+namespace ONEngine::Asset {
 
 /// ////////////////////////////////////////////////////
 /// アセットの種類
@@ -14,6 +14,7 @@ enum class AssetType {
 	Mesh,
 	Audio,
 	Material,
+	Shader,
 	Count
 };
 

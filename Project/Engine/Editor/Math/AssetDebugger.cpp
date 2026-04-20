@@ -30,7 +30,7 @@ void DrawTextureDropSpace(const std::string& _areaName) {
 
 
 /// テクスチャのプレビュー表示
-void DrawTexturePreview(const ONEngine::Texture* _texture) {
+void DrawTexturePreview(const ONEngine::Asset::Texture* _texture) {
 	if(!_texture) {
 		return;
 	}
@@ -41,7 +41,7 @@ void DrawTexturePreview(const ONEngine::Texture* _texture) {
 }
 
 
-bool TextureButton(const std::string& label, const ONEngine::Texture* texture) {
+bool TextureButton(const std::string& label, const ONEngine::Asset::Texture* texture) {
 	if(!texture) {
 		return false;
 	}
@@ -52,14 +52,14 @@ bool TextureButton(const std::string& label, const ONEngine::Texture* texture) {
 }
 
 /// テクスチャのドロップ処理
-bool HandleTextureDrop(ONEngine::Material* _material) {
+bool HandleTextureDrop(ONEngine::Asset::Material* _material) {
 	bool edit = false;
 	if(ImGui::BeginDragDropTarget()) {
 		if(const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("AssetData")) {
 			if(payload->Data) {
 				AssetPayload* assetPayload = *static_cast<AssetPayload**>(payload->Data);
 				const std::string path = assetPayload->filePath;
-				if(ONEngine::CheckAssetType(ONEngine::FileSystem::FileExtension(path), ONEngine::AssetType::Texture)) {
+				if(ONEngine::Asset::CheckAssetType(ONEngine::FileSystem::FileExtension(path), ONEngine::Asset::AssetType::Texture)) {
 					const ONEngine::Guid& guid = assetPayload->guid;
 					_material->SetBaseTextureGuid(guid);
 					edit = true;
@@ -73,15 +73,15 @@ bool HandleTextureDrop(ONEngine::Material* _material) {
 
 
 /// 法線テクスチャのドロップ処理
-bool HandleNormalTextureDrop(ONEngine::Material* _material) {
+bool HandleNormalTextureDrop(ONEngine::Asset::Material* _material) {
 	bool edit = false;
 	if(ImGui::BeginDragDropTarget()) {
 		if(const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("AssetData")) {
 			if(payload->Data) {
 				AssetPayload* assetPayload = *static_cast<AssetPayload**>(payload->Data);
 				std::string path = assetPayload->filePath;
-				ONEngine::AssetType type = ONEngine::GetAssetTypeFromExtension(ONEngine::FileSystem::FileExtension(path));
-				if(type == ONEngine::AssetType::Texture) {
+				ONEngine::Asset::AssetType type = ONEngine::Asset::GetAssetTypeFromExtension(ONEngine::FileSystem::FileExtension(path));
+				if(type == ONEngine::Asset::AssetType::Texture) {
 					const ONEngine::Guid& guid = assetPayload->guid;
 					_material->SetNormalTextureGuid(guid);
 					edit = true;
@@ -95,7 +95,7 @@ bool HandleNormalTextureDrop(ONEngine::Material* _material) {
 
 
 
-bool MaterialEdit(const std::string& _label, ONEngine::Material* _material, ONEngine::AssetCollection* _assetCollection, bool _isEditNormalTexture) {
+bool MaterialEdit(const std::string& _label, ONEngine::Asset::Material* _material, ONEngine::Asset::AssetCollection* _assetCollection, bool _isEditNormalTexture) {
 	/// nullptr check
 	if(!_material) {
 		return false;

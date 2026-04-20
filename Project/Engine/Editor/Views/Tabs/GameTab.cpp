@@ -5,7 +5,7 @@
 
 using namespace Editor;
 
-GameTab::GameTab(ONEngine::AssetCollection* _ac)
+GameTab::GameTab(ONEngine::Asset::AssetCollection* _ac)
 	: IEditorWindowContainer("Game") {
 
 	AddView(std::make_unique<GameSceneView>(_ac, "GameView##GameSceneView"));

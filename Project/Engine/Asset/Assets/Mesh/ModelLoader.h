@@ -7,7 +7,7 @@
 struct aiNode;
 struct aiScene;
 
-namespace ONEngine {
+namespace ONEngine::Asset {
 
 template<>
 class AssetLoader<Model> : public IAssetLoader {
@@ -59,4 +59,4 @@ private:
 	uint32_t assimpLoadFlags_;
 };
 
-} /// namespace ONEngine
+} /// namespace ONEngine::Asset

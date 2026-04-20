@@ -11,7 +11,7 @@
 #include "Engine/Asset/Assets/Texture/Texture.h"
 
 
-namespace ONEngine {
+namespace ONEngine::Asset {
 class AssetCollection;
 }
 
@@ -24,7 +24,7 @@ public:
 		std::filesystem::path path;
 		bool isDirectory = false;
 		std::string relativePath;
-		ONEngine::Texture* displayTexture = nullptr;
+		ONEngine::Asset::Texture* displayTexture = nullptr;
 	};
 
 public:
@@ -32,7 +32,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	ProjectWindow(ONEngine::AssetCollection* assetCollection);
+	ProjectWindow(ONEngine::Asset::AssetCollection* assetCollection);
 	~ProjectWindow();
 
 	/// @brief imgui windowの描画処理
@@ -70,7 +70,7 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	ONEngine::AssetCollection* pAssetCollection_;
+	ONEngine::Asset::AssetCollection* pAssetCollection_;
 
 	/// ImGui::Beginのlabelに使う
 	std::string windowName_;

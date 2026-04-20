@@ -6,7 +6,7 @@ namespace Editor {
 
 class GameTab : public IEditorWindowContainer {
 public:
-	GameTab(ONEngine::AssetCollection* _ac);
+	GameTab(ONEngine::Asset::AssetCollection* _ac);
 	~GameTab() override = default;
 };
 

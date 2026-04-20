@@ -10,9 +10,9 @@
 /// engine
 #include "Engine/Editor/Commands/ImGuiCommand/ImGuiCommand.h"
 
-using namespace ONEngine;
+namespace ONEngine::Asset {
 
-Material ONEngine::GenerateMaterial() {
+Material GenerateMaterial() {
 	/// ----- 新規のMaterialを作成して返す ----- ///
 	Material material;
 
@@ -23,17 +23,17 @@ Material ONEngine::GenerateMaterial() {
 	return material;
 }
 
-void ONEngine::GenerateMaterialFile(const std::string& _filepath, Material* _material) {
+void GenerateMaterialFile(const std::string& _filepath, Material* _material) {
 	/// _filepathにマテリアル情報を書き込む
 
 	/// _filepathがないなら生成する
-	if (std::filesystem::exists(_filepath) == false) {
+	if(std::filesystem::exists(_filepath) == false) {
 		std::ofstream ofs(_filepath);
 		ofs.close();
 	}
 
 	std::ofstream ofs(_filepath);
-	if (!ofs) {
+	if(!ofs) {
 		return;
 	}
 
@@ -41,7 +41,7 @@ void ONEngine::GenerateMaterialFile(const std::string& _filepath, Material* _mat
 	/// 引数のマテリアル情報を使用する
 	/// nullptrならデフォルト値で生成する
 	Material material;
-	if (_material) {
+	if(_material) {
 		material = *_material;
 	} else {
 		material = GenerateMaterial();
@@ -61,7 +61,7 @@ void ONEngine::GenerateMaterialFile(const std::string& _filepath, Material* _mat
 /// Json変換
 /// ---------------------------------------------------
 
-void ONEngine::from_json(const nlohmann::json& _j, Material& _material) {
+void from_json(const nlohmann::json& _j, Material& _material) {
 	/// ----- JsonデータをMaterialに変換する ----- ///
 
 	_j.at("baseColor").get<ONEngine::Vector4>();
@@ -70,21 +70,21 @@ void ONEngine::from_json(const nlohmann::json& _j, Material& _material) {
 	_material.baseColor = _j.value("baseColor", Vector4::Red);
 	_material.postEffectFlags = _j.value("postEffectFlags", 1u);
 	Guid baseTextureGuid = _j.value("baseTextureGuid", Guid::kInvalid);
-	if (baseTextureGuid.CheckValid()) {
+	if(baseTextureGuid.CheckValid()) {
 		_material.baseTextureGuid_ = baseTextureGuid;
 	} else {
 		_material.baseTextureGuid_ = std::nullopt;
 	}
 
 	Guid normalTextureGuid = _j.value("normalTextureGuid", Guid::kInvalid);
-	if (normalTextureGuid.CheckValid()) {
+	if(normalTextureGuid.CheckValid()) {
 		_material.normalTextureGuid_ = normalTextureGuid;
 	} else {
 		_material.normalTextureGuid_ = std::nullopt;
 	}
 }
 
-void ONEngine::to_json(nlohmann::json& _j, const Material& _material) {
+void to_json(nlohmann::json& _j, const Material& _material) {
 	/// ----- MaterialデータをJsonに変換する ----- ///
 	_j = {
 		{ "guid", _material.guid },
@@ -119,7 +119,7 @@ const Guid& Material::GetBaseTextureGuid() const {
 
 void Material::SetBaseTextureGuid(const Guid& _guid) {
 	/// ----- base texture guidの設定 ----- ///
-	if (baseTextureGuid_.has_value()) {
+	if(baseTextureGuid_.has_value()) {
 		baseTextureGuid_.value() = _guid;
 	} else {
 		baseTextureGuid_ = std::make_optional<Guid>();
@@ -137,10 +137,12 @@ const Guid& Material::GetNormalTextureGuid() const {
 
 void Material::SetNormalTextureGuid(const Guid& _guid) {
 	/// ----- 法線 texture の guid を登録 ----- ///
-	if (normalTextureGuid_.has_value()) {
+	if(normalTextureGuid_.has_value()) {
 		normalTextureGuid_.value() = _guid;
 	} else {
 		normalTextureGuid_ = std::make_optional<Guid>();
 		normalTextureGuid_ = _guid;
 	}
 }
+
+} /// namespace ONEngine::Asset

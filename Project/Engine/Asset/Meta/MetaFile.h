@@ -1,10 +1,13 @@
-#pragma once
+﻿#pragma once
+
+/// std
+#include <unordered_map>
 
 /// engine
 #include "Engine/Asset/Guid/Guid.h"
 #include "Engine/Asset/AssetType.h"
 
-namespace ONEngine {
+namespace ONEngine::Asset {
 
 /// ////////////////////////////////////////////////////
 /// .pngなどに付随するメタファイルクラス
@@ -34,6 +37,7 @@ public:
 
 	Guid guid;
 	AssetType assetType;
+	std::unordered_map<std::string, std::string> properties;
 
 };
 

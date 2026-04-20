@@ -10,6 +10,18 @@
 #include "Engine/Graphics/Buffer/StructuredBuffer.h"
 #include "Engine/Graphics/Buffer/ConstantBuffer.h"
 
+namespace ONEngine {
+class DxManager;
+class ECSGroup;
+class CameraComponent;
+class DxCommand;
+}
+
+namespace ONEngine::Asset {
+class AssetCollection;
+}
+
+
 /// /////////////////////////////////////////////////
 /// 地形に対してのプロシージャルレンダリングパイプライン
 /// /////////////////////////////////////////////////
@@ -62,20 +74,20 @@ public:
 	/// public : methods
 	/// =====================================
 
-	TerrainProceduralRenderingPipeline(class AssetCollection* _assetCollection);
+	TerrainProceduralRenderingPipeline(Asset::AssetCollection* _assetCollection);
 	~TerrainProceduralRenderingPipeline();
 
-	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxm) override;
-	void PreDraw(class ECSGroup* _ecs, class CameraComponent* _camera, class DxCommand* _dxCommand) override;
-	void Draw(class ECSGroup* _ecs, class CameraComponent* _camera, class DxCommand* _dxCommand) override;
+	void Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) override;
+	void PreDraw(ECSGroup* _ecs, CameraComponent* _camera, DxCommand* _dxCommand) override;
+	void Draw(ECSGroup* _ecs, CameraComponent* _camera, DxCommand* _dxCommand) override;
 
 private:
 	/// =====================================
 	/// private : objects
 	/// =====================================
 
-	class AssetCollection* pAssetCollection_;
-	class DxManager* pDxManager_;
+	Asset::AssetCollection* pAssetCollection_;
+	DxManager* pDxManager_;
 
 	std::unique_ptr<ComputePipeline> arrangementPipeline_;
 	std::unique_ptr<ComputePipeline> cullingPipeline_;

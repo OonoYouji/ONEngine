@@ -6,7 +6,7 @@
 /// engine
 #include "../../EditorViewCollection.h"
 
-namespace ONEngine {
+namespace ONEngine::Asset {
 class AssetCollection;
 }
 
@@ -21,7 +21,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	TexturePreviewWindow(ONEngine::AssetCollection* _assetCollection);
+	TexturePreviewWindow(ONEngine::Asset::AssetCollection* _assetCollection);
 	~TexturePreviewWindow();
 
 	void ShowImGui() override;
@@ -31,7 +31,7 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	ONEngine::AssetCollection* pAssetCollection_;
+	ONEngine::Asset::AssetCollection* pAssetCollection_;
 	std::string searchFilter_;
 
 };

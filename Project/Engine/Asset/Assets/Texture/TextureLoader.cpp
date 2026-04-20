@@ -13,43 +13,65 @@
 namespace {
 /// SRVの割り当てとログ出力が競合しないようにするためだけのミューテックス
 std::mutex s_textureGpuMutex;
+
+/// @brief DXGI_FORMATの文字列から列挙型を取得する
+DXGI_FORMAT GetDxgiFormatFromString(const std::string& _formatStr) {
+	if(_formatStr == "R8G8B8A8_UNORM") return DXGI_FORMAT_R8G8B8A8_UNORM;
+	if(_formatStr == "R8G8B8A8_UNORM_SRGB") return DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+	if(_formatStr == "BC7_UNORM") return DXGI_FORMAT_BC7_UNORM;
+	if(_formatStr == "BC7_UNORM_SRGB") return DXGI_FORMAT_BC7_UNORM_SRGB;
+	if(_formatStr == "R32G32B32A32_FLOAT") return DXGI_FORMAT_R32G32B32A32_FLOAT;
+	return DXGI_FORMAT_UNKNOWN;
 }
 
-namespace ONEngine {
+}
+
+namespace ONEngine::Asset {
 
 AssetLoader<Texture>::AssetLoader(DxManager* _dxm, AssetCollection* _ac)
 	: pDxManager_(_dxm), pAssetCollection_(_ac) {
 }
 
 std::optional<Texture> AssetLoader<Texture>::Load(const std::string& _filepath) {
+	MetaFile meta;
+	if(!meta.LoadFromFile(_filepath + ".meta")) {
+		meta = GenerateMetaFile(_filepath);
+	}
+
 	const std::string extension = FileSystem::FileExtension(_filepath);
 	if(extension == ".dds") {
-		DirectX::ScratchImage scratch = LoadScratchImage3D(_filepath);
-		const auto& meta = scratch.GetMetadata();
-		if(meta.dimension == DirectX::TEX_DIMENSION_TEXTURE3D) {
-			return Load3DTexture(_filepath);
+		DirectX::ScratchImage scratch = LoadScratchImage3D(_filepath, meta);
+		const auto& texMeta = scratch.GetMetadata();
+		if(texMeta.dimension == DirectX::TEX_DIMENSION_TEXTURE3D) {
+			return Load3DTexture(_filepath, meta);
 		}
 	}
-	return Load2DTexture(_filepath);
+	return Load2DTexture(_filepath, meta);
 }
 
 std::optional<Texture> AssetLoader<Texture>::Reload(const std::string& _filepath, Texture* _src) {
+	MetaFile meta;
+	if(!meta.LoadFromFile(_filepath + ".meta")) {
+		meta = GenerateMetaFile(_filepath);
+	}
+
 	const std::string extension = FileSystem::FileExtension(_filepath);
 	if(extension == ".dds") {
-		DirectX::ScratchImage scratch = LoadScratchImage3D(_filepath);
-		const auto& meta = scratch.GetMetadata();
-		if(meta.dimension == DirectX::TEX_DIMENSION_TEXTURE3D) {
-			return Reload3DTexture(_filepath, _src);
+		DirectX::ScratchImage scratch = LoadScratchImage3D(_filepath, meta);
+		const auto& texMeta = scratch.GetMetadata();
+		if(texMeta.dimension == DirectX::TEX_DIMENSION_TEXTURE3D) {
+			return Reload3DTexture(_filepath, _src, meta);
 		}
 	}
-	return Reload2DTexture(_filepath, _src);
+	return Reload2DTexture(_filepath, _src, meta);
 }
 
 
-std::optional<Texture> AssetLoader<Texture>::Load2DTexture(const std::string& _filepath) {
+std::optional<Texture> AssetLoader<Texture>::Load2DTexture(const std::string& _filepath, const MetaFile& _meta) {
 	Texture texture;
+	texture.guid = _meta.guid;
 
-	DirectX::ScratchImage       scratchImage = LoadScratchImage2D(_filepath);
+	DirectX::ScratchImage       scratchImage = LoadScratchImage2D(_filepath, _meta);
 	const DirectX::TexMetadata& metadata = scratchImage.GetMetadata();
 
 	texture.dxResource_ = std::move(CreateTextureResource2D(pDxManager_->GetDxDevice(), metadata));
@@ -126,10 +148,11 @@ std::optional<Texture> AssetLoader<Texture>::Load2DTexture(const std::string& _f
 	return std::move(texture);
 }
 
-std::optional<Texture> AssetLoader<Texture>::Load3DTexture(const std::string& _filepath) {
+std::optional<Texture> AssetLoader<Texture>::Load3DTexture(const std::string& _filepath, const MetaFile& _meta) {
 	Texture texture;
+	texture.guid = _meta.guid;
 
-	DirectX::ScratchImage scratchImage = LoadScratchImage3D(_filepath);
+	DirectX::ScratchImage scratchImage = LoadScratchImage3D(_filepath, _meta);
 	if(scratchImage.GetImageCount() == 0) {
 		std::lock_guard<std::mutex> lock(s_textureGpuMutex);
 		Console::LogError("[Load Failed] [Texture DDS] - Failed to load DDS file: \"" + _filepath + "\"");
@@ -199,10 +222,11 @@ std::optional<Texture> AssetLoader<Texture>::Load3DTexture(const std::string& _f
 	return std::move(texture);
 }
 
-std::optional<Texture> AssetLoader<Texture>::Reload2DTexture(const std::string& _filepath, Texture* _src) {
+std::optional<Texture> AssetLoader<Texture>::Reload2DTexture(const std::string& _filepath, Texture* _src, const MetaFile& _meta) {
 	Texture texture = *_src;
+	texture.guid = _meta.guid;
 
-	DirectX::ScratchImage       scratchImage = LoadScratchImage2D(_filepath);
+	DirectX::ScratchImage       scratchImage = LoadScratchImage2D(_filepath, _meta);
 	const DirectX::TexMetadata& metadata = scratchImage.GetMetadata();
 
 	if(metadata.width == 0 || metadata.height == 0) {
@@ -265,10 +289,11 @@ std::optional<Texture> AssetLoader<Texture>::Reload2DTexture(const std::string& 
 	return std::move(texture);
 }
 
-std::optional<Texture> AssetLoader<Texture>::Reload3DTexture(const std::string& _filepath, Texture* _src) {
+std::optional<Texture> AssetLoader<Texture>::Reload3DTexture(const std::string& _filepath, Texture* _src, const MetaFile& _meta) {
 	Texture texture = *_src;
+	texture.guid = _meta.guid;
 
-	DirectX::ScratchImage scratchImage = LoadScratchImage3D(_filepath);
+	DirectX::ScratchImage scratchImage = LoadScratchImage3D(_filepath, _meta);
 	if(scratchImage.GetImageCount() == 0) {
 		std::lock_guard<std::mutex> lock(s_textureGpuMutex);
 		Console::LogError("[Reload Failed] [Texture DDS] - Failed to load DDS file: \"" + _filepath + "\"");
@@ -333,13 +358,32 @@ std::optional<Texture> AssetLoader<Texture>::Reload3DTexture(const std::string& 
 	return std::move(texture);
 }
 
-DirectX::ScratchImage AssetLoader<Texture>::LoadScratchImage2D(const std::string& _filepath) {
+DirectX::ScratchImage AssetLoader<Texture>::LoadScratchImage2D(const std::string& _filepath, const MetaFile& _meta) {
 	DirectX::ScratchImage image{};
 	std::wstring          filePathW = ConvertString(_filepath);
 	if(_filepath.ends_with(".dds")) {
 		DirectX::LoadFromDDSFile(filePathW.c_str(), DirectX::DDS_FLAGS_NONE, nullptr, image);
 	} else {
 		DirectX::LoadFromWICFile(filePathW.c_str(), DirectX::WIC_FLAGS_FORCE_SRGB, nullptr, image);
+	}
+
+	/// MetaFileにフォーマット指定があれば変換を試みる
+	if(_meta.properties.contains("format")) {
+		DXGI_FORMAT targetFormat = GetDxgiFormatFromString(_meta.properties.at("format"));
+		if(targetFormat != DXGI_FORMAT_UNKNOWN && targetFormat != image.GetMetadata().format) {
+			DirectX::ScratchImage convertedImage;
+			HRESULT hr = S_OK;
+			if(DirectX::IsCompressed(targetFormat)) {
+				// 圧縮が必要な場合は後でやるか、ここでは簡易的に
+				hr = DirectX::Compress(image.GetImages(), image.GetImageCount(), image.GetMetadata(), targetFormat, DirectX::TEX_COMPRESS_DEFAULT, 0.5f, convertedImage);
+			} else {
+				hr = DirectX::Convert(image.GetImages(), image.GetImageCount(), image.GetMetadata(), targetFormat, DirectX::TEX_FILTER_DEFAULT, 0.5f, convertedImage);
+			}
+
+			if(SUCCEEDED(hr)) {
+				image = std::move(convertedImage);
+			}
+		}
 	}
 
 	DirectX::ScratchImage mipImages{};
@@ -352,7 +396,7 @@ DirectX::ScratchImage AssetLoader<Texture>::LoadScratchImage2D(const std::string
 	return mipImages;
 }
 
-DirectX::ScratchImage AssetLoader<Texture>::LoadScratchImage3D(const std::string& _filepath) {
+DirectX::ScratchImage AssetLoader<Texture>::LoadScratchImage3D(const std::string& _filepath, const MetaFile& _meta) {
 	if(!_filepath.ends_with(".dds")) {
 		std::lock_guard<std::mutex> lock(s_textureGpuMutex);
 		Console::LogError("LoadScratchImage3D: Only DDS files are supported for Texture3D.");
@@ -376,11 +420,28 @@ DirectX::ScratchImage AssetLoader<Texture>::LoadScratchImage3D(const std::string
 		return DirectX::ScratchImage{};
 	}
 
+	/// MetaFileにフォーマット指定があれば変換を試みる (3Dテクスチャ)
+	if(_meta.properties.contains("format")) {
+		DXGI_FORMAT targetFormat = GetDxgiFormatFromString(_meta.properties.at("format"));
+		if(targetFormat != DXGI_FORMAT_UNKNOWN && targetFormat != image.GetMetadata().format) {
+			DirectX::ScratchImage convertedImage;
+			if(DirectX::IsCompressed(targetFormat)) {
+				hr = DirectX::Compress(image.GetImages(), image.GetImageCount(), image.GetMetadata(), targetFormat, DirectX::TEX_COMPRESS_DEFAULT, 0.5f, convertedImage);
+			} else {
+				hr = DirectX::Convert(image.GetImages(), image.GetImageCount(), image.GetMetadata(), targetFormat, DirectX::TEX_FILTER_DEFAULT, 0.5f, convertedImage);
+			}
+
+			if(SUCCEEDED(hr)) {
+				image = std::move(convertedImage);
+			}
+		}
+	}
+
 	DirectX::ScratchImage mipImages;
-	if(DirectX::IsCompressed(meta.format)) {
+	if(DirectX::IsCompressed(image.GetMetadata().format)) {
 		mipImages = std::move(image);
 	} else {
-		hr = DirectX::GenerateMipMaps(image.GetImages(), image.GetImageCount(), meta, DirectX::TEX_FILTER_DEFAULT, 0, mipImages);
+		hr = DirectX::GenerateMipMaps(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::TEX_FILTER_DEFAULT, 0, mipImages);
 		if(FAILED(hr)) {
 			std::lock_guard<std::mutex> lock(s_textureGpuMutex);
 			Console::LogWarning("[GenerateMipMaps Failed] Using original image: \"" + _filepath + "\"");

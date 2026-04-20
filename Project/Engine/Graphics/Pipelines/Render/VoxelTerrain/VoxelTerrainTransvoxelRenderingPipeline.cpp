@@ -17,7 +17,7 @@ ConstantBuffer<Vector4> cBufPos;
 
 
 
-VoxelTerrainTransvoxelRenderingPipeline::VoxelTerrainTransvoxelRenderingPipeline(AssetCollection* _ac)
+VoxelTerrainTransvoxelRenderingPipeline::VoxelTerrainTransvoxelRenderingPipeline(Asset::AssetCollection* _ac)
 	: pAssetCollection_(_ac) {
 }
 
@@ -43,7 +43,7 @@ void VoxelTerrainTransvoxelRenderingPipeline::Initialize(ShaderCompiler* _shader
 		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 4); // Material
 
 		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // Chunk array
-		pipeline_->AddDescriptorRange(1, MAX_TEXTURE_COUNT, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // VoxelTerrain Texture3D
+		pipeline_->AddDescriptorRange(1, Asset::MAX_TEXTURE_COUNT, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // VoxelTerrain Texture3D
 
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 0); // Chunk array
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 1); // VoxelTerrain Texture3D
@@ -76,7 +76,7 @@ void VoxelTerrainTransvoxelRenderingPipeline::Initialize(ShaderCompiler* _shader
 		debugPipeline_->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 3); // LodInfo
 		debugPipeline_->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 4); // Material
 		debugPipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // Chunk array
-		debugPipeline_->AddDescriptorRange(1, MAX_TEXTURE_COUNT, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // VoxelTerrain Texture3D
+		debugPipeline_->AddDescriptorRange(1, Asset::MAX_TEXTURE_COUNT, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // VoxelTerrain Texture3D
 		debugPipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 0); // Chunk array
 		debugPipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 1); // VoxelTerrain Texture3D
 		debugPipeline_->AddStaticSampler(StaticSampler::ClampSampler(), D3D12_SHADER_VISIBILITY_ALL, 0);

@@ -15,7 +15,7 @@
 
 using namespace Editor;
 
-PrefabFileWindow::PrefabFileWindow(ONEngine::EntityComponentSystem* _ecs, ONEngine::AssetCollection* _assetCollection, InspectorWindow* _inspector)
+PrefabFileWindow::PrefabFileWindow(ONEngine::EntityComponentSystem* _ecs, ONEngine::Asset::AssetCollection* _assetCollection, InspectorWindow* _inspector)
 	: pEcs_(_ecs), pAssetCollection_(_assetCollection), pInspector_(_inspector) {
 
 	/// Prefabファイルの取得
@@ -34,7 +34,7 @@ void PrefabFileWindow::ShowImGui() {
 	/// prefabファイルの再読み込みボタン
 	/// ---------------------------------------------------
 	const auto& textures = pAssetCollection_->GetTextures();
-	const ONEngine::Texture& button = textures[pAssetCollection_->GetTextureIndex("./Packages/Textures/ImGui/reload.png")];
+	const ONEngine::Asset::Texture& button = textures[pAssetCollection_->GetTextureIndex("./Packages/Textures/ImGui/reload.png")];
 
 	ReloadPrefabFiles(&button);
 
@@ -91,7 +91,7 @@ void PrefabFileWindow::ShowPrefabFileList() {
 	}
 }
 
-void PrefabFileWindow::ReloadPrefabFiles(const ONEngine::Texture* _tex) {
+void PrefabFileWindow::ReloadPrefabFiles(const ONEngine::Asset::Texture* _tex) {
 
 	/// Reloadボタンの表示
 	ImVec2 buttonSize = ImVec2(24.0f, 24.0f);

@@ -4,6 +4,17 @@
 #include "../Interface/ECSISystem.h"
 #include "Engine/ECS/Component/Components/RendererComponents/SkinMesh/SkinMeshRenderer.h"
 
+namespace ONEngine {
+class DxManager;
+class ECSGroup;
+class SkinMeshRenderer;
+}
+
+namespace ONEngine::Asset {
+class AssetCollection;
+}
+
+
 /// /////////////////////////////////////////////
 /// スキンメッシュの更新システム
 /// /////////////////////////////////////////////
@@ -12,24 +23,24 @@ namespace ONEngine {
 class SkinMeshUpdateSystem : public ECSISystem {
 public:
 
-	SkinMeshUpdateSystem(class DxManager* _dxm, class AssetCollection* _assetCollection);
+	SkinMeshUpdateSystem(DxManager* _dxm, Asset::AssetCollection* _assetCollection);
 	~SkinMeshUpdateSystem() override = default;
 
-	void RuntimeUpdate(class ECSGroup* _ecs) override;
+	void RuntimeUpdate(ECSGroup* _ecs) override;
 
 	/// @brief スケルトンの更新
-	void UpdateSkeleton(class SkinMeshRenderer* _smr);
+	void UpdateSkeleton(SkinMeshRenderer* _smr);
 
 	/// @brief スキンクラスターの更新
-	void UpdateSkinCluster(class SkinMeshRenderer* _smr);
+	void UpdateSkinCluster(SkinMeshRenderer* _smr);
 
 private:
 	/// =========================================
 	/// private : objects
 	/// =========================================
 
-	class AssetCollection* pAssetCollection_; ///< グラフィックスリソースコレクション
-	class DxManager* pDxManager_; ///< DirectXマネージャー
+	Asset::AssetCollection* pAssetCollection_; ///< グラフィックスリソースコレクション
+	DxManager* pDxManager_; ///< DirectXマネージャー
 
 };
 

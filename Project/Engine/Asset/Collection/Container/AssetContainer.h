@@ -14,7 +14,7 @@
 #include "Engine/Asset/Guid/Guid.h"
 #include "Engine/Asset/Meta/MetaFile.h"
 
-namespace ONEngine {
+namespace ONEngine::Asset {
 
 /// ///////////////////////////////////////////////////
 /// アセットのインターフェイスクラス
@@ -239,4 +239,4 @@ inline const Guid& AssetContainer<T>::GetGuid(int32_t _index) const {
 	return indexToGuidMap_.at(_index);
 }
 
-} /// ONEngine
+} /// namespace ONEngine::Asset

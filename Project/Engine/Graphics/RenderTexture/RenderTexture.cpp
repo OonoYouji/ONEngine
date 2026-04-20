@@ -10,14 +10,14 @@ using namespace ONEngine;
 RenderTexture::RenderTexture() = default;
 RenderTexture::~RenderTexture() = default;
 
-void RenderTexture::Initialize(DXGI_FORMAT _format, const Vector4& _clearColor, const Vector2& _textureSize, const std::string& _name, DxManager* _dxm, DxDepthStencil* _dxDepthStencil, AssetCollection* _assetCollection) {
+void RenderTexture::Initialize(DXGI_FORMAT _format, const Vector4& _clearColor, const Vector2& _textureSize, const std::string& _name, DxManager* _dxm, DxDepthStencil* _dxDepthStencil, Asset::AssetCollection* _assetCollection) {
 	clearColor_ = _clearColor;
 	name_ = _name;
 	pDxDepthStencil_ = _dxDepthStencil;
 
 	{	/// textureの作成
-		Texture rtvTexture(_textureSize);
-		_assetCollection->AddAsset<Texture>(_name, std::move(rtvTexture)); /// textureの管理を AssetCollection に任せる
+		Asset::Texture rtvTexture(_textureSize);
+		_assetCollection->AddAsset<Asset::Texture>(_name, std::move(rtvTexture)); /// textureの管理を AssetCollection に任せる
 		texture_ = _assetCollection->GetTexture(_name);
 	}
 
@@ -120,9 +120,9 @@ const std::string& RenderTexture::GetName() const {
 UAVTexture::UAVTexture() = default;
 UAVTexture::~UAVTexture() = default;
 
-void UAVTexture::Initialize(const std::string& _textureName, DxManager* _dxm, AssetCollection* _assetCollection) {
-	Texture uavTexture;
-	_assetCollection->AddAsset<Texture>(_textureName, std::move(uavTexture));
+void UAVTexture::Initialize(const std::string& _textureName, DxManager* _dxm, Asset::AssetCollection* _assetCollection) {
+	Asset::Texture uavTexture;
+	_assetCollection->AddAsset<Asset::Texture>(_textureName, std::move(uavTexture));
 	texture_ = _assetCollection->GetTexture(_textureName);
 
 	/// 必要なオブジェクトの取得

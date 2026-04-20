@@ -1,4 +1,4 @@
-#include "SkinMeshRenderingPipeline.h"
+﻿#include "SkinMeshRenderingPipeline.h"
 
 using namespace ONEngine;
 
@@ -12,7 +12,7 @@ using namespace ONEngine;
 #include "Engine/Asset/Collection/AssetCollection.h"
 
 
-SkinMeshRenderingPipeline::SkinMeshRenderingPipeline(AssetCollection* _assetCollection)
+SkinMeshRenderingPipeline::SkinMeshRenderingPipeline(Asset::AssetCollection* _assetCollection)
 	: pAssetCollection_(_assetCollection) {
 }
 
@@ -142,7 +142,7 @@ void SkinMeshRenderingPipeline::Draw(class ECSGroup* _ecs, CameraComponent* _cam
 
 
 		/// mesh の描画
-		Model* model = pAssetCollection_->GetModel(smRenderer->GetMeshPath());
+		Asset::Model* model = pAssetCollection_->GetModel(smRenderer->GetMeshPath());
 		for (auto& mesh : model->GetMeshes()) {
 			/// vbv, ibvのセット
 			D3D12_VERTEX_BUFFER_VIEW vbvs[2] = {

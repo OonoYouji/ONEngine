@@ -6,8 +6,10 @@
 #include "Engine/Asset/Guid/Guid.h"
 
 namespace ONEngine {
-/// 前方宣言
 class EntityComponentSystem;
+}
+
+namespace ONEngine::Asset {
 class AssetCollection;
 class Texture;
 }
@@ -26,7 +28,7 @@ public:
 	/// public : methods
 	/// =====================================================
 
-	PrefabFileWindow(ONEngine::EntityComponentSystem* _ecs, ONEngine::AssetCollection* _assetCollection, InspectorWindow* _inspector);
+	PrefabFileWindow(ONEngine::EntityComponentSystem* _ecs, ONEngine::Asset::AssetCollection* _assetCollection, InspectorWindow* _inspector);
 	~PrefabFileWindow() override = default;
 
 	void ShowImGui() override;
@@ -37,7 +39,7 @@ public:
 
 	/// @brief Prefabファイルを再読み込みする
 	/// @param _tex ImageButtonに使うテクスチャ
-	void ReloadPrefabFiles(const ONEngine::Texture* _tex);
+	void ReloadPrefabFiles(const ONEngine::Asset::Texture* _tex);
 
 	/// @brief 新規Prefab作成ウィンドウ
 	void AddNewPrefabWindow();
@@ -53,8 +55,8 @@ private:
 
 	/// --------------- other class pointers --------------- ///
 	ONEngine::EntityComponentSystem* pEcs_;
-	ONEngine::AssetCollection*       pAssetCollection_;
-	InspectorWindow*  pInspector_;
+	ONEngine::Asset::AssetCollection* pAssetCollection_;
+	InspectorWindow* pInspector_;
 
 
 	/// --------------- member objects --------------- ///
