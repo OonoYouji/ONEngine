@@ -25,6 +25,7 @@ using namespace ONEngine;
 #include "../Render/Terrain/TerrainProceduralRenderingPipeline.h"
 #include "../Render/River/RiverRenderingPipeline.h"
 #include "../Render/Grass/GrassRenderingPipeline.h"
+#include "../Render/Grid/GridRenderingPipeline.h"
 #include "../Render/VoxelTerrain/VoxelTerrainVertexCreatePipeline.h"
 #include "../Render/VoxelTerrain/VoxelTerrainVertexShaderRenderingPipeline.h"
 #include "../Render/VoxelTerrain/VoxelTerrainRenderingPipeline.h"
@@ -68,9 +69,10 @@ void RenderingPipelineCollection::Initialize() {
 	Generate3DRenderingPipeline<DissolveMeshRenderingPipeline>(pAssetCollection_);
 	Generate3DRenderingPipeline<SkinMeshRenderingPipeline>(pAssetCollection_);
 #ifdef DEBUG_MODE
-	/// Debug用にスケルトンを描画するパイプラインを追加
+	/// Debug用のパイプライン
 	Generate3DRenderingPipeline<SkinMeshSkeletonRenderingPipeline>();
 	Generate3DRenderingPipeline<VoxelTerrainBrushPreviewRenderingPipeline>(pAssetCollection_);
+	Generate3DRenderingPipeline<GridRenderingPipeline>();
 #endif // DEBUG_MODE
 	Generate3DRenderingPipeline<EffectRenderingPipeline>(pAssetCollection_);
 	Generate3DRenderingPipeline<GrassRenderingPipeline>(pAssetCollection_);

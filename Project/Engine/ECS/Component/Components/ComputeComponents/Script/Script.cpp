@@ -22,7 +22,7 @@ bool Script::ScriptData::GetEnable(GameEntity* _entity) {
 		_entity->GetECSGroup()->GetGroupName(), _entity->GetId(), scriptName
 	);
 
-	if (!obj) {
+	if(!obj) {
 		return false;
 	}
 
@@ -39,7 +39,7 @@ void Script::ScriptData::SetEnable(GameEntity* _entity, bool _enable) {
 		_entity->GetECSGroup()->GetGroupName(), _entity->GetId(), scriptName
 	);
 
-	if (!obj) {
+	if(!obj) {
 		return;
 	}
 
@@ -61,7 +61,7 @@ Script::~Script() {}
 
 void Script::AddScript(const std::string& _scriptName) {
 	/// すでにアタッチされているかチェック
-	if (scriptIndexMap_.contains(_scriptName)) {
+	if(scriptIndexMap_.contains(_scriptName)) {
 		return;
 	}
 
@@ -74,7 +74,7 @@ void Script::AddScript(const std::string& _scriptName) {
 }
 
 bool Script::Contains(const std::string& _scriptName) const {
-	if (scriptIndexMap_.contains(_scriptName)) {
+	if(scriptIndexMap_.contains(_scriptName)) {
 		return true;
 	}
 
@@ -82,7 +82,7 @@ bool Script::Contains(const std::string& _scriptName) const {
 }
 
 void Script::RemoveScript(const std::string& _scriptName) {
-	if (!scriptIndexMap_.contains(_scriptName)) {
+	if(!scriptIndexMap_.contains(_scriptName)) {
 		Console::LogWarning("Script " + _scriptName + " not found, cannot remove.");
 		return;
 	}
@@ -90,8 +90,8 @@ void Script::RemoveScript(const std::string& _scriptName) {
 	size_t index = scriptIndexMap_[_scriptName];
 	/// vectorの要素を削除するのに合わせてmapのインデックスも更新
 	scriptIndexMap_.erase(_scriptName);
-	for (auto& [name, value] : scriptIndexMap_) {
-		if (value > index) {
+	for(auto& [name, value] : scriptIndexMap_) {
+		if(value > index) {
 			--value;  ///< 削除した分インデックスをずらす
 		}
 	}
@@ -100,7 +100,7 @@ void Script::RemoveScript(const std::string& _scriptName) {
 }
 
 const std::string& Script::GetScriptName(size_t _index) const {
-	if (_index < scriptDataList_.size()) {
+	if(_index < scriptDataList_.size()) {
 		return scriptDataList_[_index].scriptName;
 	}
 
@@ -110,7 +110,7 @@ const std::string& Script::GetScriptName(size_t _index) const {
 
 std::vector<std::string> Script::GetScriptNames() const {
 	std::vector<std::string> scriptNames;
-	for (auto& script : scriptDataList_) {
+	for(auto& script : scriptDataList_) {
 		scriptNames.push_back(script.scriptName);
 	}
 
@@ -126,8 +126,8 @@ std::vector<Script::ScriptData>& Script::GetScriptDataList() {
 }
 
 Script::ScriptData* Script::GetScriptData(const std::string& _scriptName) {
-	for (auto& data : scriptDataList_) {
-		if (data.scriptName == _scriptName) {
+	for(auto& data : scriptDataList_) {
+		if(data.scriptName == _scriptName) {
 			return &data;  ///< 一致するスクリプトデータを返す
 		}
 	}
@@ -138,8 +138,8 @@ Script::ScriptData* Script::GetScriptData(const std::string& _scriptName) {
 
 void Script::SetEnable(const std::string& _scriptName, bool _enable) {
 	/// スクリプト名が一致するものを探す
-	for (auto& script : scriptDataList_) {
-		if (script.scriptName == _scriptName) {
+	for(auto& script : scriptDataList_) {
+		if(script.scriptName == _scriptName) {
 			script.SetEnable(GetOwner(), _enable);
 			Console::Log("Script " + _scriptName + " enable set to " + std::to_string(_enable));
 			return;
@@ -153,8 +153,8 @@ void Script::SetEnable(const std::string& _scriptName, bool _enable) {
 
 bool Script::GetEnable(const std::string& _scriptName) {
 	/// スクリプト名が一致するものを探す
-	for (auto& script : scriptDataList_) {
-		if (script.scriptName == _scriptName) {
+	for(auto& script : scriptDataList_) {
+		if(script.scriptName == _scriptName) {
 			return script.GetEnable(GetOwner());
 		}
 	}
@@ -172,7 +172,7 @@ bool Script::GetIsAdded() const {
 }
 
 void ComponentDebug::ScriptDebug(Script* _script) {
-	if (!_script) {
+	if(!_script) {
 		return;
 	}
 
@@ -180,14 +180,14 @@ void ComponentDebug::ScriptDebug(Script* _script) {
 	std::vector<Script::ScriptData>& scriptList = _script->GetScriptDataList();
 	std::string selectedScriptName;
 
-	for (size_t i = 0; i < scriptList.size(); i++) {
+	for(size_t i = 0; i < scriptList.size(); i++) {
 		auto& script = scriptList[i];
 
 		ptrLable = "##" + std::to_string(reinterpret_cast<uintptr_t>(&script));
 
 		bool enable = script.GetEnable(_script->GetOwner());
 		/// 有効/無効のチェックボックス
-		if (ImGui::Checkbox(ptrLable.c_str(), &enable)) {
+		if(ImGui::Checkbox(ptrLable.c_str(), &enable)) {
 			script.SetEnable(_script->GetOwner(), enable);
 		}
 
@@ -196,12 +196,12 @@ void ComponentDebug::ScriptDebug(Script* _script) {
 		ImGui::SameLine();
 
 		/// 有効/無効に応じてテキストの色を変える
-		if (!enable) {
+		if(!enable) {
 			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.7f, 0.7f, 0.7f, 1.0f));
 		}
 
 
-		if (ImGui::CollapsingHeader(script.scriptName.c_str())) {
+		if(ImGui::CollapsingHeader(script.scriptName.c_str())) {
 			/// ------------------------------------------------------------------
 			/// スクリプト内の[SerializeField]など表示
 			/// ------------------------------------------------------------------
@@ -211,17 +211,17 @@ void ComponentDebug::ScriptDebug(Script* _script) {
 			MonoObject* safeObj = monoEngine.GetMonoBehaviorFromCS(entity->GetECSGroup()->GetGroupName(), entity->GetId(), script.scriptName);
 
 
-			if (safeObj) {
+			if(safeObj) {
 				MonoClass* monoClass = mono_object_get_class(safeObj);
 				MonoClass* serializeFieldClass = mono_class_from_name(mono_class_get_image(monoClass), "", "SerializeField");
 				MonoClassField* field = nullptr;
 				void* iter = nullptr;
 
-				while ((field = mono_class_get_fields(monoClass, &iter))) {
+				while((field = mono_class_get_fields(monoClass, &iter))) {
 					const char* fieldName = mono_field_get_name(field);
 
 					MonoCustomAttrInfo* attrs = mono_custom_attrs_from_field(monoClass, field);
-					if (attrs && mono_custom_attrs_has_attr(attrs, serializeFieldClass)) {
+					if(attrs && mono_custom_attrs_has_attr(attrs, serializeFieldClass)) {
 						// 値の取得
 						MonoType* fieldType = mono_field_get_type(field);
 						int type = mono_type_get_type(fieldType);
@@ -234,14 +234,14 @@ void ComponentDebug::ScriptDebug(Script* _script) {
 		}
 
 		/// popupでスクリプトの削除などの操作を行う
-		if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
+		if(ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
 			ImGui::OpenPopup(ptrLable.c_str());
 			selectedScriptName = script.scriptName;
 		}
 
 		/// itemを左クリックしたときに出るメニュー
-		if (ImGui::BeginPopup(ptrLable.c_str())) {
-			if (ImGui::MenuItem("delete")) {
+		if(ImGui::BeginPopup(ptrLable.c_str())) {
+			if(ImGui::MenuItem("delete")) {
 				_script->RemoveScript(script.scriptName);
 			}
 			ImGui::EndPopup();
@@ -249,20 +249,20 @@ void ComponentDebug::ScriptDebug(Script* _script) {
 
 
 		/// スクリプトが2種類以上ないと入れ替える意味がない
-		if (scriptList.size() > 2) {
+		if(scriptList.size() > 2) {
 			/// スクリプトの順番を入れ替える処理
 			// ---- ドラッグソース ----
-			if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
+			if(ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
 				ImGui::SetDragDropPayload("ScriptData", &i, sizeof(int)); // i番目のインデックスを送る
 				ImGui::Text("script name : %s", scriptList[i].scriptName.c_str());
 				ImGui::EndDragDropSource();
 			}
 
 			// ---- ドラッグターゲット ----
-			if (ImGui::BeginDragDropTarget()) {
-				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ScriptData")) {
+			if(ImGui::BeginDragDropTarget()) {
+				if(const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ScriptData")) {
 					int srcIndex = *(const int*)payload->Data;
-					if (srcIndex != i) {
+					if(srcIndex != i) {
 						std::swap(scriptList[srcIndex], scriptList[i]); // 要素の入れ替え
 					}
 				}
@@ -272,7 +272,7 @@ void ComponentDebug::ScriptDebug(Script* _script) {
 
 
 
-		if (!enable) {
+		if(!enable) {
 			ImGui::PopStyleColor(1);
 		}
 	}
@@ -286,30 +286,32 @@ void ComponentDebug::ScriptDebug(Script* _script) {
 	ImVec2 windowSize = ImGui::GetWindowSize();
 
 	ImGui::InvisibleButton("##DropTarget", ImVec2(windowSize.x, 32.0f));
-	if (ImGui::BeginDragDropTarget()) {
-		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("AssetData")) {
-			Editor::AssetPayload* assetPayload = *static_cast<Editor::AssetPayload**>(payload->Data);
-			std::string name = assetPayload->filePath;
+	if(ImGui::BeginDragDropTarget()) {
+		if(const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("AssetData")) {
+			if(payload->Data) {
+				Editor::AssetPayload* assetPayload = *static_cast<Editor::AssetPayload**>(payload->Data);
+				std::string name = assetPayload->filePath;
 
-			if (name.find(".cs") != std::string::npos) {
-				/// フルパスをファイル名に変更
-				size_t lastSlash = name.find_last_of("/\\");
-				if (lastSlash != std::string::npos) {
-					name = name.substr(lastSlash + 1);
+				if(name.find(".cs") != std::string::npos) {
+					/// フルパスをファイル名に変更
+					size_t lastSlash = name.find_last_of("/\\");
+					if(lastSlash != std::string::npos) {
+						name = name.substr(lastSlash + 1);
+					}
+
+					/// .csを除去
+					if(name.find(".cs") != std::string::npos) {
+						name = name.substr(0, name.find(".cs"));
+					}
+
+					_script->AddScript(name);
+
+					Console::Log(std::format("Script set to: {}", name));
+				} else {
+					Console::Log("Invalid script format. Please use .cs");
 				}
 
-				/// .csを除去
-				if (name.find(".cs") != std::string::npos) {
-					name = name.substr(0, name.find(".cs"));
-				}
-
-				_script->AddScript(name);
-
-				Console::Log(std::format("Script set to: {}", name));
-			} else {
-				Console::Log("Invalid script format. Please use .cs");
 			}
-
 		}
 		ImGui::EndDragDropTarget();
 	}
@@ -319,15 +321,15 @@ void ComponentDebug::ScriptDebug(Script* _script) {
 
 void ONEngine::from_json(const nlohmann::json& _j, Script& _s) {
 	_s.enable = _j.at("enable").get<int>();
-	if (_j.contains("scripts")) {
+	if(_j.contains("scripts")) {
 		nlohmann::json scriptJsons = _j.at("scripts");
-		for (auto& data : scriptJsons) {
-			if (data.contains("name")) {
+		for(auto& data : scriptJsons) {
+			if(data.contains("name")) {
 				std::string scriptName = data.at("name").get<std::string>();
 				_s.AddScript(scriptName);
 				Script::ScriptData* scriptData = _s.GetScriptData(scriptName);
-				if (scriptData) {
-					if (data.contains("enable")) {
+				if(scriptData) {
+					if(data.contains("enable")) {
 						scriptData->enable = data.at("enable").get<int>();
 					}
 				}
@@ -343,7 +345,7 @@ void ONEngine::from_json(const nlohmann::json& _j, Script& _s) {
 
 void ONEngine::to_json(nlohmann::json& _j, const Script& _s) {
 	nlohmann::json scriptJsons;
-	for (auto& scriptData : _s.GetScriptDataList()) {
+	for(auto& scriptData : _s.GetScriptDataList()) {
 		nlohmann::json data{
 			{ "enable", scriptData.enable },
 			{ "name", scriptData.scriptName }

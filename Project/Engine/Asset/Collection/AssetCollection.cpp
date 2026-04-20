@@ -16,7 +16,7 @@ AssetCollection::~AssetCollection() = default;
 
 
 
-void AssetCollection::Initialize(DxManager* _dxm) {
+void AssetCollection::Initialize(DxManager* dxm) {
 
 	const size_t assetTypeCount = static_cast<size_t>(AssetType::Count);
 	assetBundles_.resize(assetTypeCount);
@@ -29,11 +29,11 @@ void AssetCollection::Initialize(DxManager* _dxm) {
 
 	// ヘルパーを使ってセットアップ（キャスト記述が減りスマートになります）
 	auto* meshBundle = GetBundle<Model>(AssetType::Mesh);
-	meshBundle->loader = std::make_unique<AssetLoader<Model>>(_dxm);
+	meshBundle->loader = std::make_unique<AssetLoader<Model>>(dxm);
 	meshBundle->container = std::make_unique<AssetContainer<Model>>(MAX_MODEL_COUNT);
 
 	auto* textureBundle = GetBundle<Texture>(AssetType::Texture);
-	textureBundle->loader = std::make_unique<AssetLoader<Texture>>(_dxm, this);
+	textureBundle->loader = std::make_unique<AssetLoader<Texture>>(dxm, this);
 	textureBundle->container = std::make_unique<AssetContainer<Texture>>(MAX_TEXTURE_COUNT);
 
 	auto* audioBundle = GetBundle<AudioClip>(AssetType::Audio);
@@ -50,8 +50,8 @@ void AssetCollection::Initialize(DxManager* _dxm) {
 	WaitAllLoads();
 }
 
-void AssetCollection::LoadResources(const std::vector<std::string>& _filePaths) {
-	for(auto& path : _filePaths) {
+void AssetCollection::LoadResources(const std::vector<std::string>& filePaths) {
+	for(auto& path : filePaths) {
 		AssetType type = GetAssetTypeFromExtension(FileSystem::FileExtension(path));
 		if(type != AssetType::None) {
 			Load(path, type);
@@ -60,8 +60,8 @@ void AssetCollection::LoadResources(const std::vector<std::string>& _filePaths) 
 }
 
 /// [非同期化による追加] スレッドプールを利用した複数ファイルの非同期ロード
-void AssetCollection::LoadResourcesAsync(const std::vector<std::string>& _filePaths) {
-	for(auto& path : _filePaths) {
+void AssetCollection::LoadResourcesAsync(const std::vector<std::string>& filePaths) {
+	for(auto& path : filePaths) {
 		AssetType type = GetAssetTypeFromExtension(FileSystem::FileExtension(path));
 		if(type != AssetType::None) {
 			if(auto* bundle = GetBaseBundle(type)) {
@@ -86,86 +86,86 @@ void AssetCollection::WaitAllLoads() {
 	pendingTasks_.clear();
 }
 
-void AssetCollection::UnloadResources(const std::vector<std::string>& _filePaths) {
-	for(auto& path : _filePaths) {
+void AssetCollection::UnloadResources(const std::vector<std::string>& filePaths) {
+	for(auto& path : filePaths) {
 		UnloadAssetByPath(path);
 	}
 }
 
-void AssetCollection::UnloadAssetByPath(const std::string& _filepath) {
+void AssetCollection::UnloadAssetByPath(const std::string& filepath) {
 	/// アセットの削除
-	const std::string extension = FileSystem::FileExtension(_filepath);
+	const std::string extension = FileSystem::FileExtension(filepath);
 	const AssetType type = GetAssetTypeFromExtension(extension);
 	if(auto* bundle = GetBaseBundle(type)) {
-		bundle->Remove(_filepath);
+		bundle->Remove(filepath);
 	}
 }
 
-void AssetCollection::Load(const std::string& _filepath, AssetType _type) {
-	if(auto* bundle = GetBaseBundle(_type)) {
-		bundle->Load(_filepath);
+void AssetCollection::Load(const std::string& filepath, AssetType type) {
+	if(auto* bundle = GetBaseBundle(type)) {
+		bundle->Load(filepath);
 	}
 }
 
 /// AddAssetのテンプレート実装
 template<>
-void AssetCollection::AddAsset<Model>(const std::string& _filepath, Model&& _asset) {
-	GetBundle<Model>(AssetType::Mesh)->container->Add(_filepath, std::move(_asset));
+void AssetCollection::AddAsset<Model>(const std::string& filepath, Model&& asset) {
+	GetBundle<Model>(AssetType::Mesh)->container->Add(filepath, std::move(asset));
 }
 
 template<>
-void AssetCollection::AddAsset<Texture>(const std::string& _filepath, Texture&& _asset) {
-	GetBundle<Texture>(AssetType::Texture)->container->Add(_filepath, std::move(_asset));
+void AssetCollection::AddAsset<Texture>(const std::string& filepath, Texture&& asset) {
+	GetBundle<Texture>(AssetType::Texture)->container->Add(filepath, std::move(asset));
 }
 
 template<>
-void AssetCollection::AddAsset<AudioClip>(const std::string& _filepath, AudioClip&& _asset) {
-	GetBundle<AudioClip>(AssetType::Audio)->container->Add(_filepath, std::move(_asset));
+void AssetCollection::AddAsset<AudioClip>(const std::string& filepath, AudioClip&& asset) {
+	GetBundle<AudioClip>(AssetType::Audio)->container->Add(filepath, std::move(asset));
 }
 
 template<>
-void AssetCollection::AddAsset<Material>(const std::string& _filepath, Material&& _asset) {
-	GetBundle<Material>(AssetType::Material)->container->Add(_filepath, std::move(_asset));
+void AssetCollection::AddAsset<Material>(const std::string& filepath, Material&& asset) {
+	GetBundle<Material>(AssetType::Material)->container->Add(filepath, std::move(asset));
 }
 
-bool AssetCollection::IsAsset(const Guid& _guid) const {
-	if(!_guid.CheckValid()) {
+bool AssetCollection::IsAsset(const Guid& guid) const {
+	if(!guid.CheckValid()) {
 		return false;
 	}
 
 	for(const auto& bundle : assetBundles_) {
-		if(bundle && bundle->Contains(_guid)) {
+		if(bundle && bundle->Contains(guid)) {
 			return true;
 		}
 	}
 	return false;
 }
 
-bool AssetCollection::HasAsset(const std::string& _filepath) {
-	const std::string extension = FileSystem::FileExtension(_filepath);
+bool AssetCollection::HasAsset(const std::string& filepath) {
+	const std::string extension = FileSystem::FileExtension(filepath);
 	AssetType type = GetAssetTypeFromExtension(extension);
 
 	if(auto* bundle = GetBaseBundle(type)) {
-		return bundle->Contains(_filepath);
+		return bundle->Contains(filepath);
 	}
 
 	return false;
 }
 
-bool AssetCollection::ReloadAsset(const std::string& _filepath) {
-	const std::string extension = FileSystem::FileExtension(_filepath);
+bool AssetCollection::ReloadAsset(const std::string& filepath) {
+	const std::string extension = FileSystem::FileExtension(filepath);
 	AssetType type = GetAssetTypeFromExtension(extension);
 
 	if(auto* bundle = GetBaseBundle(type)) {
-		bundle->Reload(_filepath);
+		bundle->Reload(filepath);
 	}
 
 	return true;
 }
 
-std::vector<std::string> AssetCollection::GetResourceFilePaths(const std::string& _directoryPath) const {
+std::vector<std::string> AssetCollection::GetResourceFilePaths(const std::string& directoryPath) const {
 	std::vector<std::string> resourcePaths;
-	for(const auto& entry : std::filesystem::recursive_directory_iterator(_directoryPath)) {
+	for(const auto& entry : std::filesystem::recursive_directory_iterator(directoryPath)) {
 		if(entry.is_regular_file()) {
 			std::string path = entry.path().string();
 			FileSystem::ReplaceAll(&path, "\\", "/");
@@ -178,12 +178,12 @@ std::vector<std::string> AssetCollection::GetResourceFilePaths(const std::string
 	return resourcePaths;
 }
 
-IAssetBundle* ONEngine::AssetCollection::GetBaseBundle(AssetType _type) const {
-	if(_type == AssetType::None) {
+IAssetBundle* ONEngine::AssetCollection::GetBaseBundle(AssetType type) const {
+	if(type == AssetType::None) {
 		return nullptr;
 	}
 
-	size_t index = static_cast<size_t>(_type);
+	size_t index = static_cast<size_t>(type);
 	if(index >= assetBundles_.size() || !assetBundles_[index]) {
 		return nullptr;
 	}
@@ -191,24 +191,24 @@ IAssetBundle* ONEngine::AssetCollection::GetBaseBundle(AssetType _type) const {
 	return assetBundles_[index].get();
 }
 
-const Guid& AssetCollection::GetAssetGuidFromPath(const std::string& _filepath) const {
-	const std::string extension = FileSystem::FileExtension(_filepath);
+const Guid& AssetCollection::GetAssetGuidFromPath(const std::string& filepath) const {
+	const std::string extension = FileSystem::FileExtension(filepath);
 	AssetType type = GetAssetTypeFromExtension(extension);
 
 	if(auto* bundle = GetBaseBundle(type)) {
-		return bundle->GetGuid(_filepath);
+		return bundle->GetGuid(filepath);
 	}
 
 	return Guid::kInvalid;
 }
 
-AssetType AssetCollection::GetAssetTypeFromGuid(const Guid& _guid) const {
-	if(!_guid.CheckValid()) {
+AssetType AssetCollection::GetAssetTypeFromGuid(const Guid& guid) const {
+	if(!guid.CheckValid()) {
 		return AssetType::None;
 	}
 
 	for(size_t i = 0; i < assetBundles_.size(); ++i) {
-		if(assetBundles_[i] && assetBundles_[i]->Contains(_guid)) {
+		if(assetBundles_[i] && assetBundles_[i]->Contains(guid)) {
 			return static_cast<AssetType>(i);
 		}
 	}
@@ -216,55 +216,55 @@ AssetType AssetCollection::GetAssetTypeFromGuid(const Guid& _guid) const {
 	return AssetType::None;
 }
 
-const Model* AssetCollection::GetModel(const std::string& _filepath) const {
-	return GetBundle<Model>(AssetType::Mesh)->container->Get(_filepath);
+const Model* AssetCollection::GetModel(const std::string& filepath) const {
+	return GetBundle<Model>(AssetType::Mesh)->container->Get(filepath);
 }
 
-Model* AssetCollection::GetModel(const std::string& _filepath) {
-	return GetBundle<Model>(AssetType::Mesh)->container->Get(_filepath);
+Model* AssetCollection::GetModel(const std::string& filepath) {
+	return GetBundle<Model>(AssetType::Mesh)->container->Get(filepath);
 }
 
-const Texture* AssetCollection::GetTexture(const std::string& _filepath) const {
-	return GetBundle<Texture>(AssetType::Texture)->container->Get(_filepath);
+const Texture* AssetCollection::GetTexture(const std::string& filepath) const {
+	return GetBundle<Texture>(AssetType::Texture)->container->Get(filepath);
 }
 
-Texture* AssetCollection::GetTexture(const std::string& _filepath) {
-	return GetBundle<Texture>(AssetType::Texture)->container->Get(_filepath);
+Texture* AssetCollection::GetTexture(const std::string& filepath) {
+	return GetBundle<Texture>(AssetType::Texture)->container->Get(filepath);
 }
 
-int32_t AssetCollection::GetTextureIndex(const std::string& _filepath) const {
-	return GetBundle<Texture>(AssetType::Texture)->container->GetIndex(_filepath);
+int32_t AssetCollection::GetTextureIndex(const std::string& filepath) const {
+	return GetBundle<Texture>(AssetType::Texture)->container->GetIndex(filepath);
 }
 
-const std::string& AssetCollection::GetTexturePath(size_t _index) const {
-	return GetBundle<Texture>(AssetType::Texture)->container->GetKey(static_cast<int32_t>(_index));
+const std::string& AssetCollection::GetTexturePath(size_t index) const {
+	return GetBundle<Texture>(AssetType::Texture)->container->GetKey(static_cast<int32_t>(index));
 }
 
 const std::vector<Texture>& AssetCollection::GetTextures() const {
 	return GetBundle<Texture>(AssetType::Texture)->container->GetValues();
 }
 
-int32_t AssetCollection::GetTextureIndexFromGuid(const Guid& _guid) const {
-	return GetBundle<Texture>(AssetType::Texture)->container->GetIndex(_guid);
+int32_t AssetCollection::GetTextureIndexFromGuid(const Guid& guid) const {
+	return GetBundle<Texture>(AssetType::Texture)->container->GetIndex(guid);
 }
 
-const std::string& AssetCollection::GetTexturePath(const Guid& _guid) const {
+const std::string& AssetCollection::GetTexturePath(const Guid& guid) const {
 	auto* container = GetBundle<Texture>(AssetType::Texture)->container.get();
-	return container->GetKey(container->GetIndex(_guid));
+	return container->GetKey(container->GetIndex(guid));
 }
 
-Texture* AssetCollection::GetTextureFromGuid(const Guid& _guid) const {
-	if(!_guid.CheckValid()) return nullptr;
+Texture* AssetCollection::GetTextureFromGuid(const Guid& guid) const {
+	if(!guid.CheckValid()) return nullptr;
 	auto* container = GetBundle<Texture>(AssetType::Texture)->container.get();
-	return container->Get(container->GetIndex(_guid));
+	return container->Get(container->GetIndex(guid));
 }
 
-const AudioClip* AssetCollection::GetAudioClip(const std::string& _filepath) const {
-	return GetBundle<AudioClip>(AssetType::Audio)->container->Get(_filepath);
+const AudioClip* AssetCollection::GetAudioClip(const std::string& filepath) const {
+	return GetBundle<AudioClip>(AssetType::Audio)->container->Get(filepath);
 }
 
-AudioClip* AssetCollection::GetAudioClip(const std::string& _filepath) {
-	return GetBundle<AudioClip>(AssetType::Audio)->container->Get(_filepath);
+AudioClip* AssetCollection::GetAudioClip(const std::string& filepath) {
+	return GetBundle<AudioClip>(AssetType::Audio)->container->Get(filepath);
 }
 
 

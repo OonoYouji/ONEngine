@@ -53,10 +53,6 @@ float32_t4 GetVolumeTextureColor(float32_t3 worldPos) {
 	float3 uvw = (worldPos - chunkOrigin) / float3(voxelTerrainInfo.textureSize);
 	uvw.y = 1.0f - uvw.y;
     
-    // Y方向の範囲外処理（空は空気、地下は固体）
-    // if (uvw.y <= 0.0f) { return float32_t4(0, 0, 0, 1); } // 空
-    // if (uvw.y >= 1.0f) { return float32_t4(0, 0, 0, 1); } // 地下    
-
 	uint chunkId = chunkLocalID.x + chunkLocalID.y * uint(voxelTerrainInfo.chunkCountXZ.x);
 	return voxelChunkTextures[chunks[chunkId].textureId].SampleLevel(texSampler, uvw, 0);
 }
@@ -98,8 +94,13 @@ VertexOut VertexInterp(float3 p1, float3 p2, float3 subChunkSize, float d1, floa
 
 	vOut.worldPosition = float4(worldPos, 1.0f);
 	vOut.position      = mul(vOut.worldPosition, viewProjection.matVP);
-    vOut.normal        = CalculateNormal(worldPos, subChunkSize.x);
-    vOut.color         = GetVolumeTextureColor(worldPos);
+    // vOut.normal        = CalculateNormal(worldPos, subChunkSize.x);
+
+    float3 n1 = CalculateNormal(p1, subChunkSize.x);
+    float3 n2 = CalculateNormal(p2, subChunkSize.x);
+    vOut.normal = normalize(lerp(n1, n2, t));
+
+    vOut.color = GetVolumeTextureColor(worldPos);
 	
 	return vOut;
 }

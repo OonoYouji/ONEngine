@@ -29,6 +29,7 @@ public:
 	void CreateResource(class DxDevice* _dxDevice, size_t _sizeInByte);
 	void CreateUAVResource(class DxDevice* _dxDevice, class DxCommand* _dxCommand, size_t _sizeInByte);
 	void CreateDefaultHeap(class DxDevice* _dxDevice, class DxCommand* _dxCommand, size_t _sizeInByte, D3D12_RESOURCE_STATES _initialState);
+	void CreateUploadHeap(class DxDevice* dxDevice, class DxCommand* dxCommand, size_t sizeInByte, D3D12_RESOURCE_STATES iniitalState);
 
 	/// @brief resourceを作成する
 	/// @param _dxDevice デバイスオブジェクトへのポインタ

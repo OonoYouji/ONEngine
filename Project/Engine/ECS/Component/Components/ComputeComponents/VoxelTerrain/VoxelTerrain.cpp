@@ -160,10 +160,10 @@ void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* vt, DxManager* _dxm, AssetC
 			}
 
 
-			if(guid.CheckValid()) {
-				int32_t& id = vt->usedTextureIds_.ids[i];
-				id = _ac->GetTextureFromGuid(guid)->GetSRVDescriptorIndex();
-			}
+			//if(guid.CheckValid()) {
+			//	int32_t& id = vt->usedTextureIds_.ids[i];
+			//	id = _ac->GetTextureFromGuid(guid)->GetSRVDescriptorIndex();
+			//}
 
 			ImGui::PopID();
 
@@ -391,8 +391,8 @@ void ONEngine::from_json(const nlohmann::json& _j, VoxelTerrain& vt) {
 
 	//vt.usedTextureIds_.usedBit = _j.value("usedTextureIds.usedBit", 0);
 	for(int i = 0; i < 3; ++i) {
-		const std::string str = "usedTextureIds.id" + std::to_string(i);
-		vt.usedTextureIds_.ids[i] = _j.value(str, 0);
+		//const std::string str = "usedTextureIds.id" + std::to_string(i);
+		//vt.usedTextureIds_.ids[i] = _j.value(str, 0);
 		const std::string guidKey = "usedTextureGuids" + std::to_string(i);
 		vt.usedTextureGuids_[i] = _j.value(guidKey, Guid::kInvalid);
 	}
@@ -438,8 +438,8 @@ void ONEngine::to_json(nlohmann::json& _j, const VoxelTerrain& _voxelTerrain) {
 
 	//_j["usedTextureIds.usedBit"] = _voxelTerrain.usedTextureIds_.usedBit;
 	for(int i = 0; i < 3; ++i) {
-		const std::string str = "usedTextureIds.id" + std::to_string(i);
-		_j[str] = _voxelTerrain.usedTextureIds_.ids[i];
+		//const std::string str = "usedTextureIds.id" + std::to_string(i);
+		//_j[str] = _voxelTerrain.usedTextureIds_.ids[i];
 
 		const std::string guidStr = "usedTextureGuids" + std::to_string(i);
 		_j[guidStr] = _voxelTerrain.usedTextureGuids_[i];
@@ -697,7 +697,7 @@ void VoxelTerrain::SetupEditorBuffers(ID3D12GraphicsCommandList* _cmdList, const
 	sBufferEditorChunks_.SRVBindForComputeCommandList(_cmdList, _rootParamIndices[3]);
 }
 
-void VoxelTerrain::CreateChunkTextureUAV(DxCommand* _dxCommand, DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap, AssetCollection* _assetCollection) {
+void VoxelTerrain::CreateChunkTextureUAV(DxCommand* _dxCommand, DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap) {
 
 	pDxSRVHeap_ = _dxSRVHeap;
 	for(auto& chunk : chunks_) {

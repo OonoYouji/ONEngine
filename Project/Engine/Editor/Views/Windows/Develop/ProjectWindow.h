@@ -8,6 +8,7 @@
 /// engine
 #include "../../EditorViewCollection.h"
 #include "Engine/Editor/Math/FileWatcher/FileWatcher.h"
+#include "Engine/Asset/Assets/Texture/Texture.h"
 
 
 namespace ONEngine {
@@ -22,6 +23,8 @@ public:
 	struct FileItem {
 		std::filesystem::path path;
 		bool isDirectory = false;
+		std::string relativePath;
+		ONEngine::Texture* displayTexture = nullptr;
 	};
 
 public:
@@ -29,7 +32,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	ProjectWindow(ONEngine::AssetCollection* _assetCollection, class EditorManager* _editorManager);
+	ProjectWindow(ONEngine::AssetCollection* assetCollection);
 	~ProjectWindow();
 
 	/// @brief imgui windowの描画処理
@@ -37,40 +40,30 @@ public:
 
 	/// @brief ImGui::Beginに用いるウィンドウ名を設定する
 	/// @param _windowName ウィンドウ名
-	void SetWindowName(const std::string& _windowName);
+	void SetWindowName(const std::string& windowName);
 
-private:
-	void DrawDirectoryTree(const std::filesystem::path& _dir);
-	void DrawFileView(const std::filesystem::path& _dir);
+	void DrawDirectoryTree(const std::filesystem::path& directory);
+	void DrawFileView(const std::filesystem::path& directory);
 
 	/// @brief 右クリックしたときに表示するポップアップメニュー
-	/// @param _dir 右クリックしたディレクトリのパス
-	void PopupContextMenu(const std::filesystem::path& _dir);
-
-
-	void SetRenameMode(const std::filesystem::path& _path);
-
-
-	/// @brief ファイルが追加された際の処理
-	/// @param path 追加されたファイルのパス
-	void HandleFileAdded(const std::filesystem::path& _path);
-
-	/// @brief ファイルが削除された際の処理
-	/// @param path 削除されたファイルのパス
-	void HandleFileRemoved(const std::filesystem::path& _path);
-
-	/// @brief ファイルが変更された際の処理
-	/// @param path 変更されたファイルのパス
-	void HandleFileModified(const std::filesystem::path& _path);
-
+	/// @param directory 右クリックしたディレクトリのパス
+	void PopupContextMenu(const std::filesystem::path& directory, std::filesystem::path& outDeletedPath);
 
 	/// @brief DirectoryCacheの更新
-	/// @param _dir 更新対象のディレクトリパス
-	void UpdateDirectoryCache(const std::filesystem::path& _dir);
+	/// @param directory 更新対象のディレクトリパス
+	void UpdateDirectoryCache(const std::filesystem::path& directory);
 
 	/// @brief FileCacheの更新
-	/// @param _dir 更新対象のディレクトリパス
-	void UpdateFileCache(const std::filesystem::path& _dir);
+	/// @param directory 更新対象のディレクトリパス
+	void UpdateFileCache(const std::filesystem::path& directory);
+
+private:
+	/// ===================================================
+	/// private : methods
+	/// ===================================================
+
+	void DrawBreadcrumbs(const std::filesystem::path& directory, bool& outRequestChangeDir, std::filesystem::path& outNextTargetDir);
+	void DrawFileList(const std::filesystem::path& directory, bool& outRequestChangeDir, std::filesystem::path& outNextTargetDir);
 
 private:
 	/// ===================================================
@@ -83,7 +76,7 @@ private:
 	std::string windowName_;
 
 	std::vector<std::filesystem::path> rootPaths_;
-	std::filesystem::path rootPath_;
+	//std::filesystem::path rootPath_;
 	std::filesystem::path currentPath_;   // 今見ているフォルダ
 	std::unordered_map<std::string, bool> dirOpenState_; // ツリーの開閉状態
 	std::filesystem::file_time_type lastWriteTime_;
@@ -96,12 +89,6 @@ private:
 	/// ファイルリストのキャッシュ
 	std::unordered_map<std::string, std::vector<FileItem>> fileCache_;
 
-
-	/// ----- 名前の変更に使う ----- ///
-	bool justStartedRename_;
-	bool isRenaming_ = false;
-	std::filesystem::path renamingPath_;
-	std::string renameBuffer_;
 
 	FileWatcher fileWatcher_;
 

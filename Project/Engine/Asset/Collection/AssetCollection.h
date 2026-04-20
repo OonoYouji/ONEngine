@@ -21,10 +21,14 @@
 /// @brief TがIAssetを継承しているかのコンセプト
 namespace ONEngine {
 
-static const uint32_t MAX_TEXTURE_COUNT = 2048; ///< 最大テクスチャ数
-static const uint32_t MAX_MODEL_COUNT = 128; ///< 最大モデル数
-static const uint32_t MAX_AUDIOCLIP_COUNT = 128; ///< 最大オーディオクリップ数
-static const uint32_t MAX_MATERIAL_COUNT = 128; ///< 最大マテリアル数
+/// ----- 前方宣言 ----- ///
+class DxManager;
+
+
+static const uint32_t MAX_TEXTURE_COUNT   = 2048; ///< 最大テクスチャ数
+static const uint32_t MAX_MODEL_COUNT     = 128;  ///< 最大モデル数
+static const uint32_t MAX_AUDIOCLIP_COUNT = 128;  ///< 最大オーディオクリップ数
+static const uint32_t MAX_MATERIAL_COUNT  = 128;  ///< 最大マテリアル数
 
 /// ///////////////////////////////////////////////////
 /// グラフィクスリソースのコレクション
@@ -40,18 +44,18 @@ public:
 
 	/// @brief 初期化関数
 	/// @param _dxm DxManagerのポインタ
-	void Initialize(class DxManager* _dxm);
+	void Initialize(DxManager* dxm);
 
 	/// 読み込み
-	void Load(const std::string& _filepath, AssetType _type);
-	void LoadResources(const std::vector<std::string>& _filepaths);
+	void Load(const std::string& filepath, AssetType type);
+	void LoadResources(const std::vector<std::string>& filepaths);
 
-	void LoadResourcesAsync(const std::vector<std::string>& _filepaths);
+	void LoadResourcesAsync(const std::vector<std::string>& filepaths);
 	void WaitAllLoads();
 
 	/// アンロード
-	void UnloadResources(const std::vector<std::string>& _filepaths);
-	void UnloadAssetByPath(const std::string& _filepath);
+	void UnloadResources(const std::vector<std::string>& filepaths);
+	void UnloadAssetByPath(const std::string& filepath);
 
 
 	/// @brief アセットを取得する
@@ -59,14 +63,14 @@ public:
 	/// @param _guid アセットのGuid
 	/// @return 所得できたアセットのポインタ、見つからなかった場合はnullptr
 	template <IsAsset T>
-	const T* GetAsset(const Guid& _guid) const;
+	const T* GetAsset(const Guid& guid) const;
 
 	/// @brief アセットのパスを取得する
 	/// @tparam T 取得したアセットの型
 	/// @param _guid アセットのGuid
 	/// @return 取得出来たアセットのパスの参照
 	template <IsAsset T>
-	const std::string& GetAssetPath(const Guid& _guid) const;
+	const std::string& GetAssetPath(const Guid& guid) const;
 
 
 	/// @brief アセットの追加
@@ -74,45 +78,45 @@ public:
 	/// @param _filepath アセットへのファイルパス
 	/// @param _asset 追加するアセットのインスタンス
 	template <IsAsset T>
-	void AddAsset(const std::string& _filepath, T&& _asset);
+	void AddAsset(const std::string& filepath, T&& asset);
 
 	/// @brief guidがアセットの物かチェックする
 	/// @param _guid Guid
 	/// @return true: アセット, false: アセットではない
-	bool IsAsset(const Guid& _guid) const;
+	bool IsAsset(const Guid& guid) const;
 
 
 	/// @brief アセットを持っているのかチェックする
 	/// @param _filepath アセットのファイルパス
 	/// @return true: 持っている, false: 持っていない
-	bool HasAsset(const std::string& _filepath);
+	bool HasAsset(const std::string& filepath);
 
 	/// @brief アセットのリロード
 	/// @param _filepath リロード対象のアセットパス
 	/// @return true: リロード成功, false: リロード失敗
-	bool ReloadAsset(const std::string& _filepath);
+	bool ReloadAsset(const std::string& filepath);
 
 	/// リソースパスの取得
-	std::vector<std::string> GetResourceFilePaths(const std::string& _directoryPath) const;
+	std::vector<std::string> GetResourceFilePaths(const std::string& directoryPath) const;
 
 
 private:
 
 	template <typename T>
-	AssetBundle<T>* GetBundle(AssetType _type) const {
+	AssetBundle<T>* GetBundle(AssetType type) const {
 		// Noneの場合は即座に無効値を返す
-		if(_type == AssetType::None) {
+		if(type == AssetType::None) {
 			return nullptr;
 		}
 		// 範囲外チェック、または初期化されていない(nullptr)チェック
-		size_t index = static_cast<size_t>(_type);
+		size_t index = static_cast<size_t>(type);
 		if(index >= assetBundles_.size() || !assetBundles_[index]) {
 			return nullptr;
 		}
 		return static_cast<AssetBundle<T>*>(assetBundles_[index].get());
 	}
 
-	IAssetBundle* GetBaseBundle(AssetType _type) const;
+	IAssetBundle* GetBaseBundle(AssetType type) const;
 
 private:
 	/// ===================================================
@@ -132,17 +136,17 @@ public:
 	/// @brief アセットのパスからGuidを取得する
 	/// @param _filepath ファイルパス
 	/// @return 取得したGuidの参照
-	const Guid& GetAssetGuidFromPath(const std::string& _filepath) const;
+	const Guid& GetAssetGuidFromPath(const std::string& filepath) const;
 
 	/// @brief Guidからアセットのタイプを取得する
 	/// @param _guid AssetのGuid
 	/// @return Assetのタイプ
-	AssetType GetAssetTypeFromGuid(const Guid& _guid) const;
+	AssetType GetAssetTypeFromGuid(const Guid& guid) const;
 
 
 	/// ゲッタ モデル
-	const Model* GetModel(const std::string& _filepath) const;
-	Model* GetModel(const std::string& _filepath);
+	const Model* GetModel(const std::string& filepath) const;
+	Model* GetModel(const std::string& filepath);
 
 
 	/// --------------------------------------------------
@@ -150,31 +154,31 @@ public:
 	/// --------------------------------------------------
 
 	/// ゲッタ テクスチャ
-	const Texture* GetTexture(const std::string& _filepath) const;
-	Texture* GetTexture(const std::string& _filepath);
-	int32_t GetTextureIndex(const std::string& _filepath) const;
-	const std::string& GetTexturePath(size_t _index) const;
+	const Texture* GetTexture(const std::string& filepath) const;
+	Texture* GetTexture(const std::string& filepath);
+	int32_t GetTextureIndex(const std::string& filepath) const;
+	const std::string& GetTexturePath(size_t index) const;
 	const std::vector<Texture>& GetTextures() const;
 
 	/// @brief GuidからTextureのインデックスを取得する
 	/// @param _guid 探索対象のGuid
 	/// @return 見つかった場合のインデックス、見つからなかった場合は無効値
-	int32_t GetTextureIndexFromGuid(const Guid& _guid) const;
+	int32_t GetTextureIndexFromGuid(const Guid& guid) const;
 
 	/// @brief GuidからTextureのパスを取得する
 	/// @param _guid 探索対象のGuid
 	/// @return 見つかった場合のパス、見つからなかった場合は空文字
-	const std::string& GetTexturePath(const Guid& _guid) const;
+	const std::string& GetTexturePath(const Guid& guid) const;
 
 	/// @brief GuidからTextureを取得する
 	/// @param _guid TextureのGuid
 	/// @return Textureのポインタ、見つからなかった場合はnullptr
-	Texture* GetTextureFromGuid(const Guid& _guid) const;
+	Texture* GetTextureFromGuid(const Guid& guid) const;
 
 
 	/// ゲッタ オーディオクリップ
-	const AudioClip* GetAudioClip(const std::string& _filepath) const;
-	AudioClip* GetAudioClip(const std::string& _filepath);
+	const AudioClip* GetAudioClip(const std::string& filepath) const;
+	AudioClip* GetAudioClip(const std::string& filepath);
 
 };
 

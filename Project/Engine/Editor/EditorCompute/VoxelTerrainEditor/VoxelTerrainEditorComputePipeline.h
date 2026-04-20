@@ -68,9 +68,8 @@ private:
 	ONEngine::DxManager* pDxManager_ = nullptr;
 
 	/// ----- Editor用Pipeline ----- ///
-	std::unique_ptr<ONEngine::ComputePipeline> adjacentModePipeline_ = nullptr;
-	std::unique_ptr<ONEngine::ComputePipeline> materialBitMaskEditPipeline_ = nullptr;
-	std::unique_ptr<ONEngine::ComputePipeline> materialTextureWeightEditPipeline_ = nullptr;
+	std::vector<std::unique_ptr<ONEngine::ComputePipeline>> editPipelines_;
+
 
 	/// ----- 前準備用Pipeline ----- ///
 	std::unique_ptr<ONEngine::ComputePipeline> calculationMouseWorldPosPipeline_ = nullptr;

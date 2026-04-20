@@ -2,31 +2,37 @@
 
 /// std
 #include <string>
-#include <list>
 
 /// engine
 #include "../../EditorViewCollection.h"
+#include "Engine/Asset/Guid/Guid.h"
 
 namespace ONEngine {
 /// 前方宣言
 class ECSGroup;
 class GameEntity;
+class EntityComponentSystem;
+class SceneManager;
 }
 
-/// ///////////////////////////////////////////////////
-/// ImGuiHierarchyWindow
-/// ///////////////////////////////////////////////////
 namespace Editor {
 
+/// @brief 前方宣言
+class EditorManager;
+
+/// ///////////////////////////////////////////////////
+/// ECSGroupのヒエラルキーを表示
+/// ///////////////////////////////////////////////////
 class HierarchyWindow : public IEditorWindow {
 public:
 	/// ===================================================
 	/// public : methods   
 	/// ===================================================
 
-	HierarchyWindow(const std::string& _imGuiWindowName, ONEngine::ECSGroup*, class EditorManager*, ONEngine::SceneManager*);
+	HierarchyWindow(const std::string& windowName, ONEngine::EntityComponentSystem* ecs, ONEngine::ECSGroup* ecsGroup, EditorManager* editorManager, ONEngine::SceneManager* sceneManager);
 	~HierarchyWindow() override = default;
 
+	/// @brief GUIの表示
 	void ShowImGui() override;
 
 protected:
@@ -36,7 +42,6 @@ protected:
 
 	/// @brief Prefabのドラッグアンドドロップ処理
 	void PrefabDragAndDrop();
-	
 
 	/// ----- menu methods----- ///
 
@@ -58,15 +63,31 @@ protected:
 	void DrawDialog();
 	void DrawSceneSaveDialog();
 
+	/// ----- element methods ----- ///
 
-	/// ----- test methods ----- ///
+	/// @brief 親子関係のループチェック
+	bool IsDescendant(ONEngine::GameEntity* ancestor, ONEngine::GameEntity* descendant);
 
-	///
-	void DrawEntity(ONEngine::GameEntity* _entity);
-
-	bool IsDescendant(ONEngine::GameEntity* _ancestor, ONEngine::GameEntity* _descendant);
-
+	/// @brief エラーポップアップの表示
 	void ShowInvalidParentPopup();
+
+
+	///	--------------------------------------------------------------------------------------------------
+	/// エンティティのエディタ表示
+	///	--------------------------------------------------------------------------------------------------
+
+	/// @brief エンティティのエディタ表示
+	/// @param entity 表示対象のエンティティ
+	void DrawEntity(ONEngine::GameEntity* entity);
+
+	void HandleRootDragDrop();
+
+	void HandleEntityDragDrop(ONEngine::GameEntity* entity);
+
+	void DrawEntityContextMenu(ONEngine::GameEntity* entity, bool selected);
+
+	void HandleEntityShortcuts(ONEngine::GameEntity* entity, bool selected);
+
 
 protected:
 	/// ===================================================
@@ -74,50 +95,43 @@ protected:
 	/// ===================================================
 
 	/// ----- other class ----- ///
-	ONEngine::ECSGroup*         pEcsGroup_        = nullptr;
-	class EditorManager*        pEditorManager_   = nullptr;
-	ONEngine::SceneManager*     pSceneManager_    = nullptr;
+	ONEngine::EntityComponentSystem* pEcs_ = nullptr;
+	ONEngine::ECSGroup* pEcsGroup_ = nullptr;
+	EditorManager* pEditorManager_ = nullptr;
+	ONEngine::SceneManager* pSceneManager_ = nullptr;
 
-
-	std::string       imGuiWindowName_ = "Hierarchy";
-	std::string       entityName_      = "empty";
-	const std::string kClassPrefix     = "class ";
-
-	std::list<ONEngine::GameEntity*> entityList_;
-	ONEngine::GameEntity* selectedEntity_ = nullptr;
+	std::string windowName_ = "Hierarchy";
 
 	/// ----- hierarchy ----- ///
 	bool isNodeOpen_;
-	std::string selectedEntityName_ = "empty"; ///< 選択しているエンティティの名前
 
 	/// ----- rename ----- ///
 	std::string newName_ = "";
-	ONEngine::GameEntity* renameEntity_;
-
+	ONEngine::Guid renameEntityGuid_; ///< 生ポインタではなくGuidで安全に管理
 
 	/// ----- test objects ----- ///
 	bool showInvalidParentPopup_ = false;
 
 };
 
-
-
 /// ///////////////////////////////////////////////////
 /// 通常のシーンのHierarchyウィンドウ
 /// ///////////////////////////////////////////////////
-class ImGuiNormalHierarchyWindow : public HierarchyWindow {
+class NormalHierarchyWindow : public HierarchyWindow {
 public:
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
 
-	ImGuiNormalHierarchyWindow(const std::string& _imGuiWindowName, ONEngine::EntityComponentSystem* _ecs, class EditorManager* _editorManager, ONEngine::SceneManager* _sceneManager);
-	~ImGuiNormalHierarchyWindow() override = default;
-	
+	NormalHierarchyWindow(const std::string& windowName, ONEngine::EntityComponentSystem* ecs, EditorManager* editorManager, ONEngine::SceneManager* sceneManager);
+	~NormalHierarchyWindow() override = default;
+
 	void ShowImGui() override;
 
 	/// ----- dialog ----- ///
 	void DrawSceneDialog();
+
+	void HandleGlobalShortcuts();
 
 private:
 	/// ===================================================

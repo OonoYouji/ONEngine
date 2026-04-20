@@ -99,3 +99,51 @@ uint32_t3 GetNewChunkCoord(int32_t3 brushCoord, uint32_t3 chunkCoord) {
 
     return newChunkCoord;
 }
+
+
+/// -------------------------------------------------------------------
+/// ボクセルの色を取得する関数
+/// サンプリング位置がチャンク外の場合にも隣接チャンクを参照する
+/// -------------------------------------------------------------------
+float4 SampleVoxelColor(int3 samplePos, int currentChunkX, int currentChunkZ) {
+    if (samplePos.y < 1 || samplePos.y >= voxelTerrainInfo.textureSize.y - 1) {
+        return float4(0.0f, 0.0f, 0.0f, -1.0f); // 範囲外
+    }
+
+    int targetChunkX = currentChunkX;
+    int targetChunkZ = currentChunkZ;
+    int wrapX = samplePos.x;
+    int wrapZ = samplePos.z;
+
+    /// X軸のチャンク跨ぎ判定
+    if (wrapX < 0) {
+        targetChunkX -= 1; 
+        wrapX += voxelTerrainInfo.textureSize.x;
+    } else if (wrapX >= voxelTerrainInfo.textureSize.x) {
+        targetChunkX += 1; 
+        wrapX -= voxelTerrainInfo.textureSize.x;
+    }
+
+    /// Z軸のチャンク跨ぎ判定
+    if (wrapZ < 0) {
+        targetChunkZ -= 1; 
+        wrapZ += voxelTerrainInfo.textureSize.z;
+    } else if (wrapZ >= voxelTerrainInfo.textureSize.z) {
+        targetChunkZ += 1; 
+        wrapZ -= voxelTerrainInfo.textureSize.z;
+    }
+
+    /// 対象チャンクがワールド範囲内かチェック
+    if (targetChunkX >= 0 && targetChunkX < voxelTerrainInfo.chunkCountXZ.x &&
+        targetChunkZ >= 0 && targetChunkZ < voxelTerrainInfo.chunkCountXZ.y) {
+        
+        int targetChunkID = targetChunkZ * voxelTerrainInfo.chunkCountXZ.x + targetChunkX;
+        int3 finalSamplePos = int3(wrapX, samplePos.y, wrapZ);
+        
+        // テクスチャにアクセスし、RGBA(float4)をそのまま返す
+        return voxelTextures[chunks[targetChunkID].textureId][finalSamplePos];
+    }
+
+    /// ワールド範囲外
+    return float4(0.0f, 0.0f, 0.0f, -1.0f);
+}

@@ -174,7 +174,7 @@ public:
 		UNKOWN,         /// 不明なモード
 		ADJACENT,       /// 隣接編集モード
 		AREA,           /// 範囲編集モード
-		//BIT_MASK,       /// Bit編集モード
+		SMOOTH,         /// 滑らかにするモード
 		TEXTURE_WEIGHT, /// テクスチャ比重編集モード
 		COUNT
 	};
@@ -253,7 +253,7 @@ public:
 	/// @param _dxDevice DxDeviceのポインタ
 	/// @param _dxSRVHeap DxSRVHeapのポインタ
 	/// @param _assetCollection AssetCollectionのポインタ
-	void CreateChunkTextureUAV(DxCommand* _dxCommand, DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap, class AssetCollection* _assetCollection);
+	void CreateChunkTextureUAV(DxCommand* _dxCommand, DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap);
 
 	/// @brief 編集したエディタ用テクスチャをチャンク用テクスチャにコピーする
 	/// @param _dxCommand DxCommandのポインタ
