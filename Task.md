@@ -5,8 +5,9 @@
 - Rendering
     - ShaderReflectionの実装
     - TextureBindlessの実装
+    - Pipelineの外部ファイル化
 - Asset
-    - Shaderのアセット化
+    <!-- - Shaderのアセット化 -->
     - Materialから使用するShaderの選択
     - Sceneのデータ構造の変更
         - object(entity)ごとにファイルを生成
