@@ -8,9 +8,7 @@
 #include "../IAsset.h"
 #include "Engine/Core/DirectX12/Resource/DxResource.h"
 
-/// ===================================================
-/// forward declarations
-/// ===================================================
+
 
 namespace ONEngine::Asset {
 template <typename T>
@@ -24,7 +22,32 @@ class DxCommand;
 }
 
 
+
 namespace ONEngine::Asset {
+
+
+/// @brief テクスチャのフォーマットの種類
+enum class TextureFormat {
+	RGBA8_UNORM,
+	RGBA8_SRGB,
+	RGBA16_FLOAT,
+	RGBA32_FLOAT,
+	RGBA32_UINT,
+};
+
+/// @brief 色空間の種類
+enum class ColorSpace {
+	Linear,
+	sRGB
+};
+
+/// @brief Textureのメタデータ
+struct TextureMeta {
+	TextureFormat format;
+	ColorSpace colorSpace;
+};
+
+
 
 /// ///////////////////////////////////////////////////
 /// texture

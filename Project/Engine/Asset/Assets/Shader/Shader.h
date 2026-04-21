@@ -11,17 +11,20 @@
 #include "../IAsset.h"
 #include "../../../Core/DirectX12/ComPtr/ComPtr.h"
 
+
+
 namespace ONEngine::Asset {
 template<typename T>
 class AssetLoader;
 }
 
 
+
 namespace ONEngine::Asset {
 
-/// ///////////////////////////////////////////////////
-/// HLSLのステージを表す列挙型
-/// ///////////////////////////////////////////////////
+
+
+/// @brief Shaderの種類
 enum class ShaderStage {
 	Vertex,
 	Pixel,
@@ -29,6 +32,14 @@ enum class ShaderStage {
 	Amplification,
 	Mesh,
 };
+
+/// @brief Shaderのメタデータ
+struct ShaderMeta {
+	ShaderStage stage;
+	std::string entryPoint;
+	std::string profile;
+};
+
 
 
 /// ///////////////////////////////////////////////////

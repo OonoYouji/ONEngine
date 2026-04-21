@@ -12,6 +12,17 @@
 
 namespace ONEngine::Asset {
 
+
+/// @brief Materialのメタデータ
+struct MaterialMeta {
+	std::string useShader;
+	Vector4 albedoColor;
+	Guid albedoTextureGuid;
+	Guid normalTextureGuid;
+};
+
+
+
 /// ShowGuiMaterialように前方宣言
 class Material;
 

@@ -5,6 +5,7 @@
 - **name**
 - **hash** 再インポート用
 - **importedPath** 
+- **dependencies** 依存しているファイルのGUIDをまとめたやつ。
 - **path**
 - **type** Texture/Audio/Model
 
@@ -48,3 +49,23 @@
     - camera
     - light
     - collider
+
+
+### Load phase
+```
+AssetManager::Load(guid)
+    ↓
+① キャッシュ確認
+    ↓
+② Meta読込（共通）
+    ↓
+③ 依存解決（再帰）
+    ↓
+④ Loader選択（type）
+    ↓
+⑤ アセット別Load処理
+    ↓
+⑥ キャッシュ登録
+    ↓
+⑦ Handle返却
+```

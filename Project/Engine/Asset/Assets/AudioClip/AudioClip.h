@@ -9,36 +9,48 @@
 /// engine
 #include "../IAsset.h"
 
-namespace ONEngine::Asset {
 
+
+namespace ONEngine::Asset {
 template<typename T>
 class AssetLoader;
+}
+
+
+
+namespace ONEngine::Asset {
+
+
+/// @brief AudioClipのメタデータ
+struct AudioClipMeta {
+	float duration;
+};
+
+
 
 /// ////////////////////////////////////////////////////////////////
 /// @brief サウンドの読み込み、再生に必用な構造体
 /// ////////////////////////////////////////////////////////////////
 namespace AudioStructs {
+struct ChunkHeader {
+	char         id[4];      /// チャンク毎のID
+	int32_t      size;       /// チャンクサイズ
+};
 
+struct RiffHeader {
+	ChunkHeader  chunk;      /// "RIFF"
+	char         type[4];    /// "WAVE"
+};
 
-	struct ChunkHeader {
-		char         id[4];      /// チャンク毎のID
-		int32_t      size;       /// チャンクサイズ
-	};
+struct FormatChunk {
+	ChunkHeader  chunk;      /// "fmt"
+	WAVEFORMATEX fmt;        /// 波形フォーマット
+};
 
-	struct RiffHeader {
-		ChunkHeader  chunk;      /// "RIFF"
-		char         type[4];    /// "WAVE"
-	};
-
-	struct FormatChunk {
-		ChunkHeader  chunk;      /// "fmt"
-		WAVEFORMATEX fmt;        /// 波形フォーマット
-	};
-
-	struct SoundData {
-		WAVEFORMATEX wfex;       /// 波形フォーマット
-		std::vector<BYTE> buffer; /// 音声データ
-	};
+struct SoundData {
+	WAVEFORMATEX wfex;       /// 波形フォーマット
+	std::vector<BYTE> buffer; /// 音声データ
+};
 }
 
 

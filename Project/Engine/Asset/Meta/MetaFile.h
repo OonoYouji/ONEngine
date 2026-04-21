@@ -3,6 +3,9 @@
 /// std
 #include <unordered_map>
 
+/// externals
+#include <nlohmann/json.hpp>
+
 /// engine
 #include "Engine/Asset/Guid/Guid.h"
 #include "Engine/Asset/AssetType.h"
@@ -47,5 +50,37 @@ public:
 /// @param _refFile .pngなどの参照ファイルパス
 /// @return 生成されたMetaFileオブジェクト
 MetaFile GenerateMetaFile(const std::string& _refFile);
+
+
+/*
+* すべてのアセットに不随させるデータ
+* 共通のデータ+アセット別の異なるデータを格納する
+* ファイル形式はJSONを採用
+*/
+
+
+/// @brief MetaFileの共通部分
+struct MetaBase {
+	Guid guid;	                    /// アセットの一意な識別子
+	AssetType type;                 /// アセットのタイプ
+	std::string name;               /// アセットの名前
+	std::vector<Guid> dependencies; /// アセットの依存関係を表すGuidのリスト
+};
+
+/// @brief Assetのタイプごとに異なるデータを格納するための構造体
+/// @tparam T アセット別のMetaデータ構造体
+template<typename T>
+struct Meta {
+	MetaBase base;
+	T data;
+};
+
+
+/// @brief MetaBaseをファイルから読み込む
+/// @param filepath 対象の.metaファイルパス
+/// @return 読み込まれたMetaBaseオブジェクト
+MetaBase LoadMetaBaseFromFile(const std::string& filepath);
+
+
 
 } /// ONEngine

@@ -142,4 +142,22 @@ MetaFile GenerateMetaFile(const std::string& _refFile) {
 	return metaFile;
 }
 
+MetaBase LoadMetaBaseFromFile(const std::string& filepath) {
+
+	nlohmann::json j;
+	std::ifstream ifs(filepath);
+	if(!ifs.is_open()) {
+		return {};
+	}
+
+	ifs >> j;
+	ifs.close();
+	MetaBase metaBase;
+	metaBase.guid = j.value("guid", Guid{});
+	metaBase.type = j.value("type", AssetType{});
+	metaBase.name = j.value("name", std::string{});
+
+	return metaBase;
+}
+
 } /// namespace ONEngine::Asset

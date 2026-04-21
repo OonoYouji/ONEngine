@@ -25,15 +25,6 @@ template<typename Vertex>
 class Mesh final {
 public:
 
-	/// @brief 頂点データ
-	//struct VertexData final {
-	//	Vector4 position;
-	//	Vector2 uv;
-	//	Vector3 normal;
-	//};
-
-public:
-
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
