@@ -22,8 +22,8 @@ public:
 	~AssetLoader() override = default;
 
 
-	std::optional<Shader> Load(const std::string& filepath);
-	std::optional<Shader> Reload(const std::string& filepath, Shader* src);
+	std::optional<Shader> Load(const std::string& filepath, Meta<ShaderMeta> meta);
+	std::optional<Shader> Reload(const std::string& filepath, Shader* src, Meta<ShaderMeta> meta);
 	Meta<ShaderMeta> GetMetaData(const std::string& filepath);
 
 

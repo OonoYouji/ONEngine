@@ -33,12 +33,12 @@ public:
 	/// @param _filepath 対象のファイルパス
 	/// @return 読み込んだテクスチャ
 	[[nodiscard]]
-	std::optional<Texture> Load(const std::string& _filepath);
+	std::optional<Texture> Load(const std::string& _filepath, Meta<TextureMeta> meta);
 
 	/// @brief テクスチャの再読み込みを行う
 	/// @param _filepath 対象のファイルパス
 	/// @return 読み込んだテクスチャ
-	std::optional<Texture> Reload(const std::string& _filepath, Texture* _src);
+	std::optional<Texture> Reload(const std::string& _filepath, Texture* _src, Meta<TextureMeta> meta);
 
 	/// @brief MetaDataの取得を行う
 	/// @param _filepath メタデータを取得する対象のファイルパス

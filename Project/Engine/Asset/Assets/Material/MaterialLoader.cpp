@@ -10,7 +10,7 @@
 namespace ONEngine::Asset {
 
 
-std::optional<Material> AssetLoader<Material, MaterialMeta>::Load(const std::string& _filepath) {
+std::optional<Material> AssetLoader<Material, MaterialMeta>::Load(const std::string& _filepath, Meta<MaterialMeta> meta) {
 	/// Metaファイルを読み込む
 	//MetaFile meta;
 	//if(!meta.LoadFromFile(_filepath + ".meta")) {
@@ -46,9 +46,9 @@ std::optional<Material> AssetLoader<Material, MaterialMeta>::Load(const std::str
 	return std::move(material);
 }
 
-std::optional<Material> AssetLoader<Material, MaterialMeta>::Reload(const std::string& _filepath, Material* /*_src*/) {
+std::optional<Material> AssetLoader<Material, MaterialMeta>::Reload(const std::string& _filepath, Material* /*_src*/, Meta<MaterialMeta> meta) {
 	/// Materialの再読み込みは新規読み込みと同じ処理を行う
-	return std::move(Load(_filepath));
+	return std::move(Load(_filepath, meta));
 }
 
 

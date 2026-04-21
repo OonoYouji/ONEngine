@@ -34,7 +34,7 @@ namespace ONEngine::Asset {
 AssetLoader<Texture, TextureMeta>::AssetLoader(DxManager* _dxm, AssetCollection* _ac)
 	: pDxManager_(_dxm), pAssetCollection_(_ac) {}
 
-std::optional<Texture> AssetLoader<Texture, TextureMeta>::Load(const std::string& _filepath) {
+std::optional<Texture> AssetLoader<Texture, TextureMeta>::Load(const std::string& _filepath, Meta<TextureMeta> meta) {
 	//MetaFile meta;
 	//if(!meta.LoadFromFile(_filepath + ".meta")) {
 	//	meta = GenerateMetaFile(_filepath);
@@ -51,7 +51,7 @@ std::optional<Texture> AssetLoader<Texture, TextureMeta>::Load(const std::string
 	return Load2DTexture(_filepath);
 }
 
-std::optional<Texture> AssetLoader<Texture, TextureMeta>::Reload(const std::string& _filepath, Texture* _src) {
+std::optional<Texture> AssetLoader<Texture, TextureMeta>::Reload(const std::string& _filepath, Texture* _src, Meta<TextureMeta> meta) {
 	//MetaFile meta;
 	//if(!meta.LoadFromFile(_filepath + ".meta")) {
 	//	meta = GenerateMetaFile(_filepath);

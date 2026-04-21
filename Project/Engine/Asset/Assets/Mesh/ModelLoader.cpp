@@ -21,7 +21,7 @@ AssetLoader<Model, ModelMeta>::AssetLoader(DxManager* _dxm)
 	assimpLoadFlags_ = aiProcess_FlipWindingOrder | aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices;
 }
 
-std::optional<Model> AssetLoader<Model, ModelMeta>::Load(const std::string& _filepath) {
+std::optional<Model> AssetLoader<Model, ModelMeta>::Load(const std::string& _filepath, Meta<ModelMeta> meta) {
 	/// ----- モデルの読み込み ----- ///
 
 	//MetaFile meta;
@@ -133,9 +133,9 @@ std::optional<Model> AssetLoader<Model, ModelMeta>::Load(const std::string& _fil
 	return model;
 }
 
-std::optional<Model> AssetLoader<Model, ModelMeta>::Reload(const std::string& _filepath, Model* /*_src*/) {
+std::optional<Model> AssetLoader<Model, ModelMeta>::Reload(const std::string& _filepath, Model* /*_src*/, Meta<ModelMeta> meta) {
 	/// モデルの再読み込みは特殊な操作をする必要がないのでもう一度読み込んだ内容を渡す
-	return Load(_filepath);
+	return Load(_filepath, meta);
 }
 
 

@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "../IAssetLoader.h"
+#include "../../Meta/MetaFile.h"
 #include "AudioClip.h"
 
 namespace ONEngine::Asset {
@@ -15,8 +16,8 @@ public:
 	AssetLoader() = default;
 	~AssetLoader() override = default;
 
-	std::optional<AudioClip> Load(const std::string& _filepath);
-	std::optional<AudioClip> Reload(const std::string& _filepath, AudioClip* _src = nullptr);
+	std::optional<AudioClip> Load(const std::string& _filepath, Meta<AudioClipMeta> meta);
+	std::optional<AudioClip> Reload(const std::string& _filepath, AudioClip* _src = nullptr, Meta<AudioClipMeta> meta = {});
 
 	Meta<AudioClipMeta> GetMetaData(const std::string& _filepath);
 

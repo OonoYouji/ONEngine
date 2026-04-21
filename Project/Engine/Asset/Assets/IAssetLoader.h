@@ -44,12 +44,12 @@ public:
 	/// @brief 読み込み用関数
 	/// @param _filepath 読み込み対象のファイルパス
 	/// @return 読み込んだアセット
-	std::optional<T> Load(const std::string& /*_filepath*/) {}
+	std::optional<T> Load(const std::string& /*_filepath*/, Meta<U> /*meta*/) {}
 
 	/// @brief 再読み込み用関数
 	/// @param _filepath 再読み込み対象のファイルパス
 	/// @return 読み込んだアセット
-	std::optional<T> Reload(const std::string& /*_filepath*/, T* /*_src*/) {}
+	std::optional<T> Reload(const std::string& /*_filepath*/, T* /*_src*/, Meta<U> /*meta*/) {}
 
 	/// @brief アセットのメタデータを取得する関数
 	/// @param _filepath メタデータを取得する対象のファイルパス
