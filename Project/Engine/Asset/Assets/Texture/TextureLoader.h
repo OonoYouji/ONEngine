@@ -52,13 +52,13 @@ public:
 	/// @param _filepath 対象のファイルパス
 	/// @param _meta MetaFile
 	/// @return 読み込んだテクスチャ
-	std::optional<Texture> Load2DTexture(const std::string& _filepath, const MetaFile& _meta);
+	std::optional<Texture> Load2DTexture(const std::string& _filepath);
 
 	/// @brief テクスチャ3Dの読み込みを行う
 	/// @param _filepath 対象 of ファイルパス
 	/// @param _meta MetaFile
 	/// @return 読み込んだテクスチャ
-	std::optional<Texture> Load3DTexture(const std::string& _filepath, const MetaFile& _meta);
+	std::optional<Texture> Load3DTexture(const std::string& _filepath);
 
 
 	/// @brief テクスチャ2Dの再読み込みを行う
@@ -66,27 +66,27 @@ public:
 	/// @param _src 再読み込み元のテクスチャ
 	/// @param _meta MetaFile
 	/// @return 再読み込みしたテクスチャ
-	std::optional<Texture> Reload2DTexture(const std::string& _filepath, Texture* _src, const MetaFile& _meta);
+	std::optional<Texture> Reload2DTexture(const std::string& _filepath, Texture* _src);
 
 	/// @brief テクスチャ3Dの再読み込みを行う
 	/// @param _filepath 対象のファイルパス
 	/// @param _src 再読み込み元のテクスチャ
 	/// @param _meta MetaFile
 	/// @return 再読み込みしたテクスチャ
-	std::optional<Texture> Reload3DTexture(const std::string& _filepath, Texture* _src, const MetaFile& _meta);
+	std::optional<Texture> Reload3DTexture(const std::string& _filepath, Texture* _src);
 
 
 	/// @brief 2Dテクスチャ用のScratchImageを読み込む
 	/// @param _filepath 対象のファイルパス
 	/// @param _meta MetaFile
 	/// @return 2Dテクスチャ用のScratchImage
-	DirectX::ScratchImage LoadScratchImage2D(const std::string& _filepath, const MetaFile& _meta);
+	DirectX::ScratchImage LoadScratchImage2D(const std::string& _filepath);
 
 	/// @brief 3Dテクスチャ用のScratchImageを読み込む
 	/// @param _filepath 対象のファイルパス
 	/// @param _meta MetaFile
 	/// @return 3Dテクスチャ用のScratchImage
-	DirectX::ScratchImage LoadScratchImage3D(const std::string& _filepath, const MetaFile& _meta);
+	DirectX::ScratchImage LoadScratchImage3D(const std::string& _filepath);
 
 
 	/// @brief テクスチャのリソースを作成する(2D)

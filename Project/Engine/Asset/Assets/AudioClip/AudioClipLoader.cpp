@@ -24,10 +24,10 @@ namespace ONEngine::Asset {
 std::optional<AudioClip> AssetLoader<AudioClip, AudioClipMeta>::Load(const std::string& _filepath) {
 	/// ----- オーディオクリップの読み込み ----- ///
 
-	MetaFile meta;
-	if(!meta.LoadFromFile(_filepath + ".meta")) {
-		meta = GenerateMetaFile(_filepath);
-	}
+	//MetaFile meta;
+	//if(!meta.LoadFromFile(_filepath + ".meta")) {
+	//	meta = GenerateMetaFile(_filepath);
+	//}
 
 	/// ファイルが存在するのかチェックする
 	if(!std::filesystem::exists(_filepath)) {
@@ -113,7 +113,7 @@ std::optional<AudioClip> AssetLoader<AudioClip, AudioClipMeta>::Load(const std::
 	}
 
 	AudioClip audioClip;
-	audioClip.guid = meta.guid;
+	//audioClip.guid = meta.guid;
 	audioClip.soundData_ = std::move(soundData);
 
 	Console::Log("[Load] [AudioClip] - path:\"" + _filepath + "\"");

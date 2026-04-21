@@ -106,20 +106,20 @@ inline T* AssetContainer<T>::Add(const std::string& _key, T _t) {
 	indexMap_[_key] = index;
 	reverseIndexMap_[index] = _key;
 
-	if(std::filesystem::exists(_key + ".meta")) {
-		MetaFile metaFile;
-		metaFile.LoadFromFile(_key + ".meta");
-		Guid& guid = metaFile.guid;
-		guidToIndexMap_[guid] = index;
-		indexToGuidMap_[index] = guid;
-		_t.guid = guid;
-	} else {
-		MetaFile metaFile = GenerateMetaFile(_key);
-		Guid& guid = metaFile.guid;
-		guidToIndexMap_[guid] = index;
-		indexToGuidMap_[index] = guid;
-		_t.guid = guid;
-	}
+	//if(std::filesystem::exists(_key + ".meta")) {
+	//	MetaFile metaFile;
+	//	metaFile.LoadFromFile(_key + ".meta");
+	//	Guid& guid = metaFile.guid;
+	//	guidToIndexMap_[guid] = index;
+	//	indexToGuidMap_[index] = guid;
+	//	_t.guid = guid;
+	//} else {
+	//	MetaFile metaFile = GenerateMetaFile(_key);
+	//	Guid& guid = metaFile.guid;
+	//	guidToIndexMap_[guid] = index;
+	//	indexToGuidMap_[index] = guid;
+	//	_t.guid = guid;
+	//}
 
 	values_[index] = std::move(_t);
 	return &values_[index];

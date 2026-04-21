@@ -13,27 +13,8 @@ AssetLoader<Shader, ShaderMeta>::AssetLoader() {}
 std::optional<Shader> AssetLoader<Shader, ShaderMeta>::Load(const std::string& filepath) {
 	/// ----- Shaderの読み込み処理 ----- ///
 
-	MetaFile meta;
-	if(!meta.LoadFromFile(filepath + ".meta")) {
-		meta = GenerateMetaFile(filepath);
-	}
-
 	Shader shader;
-	shader.guid = meta.guid;
-
-	/// metaファイルから情報を取得
-	if(meta.properties.contains("shaderStage")) {
-		auto stage = magic_enum::enum_cast<ShaderStage>(meta.properties.at("shaderStage"));
-		if(stage.has_value()) {
-			shader.stage_ = stage.value();
-		}
-	}
-	if(meta.properties.contains("entryPoint")) {
-		shader.entryPoint_ = meta.properties.at("entryPoint");
-	}
-	if(meta.properties.contains("profile")) {
-		shader.profile_ = meta.properties.at("profile");
-	}
+	//shader.guid = meta.guid;
 	shader.path_ = filepath;
 
 	// ... shader compilation/loading logic ...

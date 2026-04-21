@@ -12,10 +12,10 @@ namespace ONEngine::Asset {
 
 std::optional<Material> AssetLoader<Material, MaterialMeta>::Load(const std::string& _filepath) {
 	/// Metaファイルを読み込む
-	MetaFile meta;
-	if(!meta.LoadFromFile(_filepath + ".meta")) {
-		meta = GenerateMetaFile(_filepath);
-	}
+	//MetaFile meta;
+	//if(!meta.LoadFromFile(_filepath + ".meta")) {
+	//	meta = GenerateMetaFile(_filepath);
+	//}
 
 	/// ファイルを開く
 	std::ifstream ifs(_filepath);
@@ -27,7 +27,7 @@ std::optional<Material> AssetLoader<Material, MaterialMeta>::Load(const std::str
 
 	/// 読み込んだMaterialを格納するオブジェクト
 	Material material;
-	material.guid = meta.guid;
+	//material.guid = meta.guid;
 
 	/// ----------------------------------------------
 	/// ファイルの読み込み

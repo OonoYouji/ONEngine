@@ -24,10 +24,10 @@ AssetLoader<Model, ModelMeta>::AssetLoader(DxManager* _dxm)
 std::optional<Model> AssetLoader<Model, ModelMeta>::Load(const std::string& _filepath) {
 	/// ----- モデルの読み込み ----- ///
 
-	MetaFile meta;
-	if(!meta.LoadFromFile(_filepath + ".meta")) {
-		meta = GenerateMetaFile(_filepath);
-	}
+	//MetaFile meta;
+	//if(!meta.LoadFromFile(_filepath + ".meta")) {
+	//	meta = GenerateMetaFile(_filepath);
+	//}
 
 	/// ファイルの拡張子を取得
 	const std::string fileExtension = FileSystem::FileExtension(_filepath);
@@ -44,7 +44,7 @@ std::optional<Model> AssetLoader<Model, ModelMeta>::Load(const std::string& _fil
 	}
 
 	Model model;
-	model.guid = meta.guid;
+	//model.guid = meta.guid;
 	model.SetPath(_filepath);
 
 	/// mesh 解析
