@@ -35,37 +35,49 @@ AssetLoader<Texture, TextureMeta>::AssetLoader(DxManager* _dxm, AssetCollection*
 	: pDxManager_(_dxm), pAssetCollection_(_ac) {}
 
 std::optional<Texture> AssetLoader<Texture, TextureMeta>::Load(const std::string& _filepath, Meta<TextureMeta> meta) {
-	//MetaFile meta;
-	//if(!meta.LoadFromFile(_filepath + ".meta")) {
-	//	meta = GenerateMetaFile(_filepath);
-	//}
+	std::optional<Texture> res{};
 
 	const std::string extension = FileSystem::FileExtension(_filepath);
 	if(extension == ".dds") {
 		DirectX::ScratchImage scratch = LoadScratchImage3D(_filepath);
 		const auto& texMeta = scratch.GetMetadata();
 		if(texMeta.dimension == DirectX::TEX_DIMENSION_TEXTURE3D) {
-			return Load3DTexture(_filepath);
+			res = Load3DTexture(_filepath);
+			if(res.has_value()) {
+				res->guid = meta.base.guid;
+				return res;
+			}
 		}
 	}
-	return Load2DTexture(_filepath);
+
+	res = Load2DTexture(_filepath);
+	if(res.has_value()) {
+		res->guid = meta.base.guid;
+	}
+	return res;
 }
 
 std::optional<Texture> AssetLoader<Texture, TextureMeta>::Reload(const std::string& _filepath, Texture* _src, Meta<TextureMeta> meta) {
-	//MetaFile meta;
-	//if(!meta.LoadFromFile(_filepath + ".meta")) {
-	//	meta = GenerateMetaFile(_filepath);
-	//}
+	std::optional<Texture> res{};
 
 	const std::string extension = FileSystem::FileExtension(_filepath);
 	if(extension == ".dds") {
 		DirectX::ScratchImage scratch = LoadScratchImage3D(_filepath);
 		const auto& texMeta = scratch.GetMetadata();
 		if(texMeta.dimension == DirectX::TEX_DIMENSION_TEXTURE3D) {
-			return Reload3DTexture(_filepath, _src);
+			res = Reload3DTexture(_filepath, _src);
+			if(res.has_value()) {
+				res->guid = meta.base.guid;
+				return res;
+			}
 		}
 	}
-	return Reload2DTexture(_filepath, _src);
+
+	res = Reload2DTexture(_filepath, _src);
+	if(res.has_value()) {
+		res->guid = meta.base.guid;
+	}
+	return res;
 }
 
 Meta<TextureMeta> AssetLoader<Texture, TextureMeta>::GetMetaData(const std::string& _filepath) {
@@ -173,7 +185,6 @@ std::optional<Texture> AssetLoader<Texture, TextureMeta>::Load2DTexture(const st
 
 std::optional<Texture> AssetLoader<Texture, TextureMeta>::Load3DTexture(const std::string& _filepath) {
 	Texture texture;
-	//texture.guid = _meta.guid;
 
 	DirectX::ScratchImage scratchImage = LoadScratchImage3D(_filepath);
 	if(scratchImage.GetImageCount() == 0) {

@@ -44,7 +44,7 @@ std::optional<Model> AssetLoader<Model, ModelMeta>::Load(const std::string& _fil
 	}
 
 	Model model;
-	//model.guid = meta.guid;
+	model.guid = meta.base.guid;
 	model.SetPath(_filepath);
 
 	/// mesh 解析

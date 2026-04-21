@@ -7,6 +7,7 @@ using namespace ONEngine;
 
 /// engine
 #include "ShaderCompiler.h"
+#include "Shader.h"
 
 Shader::Shader() = default;
 Shader::~Shader() = default;

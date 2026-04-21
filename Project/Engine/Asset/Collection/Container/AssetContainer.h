@@ -106,6 +106,9 @@ inline T* AssetContainer<T>::Add(const std::string& _key, T _t) {
 	indexMap_[_key] = index;
 	reverseIndexMap_[index] = _key;
 
+	guidToIndexMap_[_t.guid] = index;
+	indexToGuidMap_[index] = _t.guid;
+
 	//if(std::filesystem::exists(_key + ".meta")) {
 	//	MetaFile metaFile;
 	//	metaFile.LoadFromFile(_key + ".meta");

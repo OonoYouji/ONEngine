@@ -54,7 +54,7 @@ public:
 	std::future<void> LoadAsync(const std::string& _filepath) override {
 		return ThreadPool::Instance().Enqueue([this, _filepath]() {
 			if(container->GetIndex(_filepath) == -1) {
-				Meta<U> meta = loader->GetMetaData(_filepath);
+				Meta<U> meta = loader->GetMetaData(_filepath + ".meta");
 				auto asset = loader->Load(_filepath, meta);
 				if(asset.has_value()) {
 					container->Add(_filepath, std::move(asset.value()));
@@ -67,7 +67,7 @@ public:
 		int32_t index = container->GetIndex(_filepath);
 		if(index != -1) {
 			T* src = container->Get(index);
-			Meta<U> meta = loader->GetMetaData(_filepath);
+			Meta<U> meta = loader->GetMetaData(_filepath + ".meta");
 			auto reloadedAsset = loader->Reload(_filepath, src, meta);
 			if(reloadedAsset.has_value()) {
 				container->Add(_filepath, std::move(reloadedAsset.value()));

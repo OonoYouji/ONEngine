@@ -34,6 +34,11 @@ enum class ShaderStage {
 	Mesh,
 };
 
+void from_json(const nlohmann::json& j, ShaderStage& stage);
+
+void to_json(nlohmann::json& j, const ShaderStage& stage);
+
+
 /// @brief Shaderのメタデータ
 struct ShaderMeta {
 	ShaderStage stage;

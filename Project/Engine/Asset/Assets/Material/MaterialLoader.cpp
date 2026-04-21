@@ -27,7 +27,7 @@ std::optional<Material> AssetLoader<Material, MaterialMeta>::Load(const std::str
 
 	/// 読み込んだMaterialを格納するオブジェクト
 	Material material;
-	//material.guid = meta.guid;
+	material.guid = meta.base.guid;
 
 	/// ----------------------------------------------
 	/// ファイルの読み込み

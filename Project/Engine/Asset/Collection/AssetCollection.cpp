@@ -47,8 +47,8 @@ void AssetCollection::Initialize(DxManager* dxm) {
 	shaderBundle->loader = std::make_unique<AssetLoader<Shader, ShaderMeta>>();
 	shaderBundle->container = std::make_unique<AssetContainer<Shader>>(128); // 適当な数
 
-	LoadResources(GetResourceFilePaths("./Packages/"));
-	LoadResources(GetResourceFilePaths("./Assets/"));
+	LoadResourcesAsync(GetResourceFilePaths("./Packages/"));
+	LoadResourcesAsync(GetResourceFilePaths("./Assets/"));
 
 	WaitAllLoads();
 }

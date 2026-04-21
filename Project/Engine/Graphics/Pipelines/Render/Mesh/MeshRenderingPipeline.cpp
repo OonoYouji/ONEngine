@@ -130,9 +130,13 @@ void MeshRenderingPipeline::RenderingMesh(ID3D12GraphicsCommandList* _cmdList, s
 
 		/// transform, material を mapping
 		for (auto& renderer : renderers) {
-
 			/// TextureのIdをGuidからセット
 			renderer->SetupRenderData(pAssetCollection_);
+
+			uint32_t id = renderer->GetGpuMaterial().baseTextureId;
+			if(id < 0 || id >= _textures.size()) {
+				continue;
+			}
 
 			materialBuffer_.SetMappedData(
 				transformIndex_,

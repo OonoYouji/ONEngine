@@ -14,7 +14,7 @@ std::optional<Shader> AssetLoader<Shader, ShaderMeta>::Load(const std::string& f
 	/// ----- Shaderの読み込み処理 ----- ///
 
 	Shader shader;
-	//shader.guid = meta.guid;
+	shader.guid = meta.base.guid;
 	shader.path_ = filepath;
 
 	// ... shader compilation/loading logic ...
