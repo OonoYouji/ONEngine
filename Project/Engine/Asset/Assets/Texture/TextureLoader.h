@@ -21,11 +21,13 @@ namespace ONEngine::Asset {
 /// Texture用のアセットローダー
 /// ///////////////////////////////////////////////////
 template<>
-class AssetLoader<Texture> : public IAssetLoader {
+class AssetLoader<Texture, TextureMeta> : public IAssetLoader {
 public:
 
 	AssetLoader(DxManager* _dxm, AssetCollection* _ac);
 	~AssetLoader() override = default;
+
+
 
 	/// @brief テクスチャの読み込みを行う
 	/// @param _filepath 対象のファイルパス
@@ -37,6 +39,13 @@ public:
 	/// @param _filepath 対象のファイルパス
 	/// @return 読み込んだテクスチャ
 	std::optional<Texture> Reload(const std::string& _filepath, Texture* _src);
+
+	/// @brief MetaDataの取得を行う
+	/// @param _filepath メタデータを取得する対象のファイルパス
+	/// @return メタデータ
+	TextureMeta GetMetaData(const std::string& _filepath);
+
+
 
 
 	/// @brief テクスチャ2Dの読み込みを行う

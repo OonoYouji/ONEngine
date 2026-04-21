@@ -10,7 +10,7 @@ struct aiScene;
 namespace ONEngine::Asset {
 
 template<>
-class AssetLoader<Model> : public IAssetLoader {
+class AssetLoader<Model, ModelMeta> : public IAssetLoader {
 public:
 	/// ====================================================
 	/// public : methods
@@ -31,6 +31,9 @@ public:
 	/// @return 再読み込みしたモデル
 	[[nodiscard]]
 	std::optional<Model> Reload(const std::string& _filepath, Model* _src = nullptr);
+
+
+	ModelMeta GetMetaData(const std::string& _filepath);
 
 
 	/// @brief アニメーションのNodeを読み込む

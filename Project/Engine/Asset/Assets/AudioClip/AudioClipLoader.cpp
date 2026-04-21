@@ -18,7 +18,7 @@
 
 namespace ONEngine::Asset {
 
-std::optional<AudioClip> AssetLoader<AudioClip>::Load(const std::string& _filepath) {
+std::optional<AudioClip> AssetLoader<AudioClip, AudioClipMeta>::Load(const std::string& _filepath) {
 	/// ----- オーディオクリップの読み込み ----- ///
 
 	MetaFile meta;
@@ -118,8 +118,16 @@ std::optional<AudioClip> AssetLoader<AudioClip>::Load(const std::string& _filepa
 	return std::move(audioClip);
 }
 
-std::optional<AudioClip> AssetLoader<AudioClip>::Reload(const std::string& _filepath, AudioClip* /*_src*/) {
+std::optional<AudioClip> AssetLoader<AudioClip, AudioClipMeta>::Reload(const std::string& _filepath, AudioClip* /*_src*/) {
 	return std::move(Load(_filepath));
 }
+
+
+AudioClipMeta AssetLoader<AudioClip, AudioClipMeta>::GetMetaData(const std::string& _filepath) {
+
+
+	return;
+}
+
 
 } /// namespace ONEngine::Asset

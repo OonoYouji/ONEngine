@@ -13,12 +13,12 @@
 
 namespace ONEngine::Asset {
 
-AssetLoader<Model>::AssetLoader(DxManager* _dxm)
+AssetLoader<Model, ModelMeta>::AssetLoader(DxManager* _dxm)
 	: pDxManager_(_dxm) {
 	assimpLoadFlags_ = aiProcess_FlipWindingOrder | aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices;
 }
 
-std::optional<Model> AssetLoader<Model>::Load(const std::string& _filepath) {
+std::optional<Model> AssetLoader<Model, ModelMeta>::Load(const std::string& _filepath) {
 	/// ----- モデルの読み込み ----- ///
 
 	MetaFile meta;
@@ -130,14 +130,19 @@ std::optional<Model> AssetLoader<Model>::Load(const std::string& _filepath) {
 	return model;
 }
 
-std::optional<Model> AssetLoader<Model>::Reload(const std::string& _filepath, Model* /*_src*/) {
-
+std::optional<Model> AssetLoader<Model, ModelMeta>::Reload(const std::string& _filepath, Model* /*_src*/) {
 	/// モデルの再読み込みは特殊な操作をする必要がないのでもう一度読み込んだ内容を渡す
 	return Load(_filepath);
 }
 
 
-Node AssetLoader<Model>::ReadNode(aiNode* _node) {
+ModelMeta AssetLoader<Model, ModelMeta>::GetMetaData(const std::string& _filepath) {
+	return;
+}
+
+
+
+Node AssetLoader<Model, ModelMeta>::ReadNode(aiNode* _node) {
 	/// ----- nodeの読み込み ----- ///
 
 	Node result;
@@ -165,7 +170,7 @@ Node AssetLoader<Model>::ReadNode(aiNode* _node) {
 	return result;
 }
 
-void AssetLoader<Model>::LoadAnimation(Model* _model, const std::string& _filepath) {
+void AssetLoader<Model, ModelMeta>::LoadAnimation(Model* _model, const std::string& _filepath) {
 	/// ----- アニメーションの読み込み ----- ///
 
 	Assimp::Importer importer;
@@ -243,7 +248,7 @@ void AssetLoader<Model>::LoadAnimation(Model* _model, const std::string& _filepa
 	}
 }
 
-bool AssetLoader<Model>::ValidateModel(const aiScene* _aiScene) {
+bool AssetLoader<Model, ModelMeta>::ValidateModel(const aiScene* _aiScene) {
 	if(!_aiScene || !_aiScene->mNumMeshes) {
 		return false;
 	}

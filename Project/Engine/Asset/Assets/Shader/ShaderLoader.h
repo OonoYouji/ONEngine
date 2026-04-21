@@ -12,7 +12,7 @@ namespace ONEngine::Asset {
 /// Shader用のアセットローダー
 /// /////////////////////////////////////////////////
 template<>
-class AssetLoader<Shader> : public IAssetLoader {
+class AssetLoader<Shader, ShaderMeta> : public IAssetLoader {
 public:
 	/// ===================================================
 	/// public : methods
@@ -24,6 +24,7 @@ public:
 
 	std::optional<Shader> Load(const std::string& filepath);
 	std::optional<Shader> Reload(const std::string& filepath, Shader* src);
+	ShaderMeta GetMetaData(const std::string& filepath);
 
 
 private:

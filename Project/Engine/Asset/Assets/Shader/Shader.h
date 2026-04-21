@@ -14,7 +14,7 @@
 
 
 namespace ONEngine::Asset {
-template<typename T>
+template<typename T, typename U>
 class AssetLoader;
 }
 
@@ -46,7 +46,7 @@ struct ShaderMeta {
 /// HLSLのアセット化
 /// ///////////////////////////////////////////////////
 class Shader : public IAsset {
-	friend class AssetLoader<Shader>;
+	friend class AssetLoader<Shader, ShaderMeta>;
 public:
 	/// ===================================================
 	/// public : methods

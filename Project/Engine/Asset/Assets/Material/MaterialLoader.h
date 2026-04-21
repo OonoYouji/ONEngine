@@ -7,7 +7,7 @@
 namespace ONEngine::Asset {
 
 template<>
-class AssetLoader<Material> : public IAssetLoader {
+class AssetLoader<Material, MaterialMeta> : public IAssetLoader {
 public:
 	/// ==================================================
 	/// public : methods
@@ -28,6 +28,9 @@ public:
 	/// @return 再読み込みしたモデル
 	[[nodiscard]]
 	std::optional<Material> Reload(const std::string& _filepath, Material* _src = nullptr);
+
+
+	MaterialMeta GetMetaData(const std::string& _filepath);
 
 };
 

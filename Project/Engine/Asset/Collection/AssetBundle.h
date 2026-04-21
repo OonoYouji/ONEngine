@@ -25,18 +25,25 @@ public:
 	virtual bool Contains(const std::string& _filepath) const = 0;
 };
 
-template <IsAsset T>
+template <IsAsset T, typename U>
 class AssetBundle : public IAssetBundle {
 public:
 
 	AssetBundle() = default;
 	~AssetBundle() override = default;
 
-	std::unique_ptr<AssetLoader<T>> loader;
+	std::unique_ptr<AssetLoader<T, U>> loader;
 	std::unique_ptr<AssetContainer<T>> container;
 
 	void Load(const std::string& _filepath) override {
+
+		/// キャッシュ確認
 		if(container->GetIndex(_filepath) == -1) {
+
+			/// Metaファイル読み込み
+
+
+			/// ロード&追加
 			auto asset = loader->Load(_filepath);
 			if(asset.has_value()) {
 				container->Add(_filepath, std::move(asset.value()));

@@ -11,7 +11,7 @@
 
 
 namespace ONEngine::Asset {
-template <typename T>
+template <typename T, typename U>
 class AssetLoader;
 }
 
@@ -53,7 +53,7 @@ struct TextureMeta {
 /// texture
 /// ///////////////////////////////////////////////////
 class Texture final : public IAsset {
-	friend class AssetLoader<Texture>;
+	friend class AssetLoader<Texture, TextureMeta>;
 public:
 	/// ===================================================
 	/// public : sub class
