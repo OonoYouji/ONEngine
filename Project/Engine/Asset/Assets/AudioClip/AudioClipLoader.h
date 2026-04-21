@@ -18,7 +18,7 @@ public:
 	std::optional<AudioClip> Load(const std::string& _filepath);
 	std::optional<AudioClip> Reload(const std::string& _filepath, AudioClip* _src = nullptr);
 
-	AudioClipMeta GetMetaData(const std::string& _filepath);
+	Meta<AudioClipMeta> GetMetaData(const std::string& _filepath);
 
 };
 

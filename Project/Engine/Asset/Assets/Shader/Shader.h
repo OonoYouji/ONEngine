@@ -26,6 +26,7 @@ namespace ONEngine::Asset {
 
 /// @brief Shaderの種類
 enum class ShaderStage {
+	Unkown,
 	Vertex,
 	Pixel,
 	Compute,

@@ -52,8 +52,27 @@ std::optional<Material> AssetLoader<Material, MaterialMeta>::Reload(const std::s
 }
 
 
-MaterialMeta AssetLoader<Material, MaterialMeta>::GetMetaData(const std::string& _filepath) {
-	return;
+Meta<MaterialMeta> AssetLoader<Material, MaterialMeta>::GetMetaData(const std::string& _filepath) {
+	Meta<MaterialMeta> res{};
+
+	res.base = LoadMetaBaseFromFile(_filepath);
+
+	nlohmann::json j;
+	std::ifstream ifs(_filepath);
+	if(!ifs.is_open()) {
+		return {};
+	}
+
+	ifs >> j;
+	MaterialMeta data;
+	data.useShader = j.value("useShader", std::string(""));
+	data.albedoColor = j.value("albedoColor", Vector4::One);
+	data.albedoTextureGuid = j.value("albedoTextureGuid", Guid::kInvalid);
+	data.normalTextureGuid = j.value("normalTextureGuid", Guid::kInvalid);
+
+	res.data = data;
+
+	return res;
 }
 
 

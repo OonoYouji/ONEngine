@@ -13,6 +13,10 @@ class DxManager;
 class AssetCollection;
 }
 
+namespace ONEngine::Asset {
+template <typename T>
+struct Meta;
+}
 
 namespace ONEngine::Asset {
 
@@ -46,11 +50,11 @@ public:
 	/// @param _filepath 再読み込み対象のファイルパス
 	/// @return 読み込んだアセット
 	std::optional<T> Reload(const std::string& /*_filepath*/, T* /*_src*/) {}
-	
+
 	/// @brief アセットのメタデータを取得する関数
 	/// @param _filepath メタデータを取得する対象のファイルパス
 	/// @return メタデータ
-	U GetMetaData(const std::string& /*_filepath*/) { return U(); }
+	Meta<U> GetMetaData(const std::string& /*_filepath*/) { return {}; }
 
 };
 

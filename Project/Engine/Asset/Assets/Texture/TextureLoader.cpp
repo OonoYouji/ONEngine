@@ -1,8 +1,11 @@
 ﻿#include "TextureLoader.h"
 
+/// std
+#include <fstream>
+#include <mutex>
+
 /// externals
 #include <magic_enum/magic_enum.hpp>
-#include <mutex>
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
@@ -66,10 +69,25 @@ std::optional<Texture> AssetLoader<Texture, TextureMeta>::Reload(const std::stri
 	return Reload2DTexture(_filepath, _src, meta);
 }
 
-TextureMeta AssetLoader<Texture, TextureMeta>::GetMetaData(const std::string& _filepath) {
+Meta<TextureMeta> AssetLoader<Texture, TextureMeta>::GetMetaData(const std::string& _filepath) {
+	Meta<TextureMeta> res{};
 
+	res.base = LoadMetaBaseFromFile(_filepath);
 
-	return TextureMeta();
+	nlohmann::json j;
+	std::ifstream ifs(_filepath);
+	if(!ifs.is_open()) {
+		return {};
+	}
+
+	ifs >> j;
+	TextureMeta data;
+	data.format = j.value("format", TextureFormat::RGBA16_FLOAT);
+	data.colorSpace = j.value("colorSpace", ColorSpace::Linear);
+
+	res.data = data;
+
+	return res;
 }
 
 

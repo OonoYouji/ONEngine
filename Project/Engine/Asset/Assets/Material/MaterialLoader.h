@@ -29,8 +29,7 @@ public:
 	[[nodiscard]]
 	std::optional<Material> Reload(const std::string& _filepath, Material* _src = nullptr);
 
-
-	MaterialMeta GetMetaData(const std::string& _filepath);
+	Meta<MaterialMeta> GetMetaData(const std::string& _filepath);
 
 };
 

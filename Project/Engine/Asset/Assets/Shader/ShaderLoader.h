@@ -24,7 +24,7 @@ public:
 
 	std::optional<Shader> Load(const std::string& filepath);
 	std::optional<Shader> Reload(const std::string& filepath, Shader* src);
-	ShaderMeta GetMetaData(const std::string& filepath);
+	Meta<ShaderMeta> GetMetaData(const std::string& filepath);
 
 
 private:

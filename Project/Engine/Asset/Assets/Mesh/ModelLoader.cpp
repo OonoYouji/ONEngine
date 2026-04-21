@@ -1,5 +1,8 @@
 ﻿#include "ModelLoader.h"
 
+/// std
+#include <fstream>
+
 /// externals
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
@@ -136,8 +139,24 @@ std::optional<Model> AssetLoader<Model, ModelMeta>::Reload(const std::string& _f
 }
 
 
-ModelMeta AssetLoader<Model, ModelMeta>::GetMetaData(const std::string& _filepath) {
-	return;
+Meta<ModelMeta> AssetLoader<Model, ModelMeta>::GetMetaData(const std::string& _filepath) {
+	Meta<ModelMeta> res{};
+
+	res.base = LoadMetaBaseFromFile(_filepath);
+
+	nlohmann::json j;
+	std::ifstream ifs(_filepath);
+	if(!ifs.is_open()) {
+		return {};
+	}
+
+	ifs >> j;
+	ModelMeta data;
+	data.scale = j.value("scale", 1.0f);
+
+	res.data = data;
+
+	return res;
 }
 
 

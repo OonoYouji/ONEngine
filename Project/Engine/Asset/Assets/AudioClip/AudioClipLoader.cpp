@@ -1,5 +1,8 @@
 ﻿#include "AudioClipLoader.h"
 
+/// std
+#include <fstream>
+
 /// sound api
 #include <mfapi.h>
 #include <mfobjects.h>
@@ -123,10 +126,24 @@ std::optional<AudioClip> AssetLoader<AudioClip, AudioClipMeta>::Reload(const std
 }
 
 
-AudioClipMeta AssetLoader<AudioClip, AudioClipMeta>::GetMetaData(const std::string& _filepath) {
+Meta<AudioClipMeta> AssetLoader<AudioClip, AudioClipMeta>::GetMetaData(const std::string& _filepath) {
+	Meta<AudioClipMeta> res{};
 
+	res.base = LoadMetaBaseFromFile(_filepath);
 
-	return;
+	nlohmann::json j;
+	std::ifstream ifs(_filepath);
+	if(!ifs.is_open()) {
+		return {};
+	}
+
+	ifs >> j;
+	AudioClipMeta data;
+	data.duration = j.value("duration", 0.0f);
+
+	res.data = data;
+
+	return res;
 }
 
 

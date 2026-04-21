@@ -33,7 +33,7 @@ public:
 	std::optional<Model> Reload(const std::string& _filepath, Model* _src = nullptr);
 
 
-	ModelMeta GetMetaData(const std::string& _filepath);
+	Meta<ModelMeta> GetMetaData(const std::string& _filepath);
 
 
 	/// @brief アニメーションのNodeを読み込む

@@ -43,7 +43,7 @@ public:
 	/// @brief MetaDataの取得を行う
 	/// @param _filepath メタデータを取得する対象のファイルパス
 	/// @return メタデータ
-	TextureMeta GetMetaData(const std::string& _filepath);
+	Meta<TextureMeta> GetMetaData(const std::string& _filepath);
 
 
 

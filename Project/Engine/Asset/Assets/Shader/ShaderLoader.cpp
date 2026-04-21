@@ -1,5 +1,8 @@
 ﻿#include "ShaderLoader.h"
 
+/// std
+#include <fstream>
+
 /// externals
 #include <magic_enum/magic_enum.hpp>
 
@@ -43,8 +46,25 @@ std::optional<Shader> AssetLoader<Shader, ShaderMeta>::Reload(const std::string&
 	return Load(filepath);
 }
 
-ShaderMeta AssetLoader<Shader, ShaderMeta>::GetMetaData(const std::string& filepath) {
-	return;
+Meta<ShaderMeta> AssetLoader<Shader, ShaderMeta>::GetMetaData(const std::string& filepath) {
+	Meta<ShaderMeta> res{};
+
+	res.base = LoadMetaBaseFromFile(filepath);
+
+	nlohmann::json j;
+	std::ifstream ifs(filepath);
+	if(!ifs.is_open()) {
+		return {};
+	}
+
+	ifs >> j;
+	ShaderMeta data{};
+	data.entryPoint = j.value("entryPoint", "");
+	data.profile = j.value("profile", "");
+	data.stage = j.value("shaderStage", ShaderStage::Unkown);
+	res.data = data;
+
+	return res;
 }
 
 
