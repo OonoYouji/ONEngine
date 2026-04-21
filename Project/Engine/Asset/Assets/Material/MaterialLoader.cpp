@@ -10,13 +10,7 @@
 namespace ONEngine::Asset {
 
 
-std::optional<Material> AssetLoader<Material, MaterialMeta>::Load(const std::string& _filepath, Meta<MaterialMeta> meta) {
-	/// Metaファイルを読み込む
-	//MetaFile meta;
-	//if(!meta.LoadFromFile(_filepath + ".meta")) {
-	//	meta = GenerateMetaFile(_filepath);
-	//}
-
+std::optional<Material> AssetLoader<Material>::Load(const std::string& _filepath, Meta<Material::MetaData> meta) {
 	/// ファイルを開く
 	std::ifstream ifs(_filepath);
 	if(!ifs) {
@@ -46,14 +40,14 @@ std::optional<Material> AssetLoader<Material, MaterialMeta>::Load(const std::str
 	return std::move(material);
 }
 
-std::optional<Material> AssetLoader<Material, MaterialMeta>::Reload(const std::string& _filepath, Material* /*_src*/, Meta<MaterialMeta> meta) {
+std::optional<Material> AssetLoader<Material>::Reload(const std::string& _filepath, Material* /*_src*/, Meta<Material::MetaData> meta) {
 	/// Materialの再読み込みは新規読み込みと同じ処理を行う
 	return std::move(Load(_filepath, meta));
 }
 
 
-Meta<MaterialMeta> AssetLoader<Material, MaterialMeta>::GetMetaData(const std::string& _filepath) {
-	Meta<MaterialMeta> res{};
+Meta<Material::MetaData> AssetLoader<Material>::GetMetaData(const std::string& _filepath) {
+	Meta<Material::MetaData> res{};
 
 	res.base = LoadMetaBaseFromFile(_filepath);
 
@@ -64,7 +58,7 @@ Meta<MaterialMeta> AssetLoader<Material, MaterialMeta>::GetMetaData(const std::s
 	}
 
 	ifs >> j;
-	MaterialMeta data;
+	Material::MetaData data;
 	data.useShader = j.value("useShader", std::string(""));
 	data.albedoColor = j.value("albedoColor", Vector4::One);
 	data.albedoTextureGuid = j.value("albedoTextureGuid", Guid::kInvalid);

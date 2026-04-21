@@ -18,7 +18,7 @@ void ONEngine::ShowGUI(DissolveMeshRenderer* _dmr, Asset::AssetCollection* _ac) 
 	Editor::AssetPayload* payload = nullptr;
 
 	/// mesh
-	std::string meshName = _ac->GetAssetPath<Asset::Model, Asset::ModelMeta>(_dmr->meshGuid_);
+	std::string meshName = _ac->GetAssetPath<Asset::Model>(_dmr->meshGuid_);
 	ImGui::Text("Mesh: ");
 	ImGui::SameLine();
 	ImGui::InputText("##mesh", meshName.data(), meshName.capacity(), ImGuiInputTextFlags_ReadOnly);
@@ -31,7 +31,7 @@ void ONEngine::ShowGUI(DissolveMeshRenderer* _dmr, Asset::AssetCollection* _ac) 
 
 	/// dissolve texture
 	const float texturePreviewSize = 64.0f;
-	const std::string dissolveTexName = _ac->GetAssetPath<Asset::Texture, Asset::TextureMeta>(_dmr->dissolveTexture_);
+	const std::string dissolveTexName = _ac->GetAssetPath<Asset::Texture>(_dmr->dissolveTexture_);
 	const Asset::Texture* dissolveTex = _ac->GetTextureFromGuid(_dmr->dissolveTexture_);
 	Editor::ShowTexture2DPreview(dissolveTexName, const_cast<Asset::Texture*>(dissolveTex), dissolveTex->GetTextureSize(), texturePreviewSize);
 	payload = Editor::DragDrop::GetDragDropPayload();

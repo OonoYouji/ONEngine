@@ -8,9 +8,9 @@
 
 namespace ONEngine::Asset {
 
-AssetLoader<Shader, ShaderMeta>::AssetLoader() {}
+AssetLoader<Shader>::AssetLoader() {}
 
-std::optional<Shader> AssetLoader<Shader, ShaderMeta>::Load(const std::string& filepath, Meta<ShaderMeta> meta) {
+std::optional<Shader> AssetLoader<Shader>::Load(const std::string& filepath, Meta<Shader::MetaData> meta) {
 	/// ----- Shaderの読み込み処理 ----- ///
 
 	Shader shader;
@@ -22,13 +22,13 @@ std::optional<Shader> AssetLoader<Shader, ShaderMeta>::Load(const std::string& f
 	return shader;
 }
 
-std::optional<Shader> AssetLoader<Shader, ShaderMeta>::Reload(const std::string& filepath, Shader* src, Meta<ShaderMeta> meta) {
+std::optional<Shader> AssetLoader<Shader>::Reload(const std::string& filepath, Shader* src, Meta<Shader::MetaData> meta) {
 	/// ----- Shaderの再読み込み処理 ----- ///
 	return Load(filepath, meta);
 }
 
-Meta<ShaderMeta> AssetLoader<Shader, ShaderMeta>::GetMetaData(const std::string& filepath) {
-	Meta<ShaderMeta> res{};
+Meta<Shader::MetaData> AssetLoader<Shader>::GetMetaData(const std::string& filepath) {
+	Meta<Shader::MetaData> res{};
 
 	res.base = LoadMetaBaseFromFile(filepath);
 
@@ -39,7 +39,7 @@ Meta<ShaderMeta> AssetLoader<Shader, ShaderMeta>::GetMetaData(const std::string&
 	}
 
 	ifs >> j;
-	ShaderMeta data{};
+	Shader::MetaData data{};
 	data.entryPoint = j.value("entryPoint", "");
 	data.profile = j.value("profile", "");
 	data.stage = j.value("shaderStage", ShaderStage::Unkown);

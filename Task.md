@@ -12,6 +12,8 @@
     - Sceneのデータ構造の変更
         - object(entity)ごとにファイルを生成
     - metaファイルにアセットごとの設定を組み込む
+        - metaファイルのJSON化
+        - metaファイルのエディター
 - Animation
     - GPUAnimationの実装
     

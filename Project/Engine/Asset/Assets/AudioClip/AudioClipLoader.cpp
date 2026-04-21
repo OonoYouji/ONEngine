@@ -21,7 +21,7 @@
 
 namespace ONEngine::Asset {
 
-std::optional<AudioClip> AssetLoader<AudioClip, AudioClipMeta>::Load(const std::string& _filepath, Meta<AudioClipMeta> meta) {
+std::optional<AudioClip> AssetLoader<AudioClip>::Load(const std::string& _filepath, Meta<AudioClip::MetaData> meta) {
 	/// ----- オーディオクリップの読み込み ----- ///
 
 	/// ファイルが存在するのかチェックする
@@ -116,13 +116,13 @@ std::optional<AudioClip> AssetLoader<AudioClip, AudioClipMeta>::Load(const std::
 	return std::move(audioClip);
 }
 
-std::optional<AudioClip> AssetLoader<AudioClip, AudioClipMeta>::Reload(const std::string& _filepath, AudioClip* /*_src*/, Meta<AudioClipMeta> meta) {
+std::optional<AudioClip> AssetLoader<AudioClip>::Reload(const std::string& _filepath, AudioClip* /*_src*/, Meta<AudioClip::MetaData> meta) {
 	return std::move(Load(_filepath, meta));
 }
 
 
-Meta<AudioClipMeta> AssetLoader<AudioClip, AudioClipMeta>::GetMetaData(const std::string& _filepath) {
-	Meta<AudioClipMeta> res{};
+Meta<AudioClip::MetaData> AssetLoader<AudioClip>::GetMetaData(const std::string& _filepath) {
+	Meta<AudioClip::MetaData> res{};
 
 	res.base = LoadMetaBaseFromFile(_filepath);
 
@@ -133,7 +133,7 @@ Meta<AudioClipMeta> AssetLoader<AudioClip, AudioClipMeta>::GetMetaData(const std
 	}
 
 	ifs >> j;
-	AudioClipMeta data;
+	AudioClip::MetaData data;
 	data.duration = j.value("duration", 0.0f);
 
 	res.data = data;

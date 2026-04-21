@@ -7,7 +7,7 @@
 namespace ONEngine::Asset {
 
 template<>
-class AssetLoader<AudioClip, AudioClipMeta> : public IAssetLoader {
+class AssetLoader<AudioClip> : public IAssetLoader {
 public:
 	/// ===================================================
 	/// public : methods
@@ -16,10 +16,10 @@ public:
 	AssetLoader() = default;
 	~AssetLoader() override = default;
 
-	std::optional<AudioClip> Load(const std::string& _filepath, Meta<AudioClipMeta> meta);
-	std::optional<AudioClip> Reload(const std::string& _filepath, AudioClip* _src = nullptr, Meta<AudioClipMeta> meta = {});
+	std::optional<AudioClip> Load(const std::string& _filepath, Meta<typename AudioClip::MetaData> meta);
+	std::optional<AudioClip> Reload(const std::string& _filepath, AudioClip* _src = nullptr, Meta<typename AudioClip::MetaData> meta = {});
 
-	Meta<AudioClipMeta> GetMetaData(const std::string& _filepath);
+	Meta<typename AudioClip::MetaData> GetMetaData(const std::string& _filepath);
 
 };
 

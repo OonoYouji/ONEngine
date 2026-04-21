@@ -12,20 +12,13 @@
 
 
 namespace ONEngine::Asset {
-template<typename T, typename U>
+template<typename T>
 class AssetLoader;
 }
 
 
 
 namespace ONEngine::Asset {
-
-
-/// @brief AudioClipのメタデータ
-struct AudioClipMeta {
-	float duration;
-};
-
 
 
 /// ////////////////////////////////////////////////////////////////
@@ -58,7 +51,15 @@ struct SoundData {
 /// 音のサウンドデータ
 /// ////////////////////////////////////////////////////////////////
 class AudioClip final : public IAsset {
-	friend class AssetLoader<AudioClip, AudioClipMeta>;
+	friend class AssetLoader<AudioClip>;
+public:
+
+	/// @brief AudioClipのメタデータ
+	struct MetaData {
+		float duration;
+	};
+
+
 public:
 	/// ===================================================
 	/// public : methods

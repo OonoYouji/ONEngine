@@ -16,12 +16,12 @@
 
 namespace ONEngine::Asset {
 
-AssetLoader<Model, ModelMeta>::AssetLoader(DxManager* _dxm)
+AssetLoader<Model>::AssetLoader(DxManager* _dxm)
 	: pDxManager_(_dxm) {
 	assimpLoadFlags_ = aiProcess_FlipWindingOrder | aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices;
 }
 
-std::optional<Model> AssetLoader<Model, ModelMeta>::Load(const std::string& _filepath, Meta<ModelMeta> meta) {
+std::optional<Model> AssetLoader<Model>::Load(const std::string& _filepath, Meta<Model::MetaData> meta) {
 	/// ----- モデルの読み込み ----- ///
 
 	//MetaFile meta;
@@ -133,14 +133,14 @@ std::optional<Model> AssetLoader<Model, ModelMeta>::Load(const std::string& _fil
 	return model;
 }
 
-std::optional<Model> AssetLoader<Model, ModelMeta>::Reload(const std::string& _filepath, Model* /*_src*/, Meta<ModelMeta> meta) {
+std::optional<Model> AssetLoader<Model>::Reload(const std::string& _filepath, Model* /*_src*/, Meta<Model::MetaData> meta) {
 	/// モデルの再読み込みは特殊な操作をする必要がないのでもう一度読み込んだ内容を渡す
 	return Load(_filepath, meta);
 }
 
 
-Meta<ModelMeta> AssetLoader<Model, ModelMeta>::GetMetaData(const std::string& _filepath) {
-	Meta<ModelMeta> res{};
+Meta<Model::MetaData> AssetLoader<Model>::GetMetaData(const std::string& _filepath) {
+	Meta<Model::MetaData> res{};
 
 	res.base = LoadMetaBaseFromFile(_filepath);
 
@@ -151,7 +151,7 @@ Meta<ModelMeta> AssetLoader<Model, ModelMeta>::GetMetaData(const std::string& _f
 	}
 
 	ifs >> j;
-	ModelMeta data;
+	Model::MetaData data;
 	data.scale = j.value("scale", 1.0f);
 
 	res.data = data;
@@ -161,7 +161,7 @@ Meta<ModelMeta> AssetLoader<Model, ModelMeta>::GetMetaData(const std::string& _f
 
 
 
-Node AssetLoader<Model, ModelMeta>::ReadNode(aiNode* _node) {
+Node AssetLoader<Model>::ReadNode(aiNode* _node) {
 	/// ----- nodeの読み込み ----- ///
 
 	Node result;
@@ -189,7 +189,7 @@ Node AssetLoader<Model, ModelMeta>::ReadNode(aiNode* _node) {
 	return result;
 }
 
-void AssetLoader<Model, ModelMeta>::LoadAnimation(Model* _model, const std::string& _filepath) {
+void AssetLoader<Model>::LoadAnimation(Model* _model, const std::string& _filepath) {
 	/// ----- アニメーションの読み込み ----- ///
 
 	Assimp::Importer importer;
@@ -267,7 +267,7 @@ void AssetLoader<Model, ModelMeta>::LoadAnimation(Model* _model, const std::stri
 	}
 }
 
-bool AssetLoader<Model, ModelMeta>::ValidateModel(const aiScene* _aiScene) {
+bool AssetLoader<Model>::ValidateModel(const aiScene* _aiScene) {
 	if(!_aiScene || !_aiScene->mNumMeshes) {
 		return false;
 	}

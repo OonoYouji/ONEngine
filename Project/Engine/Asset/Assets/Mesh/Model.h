@@ -13,17 +13,17 @@
 namespace ONEngine::Asset {
 
 
-/// @brief Model用のメタデータ
-struct ModelMeta {
-	float scale;
-};
-
-
 /// ///////////////////////////////////////////////////
 /// Meshの集合体、モデルデータ (アニメーションがある場合も含む)
 /// ///////////////////////////////////////////////////
 class Model final : public IAsset {
 public:
+
+	/// @brief Model用のメタデータ
+	struct MetaData {
+		float scale;
+	};
+
 
 	struct Vertex {
 		Vector4 position;

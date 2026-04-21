@@ -63,14 +63,14 @@ public:
 	/// @tparam T 取得したアセットの型
 	/// @param _guid アセットのGuid
 	/// @return 所得できたアセットのポインタ、見つからなかった場合はnullptr
-	template <IsAsset T, typename U>
+	template <IsAsset T>
 	const T* GetAsset(const Guid& guid) const;
 
 	/// @brief アセットのパスを取得する
 	/// @tparam T 取得したアセットの型
 	/// @param _guid アセットのGuid
 	/// @return 取得出来たアセットのパスの参照
-	template <IsAsset T, typename U>
+	template <IsAsset T>
 	const std::string& GetAssetPath(const Guid& guid) const;
 
 
@@ -103,8 +103,8 @@ public:
 
 private:
 
-	template <typename T, typename U>
-	AssetBundle<T, U>* GetBundle(AssetType type) const {
+	template <typename T>
+	AssetBundle<T>* GetBundle(AssetType type) const {
 		// Noneの場合は即座に無効値を返す
 		if(type == AssetType::None) {
 			return nullptr;
@@ -114,7 +114,7 @@ private:
 		if(index >= assetBundles_.size() || !assetBundles_[index]) {
 			return nullptr;
 		}
-		return static_cast<AssetBundle<T, U>*>(assetBundles_[index].get());
+		return static_cast<AssetBundle<T>*>(assetBundles_[index].get());
 	}
 
 	IAssetBundle* GetBaseBundle(AssetType type) const;
@@ -183,9 +183,9 @@ public:
 
 };
 
-template<IsAsset T, typename U>
+template<IsAsset T>
 inline const T* AssetCollection::GetAsset(const Guid& _guid) const {
-	auto* bundle = GetBundle<T, U>(GetAssetTypeFromGuid(_guid));
+	auto* bundle = GetBundle<T>(GetAssetTypeFromGuid(_guid));
 	if(!bundle) {
 		return nullptr;
 	}
@@ -199,9 +199,9 @@ inline const T* AssetCollection::GetAsset(const Guid& _guid) const {
 	return nullptr;
 }
 
-template<IsAsset T, typename U>
+template<IsAsset T>
 inline const std::string& AssetCollection::GetAssetPath(const Guid& _guid) const {
-	auto* bundle = GetBundle<T, U>(GetAssetTypeFromGuid(_guid));
+	auto* bundle = GetBundle<T>(GetAssetTypeFromGuid(_guid));
 	if(!bundle) {
 		static std::string emptyString = "";
 		return emptyString;

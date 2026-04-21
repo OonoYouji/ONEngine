@@ -11,7 +11,7 @@
 
 
 namespace ONEngine::Asset {
-template <typename T, typename U>
+template<typename T>
 class AssetLoader;
 }
 
@@ -41,23 +41,20 @@ enum class ColorSpace {
 	sRGB
 };
 
-/// @brief Textureのメタデータ
-struct TextureMeta {
-	TextureFormat format;
-	ColorSpace colorSpace;
-};
-
-
-
 /// ///////////////////////////////////////////////////
 /// texture
 /// ///////////////////////////////////////////////////
 class Texture final : public IAsset {
-	friend class AssetLoader<Texture, TextureMeta>;
+	friend class AssetLoader<Texture>;
 public:
 	/// ===================================================
 	/// public : sub class
 	/// ===================================================
+
+	struct MetaData {
+		TextureFormat format;
+		ColorSpace colorSpace;
+	};
 
 	struct Handle {
 		uint32_t descriptorIndex;

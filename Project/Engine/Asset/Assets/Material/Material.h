@@ -13,16 +13,6 @@
 namespace ONEngine::Asset {
 
 
-/// @brief Materialのメタデータ
-struct MaterialMeta {
-	std::string useShader;
-	Vector4 albedoColor;
-	Guid albedoTextureGuid;
-	Guid normalTextureGuid;
-};
-
-
-
 /// ShowGuiMaterialように前方宣言
 class Material;
 
@@ -47,6 +37,17 @@ class Material final : public IAsset {
 	friend void to_json(nlohmann::json& _j, const Material& _material);
 
 public:
+
+	/// @brief Materialのメタデータ
+	struct MetaData {
+		std::string useShader;
+		Vector4 albedoColor;
+		Guid albedoTextureGuid;
+		Guid normalTextureGuid;
+	};
+
+
+public:
 	/// ==================================================
 	/// public : methods
 	/// ==================================================
@@ -54,7 +55,7 @@ public:
 	Material();
 	~Material();
 
-	
+
 	/// @brief BaseTextureのGuidを持っているかチェック
 	/// @return true: 持っている, false: 持っていない
 	bool HasBaseTexture() const;

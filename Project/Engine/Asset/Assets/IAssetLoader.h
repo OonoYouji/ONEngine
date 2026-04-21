@@ -33,7 +33,7 @@ public:
 /// アセットの読み込み用クラスのテンプレート
 /// 各アセットごとに特殊化して使用する
 /// ///////////////////////////////////////////////////
-template <typename T, typename U>
+template <typename T>
 class AssetLoader : public IAssetLoader {
 public:
 	static_assert(IsAsset<T>, "AssetLoader can only be used with Asset types.");
@@ -44,17 +44,17 @@ public:
 	/// @brief 読み込み用関数
 	/// @param _filepath 読み込み対象のファイルパス
 	/// @return 読み込んだアセット
-	std::optional<T> Load(const std::string& /*_filepath*/, Meta<U> /*meta*/) {}
+	std::optional<T> Load(const std::string& /*_filepath*/, Meta<typename T::MetaData> /*meta*/) {}
 
 	/// @brief 再読み込み用関数
 	/// @param _filepath 再読み込み対象のファイルパス
 	/// @return 読み込んだアセット
-	std::optional<T> Reload(const std::string& /*_filepath*/, T* /*_src*/, Meta<U> /*meta*/) {}
+	std::optional<T> Reload(const std::string& /*_filepath*/, T* /*_src*/, Meta<typename T::MetaData> /*meta*/) {}
 
 	/// @brief アセットのメタデータを取得する関数
 	/// @param _filepath メタデータを取得する対象のファイルパス
 	/// @return メタデータ
-	Meta<U> GetMetaData(const std::string& /*_filepath*/) { return {}; }
+	Meta<typename T::MetaData> GetMetaData(const std::string& /*_filepath*/) { return {}; }
 
 };
 

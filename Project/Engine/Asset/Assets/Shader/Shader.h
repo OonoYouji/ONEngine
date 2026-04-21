@@ -14,7 +14,7 @@
 
 
 namespace ONEngine::Asset {
-template<typename T, typename U>
+template<typename T>
 class AssetLoader;
 }
 
@@ -39,20 +39,25 @@ void from_json(const nlohmann::json& j, ShaderStage& stage);
 void to_json(nlohmann::json& j, const ShaderStage& stage);
 
 
-/// @brief Shaderのメタデータ
-struct ShaderMeta {
-	ShaderStage stage;
-	std::string entryPoint;
-	std::string profile;
-};
-
-
 
 /// ///////////////////////////////////////////////////
 /// HLSLのアセット化
 /// ///////////////////////////////////////////////////
 class Shader : public IAsset {
-	friend class AssetLoader<Shader, ShaderMeta>;
+	friend class AssetLoader<Shader>;
+public:
+	/// ===================================================
+	/// public : sub class
+	/// ===================================================
+
+	/// @brief Shaderのメタデータ
+	struct MetaData {
+		ShaderStage stage;
+		std::string entryPoint;
+		std::string profile;
+	};
+
+
 public:
 	/// ===================================================
 	/// public : methods

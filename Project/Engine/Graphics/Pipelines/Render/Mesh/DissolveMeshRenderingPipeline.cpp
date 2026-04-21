@@ -107,7 +107,7 @@ void DissolveMeshRenderingPipeline::Draw(ECSGroup* _ecsGroup, CameraComponent* _
 	uint32_t instanceIndex_ = 0;
 
 	for(const auto& [meshGuid, dmrList] : meshCompMap) {
-		const Asset::Model* model = pAssetCollection_->GetAsset<Asset::Model, Asset::ModelMeta>(meshGuid);
+		const Asset::Model* model = pAssetCollection_->GetAsset<Asset::Model>(meshGuid);
 		if(!model) {
 			continue;
 		}

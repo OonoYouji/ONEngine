@@ -25,14 +25,14 @@ public:
 	virtual bool Contains(const std::string& _filepath) const = 0;
 };
 
-template <IsAsset T, typename U>
+template <IsAsset T>
 class AssetBundle : public IAssetBundle {
 public:
 
 	AssetBundle() = default;
 	~AssetBundle() override = default;
 
-	std::unique_ptr<AssetLoader<T, U>> loader;
+	std::unique_ptr<AssetLoader<T>> loader;
 	std::unique_ptr<AssetContainer<T>> container;
 
 	void Load(const std::string& _filepath) override {
@@ -41,7 +41,7 @@ public:
 		if(container->GetIndex(_filepath) == -1) {
 
 			/// Metaファイル読み込み
-			Meta<U> meta = loader->GetMetaData(_filepath + ".meta");
+			Meta<T::MetaData> meta = loader->GetMetaData(_filepath + ".meta");
 
 			/// ロード&追加
 			auto asset = loader->Load(_filepath, meta);
@@ -54,7 +54,7 @@ public:
 	std::future<void> LoadAsync(const std::string& _filepath) override {
 		return ThreadPool::Instance().Enqueue([this, _filepath]() {
 			if(container->GetIndex(_filepath) == -1) {
-				Meta<U> meta = loader->GetMetaData(_filepath + ".meta");
+				Meta<T::MetaData> meta = loader->GetMetaData(_filepath + ".meta");
 				auto asset = loader->Load(_filepath, meta);
 				if(asset.has_value()) {
 					container->Add(_filepath, std::move(asset.value()));
@@ -67,7 +67,7 @@ public:
 		int32_t index = container->GetIndex(_filepath);
 		if(index != -1) {
 			T* src = container->Get(index);
-			Meta<U> meta = loader->GetMetaData(_filepath + ".meta");
+			Meta<T::MetaData> meta = loader->GetMetaData(_filepath + ".meta");
 			auto reloadedAsset = loader->Reload(_filepath, src, meta);
 			if(reloadedAsset.has_value()) {
 				container->Add(_filepath, std::move(reloadedAsset.value()));

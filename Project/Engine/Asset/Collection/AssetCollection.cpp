@@ -20,31 +20,31 @@ void AssetCollection::Initialize(DxManager* dxm) {
 	assetBundles_.resize(assetTypeCount);
 
 	// 基底クラス(IAssetBundle等)のポインタとして保持し、実体を作成
-	assetBundles_[static_cast<size_t>(AssetType::Mesh)] = std::make_unique<AssetBundle<Model, ModelMeta>>();
-	assetBundles_[static_cast<size_t>(AssetType::Texture)] = std::make_unique<AssetBundle<Texture, TextureMeta>>();
-	assetBundles_[static_cast<size_t>(AssetType::Audio)] = std::make_unique<AssetBundle<AudioClip, AudioClipMeta>>();
-	assetBundles_[static_cast<size_t>(AssetType::Material)] = std::make_unique<AssetBundle<Material, MaterialMeta>>();
-	assetBundles_[static_cast<size_t>(AssetType::Shader)] = std::make_unique<AssetBundle<Shader, ShaderMeta>>();
+	assetBundles_[static_cast<size_t>(AssetType::Mesh)] = std::make_unique<AssetBundle<Model>>();
+	assetBundles_[static_cast<size_t>(AssetType::Texture)] = std::make_unique<AssetBundle<Texture>>();
+	assetBundles_[static_cast<size_t>(AssetType::Audio)] = std::make_unique<AssetBundle<AudioClip>>();
+	assetBundles_[static_cast<size_t>(AssetType::Material)] = std::make_unique<AssetBundle<Material>>();
+	assetBundles_[static_cast<size_t>(AssetType::Shader)] = std::make_unique<AssetBundle<Shader>>();
 
 	// ヘルパーを使ってセットアップ（キャスト記述が減りスマートになります）
-	auto* meshBundle = GetBundle<Model, ModelMeta>(AssetType::Mesh);
-	meshBundle->loader = std::make_unique<AssetLoader<Model, ModelMeta>>(dxm);
+	auto* meshBundle = GetBundle<Model>(AssetType::Mesh);
+	meshBundle->loader = std::make_unique<AssetLoader<Model>>(dxm);
 	meshBundle->container = std::make_unique<AssetContainer<Model>>(MAX_MODEL_COUNT);
 
-	auto* textureBundle = GetBundle<Texture, TextureMeta>(AssetType::Texture);
-	textureBundle->loader = std::make_unique<AssetLoader<Texture, TextureMeta>>(dxm, this);
+	auto* textureBundle = GetBundle<Texture>(AssetType::Texture);
+	textureBundle->loader = std::make_unique<AssetLoader<Texture>>(dxm, this);
 	textureBundle->container = std::make_unique<AssetContainer<Texture>>(MAX_TEXTURE_COUNT);
 
-	auto* audioBundle = GetBundle<AudioClip, AudioClipMeta>(AssetType::Audio);
-	audioBundle->loader = std::make_unique<AssetLoader<AudioClip, AudioClipMeta>>();
+	auto* audioBundle = GetBundle<AudioClip>(AssetType::Audio);
+	audioBundle->loader = std::make_unique<AssetLoader<AudioClip>>();
 	audioBundle->container = std::make_unique<AssetContainer<AudioClip>>(MAX_AUDIOCLIP_COUNT);
 
-	auto* materialBundle = GetBundle<Material, MaterialMeta>(AssetType::Material);
-	materialBundle->loader = std::make_unique<AssetLoader<Material, MaterialMeta>>();
+	auto* materialBundle = GetBundle<Material>(AssetType::Material);
+	materialBundle->loader = std::make_unique<AssetLoader<Material>>();
 	materialBundle->container = std::make_unique<AssetContainer<Material>>(MAX_MATERIAL_COUNT);
 
-	auto* shaderBundle = GetBundle<Shader, ShaderMeta>(AssetType::Shader);
-	shaderBundle->loader = std::make_unique<AssetLoader<Shader, ShaderMeta>>();
+	auto* shaderBundle = GetBundle<Shader>(AssetType::Shader);
+	shaderBundle->loader = std::make_unique<AssetLoader<Shader>>();
 	shaderBundle->container = std::make_unique<AssetContainer<Shader>>(128); // 適当な数
 
 	LoadResourcesAsync(GetResourceFilePaths("./Packages/"));
@@ -121,22 +121,22 @@ void AssetCollection::Load(const std::string& filepath, AssetType type) {
 /// AddAssetのテンプレート実装
 template<>
 void AssetCollection::AddAsset<Model>(const std::string& filepath, Model&& asset) {
-	GetBundle<Model, ModelMeta>(AssetType::Mesh)->container->Add(filepath, std::move(asset));
+	GetBundle<Model>(AssetType::Mesh)->container->Add(filepath, std::move(asset));
 }
 
 template<>
 void AssetCollection::AddAsset<Texture>(const std::string& filepath, Texture&& asset) {
-	GetBundle<Texture, TextureMeta>(AssetType::Texture)->container->Add(filepath, std::move(asset));
+	GetBundle<Texture>(AssetType::Texture)->container->Add(filepath, std::move(asset));
 }
 
 template<>
 void AssetCollection::AddAsset<AudioClip>(const std::string& filepath, AudioClip&& asset) {
-	GetBundle<AudioClip, AudioClipMeta>(AssetType::Audio)->container->Add(filepath, std::move(asset));
+	GetBundle<AudioClip>(AssetType::Audio)->container->Add(filepath, std::move(asset));
 }
 
 template<>
 void AssetCollection::AddAsset<Material>(const std::string& filepath, Material&& asset) {
-	GetBundle<Material, MaterialMeta>(AssetType::Material)->container->Add(filepath, std::move(asset));
+	GetBundle<Material>(AssetType::Material)->container->Add(filepath, std::move(asset));
 }
 
 bool AssetCollection::IsAsset(const Guid& guid) const {
@@ -228,54 +228,54 @@ AssetType AssetCollection::GetAssetTypeFromGuid(const Guid& guid) const {
 }
 
 const Model* AssetCollection::GetModel(const std::string& filepath) const {
-	return GetBundle<Model, ModelMeta>(AssetType::Mesh)->container->Get(filepath);
+	return GetBundle<Model>(AssetType::Mesh)->container->Get(filepath);
 }
 
 Model* AssetCollection::GetModel(const std::string& filepath) {
-	return GetBundle<Model, ModelMeta>(AssetType::Mesh)->container->Get(filepath);
+	return GetBundle<Model>(AssetType::Mesh)->container->Get(filepath);
 }
 
 const Texture* AssetCollection::GetTexture(const std::string& filepath) const {
-	return GetBundle<Texture, TextureMeta>(AssetType::Texture)->container->Get(filepath);
+	return GetBundle<Texture>(AssetType::Texture)->container->Get(filepath);
 }
 
 Texture* AssetCollection::GetTexture(const std::string& filepath) {
-	return GetBundle<Texture, TextureMeta>(AssetType::Texture)->container->Get(filepath);
+	return GetBundle<Texture>(AssetType::Texture)->container->Get(filepath);
 }
 
 int32_t AssetCollection::GetTextureIndex(const std::string& filepath) const {
-	return GetBundle<Texture, TextureMeta>(AssetType::Texture)->container->GetIndex(filepath);
+	return GetBundle<Texture>(AssetType::Texture)->container->GetIndex(filepath);
 }
 
 const std::string& AssetCollection::GetTexturePath(size_t index) const {
-	return GetBundle<Texture, TextureMeta>(AssetType::Texture)->container->GetKey(static_cast<int32_t>(index));
+	return GetBundle<Texture>(AssetType::Texture)->container->GetKey(static_cast<int32_t>(index));
 }
 
 const std::vector<Texture>& AssetCollection::GetTextures() const {
-	return GetBundle<Texture, TextureMeta>(AssetType::Texture)->container->GetValues();
+	return GetBundle<Texture>(AssetType::Texture)->container->GetValues();
 }
 
 int32_t AssetCollection::GetTextureIndexFromGuid(const Guid& guid) const {
-	return GetBundle<Texture, TextureMeta>(AssetType::Texture)->container->GetIndex(guid);
+	return GetBundle<Texture>(AssetType::Texture)->container->GetIndex(guid);
 }
 
 const std::string& AssetCollection::GetTexturePath(const Guid& guid) const {
-	auto* container = GetBundle<Texture, TextureMeta>(AssetType::Texture)->container.get();
+	auto* container = GetBundle<Texture>(AssetType::Texture)->container.get();
 	return container->GetKey(container->GetIndex(guid));
 }
 
 Texture* AssetCollection::GetTextureFromGuid(const Guid& guid) const {
 	if(!guid.CheckValid()) return nullptr;
-	auto* container = GetBundle<Texture, TextureMeta>(AssetType::Texture)->container.get();
+	auto* container = GetBundle<Texture>(AssetType::Texture)->container.get();
 	return container->Get(container->GetIndex(guid));
 }
 
 const AudioClip* AssetCollection::GetAudioClip(const std::string& filepath) const {
-	return GetBundle<AudioClip, AudioClipMeta>(AssetType::Audio)->container->Get(filepath);
+	return GetBundle<AudioClip>(AssetType::Audio)->container->Get(filepath);
 }
 
 AudioClip* AssetCollection::GetAudioClip(const std::string& filepath) {
-	return GetBundle<AudioClip, AudioClipMeta>(AssetType::Audio)->container->Get(filepath);
+	return GetBundle<AudioClip>(AssetType::Audio)->container->Get(filepath);
 }
 
 

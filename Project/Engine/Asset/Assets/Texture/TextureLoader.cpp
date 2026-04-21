@@ -31,10 +31,10 @@ DXGI_FORMAT GetDxgiFormatFromString(const std::string& _formatStr) {
 
 namespace ONEngine::Asset {
 
-AssetLoader<Texture, TextureMeta>::AssetLoader(DxManager* _dxm, AssetCollection* _ac)
+AssetLoader<Texture>::AssetLoader(DxManager* _dxm, AssetCollection* _ac)
 	: pDxManager_(_dxm), pAssetCollection_(_ac) {}
 
-std::optional<Texture> AssetLoader<Texture, TextureMeta>::Load(const std::string& _filepath, Meta<TextureMeta> meta) {
+std::optional<Texture> AssetLoader<Texture>::Load(const std::string& _filepath, Meta<Texture::MetaData> meta) {
 	std::optional<Texture> res{};
 
 	const std::string extension = FileSystem::FileExtension(_filepath);
@@ -57,7 +57,7 @@ std::optional<Texture> AssetLoader<Texture, TextureMeta>::Load(const std::string
 	return res;
 }
 
-std::optional<Texture> AssetLoader<Texture, TextureMeta>::Reload(const std::string& _filepath, Texture* _src, Meta<TextureMeta> meta) {
+std::optional<Texture> AssetLoader<Texture>::Reload(const std::string& _filepath, Texture* _src, Meta<Texture::MetaData> meta) {
 	std::optional<Texture> res{};
 
 	const std::string extension = FileSystem::FileExtension(_filepath);
@@ -80,8 +80,8 @@ std::optional<Texture> AssetLoader<Texture, TextureMeta>::Reload(const std::stri
 	return res;
 }
 
-Meta<TextureMeta> AssetLoader<Texture, TextureMeta>::GetMetaData(const std::string& _filepath) {
-	Meta<TextureMeta> res{};
+Meta<Texture::MetaData> AssetLoader<Texture>::GetMetaData(const std::string& _filepath) {
+	Meta<Texture::MetaData> res{};
 
 	res.base = LoadMetaBaseFromFile(_filepath);
 
@@ -92,7 +92,7 @@ Meta<TextureMeta> AssetLoader<Texture, TextureMeta>::GetMetaData(const std::stri
 	}
 
 	ifs >> j;
-	TextureMeta data;
+	Texture::MetaData data;
 	data.format = j.value("format", TextureFormat::RGBA16_FLOAT);
 	data.colorSpace = j.value("colorSpace", ColorSpace::Linear);
 
@@ -102,9 +102,8 @@ Meta<TextureMeta> AssetLoader<Texture, TextureMeta>::GetMetaData(const std::stri
 }
 
 
-std::optional<Texture> AssetLoader<Texture, TextureMeta>::Load2DTexture(const std::string& _filepath) {
+std::optional<Texture> AssetLoader<Texture>::Load2DTexture(const std::string& _filepath) {
 	Texture texture;
-	//texture.guid = _meta.guid;
 
 	DirectX::ScratchImage       scratchImage = LoadScratchImage2D(_filepath);
 	const DirectX::TexMetadata& metadata = scratchImage.GetMetadata();
@@ -183,7 +182,7 @@ std::optional<Texture> AssetLoader<Texture, TextureMeta>::Load2DTexture(const st
 	return std::move(texture);
 }
 
-std::optional<Texture> AssetLoader<Texture, TextureMeta>::Load3DTexture(const std::string& _filepath) {
+std::optional<Texture> AssetLoader<Texture>::Load3DTexture(const std::string& _filepath) {
 	Texture texture;
 
 	DirectX::ScratchImage scratchImage = LoadScratchImage3D(_filepath);
@@ -256,9 +255,8 @@ std::optional<Texture> AssetLoader<Texture, TextureMeta>::Load3DTexture(const st
 	return std::move(texture);
 }
 
-std::optional<Texture> AssetLoader<Texture, TextureMeta>::Reload2DTexture(const std::string& _filepath, Texture* _src) {
+std::optional<Texture> AssetLoader<Texture>::Reload2DTexture(const std::string& _filepath, Texture* _src) {
 	Texture texture = *_src;
-	//texture.guid = _meta.guid;
 
 	DirectX::ScratchImage       scratchImage = LoadScratchImage2D(_filepath);
 	const DirectX::TexMetadata& metadata = scratchImage.GetMetadata();
@@ -323,9 +321,8 @@ std::optional<Texture> AssetLoader<Texture, TextureMeta>::Reload2DTexture(const 
 	return std::move(texture);
 }
 
-std::optional<Texture> AssetLoader<Texture, TextureMeta>::Reload3DTexture(const std::string& _filepath, Texture* _src) {
+std::optional<Texture> AssetLoader<Texture>::Reload3DTexture(const std::string& _filepath, Texture* _src) {
 	Texture texture = *_src;
-	//texture.guid = _meta.guid;
 
 	DirectX::ScratchImage scratchImage = LoadScratchImage3D(_filepath);
 	if(scratchImage.GetImageCount() == 0) {
@@ -392,7 +389,7 @@ std::optional<Texture> AssetLoader<Texture, TextureMeta>::Reload3DTexture(const 
 	return std::move(texture);
 }
 
-DirectX::ScratchImage AssetLoader<Texture, TextureMeta>::LoadScratchImage2D(const std::string& _filepath) {
+DirectX::ScratchImage AssetLoader<Texture>::LoadScratchImage2D(const std::string& _filepath) {
 	DirectX::ScratchImage image{};
 	std::wstring          filePathW = ConvertString(_filepath);
 	if(_filepath.ends_with(".dds")) {
@@ -400,25 +397,6 @@ DirectX::ScratchImage AssetLoader<Texture, TextureMeta>::LoadScratchImage2D(cons
 	} else {
 		DirectX::LoadFromWICFile(filePathW.c_str(), DirectX::WIC_FLAGS_FORCE_SRGB, nullptr, image);
 	}
-
-	/// MetaFileにフォーマット指定があれば変換を試みる
-	//if(_meta.properties.contains("format")) {
-	//	DXGI_FORMAT targetFormat = GetDxgiFormatFromString(_meta.properties.at("format"));
-	//	if(targetFormat != DXGI_FORMAT_UNKNOWN && targetFormat != image.GetMetadata().format) {
-	//		DirectX::ScratchImage convertedImage;
-	//		HRESULT hr = S_OK;
-	//		if(DirectX::IsCompressed(targetFormat)) {
-	//			// 圧縮が必要な場合は後でやるか、ここでは簡易的に
-	//			hr = DirectX::Compress(image.GetImages(), image.GetImageCount(), image.GetMetadata(), targetFormat, DirectX::TEX_COMPRESS_DEFAULT, 0.5f, convertedImage);
-	//		} else {
-	//			hr = DirectX::Convert(image.GetImages(), image.GetImageCount(), image.GetMetadata(), targetFormat, DirectX::TEX_FILTER_DEFAULT, 0.5f, convertedImage);
-	//		}
-
-	//		if(SUCCEEDED(hr)) {
-	//			image = std::move(convertedImage);
-	//		}
-	//	}
-	//}
 
 	DirectX::ScratchImage mipImages{};
 
@@ -430,7 +408,7 @@ DirectX::ScratchImage AssetLoader<Texture, TextureMeta>::LoadScratchImage2D(cons
 	return mipImages;
 }
 
-DirectX::ScratchImage AssetLoader<Texture, TextureMeta>::LoadScratchImage3D(const std::string& _filepath) {
+DirectX::ScratchImage AssetLoader<Texture>::LoadScratchImage3D(const std::string& _filepath) {
 	if(!_filepath.ends_with(".dds")) {
 		std::lock_guard<std::mutex> lock(s_textureGpuMutex);
 		Console::LogError("LoadScratchImage3D: Only DDS files are supported for Texture3D.");
@@ -454,23 +432,6 @@ DirectX::ScratchImage AssetLoader<Texture, TextureMeta>::LoadScratchImage3D(cons
 		return DirectX::ScratchImage{};
 	}
 
-	///// MetaFileにフォーマット指定があれば変換を試みる (3Dテクスチャ)
-	//if(_meta.properties.contains("format")) {
-	//	DXGI_FORMAT targetFormat = GetDxgiFormatFromString(_meta.properties.at("format"));
-	//	if(targetFormat != DXGI_FORMAT_UNKNOWN && targetFormat != image.GetMetadata().format) {
-	//		DirectX::ScratchImage convertedImage;
-	//		if(DirectX::IsCompressed(targetFormat)) {
-	//			hr = DirectX::Compress(image.GetImages(), image.GetImageCount(), image.GetMetadata(), targetFormat, DirectX::TEX_COMPRESS_DEFAULT, 0.5f, convertedImage);
-	//		} else {
-	//			hr = DirectX::Convert(image.GetImages(), image.GetImageCount(), image.GetMetadata(), targetFormat, DirectX::TEX_FILTER_DEFAULT, 0.5f, convertedImage);
-	//		}
-
-	//		if(SUCCEEDED(hr)) {
-	//			image = std::move(convertedImage);
-	//		}
-	//	}
-	//}
-
 	DirectX::ScratchImage mipImages;
 	if(DirectX::IsCompressed(image.GetMetadata().format)) {
 		mipImages = std::move(image);
@@ -485,7 +446,7 @@ DirectX::ScratchImage AssetLoader<Texture, TextureMeta>::LoadScratchImage3D(cons
 	return mipImages;
 }
 
-DxResource AssetLoader<Texture, TextureMeta>::CreateTextureResource2D(DxDevice* _dxDevice, const DirectX::TexMetadata& _metadata) {
+DxResource AssetLoader<Texture>::CreateTextureResource2D(DxDevice* _dxDevice, const DirectX::TexMetadata& _metadata) {
 	D3D12_RESOURCE_DESC desc{};
 	desc.Width = UINT(_metadata.width);
 	desc.Height = UINT(_metadata.height);
@@ -503,7 +464,7 @@ DxResource AssetLoader<Texture, TextureMeta>::CreateTextureResource2D(DxDevice* 
 	return dxResource;
 }
 
-DxResource AssetLoader<Texture, TextureMeta>::CreateTextureResource3D(DxDevice* _dxDevice, const DirectX::TexMetadata& _metadata) {
+DxResource AssetLoader<Texture>::CreateTextureResource3D(DxDevice* _dxDevice, const DirectX::TexMetadata& _metadata) {
 	if(_metadata.dimension != DirectX::TEX_DIMENSION_TEXTURE3D) {
 		std::lock_guard<std::mutex> lock(s_textureGpuMutex);
 		Console::LogError("[CreateTexture3DResource] Metadata is not Texture3D.");
@@ -529,7 +490,7 @@ DxResource AssetLoader<Texture, TextureMeta>::CreateTextureResource3D(DxDevice* 
 	return dxResource;
 }
 
-DxResource AssetLoader<Texture, TextureMeta>::UploadTextureData(ID3D12Resource* _texture, const DirectX::ScratchImage& _mipScratchImage) {
+DxResource AssetLoader<Texture>::UploadTextureData(ID3D12Resource* _texture, const DirectX::ScratchImage& _mipScratchImage) {
 	DxDevice* dxDevice = pDxManager_->GetDxDevice();
 
 	/// 実行しているスレッドに応じてコマンドリストを出し分ける

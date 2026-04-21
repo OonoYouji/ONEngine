@@ -11,7 +11,7 @@ struct aiScene;
 namespace ONEngine::Asset {
 
 template<>
-class AssetLoader<Model, ModelMeta> : public IAssetLoader {
+class AssetLoader<Model> : public IAssetLoader {
 public:
 	/// ====================================================
 	/// public : methods
@@ -24,18 +24,17 @@ public:
 	/// @param _filepath 対象のファイルパス
 	/// @return 読み込んだモデル
 	[[nodiscard]]
-	std::optional<Model> Load(const std::string& _filepath, Meta<ModelMeta> meta);
+	std::optional<Model> Load(const std::string& _filepath, typename Meta<Model::MetaData> meta);
 
 	/// @brief モデルファイルの再読み込みを行う
 	/// @param _filepath 対象のファイルパス
 	/// @param _src 元のモデル
 	/// @return 再読み込みしたモデル
 	[[nodiscard]]
-	std::optional<Model> Reload(const std::string& _filepath, Model* _src = nullptr, Meta<ModelMeta> meta = {});
+	std::optional<Model> Reload(const std::string& _filepath, Model* _src = nullptr, typename Meta<Model::MetaData> meta = {});
 
 
-	Meta<ModelMeta> GetMetaData(const std::string& _filepath);
-
+	Meta<typename Model::MetaData> GetMetaData(const std::string& _filepath);
 
 	/// @brief アニメーションのNodeを読み込む
 	/// @param _node 読み込み対象のaiNodeポインタ
