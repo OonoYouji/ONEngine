@@ -1,7 +1,8 @@
-﻿#pragma once
+#pragma once
 
 /// std
 #include <memory>
+#include <vector>
 
 /// engine
 #include "../../Interface/IRenderingPipeline.h"
@@ -32,13 +33,17 @@ namespace ONEngine {
 
 class SkinMeshRenderingPipeline : public IRenderingPipeline {
 
+	/// @brief インスタンスごとのデータ構造体
+	struct SkinMeshInstanceData {
+		Matrix4x4 matWorld;
+		GPUMaterial material;
+	};
+
 	enum {
-		ViewProjectionCBV = 0, ///< ViewProjectionのCBV
-		TransformCBV,          ///< TransformのCBV
-		MaterialCBV,          ///< MaterialのCBV
-		TextureIdCBV,         ///< TextureIdのCBV
-		WellForGPUSRV,           ///< WellForGPUのSRV
-		TextureSRV,           ///< TextureのSRV
+		ViewProjectionCBV = 0, ///< ViewProjectionのCBV (b0)
+		InstanceDataSRV,       ///< 全インスタンスデータのSRV (t0)
+		WellForGPUSRV,         ///< モデルごとのボーンパレットのSRV (t1)
+		TextureSRV,            ///< テクスチャ配列のSRV (t2)
 	};
 
 public:
@@ -60,9 +65,10 @@ private:
 	Asset::AssetCollection* pAssetCollection_ = nullptr;
 
 	static constexpr size_t kMaxInstances = 1024;
-	std::vector<std::unique_ptr<ConstantBuffer<Matrix4x4>>> transformBuffers_;
-	std::vector<std::unique_ptr<ConstantBuffer<GPUMaterial>>> materialBuffers_;
-	std::vector<std::unique_ptr<ConstantBuffer<uint32_t>>> textureIdBuffers_;
+	
+	/// インスタンスデータを一括管理するバッファ
+	StructuredBuffer<SkinMeshInstanceData> instanceDataBuffer_;
+	std::vector<SkinMeshInstanceData> instanceDataCPU_;
 
 };
 

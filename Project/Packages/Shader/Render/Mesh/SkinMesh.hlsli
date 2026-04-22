@@ -12,6 +12,7 @@ struct VSOutput {
 	float4 worldPosition : POSITION0;
 	float3 normal : NORMAL0;
 	float2 uv : TEXCOORD0;
+	nointerpolation uint instanceId : INSTANCEID0;
 };
 
 
