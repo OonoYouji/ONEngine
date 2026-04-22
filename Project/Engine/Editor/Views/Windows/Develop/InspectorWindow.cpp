@@ -18,6 +18,7 @@
 #include "Engine/Editor/Manager/EditorManager.h"
 #include "Engine/Editor/Math/ImGuiMath.h"
 #include "Engine/Editor/Math/ImGuiSelection.h"
+#include "Engine/Editor/Math/MetaData/AssetMetaReflection.h"
 
 /// compute
 #include "Engine/ECS/Component/Components/ComputeComponents/Light/Light.h"
@@ -463,8 +464,48 @@ void InspectorWindow::AssetInspector() {
 		break;
 	case Asset::AssetType::Material:
 		ImGui::Text("Material Inspector");
+
+		/*
+		* use shader     : 使用するshader
+		* albedo color	 : ベースの色
+		* albedo texture : 使用するテクスチャ
+		* used normal	 : 法線マップを使用するかどうか
+		* normal texture : 使用する法線マップ
+		*/
+
+
+
+
 		break;
 	}
+
+
+	{
+		static ONEngine::Asset::Texture::MetaData meta{};
+		DrawMetaUI(meta);
+	}
+
+	{
+		static ONEngine::Asset::AudioClip::MetaData meta{};
+		DrawMetaUI(meta);
+	}
+
+	{
+		static ONEngine::Asset::Material::MetaData meta{};
+		DrawMetaUI(meta);
+	}
+
+	{
+		static ONEngine::Asset::Shader::MetaData meta{};
+		DrawMetaUI(meta);
+	}
+
+	{
+		static ONEngine::Asset::Model::MetaData meta{};
+		DrawMetaUI(meta);
+	}
+
+
 
 }
 

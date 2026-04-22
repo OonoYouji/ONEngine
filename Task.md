@@ -12,8 +12,13 @@
     - Sceneのデータ構造の変更
         - object(entity)ごとにファイルを生成
     - metaファイルにアセットごとの設定を組み込む
-        - metaファイルのJSON化
+        <!-- - metaファイルのJSON化 -->
         - metaファイルのエディター
 - Animation
     - GPUAnimationの実装
+- Editor
+    - Engineへの依存度を少なくする
+        - Coreなクラスへの依存はよいが、アセットがないとクラッシュするのは良くない
+    - Release時にビルドしないようにする
+    
     

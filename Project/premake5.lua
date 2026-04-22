@@ -108,6 +108,7 @@ project "ONEngine"
 
     includedirs {
         "$(ProjectDir)",
+        "$(ProjectDir)Engine",
         "$(ProjectDir)Externals/assimp/include",
         "$(ProjectDir)Externals/imgui",
         "$(ProjectDir)Externals/glib",
