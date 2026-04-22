@@ -9,6 +9,12 @@ struct SkinMeshInstanceData {
 };
 
 ConstantBuffer<ViewProjection> viewProjection : register(b0);
+
+/// インスタンスインデックスを受け取る定数バッファ
+cbuffer InstanceIndex : register(b1) {
+	uint gInstanceIndex;
+};
+
 StructuredBuffer<SkinMeshInstanceData> instanceData : register(t0);
 
 /// テクスチャ配列は t2
@@ -19,7 +25,7 @@ SamplerState textureSampler : register(s0);
 PSOutput main(VSOutput input) {
 	PSOutput output;
 	
-	/// インスタンスごとのマテリアル取得
+	/// インスタンスごとのマテリアル取得 (VSから渡されたIDを使用)
 	Material material = instanceData[input.instanceId].material;
 	
 	/// テクスチャサンプリング

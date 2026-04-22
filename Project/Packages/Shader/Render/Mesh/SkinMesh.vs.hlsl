@@ -11,11 +11,17 @@ struct SkinMeshInstanceData {
 };
 
 ConstantBuffer<ViewProjection> viewProjection : register(b0);
+
+/// インスタンスインデックスを受け取る定数バッファ
+cbuffer InstanceIndex : register(b1) {
+	uint gInstanceIndex;
+};
+
 StructuredBuffer<SkinMeshInstanceData> instanceData : register(t0);
 StructuredBuffer<Well> matrixPalette : register(t1);
 
 
-VSOutput main(VSInput input, uint instanceId : SV_InstanceID) {
+VSOutput main(VSInput input) {
 	VSOutput output;
 
 	Skinned skinned;
@@ -38,8 +44,8 @@ VSOutput main(VSInput input, uint instanceId : SV_InstanceID) {
 	skinned.normal = normalize(skinned.normal);
 
 
-	/// 2. インスタンスデータの取得
-	float4x4 matWorld = instanceData[instanceId].matWorld;
+	/// 2. インスタンスデータの取得 (明示的に渡されたインデックスを使用)
+	float4x4 matWorld = instanceData[gInstanceIndex].matWorld;
 
 	/// 3. ワールド・ビュー・プロジェクション変換
 	float4x4 matWVP = mul(matWorld, viewProjection.matVP);
@@ -49,7 +55,7 @@ VSOutput main(VSInput input, uint instanceId : SV_InstanceID) {
 	output.uv = input.uv;
 	output.normal = normalize(mul(skinned.normal, (float3x3) matWorld));
 	
-	output.instanceId = instanceId;
+	output.instanceId = gInstanceIndex;
 
 	return output;
 }

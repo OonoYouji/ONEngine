@@ -50,13 +50,15 @@ void SkinMeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMa
 
 
 		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 0);       /// 0: ViewProjection (b0)
+		pipeline_->Add32BitConstant(D3D12_SHADER_VISIBILITY_ALL, 1, 1); /// 1: InstanceIndex (b1)
+
 		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);    /// Range 0: InstanceData (t0)
 		pipeline_->AddDescriptorRange(1, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);    /// Range 1: WellForGPU (t1)
 		pipeline_->AddDescriptorRange(2, 2048, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); /// Range 2: Texture (t2)
 
-		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 0);    /// 1: InstanceData
-		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_VERTEX, 1); /// 2: WellForGPU
-		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 2);  /// 3: Texture
+		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 0);    /// 2: InstanceData
+		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_VERTEX, 1); /// 3: WellForGPU
+		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 2);  /// 4: Texture
 
 		pipeline_->AddStaticSampler(D3D12_SHADER_VISIBILITY_PIXEL, 0);
 
@@ -78,6 +80,7 @@ void SkinMeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMa
 	{
 		/// Buffer
 		instanceDataBuffer_.Create(static_cast<uint32_t>(kMaxInstances), _dxm->GetDxDevice(), _dxm->GetDxSRVHeap());
+		instanceDataCPU_.resize(kMaxInstances);
 	}
 
 
@@ -142,6 +145,10 @@ void SkinMeshRenderingPipeline::Draw(class ECSGroup* _ecs, CameraComponent* _cam
 	for (size_t i = 0; i < activeRenderers.size(); i++) {
 		SkinMeshRenderer* smRenderer = activeRenderers[i];
 
+		/// 現在のインスタンスインデックスを渡す
+		uint32_t index = static_cast<uint32_t>(i);
+		cmdList->SetGraphicsRoot32BitConstants(InstanceIndexCBV, 1, &index, 0);
+
 		/// モデルごとのボーンパレットをバインド
 		cmdList->SetGraphicsRootDescriptorTable(WellForGPUSRV, smRenderer->skinCluster_->paletteSRVHandle.second);
 
@@ -155,10 +162,10 @@ void SkinMeshRenderingPipeline::Draw(class ECSGroup* _ecs, CameraComponent* _cam
 			cmdList->IASetVertexBuffers(0, 2, vbvs);
 			cmdList->IASetIndexBuffer(&mesh->GetIBV());
 
-			/// 描画 (StartInstanceLocationにインデックスを渡す)
+			/// 描画
 			cmdList->DrawIndexedInstanced(
 				static_cast<UINT>(mesh->GetIndices().size()),
-				1, 0, 0, static_cast<UINT>(i)
+				1, 0, 0, 0
 			);
 		}
 	}

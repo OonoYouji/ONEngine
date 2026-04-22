@@ -41,6 +41,7 @@ class SkinMeshRenderingPipeline : public IRenderingPipeline {
 
 	enum {
 		ViewProjectionCBV = 0, ///< ViewProjectionのCBV (b0)
+		InstanceIndexCBV,      ///< インスタンスインデックス (b1)
 		InstanceDataSRV,       ///< 全インスタンスデータのSRV (t0)
 		WellForGPUSRV,         ///< モデルごとのボーンパレットのSRV (t1)
 		TextureSRV,            ///< テクスチャ配列のSRV (t2)
