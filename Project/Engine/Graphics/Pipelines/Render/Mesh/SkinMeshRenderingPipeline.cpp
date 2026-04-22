@@ -41,7 +41,7 @@ void SkinMeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMa
 
 		pipeline_->AddInputElement("POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT);
 		pipeline_->AddInputElement("TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT);
-		pipeline_->AddInputElement("NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT);
+		pipeline_->AddInputElement("NORMAL", 0, DXGI_FORMAT_R32G32B32A32_FLOAT);
 		pipeline_->AddInputElement("WEIGHT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1);
 		pipeline_->AddInputElement("INDEX", 0, DXGI_FORMAT_R32G32B32A32_SINT, 1);
 
@@ -51,8 +51,8 @@ void SkinMeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMa
 		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_PIXEL, 0);  /// 2: Material
 		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_PIXEL, 1);  /// 3: TextureId
 
-		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); /// WellForGPU
-		pipeline_->AddDescriptorRange(0, 32, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); /// Texture
+		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);    /// Range 0: WellForGPU (t0)
+		pipeline_->AddDescriptorRange(0, 2048, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); /// Range 1: Texture (t0)
 
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_VERTEX, 0); /// 4: WellForGPU
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 1);  /// 5: Texture
@@ -76,9 +76,15 @@ void SkinMeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMa
 
 	{
 		/// Buffer
-		transformBuffer_.Create(_dxm->GetDxDevice());
-		materialBuffer_.Create(_dxm->GetDxDevice());
-		textureIdBuffer_.Create(_dxm->GetDxDevice());
+		for (size_t i = 0; i < kMaxInstances; i++) {
+			transformBuffers_.push_back(std::make_unique<ConstantBuffer<Matrix4x4>>());
+			materialBuffers_.push_back(std::make_unique<ConstantBuffer<GPUMaterial>>());
+			textureIdBuffers_.push_back(std::make_unique<ConstantBuffer<uint32_t>>());
+
+			transformBuffers_.back()->Create(_dxm->GetDxDevice());
+			materialBuffers_.back()->Create(_dxm->GetDxDevice());
+			textureIdBuffers_.back()->Create(_dxm->GetDxDevice());
+		}
 	}
 
 
@@ -97,15 +103,15 @@ void SkinMeshRenderingPipeline::Draw(class ECSGroup* _ecs, CameraComponent* _cam
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	/// ViewProjection Bind
-	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(cmdList, ViewProjectionCBV);
-	/// Textures Bind
 	auto& textures = pAssetCollection_->GetTextures();
-	cmdList->SetGraphicsRootDescriptorTable(TextureSRV, (*textures.begin()).GetSRVGPUHandle()); ///< Texture
-
 
 	/// インスタンスごとの設定
+	size_t instanceIndex = 0;
 	for (auto& smRenderer : skinMeshArray->GetUsedComponents()) {
+		if (instanceIndex >= kMaxInstances) {
+			break; ///< 最大描画数を超えた場合は終了
+		}
+
 		if (!smRenderer || !smRenderer->enable) {
 			continue; ///< 無効なコンポーネントはスキップ
 		}
@@ -115,15 +121,18 @@ void SkinMeshRenderingPipeline::Draw(class ECSGroup* _ecs, CameraComponent* _cam
 		}
 
 		GameEntity* entity = smRenderer->GetOwner();
-		if (!entity || entity->active) {
+		if (!entity || !entity->active) {
 			continue; /// エンティティが無効な場合はスキップ
 		}
 
+		/// ViewProjection Bind (念のためループ内でバインド)
+		_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(cmdList, ViewProjectionCBV);
+
 		/// Transform Bind
-		transformBuffer_.SetMappedData(entity->GetTransform()->GetMatWorld());
+		transformBuffers_[instanceIndex]->SetMappedData(entity->GetTransform()->GetMatWorld());
 
 		/// Material Bind
-		materialBuffer_.SetMappedData(
+		materialBuffers_[instanceIndex]->SetMappedData(
 			GPUMaterial{
 				.baseColor = smRenderer->GetColor(),
 				.postEffectFlags = 1,
@@ -133,12 +142,13 @@ void SkinMeshRenderingPipeline::Draw(class ECSGroup* _ecs, CameraComponent* _cam
 
 		/// TextureId Bind
 		size_t textureIndex = pAssetCollection_->GetTextureIndex(smRenderer->GetTexturePath());
-		textureIdBuffer_.SetMappedData(textures[textureIndex].GetSRVDescriptorIndex());
+		textureIdBuffers_[instanceIndex]->SetMappedData(textures[textureIndex].GetSRVDescriptorIndex());
 
-		transformBuffer_.BindForGraphicsCommandList(cmdList, TransformCBV);
-		materialBuffer_.BindForGraphicsCommandList(cmdList, MaterialCBV);
+		transformBuffers_[instanceIndex]->BindForGraphicsCommandList(cmdList, TransformCBV);
+		materialBuffers_[instanceIndex]->BindForGraphicsCommandList(cmdList, MaterialCBV);
 		cmdList->SetGraphicsRootDescriptorTable(WellForGPUSRV, smRenderer->skinCluster_->paletteSRVHandle.second);
-		textureIdBuffer_.BindForGraphicsCommandList(cmdList, TextureIdCBV);
+		textureIdBuffers_[instanceIndex]->BindForGraphicsCommandList(cmdList, TextureIdCBV);
+		cmdList->SetGraphicsRootDescriptorTable(TextureSRV, (*textures.begin()).GetSRVGPUHandle()); ///< Texture (ループ内でバインド)
 
 
 		/// mesh の描画
@@ -158,7 +168,7 @@ void SkinMeshRenderingPipeline::Draw(class ECSGroup* _ecs, CameraComponent* _cam
 			);
 		}
 
-
+		instanceIndex++;
 	}
 
 }

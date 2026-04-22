@@ -52,7 +52,7 @@ Pixel main(PSInput input)
 
     // --- カメラ距離によるフェードアウト ---
     float distanceToCamera = length(input.worldPosition - cCamera.position.xyz);
-    float maxFadeDistance = 100.0f; // 100m先で完全に透明になる
+    float maxFadeDistance = 500.0f; // 100m先で完全に透明になる
     float fade = max(0.0f, 1.0f - (distanceToCamera / maxFadeDistance));
 
     gridColor.a *= fade;

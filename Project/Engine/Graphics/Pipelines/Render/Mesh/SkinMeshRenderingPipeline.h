@@ -59,9 +59,10 @@ private:
 
 	Asset::AssetCollection* pAssetCollection_ = nullptr;
 
-	ConstantBuffer<Matrix4x4> transformBuffer_;
-	ConstantBuffer<GPUMaterial> materialBuffer_;
-	ConstantBuffer<uint32_t> textureIdBuffer_;
+	static constexpr size_t kMaxInstances = 1024;
+	std::vector<std::unique_ptr<ConstantBuffer<Matrix4x4>>> transformBuffers_;
+	std::vector<std::unique_ptr<ConstantBuffer<GPUMaterial>>> materialBuffers_;
+	std::vector<std::unique_ptr<ConstantBuffer<uint32_t>>> textureIdBuffers_;
 
 };
 

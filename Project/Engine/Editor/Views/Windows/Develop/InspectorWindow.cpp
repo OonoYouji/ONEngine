@@ -79,7 +79,7 @@ InspectorWindow::InspectorWindow(const std::string& windowName, DxManager* dxm, 
 	RegisterComponent<SpriteRenderer>(ComponentType::Renderer, [&](IComponent* comp) { ComponentDebug::SpriteDebug(static_cast<SpriteRenderer*>(comp), pAssetCollection_); });
 	RegisterComponent<Line2DRenderer>(ComponentType::Renderer, [&]([[maybe_unused]] IComponent* comp) {});
 	RegisterComponent<Line3DRenderer>(ComponentType::Renderer, [&]([[maybe_unused]] IComponent* comp) {});
-	RegisterComponent<SkinMeshRenderer>(ComponentType::Renderer, [&](IComponent* comp) { ComponentDebug::SkinMeshRendererDebug(static_cast<SkinMeshRenderer*>(comp)); });
+	RegisterComponent<SkinMeshRenderer>(ComponentType::Renderer, [&](IComponent* comp) { ComponentDebug::SkinMeshRendererDebug(static_cast<SkinMeshRenderer*>(comp), pAssetCollection_); });
 	RegisterComponent<ScreenPostEffectTag>(ComponentType::Renderer, [&](IComponent* comp) { ComponentDebug::ScreenPostEffectTagDebug(static_cast<ScreenPostEffectTag*>(comp)); });
 	RegisterComponent<Skybox>(ComponentType::Renderer, [&](IComponent* comp) { ComponentDebug::SkyboxDebug(static_cast<Skybox*>(comp)); });
 

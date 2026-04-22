@@ -18,13 +18,16 @@ DxResource::~DxResource() = default;
 void DxResource::CreateResource(DxDevice* _dxDevice, size_t _sizeInByte) {
 	HRESULT result = S_FALSE;
 
+	/// 256バイトの倍数に切り上げる (ConstantBufferのアライメント制限)
+	size_t alignedSize = (_sizeInByte + 255) & ~255;
+
 	/// ヒープ設定
 	D3D12_HEAP_PROPERTIES uploadHeapProperties{};
 	uploadHeapProperties.Type = D3D12_HEAP_TYPE_UPLOAD;
 
 	D3D12_RESOURCE_DESC desc{};
 	desc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER; /// バッファリソース
-	desc.Width = _sizeInByte;                     /// リソースのサイズ
+	desc.Width = alignedSize;                     /// リソースのサイズ
 	desc.Height = 1;
 	desc.DepthOrArraySize = 1;
 	desc.MipLevels = 1;

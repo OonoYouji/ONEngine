@@ -21,7 +21,7 @@ void SkinMeshUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
 
 	for (auto& skinMesh : skinMeshArray->GetUsedComponents()) {
 		/// 以降の処理を無視する条件
-		if (!skinMesh || skinMesh->enable || !skinMesh->GetOwner()->active) {
+		if (!skinMesh || !skinMesh->enable || !skinMesh->GetOwner()->active) {
 			continue;
 		}
 
@@ -29,10 +29,7 @@ void SkinMeshUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
 		if (skinMesh->isChangingMesh_) {
 			Asset::Model* model = pAssetCollection_->GetModel(skinMesh->GetMeshPath());
 			if (!model) {
-				//!< nullの場合は適当なメッセージを出力してスキップ
-				Console::LogError("SkinMeshUpdateSystem::Update: Model not found for path: " + skinMesh->GetMeshPath());
-				skinMesh->isChangingMesh_ = false; ///< モデルが見つからない場合はメッシュ変更フラグを下げる
-				continue; ///< モデルが見つからない場合はスキップ
+				continue; ///< モデルが見つからない場合はスキップ（isChangingMesh_はtrueのままにする）
 			}
 
 
@@ -77,26 +74,39 @@ void SkinMeshUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
 }
 
 void SkinMeshUpdateSystem::UpdateSkeleton(SkinMeshRenderer* _smr) {
-	Skeleton& skeleton = _smr->skeleton_;
-
 	/// ------------------------------------
 	/// スケルトンの更新
 	/// ------------------------------------
-	for (Joint& joint : skeleton.joints) {
+	UpdateSkeletonRecursive(_smr, _smr->skeleton_.root, std::nullopt);
+}
 
-		NodeAnimation& rootAnimation = _smr->nodeAnimationMap_[joint.name];
+void SkinMeshUpdateSystem::UpdateSkeletonRecursive(SkinMeshRenderer* _smr, int32_t _jointIndex, const std::optional<int32_t>& _parentIndex) {
+	Skeleton& skeleton = _smr->skeleton_;
+	Joint& joint = skeleton.joints[_jointIndex];
 
-		if (!rootAnimation.translate.empty()) { joint.transform.position = ANIME_MATH::CalculateValue(rootAnimation.translate, _smr->animationTime_); }
-		if (!rootAnimation.rotate.empty()) { joint.transform.rotate = ANIME_MATH::CalculateValue(rootAnimation.rotate, _smr->animationTime_); }
-		if (!rootAnimation.scale.empty()) { joint.transform.scale = ANIME_MATH::CalculateValue(rootAnimation.scale, _smr->animationTime_); }
-		joint.transform.Update();
+	/// アニメーションの適用
+	auto it = _smr->nodeAnimationMap_.find(joint.name);
+	if (it != _smr->nodeAnimationMap_.end()) {
+		NodeAnimation& animation = it->second;
+		if (!animation.translate.empty()) { joint.transform.position = ANIME_MATH::CalculateValue(animation.translate, _smr->animationTime_); }
+		if (!animation.rotate.empty()) { joint.transform.rotate = ANIME_MATH::CalculateValue(animation.rotate, _smr->animationTime_); }
+		if (!animation.scale.empty()) { joint.transform.scale = ANIME_MATH::CalculateValue(animation.scale, _smr->animationTime_); }
+	}
+	joint.transform.Update();
 
+	/// スケルトン空間行列の計算 (Local * Parent)
+	if (_parentIndex) {
+		joint.matSkeletonSpace = joint.transform.matWorld * skeleton.joints[*_parentIndex].matSkeletonSpace;
+	} else {
 		joint.matSkeletonSpace = joint.transform.matWorld;
-		if (joint.parent) {
-			joint.matSkeletonSpace *= skeleton.joints[*joint.parent].matSkeletonSpace;
-		}
+	}
 
-		joint.matWorld = joint.matSkeletonSpace * _smr->GetOwner()->GetTransform()->matWorld;
+	/// ワールド行列の計算
+	joint.matWorld = joint.matSkeletonSpace * _smr->GetOwner()->GetTransform()->matWorld;
+
+	/// 子の更新
+	for (int32_t childIndex : joint.children) {
+		UpdateSkeletonRecursive(_smr, childIndex, _jointIndex);
 	}
 }
 
@@ -115,6 +125,7 @@ void SkinMeshUpdateSystem::UpdateSkinCluster(SkinMeshRenderer* _smr) {
 			continue; ///< 範囲外の場合はスキップ
 		}
 
+		/// スキニング行列 = 逆バインドポーズ行列 * スケルトン空間行列
 		skinCluster.mappedPalette[jointIndex].matSkeletonSpace =
 			skinCluster.matBindPoseInverseArray[jointIndex] * skeleton.joints[jointIndex].matSkeletonSpace;
 

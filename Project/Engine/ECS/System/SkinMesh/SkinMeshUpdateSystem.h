@@ -35,6 +35,9 @@ public:
 	void UpdateSkinCluster(SkinMeshRenderer* _smr);
 
 private:
+	/// @brief 再帰的にスケルトンを更新
+	void UpdateSkeletonRecursive(SkinMeshRenderer* _smr, int32_t _jointIndex, const std::optional<int32_t>& _parentIndex);
+
 	/// =========================================
 	/// private : objects
 	/// =========================================
