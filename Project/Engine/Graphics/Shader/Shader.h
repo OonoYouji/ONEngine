@@ -63,6 +63,12 @@ public:
 	ComPtr<IDxcBlob> ms_;
 	ComPtr<IDxcBlob> as_;
 
+	ComPtr<IDxcBlob> vsReflection_;
+	ComPtr<IDxcBlob> psReflection_;
+	ComPtr<IDxcBlob> csReflection_;
+	ComPtr<IDxcBlob> msReflection_;
+	ComPtr<IDxcBlob> asReflection_;
+
 	class ShaderCompiler* pShaderCompiler_ = nullptr;
 
 
@@ -77,6 +83,12 @@ public:
 	IDxcBlob* GetCS() const { return cs_.Get(); }
 	IDxcBlob* GetMS() const { return ms_.Get(); }
 	IDxcBlob* GetAS() const { return as_.Get(); }
+
+	IDxcBlob* GetVSReflection() const { return vsReflection_.Get(); }
+	IDxcBlob* GetPSReflection() const { return psReflection_.Get(); }
+	IDxcBlob* GetCSReflection() const { return csReflection_.Get(); }
+	IDxcBlob* GetMSReflection() const { return msReflection_.Get(); }
+	IDxcBlob* GetASReflection() const { return asReflection_.Get(); }
 
 };
 

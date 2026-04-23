@@ -31,13 +31,20 @@ public:
 
 	void Initialize();	
 
+	struct ShaderCompileResult {
+		ComPtr<IDxcBlob> shaderBlob;
+		ComPtr<IDxcBlob> reflectionBlob;
+	};
+
 	/// @brief HLSLシェーダーのコンパイル
 	/// @param _filePath HLSLファイルのパス
 	/// @param _profile HLSLプロファイル
 	/// @param _entryPoint エントリーポイント関数名 
-	/// @return コンパイル後のシェーダーブロブ
-	ComPtr<IDxcBlob> CompileShader(const std::wstring& _filePath, const wchar_t* _profile, const std::wstring& _entryPoint);
+	/// @return コンパイル結果
+	ShaderCompileResult CompileShader(const std::wstring& _filePath, const wchar_t* _profile, const std::wstring& _entryPoint);
 
+
+	ComPtr<IDxcUtils> GetDxcUtils() const { return dxcUtils_; }
 
 private:
 

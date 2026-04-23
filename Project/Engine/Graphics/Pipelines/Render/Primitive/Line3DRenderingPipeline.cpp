@@ -24,11 +24,6 @@ void Line3DRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 		pipeline_.reset(new GraphicsPipeline());
 		pipeline_->SetShader(&shader);
 
-		pipeline_->AddInputElement("POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT);
-		pipeline_->AddInputElement("COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT);
-
-		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 0); ///< view projection
-
 		pipeline_->SetFillMode(D3D12_FILL_MODE_SOLID);
 		pipeline_->SetCullMode(D3D12_CULL_MODE_NONE);
 		pipeline_->SetTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE);
@@ -36,7 +31,7 @@ void Line3DRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 		pipeline_->SetDepthStencilDesc(DefaultDepthStencilDesc());
 
 		/// create pipeline
-		pipeline_->CreatePipeline(_dxm->GetDxDevice());
+		pipeline_->CreatePipeline(_dxm->GetDxDevice(), _shaderCompiler);
 	}
 
 

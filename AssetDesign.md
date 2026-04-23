@@ -32,6 +32,7 @@
     - metallic roughness guid
 
 ### Shader
+- **useShader** "....cs.hlsl"
 - **stage** vs/ps/cs/as/ms
 - **entryPoint** "main"
 - **profile** 6_6

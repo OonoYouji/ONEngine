@@ -7,7 +7,6 @@ using namespace ONEngine;
 
 /// engine
 #include "ShaderCompiler.h"
-#include "Shader.h"
 
 Shader::Shader() = default;
 Shader::~Shader() = default;
@@ -19,23 +18,28 @@ void Shader::Initialize(ShaderCompiler* _compiler) {
 bool Shader::CompileShader(const std::wstring& _filePath, const wchar_t* _profile, Type _type, const std::wstring& _entryPoint) {
 	/// ----- Typeごとにコンパイル結果を保存 ----- ///
 
-	ComPtr<IDxcBlob> shader = pShaderCompiler_->CompileShader(_filePath, _profile, _entryPoint);
+	ShaderCompiler::ShaderCompileResult result = pShaderCompiler_->CompileShader(_filePath, _profile, _entryPoint);
 
 	switch (_type) {
 	case Shader::Type::vs:
-		vs_ = shader;
+		vs_ = result.shaderBlob;
+		vsReflection_ = result.reflectionBlob;
 		return true;
 	case Shader::Type::ps:
-		ps_ = shader;
+		ps_ = result.shaderBlob;
+		psReflection_ = result.reflectionBlob;
 		return true;
 	case Shader::Type::cs:
-		cs_ = shader;
+		cs_ = result.shaderBlob;
+		csReflection_ = result.reflectionBlob;
 		return true;
 	case Shader::Type::ms:
-		ms_ = shader;
+		ms_ = result.shaderBlob;
+		msReflection_ = result.reflectionBlob;
 		return true;
 	case Shader::Type::as:
-		as_ = shader;
+		as_ = result.shaderBlob;
+		asReflection_ = result.reflectionBlob;
 		return true;
 	}
 

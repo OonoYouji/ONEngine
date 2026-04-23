@@ -4,11 +4,16 @@ using namespace ONEngine;
 
 /// directx
 #include <DirectX-Headers/include/directx/d3dx12_pipeline_state_stream.h>
+#include <DirectX-Headers/include/directx/d3d12shader.h>
 #include <comdef.h>
+
+/// comment
+#pragma comment(lib, "dxguid.lib")
 
 /// engine
 #include "Engine/Core/DirectX12/Device/DxDevice.h"
 #include "Engine/Core/DirectX12/Command/DxCommand.h"
+#include "ShaderCompiler.h"
 #include "Engine/Core/Utility/Tools/Assert.h"
 #include "Engine/Core/Utility/Tools/Log.h"
 
@@ -41,14 +46,14 @@ GraphicsPipeline::GraphicsPipeline() {
 }
 GraphicsPipeline::~GraphicsPipeline() {}
 
-void GraphicsPipeline::CreatePipeline(DxDevice* _dxDevice) {
+void GraphicsPipeline::CreatePipeline(DxDevice* _dxDevice, ShaderCompiler* _shaderCompiler) {
 	/// root signatureとpipeline state objectを生成する
-	CreateRootSignature(_dxDevice);
+	CreateRootSignature(_dxDevice, _shaderCompiler);
 
 	if (pShader_->GetMS() != nullptr) {
 		CreateMeshPipelineStateObject(_dxDevice);
 	} else {
-		CreatePipelineStateObject(_dxDevice);
+		CreatePipelineStateObject(_dxDevice, _shaderCompiler);
 	}
 }
 
@@ -207,8 +212,12 @@ void GraphicsPipeline::SetPipelineStateForCommandList(DxCommand* _dxCommand) {
 
 
 
-void GraphicsPipeline::CreateRootSignature(DxDevice* _dxDevice) {
+void GraphicsPipeline::CreateRootSignature(DxDevice* _dxDevice, ShaderCompiler* _shaderCompiler) {
 	/// ----- root signatureの生成 ----- ///
+
+	if (_shaderCompiler) {
+		ReflectRootSignature(_shaderCompiler);
+	}
 
 	HRESULT hr = S_FALSE;
 	ComPtr<ID3DBlob> signatureBlob;
@@ -241,8 +250,12 @@ void GraphicsPipeline::CreateRootSignature(DxDevice* _dxDevice) {
 	Assert(SUCCEEDED(hr), "error...");
 }
 
-void GraphicsPipeline::CreatePipelineStateObject(DxDevice* _dxDevice) {
+void GraphicsPipeline::CreatePipelineStateObject(DxDevice* _dxDevice, ShaderCompiler* _shaderCompiler) {
 	/// ----- pipeline state objectの生成 ----- ///
+
+	if (_shaderCompiler) {
+		ReflectInputLayout(_shaderCompiler);
+	}
 
 	/// input layoutの設定
 	for (uint32_t i = 0; i < inputElements_.size(); ++i) {
@@ -476,4 +489,96 @@ D3D12_STATIC_SAMPLER_DESC StaticSampler::ClampSampler() {
 	sampler.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 
 	return sampler;
+}
+
+void GraphicsPipeline::ReflectInputLayout(ShaderCompiler* _shaderCompiler) {
+	if (!pShader_ || !pShader_->GetVSReflection()) return;
+
+	IDxcBlob* vsReflectionBlob = pShader_->GetVSReflection();
+	DxcBuffer reflectionBuffer;
+	reflectionBuffer.Ptr = vsReflectionBlob->GetBufferPointer();
+	reflectionBuffer.Size = vsReflectionBlob->GetBufferSize();
+	reflectionBuffer.Encoding = 0;
+
+	ComPtr<ID3D12ShaderReflection> shaderReflection;
+	_shaderCompiler->GetDxcUtils()->CreateReflection(&reflectionBuffer, IID_PPV_ARGS(&shaderReflection));
+
+	D3D12_SHADER_DESC shaderDesc;
+	shaderReflection->GetDesc(&shaderDesc);
+
+	for (UINT i = 0; i < shaderDesc.InputParameters; ++i) {
+		D3D12_SIGNATURE_PARAMETER_DESC paramDesc;
+		shaderReflection->GetInputParameterDesc(i, &paramDesc);
+
+		DXGI_FORMAT format = DXGI_FORMAT_UNKNOWN;
+		if (paramDesc.Mask == 1) {
+			if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_UINT32) format = DXGI_FORMAT_R32_UINT;
+			else if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_SINT32) format = DXGI_FORMAT_R32_SINT;
+			else if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_FLOAT32) format = DXGI_FORMAT_R32_FLOAT;
+		}
+		else if (paramDesc.Mask <= 3) {
+			if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_UINT32) format = DXGI_FORMAT_R32G32_UINT;
+			else if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_SINT32) format = DXGI_FORMAT_R32G32_SINT;
+			else if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_FLOAT32) format = DXGI_FORMAT_R32G32_FLOAT;
+		}
+		else if (paramDesc.Mask <= 7) {
+			if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_UINT32) format = DXGI_FORMAT_R32G32B32_UINT;
+			else if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_SINT32) format = DXGI_FORMAT_R32G32B32_SINT;
+			else if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_FLOAT32) format = DXGI_FORMAT_R32G32B32_FLOAT;
+		}
+		else if (paramDesc.Mask <= 15) {
+			if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_UINT32) format = DXGI_FORMAT_R32G32B32A32_UINT;
+			else if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_SINT32) format = DXGI_FORMAT_R32G32B32A32_SINT;
+			else if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_FLOAT32) format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		}
+
+		AddInputElement(paramDesc.SemanticName, paramDesc.SemanticIndex, format);
+	}
+}
+
+void GraphicsPipeline::ReflectRootSignature(ShaderCompiler* _shaderCompiler) {
+	if (!pShader_) return;
+
+	auto reflectStage = [&](IDxcBlob* _reflectionBlob, D3D12_SHADER_VISIBILITY _visibility) {
+		if (!_reflectionBlob) return;
+
+		DxcBuffer reflectionBuffer;
+		reflectionBuffer.Ptr = _reflectionBlob->GetBufferPointer();
+		reflectionBuffer.Size = _reflectionBlob->GetBufferSize();
+		reflectionBuffer.Encoding = 0;
+
+		ComPtr<ID3D12ShaderReflection> shaderReflection;
+		_shaderCompiler->GetDxcUtils()->CreateReflection(&reflectionBuffer, IID_PPV_ARGS(&shaderReflection));
+
+		D3D12_SHADER_DESC shaderDesc;
+		shaderReflection->GetDesc(&shaderDesc);
+
+		for (UINT i = 0; i < shaderDesc.BoundResources; ++i) {
+			D3D12_SHADER_INPUT_BIND_DESC resourceDesc;
+			shaderReflection->GetResourceBindingDesc(i, &resourceDesc);
+
+			switch (resourceDesc.Type) {
+			case D3D_SIT_CBUFFER:
+				AddCBV(_visibility, resourceDesc.BindPoint);
+				break;
+			case D3D_SIT_TBUFFER:
+			case D3D_SIT_TEXTURE:
+			case D3D_SIT_STRUCTURED:
+			case D3D_SIT_BYTEADDRESS:
+				AddSRV(_visibility, resourceDesc.BindPoint);
+				break;
+			case D3D_SIT_SAMPLER:
+				AddStaticSampler(_visibility, resourceDesc.BindPoint);
+				break;
+			default:
+				break;
+			}
+		}
+	};
+
+	reflectStage(pShader_->GetVSReflection(), D3D12_SHADER_VISIBILITY_VERTEX);
+	reflectStage(pShader_->GetPSReflection(), D3D12_SHADER_VISIBILITY_PIXEL);
+	reflectStage(pShader_->GetCSReflection(), D3D12_SHADER_VISIBILITY_ALL);
+	reflectStage(pShader_->GetMSReflection(), D3D12_SHADER_VISIBILITY_MESH);
+	reflectStage(pShader_->GetASReflection(), D3D12_SHADER_VISIBILITY_AMPLIFICATION);
 }

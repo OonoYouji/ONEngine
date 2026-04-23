@@ -35,7 +35,7 @@ void ShaderCompiler::Initialize() {
 }
 
 
-ComPtr<IDxcBlob> ShaderCompiler::CompileShader(const std::wstring& _filePath, const wchar_t* _profile, const std::wstring& _entryPoint) {
+ShaderCompiler::ShaderCompileResult ShaderCompiler::CompileShader(const std::wstring& _filePath, const wchar_t* _profile, const std::wstring& _entryPoint) {
 	HRESULT hr = S_FALSE;
 
 	/// hlslを読み込む
@@ -95,8 +95,13 @@ ComPtr<IDxcBlob> ShaderCompiler::CompileShader(const std::wstring& _filePath, co
 	hr = shaderResult->GetOutput(DXC_OUT_OBJECT, IID_PPV_ARGS(&shaderBlob), nullptr);
 	Assert(SUCCEEDED(hr), "compile Not succeeded");
 
+	/// Reflectionの取得
+	ComPtr<IDxcBlob> reflectionBlob = nullptr;
+	hr = shaderResult->GetOutput(DXC_OUT_REFLECTION, IID_PPV_ARGS(&reflectionBlob), nullptr);
+	Assert(SUCCEEDED(hr), "reflection Not succeeded");
+
 	/// 成功したログ出力
 	Console::Log(std::format(L"[Load Resource] type:Shader, path:\"{}\", profile:\"{}\"", _filePath, _profile));
 
-	return shaderBlob;
+	return { shaderBlob, reflectionBlob };
 }

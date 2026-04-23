@@ -45,7 +45,7 @@ public:
 	~GraphicsPipeline();
 
 	/// @brief 今までにセットした値を使ってパイプラインを生成する
-	void CreatePipeline(class DxDevice* _dxDevice);
+	void CreatePipeline(class DxDevice* _dxDevice, class ShaderCompiler* _shaderCompiler = nullptr);
 
 
 	/*--- root signature ---*/
@@ -139,12 +139,15 @@ private:
 	/// ===================================================
 
 	/// @brief root signatureを生成する
-	void CreateRootSignature(class DxDevice* _dxDevice);
+	void CreateRootSignature(class DxDevice* _dxDevice, class ShaderCompiler* _shaderCompiler = nullptr);
 
 	/// @brief pipeline state objectを生成する
-	void CreatePipelineStateObject(class DxDevice* _dxDevice);
+	void CreatePipelineStateObject(class DxDevice* _dxDevice, class ShaderCompiler* _shaderCompiler = nullptr);
 
 	void CreateMeshPipelineStateObject(class DxDevice* _dxDevice);
+
+	void ReflectRootSignature(class ShaderCompiler* _shaderCompiler);
+	void ReflectInputLayout(class ShaderCompiler* _shaderCompiler);
 
 
 private:

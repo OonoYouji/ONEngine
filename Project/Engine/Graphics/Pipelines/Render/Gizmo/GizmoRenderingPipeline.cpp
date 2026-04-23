@@ -30,21 +30,15 @@ void GizmoRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManag
 
 		pipeline->SetShader(&shader);
 
-		/// input element setting
-		pipeline->AddInputElement("POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT);
-		pipeline->AddInputElement("COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT);
-
 		pipeline->SetFillMode(D3D12_FILL_MODE_SOLID);
 		pipeline->SetCullMode(D3D12_CULL_MODE_NONE);
 		pipeline->SetBlendDesc(BlendMode::None());
 		pipeline->SetTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE);
 
-		pipeline->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 0); ///< view projection
-
 		pipeline->SetDepthStencilDesc(DefaultDepthStencilDesc());
 
 		/// create pipeline
-		pipeline->CreatePipeline(_dxm->GetDxDevice());
+		pipeline->CreatePipeline(_dxm->GetDxDevice(), _shaderCompiler);
 	}
 
 
