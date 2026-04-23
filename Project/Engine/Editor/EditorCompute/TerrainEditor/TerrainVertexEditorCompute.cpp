@@ -48,7 +48,7 @@ void TerrainVertexEditorCompute::Initialize(ONEngine::ShaderCompiler* _shaderCom
 	}
 }
 
-void TerrainVertexEditorCompute::Execute(ONEngine::EntityComponentSystem* _ecs, ONEngine::DxCommand* _dxCommand, ONEngine::AssetCollection* _assetCollection) {
+void TerrainVertexEditorCompute::Execute(ONEngine::EntityComponentSystem* _ecs, ONEngine::DxCommand* _dxCommand, ONEngine::Asset::AssetCollection* _assetCollection) {
 
 	ONEngine::ComponentArray<ONEngine::Terrain>* terrainArray = _ecs->GetCurrentGroup()->GetComponentArray<ONEngine::Terrain>();
 	if (!terrainArray || terrainArray->GetUsedComponents().empty()) {
@@ -123,8 +123,8 @@ void TerrainVertexEditorCompute::Execute(ONEngine::EntityComponentSystem* _ecs, 
 	pTerrain->GetRwVertices().UAVBindForComputeCommandList(cmdList, UAV_VERTICES);
 
 	/// SRV
-	const ONEngine::Texture* positionTexture = _assetCollection->GetTexture("./Assets/Scene/RenderTexture/debugWorldPosition");
-	const ONEngine::Texture* flagTexture = _assetCollection->GetTexture("./Assets/Scene/RenderTexture/debugFlags");
+	const ONEngine::Asset::Texture* positionTexture = _assetCollection->GetTexture("./Assets/Scene/RenderTexture/debugWorldPosition");
+	const ONEngine::Asset::Texture* flagTexture = _assetCollection->GetTexture("./Assets/Scene/RenderTexture/debugFlags");
 
 	cmdList->SetComputeRootDescriptorTable(SRV_POSITION_TEXTURE, positionTexture->GetSRVGPUHandle());
 	cmdList->SetComputeRootDescriptorTable(SRV_FLAG_TEXTURE, flagTexture->GetSRVGPUHandle());

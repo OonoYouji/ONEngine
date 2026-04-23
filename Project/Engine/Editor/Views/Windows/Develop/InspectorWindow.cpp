@@ -18,6 +18,7 @@
 #include "Engine/Editor/Manager/EditorManager.h"
 #include "Engine/Editor/Math/ImGuiMath.h"
 #include "Engine/Editor/Math/ImGuiSelection.h"
+#include "Engine/Editor/Math/MetaData/AssetMetaReflection.h"
 
 /// compute
 #include "Engine/ECS/Component/Components/ComputeComponents/Light/Light.h"
@@ -48,7 +49,7 @@ using namespace ONEngine;
 namespace Editor {
 
 
-InspectorWindow::InspectorWindow(const std::string& windowName, DxManager* dxm, EntityComponentSystem* ecs, AssetCollection* assetCollection, EditorManager* editorManager)
+InspectorWindow::InspectorWindow(const std::string& windowName, DxManager* dxm, EntityComponentSystem* ecs, Asset::AssetCollection* assetCollection, EditorManager* editorManager)
 	: pEcs_(ecs), pDxManager_(dxm), pAssetCollection_(assetCollection), pEditorManager_(editorManager) {
 	windowName_ = windowName;
 
@@ -78,7 +79,7 @@ InspectorWindow::InspectorWindow(const std::string& windowName, DxManager* dxm, 
 	RegisterComponent<SpriteRenderer>(ComponentType::Renderer, [&](IComponent* comp) { ComponentDebug::SpriteDebug(static_cast<SpriteRenderer*>(comp), pAssetCollection_); });
 	RegisterComponent<Line2DRenderer>(ComponentType::Renderer, [&]([[maybe_unused]] IComponent* comp) {});
 	RegisterComponent<Line3DRenderer>(ComponentType::Renderer, [&]([[maybe_unused]] IComponent* comp) {});
-	RegisterComponent<SkinMeshRenderer>(ComponentType::Renderer, [&](IComponent* comp) { ComponentDebug::SkinMeshRendererDebug(static_cast<SkinMeshRenderer*>(comp)); });
+	RegisterComponent<SkinMeshRenderer>(ComponentType::Renderer, [&](IComponent* comp) { ComponentDebug::SkinMeshRendererDebug(static_cast<SkinMeshRenderer*>(comp), pAssetCollection_); });
 	RegisterComponent<ScreenPostEffectTag>(ComponentType::Renderer, [&](IComponent* comp) { ComponentDebug::ScreenPostEffectTagDebug(static_cast<ScreenPostEffectTag*>(comp)); });
 	RegisterComponent<Skybox>(ComponentType::Renderer, [&](IComponent* comp) { ComponentDebug::SkyboxDebug(static_cast<Skybox*>(comp)); });
 
@@ -442,33 +443,73 @@ void InspectorWindow::DrawComponentInnerContent(ONEngine::IComponent* comp, size
 void InspectorWindow::AssetInspector() {
 	/// Typeごとに表示を変える
 
-	AssetType type = pAssetCollection_->GetAssetTypeFromGuid(ImGuiSelection::GetSelectedObject());
+	Asset::AssetType type = pAssetCollection_->GetAssetTypeFromGuid(ImGuiSelection::GetSelectedObject());
 
 	switch(type) {
-	case AssetType::Texture:
+	case Asset::AssetType::Texture:
 	{
 		ImGui::Text("Texture Inspector");
-		Texture* texture = pAssetCollection_->GetTextureFromGuid(ImGuiSelection::GetSelectedObject());
+		ONEngine::Asset::Texture* texture = pAssetCollection_->GetTextureFromGuid(ImGuiSelection::GetSelectedObject());
 		if(texture) {
 			TextureAssetInspector(texture);
 		}
 
 	}
 	break;
-	case AssetType::Audio:
+	case Asset::AssetType::Audio:
 		ImGui::Text("Audio Inspector");
 		break;
-	case AssetType::Mesh:
+	case Asset::AssetType::Mesh:
 		ImGui::Text("Mesh Inspector");
 		break;
-	case AssetType::Material:
+	case Asset::AssetType::Material:
 		ImGui::Text("Material Inspector");
+
+		/*
+		* use shader     : 使用するshader
+		* albedo color	 : ベースの色
+		* albedo texture : 使用するテクスチャ
+		* used normal	 : 法線マップを使用するかどうか
+		* normal texture : 使用する法線マップ
+		*/
+
+
+
+
 		break;
 	}
 
+
+	{
+		static ONEngine::Asset::Texture::MetaData meta{};
+		DrawMetaUI(meta);
+	}
+
+	{
+		static ONEngine::Asset::AudioClip::MetaData meta{};
+		DrawMetaUI(meta);
+	}
+
+	{
+		static ONEngine::Asset::Material::MetaData meta{};
+		DrawMetaUI(meta);
+	}
+
+	{
+		static ONEngine::Asset::Shader::MetaData meta{};
+		DrawMetaUI(meta);
+	}
+
+	{
+		static ONEngine::Asset::Model::MetaData meta{};
+		DrawMetaUI(meta);
+	}
+
+
+
 }
 
-void InspectorWindow::TextureAssetInspector(Texture* tex) {
+void InspectorWindow::TextureAssetInspector(ONEngine::Asset::Texture* tex) {
 	/// ----- テクスチャのインスペクター表示 ----- /
 
 	/// previewのための枠を確保

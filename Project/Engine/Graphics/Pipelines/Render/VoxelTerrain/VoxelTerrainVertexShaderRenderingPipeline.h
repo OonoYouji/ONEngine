@@ -5,9 +5,18 @@
 
 
 namespace ONEngine {
+class DxManager;
+class ECSGroup;
+class CameraComponent;
+}
 
+namespace ONEngine::Asset {
 class AssetCollection;
+}
 
+
+
+namespace ONEngine {
 
 /// ///////////////////////////////////////////////////
 /// VertexShaderによるVoxelTerrain描画パイプライン
@@ -24,12 +33,12 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	VoxelTerrainVertexShaderRenderingPipeline(AssetCollection* _ac);
+	VoxelTerrainVertexShaderRenderingPipeline(Asset::AssetCollection* _ac);
 	~VoxelTerrainVertexShaderRenderingPipeline();
 
 	/// --------------- override methods --------------- ///
-	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxm) override;
-	void Draw(class ECSGroup* _ecs, class CameraComponent* _camera, DxCommand* _dxCommand) override;
+	void Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) override;
+	void Draw(ECSGroup* _ecs, CameraComponent* _camera, DxCommand* _dxCommand) override;
 
 
 private:
@@ -38,8 +47,8 @@ private:
 	/// ===================================================
 
 	/// --------------- other class pointers --------------- ///
-	class AssetCollection* pAssetCollection_;
-	class DxManager* pDxManager_;
+	Asset::AssetCollection* pAssetCollection_;
+	DxManager* pDxManager_;
 
 };
 

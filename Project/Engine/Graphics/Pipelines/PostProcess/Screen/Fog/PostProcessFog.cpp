@@ -34,7 +34,7 @@ void PostProcessFog::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm
 
 }
 
-void PostProcessFog::Execute(const std::string& _textureName, DxCommand* _dxCommand, AssetCollection* _assetCollection, EntityComponentSystem* _entityComponentSystem) {
+void PostProcessFog::Execute(const std::string& _textureName, DxCommand* _dxCommand, Asset::AssetCollection* _assetCollection, EntityComponentSystem* _entityComponentSystem) {
 
 	ECSGroup* currentGroup = _entityComponentSystem->GetCurrentGroup();
 	if(!currentGroup) {

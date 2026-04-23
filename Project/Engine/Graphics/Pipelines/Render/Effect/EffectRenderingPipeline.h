@@ -11,6 +11,18 @@
 #include "Engine/Core/Utility/Math/Matrix4x4.h"
 #include "Engine/Core/Utility/Math/Vector4.h"
 
+namespace ONEngine {
+class ShaderCompiler;
+class DxManager;
+class ECSGroup;
+class CameraComponent;
+}
+
+namespace ONEngine::Asset {
+class AssetCollection;
+}
+
+
 /// //////////////////////////////////////////////////
 /// エフェクトの描画パイプライン
 /// //////////////////////////////////////////////////
@@ -35,12 +47,12 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	EffectRenderingPipeline(class AssetCollection* _assetCollection);
+	EffectRenderingPipeline(Asset::AssetCollection* _assetCollection);
 	~EffectRenderingPipeline();
 
-	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxm) override;
+	void Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) override;
 
-	void Draw(class ECSGroup* _ecs, class CameraComponent* _camera, DxCommand* _dxCommand) override;
+	void Draw(ECSGroup* _ecs, CameraComponent* _camera, DxCommand* _dxCommand) override;
 
 
 private:
@@ -48,7 +60,7 @@ private:
 	/// private : objects
 	/// ====================================================
 
-	class AssetCollection* pAssetCollection_ = nullptr;
+	Asset::AssetCollection* pAssetCollection_ = nullptr;
 
 	const size_t kMaxRenderingMeshCount_ = size_t(std::pow(2, 20));
 	StructuredBuffer<Matrix4x4> transformBuffer_;

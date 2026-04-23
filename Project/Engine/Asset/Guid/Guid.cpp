@@ -21,13 +21,11 @@ constexpr size_t kGuidHexSegmentLength = 16;
 
 
 void ONEngine::from_json(const nlohmann::json& _j, Guid& _guid) {
-	_guid = Guid::FromString(_j.value("guid", ""));
+    _guid = Guid::FromString(_j.get<std::string>());
 }
 
 void ONEngine::to_json(nlohmann::json& _j, const Guid& _guid) {
-	_j = nlohmann::json{
-		{ "guid", _guid.ToString() },
-	};
+    _j = _guid.ToString();
 }
 
 

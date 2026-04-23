@@ -63,7 +63,7 @@ void PostProcessLighting::Initialize(ShaderCompiler* _shaderCompiler, DxManager*
 
 }
 
-void PostProcessLighting::Execute(const std::string& _textureName, DxCommand* _dxCommand, AssetCollection* _assetCollection, EntityComponentSystem* _pEntityComponentSystem) {
+void PostProcessLighting::Execute(const std::string& _textureName, DxCommand* _dxCommand, Asset::AssetCollection* _assetCollection, EntityComponentSystem* _pEntityComponentSystem) {
 
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 

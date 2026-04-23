@@ -14,7 +14,7 @@ SceneRenderTexture::SceneRenderTexture() {
 
 void SceneRenderTexture::Initialize( 
 	const std::string& _name, const Vector4& _clearColor, const Vector2& _textureSize,
-	DxManager* _dxm, AssetCollection* _assetCollection) {
+	DxManager* _dxm, Asset::AssetCollection* _assetCollection) {
 
 	/// パラメータの設定
 	name_ = _name;

@@ -86,7 +86,7 @@ bool ImMathf::InputText(const char* _label, std::string* _text, ImGuiInputTextFl
 	);
 }
 
-bool ImMathf::MaterialEdit(const char* _label, ONEngine::GPUMaterial* _material, ONEngine::AssetCollection* _assetCollection) {
+bool ImMathf::MaterialEdit(const char* _label, ONEngine::GPUMaterial* _material, ONEngine::Asset::AssetCollection* _assetCollection) {
 	/// nullptr check
 	if(!_material) {
 		return false;
@@ -141,8 +141,8 @@ bool ImMathf::MaterialEdit(const char* _label, ONEngine::GPUMaterial* _material,
 						AssetPayload* assetPayload = *static_cast<AssetPayload**>(payload->Data);
 						std::string path = assetPayload->filePath;
 
-						ONEngine::AssetType type = ONEngine::GetAssetTypeFromExtension(ONEngine::FileSystem::FileExtension(path));
-						if(type == ONEngine::AssetType::Texture) {
+						ONEngine::Asset::AssetType type = ONEngine::Asset::GetAssetTypeFromExtension(ONEngine::FileSystem::FileExtension(path));
+						if(type == ONEngine::Asset::AssetType::Texture) {
 							size_t droppedTextureIndex = _assetCollection->GetTextureIndex(path);
 							_material->baseTextureId = static_cast<int32_t>(droppedTextureIndex);
 							isEdit = true;
@@ -154,7 +154,7 @@ bool ImMathf::MaterialEdit(const char* _label, ONEngine::GPUMaterial* _material,
 
 			/// texture idが有効値じゃなければ無視
 			if(_material->baseTextureId >= 0) {
-				const ONEngine::Texture* baseTexture = _assetCollection->GetTexture(_assetCollection->GetTexturePath(_material->baseTextureId));
+				const ONEngine::Asset::Texture* baseTexture = _assetCollection->GetTexture(_assetCollection->GetTexturePath(_material->baseTextureId));
 				if(baseTexture) {
 					ImTextureID textureId = reinterpret_cast<ImTextureID>(baseTexture->GetSRVGPUHandle().ptr);
 					ImGui::Image(textureId, ImVec2(100, 100), ImVec2(0, 0), ImVec2(1, 1), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
@@ -186,7 +186,7 @@ bool ImMathf::MaterialEdit(const char* _label, ONEngine::GPUMaterial* _material,
 
 			/// normal texture idが有効値じゃなければ無視
 			if(_material->normalTextureId >= 0) {
-				const ONEngine::Texture* normalTexture = _assetCollection->GetTexture(_assetCollection->GetTexturePath(_material->normalTextureId));
+				const ONEngine::Asset::Texture* normalTexture = _assetCollection->GetTexture(_assetCollection->GetTexturePath(_material->normalTextureId));
 				if(normalTexture) {
 					ImTextureID textureId = reinterpret_cast<ImTextureID>(normalTexture->GetSRVGPUHandle().ptr);
 					ImGui::Image(textureId, ImVec2(100, 100), ImVec2(0, 0), ImVec2(1, 1), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));

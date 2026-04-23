@@ -1,4 +1,4 @@
-#include "RiverRenderingPipeline.h"
+﻿#include "RiverRenderingPipeline.h"
 
 using namespace ONEngine;
 
@@ -10,7 +10,7 @@ using namespace ONEngine;
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 #include "Engine/Asset/Collection/AssetCollection.h"
 
-RiverRenderingPipeline::RiverRenderingPipeline(AssetCollection* _assetCollection) : pAssetCollection_(_assetCollection) {}
+RiverRenderingPipeline::RiverRenderingPipeline(Asset::AssetCollection* _assetCollection) : pAssetCollection_(_assetCollection) {}
 RiverRenderingPipeline::~RiverRenderingPipeline() = default;
 
 void RiverRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {
@@ -36,7 +36,7 @@ void RiverRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManag
 		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 0);
 		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_PIXEL, 1);
 
-		pipeline_->AddDescriptorRange(0, MAX_TEXTURE_COUNT, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); /// texture
+		pipeline_->AddDescriptorRange(0, Asset::MAX_TEXTURE_COUNT, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); /// texture
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 0);
 
 		pipeline_->AddStaticSampler(D3D12_SHADER_VISIBILITY_PIXEL, 0);

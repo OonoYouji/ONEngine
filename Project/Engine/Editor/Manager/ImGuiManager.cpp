@@ -658,7 +658,7 @@ ImGuiManager::~ImGuiManager() {
 
 
 
-void ImGuiManager::Initialize(ONEngine::AssetCollection* _assetCollection) {
+void ImGuiManager::Initialize(ONEngine::Asset::AssetCollection* _assetCollection) {
 
 	pAssetCollection_ = _assetCollection;
 

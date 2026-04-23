@@ -7,7 +7,7 @@
 #include "../../Interface/IComponent.h"
 #include "Engine/Asset/Guid/Guid.h"
 #include "Engine/Asset/Assets/Texture/Texture.h"
-#include "Engine/Asset/Assets/Mateiral/Material.h"
+#include "Engine/Asset/Assets/Material/Material.h"
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/Graphics/Buffer/ConstantBuffer.h"
 #include "Engine/Graphics/Buffer/StructuredBuffer.h"
@@ -41,9 +41,17 @@
 *
 */
 
+namespace ONEngine {
+class VoxelTerrain;
+class DxManager;
+}
+
+namespace ONEngine::Asset {
+class AssetCollection;
+}
+
 
 namespace ONEngine {
-
 
 struct VoxelTerrainVertex {
 	Vector4 position;
@@ -51,14 +59,13 @@ struct VoxelTerrainVertex {
 	Vector3 normal;
 };
 
-
 /// ///////////////////////////////////////////////////
 /// ボクセル地形におけるチャンク
 /// ///////////////////////////////////////////////////
 struct Chunk {
 	Guid texture3DId; ///< このチャンクを表現するTexture3DのId
-	Texture* pTexture;
-	Texture uavTexture; ///< エディタ用UAVテクスチャ
+	Asset::Texture* pTexture;
+	Asset::Texture uavTexture; ///< エディタ用UAVテクスチャ
 
 	StructuredBuffer<VoxelTerrainVertex> rwVertices;
 	StructuredBuffer<uint32_t> rwVertexCounter;
@@ -66,13 +73,8 @@ struct Chunk {
 	VertexBuffer<VoxelTerrainVertex> vbv;
 };
 
-/// @brief デバッグ関数用に前方宣言をする
-class VoxelTerrain;
-class DxManager;
-class AssetCollection;
-
 namespace ComponentDebug {
-void VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _dxm, AssetCollection* _ac);
+void VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _dxm, Asset::AssetCollection* _ac);
 }
 
 void from_json(const nlohmann::json& _j, std::vector<Chunk>& _chunk);
@@ -151,7 +153,7 @@ struct UsedTextureIds {
 /// ///////////////////////////////////////////////////
 class VoxelTerrain : public IComponent {
 	/// --------------- friend function --------------- ///
-	friend void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _dxm, AssetCollection* _ac);
+	friend void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* _voxelTerrain, DxManager* _dxm, Asset::AssetCollection* _ac);
 	friend void from_json(const nlohmann::json& _j, VoxelTerrain& _voxelTerrain);
 	friend void to_json(nlohmann::json& _j, const VoxelTerrain& _voxelTerrain);
 
@@ -190,7 +192,7 @@ public:
 
 	/// @brief チャンクのGuid設定を行う
 	/// @param _assetCollection AssetCollectionのポインタ
-	void SettingChunksGuid(class AssetCollection* _assetCollection);
+	void SettingChunksGuid(Asset::AssetCollection* _assetCollection);
 
 	/// @brief Bufferが生成されているかチェックする
 	/// @return true: 生成済み, false: 未生成
@@ -199,7 +201,7 @@ public:
 	/// @brief Bufferの生成を行う
 	/// @param _dxDevice DxDeviceのポインタ
 	/// @param _dxSRVHeap DxSRVHeapのポインタ
-	void CreateBuffers(DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap, AssetCollection* _assetCollection);
+	void CreateBuffers(DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap, Asset::AssetCollection* _assetCollection);
 
 	/// @brief GraphicsPipeline用のバッファ設定を行う
 	/// @param _cmdList GraphicsCommandListのポインタ
@@ -210,10 +212,10 @@ public:
 	/// [3]: LODInfo,
 	/// [4]: CliffMaterial,
 	/// [5]: UsedTextureIds
-	void SetupGraphicBuffers(ID3D12GraphicsCommandList* _cmdList, const std::array<UINT, 6> _rootParamIndices, class AssetCollection* _assetCollection);
+	void SetupGraphicBuffers(ID3D12GraphicsCommandList* _cmdList, const std::array<UINT, 6> _rootParamIndices, Asset::AssetCollection* _assetCollection);
 
 	/// テクスチャのステートを変更する
-	void TransitionTextureStates(class DxCommand* _dxCommand, class AssetCollection* _assetCollection, D3D12_RESOURCE_STATES _afterState);
+	void TransitionTextureStates(class DxCommand* _dxCommand, Asset::AssetCollection* _assetCollection, D3D12_RESOURCE_STATES _afterState);
 
 	/// @brief 現在のチャンクの総数を取得する
 	/// @return 今あるチャンクの総数
@@ -228,7 +230,7 @@ public:
 	const Vector3Int& GetChunkSize() const;
 
 
-	void SettingMaterial(AssetCollection* assetCollection);
+	void SettingMaterial(Asset::AssetCollection* assetCollection);
 	void SettingTerrainInfo();
 
 
@@ -299,8 +301,8 @@ private:
 	UINT maxChunkCount_;
 	float isoLevel_ = 0.5f;
 
-	Material material_;
-	Material cliffMaterial_;
+	Asset::Material material_;
+	Asset::Material cliffMaterial_;
 	GPUData::LODInfo lodInfo_;
 	GPUData::UsedTextureIds usedTextureIds_;
 	std::array<Guid, 3> usedTextureGuids_;

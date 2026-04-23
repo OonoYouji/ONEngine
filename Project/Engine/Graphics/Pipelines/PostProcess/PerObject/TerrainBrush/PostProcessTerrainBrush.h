@@ -37,13 +37,13 @@ public:
 	PostProcessTerrainBrush();
 	~PostProcessTerrainBrush();
 
-	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxm) override;
+	void Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) override;
 
 	void Execute(
 		const std::string& _textureName,
-		class DxCommand* _dxCommand,
-		class AssetCollection* _assetCollection,
-		class EntityComponentSystem* _ecs
+		DxCommand* _dxCommand,
+		Asset::AssetCollection* _assetCollection,
+		EntityComponentSystem* _ecs
 	) override;
 
 private:

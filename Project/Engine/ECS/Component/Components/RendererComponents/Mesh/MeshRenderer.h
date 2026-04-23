@@ -6,20 +6,27 @@
 
 /// engine
 #include "../../Interface/IComponent.h"
-#include "Engine/Asset/Assets/Mateiral/Material.h"
+#include "Engine/Asset/Assets/Material/Material.h"
 #include "Engine/Graphics/Pipelines/Render/Mesh/MeshRenderingPipeline.h"
 #include "Engine/Graphics/Buffer/Data/GPUMaterial.h"
 
 
-/// 前方宣言
 namespace ONEngine {
-
+class EntityComponentSystem;
 class MeshRenderer;
+}
+
+namespace ONEngine::Asset {
 class AssetCollection;
+}
+
+
+
+namespace ONEngine {
 
 namespace ComponentDebug {
 /// @brief MeshRendererのデバッグ表示
-void MeshRendererDebug(MeshRenderer* _mr, AssetCollection* _assetCollection);
+void MeshRendererDebug(MeshRenderer* _mr, Asset::AssetCollection* _assetCollection);
 }
 
 /// Json変換
@@ -32,7 +39,7 @@ void to_json(nlohmann::json& _j, const MeshRenderer& _mr);
 /// ///////////////////////////////////////////////////
 class MeshRenderer : public IRenderComponent {
 	/// friend methods
-	friend void ComponentDebug::MeshRendererDebug(MeshRenderer* _mr, AssetCollection* _assetCollection);
+	friend void ComponentDebug::MeshRendererDebug(MeshRenderer* _mr, Asset::AssetCollection* _assetCollection);
 	friend void from_json(const nlohmann::json& _j, MeshRenderer& _mr);
 	friend void to_json(nlohmann::json& _j, const MeshRenderer& _mr);
 
@@ -45,7 +52,7 @@ public:
 	~MeshRenderer();
 
 	/// @brief 描画のために必要なデータを設定する
-	void SetupRenderData(class AssetCollection* _assetCollection);
+	void SetupRenderData(Asset::AssetCollection* _assetCollection);
 
 private:
 	/// ===================================================
@@ -55,7 +62,7 @@ private:
 	std::string meshPath_;
 
 	GPUMaterial gpuMaterial_;
-	Material material_;
+	Asset::Material material_;
 
 public:
 	/// ===================================================

@@ -48,7 +48,7 @@ public:
 	void Execute(
 		ONEngine::EntityComponentSystem* _ecs,
 		ONEngine::DxCommand* _dxCommand,
-		ONEngine::AssetCollection* _assetCollection
+		ONEngine::Asset::AssetCollection* _assetCollection
 	) override;
 
 private:

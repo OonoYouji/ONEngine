@@ -16,11 +16,14 @@
 #include "../../EditorViewCollection.h"
 
 namespace ONEngine {
-/// 前方宣言
 class IComponent;
-class Texture;
 class GameEntity;
 }
+
+namespace ONEngine::Asset {
+class Texture;
+}
+
 
 namespace Editor {
 
@@ -55,7 +58,7 @@ public:
 		const std::string& windowName,
 		ONEngine::DxManager* dxm,
 		ONEngine::EntityComponentSystem* ecs,
-		ONEngine::AssetCollection* assetCollection,
+		ONEngine::Asset::AssetCollection* assetCollection,
 		EditorManager* editorManager
 	);
 	~InspectorWindow() {}
@@ -127,7 +130,7 @@ public:
 
 	/// @brief テクスチャのInspector表示
 	/// @param _texture 
-	void TextureAssetInspector(ONEngine::Texture* tex);
+	void TextureAssetInspector(ONEngine::Asset::Texture* tex);
 
 private:
 	/// ===================================================
@@ -136,9 +139,9 @@ private:
 
 	/// ----- other class ----- ///
 	ONEngine::EntityComponentSystem* pEcs_;
-	EditorManager*                   pEditorManager_;
-	ONEngine::AssetCollection*       pAssetCollection_;
-	ONEngine::DxManager*             pDxManager_;
+	EditorManager* pEditorManager_;
+	ONEngine::Asset::AssetCollection* pAssetCollection_;
+	ONEngine::DxManager* pDxManager_;
 
 
 

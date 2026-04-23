@@ -55,7 +55,7 @@ void GameEntityPickingPipeline::Initialize(ONEngine::ShaderCompiler* _shaderComp
 void GameEntityPickingPipeline::Execute(
 	ONEngine::EntityComponentSystem* _ecs,
 	ONEngine::DxCommand* _dxCommand,
-	ONEngine::AssetCollection* _assetCollection) {
+	ONEngine::Asset::AssetCollection* _assetCollection) {
 
 	Vector2 mousePosNorm = Input::GetImGuiImageMousePosNormalized("Scene");
 	mousePosNorm /= Vector2::HD;
@@ -80,7 +80,7 @@ void GameEntityPickingPipeline::Execute(
 	cbufPickingParams_.BindForComputeCommandList(cmdList, CBV_PICKING_PARAMS);
 	sbufPicking_.UAVBindForComputeCommandList(cmdList, UAV_PICKING);
 
-	const ONEngine::Texture* flagsTexture = _assetCollection->GetTexture(
+	const ONEngine::Asset::Texture* flagsTexture = _assetCollection->GetTexture(
 		RenderInfo::kRenderTargetDir +
 		RenderInfo::kRenderTargetNames[static_cast<int>(RenderInfo::RenderTexture::Debug)] +
 		RenderInfo::kRenderTargetType[static_cast<int>(RenderInfo::RenderTextureType::Flags)]

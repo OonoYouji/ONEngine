@@ -75,7 +75,7 @@ private:
 
 	std::unique_ptr<ShaderCompiler>              shaderCompiler_;
 	std::unique_ptr<RenderingPipelineCollection> renderingPipelineCollection_;
-	std::unique_ptr<AssetCollection>             assetCollection_;
+	std::unique_ptr<Asset::AssetCollection>             assetCollection_;
 	std::vector<std::unique_ptr<SceneRenderTexture>> renderTextures_;
 	DxManager* pDxManager_;
 	WindowManager* pWindowManager_;
@@ -97,7 +97,7 @@ public:
 
 	/// @brief 描画に使用するリソースコレクションの取得
 	/// @return リソースのコレクションを返す
-	AssetCollection* GetAssetCollection() const;
+	Asset::AssetCollection* GetAssetCollection() const;
 
 
 

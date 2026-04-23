@@ -8,6 +8,19 @@
 #include "../Interface/IRenderingPipeline.h"
 #include "../Interface/IPostProcessPipeline.h"
 
+
+namespace ONEngine {
+class DxManager;
+class EntityComponentSystem;
+class CameraComponent;
+}
+
+namespace ONEngine::Asset {
+class AssetCollection;
+}
+
+
+
 namespace ONEngine {
 
 template <typename T>
@@ -25,7 +38,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	RenderingPipelineCollection(ShaderCompiler* _shaderCompiler, class DxManager* _dxm, class EntityComponentSystem* _pEntityComponentSystem, class AssetCollection* _assetCollection);
+	RenderingPipelineCollection(ShaderCompiler* _shaderCompiler, DxManager* _dxm, EntityComponentSystem* _pEntityComponentSystem, Asset::AssetCollection* _assetCollection);
 	~RenderingPipelineCollection();
 
 	/// @brief 初期化関数
@@ -49,17 +62,17 @@ public:
 	/// @brief すべてのPipelineのPreDrawを実行する
 	/// @param _3dCamera 3Dカメラ
 	/// @param _2dCamera 2Dカメラ
-	void PreDrawEntities(class CameraComponent* _3dCamera, class CameraComponent* _2dCamera);
+	void PreDrawEntities(CameraComponent* _3dCamera, CameraComponent* _2dCamera);
 
 	/// @brief 現在のECSGroupのすべてのEntityを描画する
 	/// @param _3dCamera 3Dカメラ
 	/// @param _2dCamera 2Dカメラ
-	void DrawEntities(class CameraComponent* _3dCamera, class CameraComponent* _2dCamera);
+	void DrawEntities(CameraComponent* _3dCamera, CameraComponent* _2dCamera);
 
 	/// @brief 選択されたPrefabの描画
 	/// @param _3dCamera 3Dカメラ
 	/// @param _2dCamera 2Dカメラ
-	void DrawSelectedPrefab(class CameraComponent* _3dCamera, class CameraComponent* _2dCamera);
+	void DrawSelectedPrefab(CameraComponent* _3dCamera, CameraComponent* _2dCamera);
 
 
 	/// @brief ポストエフェクトの実行
@@ -70,17 +83,17 @@ public:
 	/// @brief 引数のカメラが有効なのか確認する
 	/// @param _camera チェックしたいカメラ
 	/// @return true: 有効, false: 無効
-	bool IsEnableCamera(const class CameraComponent* _camera) const;
+	bool IsEnableCamera(const CameraComponent* _camera) const;
 
 private:
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
 
-	class DxManager* pDxManager_;
-	class EntityComponentSystem* pEntityComponentSystem_;
-	class AssetCollection* pAssetCollection_;
-	class ShaderCompiler* pShaderCompiler_;
+	DxManager* pDxManager_;
+	EntityComponentSystem* pEntityComponentSystem_;
+	Asset::AssetCollection* pAssetCollection_;
+	ShaderCompiler* pShaderCompiler_;
 
 	std::unique_ptr<IRenderingPipeline> prefabRenderingPipeline_;
 

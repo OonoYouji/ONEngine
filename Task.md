@@ -1,11 +1,24 @@
-# エンジンやりたいこと
-<!-- 1. インスペクターの見た目強化 -->
-2. 選択したオブジェクトのアウトライン表示
-3. Depthを使ったカリング
-4. シャドウマップ用スタティックDepthテクスチャ
-<!-- 5. AddComponentの検索機能 -->
-6. エンティティごとの保存
-7. エンティティの非同期読み込み
-8. ヒエラルキーの見た目強化
-<!-- 9. Fキーで選択中のオブジェクトへカメラを動かす。 -->
-10. 選択中のオブジェクトにアウトラインを付ける
+# やりたいことリスト
+- ECS
+    - Componentの継承で管理をやめる
+    - SystemでRenderer.Queueに追加まで行う
+- Rendering
+    - ShaderReflectionの実装
+    - TextureBindlessの実装
+    - Pipelineの外部ファイル化
+- Asset
+    <!-- - Shaderのアセット化 -->
+    - Materialから使用するShaderの選択
+    - Sceneのデータ構造の変更
+        - object(entity)ごとにファイルを生成
+    - metaファイルにアセットごとの設定を組み込む
+        <!-- - metaファイルのJSON化 -->
+        - metaファイルのエディター
+- Animation
+    - GPUAnimationの実装
+- Editor
+    - Engineへの依存度を少なくする
+        - Coreなクラスへの依存はよいが、アセットがないとクラッシュするのは良くない
+    - Release時にビルドしないようにする
+    
+    

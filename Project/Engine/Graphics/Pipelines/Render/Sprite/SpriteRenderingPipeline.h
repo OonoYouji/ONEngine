@@ -14,6 +14,11 @@
 #include "Engine/Graphics/Buffer/StructuredBuffer.h"
 #include "Engine/Graphics/Buffer/Data/GPUMaterial.h"
 
+namespace ONEngine::Asset {
+class AssetCollection;
+}
+
+
 /// /////////////////////////////////////////////////
 /// sprite描画のパイプライン
 /// /////////////////////////////////////////////////
@@ -44,7 +49,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	SpriteRenderingPipeline(class AssetCollection* _assetCollection);
+	SpriteRenderingPipeline(Asset::AssetCollection* _assetCollection);
 	~SpriteRenderingPipeline();
 
 
@@ -53,7 +58,7 @@ public:
 	/// @param _dxm DxManagerへのポインタ
 	void Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) override;
 
-	void Draw(class ECSGroup* _ecs, CameraComponent* _camera, DxCommand* _dxCommand) override;
+	void Draw(ECSGroup* _ecs, CameraComponent* _camera, DxCommand* _dxCommand) override;
 
 private:
 	/// ===================================================
@@ -62,7 +67,7 @@ private:
 
 	/// ----- other class ----- ///
 
-	class AssetCollection* pAssetCollection_ = nullptr;
+	Asset::AssetCollection* pAssetCollection_ = nullptr;
 
 
 	const size_t                      kMaxRenderingSpriteCount_ = 1024; ///< 最大描画スプライト数

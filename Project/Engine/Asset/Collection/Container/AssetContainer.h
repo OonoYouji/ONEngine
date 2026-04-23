@@ -14,7 +14,7 @@
 #include "Engine/Asset/Guid/Guid.h"
 #include "Engine/Asset/Meta/MetaFile.h"
 
-namespace ONEngine {
+namespace ONEngine::Asset {
 
 /// ///////////////////////////////////////////////////
 /// アセットのインターフェイスクラス
@@ -106,20 +106,23 @@ inline T* AssetContainer<T>::Add(const std::string& _key, T _t) {
 	indexMap_[_key] = index;
 	reverseIndexMap_[index] = _key;
 
-	if(std::filesystem::exists(_key + ".meta")) {
-		MetaFile metaFile;
-		metaFile.LoadFromFile(_key + ".meta");
-		Guid& guid = metaFile.guid;
-		guidToIndexMap_[guid] = index;
-		indexToGuidMap_[index] = guid;
-		_t.guid = guid;
-	} else {
-		MetaFile metaFile = GenerateMetaFile(_key);
-		Guid& guid = metaFile.guid;
-		guidToIndexMap_[guid] = index;
-		indexToGuidMap_[index] = guid;
-		_t.guid = guid;
-	}
+	guidToIndexMap_[_t.guid] = index;
+	indexToGuidMap_[index] = _t.guid;
+
+	//if(std::filesystem::exists(_key + ".meta")) {
+	//	MetaFile metaFile;
+	//	metaFile.LoadFromFile(_key + ".meta");
+	//	Guid& guid = metaFile.guid;
+	//	guidToIndexMap_[guid] = index;
+	//	indexToGuidMap_[index] = guid;
+	//	_t.guid = guid;
+	//} else {
+	//	MetaFile metaFile = GenerateMetaFile(_key);
+	//	Guid& guid = metaFile.guid;
+	//	guidToIndexMap_[guid] = index;
+	//	indexToGuidMap_[index] = guid;
+	//	_t.guid = guid;
+	//}
 
 	values_[index] = std::move(_t);
 	return &values_[index];
@@ -239,4 +242,4 @@ inline const Guid& AssetContainer<T>::GetGuid(int32_t _index) const {
 	return indexToGuidMap_.at(_index);
 }
 
-} /// ONEngine
+} /// namespace ONEngine::Asset

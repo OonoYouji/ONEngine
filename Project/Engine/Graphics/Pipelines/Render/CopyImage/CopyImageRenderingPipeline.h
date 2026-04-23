@@ -3,6 +3,19 @@
 /// engine
 #include "../../Interface/IRenderingPipeline.h"
 
+
+namespace ONEngine {
+class DxManager;
+class ECSGroup;
+class CameraComponent;
+}
+
+namespace ONEngine::Asset {
+class AssetCollection;
+}
+
+
+
 /// //////////////////////////////////////////////////
 /// レンダリング結果を画面に表示するShader
 /// //////////////////////////////////////////////////
@@ -14,18 +27,18 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	CopyImageRenderingPipeline(class AssetCollection* _assetCollection);
+	CopyImageRenderingPipeline(Asset::AssetCollection* _assetCollection);
 	~CopyImageRenderingPipeline() = default;
 
-	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxm) override;
-	void Draw(class ECSGroup* _ecs, class CameraComponent* _camera, DxCommand* _dxCommand) override;
+	void Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) override;
+	void Draw(ECSGroup* _ecs, CameraComponent* _camera, DxCommand* _dxCommand) override;
 
 private:
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
 
-	class AssetCollection* pAssetCollection_ = nullptr;
+	Asset::AssetCollection* pAssetCollection_ = nullptr;
 };
 
 

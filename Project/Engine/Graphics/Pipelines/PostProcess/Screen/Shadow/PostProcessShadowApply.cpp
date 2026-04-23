@@ -60,7 +60,7 @@ void PostProcessShadowApply::Initialize(ShaderCompiler* _shaderCompiler, DxManag
 	}
 }
 
-void PostProcessShadowApply::Execute(const std::string& _textureName, DxCommand* _dxCommand, AssetCollection* _assetCollection, EntityComponentSystem* _ecs) {
+void PostProcessShadowApply::Execute(const std::string& _textureName, DxCommand* _dxCommand, Asset::AssetCollection* _assetCollection, EntityComponentSystem* _ecs) {
 
 	/// ---------------------------------------------------
 	/// 現在のGroupからShadowCasterを取得
@@ -127,21 +127,21 @@ void PostProcessShadowApply::Execute(const std::string& _textureName, DxCommand*
 	/// --------------- テクスチャの設定 --------------- ///
 
 	// シーンカラー
-	Texture* sceneColorTex = _assetCollection->GetTexture(_textureName + "Scene");
+	Asset::Texture* sceneColorTex = _assetCollection->GetTexture(_textureName + "Scene");
 	cmdList->SetComputeRootDescriptorTable(
 		ROOT_PARAM::SRV_SCENE_COLOR,
 		sceneColorTex->GetSRVHandle().gpuHandle
 	);
 
 	/// ワールドポジション
-	Texture* worldPosTex = _assetCollection->GetTexture(_textureName + "WorldPosition");
+	Asset::Texture* worldPosTex = _assetCollection->GetTexture(_textureName + "WorldPosition");
 	cmdList->SetComputeRootDescriptorTable(
 		ROOT_PARAM::SRV_WORLD_POSITION,
 		worldPosTex->GetSRVHandle().gpuHandle
 	);
 
 	/// フラグ
-	Texture* flagTex = _assetCollection->GetTexture(_textureName + "Flags");
+	Asset::Texture* flagTex = _assetCollection->GetTexture(_textureName + "Flags");
 	cmdList->SetComputeRootDescriptorTable(
 		ROOT_PARAM::SRV_FLAGS,
 		flagTex->GetSRVHandle().gpuHandle
@@ -158,7 +158,7 @@ void PostProcessShadowApply::Execute(const std::string& _textureName, DxCommand*
 
 
 	/// output テクスチャ
-	Texture* outputTex = _assetCollection->GetTexture("postProcessResult");
+	Asset::Texture* outputTex = _assetCollection->GetTexture("postProcessResult");
 	cmdList->SetComputeRootDescriptorTable(
 		ROOT_PARAM::UAV_OUTPUT_COLOR,
 		outputTex->GetUAVHandle().gpuHandle

@@ -7,6 +7,10 @@
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/Graphics/Buffer/ConstantBuffer.h"
 
+namespace ONEngine::Asset {
+class AssetCollection;
+}
+
 
 /// /////////////////////////////////////////////////
 /// 天球のレンダリングパイプライン
@@ -32,11 +36,11 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	SkyboxRenderingPipeline(class AssetCollection* _assetCollection);
+	SkyboxRenderingPipeline(Asset::AssetCollection* _assetCollection);
 	~SkyboxRenderingPipeline();
 
-	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxm) override;
-	void Draw(class ECSGroup* _ecs, class CameraComponent* _camera, DxCommand* _dxCommand) override;
+	void Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) override;
+	void Draw(ECSGroup* _ecs, CameraComponent* _camera, DxCommand* _dxCommand) override;
 
 private:
 	/// ===================================================
@@ -44,7 +48,7 @@ private:
 	/// ===================================================
 
 	/// ----- other class ----- ///
-	class AssetCollection* pAssetCollection_;
+	Asset::AssetCollection* pAssetCollection_;
 
 
 	ConstantBuffer<size_t>    texIndex_;

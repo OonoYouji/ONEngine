@@ -10,7 +10,7 @@
 #include "Engine/Asset/Collection/Container/AssetContainer.h"
 #include "Engine/Core/Threading/ThreadPool.h" 
 
-namespace ONEngine {
+namespace ONEngine::Asset {
 
 class IAssetBundle {
 public:
@@ -36,8 +36,15 @@ public:
 	std::unique_ptr<AssetContainer<T>> container;
 
 	void Load(const std::string& _filepath) override {
+
+		/// キャッシュ確認
 		if(container->GetIndex(_filepath) == -1) {
-			auto asset = loader->Load(_filepath);
+
+			/// Metaファイル読み込み
+			Meta<T::MetaData> meta = loader->GetMetaData(_filepath + ".meta");
+
+			/// ロード&追加
+			auto asset = loader->Load(_filepath, meta);
 			if(asset.has_value()) {
 				container->Add(_filepath, std::move(asset.value()));
 			}
@@ -47,7 +54,8 @@ public:
 	std::future<void> LoadAsync(const std::string& _filepath) override {
 		return ThreadPool::Instance().Enqueue([this, _filepath]() {
 			if(container->GetIndex(_filepath) == -1) {
-				auto asset = loader->Load(_filepath);
+				Meta<T::MetaData> meta = loader->GetMetaData(_filepath + ".meta");
+				auto asset = loader->Load(_filepath, meta);
 				if(asset.has_value()) {
 					container->Add(_filepath, std::move(asset.value()));
 				}
@@ -59,7 +67,8 @@ public:
 		int32_t index = container->GetIndex(_filepath);
 		if(index != -1) {
 			T* src = container->Get(index);
-			auto reloadedAsset = loader->Reload(_filepath, src);
+			Meta<T::MetaData> meta = loader->GetMetaData(_filepath + ".meta");
+			auto reloadedAsset = loader->Reload(_filepath, src, meta);
 			if(reloadedAsset.has_value()) {
 				container->Add(_filepath, std::move(reloadedAsset.value()));
 			}

@@ -35,7 +35,7 @@ void RiverTerrainAdjustPipeline::Initialize(ONEngine::ShaderCompiler* _shaderCom
 	}
 }
 
-void RiverTerrainAdjustPipeline::Execute(ONEngine::EntityComponentSystem* _ecs, ONEngine::DxCommand* _dxCommand, ONEngine::AssetCollection* /*_assetCollection*/) {
+void RiverTerrainAdjustPipeline::Execute(ONEngine::EntityComponentSystem* _ecs, ONEngine::DxCommand* _dxCommand, ONEngine::Asset::AssetCollection* /*_assetCollection*/) {
 
 	/// ----------------------------------------------------
 	/// 早期 return条件

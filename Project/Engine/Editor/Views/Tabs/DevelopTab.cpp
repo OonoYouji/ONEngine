@@ -20,7 +20,7 @@ using namespace Editor;
 
 DevelopTab::DevelopTab(
 	DxManager* _dxm,
-	EntityComponentSystem* _ecs, AssetCollection* _assetCollection,
+	EntityComponentSystem* _ecs, Asset::AssetCollection* _assetCollection,
 	EditorManager* _editorManager, SceneManager* _sceneManager)
 	: IEditorWindowContainer("Game") {
 

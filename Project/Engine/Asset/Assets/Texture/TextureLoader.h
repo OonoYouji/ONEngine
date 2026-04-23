@@ -7,11 +7,15 @@
 /// engine
 #include "../IAssetLoader.h"
 #include "Texture.h"
+#include "Engine/Asset/Meta/MetaFile.h"
 
 #include "Engine/Core/DirectX12/Resource/DxResource.h"
 
+namespace ONEngine::Asset {
+class AssetCollection;
+}
 
-namespace ONEngine {
+namespace ONEngine::Asset {
 
 /// ///////////////////////////////////////////////////
 /// Texture用のアセットローダー
@@ -23,25 +27,36 @@ public:
 	AssetLoader(DxManager* _dxm, AssetCollection* _ac);
 	~AssetLoader() override = default;
 
+
+
 	/// @brief テクスチャの読み込みを行う
 	/// @param _filepath 対象のファイルパス
 	/// @return 読み込んだテクスチャ
 	[[nodiscard]]
-	std::optional<Texture> Load(const std::string& _filepath);
+	std::optional<Texture> Load(const std::string& _filepath, typename Meta<Texture::MetaData> meta);
 
 	/// @brief テクスチャの再読み込みを行う
 	/// @param _filepath 対象のファイルパス
 	/// @return 読み込んだテクスチャ
-	std::optional<Texture> Reload(const std::string& _filepath, Texture* _src);
+	std::optional<Texture> Reload(const std::string& _filepath, Texture* _src, typename Meta<Texture::MetaData> meta);
+
+	/// @brief MetaDataの取得を行う
+	/// @param _filepath メタデータを取得する対象のファイルパス
+	/// @return メタデータ
+	Meta<typename Texture::MetaData> GetMetaData(const std::string& _filepath);
+
+
 
 
 	/// @brief テクスチャ2Dの読み込みを行う
 	/// @param _filepath 対象のファイルパス
+	/// @param _meta MetaFile
 	/// @return 読み込んだテクスチャ
 	std::optional<Texture> Load2DTexture(const std::string& _filepath);
 
 	/// @brief テクスチャ3Dの読み込みを行う
-	/// @param _filepath 対象のファイルパス
+	/// @param _filepath 対象 of ファイルパス
+	/// @param _meta MetaFile
 	/// @return 読み込んだテクスチャ
 	std::optional<Texture> Load3DTexture(const std::string& _filepath);
 
@@ -49,23 +64,27 @@ public:
 	/// @brief テクスチャ2Dの再読み込みを行う
 	/// @param _filepath 対象のファイルパス
 	/// @param _src 再読み込み元のテクスチャ
+	/// @param _meta MetaFile
 	/// @return 再読み込みしたテクスチャ
 	std::optional<Texture> Reload2DTexture(const std::string& _filepath, Texture* _src);
 
 	/// @brief テクスチャ3Dの再読み込みを行う
 	/// @param _filepath 対象のファイルパス
 	/// @param _src 再読み込み元のテクスチャ
+	/// @param _meta MetaFile
 	/// @return 再読み込みしたテクスチャ
 	std::optional<Texture> Reload3DTexture(const std::string& _filepath, Texture* _src);
 
 
 	/// @brief 2Dテクスチャ用のScratchImageを読み込む
 	/// @param _filepath 対象のファイルパス
+	/// @param _meta MetaFile
 	/// @return 2Dテクスチャ用のScratchImage
 	DirectX::ScratchImage LoadScratchImage2D(const std::string& _filepath);
 
 	/// @brief 3Dテクスチャ用のScratchImageを読み込む
 	/// @param _filepath 対象のファイルパス
+	/// @param _meta MetaFile
 	/// @return 3Dテクスチャ用のScratchImage
 	DirectX::ScratchImage LoadScratchImage3D(const std::string& _filepath);
 

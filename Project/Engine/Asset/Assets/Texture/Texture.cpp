@@ -18,7 +18,6 @@
 #include "Engine/Core/DirectX12/DescriptorHeap/DxSRVHeap.h"
 #include "Engine/Core/DirectX12/Command/DxCommand.h"
 
-using namespace ONEngine;
 
 namespace {
 /// printf 互換のフォーマットログ
@@ -27,7 +26,7 @@ void Printf(const char* _fmt, Args... _args) {
 	// 出力サイズ計算
 	int size = std::snprintf(nullptr, 0, _fmt, _args...);
 	if(size <= 0) {
-		Console::Log("Format error");
+		ONEngine::Console::Log("Format error");
 		return;
 	}
 
@@ -38,16 +37,16 @@ void Printf(const char* _fmt, Args... _args) {
 	std::snprintf(&msg[0], size + 1, _fmt, _args...);
 
 	// Console::Log に渡す
-	Console::Log(msg);
+	ONEngine::Console::Log(msg);
 }
 }
 
+namespace ONEngine::Asset {
 
 Texture::Texture() = default;
 
 Texture::Texture(const Vector2& _textureSize)
-	: textureSize_(_textureSize) {
-}
+	: textureSize_(_textureSize) {}
 
 void Texture::CreateEmptySRVHandle() {
 	srvHandle_.emplace(Handle());
@@ -559,7 +558,7 @@ D3D12_GPU_DESCRIPTOR_HANDLE Texture::GetSRVGPUHandle() const {
 	return srvHandle_->gpuHandle;
 }
 
-bool ONEngine::Texture::HasSRVHandle() const {
+bool Texture::HasSRVHandle() const {
 	return srvHandle_.has_value();
 }
 
@@ -578,7 +577,7 @@ D3D12_GPU_DESCRIPTOR_HANDLE Texture::GetUAVGPUHandle() const {
 	return uavHandle_->gpuHandle;
 }
 
-bool ONEngine::Texture::HasUAVHandle() const {
+bool Texture::HasUAVHandle() const {
 	return uavHandle_.has_value();
 }
 
@@ -600,7 +599,7 @@ UINT Texture::GetTextureDepth() const {
 
 
 
-void ONEngine::SaveTextureToPNG(const std::wstring& _filename, size_t _width, size_t _height, bool _overwrite) {
+void SaveTextureToPNG(const std::wstring& _filename, size_t _width, size_t _height, bool _overwrite) {
 
 	/// _filenameの先のディレクトリが存在しない場合は作成
 	std::filesystem::path filePath(_filename);
@@ -648,7 +647,7 @@ void ONEngine::SaveTextureToPNG(const std::wstring& _filename, size_t _width, si
 
 }
 
-void ONEngine::SaveTextureToDDS(const std::wstring& _filename, size_t _width, size_t _height, size_t _depth, bool _overwrite) {
+void SaveTextureToDDS(const std::wstring& _filename, size_t _width, size_t _height, size_t _depth, bool _overwrite) {
 
 	/// _filenameの先のディレクトリが存在しない場合は作成
 	std::filesystem::path filePath(_filename);
@@ -721,3 +720,4 @@ void ONEngine::SaveTextureToDDS(const std::wstring& _filename, size_t _width, si
 
 }
 
+} /// namespace ONEngine::Asset

@@ -46,7 +46,7 @@ std::string GetRelativePath(const std::filesystem::path& _absolutePath, const st
 
 }
 
-ProjectWindow::ProjectWindow(ONEngine::AssetCollection* _assetCollection)
+ProjectWindow::ProjectWindow(ONEngine::Asset::AssetCollection* _assetCollection)
 	: pAssetCollection_(_assetCollection) {
 	windowName_ = "Project";
 
@@ -411,9 +411,9 @@ void ProjectWindow::UpdateFileCache(const std::filesystem::path& directory) {
 			if(item.isDirectory) {
 				item.displayTexture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/FileIcons/FolderIcon.png");
 				if(!item.displayTexture) item.displayTexture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/FileIcons/FolderIcon.dds");
-			} else if(ONEngine::CheckAssetType(ext, ONEngine::AssetType::Texture)) {
+			} else if(ONEngine::Asset::CheckAssetType(ext, ONEngine::Asset::AssetType::Texture)) {
 				item.displayTexture = pAssetCollection_->GetTexture(item.relativePath);
-			} else if(ONEngine::CheckAssetType(ext, ONEngine::AssetType::Audio)) {
+			} else if(ONEngine::Asset::CheckAssetType(ext, ONEngine::Asset::AssetType::Audio)) {
 				item.displayTexture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/FileIcons/lets-icons-sound-none-256.png");
 			} else if(ext == ".cs") {
 				item.displayTexture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/FileIcons/ph-file-c-sharp-none-256.png");

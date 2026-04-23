@@ -1,4 +1,4 @@
-#include "CopyImageRenderingPipeline.h"
+﻿#include "CopyImageRenderingPipeline.h"
 
 using namespace ONEngine;
 
@@ -8,9 +8,8 @@ using namespace ONEngine;
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 
 
-CopyImageRenderingPipeline::CopyImageRenderingPipeline(AssetCollection* _assetCollection)
-	: pAssetCollection_(_assetCollection) {
-}
+CopyImageRenderingPipeline::CopyImageRenderingPipeline(Asset::AssetCollection* _assetCollection)
+	: pAssetCollection_(_assetCollection) {}
 
 void CopyImageRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {
 
@@ -45,7 +44,7 @@ void CopyImageRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxM
 }
 
 
-void CopyImageRenderingPipeline::Draw(class ECSGroup* /*_ecs*/, CameraComponent*, DxCommand* _dxCommand) {
+void CopyImageRenderingPipeline::Draw(ECSGroup* /*_ecs*/, CameraComponent*, DxCommand* _dxCommand) {
 
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 	ID3D12GraphicsCommandList* cmdList = _dxCommand->GetCommandList();

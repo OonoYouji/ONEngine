@@ -10,6 +10,12 @@
 #include "Engine/Graphics/Buffer/IndexBuffer.h"
 #include "Engine/Graphics/Buffer/Data/GPUMaterial.h"
 
+
+namespace ONEngine::Asset {
+class AssetCollection;
+}
+
+
 /// /////////////////////////////////////////////////
 /// Terrainの描画pipeline
 /// /////////////////////////////////////////////////
@@ -38,11 +44,11 @@ public:
 	/// public : methods
 	/// ====================================
 
-	TerrainRenderingPipeline(class AssetCollection* _assetCollection);
+	TerrainRenderingPipeline(Asset::AssetCollection* _assetCollection);
 	~TerrainRenderingPipeline();
 
-	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxm) override;
-	void Draw(class ECSGroup* _ecs, class CameraComponent* _camera, DxCommand* _dxCommand) override;
+	void Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) override;
+	void Draw(ECSGroup* _ecs, CameraComponent* _camera, DxCommand* _dxCommand) override;
 
 private:
 	/// ====================================
@@ -50,7 +56,7 @@ private:
 	/// ====================================
 
 	/// ----- other class ----- ///
-	class AssetCollection* pAssetCollection_;
+	Asset::AssetCollection* pAssetCollection_;
 	class Terrain* pTerrain_;
 
 	ConstantBuffer<Matrix4x4> transformBuffer_;

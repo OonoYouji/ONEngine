@@ -45,7 +45,7 @@ void TerrainDataOutput::Initialize(ONEngine::ShaderCompiler* _shaderCompiler, ON
 
 }
 
-void TerrainDataOutput::Execute(ONEngine::EntityComponentSystem* _ecs, ONEngine::DxCommand* _dxCommand, ONEngine::AssetCollection* /*_assetCollection*/) {
+void TerrainDataOutput::Execute(ONEngine::EntityComponentSystem* _ecs, ONEngine::DxCommand* _dxCommand, ONEngine::Asset::AssetCollection* /*_assetCollection*/) {
 	/// 出力をするときしか処理しない
 	if (!(ONEngine::Input::PressKey(DIK_LCONTROL) && ONEngine::Input::TriggerKey(DIK_O))) {
 		return;

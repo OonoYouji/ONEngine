@@ -12,7 +12,7 @@ using namespace ONEngine;
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 
 
-MeshRenderingPipeline::MeshRenderingPipeline(AssetCollection* _assetCollection)
+MeshRenderingPipeline::MeshRenderingPipeline(Asset::AssetCollection* _assetCollection)
 	: pAssetCollection_(_assetCollection) {
 }
 
@@ -44,7 +44,7 @@ void MeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManage
 
 		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);  ///< material
 		pipeline_->AddDescriptorRange(1, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);  ///< textureId
-		pipeline_->AddDescriptorRange(2, MAX_TEXTURE_COUNT, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); ///< texture
+		pipeline_->AddDescriptorRange(2, Asset::MAX_TEXTURE_COUNT, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); ///< texture
 		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);  ///< transform
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 0);       ///< material  : 1
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 1);       ///< textureId : 2
@@ -119,20 +119,24 @@ void MeshRenderingPipeline::Draw(class ECSGroup* _ecs, CameraComponent* _camera,
 	RenderingMesh(cmdList, &pathMeshMap, textures);
 }
 
-void MeshRenderingPipeline::RenderingMesh(ID3D12GraphicsCommandList* _cmdList, std::unordered_map<std::string, std::list<MeshRenderer*>>* _meshRendererPerMesh, const std::vector<Texture>& _textures) {
+void MeshRenderingPipeline::RenderingMesh(ID3D12GraphicsCommandList* _cmdList, std::unordered_map<std::string, std::list<MeshRenderer*>>* _meshRendererPerMesh, const std::vector<Asset::Texture>& _textures) {
 	for (auto& [meshPath, renderers] : (*_meshRendererPerMesh)) {
 
 		/// modelの取得、なければ次へ
-		const Model*&& model = pAssetCollection_->GetModel(meshPath);
+		const Asset::Model*&& model = pAssetCollection_->GetModel(meshPath);
 		if (!model) {
 			continue;
 		}
 
 		/// transform, material を mapping
 		for (auto& renderer : renderers) {
-
 			/// TextureのIdをGuidからセット
 			renderer->SetupRenderData(pAssetCollection_);
+
+			uint32_t id = renderer->GetGpuMaterial().baseTextureId;
+			if(id < 0 || id >= _textures.size()) {
+				continue;
+			}
 
 			materialBuffer_.SetMappedData(
 				transformIndex_,

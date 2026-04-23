@@ -9,7 +9,7 @@
 
 using namespace Editor;
 
-TexturePreviewWindow::TexturePreviewWindow(ONEngine::AssetCollection* _assetCollection)
+TexturePreviewWindow::TexturePreviewWindow(ONEngine::Asset::AssetCollection* _assetCollection)
 	: pAssetCollection_(_assetCollection) {
 	searchFilter_ = "./Assets/Scene/RenderTexture/shadowMapScene";
 }
@@ -26,7 +26,7 @@ void TexturePreviewWindow::ShowImGui() {
 
 	ImMathf::InputText("Search Filter", &searchFilter_);
 
-	ONEngine::Texture* texture = pAssetCollection_->GetTexture(searchFilter_);
+	ONEngine::Asset::Texture* texture = pAssetCollection_->GetTexture(searchFilter_);
 	if (texture) {
 
 		/// ウィンドウのサイズに合わせてテクスチャのサイズを調整する場合

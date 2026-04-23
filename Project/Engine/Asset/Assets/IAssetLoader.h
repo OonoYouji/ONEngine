@@ -9,9 +9,16 @@
 #include "IAsset.h"
 
 namespace ONEngine {
-
 class DxManager;
 class AssetCollection;
+}
+
+namespace ONEngine::Asset {
+template <typename T>
+struct Meta;
+}
+
+namespace ONEngine::Asset {
 
 /// ///////////////////////////////////////////////////
 /// アセットの読み込み用クラスのインターフェイス
@@ -37,13 +44,18 @@ public:
 	/// @brief 読み込み用関数
 	/// @param _filepath 読み込み対象のファイルパス
 	/// @return 読み込んだアセット
-	std::optional<T> Load(const std::string& /*_filepath*/) {}
+	std::optional<T> Load(const std::string& /*_filepath*/, Meta<typename T::MetaData> /*meta*/) {}
 
 	/// @brief 再読み込み用関数
 	/// @param _filepath 再読み込み対象のファイルパス
 	/// @return 読み込んだアセット
-	std::optional<T> Reload(const std::string& /*_filepath*/, T* /*_src*/) {}
-	
+	std::optional<T> Reload(const std::string& /*_filepath*/, T* /*_src*/, Meta<typename T::MetaData> /*meta*/) {}
+
+	/// @brief アセットのメタデータを取得する関数
+	/// @param _filepath メタデータを取得する対象のファイルパス
+	/// @return メタデータ
+	Meta<typename T::MetaData> GetMetaData(const std::string& /*_filepath*/) { return {}; }
+
 };
 
 

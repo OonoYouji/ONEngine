@@ -4,8 +4,12 @@
 
 namespace ONEngine {
 class EntityComponentSystem;
+}
+
+namespace ONEngine::Asset {
 class AssetCollection;
 }
+
 
 namespace Editor {
 
@@ -18,7 +22,7 @@ public:
 	/// public : methods
 	/// =====================================================
 
-	PrefabViewWindow(ONEngine::EntityComponentSystem* _ecs, ONEngine::AssetCollection* _assetCollection);
+	PrefabViewWindow(ONEngine::EntityComponentSystem* _ecs, ONEngine::Asset::AssetCollection* _assetCollection);
 	~PrefabViewWindow() {}
 
 	void ShowImGui() override;
@@ -32,7 +36,7 @@ private:
 	/// =====================================================
 
 	ONEngine::EntityComponentSystem* pEcs_;
-	ONEngine::AssetCollection* pAssetCollection_;
+	ONEngine::Asset::AssetCollection* pAssetCollection_;
 
 
 };

@@ -2,17 +2,19 @@ name: ReleaseBuild
 
 on:
   push:
-    branches:
-      - master
+    branches: [ "master" ]
+  pull_request: # PR作成時にもチェック
+    branches: [ "master" ]
+  workflow_dispatch: # 手動実行を許可
 
 env:
   SOLUTION_FILE_PATH: Project/ONEngine.sln
-  CONFIGURATION: Release
+  CONFIGURATION: Release # ここはReleaseのまま
   PREMAKE_SCRIPT_PATH: ./Project/GenerateProject.ps1
 
 jobs:
   build:
-    runs-on: windows-2022
+    runs-on: windows-latest # 最新環境を指定
 
     steps:
     # 1. ソース取得
@@ -34,5 +36,7 @@ jobs:
         ./Project/GenerateProject.ps1
 
     # 4. ONEngine ビルド（Release）
+    # 修正点:
+    # - /p:PlatformToolset=v143 を追加 (VS2026 project -> VS2022 runner 対応)
     - name: Build ONEngine
-      run: msbuild ${{ env.SOLUTION_FILE_PATH }} /p:Platform=x64,Configuration=${{ env.CONFIGURATION }}
+      run: msbuild ${{ env.SOLUTION_FILE_PATH }} /p:Platform=x64 /p:Configuration=${{ env.CONFIGURATION }} /p:PlatformToolset=v143 /restore
