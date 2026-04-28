@@ -1,4 +1,4 @@
-﻿#include "SkinMeshRenderer.h"
+#include "SkinMeshRenderer.h"
 
 /// external
 #include <imgui.h>
@@ -19,8 +19,8 @@ SkinMeshRenderer::SkinMeshRenderer() {
 
 	isPlaying_ = true;
 	animationTime_ = 0.0f;
-	duration_ = 0.0f;
 	animationScale_ = 1.0f;
+	animationIndex_ = 0;
 
 
 	color_ = Color::kWhite;
@@ -48,12 +48,12 @@ void SkinMeshRenderer::SetAnimationTime(float _time) {
 	animationTime_ = _time;
 }
 
-void SkinMeshRenderer::SetDuration(float _duration) {
-	duration_ = _duration;
-}
-
 void SkinMeshRenderer::SetAnimationScale(float _scale) {
 	animationScale_ = _scale;
+}
+
+void SkinMeshRenderer::SetAnimationIndex(uint32_t _index) {
+	animationIndex_ = _index;
 }
 
 const std::string& SkinMeshRenderer::GetMeshPath() const {
@@ -72,12 +72,12 @@ float SkinMeshRenderer::GetAnimationTime() const {
 	return animationTime_;
 }
 
-float SkinMeshRenderer::GetDuration() const {
-	return duration_;
-}
-
 float SkinMeshRenderer::GetAnimationScale() const {
 	return animationScale_;
+}
+
+uint32_t SkinMeshRenderer::GetAnimationIndex() const {
+	return animationIndex_;
 }
 
 const Skeleton& SkinMeshRenderer::GetSkeleton() const {
@@ -102,8 +102,15 @@ void ComponentDebug::SkinMeshRendererDebug(SkinMeshRenderer* _smr, Asset::AssetC
 
 	bool isPlaying = _smr->GetIsPlaying();
 	float animationTime = _smr->GetAnimationTime();
-	float duration = _smr->GetDuration();
 	Vector4 color = _smr->GetColor();
+	int animationIndex = (int)_smr->GetAnimationIndex();
+
+	Asset::Model* model = _assetCollection->GetModel(meshPath);
+	float duration = 0.0f;
+	if (model && !model->GetAnimations().empty()) {
+		animationIndex = (std::min)(animationIndex, (int)model->GetAnimations().size() - 1);
+		duration = model->GetAnimations()[animationIndex].duration;
+	}
 
 
 	if (ImGui::Checkbox("is playing", &isPlaying)) {
@@ -120,8 +127,14 @@ void ComponentDebug::SkinMeshRendererDebug(SkinMeshRenderer* _smr, Asset::AssetC
 		_smr->SetAnimationTime(animationTime);
 	}
 
-	if (ImGui::DragFloat("duration", &duration, 0.01f, 0.0f, 0.0f, "%.3f", ImGuiSliderFlags_None)) {
-		_smr->SetDuration(duration);
+	if (model && !model->GetAnimations().empty()) {
+		if (ImGui::Combo("Animation", &animationIndex, [](void* data, int idx, const char** out_text) {
+			auto& anims = *(std::vector<Asset::Model::ModelAnimation>*)data;
+			*out_text = anims[idx].name.c_str();
+			return true;
+		}, (void*)&model->GetAnimations(), (int)model->GetAnimations().size())) {
+			_smr->SetAnimationIndex((uint32_t)animationIndex);
+		}
 	}
 
 
@@ -235,7 +248,8 @@ void ONEngine::to_json(nlohmann::json& _j, const SkinMeshRenderer& _smr) {
 		{ "meshPath", _smr.GetMeshPath() },
 		{ "texturePath", _smr.GetTexturePath() },
 		{ "isPlaying", _smr.GetIsPlaying() },
-		{ "animationScale", _smr.GetAnimationScale() }
+		{ "animationScale", _smr.GetAnimationScale() },
+		{ "animationIndex", _smr.GetAnimationIndex() }
 	};
 }
 

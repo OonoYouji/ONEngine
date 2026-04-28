@@ -107,7 +107,7 @@ void SkinMeshRenderingPipeline::Draw(class ECSGroup* _ecs, CameraComponent* _cam
 	for (auto& smRenderer : skinMeshArray->GetUsedComponents()) {
 		if (instanceCount >= kMaxInstances) break;
 
-		if (!smRenderer || !smRenderer->enable || !smRenderer->skinCluster_ || !smRenderer->GetOwner()->active) {
+		if (!smRenderer || !smRenderer->enable || smRenderer->skinClusters_.empty() || !smRenderer->GetOwner()->active) {
 			continue;
 		}
 
@@ -149,15 +149,20 @@ void SkinMeshRenderingPipeline::Draw(class ECSGroup* _ecs, CameraComponent* _cam
 		uint32_t index = static_cast<uint32_t>(i);
 		cmdList->SetGraphicsRoot32BitConstants(InstanceIndexCBV, 1, &index, 0);
 
-		/// モデルごとのボーンパレットをバインド
-		cmdList->SetGraphicsRootDescriptorTable(WellForGPUSRV, smRenderer->skinCluster_->paletteSRVHandle.second);
-
 		/// mesh の描画
 		Asset::Model* model = pAssetCollection_->GetModel(smRenderer->GetMeshPath());
-		for (auto& mesh : model->GetMeshes()) {
+		auto& meshes = model->GetMeshes();
+
+		for (size_t meshIdx = 0; meshIdx < meshes.size(); ++meshIdx) {
+			auto& mesh = meshes[meshIdx];
+			auto& skinCluster = smRenderer->skinClusters_[meshIdx];
+
+			/// モデルごとのボーンパレットをバインド
+			cmdList->SetGraphicsRootDescriptorTable(WellForGPUSRV, skinCluster.paletteSRVHandle.second);
+
 			/// vbv, ibvのセット
 			D3D12_VERTEX_BUFFER_VIEW vbvs[2] = {
-				mesh->GetVBV(), smRenderer->skinCluster_->vbv
+				mesh->GetVBV(), skinCluster.vbv
 			};
 			cmdList->IASetVertexBuffers(0, 2, vbvs);
 			cmdList->IASetIndexBuffer(&mesh->GetIBV());

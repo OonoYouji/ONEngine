@@ -1,4 +1,4 @@
-﻿#include "ModelLoader.h"
+#include "ModelLoader.h"
 
 /// std
 #include <fstream>
@@ -18,16 +18,11 @@ namespace ONEngine::Asset {
 
 AssetLoader<Model>::AssetLoader(DxManager* _dxm)
 	: pDxManager_(_dxm) {
-	assimpLoadFlags_ = aiProcess_FlipWindingOrder | aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices;
+	assimpLoadFlags_ = aiProcess_FlipWindingOrder | aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices | aiProcess_Triangulate | aiProcess_LimitBoneWeights;
 }
 
 std::optional<Model> AssetLoader<Model>::Load(const std::string& _filepath, Meta<Model::MetaData> meta) {
 	/// ----- モデルの読み込み ----- ///
-
-	//MetaFile meta;
-	//if(!meta.LoadFromFile(_filepath + ".meta")) {
-	//	meta = GenerateMetaFile(_filepath);
-	//}
 
 	/// ファイルの拡張子を取得
 	const std::string fileExtension = FileSystem::FileExtension(_filepath);
@@ -47,6 +42,12 @@ std::optional<Model> AssetLoader<Model>::Load(const std::string& _filepath, Meta
 	model.guid = meta.base.guid;
 	model.SetPath(_filepath);
 
+	if(fileExtension == ".gltf") {
+		/// nodeの解析
+		model.SetRootNode(ReadNode(scene->mRootNode));
+		LoadAnimation(&model, scene);
+	}
+
 	/// mesh 解析
 	for(uint32_t meshIndex = 0u; meshIndex < scene->mNumMeshes; ++meshIndex) {
 		aiMesh* mesh = scene->mMeshes[meshIndex];
@@ -60,9 +61,9 @@ std::optional<Model> AssetLoader<Model>::Load(const std::string& _filepath, Meta
 
 		/// vertex 解析
 		for(uint32_t i = 0; i < mesh->mNumVertices; ++i) {
-			Model::Vertex&& vertex = {
+			Model::Vertex vertex = {
 				Vector4(-mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z, 1.0f),
-				Vector2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y),
+				Vector2(mesh->mTextureCoords[0] ? mesh->mTextureCoords[0][i].x : 0.0f, mesh->mTextureCoords[0] ? mesh->mTextureCoords[0][i].y : 0.0f),
 				Vector3(-mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z)
 			};
 
@@ -78,6 +79,7 @@ std::optional<Model> AssetLoader<Model>::Load(const std::string& _filepath, Meta
 			}
 		}
 
+		Model::SkinData skinData;
 
 		/// joint 解析
 		for(uint32_t boneIndex = 0; boneIndex < mesh->mNumBones; ++boneIndex) {
@@ -85,7 +87,7 @@ std::optional<Model> AssetLoader<Model>::Load(const std::string& _filepath, Meta
 			/// 格納領域の作成
 			aiBone* bone = mesh->mBones[boneIndex];
 			std::string      jointName = bone->mName.C_Str();
-			JointWeightData& jointWeightData = model.GetJointWeightData()[jointName];
+			JointWeightData& jointWeightData = skinData.jointWeightData[jointName];
 
 			/// mat bind pose inverseの計算
 			aiMatrix4x4  matBindPoseAssimp = bone->mOffsetMatrix.Inverse();
@@ -111,21 +113,15 @@ std::optional<Model> AssetLoader<Model>::Load(const std::string& _filepath, Meta
 
 		}
 
-		if(fileExtension == ".gltf") {
-			/// nodeの解析
-			model.SetRootNode(ReadNode(scene->mRootNode));
-			LoadAnimation(&model, _filepath);
-		}
-
 		/// mesh dataを作成
-		std::unique_ptr<Model::ModelMesh> meshData = std::make_unique<Model::ModelMesh>();
+		std::shared_ptr<Model::ModelMesh> meshData = std::make_shared<Model::ModelMesh>();
 		meshData->SetVertices(vertices);
 		meshData->SetIndices(indices);
 
 		/// bufferの作成
 		meshData->CreateBuffer(pDxManager_->GetDxDevice());
 
-		model.AddMesh(std::move(meshData));
+		model.AddMesh(std::move(meshData), skinData);
 	}
 
 	Console::Log("[Load] [Model] - path:\"" + _filepath + "\"");
@@ -134,7 +130,6 @@ std::optional<Model> AssetLoader<Model>::Load(const std::string& _filepath, Meta
 }
 
 std::optional<Model> AssetLoader<Model>::Reload(const std::string& _filepath, Model* /*_src*/, Meta<Model::MetaData> meta) {
-	/// モデルの再読み込みは特殊な操作をする必要がないのでもう一度読み込んだ内容を渡す
 	return Load(_filepath, meta);
 }
 
@@ -162,8 +157,6 @@ Meta<Model::MetaData> AssetLoader<Model>::GetMetaData(const std::string& _filepa
 
 
 Node AssetLoader<Model>::ReadNode(aiNode* _node) {
-	/// ----- nodeの読み込み ----- ///
-
 	Node result;
 
 	aiVector3D   position;
@@ -189,81 +182,58 @@ Node AssetLoader<Model>::ReadNode(aiNode* _node) {
 	return result;
 }
 
-void AssetLoader<Model>::LoadAnimation(Model* _model, const std::string& _filepath) {
+void AssetLoader<Model>::LoadAnimation(Model* _model, const aiScene* _scene) {
 	/// ----- アニメーションの読み込み ----- ///
 
-	Assimp::Importer importer;
-	const aiScene* scene = importer.ReadFile(_filepath.c_str(), 0);
-
-	///!< アニメーションが存在しない場合は何もしない
-	if(scene->mAnimations == 0) {
-		Console::Log("[warning] type:Animation, path:\"" + _filepath + "\"");
-		return; ///< アニメーションが存在しない場合は何もしない
+	if(_scene->mNumAnimations == 0) {
+		return;
 	}
 
-	/// 解析
-	aiAnimation* animationAssimp = scene->mAnimations[0];
+	for(uint32_t animIndex = 0; animIndex < _scene->mNumAnimations; ++animIndex) {
+		aiAnimation* animationAssimp = _scene->mAnimations[animIndex];
+		
+		Model::ModelAnimation animation;
+		animation.name = animationAssimp->mName.C_Str();
+		animation.duration = static_cast<float>(animationAssimp->mDuration / animationAssimp->mTicksPerSecond);
 
-	float duration = _model->GetAnimationDuration();
-	std::unordered_map<std::string, NodeAnimation>& nodeAnimationMap = _model->GetNodeAnimationMap();
+		/// node animationの読み込み
+		for(uint32_t channelIndex = 0u; channelIndex < animationAssimp->mNumChannels; ++channelIndex) {
 
-	duration = static_cast<float>(animationAssimp->mDuration / animationAssimp->mTicksPerSecond);
-	_model->SetAnimationDuration(duration);
+			aiNodeAnim* nodeAnimationAssimp = animationAssimp->mChannels[channelIndex];
+			NodeAnimation& nodeAnimation = animation.nodeAnimationMap[nodeAnimationAssimp->mNodeName.C_Str()];
 
-	/// node animationの読み込み
-	for(uint32_t channelIndex = 0u; channelIndex < animationAssimp->mNumChannels; ++channelIndex) {
+			/// translateの解析
+			for(uint32_t keyIndex = 0u; keyIndex < nodeAnimationAssimp->mNumPositionKeys; ++keyIndex) {
+				aiVectorKey& keyAssimp = nodeAnimationAssimp->mPositionKeys[keyIndex];
+				KeyFrameVector3 keyframe{
+					.time = static_cast<float>(keyAssimp.mTime / (animationAssimp->mTicksPerSecond != 0 ? animationAssimp->mTicksPerSecond : 1.0)),
+					.value = { -keyAssimp.mValue.x, keyAssimp.mValue.y, keyAssimp.mValue.z }
+				};
+				nodeAnimation.translate.push_back(keyframe);
+			}
 
-		/// node animationの解析用データを
-		aiNodeAnim* nodeAnimationAssimp = animationAssimp->mChannels[channelIndex];
-		NodeAnimation& nodeAnimation = nodeAnimationMap[nodeAnimationAssimp->mNodeName.C_Str()];
+			/// rotateの解析
+			for(uint32_t keyIndex = 0u; keyIndex < nodeAnimationAssimp->mNumRotationKeys; ++keyIndex) {
+				aiQuatKey& keyAssimp = nodeAnimationAssimp->mRotationKeys[keyIndex];
+				KeyFrameQuaternion keyframe{
+					.time = static_cast<float>(keyAssimp.mTime / (animationAssimp->mTicksPerSecond != 0 ? animationAssimp->mTicksPerSecond : 1.0)),
+					.value = { keyAssimp.mValue.x, -keyAssimp.mValue.y, -keyAssimp.mValue.z, keyAssimp.mValue.w }
+				};
+				nodeAnimation.rotate.push_back(keyframe);
+			}
 
-		/// ---------------------------------------------------
-		/// translateの解析
-		/// ---------------------------------------------------
-		for(uint32_t keyIndex = 0u; keyIndex < nodeAnimationAssimp->mNumPositionKeys; ++keyIndex) {
-
-			/// keyの値を得る
-			aiVectorKey& keyAssimp = nodeAnimationAssimp->mPositionKeys[keyIndex];
-			KeyFrameVector3 keyframe{
-				.time = static_cast<float>(keyAssimp.mTime / animationAssimp->mTicksPerSecond),
-				.value = { -keyAssimp.mValue.x, keyAssimp.mValue.y, keyAssimp.mValue.z }
-			};
-
-			nodeAnimation.translate.push_back(keyframe);
+			/// scaleの解析
+			for(uint32_t keyIndex = 0u; keyIndex < nodeAnimationAssimp->mNumScalingKeys; ++keyIndex) {
+				aiVectorKey& keyAssimp = nodeAnimationAssimp->mScalingKeys[keyIndex];
+				KeyFrameVector3 keyframe{
+					.time = static_cast<float>(keyAssimp.mTime / (animationAssimp->mTicksPerSecond != 0 ? animationAssimp->mTicksPerSecond : 1.0)),
+					.value = { keyAssimp.mValue.x, keyAssimp.mValue.y, keyAssimp.mValue.z }
+				};
+				nodeAnimation.scale.push_back(keyframe);
+			}
 		}
 
-
-		/// ---------------------------------------------------
-		/// rotateの解析
-		/// ---------------------------------------------------
-		for(uint32_t keyIndex = 0u; keyIndex < nodeAnimationAssimp->mNumRotationKeys; ++keyIndex) {
-
-			/// keyの値を得る
-			aiQuatKey& keyAssimp = nodeAnimationAssimp->mRotationKeys[keyIndex];
-			KeyFrameQuaternion keyframe{
-				.time = static_cast<float>(keyAssimp.mTime / animationAssimp->mTicksPerSecond),
-				.value = { keyAssimp.mValue.x, -keyAssimp.mValue.y, -keyAssimp.mValue.z, keyAssimp.mValue.w }
-			};
-
-			nodeAnimation.rotate.push_back(keyframe);
-		}
-
-
-		/// ---------------------------------------------------
-		/// scaleの解析
-		/// ---------------------------------------------------
-		for(uint32_t keyIndex = 0u; keyIndex < nodeAnimationAssimp->mNumScalingKeys; ++keyIndex) {
-
-			/// keyの値を得る
-			aiVectorKey& keyAssimp = nodeAnimationAssimp->mScalingKeys[keyIndex];
-			KeyFrameVector3 keyframe{
-				.time = static_cast<float>(keyAssimp.mTime / animationAssimp->mTicksPerSecond),
-				.value = { keyAssimp.mValue.x, keyAssimp.mValue.y, keyAssimp.mValue.z }
-			};
-
-			nodeAnimation.scale.push_back(keyframe);
-		}
-
+		_model->GetAnimations().push_back(std::move(animation));
 	}
 }
 
@@ -278,8 +248,8 @@ bool AssetLoader<Model>::ValidateModel(const aiScene* _aiScene) {
 			return false;
 		}
 
-		/// UV 
-		bool hasUV = (mesh->mTextureCoords[0] != nullptr);
+		/// UV (任意にする。なければ 0,0 を入れるようにしたため)
+		// bool hasUV = (mesh->mTextureCoords[0] != nullptr);
 
 		/// 法線 
 		bool hasNormals = mesh->HasNormals();
@@ -294,8 +264,7 @@ bool AssetLoader<Model>::ValidateModel(const aiScene* _aiScene) {
 			}
 		}
 
-		/// 1つでも条件を満たさないメッシュがあれば対象外 
-		if(!hasUV || !hasNormals || !isTriangulated) {
+		if(!hasNormals || !isTriangulated) {
 			return false;
 		}
 	}

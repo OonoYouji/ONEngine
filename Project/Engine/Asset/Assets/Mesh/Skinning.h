@@ -142,10 +142,11 @@ namespace ANIME_MATH {
 
 	/// @brief スキンクラスターの作成
 	/// @param _skeleton CreateSkeletonで作成されたスケルトン
-	/// @param _model ソースモデル
+	/// @param _jointWeightData ジョイントのウェイトデータ
+	/// @param _vertexCount 頂点数
 	/// @param _dxm DxManagerのインスタンスへのポインタ
 	/// @return 構築されたスキンクラスター
-	SkinCluster CreateSkinCluster(const Skeleton& _skeleton, Asset::Model* _model, DxManager* _dxm);
+	SkinCluster CreateSkinCluster(const Skeleton& _skeleton, const std::unordered_map<std::string, JointWeightData>& _jointWeightData, size_t _vertexCount, DxManager* _dxm);
 }
 
 

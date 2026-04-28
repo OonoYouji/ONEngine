@@ -43,8 +43,8 @@ public:
 
 	/// @brief アニメーションの読み込み
 	/// @param _model 読み込み対象のModelポインタ
-	/// @param _filepath 読み込み対象のファイルパス
-	void LoadAnimation(Model* _model, const std::string& _filepath);
+	/// @param _scene Assimpのシーンポインタ
+	void LoadAnimation(Model* _model, const aiScene* _scene);
 
 private:
 

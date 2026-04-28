@@ -1,4 +1,4 @@
-﻿#include "Skinning.h"
+#include "Skinning.h"
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
@@ -94,7 +94,7 @@ Skeleton ANIME_MATH::CreateSkeleton(const Node& _rootNode) {
 	return result;
 }
 
-SkinCluster ANIME_MATH::CreateSkinCluster(const Skeleton& _skeleton, Asset::Model* _model, DxManager* _dxm) {
+SkinCluster ANIME_MATH::CreateSkinCluster(const Skeleton& _skeleton, const std::unordered_map<std::string, JointWeightData>& _jointWeightData, size_t _vertexCount, DxManager* _dxm) {
 	/// ----- スキンクラスターを作成 ----- ///
 
 	SkinCluster result{};
@@ -127,18 +127,17 @@ SkinCluster ANIME_MATH::CreateSkinCluster(const Skeleton& _skeleton, Asset::Mode
 
 
 	/// resource create
-	Asset::Model::ModelMesh* frontMesh = _model->GetMeshes().front().get();
-	result.influenceResource.CreateResource(dxDevice, sizeof(VertexInfluence) * frontMesh->GetVertices().size());
+	result.influenceResource.CreateResource(dxDevice, sizeof(VertexInfluence) * _vertexCount);
 
 	/// mapping
 	VertexInfluence* mappedInfluence = nullptr;
 	result.influenceResource.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mappedInfluence));
-	std::memset(mappedInfluence, 0, sizeof(VertexInfluence) * frontMesh->GetVertices().size()); /// 第二引数の0ですべて初期化する
-	result.mappedInfluence = { mappedInfluence, frontMesh->GetVertices().size() };
+	std::memset(mappedInfluence, 0, sizeof(VertexInfluence) * _vertexCount); /// 第二引数の0ですべて初期化する
+	result.mappedInfluence = { mappedInfluence, _vertexCount };
 
 	/// vbvの作成
 	result.vbv.BufferLocation = result.influenceResource.Get()->GetGPUVirtualAddress();
-	result.vbv.SizeInBytes = static_cast<UINT>(sizeof(VertexInfluence) * frontMesh->GetVertices().size());
+	result.vbv.SizeInBytes = static_cast<UINT>(sizeof(VertexInfluence) * _vertexCount);
 	result.vbv.StrideInBytes = sizeof(VertexInfluence);
 
 	/// すべて単位行列で初期化
@@ -149,7 +148,7 @@ SkinCluster ANIME_MATH::CreateSkinCluster(const Skeleton& _skeleton, Asset::Mode
 	);
 
 
-	for (const auto& jointWeight : _model->GetJointWeightData()) {
+	for (const auto& jointWeight : _jointWeightData) {
 
 		/// jointWeight.firstにあるjoint名からskeletonに対象のjointがあるか探索
 		/// なければ次の処理
@@ -160,6 +159,10 @@ SkinCluster ANIME_MATH::CreateSkinCluster(const Skeleton& _skeleton, Asset::Mode
 
 		result.matBindPoseInverseArray[(*itr).second] = jointWeight.second.matBindPoseInverse;
 		for (const auto& vertexWeight : jointWeight.second.vertexWeights) {
+
+			if (vertexWeight.vertexIndex >= _vertexCount) {
+				continue;
+			}
 
 			/// influenceの開いている箇所に入れる
 			VertexInfluence& currentInfluence = result.mappedInfluence[vertexWeight.vertexIndex];

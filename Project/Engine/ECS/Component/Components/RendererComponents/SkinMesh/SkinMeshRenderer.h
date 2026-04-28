@@ -44,11 +44,10 @@ private:
 
 	bool isPlaying_;
 	float animationTime_;
-	float duration_;
 	float animationScale_;
+	uint32_t animationIndex_;
 
-	std::unordered_map<std::string, NodeAnimation> nodeAnimationMap_;
-	std::optional<SkinCluster> skinCluster_; ///< スキンアニメーションのデータ
+	std::vector<SkinCluster> skinClusters_; ///< スキンアニメーションのデータ群
 	Skeleton skeleton_; ///< ボーンデータ
 	bool isChangingMesh_;
 
@@ -64,8 +63,8 @@ public:
 
 	void SetIsPlaying(bool _isPlaying);
 	void SetAnimationTime(float _time);
-	void SetDuration(float _duration);
 	void SetAnimationScale(float _scale);
+	void SetAnimationIndex(uint32_t _index);
 
 
 	const std::string& GetMeshPath() const;
@@ -75,8 +74,8 @@ public:
 
 	bool GetIsPlaying() const;
 	float GetAnimationTime() const;
-	float GetDuration() const;
 	float GetAnimationScale() const;
+	uint32_t GetAnimationIndex() const;
 
 	const Skeleton& GetSkeleton() const;
 

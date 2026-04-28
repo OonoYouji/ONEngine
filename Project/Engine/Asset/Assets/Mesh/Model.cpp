@@ -1,4 +1,4 @@
-﻿#include "Model.h"
+#include "Model.h"
 
 
 namespace ONEngine::Asset {
@@ -6,25 +6,16 @@ namespace ONEngine::Asset {
 Model::Model() = default;
 Model::~Model() = default;
 
-void Model::AddMesh(std::shared_ptr<ModelMesh>&& _mesh) {
+void Model::AddMesh(std::shared_ptr<ModelMesh>&& _mesh, const SkinData& _skinData) {
 	meshes_.push_back(std::move(_mesh));
+	skinDatas_.push_back(_skinData);
 }
 
 Model::ModelMesh* Model::CreateMesh() {
 	/// ----- 新規Meshを追加し、返す ----- ///
 	meshes_.emplace_back(std::make_shared<ModelMesh>());
+	skinDatas_.emplace_back();
 	return meshes_.back().get();
-}
-
-void Model::SetMeshes(std::vector<std::shared_ptr<ModelMesh>>&& _meshes) {
-	/// ----- 新しいMeshと今のMeshを入れ替える ----- ///
-	if(_meshes.size() > meshes_.size()) {
-		meshes_.resize(_meshes.size());
-	}
-
-	for(size_t i = 0; i < _meshes.size(); ++i) {
-		meshes_[i] = std::move(_meshes[i]);
-	}
 }
 
 const std::vector<std::shared_ptr<Model::ModelMesh>>& Model::GetMeshes() const {
@@ -43,36 +34,12 @@ void Model::SetRootNode(const Node& _node) {
 	rootNode_ = _node;
 }
 
-void Model::SetAnimationDuration(float _duration) {
-	duration_ = _duration;
-}
-
 const std::string& Model::GetPath() const {
 	return path_;
 }
 
 const Node& Model::GetRootNode() const {
 	return rootNode_;
-}
-
-const std::unordered_map<std::string, JointWeightData>& Model::GetJointWeightData() const {
-	return jointWeightData_;
-}
-
-std::unordered_map<std::string, JointWeightData>& Model::GetJointWeightData() {
-	return jointWeightData_;
-}
-
-const std::unordered_map<std::string, NodeAnimation>& Model::GetNodeAnimationMap() const {
-	return nodeAnimationMap_;
-}
-
-std::unordered_map<std::string, NodeAnimation>& Model::GetNodeAnimationMap() {
-	return nodeAnimationMap_;
-}
-
-float Model::GetAnimationDuration() const {
-	return duration_;
 }
 
 } // namespace ONEngine::Asset

@@ -1,4 +1,4 @@
-﻿#include "SkinMeshUpdateSystem.h"
+#include "SkinMeshUpdateSystem.h"
 
 using namespace ONEngine;
 
@@ -34,16 +34,18 @@ void SkinMeshUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
 
 
 			Skeleton skeleton = ANIME_MATH::CreateSkeleton(model->GetRootNode());
-			SkinCluster skinCluster = ANIME_MATH::CreateSkinCluster(skeleton, model, pDxManager_);
+			
+			skinMesh->skinClusters_.clear();
+			auto& meshes = model->GetMeshes();
+			auto& skinDatas = model->GetSkinDatas();
 
-			skinMesh->skinCluster_ = std::move(skinCluster);
+			for (size_t i = 0; i < meshes.size(); ++i) {
+				SkinCluster skinCluster = ANIME_MATH::CreateSkinCluster(skeleton, skinDatas[i].jointWeightData, meshes[i]->GetVertices().size(), pDxManager_);
+				skinMesh->skinClusters_.push_back(std::move(skinCluster));
+			}
+
 			skinMesh->skeleton_ = std::move(skeleton);
-
 			skinMesh->animationTime_ = 0.0f;
-			skinMesh->duration_ = model->GetAnimationDuration();
-
-			skinMesh->nodeAnimationMap_ = model->GetNodeAnimationMap();
-
 			skinMesh->isChangingMesh_ = false;
 
 			UpdateSkeleton(skinMesh);
@@ -52,7 +54,7 @@ void SkinMeshUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
 
 
 		/// skin clusterがあるかチェック
-		if (!skinMesh->skinCluster_) {
+		if (skinMesh->skinClusters_.empty()) {
 			continue;
 		}
 
@@ -61,9 +63,15 @@ void SkinMeshUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
 			continue;
 		}
 
+		Asset::Model* model = pAssetCollection_->GetModel(skinMesh->GetMeshPath());
+		if (model && !model->GetAnimations().empty()) {
+			uint32_t animIdx = (std::min)(skinMesh->animationIndex_, (uint32_t)model->GetAnimations().size() - 1);
+			float duration = model->GetAnimations()[animIdx].duration;
 
-		skinMesh->animationTime_ += Time::DeltaTime();
-		skinMesh->animationTime_ = std::fmod(skinMesh->animationTime_, skinMesh->GetDuration());
+			skinMesh->animationTime_ += Time::DeltaTime() * skinMesh->animationScale_;
+			skinMesh->animationTime_ = std::fmod(skinMesh->animationTime_, duration);
+		}
+
 
 		UpdateSkeleton(skinMesh);
 		UpdateSkinCluster(skinMesh);
@@ -85,12 +93,18 @@ void SkinMeshUpdateSystem::UpdateSkeletonRecursive(SkinMeshRenderer* _smr, int32
 	Joint& joint = skeleton.joints[_jointIndex];
 
 	/// アニメーションの適用
-	auto it = _smr->nodeAnimationMap_.find(joint.name);
-	if (it != _smr->nodeAnimationMap_.end()) {
-		NodeAnimation& animation = it->second;
-		if (!animation.translate.empty()) { joint.transform.position = ANIME_MATH::CalculateValue(animation.translate, _smr->animationTime_); }
-		if (!animation.rotate.empty()) { joint.transform.rotate = ANIME_MATH::CalculateValue(animation.rotate, _smr->animationTime_); }
-		if (!animation.scale.empty()) { joint.transform.scale = ANIME_MATH::CalculateValue(animation.scale, _smr->animationTime_); }
+	Asset::Model* model = pAssetCollection_->GetModel(_smr->GetMeshPath());
+	if (model && !model->GetAnimations().empty()) {
+		uint32_t animIdx = (std::min)(_smr->animationIndex_, (uint32_t)model->GetAnimations().size() - 1);
+		auto& animationMap = model->GetAnimations()[animIdx].nodeAnimationMap;
+
+		auto it = animationMap.find(joint.name);
+		if (it != animationMap.end()) {
+			NodeAnimation& animation = it->second;
+			if (!animation.translate.empty()) { joint.transform.position = ANIME_MATH::CalculateValue(animation.translate, _smr->animationTime_); }
+			if (!animation.rotate.empty()) { joint.transform.rotate = ANIME_MATH::CalculateValue(animation.rotate, _smr->animationTime_); }
+			if (!animation.scale.empty()) { joint.transform.scale = ANIME_MATH::CalculateValue(animation.scale, _smr->animationTime_); }
+		}
 	}
 	joint.transform.Update();
 
@@ -112,26 +126,26 @@ void SkinMeshUpdateSystem::UpdateSkeletonRecursive(SkinMeshRenderer* _smr, int32
 
 void SkinMeshUpdateSystem::UpdateSkinCluster(SkinMeshRenderer* _smr) {
 	Skeleton& skeleton = _smr->skeleton_;
-	SkinCluster& skinCluster = _smr->skinCluster_.value();
+	
+	for (auto& skinCluster : _smr->skinClusters_) {
+		/// ------------------------------------
+		/// スキンクラスターの更新
+		/// ------------------------------------
+		for (size_t jointIndex = 0; jointIndex < skeleton.joints.size(); ++jointIndex) {
 
+			if (jointIndex >= skinCluster.matBindPoseInverseArray.size()) {
+				Console::Log("[warring] SkinMeshUpdateSystem::Update: jointIndex out of range for matBindPoseInverseArray");
+				continue; ///< 範囲外の場合はスキップ
+			}
 
-	/// ------------------------------------
-	/// スキンクラスターの更新
-	/// ------------------------------------
-	for (size_t jointIndex = 0; jointIndex < skeleton.joints.size(); ++jointIndex) {
+			/// スキニング行列 = 逆バインドポーズ行列 * スケルトン空間行列
+			skinCluster.mappedPalette[jointIndex].matSkeletonSpace =
+				skinCluster.matBindPoseInverseArray[jointIndex] * skeleton.joints[jointIndex].matSkeletonSpace;
 
-		if (jointIndex >= skinCluster.matBindPoseInverseArray.size()) {
-			Console::Log("[warring] SkinMeshUpdateSystem::Update: jointIndex out of range for matBindPoseInverseArray");
-			continue; ///< 範囲外の場合はスキップ
+			skinCluster.mappedPalette[jointIndex].matSkeletonSpaceInverseTranspose =
+				Matrix4x4::MakeTranspose(Matrix4x4::MakeInverse(skinCluster.mappedPalette[jointIndex].matSkeletonSpace));
+
 		}
-
-		/// スキニング行列 = 逆バインドポーズ行列 * スケルトン空間行列
-		skinCluster.mappedPalette[jointIndex].matSkeletonSpace =
-			skinCluster.matBindPoseInverseArray[jointIndex] * skeleton.joints[jointIndex].matSkeletonSpace;
-
-		skinCluster.mappedPalette[jointIndex].matSkeletonSpaceInverseTranspose =
-			Matrix4x4::MakeTranspose(Matrix4x4::MakeInverse(skinCluster.mappedPalette[jointIndex].matSkeletonSpace));
-
 	}
 
 }

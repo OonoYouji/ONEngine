@@ -33,6 +33,17 @@ public:
 
 	using ModelMesh = Mesh<Vertex>;
 
+	/// @brief メッシュごとのスキンデータ
+	struct SkinData {
+		std::unordered_map<std::string, JointWeightData> jointWeightData;
+	};
+
+	struct ModelAnimation {
+		std::string name;
+		float duration;
+		std::unordered_map<std::string, NodeAnimation> nodeAnimationMap;
+	};
+
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
@@ -42,7 +53,7 @@ public:
 
 	/// @brief mesh の新規追加
 	/// @param _mesh meshのunique_ptr
-	void AddMesh(std::shared_ptr<ModelMesh>&& _mesh);
+	void AddMesh(std::shared_ptr<ModelMesh>&& _mesh, const SkinData& _skinData = {});
 
 	ModelMesh* CreateMesh();
 
@@ -52,14 +63,13 @@ private:
 	/// ===================================================
 
 	std::vector<std::shared_ptr<ModelMesh>> meshes_;
+	std::vector<SkinData>              skinDatas_;
 	std::string                        path_;
 
 
 	/// ----- animation data ----- ///
 	Node rootNode_;
-	std::unordered_map<std::string, JointWeightData> jointWeightData_;
-	std::unordered_map<std::string, NodeAnimation> nodeAnimationMap_;
-	float duration_;
+	std::vector<ModelAnimation> animations_;
 
 
 public:
@@ -69,10 +79,8 @@ public:
 
 	/// ----- setters ----- ///
 
-	void SetMeshes(std::vector<std::shared_ptr<ModelMesh>>&& _meshes);
 	void SetPath(const std::string& _path);
 	void SetRootNode(const Node& _node);
-	void SetAnimationDuration(float _duration);
 
 
 	/// ----- getters ----- ///
@@ -84,19 +92,15 @@ public:
 	const std::vector<std::shared_ptr<ModelMesh>>& GetMeshes() const;
 	std::vector<std::shared_ptr<ModelMesh>>& GetMeshes();
 
+	/// @brief メッシュごとのスキンデータを取得
+	const std::vector<SkinData>& GetSkinDatas() const { return skinDatas_; }
+
 	/// @brief アニメーションのルートノードを取得
 	const Node& GetRootNode() const;
 
-	/// @brief アニメーションのJointWeightDataを取得
-	const std::unordered_map<std::string, JointWeightData>& GetJointWeightData() const;
-	std::unordered_map<std::string, JointWeightData>& GetJointWeightData();
-
-	/// @brief アニメーションのNodeAnimationのマップを取得
-	const std::unordered_map<std::string, NodeAnimation>& GetNodeAnimationMap() const;
-	std::unordered_map<std::string, NodeAnimation>& GetNodeAnimationMap();
-
-	/// @brief アニメーションの再生時間を取得
-	float GetAnimationDuration() const;
+	/// @brief アニメーション群を取得
+	const std::vector<ModelAnimation>& GetAnimations() const { return animations_; }
+	std::vector<ModelAnimation>& GetAnimations() { return animations_; }
 
 
 };
