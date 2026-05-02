@@ -96,4 +96,27 @@ bool Window::CreateGameWindow(const wchar_t* title, UINT windowStyle) {
 }
 
 
+
+void Window::Update() {
+	while(PeekMessage(&msg_, nullptr, 0, 0, PM_REMOVE)) {
+		if(msg_.message == WM_QUIT) {
+			break;
+		}
+
+		TranslateMessage(&msg_);
+		DispatchMessage(&msg_);
+	}
+
+	/// 終了メッセージ
+	if(msg_.message == WM_QUIT) {
+		isProcessEnd_ = true;
+		processMessage_ = true;
+		return;
+	}
+
+	isProcessEnd_ = false;
+	processMessage_ = false;
+}
+
+
 } /// namespace Engine::Core

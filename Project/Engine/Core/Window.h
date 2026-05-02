@@ -23,6 +23,12 @@ public:
 
 	void Shutdown();
 
+
+	void Update();
+
+
+	bool GetIsProcessEnd() const { return isProcessEnd_; }
+
 private:
 
 	bool CreateGameWindow(const wchar_t* title, UINT windowStyle);
@@ -38,6 +44,9 @@ private:
 	HWND hwnd_;
 	MSG msg_;
 	UINT windowStyle_;
+
+	UINT processMessage_;
+	bool isProcessEnd_;
 
 };
 

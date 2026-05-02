@@ -25,11 +25,18 @@
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	Engine::Core::Window window;
-	window.Initialize(L"TwoEngine", Engine::Math::Vector2Int{ 1280, 720 });
-	//while(true) {
+	window.Initialize(L"ThreeEngine", Engine::Math::Vector2Int{ 1280, 720 });
+	
+	while(true) {
+		window.Update();
 
-	//}
+
+
+		if(window.GetIsProcessEnd()) {
+			break;
+		}
+	}
+
 	window.Shutdown();
-
 	return 0;
 }
