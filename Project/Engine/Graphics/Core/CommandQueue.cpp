@@ -43,6 +43,8 @@ void CommandQueue::Initialize(RenderDevice* renderDevice) {
 		IID_PPV_ARGS(&commandList_)
 	);
 	Assert(SUCCEEDED(result), "Failed to create command list.");
+	/// コマンドリストは最初は閉じておく
+	commandList_->Close();
 
 
 	/// ---------------------------------------------------
@@ -52,6 +54,9 @@ void CommandQueue::Initialize(RenderDevice* renderDevice) {
 	result = device->CreateFence(fenceValue_, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence_));
 	Assert(SUCCEEDED(result), "Failed to create fence.");
 
+	fenceEvent_ = CreateEvent(nullptr, FALSE, FALSE, nullptr);
+	Assert(fenceEvent_ != nullptr, "Failed to create fence event.");
+
 
 	/// コマンドリストに名前を付ける
 	commandList_->SetName(L"DxCommand CommandList");
@@ -60,11 +65,37 @@ void CommandQueue::Initialize(RenderDevice* renderDevice) {
 }
 
 void CommandQueue::Shutdown() {
+	CloseHandle(fenceEvent_);
+}
 
+void CommandQueue::Reset() {
+	commandAllocator_->Reset();
+	commandList_->Reset(commandAllocator_.Get(), nullptr);
+}
+
+void CommandQueue::Execute() {
+	commandList_->Close();
+	ID3D12CommandQueue* commandQueue = commandQueue_.Get();
+	ID3D12CommandList* ppCommandLists[] = { commandList_.Get() };
+	commandQueue->ExecuteCommandLists(_countof(ppCommandLists), ppCommandLists);
+}
+
+void CommandQueue::SignalAndWait() {
+	fenceValue_++;
+	commandQueue_->Signal(fence_.Get(), fenceValue_);
+
+	if(fence_->GetCompletedValue() < fenceValue_) {
+		fence_->SetEventOnCompletion(fenceValue_, fenceEvent_);
+		WaitForSingleObject(fenceEvent_, INFINITE);
+	}
 }
 
 ID3D12CommandQueue* CommandQueue::GetCommandQueue() const {
 	return commandQueue_.Get();
+}
+
+ID3D12GraphicsCommandList6* CommandQueue::GetCommandList() const {
+	return commandList_.Get();
 }
 
 }

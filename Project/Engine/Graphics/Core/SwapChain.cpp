@@ -52,32 +52,26 @@ void SwapChain::Initialize(HWND hwnd, const Engine::Math::Vector2Int& size) {
 	}
 
 
-	//{
-	//	/// ---------------------------------------------------
-	//	/// buffer の初期化
-	//	/// ---------------------------------------------------
+	{
+		/// ---------------------------------------------------
+		/// buffer の初期化
+		/// ---------------------------------------------------
 
-	//	D3D12_RENDER_TARGET_VIEW_DESC desc{};
-	//	desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	//	desc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
+		buffers_.resize(kBufferCount);
+		rtvHandles_.resize(kBufferCount);
 
-	//	buffers_.resize(kBufferCount);
-	//	rtvHandles_.resize(kBufferCount);
-	//	rtvIndices_.resize(kBufferCount);
+		DescriptorHeap* rtvHeap = graphicsEngine.GetRTVHeap();
 
-	//	DxRTVHeap* dxRTVHeap = pDxManager_->GetDxRTVHeap();
+		for(uint32_t i = 0u; i < kBufferCount; ++i) {
+			HRESULT hr = swapChain_->GetBuffer(i, IID_PPV_ARGS(&buffers_[i]));
+			Assert(SUCCEEDED(hr), "Failed to create buffer");
 
-	//	for(uint8_t i = 0u; i < kBufferCount; ++i) {
-	//		HRESULT hr = swapChain_->GetBuffer(i, IID_PPV_ARGS(&buffers_[i]));
-	//		Assert(SUCCEEDED(hr), "Failed to create buffer");
+			rtvHandles_[i] = rtvHeap->GetCPUHandle(i);
 
-	//		rtvIndices_[i] = dxRTVHeap->Allocate();
-	//		rtvHandles_[i] = dxRTVHeap->GetCPUDescriptorHandel(rtvIndices_[i]);
-
-	//		pDxManager_->GetDxDevice()->GetDevice()->CreateRenderTargetView(
-	//			buffers_[i].Get(), &desc, rtvHandles_[i]);
-	//	}
-	//}
+			renderDevice->GetDevice()->CreateRenderTargetView(
+				buffers_[i].Get(), nullptr, rtvHandles_[i]);
+		}
+	}
 
 
 	{
@@ -85,8 +79,8 @@ void SwapChain::Initialize(HWND hwnd, const Engine::Math::Vector2Int& size) {
 		/// view port, sicssor rect の初期化
 		/// ---------------------------------------------------
 
-		viewport_.Width = size.x;
-		viewport_.Height = size.y;
+		viewport_.Width = static_cast<float>(size.x);
+		viewport_.Height = static_cast<float>(size.y);
 		viewport_.TopLeftX = 0.0f;
 		viewport_.TopLeftY = 0.0f;
 		viewport_.MinDepth = 0.0f;
@@ -104,6 +98,50 @@ void SwapChain::Initialize(HWND hwnd, const Engine::Math::Vector2Int& size) {
 
 void SwapChain::Shutdown() {
 
+}
+
+void SwapChain::BeginFrame(ID3D12GraphicsCommandList* commandList) {
+	uint32_t backBufferIndex = GetCurrentBackBufferIndex();
+
+	D3D12_RESOURCE_BARRIER barrier{};
+	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	barrier.Transition.pResource = buffers_[backBufferIndex].Get();
+	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
+	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
+	barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+	commandList->ResourceBarrier(1, &barrier);
+
+	commandList->RSSetViewports(1, &viewport_);
+	commandList->RSSetScissorRects(1, &scissorRect_);
+
+	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = GetRTVHandle();
+	commandList->OMSetRenderTargets(1, &rtvHandle, FALSE, nullptr);
+}
+
+void SwapChain::EndFrame(ID3D12GraphicsCommandList* commandList) {
+	uint32_t backBufferIndex = GetCurrentBackBufferIndex();
+
+	D3D12_RESOURCE_BARRIER barrier{};
+	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	barrier.Transition.pResource = buffers_[backBufferIndex].Get();
+	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
+	barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+	commandList->ResourceBarrier(1, &barrier);
+}
+
+void SwapChain::Present() {
+	swapChain_->Present(1, 0);
+}
+
+uint32_t SwapChain::GetCurrentBackBufferIndex() const {
+	return swapChain_->GetCurrentBackBufferIndex();
+}
+
+D3D12_CPU_DESCRIPTOR_HANDLE SwapChain::GetRTVHandle() const {
+	return rtvHandles_[GetCurrentBackBufferIndex()];
 }
 
 } /// namespace Engine::Graphics

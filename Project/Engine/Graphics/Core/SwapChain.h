@@ -6,6 +6,7 @@
 
 /// std
 #include <vector>
+#include <cstdint>
 
 /// engine::math
 #include "Engine/Core/Math/Math.h"
@@ -30,6 +31,17 @@ public:
 
 	void Initialize(HWND hwnd, const Engine::Math::Vector2Int& size);
 	void Shutdown();
+
+
+	void BeginFrame(ID3D12GraphicsCommandList* commandList);
+	void EndFrame(ID3D12GraphicsCommandList* commandList);
+
+
+	void Present();
+
+
+	uint32_t GetCurrentBackBufferIndex() const;
+	D3D12_CPU_DESCRIPTOR_HANDLE GetRTVHandle() const;
 
 private:
 

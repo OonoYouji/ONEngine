@@ -28,7 +28,13 @@ public:
 	void Shutdown();
 
 
+	void Reset();
+	void Execute();
+	void SignalAndWait();
+
+
 	ID3D12CommandQueue* GetCommandQueue() const;
+	ID3D12GraphicsCommandList6* GetCommandList() const;
 
 private:
 
@@ -38,6 +44,7 @@ private:
 
 	ComPtr<ID3D12Fence>                fence_;
 	uint64_t                           fenceValue_;
+	HANDLE                             fenceEvent_;
 
 };
 

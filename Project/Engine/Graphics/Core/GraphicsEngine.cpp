@@ -25,6 +25,9 @@ void GraphicsEngine::Initialize(HWND hwnd, const Engine::Math::Vector2Int& windo
 	commandQueue_ = std::make_unique<CommandQueue>();
 	commandQueue_->Initialize(renderDevice_.get());
 
+	rtvHeap_ = std::make_unique<DescriptorHeap>();
+	rtvHeap_->Initialize(renderDevice_.get(), D3D12_DESCRIPTOR_HEAP_TYPE_RTV, SwapChain::kBufferCount, false);
+
 
 	///
 	/// 実行・同期レイヤーの初期化
@@ -36,7 +39,24 @@ void GraphicsEngine::Initialize(HWND hwnd, const Engine::Math::Vector2Int& windo
 }
 
 void GraphicsEngine::Shutdown() {
+	commandQueue_->SignalAndWait();
+}
 
+void GraphicsEngine::BeginFrame() {
+	commandQueue_->Reset();
+	swapChain_->BeginFrame(commandQueue_->GetCommandList());
+}
+
+void GraphicsEngine::EndFrame() {
+	swapChain_->EndFrame(commandQueue_->GetCommandList());
+	commandQueue_->Execute();
+	swapChain_->Present();
+	commandQueue_->SignalAndWait();
+}
+
+void GraphicsEngine::Clear(const Engine::Math::Vector4& color) {
+	float clearColor[] = { color.x, color.y, color.z, color.w };
+	commandQueue_->GetCommandList()->ClearRenderTargetView(swapChain_->GetRTVHandle(), clearColor, 0, nullptr);
 }
 
 void GraphicsEngine::SetDebugLayer() {

@@ -8,6 +8,7 @@
 #include "CommandQueue.h"
 #include "RenderDevice.h"
 #include "SwapChain.h"
+#include "DescriptorHeap.h"
 
 namespace Engine::Graphics {
 
@@ -35,8 +36,17 @@ public:
 	void Shutdown();
 
 
+	void BeginFrame();
+	void EndFrame();
+
+
+	void Clear(const Engine::Math::Vector4& color);
+
+
 	RenderDevice* GetRenderDevice() const { return renderDevice_.get(); }
 	CommandQueue* GetCommandQueue() const { return commandQueue_.get(); }
+	DescriptorHeap* GetRTVHeap() const { return rtvHeap_.get(); }
+	SwapChain* GetSwapChain() const { return swapChain_.get(); }
 
 private:
 
@@ -54,6 +64,7 @@ private:
 
 	std::unique_ptr<RenderDevice> renderDevice_ = nullptr;
 	std::unique_ptr<CommandQueue> commandQueue_ = nullptr;
+	std::unique_ptr<DescriptorHeap> rtvHeap_ = nullptr;
 
 
 	///
