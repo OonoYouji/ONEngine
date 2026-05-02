@@ -46,6 +46,7 @@ public:
 	RenderDevice* GetRenderDevice() const { return renderDevice_.get(); }
 	CommandQueue* GetCommandQueue() const { return commandQueue_.get(); }
 	DescriptorHeap* GetRTVHeap() const { return rtvHeap_.get(); }
+	DescriptorHeap* GetSRVHeap() const { return srvHeap_.get(); }
 	SwapChain* GetSwapChain() const { return swapChain_.get(); }
 
 private:
@@ -65,6 +66,7 @@ private:
 	std::unique_ptr<RenderDevice> renderDevice_ = nullptr;
 	std::unique_ptr<CommandQueue> commandQueue_ = nullptr;
 	std::unique_ptr<DescriptorHeap> rtvHeap_ = nullptr;
+	std::unique_ptr<DescriptorHeap> srvHeap_ = nullptr;
 
 
 	///

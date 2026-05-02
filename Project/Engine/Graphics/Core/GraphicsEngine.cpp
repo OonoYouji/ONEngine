@@ -28,6 +28,9 @@ void GraphicsEngine::Initialize(HWND hwnd, const Engine::Math::Vector2Int& windo
 	rtvHeap_ = std::make_unique<DescriptorHeap>();
 	rtvHeap_->Initialize(renderDevice_.get(), D3D12_DESCRIPTOR_HEAP_TYPE_RTV, SwapChain::kBufferCount, false);
 
+	srvHeap_ = std::make_unique<DescriptorHeap>();
+	srvHeap_->Initialize(renderDevice_.get(), D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 1024, true);
+
 
 	///
 	/// 実行・同期レイヤーの初期化

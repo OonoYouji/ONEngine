@@ -1,4 +1,4 @@
-#include "RootSignature.h"
+﻿#include "RootSignature.h"
 #include "Engine/Graphics/Core/RenderDevice.h"
 #include "Engine/Common/Assert.h"
 #include "Engine/Common/Console.h"
@@ -12,6 +12,7 @@ RootSignature::RootSignature() = default;
 RootSignature::~RootSignature() = default;
 
 bool RootSignature::Create(RenderDevice* device, const std::vector<ShaderReflectionData>& reflectionDataList) {
+    nameToParameterIndex_.clear();
     std::vector<D3D12_ROOT_PARAMETER> rootParameters;
     std::vector<std::unique_ptr<D3D12_DESCRIPTOR_RANGE[]>> rangeArrays; // メモリ確保用
 
@@ -57,6 +58,8 @@ bool RootSignature::Create(RenderDevice* device, const std::vector<ShaderReflect
         param.DescriptorTable.pDescriptorRanges = ranges.get();
         param.ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 
+        nameToParameterIndex_[cb.name] = static_cast<uint32_t>(rootParameters.size());
+        Engine::Console::Log(std::format("RootSig Bind: {} -> Index {}", cb.name, rootParameters.size()));
         rootParameters.push_back(param);
         rangeArrays.push_back(std::move(ranges));
     }
@@ -76,6 +79,8 @@ bool RootSignature::Create(RenderDevice* device, const std::vector<ShaderReflect
         param.DescriptorTable.pDescriptorRanges = ranges.get();
         param.ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 
+        nameToParameterIndex_[srv.name] = static_cast<uint32_t>(rootParameters.size());
+        Engine::Console::Log(std::format("RootSig Bind: {} -> Index {}", srv.name, rootParameters.size()));
         rootParameters.push_back(param);
         rangeArrays.push_back(std::move(ranges));
     }
@@ -95,6 +100,8 @@ bool RootSignature::Create(RenderDevice* device, const std::vector<ShaderReflect
         param.DescriptorTable.pDescriptorRanges = ranges.get();
         param.ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 
+        nameToParameterIndex_[uav.name] = static_cast<uint32_t>(rootParameters.size());
+        Engine::Console::Log(std::format("RootSig Bind: {} -> Index {}", uav.name, rootParameters.size()));
         rootParameters.push_back(param);
         rangeArrays.push_back(std::move(ranges));
     }
@@ -114,6 +121,8 @@ bool RootSignature::Create(RenderDevice* device, const std::vector<ShaderReflect
         param.DescriptorTable.pDescriptorRanges = ranges.get();
         param.ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 
+        nameToParameterIndex_[sampler.name] = static_cast<uint32_t>(rootParameters.size());
+        Engine::Console::Log(std::format("RootSig Bind: {} -> Index {}", sampler.name, rootParameters.size()));
         rootParameters.push_back(param);
         rangeArrays.push_back(std::move(ranges));
     }
@@ -143,6 +152,19 @@ bool RootSignature::Create(RenderDevice* device, const std::vector<ShaderReflect
     }
 
     return true;
+}
+
+uint32_t RootSignature::GetParameterIndex(const std::string& name) const {
+    auto it = nameToParameterIndex_.find(name);
+    if (it == nameToParameterIndex_.end()) {
+        std::string available;
+        for (const auto& pair : nameToParameterIndex_) {
+            available += pair.first + ", ";
+        }
+        Engine::Console::LogError(std::format("Root parameter '{}' not found. Available: {}", name, available));
+        return 0; // クラッシュを避けるためにとりあえず0を返す（またはエラーハンドリングを上位で行う）
+    }
+    return it->second;
 }
 
 } // namespace Engine::Graphics

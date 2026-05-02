@@ -3,6 +3,7 @@
 #include <format>
 #include <vector>
 #include <d3d12shader.h>
+#include <Windows.h>
 
 #include "Engine/Common/Assert.h"
 #include "Engine/Common/Console.h"
@@ -121,67 +122,72 @@ void ShaderCompiler::ExtractReflection(IDxcBlob* reflectionBlob, ShaderReflectio
     D3D12_SHADER_DESC shaderDesc;
     reflection->GetDesc(&shaderDesc);
 
-    // 1. 定数バッファの解析
-    for (uint32_t i = 0; i < shaderDesc.ConstantBuffers; ++i) {
-        ID3D12ShaderReflectionConstantBuffer* cb = reflection->GetConstantBufferByIndex(i);
-        D3D12_SHADER_BUFFER_DESC bufferDesc;
-        cb->GetDesc(&bufferDesc);
-
-        // リソースバインド情報からレジストリ番号を取得
-        D3D12_SHADER_INPUT_BIND_DESC bindDesc;
-        reflection->GetResourceBindingDescByName(bufferDesc.Name, &bindDesc);
-
-        ShaderConstantBufferInfo cbInfo;
-        cbInfo.name = bufferDesc.Name;
-        cbInfo.bindPoint = bindDesc.BindPoint;
-        cbInfo.bindCount = bindDesc.BindCount;
-        cbInfo.space = bindDesc.Space;
-        cbInfo.size = bufferDesc.Size;
-
-        for (uint32_t j = 0; j < bufferDesc.Variables; ++j) {
-            ID3D12ShaderReflectionVariable* var = cb->GetVariableByIndex(j);
-            D3D12_SHADER_VARIABLE_DESC varDesc;
-            var->GetDesc(&varDesc);
-
-            ShaderVariableInfo varInfo;
-            varInfo.name = varDesc.Name;
-            varInfo.offset = varDesc.StartOffset;
-            varInfo.size = varDesc.Size;
-            cbInfo.variables.push_back(varInfo);
-        }
-        outData.constantBuffers.push_back(cbInfo);
-    }
-
-    // 2. その他のリソース（SRV, UAV, Sampler）の解析
+    // バインドされている全リソースを走査
     for (uint32_t i = 0; i < shaderDesc.BoundResources; ++i) {
         D3D12_SHADER_INPUT_BIND_DESC bindDesc;
         reflection->GetResourceBindingDesc(i, &bindDesc);
 
-        ShaderResourceInfo resInfo;
-        resInfo.name = bindDesc.Name;
-        resInfo.bindPoint = bindDesc.BindPoint;
-        resInfo.bindCount = bindDesc.BindCount;
-        resInfo.space = bindDesc.Space;
+        std::string resName = bindDesc.Name;
+        
+        // Debug出力
+        OutputDebugStringA(std::format("Shader Resource Found: {} (Type: {})\n", resName, (int)bindDesc.Type).c_str());
 
-        switch (bindDesc.Type) {
-        case D3D_SIT_TEXTURE:
-        case D3D_SIT_STRUCTURED:
-        case D3D_SIT_BYTEADDRESS:
-            outData.srvs.push_back(resInfo);
-            break;
-        case D3D_SIT_UAV_RWTYPED:
-        case D3D_SIT_UAV_RWSTRUCTURED:
-        case D3D_SIT_UAV_RWBYTEADDRESS:
-        case D3D_SIT_UAV_APPEND_STRUCTURED:
-        case D3D_SIT_UAV_CONSUME_STRUCTURED:
-        case D3D_SIT_UAV_RWSTRUCTURED_WITH_COUNTER:
-            outData.uavs.push_back(resInfo);
-            break;
-        case D3D_SIT_SAMPLER:
-            outData.samplers.push_back(resInfo);
-            break;
-        default:
-            break;
+        if (bindDesc.Type == D3D_SIT_CBUFFER) {
+            // 定数バッファの場合
+            ID3D12ShaderReflectionConstantBuffer* cb = reflection->GetConstantBufferByName(resName.c_str());
+            if (cb) {
+                D3D12_SHADER_BUFFER_DESC bufferDesc;
+                cb->GetDesc(&bufferDesc);
+
+                ShaderConstantBufferInfo cbInfo;
+                cbInfo.name = resName; // bindDesc.Name を使用
+                cbInfo.bindPoint = bindDesc.BindPoint;
+                cbInfo.bindCount = bindDesc.BindCount;
+                cbInfo.space = bindDesc.Space;
+                cbInfo.size = bufferDesc.Size;
+
+                for (uint32_t j = 0; j < bufferDesc.Variables; ++j) {
+                    ID3D12ShaderReflectionVariable* var = cb->GetVariableByIndex(j);
+                    D3D12_SHADER_VARIABLE_DESC varDesc;
+                    var->GetDesc(&varDesc);
+
+                    ShaderVariableInfo varInfo;
+                    varInfo.name = varDesc.Name;
+                    varInfo.offset = varDesc.StartOffset;
+                    varInfo.size = varDesc.Size;
+                    cbInfo.variables.push_back(varInfo);
+                }
+                outData.constantBuffers.push_back(cbInfo);
+            }
+        }
+        else {
+            // SRV, UAV, Sampler の場合
+            ShaderResourceInfo resInfo;
+            resInfo.name = resName;
+            resInfo.bindPoint = bindDesc.BindPoint;
+            resInfo.bindCount = bindDesc.BindCount;
+            resInfo.space = bindDesc.Space;
+
+            switch (bindDesc.Type) {
+            case D3D_SIT_TEXTURE:
+            case D3D_SIT_STRUCTURED:
+            case D3D_SIT_BYTEADDRESS:
+                outData.srvs.push_back(resInfo);
+                break;
+            case D3D_SIT_UAV_RWTYPED:
+            case D3D_SIT_UAV_RWSTRUCTURED:
+            case D3D_SIT_UAV_RWBYTEADDRESS:
+            case D3D_SIT_UAV_APPEND_STRUCTURED:
+            case D3D_SIT_UAV_CONSUME_STRUCTURED:
+            case D3D_SIT_UAV_RWSTRUCTURED_WITH_COUNTER:
+                outData.uavs.push_back(resInfo);
+                break;
+            case D3D_SIT_SAMPLER:
+                outData.samplers.push_back(resInfo);
+                break;
+            default:
+                break;
+            }
         }
     }
 }
