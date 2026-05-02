@@ -20,16 +20,19 @@
 
 #include <Windows.h>
 #include "Engine/Core/Window.h"
+#include "Engine/Graphics/Core/GraphicsEngine.h"
 
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	Engine::Core::Window window;
 	window.Initialize(L"ThreeEngine", Engine::Math::Vector2Int{ 1280, 720 });
-	
+
+	Engine::Graphics::GraphicsEngine& graphicsEngine = Engine::Graphics::GraphicsEngine::GetInstance();
+	graphicsEngine.Initialize();
+
 	while(true) {
 		window.Update();
-
 
 
 		if(window.GetIsProcessEnd()) {
@@ -37,6 +40,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 	}
 
+	graphicsEngine.Shutdown();
 	window.Shutdown();
+
 	return 0;
 }

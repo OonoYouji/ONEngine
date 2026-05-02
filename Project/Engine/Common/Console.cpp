@@ -1,0 +1,227 @@
+﻿#include "Console.h"
+
+#include <comdef.h>
+#include <Windows.h>
+
+/// std
+#include <fstream>
+#include <filesystem>
+#include <chrono>
+
+/// external
+#include <spdlog/spdlog.h>
+#include <spdlog/async.h>
+#include <spdlog/sinks/rotating_file_sink.h>
+
+namespace {
+
+/// @brief 現在の年月日時間をstringで取得する
+/// @return 
+std::string GetCurrentDateTimeString() {
+	std::time_t now = std::time(nullptr);
+	std::tm timeInfo{};
+	localtime_s(&timeInfo, &now);
+
+	std::ostringstream oss;
+	oss << std::setfill('0')
+		<< (timeInfo.tm_year + 1900)
+		<< std::setw(2) << (timeInfo.tm_mon + 1)
+		<< std::setw(2) << timeInfo.tm_mday << "_"
+		<< std::setw(2) << timeInfo.tm_hour
+		<< std::setw(2) << timeInfo.tm_min
+		<< std::setw(2) << timeInfo.tm_sec;
+
+	return oss.str();
+}
+
+/// @brief 現在の時間をstringで取得する
+/// @return 
+std::string GetCurrentTimeString() {
+	std::time_t now = std::time(nullptr);
+	std::tm timeInfo{};
+	localtime_s(&timeInfo, &now);
+	std::ostringstream oss;
+	oss << std::setw(2) << "["
+		<< std::setw(2) << timeInfo.tm_hour << ":"
+		<< std::setw(2) << timeInfo.tm_min << ":"
+		<< std::setw(2) << timeInfo.tm_sec
+		<< std::setw(2) << "] ";
+	return oss.str();
+}
+
+
+std::string gMessage;
+
+/// メンバ変数としてstaticで宣言したくないのでここで定義
+std::vector<std::string> gLogBuffer_;
+std::mutex gMutex_;
+
+} /// namespace
+
+
+/// ////////////////////////////////////////////////
+/// Console Log
+/// ////////////////////////////////////////////////
+
+namespace Engine {
+
+void Console::Initialize() {
+	/// 念のため一度だけ初期化するように制限をかける
+	static bool initialized = false;
+	if(initialized) {
+		return;
+	}
+
+	/// 非同期スレッドプール
+	spdlog::init_thread_pool(8192, 1);
+
+	/// ログ出力先(日付入り)
+	const std::string logDir = "../Generated/Log/";
+	const std::string fileName = "engine" + GetCurrentDateTimeString() + ".log";
+	auto sink = std::make_shared<spdlog::sinks::rotating_file_sink_mt>(
+		logDir + fileName, 10 * 1024 * 1024, 3);
+
+	auto logger = std::make_shared<spdlog::async_logger>(
+		"engine", sink,
+		spdlog::thread_pool(),
+		spdlog::async_overflow_policy::discard_new // v1.16.0の場合
+	);
+
+	spdlog::set_default_logger(logger);
+	spdlog::set_pattern("[%H:%M:%S.%e] [%l] %v");
+
+	spdlog::info("Logger initialized.");
+
+	initialized = true;
+}
+
+void Console::AddToBuffer(const std::string& msg) {
+	std::lock_guard<std::mutex> lock(gMutex_);
+	gLogBuffer_.push_back(msg);
+
+	/// ログの最大数を制限
+	if(gLogBuffer_.size() > MAX_LOG_BUFFER_SIZE) {
+		gLogBuffer_.erase(gLogBuffer_.begin());
+	}
+}
+
+
+Console::~Console() {}
+
+void Console::Log(const std::string& msg) {
+	AddToBuffer(msg);
+	spdlog::info(msg);
+}
+
+void Console::Log(const std::wstring& msg) {
+	Log(ConvertString(msg));
+}
+
+void Console::LogInfo(const std::string& msg) {
+	AddToBuffer("[info] " + msg);
+	spdlog::info(msg);
+}
+
+void Console::LogError(const std::string& msg) {
+	AddToBuffer("[error] " + msg);
+	spdlog::error(msg);
+}
+
+void Console::LogWarning(const std::string& msg) {
+	AddToBuffer("[warning] " + msg);
+	spdlog::warn(msg);
+}
+
+const std::vector<std::string>& Console::GetLogVector() {
+	std::lock_guard<std::mutex> lock(gMutex_);
+	return gLogBuffer_;
+}
+
+void Console::Shutdown() {
+	spdlog::info("Logger finalized.");
+	spdlog::shutdown();
+}
+
+
+/// ////////////////////////////////////////////////
+/// 文字列変換関数
+/// ////////////////////////////////////////////////
+
+std::string ConvertString(const std::wstring& wstr) {
+
+	/// 引数が空の場合は空文字を返す
+	if(wstr.empty()) {
+		return std::string();
+	}
+
+	/// 変換後のサイズを取得
+	auto sizeNeeded = WideCharToMultiByte(CP_UTF8, 0, wstr.data(), static_cast<int>(wstr.size()), NULL, 0, NULL, NULL);
+	if(sizeNeeded == 0) {
+		return std::string();
+	}
+
+	/// 変換
+	std::string result(sizeNeeded, 0);
+	WideCharToMultiByte(CP_UTF8, 0, wstr.data(), static_cast<int>(wstr.size()), result.data(), sizeNeeded, NULL, NULL);
+	return result;
+}
+
+std::wstring ConvertString(const std::string& str) {
+
+	/// 引数が空の場合は空文字を返す
+	if(str.empty()) {
+		return std::wstring();
+	}
+
+	/// 変換後のサイズを取得
+	auto sizeNeeded = MultiByteToWideChar(CP_UTF8, 0, str.data(), static_cast<int>(str.size()), NULL, 0);
+	if(sizeNeeded == 0) {
+		return std::wstring();
+	}
+
+	/// 変換
+	std::wstring result(sizeNeeded, 0);
+	MultiByteToWideChar(CP_UTF8, 0, str.data(), static_cast<int>(str.size()), result.data(), sizeNeeded);
+	return result;
+}
+
+
+
+std::string ConvertTCHARToString(const TCHAR* tstr) {
+#ifdef UNICODE
+	// TCHAR == wchar_t
+	int len = WideCharToMultiByte(CP_UTF8, 0, tstr, -1, nullptr, 0, nullptr, nullptr);
+	if(len == 0) return "";
+
+	std::string result(len - 1, 0); // -1 to remove null terminator
+	WideCharToMultiByte(CP_UTF8, 0, tstr, -1, result.data(), len, nullptr, nullptr);
+	return result;
+#else
+	return std::string(tstr); // もともと char* ならそのまま
+#endif
+}
+
+std::string ConvertString(DWORD dw) {
+	return std::to_string(dw);
+}
+
+std::string HrToString(HRESULT hr) {
+	char* errorMsg = nullptr;
+
+	FormatMessageA(
+		FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+		nullptr,
+		hr,
+		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+		reinterpret_cast<LPSTR>(&errorMsg),
+		0,
+		nullptr
+	);
+
+	std::string errorString = errorMsg ? errorMsg : "Unknown error";
+	LocalFree(errorMsg); // メモリを解放
+
+	return errorString;
+}
+
+} /// namespace ONEngine
