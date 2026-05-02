@@ -2,6 +2,7 @@
 
 /// directX
 #include <d3d12.h>
+#include "Engine/Graphics/Resource/DepthBuffer.h"
 
 
 namespace Engine::Graphics {
@@ -31,6 +32,9 @@ void GraphicsEngine::Initialize(HWND hwnd, const Engine::Math::Vector2Int& windo
 	srvHeap_ = std::make_unique<DescriptorHeap>();
 	srvHeap_->Initialize(renderDevice_.get(), D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 1024, true);
 
+	dsvHeap_ = std::make_unique<DescriptorHeap>();
+	dsvHeap_->Initialize(renderDevice_.get(), D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 1, false);
+
 
 	///
 	/// 実行・同期レイヤーの初期化
@@ -38,6 +42,9 @@ void GraphicsEngine::Initialize(HWND hwnd, const Engine::Math::Vector2Int& windo
 
 	swapChain_ = std::make_unique<SwapChain>();
 	swapChain_->Initialize(hwnd, windowSize);
+
+	depthBuffer_ = std::make_unique<DepthBuffer>();
+	depthBuffer_->Create(renderDevice_.get(), dsvHeap_.get(), windowSize.x, windowSize.y);
 
 }
 
@@ -48,6 +55,11 @@ void GraphicsEngine::Shutdown() {
 void GraphicsEngine::BeginFrame() {
 	commandQueue_->Reset();
 	swapChain_->BeginFrame(commandQueue_->GetCommandList());
+
+	// 深度バッファをセット
+	auto rtvHandle = swapChain_->GetRTVHandle();
+	auto dsvHandle = depthBuffer_->GetDSVHandle();
+	commandQueue_->GetCommandList()->OMSetRenderTargets(1, &rtvHandle, FALSE, &dsvHandle);
 }
 
 void GraphicsEngine::EndFrame() {
@@ -60,6 +72,10 @@ void GraphicsEngine::EndFrame() {
 void GraphicsEngine::Clear(const Engine::Math::Vector4& color) {
 	float clearColor[] = { color.x, color.y, color.z, color.w };
 	commandQueue_->GetCommandList()->ClearRenderTargetView(swapChain_->GetRTVHandle(), clearColor, 0, nullptr);
+}
+
+void GraphicsEngine::ClearDepth() {
+	commandQueue_->GetCommandList()->ClearDepthStencilView(depthBuffer_->GetDSVHandle(), D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
 }
 
 void GraphicsEngine::SetDebugLayer() {

@@ -214,6 +214,13 @@ Matrix4x4 Matrix4x4::MakeLookAtLH(const Vector3& _eye, const Vector3& _target, c
 	return result;
 }
 
+Matrix4x4 Matrix4x4::MakePerspectiveFovLH(float _fov, float _aspect, float _near, float _far) {
+	/// ----- 左手座標系の透視射影行列作成 ----- ///
+
+	XMMATRIX projMatrix = XMMatrixPerspectiveFovLH(_fov, _aspect, _near, _far);
+	return Convert(projMatrix);
+}
+
 Vector3 Matrix4x4::Transform(const Vector3& _v, const Matrix4x4& _m) {
 	/// ----- Vector3に行列をかける ----- ///
 

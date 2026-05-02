@@ -41,13 +41,16 @@ public:
 
 
 	void Clear(const Engine::Math::Vector4& color);
+	void ClearDepth();
 
 
 	RenderDevice* GetRenderDevice() const { return renderDevice_.get(); }
 	CommandQueue* GetCommandQueue() const { return commandQueue_.get(); }
 	DescriptorHeap* GetRTVHeap() const { return rtvHeap_.get(); }
 	DescriptorHeap* GetSRVHeap() const { return srvHeap_.get(); }
+	DescriptorHeap* GetDSVHeap() const { return dsvHeap_.get(); }
 	SwapChain* GetSwapChain() const { return swapChain_.get(); }
+    class DepthBuffer* GetDepthBuffer() const { return depthBuffer_.get(); }
 
 private:
 
@@ -67,6 +70,7 @@ private:
 	std::unique_ptr<CommandQueue> commandQueue_ = nullptr;
 	std::unique_ptr<DescriptorHeap> rtvHeap_ = nullptr;
 	std::unique_ptr<DescriptorHeap> srvHeap_ = nullptr;
+	std::unique_ptr<DescriptorHeap> dsvHeap_ = nullptr;
 
 
 	///
@@ -74,6 +78,7 @@ private:
 	///
 
 	std::unique_ptr<SwapChain> swapChain_ = nullptr;
+	std::unique_ptr<class DepthBuffer> depthBuffer_ = nullptr;
 
 };
 

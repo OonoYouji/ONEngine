@@ -91,6 +91,14 @@ struct Matrix4x4 final {
 	/// @return 計算したビュー行列
 	static Matrix4x4 MakeLookAtLH(const Vector3& _eye, const Vector3& _target, const Vector3& _up);
 
+	/// @brief 左手座標系の透視射影行列を作成する
+	/// @param _fov 視野角 (rad)
+	/// @param _aspect アスペクト比
+	/// @param _near 近クリップ面
+	/// @param _far 遠クリップ面
+	/// @return 計算した透視射影行列
+	static Matrix4x4 MakePerspectiveFovLH(float _fov, float _aspect, float _near, float _far);
+
 	/// @brief ベクトルに行列をかける
 	/// @param _v ベクトル
 	/// @param _m 行列
