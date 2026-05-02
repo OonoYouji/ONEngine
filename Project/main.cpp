@@ -1,85 +1,56 @@
-﻿///// engine
-//#include "Engine/Core/GameFramework/GameFramework.h"
-//#include "Engine/Core/Utility/Tools/Log.h"
-//
-//
-//int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
-//	ONEngine::Console console;
-//
-//	std::unique_ptr<ONEngine::GameFramework> gameFramework = std::make_unique<ONEngine::GameFramework>();
-//	gameFramework->Initialize(ONEngine::GameFrameworkConfig{
-//		.windowName = L"TwoEngine",
-//		.windowSize = ONEngine::Vector2::HD,
-//	});
-//
-//	gameFramework->Run();
-//
-//	return 0;
-//}
-
-
-#include <Windows.h>
+﻿#include <Windows.h>
+#include <iostream>
+#include "Engine/Common/Console.h"
 #include "Engine/Core/Window.h"
 #include "Engine/Graphics/Core/GraphicsEngine.h"
-#include "Engine/ECS/Registry.h"
-#include "Engine/ECS/Components/Transform.h"
-#include "Engine/ECS/Components/MeshRenderer.h"
-#include "Engine/ECS/Systems/RenderSystem.h"
-#include "Engine/ECS/Components/Camera.h"
-#include "Engine/ECS/Components/Light.h"
-
+#include "Engine/Graphics/Shader/ShaderCompiler.h"
+#include "Engine/Graphics/Shader/RootSignature.h"
+#include "Engine/Graphics/Shader/PipelineState.h"
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
+    Engine::Core::Window window;
+    window.Initialize(L"LoadTest", Engine::Math::Vector2Int::HD);
 
-	Engine::Core::Window window;
-	window.Initialize(L"ThreeEngine", Engine::Math::Vector2Int::HD);
+    Engine::Graphics::GraphicsEngine& graphicsEngine = Engine::Graphics::GraphicsEngine::GetInstance();
+    graphicsEngine.Initialize(window.GetHWND(), Engine::Math::Vector2Int::HD);
 
-	Engine::Graphics::GraphicsEngine& graphicsEngine = Engine::Graphics::GraphicsEngine::GetInstance();
-	graphicsEngine.Initialize(window.GetHWND(), Engine::Math::Vector2Int::HD);
+    // --- ロードテスト開始 ---
+    Engine::Graphics::ShaderCompiler compiler;
+    compiler.Initialize();
 
-	// ECSの初期化
-	Engine::ECS::Registry registry;
-	Engine::ECS::RenderSystem renderSystem;
+    auto vs = compiler.Compile(L"Assets/Shader/Test/Test.hlsl", L"vs_main", L"vs_6_0");
+    auto ps = compiler.Compile(L"Assets/Shader/Test/Test.hlsl", L"ps_main", L"ps_6_0");
 
-	// テスト用のエンティティ作成
-	auto entity = registry.CreateEntity();
-	registry.AddComponent<Engine::ECS::Transform>(entity, { .position = { 0.0f, 0.0f, 5.0f } });
-	registry.AddComponent<Engine::ECS::MeshRenderer>(entity, { .meshPath = "Assets/Models/cube.obj" });
+    if (vs && ps) {
+        Engine::Console::Log("Shader compilation success!");
+        
+        // Reflection情報の確認
+        Engine::Console::Log(std::format("VS CBVs: {}", vs->reflectionData.constantBuffers.size()));
+        Engine::Console::Log(std::format("PS SRVs: {}", ps->reflectionData.srvs.size()));
 
-	// カメラの作成
-	auto cameraEntity = registry.CreateEntity();
-	registry.AddComponent<Engine::ECS::Transform>(cameraEntity, { .position = { 0.0f, 0.0f, -10.0f } });
-	registry.AddComponent<Engine::ECS::Camera>(cameraEntity);
+        Engine::Graphics::RootSignature rootSig;
+        if (rootSig.Create(graphicsEngine.GetRenderDevice(), { vs->reflectionData, ps->reflectionData })) {
+            Engine::Console::Log("RootSignature creation success!");
 
-	// ライトの作成
-	auto lightEntity = registry.CreateEntity();
-	registry.AddComponent<Engine::ECS::DirectionalLight>(lightEntity);
+            Engine::Graphics::PipelineState pso;
+            if (pso.Create(graphicsEngine.GetRenderDevice(), &rootSig, vs.get(), ps.get())) {
+                Engine::Console::Log("PipelineState creation (Stream) success!");
+            }
+        }
+    }
+    // --- ロードテスト終了 ---
 
-	Engine::Math::Vector4 clearColor = { 0.1f, 0.25f, 0.5f, 1.0f };
+    while(true) {
+        window.Update();
+        if(window.GetIsProcessEnd()) break;
 
-	while(true) {
-		window.Update();
+        graphicsEngine.BeginFrame();
+        graphicsEngine.Clear({ 0.1f, 0.2f, 0.3f, 1.0f });
+        graphicsEngine.EndFrame();
+    }
 
-		if(window.GetIsProcessEnd()) {
-			break;
-		}
+    graphicsEngine.Shutdown();
+    window.Shutdown();
 
-		// ECSの更新
-		renderSystem.Update(registry);
-
-		graphicsEngine.BeginFrame();
-		graphicsEngine.Clear(clearColor);
-		
-		// ここで本来はRenderer::GetInstance().GetQueue()を使って描画を行う
-
-		graphicsEngine.EndFrame();
-
-		// キューのクリア
-		Engine::Graphics::Renderer::GetInstance().ClearQueue();
-	}
-
-	graphicsEngine.Shutdown();
-	window.Shutdown();
-
-	return 0;
+    return 0;
 }
