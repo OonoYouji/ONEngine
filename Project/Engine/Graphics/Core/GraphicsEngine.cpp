@@ -18,6 +18,9 @@ void GraphicsEngine::Initialize() {
 
 	CreateDebugLayer();
 
+	commandQueue_ = std::make_unique<CommandQueue>();
+	commandQueue_->Initialize(renderDevice_.get());
+
 }
 
 void GraphicsEngine::Shutdown() {

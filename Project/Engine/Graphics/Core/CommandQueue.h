@@ -1,5 +1,14 @@
 ﻿#pragma once
 
+/// directX
+#include <d3d12.h>
+
+/// std
+#include <cstdint>
+
+/// engine::graphics
+#include "Engine/Graphics/Utils/ComPtr.h"
+
 namespace Engine::Graphics {
 class RenderDevice;
 }
@@ -19,6 +28,14 @@ public:
 	void Shutdown();
 
 private:
+
+	ComPtr<ID3D12CommandQueue>         commandQueue_;
+	ComPtr<ID3D12CommandAllocator>     commandAllocator_;
+	ComPtr<ID3D12GraphicsCommandList6> commandList_;
+
+	ComPtr<ID3D12Fence>                fence_;
+	uint64_t                           fenceValue_;
+
 
 };
 
