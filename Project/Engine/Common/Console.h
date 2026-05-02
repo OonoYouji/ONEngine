@@ -24,9 +24,6 @@ private:
 	// private : static members
 	/// ===================================================
 
-	/// @brief spdlogの初期化など
-	static void Initialize();
-
 	static void AddToBuffer(const std::string& msg);
 
 public:
@@ -42,6 +39,7 @@ public:
 	static const std::vector<std::string>& GetLogVector();
 
 	/// @brief ログをファイルに保存して終了する
+	static void Initialize();
 	static void Shutdown();
 };
 

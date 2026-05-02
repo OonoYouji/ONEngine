@@ -1,44 +1,40 @@
 ﻿#include <Windows.h>
-#include <iostream>
-#include "Engine/Common/Console.h"
 #include "Engine/Core/Window.h"
 #include "Engine/Graphics/Core/GraphicsEngine.h"
-#include "Engine/Graphics/Shader/ShaderCompiler.h"
-#include "Engine/Graphics/Shader/RootSignature.h"
-#include "Engine/Graphics/Shader/PipelineState.h"
+#include "Engine/Graphics/Shader/ShaderManager.h"
+#include "Engine/Common/Console.h"
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
-    Engine::Core::Window window;
-    window.Initialize(L"LoadTest", Engine::Math::Vector2Int::HD);
 
-    Engine::Graphics::GraphicsEngine& graphicsEngine = Engine::Graphics::GraphicsEngine::GetInstance();
+    Engine::Console::Initialize();
+
+
+    Engine::Core::Window window;
+    window.Initialize(L"PipelineTemplateTest", Engine::Math::Vector2Int::HD);
+
+    auto& graphicsEngine = Engine::Graphics::GraphicsEngine::GetInstance();
     graphicsEngine.Initialize(window.GetHWND(), Engine::Math::Vector2Int::HD);
 
-    // --- ロードテスト開始 ---
-    Engine::Graphics::ShaderCompiler compiler;
-    compiler.Initialize();
+    auto& shaderManager = Engine::Graphics::ShaderManager::GetInstance();
+    shaderManager.Initialize(graphicsEngine.GetRenderDevice());
 
-    auto vs = compiler.Compile(L"Assets/Shader/Test/Test.hlsl", L"vs_main", L"vs_6_0");
-    auto ps = compiler.Compile(L"Assets/Shader/Test/Test.hlsl", L"ps_main", L"ps_6_0");
+    // --- テンプレートロードテスト ---
+    if (shaderManager.LoadPipelineAsset("Assets/Pipelines/TestTemplate.json")) {
+        // 1. 初回作成
+        Engine::Graphics::PipelineStateDesc desc;
+        desc.blendEnable = true;
+        auto* pso1 = shaderManager.GetOrCreatePSO("TestTemplate", desc);
+        if (pso1) Engine::Console::Log("PSO 1 (Transparent) created!");
 
-    if (vs && ps) {
-        Engine::Console::Log("Shader compilation success!");
-        
-        // Reflection情報の確認
-        Engine::Console::Log(std::format("VS CBVs: {}", vs->reflectionData.constantBuffers.size()));
-        Engine::Console::Log(std::format("PS SRVs: {}", ps->reflectionData.srvs.size()));
+        // 2. キャッシュからの取得
+        auto* pso1_cached = shaderManager.GetOrCreatePSO("TestTemplate", desc);
+        if (pso1 == pso1_cached) Engine::Console::Log("PSO 1 cached successfully!");
 
-        Engine::Graphics::RootSignature rootSig;
-        if (rootSig.Create(graphicsEngine.GetRenderDevice(), { vs->reflectionData, ps->reflectionData })) {
-            Engine::Console::Log("RootSignature creation success!");
-
-            Engine::Graphics::PipelineState pso;
-            if (pso.Create(graphicsEngine.GetRenderDevice(), &rootSig, vs.get(), ps.get())) {
-                Engine::Console::Log("PipelineState creation (Stream) success!");
-            }
-        }
+        // 3. 別の設定（不透明）で作成
+        desc.blendEnable = false;
+        auto* pso2 = shaderManager.GetOrCreatePSO("TestTemplate", desc);
+        if (pso2 && pso1 != pso2) Engine::Console::Log("PSO 2 (Opaque) created independently!");
     }
-    // --- ロードテスト終了 ---
 
     while(true) {
         window.Update();
@@ -49,8 +45,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
         graphicsEngine.EndFrame();
     }
 
+    shaderManager.Shutdown();
     graphicsEngine.Shutdown();
     window.Shutdown();
+
+    Engine::Console::Shutdown();
 
     return 0;
 }

@@ -97,7 +97,7 @@ bool PipelineState::Create(
 
     hr = device2->CreatePipelineState(&streamDesc, IID_PPV_ARGS(&pipelineState_));
     if (FAILED(hr)) {
-        Console::Log("Failed to create pipeline state using Stream.");
+        Engine::Console::LogError(std::format("Failed to create pipeline state using Stream. Error: {}", Engine::HrToString(hr)));
         return false;
     }
 

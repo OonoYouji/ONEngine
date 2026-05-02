@@ -1,0 +1,28 @@
+#pragma once
+
+#include <string>
+
+namespace Engine::Graphics {
+
+///
+/// シェーダーファイルの情報を保持する構造体
+///
+struct ShaderFileInfo {
+    std::wstring path;
+    std::wstring entry;
+    std::wstring profile;
+    bool isValid = false;
+};
+
+///
+/// パイプラインアセット（テンプレート）の情報
+///
+struct PipelineAsset {
+    std::string name;
+    ShaderFileInfo vs;
+    ShaderFileInfo ps;
+    ShaderFileInfo as; // Optional
+    ShaderFileInfo ms; // Optional
+};
+
+} // namespace Engine::Graphics
