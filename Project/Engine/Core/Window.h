@@ -20,7 +20,6 @@ public:
 	~Window();
 
 	void Initialize(const std::wstring& windowName, const Engine::Math::Vector2Int& windowSize);
-
 	void Shutdown();
 
 
@@ -28,6 +27,7 @@ public:
 
 
 	bool GetIsProcessEnd() const { return isProcessEnd_; }
+	HWND GetHWND() const { return hwnd_; }
 
 private:
 

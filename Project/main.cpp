@@ -26,10 +26,10 @@
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	Engine::Core::Window window;
-	window.Initialize(L"ThreeEngine", Engine::Math::Vector2Int{ 1280, 720 });
+	window.Initialize(L"ThreeEngine", Engine::Math::Vector2Int::HD);
 
 	Engine::Graphics::GraphicsEngine& graphicsEngine = Engine::Graphics::GraphicsEngine::GetInstance();
-	graphicsEngine.Initialize();
+	graphicsEngine.Initialize(window.GetHWND(), Engine::Math::Vector2Int::HD);
 
 	while(true) {
 		window.Update();

@@ -63,5 +63,8 @@ void CommandQueue::Shutdown() {
 
 }
 
+ID3D12CommandQueue* CommandQueue::GetCommandQueue() const {
+	return commandQueue_.Get();
+}
 
 }

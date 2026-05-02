@@ -9,7 +9,11 @@ namespace Engine::Graphics {
 GraphicsEngine::GraphicsEngine() = default;
 GraphicsEngine::~GraphicsEngine() = default;
 
-void GraphicsEngine::Initialize() {
+void GraphicsEngine::Initialize(HWND hwnd, const Engine::Math::Vector2Int& windowSize) {
+
+	///
+	/// 基盤レイヤーの初期化
+	///
 
 	SetDebugLayer();
 
@@ -20,6 +24,14 @@ void GraphicsEngine::Initialize() {
 
 	commandQueue_ = std::make_unique<CommandQueue>();
 	commandQueue_->Initialize(renderDevice_.get());
+
+
+	///
+	/// 実行・同期レイヤーの初期化
+	///
+
+	swapChain_ = std::make_unique<SwapChain>();
+	swapChain_->Initialize(hwnd, windowSize);
 
 }
 

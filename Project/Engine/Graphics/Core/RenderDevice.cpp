@@ -83,6 +83,10 @@ void RenderDevice::Shutdown() {
 }
 
 
+IDXGIFactory7* RenderDevice::GetDxgiFactory() const {
+	return dxgiFactory_.Get();
+}
+
 ID3D12Device* RenderDevice::GetDevice() const {
 	return device_.Get();
 }

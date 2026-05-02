@@ -19,6 +19,8 @@ public:
 	void Shutdown();
 
 
+	IDXGIFactory7* GetDxgiFactory() const;
+
 	/// @brief Deviceのインスタンスの取得
 	/// @return Deviceのインスタンス
 	ID3D12Device* GetDevice() const;

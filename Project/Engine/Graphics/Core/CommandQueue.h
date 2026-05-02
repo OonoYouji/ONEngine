@@ -27,6 +27,9 @@ public:
 	void Initialize(RenderDevice* renderDevice);
 	void Shutdown();
 
+
+	ID3D12CommandQueue* GetCommandQueue() const;
+
 private:
 
 	ComPtr<ID3D12CommandQueue>         commandQueue_;
@@ -35,7 +38,6 @@ private:
 
 	ComPtr<ID3D12Fence>                fence_;
 	uint64_t                           fenceValue_;
-
 
 };
 
