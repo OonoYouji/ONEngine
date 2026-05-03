@@ -84,7 +84,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
         auto view = Engine::Math::Matrix4x4::MakeLookAtLH({ 0, 20, -50 }, { 0, 0, 0 }, { 0, 1, 0 });
         auto proj = Engine::Math::Matrix4x4::MakePerspectiveFovLH(0.45f, 16.0f/9.0f, 0.1f, 1000.0f);
         sceneData.viewProj = view * proj;
-        sceneCB.Update(&sceneData, sizeof(sceneData));
+        
+        auto* currentFrameRes = graphicsEngine.GetCurrentFrameResource();
+        currentFrameRes->GetSceneCB()->Update(&sceneData, sizeof(sceneData));
 
         // 描画準備
         renderer.ClearQueue();

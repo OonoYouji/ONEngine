@@ -9,6 +9,7 @@
 #include "RenderDevice.h"
 #include "SwapChain.h"
 #include "DescriptorHeap.h"
+#include "FrameResource.h"
 
 namespace Engine::Graphics {
 
@@ -52,6 +53,9 @@ public:
 	SwapChain* GetSwapChain() const { return swapChain_.get(); }
     class DepthBuffer* GetDepthBuffer() const { return depthBuffer_.get(); }
 
+	uint32_t GetCurrentFrameIndex() const { return currentFrameIndex_; }
+	FrameResource* GetCurrentFrameResource() const { return frameResources_[currentFrameIndex_].get(); }
+
 private:
 
 	void SetDebugLayer();
@@ -76,6 +80,10 @@ private:
 	///
 	/// 実行・同期レイヤー
 	///
+
+	static constexpr uint32_t kFrameCount = 3;
+	std::unique_ptr<FrameResource> frameResources_[kFrameCount];
+	uint32_t currentFrameIndex_ = 0;
 
 	std::unique_ptr<SwapChain> swapChain_ = nullptr;
 	std::unique_ptr<class DepthBuffer> depthBuffer_ = nullptr;

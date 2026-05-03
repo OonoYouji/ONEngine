@@ -1,5 +1,6 @@
-﻿#include "Renderer.h"
+#include "Renderer.h"
 #include "Engine/Graphics/Core/RenderDevice.h"
+#include "Engine/Graphics/Core/GraphicsEngine.h"
 #include "Engine/Asset/AssetManager.h"
 #include "Engine/Asset/MaterialManager.h"
 #include "Engine/Asset/TextureManager.h"
@@ -39,19 +40,20 @@ void Renderer::ClearQueue() {
 void Renderer::Extract() {
     if (queue_.empty()) return;
 
+    auto& graphicsEngine = GraphicsEngine::GetInstance();
     auto& materialManager = Asset::MaterialManager::GetInstance();
     auto& textureManager = Asset::TextureManager::GetInstance();
 
-    // 1. フレームインデックスの更新
-    currentFrameIndex_ = (currentFrameIndex_ + 1) % kBufferCount;
+    // 中央管理のフレームインデックスを取得
+    uint32_t frameIndex = graphicsEngine.GetCurrentFrameIndex();
 
-    // 2. ソートしてバッチングしやすくする（Model -> Material順）
+    // 1. ソートしてバッチングしやすくする（Model -> Material順）
     std::sort(queue_.begin(), queue_.end(), [](const RenderRequest& a, const RenderRequest& b) {
         if (a.modelName != b.modelName) return a.modelName < b.modelName;
         return a.materialName < b.materialName;
     });
 
-    // 3. 全インスタンスデータの抽出
+    // 2. 全インスタンスデータの抽出
     std::vector<GeneratedSchema::InstanceData> instanceData;
     instanceData.reserve(queue_.size());
     for (const auto& req : queue_) {
@@ -74,20 +76,22 @@ void Renderer::Extract() {
         instanceData.push_back(data);
     }
 
-    // 4. GPUバッファへのアップロード
-    instanceSBs_[currentFrameIndex_]->Update(instanceData.data(), static_cast<uint32_t>(instanceData.size() * sizeof(GeneratedSchema::InstanceData)));
+    // 3. GPUバッファへのアップロード
+    instanceSBs_[frameIndex]->Update(instanceData.data(), static_cast<uint32_t>(instanceData.size() * sizeof(GeneratedSchema::InstanceData)));
 }
 
 void Renderer::Render(ID3D12GraphicsCommandList* commandList, const D3D12_GPU_VIRTUAL_ADDRESS sceneCBAddress) {
     if (queue_.empty()) return;
 
+    auto& graphicsEngine = GraphicsEngine::GetInstance();
     auto& assetManager = Asset::AssetManager::GetInstance();
     auto& materialManager = Asset::MaterialManager::GetInstance();
     auto& textureManager = Asset::TextureManager::GetInstance();
     auto& shaderManager = ShaderManager::GetInstance();
 
-    // 使用するインスタンスバッファを取得
-    auto* currentSB = instanceSBs_[currentFrameIndex_].get();
+    // 中央管理のフレームインデックスを使用
+    uint32_t frameIndex = graphicsEngine.GetCurrentFrameIndex();
+    auto* currentSB = instanceSBs_[frameIndex].get();
 
     // 描画ループ（バッチング実行）
     uint32_t currentInstanceStart = 0;

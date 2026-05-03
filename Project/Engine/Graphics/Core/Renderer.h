@@ -49,9 +49,8 @@ private:
 	std::vector<RenderRequest> queue_;
 	
 	// インスタンスデータ用バッファ（二重バッファリング）
-	static constexpr uint32_t kBufferCount = 3; // Triple Buffering を見越して 3 に設定
+	static constexpr uint32_t kBufferCount = 3;
 	std::unique_ptr<StructuredBuffer> instanceSBs_[kBufferCount];
-	uint32_t currentFrameIndex_ = 0;
 	const uint32_t kMaxInstances = 2048;
 };
 

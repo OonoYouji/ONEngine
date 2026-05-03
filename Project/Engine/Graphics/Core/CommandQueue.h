@@ -28,10 +28,17 @@ public:
 	void Shutdown();
 
 
-	void Reset();
+	void Reset(ID3D12CommandAllocator* allocator);
 	void Execute();
-	void SignalAndWait();
+	
+	/// @brief キューにシグナルを送り、新しいフェンス値を返す
+	uint64_t Signal();
 
+	/// @brief 指定したフェンス値まで待機する
+	void Wait(uint64_t fenceValue);
+
+	/// @brief 現在の完了済みフェンス値を取得
+	uint64_t GetCompletedFenceValue() const { return fence_->GetCompletedValue(); }
 
 	ID3D12CommandQueue* GetCommandQueue() const;
 	ID3D12GraphicsCommandList6* GetCommandList() const;
@@ -39,12 +46,11 @@ public:
 private:
 
 	ComPtr<ID3D12CommandQueue>         commandQueue_;
-	ComPtr<ID3D12CommandAllocator>     commandAllocator_;
 	ComPtr<ID3D12GraphicsCommandList6> commandList_;
 
 	ComPtr<ID3D12Fence>                fence_;
-	uint64_t                           fenceValue_;
-	HANDLE                             fenceEvent_;
+	uint64_t                           fenceValue_ = 0;
+	HANDLE                             fenceEvent_ = nullptr;
 
 };
 

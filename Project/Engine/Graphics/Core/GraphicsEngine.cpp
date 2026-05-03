@@ -1,4 +1,4 @@
-﻿#include "GraphicsEngine.h"
+#include "GraphicsEngine.h"
 
 /// directX
 #include <d3d12.h>
@@ -40,6 +40,11 @@ void GraphicsEngine::Initialize(HWND hwnd, const Engine::Math::Vector2Int& windo
 	/// 実行・同期レイヤーの初期化
 	///
 
+	for (uint32_t i = 0; i < kFrameCount; ++i) {
+		frameResources_[i] = std::make_unique<FrameResource>();
+		frameResources_[i]->Initialize(renderDevice_.get());
+	}
+
 	swapChain_ = std::make_unique<SwapChain>();
 	swapChain_->Initialize(hwnd, windowSize);
 
@@ -49,24 +54,40 @@ void GraphicsEngine::Initialize(HWND hwnd, const Engine::Math::Vector2Int& windo
 }
 
 void GraphicsEngine::Shutdown() {
-	commandQueue_->SignalAndWait();
+    if (commandQueue_) {
+        commandQueue_->Wait(commandQueue_->Signal());
+    }
 }
 
 void GraphicsEngine::BeginFrame() {
-	commandQueue_->Reset();
-	swapChain_->BeginFrame(commandQueue_->GetCommandList());
+    // 1. 次のフレームリソースへ
+    currentFrameIndex_ = (currentFrameIndex_ + 1) % kFrameCount;
 
-	// 深度バッファをセット
-	auto rtvHandle = swapChain_->GetRTVHandle();
-	auto dsvHandle = depthBuffer_->GetDSVHandle();
-	commandQueue_->GetCommandList()->OMSetRenderTargets(1, &rtvHandle, FALSE, &dsvHandle);
+    // 2. そのフレームリソースのGPU処理が終わるまで待機
+    commandQueue_->Wait(frameResources_[currentFrameIndex_]->GetFenceValue());
+
+    // 3. コマンドリストのリセット (現在のフレームのアロケータを使用)
+    commandQueue_->Reset(frameResources_[currentFrameIndex_]->GetAllocator());
+
+    swapChain_->BeginFrame(commandQueue_->GetCommandList());
+
+    // 深度バッファをセット
+    auto rtvHandle = swapChain_->GetRTVHandle();
+    auto dsvHandle = depthBuffer_->GetDSVHandle();
+    commandQueue_->GetCommandList()->OMSetRenderTargets(1, &rtvHandle, FALSE, &dsvHandle);
 }
 
 void GraphicsEngine::EndFrame() {
-	swapChain_->EndFrame(commandQueue_->GetCommandList());
-	commandQueue_->Execute();
-	swapChain_->Present();
-	commandQueue_->SignalAndWait();
+    swapChain_->EndFrame(commandQueue_->GetCommandList());
+    
+    // 4. コマンドの実行
+    commandQueue_->Execute();
+    
+    // 5. 画面表示
+    swapChain_->Present();
+    
+    // 6. 実行完了を追跡するためのシグナルを送り、フェンス値を保存
+    frameResources_[currentFrameIndex_]->SetFenceValue(commandQueue_->Signal());
 }
 
 void GraphicsEngine::Clear(const Engine::Math::Vector4& color) {
@@ -106,7 +127,5 @@ void GraphicsEngine::CreateDebugLayer() {
 		infoQueue.Reset();
 	}
 }
-
-
 
 } /// namespace Engine::Graphics

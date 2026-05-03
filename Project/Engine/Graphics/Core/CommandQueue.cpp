@@ -26,19 +26,17 @@ void CommandQueue::Initialize(RenderDevice* renderDevice) {
 
 
 	/// ---------------------------------------------------
-	/// command allocator
-	/// ---------------------------------------------------
-	result = device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&commandAllocator_));
-	Assert(SUCCEEDED(result), "Failed to create command allocator.");
-
-
-	/// ---------------------------------------------------
 	/// command list
 	/// ---------------------------------------------------
+	// D3D12では作成時に有効なアロケータが必要なため、一時的なものを作成
+	ComPtr<ID3D12CommandAllocator> dummyAllocator;
+	result = device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&dummyAllocator));
+	Assert(SUCCEEDED(result), "Failed to create dummy allocator.");
+
 	result = device->CreateCommandList(
 		0,
 		D3D12_COMMAND_LIST_TYPE_DIRECT,
-		commandAllocator_.Get(),
+		dummyAllocator.Get(),
 		nullptr,
 		IID_PPV_ARGS(&commandList_)
 	);
@@ -65,12 +63,15 @@ void CommandQueue::Initialize(RenderDevice* renderDevice) {
 }
 
 void CommandQueue::Shutdown() {
-	CloseHandle(fenceEvent_);
+	if (fenceEvent_) {
+		CloseHandle(fenceEvent_);
+		fenceEvent_ = nullptr;
+	}
 }
 
-void CommandQueue::Reset() {
-	commandAllocator_->Reset();
-	commandList_->Reset(commandAllocator_.Get(), nullptr);
+void CommandQueue::Reset(ID3D12CommandAllocator* allocator) {
+	allocator->Reset();
+	commandList_->Reset(allocator, nullptr);
 }
 
 void CommandQueue::Execute() {
@@ -80,12 +81,15 @@ void CommandQueue::Execute() {
 	commandQueue->ExecuteCommandLists(_countof(ppCommandLists), ppCommandLists);
 }
 
-void CommandQueue::SignalAndWait() {
+uint64_t CommandQueue::Signal() {
 	fenceValue_++;
 	commandQueue_->Signal(fence_.Get(), fenceValue_);
+	return fenceValue_;
+}
 
-	if(fence_->GetCompletedValue() < fenceValue_) {
-		fence_->SetEventOnCompletion(fenceValue_, fenceEvent_);
+void CommandQueue::Wait(uint64_t fenceValue) {
+	if(fence_->GetCompletedValue() < fenceValue) {
+		fence_->SetEventOnCompletion(fenceValue, fenceEvent_);
 		WaitForSingleObject(fenceEvent_, INFINITE);
 	}
 }

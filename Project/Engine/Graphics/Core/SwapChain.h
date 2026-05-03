@@ -22,7 +22,7 @@ namespace Engine::Graphics {
 class SwapChain final {
 public:
 
-	static constexpr uint32_t kBufferCount = 2;
+	static constexpr uint32_t kBufferCount = 3;
 
 public:
 

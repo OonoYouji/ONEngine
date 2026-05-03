@@ -107,8 +107,11 @@ std::shared_ptr<Texture> TextureManager::LoadTextureAsAsset(const std::string& p
         auto bufferDesc = CD3DX12_RESOURCE_DESC::Buffer(uploadBufferSize);
         device_->GetDevice()->CreateCommittedResource(&heapProps, D3D12_HEAP_FLAG_NONE, &bufferDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&uploadHeap));
 
-        auto* queue = Graphics::GraphicsEngine::GetInstance().GetCommandQueue();
-        queue->Reset();
+        auto& graphicsEngine = Graphics::GraphicsEngine::GetInstance();
+        auto* queue = graphicsEngine.GetCommandQueue();
+        auto* currentFrameRes = graphicsEngine.GetCurrentFrameResource();
+
+        queue->Reset(currentFrameRes->GetAllocator());
         auto* commandList = queue->GetCommandList();
         auto barrier = CD3DX12_RESOURCE_BARRIER::Transition(res, D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_COPY_DEST);
         commandList->ResourceBarrier(1, &barrier);
@@ -116,7 +119,9 @@ std::shared_ptr<Texture> TextureManager::LoadTextureAsAsset(const std::string& p
         barrier = CD3DX12_RESOURCE_BARRIER::Transition(res, D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
         commandList->ResourceBarrier(1, &barrier);
         queue->Execute();
-        queue->SignalAndWait();
+        
+        // 即時完了を待機
+        queue->Wait(queue->Signal());
     }
 
     texture->SetIndex(index);
