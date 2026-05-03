@@ -19,18 +19,9 @@ SamplerState gSampler : register(s0);
 // t0, space0 : Vertex Buffer (Manual Fetching)
 StructuredBuffer<Vertex> gVertices : register(t0, space0); 
 
-// --- Per Frame/Scene Data ---
-struct SceneData {
-    float4x4 viewProj;
-};
-ConstantBuffer<SceneData> gSceneData : register(b0);
+#include "../Schema/Schema.hlsli"
 
-// --- Instanced Data ---
-struct InstanceData {
-    float4x4 world;
-    uint textureIndex;
-    uint3 _pad;
-};
+ConstantBuffer<SceneData> gSceneData : register(b0);
 StructuredBuffer<InstanceData> gInstances : register(t1, space0);
 
 VSOutput vs_main(uint vID : SV_VertexID, uint iID : SV_InstanceID) {

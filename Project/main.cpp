@@ -13,16 +13,9 @@
 #include "Engine/ECS/Components/Transform.h"
 #include "Engine/ECS/Components/MeshRenderer.h"
 #include "Engine/Common/Console.h"
+#include "Schema/Schema.h"
 
-struct SceneData {
-    Engine::Math::Matrix4x4 viewProj;
-};
-
-struct InstanceData {
-    Engine::Math::Matrix4x4 world;
-    uint32_t textureIndex;
-    uint32_t _pad[3];
-};
+using namespace Engine::GeneratedSchema;
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     Engine::Console::Initialize();

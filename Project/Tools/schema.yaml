@@ -1,0 +1,23 @@
+# schema.yaml
+# SSOT definition for engine data structures
+
+types:
+  SceneData:
+    type: ConstantBuffer
+    fields:
+      - name: viewProj
+        type: float4x4
+  
+  InstanceData:
+    type: StructuredBuffer
+    fields:
+      - name: world
+        type: float4x4
+      - name: textureIndex
+        type: uint32
+
+  MaterialData:
+    type: ConstantBuffer
+    fields:
+      - name: textureIndex
+        type: uint32
