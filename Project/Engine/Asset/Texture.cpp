@@ -12,6 +12,9 @@ Texture::Texture() = default;
 Texture::~Texture() = default;
 
 bool Texture::Load(const std::wstring& filePath) {
+    path_ = Engine::ConvertString(filePath);
+    state_ = AssetLoadState::Loading;
+    
     image_ = std::make_unique<DirectX::ScratchImage>();
     std::wstring ext = std::filesystem::path(filePath).extension();
 
@@ -24,8 +27,11 @@ bool Texture::Load(const std::wstring& filePath) {
 
     if (FAILED(hr)) {
         Engine::Console::LogError(Engine::ConvertString(std::format(L"Failed to load texture file: {}", filePath)));
+        state_ = AssetLoadState::Error;
         return false;
     }
+
+    state_ = AssetLoadState::Ready;
     return true;
 }
 

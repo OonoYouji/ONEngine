@@ -4,6 +4,7 @@
 #include <memory>
 #include <d3d12.h>
 #include "Engine/Graphics/Utils/ComPtr.h"
+#include "IAsset.h"
 
 namespace DirectX {
     class ScratchImage;
@@ -16,10 +17,13 @@ class RenderDevice;
 ///
 /// テクスチャリソースを管理するクラス
 ///
-class Texture {
+class Texture : public IAsset {
 public:
     Texture();
-    ~Texture();
+    virtual ~Texture();
+
+    /// @brief IAssetの実装
+    AssetType GetType() const override { return AssetType::Texture; }
 
     /// @brief ファイルからテクスチャをロード
     bool Load(const std::wstring& filePath);

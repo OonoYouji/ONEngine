@@ -1,6 +1,7 @@
 ﻿#include "MaterialManager.h"
 #include "TextureManager.h"
 #include "AssetDatabase.h"
+#include "AssetRegistry.h"
 #include "Engine/Graphics/Core/RenderDevice.h"
 #include "Engine/Common/Console.h"
 #include "Externals/nlohmann/json.hpp"
@@ -16,6 +17,12 @@ MaterialManager::~MaterialManager() = default; // 前方宣言対応
 
 void MaterialManager::Initialize(RenderDevice* device) {
     device_ = device;
+
+    // AssetRegistryへの登録
+    AssetRegistry::GetInstance().RegisterType<Material>(AssetType::Material);
+    AssetRegistry::GetInstance().RegisterLoader(AssetType::Material, [this](const std::string& pathOrGuid) {
+        return this->LoadMaterialAsAsset(pathOrGuid);
+    });
 }
 
 void MaterialManager::Shutdown() {
@@ -23,6 +30,11 @@ void MaterialManager::Shutdown() {
 }
 
 std::string MaterialManager::LoadMaterial(const std::string& pathOrGuid) {
+    auto mat = LoadMaterialAsAsset(pathOrGuid);
+    return mat ? mat->GetGuid() : "";
+}
+
+std::shared_ptr<Material> MaterialManager::LoadMaterialAsAsset(const std::string& pathOrGuid) {
     // GUID変換
     std::string guid = pathOrGuid;
     if (AssetDatabase::GetInstance().GetPathFromGuid(pathOrGuid) == "") {
@@ -30,7 +42,7 @@ std::string MaterialManager::LoadMaterial(const std::string& pathOrGuid) {
         if (found != "") guid = found;
     }
 
-    if (materials_.count(guid)) return guid;
+    if (materials_.count(guid)) return materials_[guid];
 
     // 実際のパス取得
     std::string path = AssetDatabase::GetInstance().GetPathFromGuid(guid);
@@ -39,12 +51,12 @@ std::string MaterialManager::LoadMaterial(const std::string& pathOrGuid) {
     std::ifstream file(path);
     if (!file.is_open()) {
         Engine::Console::LogError(std::format("Failed to open material: {}", path));
-        return "";
+        return nullptr;
     }
 
     try {
         json data = json::parse(file);
-        auto material = std::make_unique<Material>();
+        auto material = std::make_shared<Material>();
         
         material->name = data.value("name", "");
         material->pipelineName = data.value("pipeline", "");
@@ -74,13 +86,14 @@ std::string MaterialManager::LoadMaterial(const std::string& pathOrGuid) {
             Engine::Console::LogWarning(std::format("Material [{}]: 'parameters' NOT found. Using defaults.", material->name));
         }
 
-        materials_[guid] = std::move(material);
+        material->OnLoaded(); // state_ = Ready
+        materials_[guid] = material;
         Engine::Console::Log(std::format("MaterialManager: Loaded [{}]", path));
-        return guid;
+        return material;
     }
     catch (const std::exception& e) {
         Engine::Console::LogError(std::format("Failed to parse material: {}\n{}", path, e.what()));
-        return "";
+        return nullptr;
     }
 }
 

@@ -6,6 +6,7 @@
 #include "Engine/Common/Console.h"
 #include "Engine/Graphics/Core/CommandQueue.h"
 #include "Engine/Graphics/Core/GraphicsEngine.h"
+#include "AssetRegistry.h"
 #include "Externals/nlohmann/json.hpp"
 #include <d3dx12.h>
 #include <DirectXTex.h>
@@ -24,6 +25,12 @@ void TextureManager::Initialize(RenderDevice* device) {
     device_ = device;
     srvHeap_ = std::make_unique<DescriptorHeap>();
     srvHeap_->Initialize(device, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, kMaxBindlessTextures, true);
+
+    // AssetRegistryへの登録
+    AssetRegistry::GetInstance().RegisterType<Texture>(AssetType::Texture);
+    AssetRegistry::GetInstance().RegisterLoader(AssetType::Texture, [this](const std::string& pathOrGuid) {
+        return this->LoadTextureAsAsset(pathOrGuid);
+    });
 }
 
 void TextureManager::Shutdown() {
@@ -38,15 +45,20 @@ std::string TextureManager::ToGuid(const std::string& pathOrGuid) {
 }
 
 int32_t TextureManager::LoadTexture(const std::string& pathOrGuid) {
+    auto texture = LoadTextureAsAsset(pathOrGuid);
+    return texture ? texture->GetIndex() : -1;
+}
+
+std::shared_ptr<Texture> TextureManager::LoadTextureAsAsset(const std::string& pathOrGuid) {
     std::string guid = ToGuid(pathOrGuid);
     
     if (textureMap_.count(guid)) {
-        return textureMap_[guid]->GetIndex();
+        return textureMap_[guid];
     }
 
     if (textureMap_.size() >= kMaxBindlessTextures) {
         Engine::Console::LogError("Texture pool is full.");
-        return -1;
+        return nullptr;
     }
 
     std::string path = AssetDatabase::GetInstance().GetPathFromGuid(guid);
@@ -66,18 +78,17 @@ int32_t TextureManager::LoadTexture(const std::string& pathOrGuid) {
         } catch (...) {}
     }
 
-    auto texture = std::make_unique<Texture>();
-    std::wstring wpath(path.begin(), path.end());
+    auto texture = std::make_shared<Texture>();
+    std::wstring wpath = Engine::ConvertString(path);
     
-    // Texture::Load 側で sRGB 指定を受け取れるように拡張するのが理想的だが、
-    // 一旦ここでは標準ロード
     if (!texture->Load(wpath)) {
-        return -1;
+        return nullptr;
     }
 
     uint32_t index = static_cast<uint32_t>(textureMap_.size());
     D3D12_CPU_DESCRIPTOR_HANDLE srvHandle = srvHeap_->GetCPUHandle(index);
     texture->CreateResource(device_, srvHandle);
+    texture->SetIndex(index);
 
     // データ転送
     auto* image = texture->GetImage();
@@ -107,10 +118,10 @@ int32_t TextureManager::LoadTexture(const std::string& pathOrGuid) {
     }
 
     texture->SetIndex(index);
-    textureMap_[guid] = std::move(texture);
+    textureMap_[guid] = texture;
 
     Engine::Console::Log(std::format("TextureManager: Loaded [{}] (sRGB: {})", path, isSRGB));
-    return static_cast<int32_t>(index);
+    return texture;
 }
 
 Texture* TextureManager::GetTexture(const std::string& pathOrGuid) {

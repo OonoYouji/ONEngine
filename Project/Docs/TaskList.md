@@ -3,17 +3,21 @@
 現在の進捗状況と `RenderingRoadmap.md` に基づいたタスク管理表です。
 
 ## ■ 完了済み (Completed)
-- [x] **ECS 基礎基盤の実装**: Sparse Set ベースの Registry と View システム。
+- [x] **アセットシステムの抽象化と統合**: `IAsset`, `AssetHandle`, `AssetRegistry` による統一管理基盤の実装。
+- [x] **ECS 基礎基盤の実装**: Sparse Set ベース의 Registry と View システム。
 - [x] **レンダリングコアの構築**: DirectX 12 基盤、コマンドキュー、スワップチェーン。
 - [x] **インスタンスバッチング**: `Renderer` による `InstanceData` の集約と一括描画。
 - [x] **Bindless Texture 基礎**: 大規模 Descriptor Heap によるテクスチャ管理とシェーダー参照。
 - [x] **データ構造の自動生成**: `schema.yaml` から C++/HLSL 構造体の一斉生成 (`codegen.py`)。
 - [x] **アセット管理システム**: マテリアル (`.mat`)、モデル (`.obj`)、テクスチャのロード・管理。
+- [x] **Pipeline の外部ファイル化**: PSO 設定を JSON から動的にロードする仕組み。
+- [x] **Shader Reflection の統合**: HLSL コンパイル結果からルートシグネチャを自動構築。
 
 ## ■ 現在進行中 (In Progress)
-- [ ] **ループの正常化**: `main.cpp` でのフレームレート制限の解除と正確なデルタタイムの実装。
-- [ ] **Pipeline の外部ファイル化**: PSO 設定を JSON/YAML から動的にロードする仕組みの安定化。
-- [ ] **Shader Reflection のプロトタイプ**: HLSL コンパイル結果からルートシグネチャを自動構築する機能。
+- [ ] **ループの正常化**: フレームレート非依存の更新処理（デルタタイム）の実装。
+- [ ] **C# スクリプトホスティングの統合**: CoreCLR の組み込みと Interop 層の構築。
+- [ ] **Texture Bindless の完全統合**: 全アセットの種類を問わず Descriptor Heap を一元管理。
+
 
 ## ■ 今後の予定 (Future Tasks)
 

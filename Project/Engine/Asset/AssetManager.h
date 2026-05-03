@@ -5,10 +5,11 @@
 #include <memory>
 #include <vector>
 
-#include "Engine/Graphics/Resource/Mesh.h"
+#include "Mesh.h"
+#include "Model.h"
+#include "AssetHandle.h"
 
 namespace Engine::Graphics {
-    //class Mesh;
     class RenderDevice;
 }
 
@@ -30,6 +31,9 @@ public:
     /// @brief パスまたはGUIDからモデルをロードしてキャッシュ
     /// @param pathOrGuid ファイルパスまたはGUID
     void LoadModel(const std::string& pathOrGuid);
+
+    /// @brief AssetRegistry経由でのロード
+    std::shared_ptr<Graphics::Model> LoadModelAsAsset(const std::string& pathOrGuid);
     
     /// @brief ロード済みメッシュリストを取得
     const std::vector<std::unique_ptr<Graphics::Mesh>>& GetMeshes(const std::string& pathOrGuid);
@@ -44,7 +48,7 @@ private:
 private:
     Graphics::RenderDevice* device_ = nullptr;
     // キャッシュはGUIDで管理
-    std::unordered_map<std::string, std::vector<std::unique_ptr<Graphics::Mesh>>> models_;
+    std::unordered_map<std::string, std::shared_ptr<Graphics::Model>> models_;
 };
 
 } // namespace Engine

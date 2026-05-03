@@ -4,6 +4,7 @@
 #include <vector>
 #include <memory>
 #include <unordered_map>
+#include "AssetHandle.h"
 
 namespace Engine::Graphics {
 
@@ -29,6 +30,9 @@ public:
     /// @return ロードされたテクスチャのインデックス。失敗した場合は -1。
     int32_t LoadTexture(const std::string& pathOrGuid);
 
+    /// @brief AssetRegistry経由でのロード
+    std::shared_ptr<Texture> LoadTextureAsAsset(const std::string& pathOrGuid);
+
     /// @brief パスまたはGUIDからテクスチャを取得
     Texture* GetTexture(const std::string& pathOrGuid);
 
@@ -45,8 +49,8 @@ private:
     RenderDevice* device_ = nullptr;
     std::unique_ptr<DescriptorHeap> srvHeap_;
     
-    // GUIDをキーにした管理
-    std::unordered_map<std::string, std::unique_ptr<Texture>> textureMap_;
+    // GUIDをキーにした管理（AssetRegistryと共有するか、こちらで実体を持ち続けるか）
+    std::unordered_map<std::string, std::shared_ptr<Texture>> textureMap_;
 };
 
 } // namespace Engine::Graphics

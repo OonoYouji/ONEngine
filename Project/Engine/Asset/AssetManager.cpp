@@ -2,6 +2,7 @@
 #include "AssetDatabase.h"
 #include "ModelLoader.h"
 #include "Mesh.h"
+#include "AssetRegistry.h"
 #include "Engine/Graphics/Core/RenderDevice.h"
 #include "Engine/Common/Console.h"
 
@@ -12,6 +13,12 @@ void AssetManager::Initialize(Graphics::RenderDevice* device) {
     // 起動時にAssetsディレクトリをスキャン
     AssetDatabase::GetInstance().Scan("Project/Assets");
     AssetDatabase::GetInstance().Scan("Project/Packages");
+
+    // AssetRegistryへの登録
+    AssetRegistry::GetInstance().RegisterType<Graphics::Model>(AssetType::Model);
+    AssetRegistry::GetInstance().RegisterLoader(AssetType::Model, [this](const std::string& pathOrGuid) {
+        return this->LoadModelAsAsset(pathOrGuid);
+    });
 }
 
 void AssetManager::Shutdown() {
@@ -32,8 +39,12 @@ std::string AssetManager::ToGuid(const std::string& pathOrGuid) {
 }
 
 void AssetManager::LoadModel(const std::string& pathOrGuid) {
+    LoadModelAsAsset(pathOrGuid);
+}
+
+std::shared_ptr<Graphics::Model> AssetManager::LoadModelAsAsset(const std::string& pathOrGuid) {
     std::string guid = ToGuid(pathOrGuid);
-    if (models_.count(guid)) return;
+    if (models_.count(guid)) return models_[guid];
     
     // ロードには実際のパスが必要
     std::string path = AssetDatabase::GetInstance().GetPathFromGuid(guid);
@@ -41,16 +52,20 @@ void AssetManager::LoadModel(const std::string& pathOrGuid) {
 
     auto meshes = Graphics::ModelLoader::LoadModel(device_, path);
     if (!meshes.empty()) {
-        models_[guid] = std::move(meshes);
+        auto model = std::make_shared<Graphics::Model>();
+        model->SetMeshes(std::move(meshes));
+        models_[guid] = model;
         Engine::Console::Log(std::format("AssetManager: Loaded Model [{}] from {}", guid, path));
+        return model;
     }
+    return nullptr;
 }
 
 const std::vector<std::unique_ptr<Graphics::Mesh>>& AssetManager::GetMeshes(const std::string& pathOrGuid) {
     static std::vector<std::unique_ptr<Graphics::Mesh>> empty;
     std::string guid = ToGuid(pathOrGuid);
     auto it = models_.find(guid);
-    return (it != models_.end()) ? it->second : empty;
+    return (it != models_.end()) ? it->second->GetMeshes() : empty;
 }
 
 } // namespace Engine
