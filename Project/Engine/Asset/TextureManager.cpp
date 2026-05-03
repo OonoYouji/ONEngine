@@ -79,6 +79,8 @@ std::shared_ptr<Texture> TextureManager::LoadTextureAsAsset(const std::string& p
     }
 
     auto texture = std::make_shared<Texture>();
+    texture->SetGuid(guid);
+    texture->SetPath(path);
     std::wstring wpath = Engine::ConvertString(path);
     
     if (!texture->Load(wpath)) {

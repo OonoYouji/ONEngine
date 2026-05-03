@@ -53,6 +53,8 @@ std::shared_ptr<Model> AssetManager::LoadModelAsAsset(const std::string& pathOrG
     auto meshes = ModelLoader::LoadModel(device_, path);
     if (!meshes.empty()) {
         auto model = std::make_shared<Model>();
+        model->SetGuid(guid);
+        model->SetPath(path);
         model->SetMeshes(std::move(meshes));
         models_[guid] = model;
         Engine::Console::Log(std::format("AssetManager: Loaded Model [{}] from {}", guid, path));

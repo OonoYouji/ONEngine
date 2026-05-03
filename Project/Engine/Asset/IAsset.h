@@ -42,9 +42,11 @@ public:
 
     /// @brief GUIDを取得
     const std::string& GetGuid() const { return guid_; }
+    void SetGuid(const std::string& guid) { guid_ = guid; }
 
     /// @brief ファイルパスを取得
     const std::string& GetPath() const { return path_; }
+    void SetPath(const std::string& path) { path_ = path; }
 
     /// @brief ロード状態を取得
     AssetLoadState GetLoadState() const { return state_; }

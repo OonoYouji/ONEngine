@@ -57,6 +57,8 @@ std::shared_ptr<Material> MaterialManager::LoadMaterialAsAsset(const std::string
     try {
         json data = json::parse(file);
         auto material = std::make_shared<Material>();
+        material->SetGuid(guid);
+        material->SetPath(path);
         
         material->name = data.value("name", "");
         material->pipelineName = data.value("pipeline", "");
