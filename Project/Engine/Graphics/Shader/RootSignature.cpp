@@ -96,32 +96,41 @@ bool RootSignature::Create(RenderDevice* device, const std::vector<ShaderReflect
             }
         }
         else {
-            // SRV, UAV は Descriptor Table として作成
-            auto ranges = std::make_unique<D3D12_DESCRIPTOR_RANGE1[]>(1);
-            ranges[0].RangeType = type;
-            ranges[0].BaseShaderRegister = res.bindPoint;
-            ranges[0].RegisterSpace = res.space;
-            ranges[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
-            ranges[0].Flags = D3D12_DESCRIPTOR_RANGE_FLAG_NONE;
-
+            // SRV, UAV
             if (res.bindCount == 0) { // Bindless
+                // Descriptor Table として作成
+                auto ranges = std::make_unique<D3D12_DESCRIPTOR_RANGE1[]>(1);
+                ranges[0].RangeType = type;
+                ranges[0].BaseShaderRegister = res.bindPoint;
+                ranges[0].RegisterSpace = res.space;
+                ranges[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
                 ranges[0].NumDescriptors = 1024; // kMaxBindlessTextures に合わせる
                 ranges[0].Flags = D3D12_DESCRIPTOR_RANGE_FLAG_DESCRIPTORS_VOLATILE;
+
+                D3D12_ROOT_PARAMETER1 param = {};
+                param.ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+                param.DescriptorTable.NumDescriptorRanges = 1;
+                param.DescriptorTable.pDescriptorRanges = ranges.get();
+                param.ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+
+                nameToParameterIndex_[res.name] = static_cast<uint32_t>(rootParameters.size());
+                Engine::Console::Log(std::format("RootSig Bind (Table): {} -> Index {}", res.name, rootParameters.size()));
+                rootParameters.push_back(param);
+                rangeArrays.push_back(std::move(ranges));
             }
             else {
-                ranges[0].NumDescriptors = res.bindCount;
+                // 固定サイズの場合は Root SRV/UAV として作成 (Buffer用)
+                D3D12_ROOT_PARAMETER1 param = {};
+                param.ParameterType = (type == D3D12_DESCRIPTOR_RANGE_TYPE_SRV) ? D3D12_ROOT_PARAMETER_TYPE_SRV : D3D12_ROOT_PARAMETER_TYPE_UAV;
+                param.Descriptor.ShaderRegister = res.bindPoint;
+                param.Descriptor.RegisterSpace = res.space;
+                param.Descriptor.Flags = D3D12_ROOT_DESCRIPTOR_FLAG_NONE;
+                param.ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+
+                nameToParameterIndex_[res.name] = static_cast<uint32_t>(rootParameters.size());
+                Engine::Console::Log(std::format("RootSig Bind (Root SRV/UAV): {} -> Index {}", res.name, rootParameters.size()));
+                rootParameters.push_back(param);
             }
-
-            D3D12_ROOT_PARAMETER1 param = {};
-            param.ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-            param.DescriptorTable.NumDescriptorRanges = 1;
-            param.DescriptorTable.pDescriptorRanges = ranges.get();
-            param.ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
-
-            nameToParameterIndex_[res.name] = static_cast<uint32_t>(rootParameters.size());
-            Engine::Console::Log(std::format("RootSig Bind (Table): {} -> Index {}", res.name, rootParameters.size()));
-            rootParameters.push_back(param);
-            rangeArrays.push_back(std::move(ranges));
         }
     };
 

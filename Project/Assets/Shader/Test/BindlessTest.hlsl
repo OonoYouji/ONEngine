@@ -9,10 +9,14 @@ struct VSOutput {
 };
 
 // --- Bindless Resources ---
-// t0 ~ : Textures
-// s0 ~ : Samplers
-Texture2D gTextures[] : register(t0); 
+// t0, space1 ~ : Textures
+// s0, space0   : Sampler (Static)
+Texture2D gTextures[] : register(t0, space1); 
 SamplerState gSampler : register(s0);
+
+// --- Proper Mesh Resources ---
+// t0, space0 : Vertex Buffer (Manual Fetching)
+StructuredBuffer<Vertex> gVertices : register(t0, space0); 
 
 // --- Per Frame/Scene Data ---
 struct SceneData {
@@ -31,20 +35,11 @@ ConstantBuffer<MaterialData> gMaterial : register(b1);
 VSOutput vs_main(uint vID : SV_VertexID) {
     VSOutput output;
     
-    // 今回は頂点データをシェーダー内で完結させる
-    float3 positions[3] = {
-        { -0.5f, -0.5f, 0.0f },
-        {  0.0f,  0.5f, 0.0f },
-        {  0.5f, -0.5f, 0.0f }
-    };
-    float2 uvs[3] = {
-        { 0.0f, 1.0f },
-        { 0.5f, 0.0f },
-        { 1.0f, 1.0f }
-    };
+    // 頂点バッファからデータを取得 (Manual Vertex Fetching)
+    Vertex v = gVertices[vID];
     
-    output.position = mul(float4(positions[vID % 3], 1.0f), gSceneData.viewProj);
-    output.uv = uvs[vID % 3];
+    output.position = mul(float4(v.position, 1.0f), gSceneData.viewProj);
+    output.uv = v.uv;
     
     return output;
 }
@@ -55,6 +50,6 @@ float4 ps_main(VSOutput input) : SV_TARGET {
     // テクスチャをサンプリング
     float4 color = gTextures[NonUniformResourceIndex(texIdx)].Sample(gSampler, input.uv);
 
-    // 最終的な色を出力（アルファはテクスチャに従うか、1.0固定）
+    // 最終的な色を出力
     return float4(color.rgb, 1.0f);
 }
