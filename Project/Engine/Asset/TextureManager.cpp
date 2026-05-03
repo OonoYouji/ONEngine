@@ -1,4 +1,4 @@
-#include "TextureManager.h"
+﻿#include "TextureManager.h"
 #include "AssetDatabase.h"
 #include "Texture.h"
 #include "Engine/Graphics/Core/RenderDevice.h"
@@ -14,16 +14,16 @@
 
 using json = nlohmann::json;
 
-namespace Engine::Graphics {
+namespace Engine::Asset {
 
 const uint32_t kMaxBindlessTextures = 1024;
 
 TextureManager::TextureManager() = default;
 TextureManager::~TextureManager() = default;
 
-void TextureManager::Initialize(RenderDevice* device) {
+void TextureManager::Initialize(Graphics::RenderDevice* device) {
     device_ = device;
-    srvHeap_ = std::make_unique<DescriptorHeap>();
+    srvHeap_ = std::make_unique<Graphics::DescriptorHeap>();
     srvHeap_->Initialize(device, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, kMaxBindlessTextures, true);
 
     // AssetRegistryへの登録
@@ -105,7 +105,7 @@ std::shared_ptr<Texture> TextureManager::LoadTextureAsAsset(const std::string& p
         auto bufferDesc = CD3DX12_RESOURCE_DESC::Buffer(uploadBufferSize);
         device_->GetDevice()->CreateCommittedResource(&heapProps, D3D12_HEAP_FLAG_NONE, &bufferDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&uploadHeap));
 
-        auto* queue = GraphicsEngine::GetInstance().GetCommandQueue();
+        auto* queue = Graphics::GraphicsEngine::GetInstance().GetCommandQueue();
         queue->Reset();
         auto* commandList = queue->GetCommandList();
         auto barrier = CD3DX12_RESOURCE_BARRIER::Transition(res, D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_COPY_DEST);
@@ -130,4 +130,4 @@ Texture* TextureManager::GetTexture(const std::string& pathOrGuid) {
     return (it != textureMap_.end()) ? it->second.get() : nullptr;
 }
 
-} // namespace Engine::Graphics
+} // namespace Engine::Asset

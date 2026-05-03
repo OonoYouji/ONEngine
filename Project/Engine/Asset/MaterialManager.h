@@ -7,8 +7,10 @@
 #include "AssetHandle.h"
 
 namespace Engine::Graphics {
+	class RenderDevice;
+}
 
-class RenderDevice;
+namespace Engine::Asset {
 
 ///
 /// マテリアルを管理するクラス
@@ -20,7 +22,7 @@ public:
 		return instance;
 	}
 
-	void Initialize(RenderDevice* device);
+	void Initialize(Graphics::RenderDevice* device);
 	void Shutdown();
 
 	/// @brief マテリアルファイルをロード (.mat / JSON)
@@ -39,8 +41,8 @@ private:
 	~MaterialManager();
 
 private:
-	RenderDevice* device_ = nullptr;
+	Graphics::RenderDevice* device_ = nullptr;
 	std::unordered_map<std::string, std::shared_ptr<Material>> materials_;
 };
 
-} // namespace Engine::Graphics
+} // namespace Engine::Asset

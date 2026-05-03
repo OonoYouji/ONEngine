@@ -7,7 +7,7 @@
 #include "Engine/Core/Math/Vector4.h"
 #include "IAsset.h"
 
-namespace Engine::Graphics {
+namespace Engine::Asset {
 
 ///
 /// マテリアルアセット
@@ -28,4 +28,5 @@ public:
     void OnLoaded() { state_ = AssetLoadState::Ready; }
 };
 
-} // namespace Engine::Graphics
+} // namespace Engine::Asset
+

@@ -10,7 +10,7 @@
 #include "IAsset.h"
 #include "AssetHandle.h"
 
-namespace Engine {
+namespace Engine::Asset {
 
 ///
 /// アセットの読み込みとキャッシュを統括するクラス
@@ -75,4 +75,4 @@ private:
     std::unordered_map<std::type_index, AssetType> typeToAssetType_;
 };
 
-} // namespace Engine
+} // namespace Engine::Asset

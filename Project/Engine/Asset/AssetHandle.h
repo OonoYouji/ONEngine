@@ -3,7 +3,7 @@
 #include <memory>
 #include "IAsset.h"
 
-namespace Engine {
+namespace Engine::Asset {
 
 ///
 /// アセットを安全に参照するためのハンドルクラス
@@ -44,4 +44,4 @@ private:
     std::shared_ptr<T> asset_;
 };
 
-} // namespace Engine
+} // namespace Engine::Asset

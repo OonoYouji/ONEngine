@@ -11,8 +11,11 @@ namespace DirectX {
 }
 
 namespace Engine::Graphics {
+    class RenderDevice;
+}
 
-class RenderDevice;
+
+namespace Engine::Asset {
 
 ///
 /// テクスチャリソースを管理するクラス
@@ -29,7 +32,7 @@ public:
     bool Load(const std::wstring& filePath);
 
     /// @brief GPUリソースの作成とSRVの生成
-    void CreateResource(RenderDevice* device, D3D12_CPU_DESCRIPTOR_HANDLE srvHandle);
+    void CreateResource(Graphics::RenderDevice* device, D3D12_CPU_DESCRIPTOR_HANDLE srvHandle);
 
     ID3D12Resource* GetResource() const { return resource_.Get(); }
     DirectX::ScratchImage* GetImage() const { return image_.get(); }
@@ -42,4 +45,4 @@ private:
     uint32_t index_ = 0xFFFFFFFF; // Bindless Index
 };
 
-} // namespace Engine::Graphics
+} // namespace Engine::Asset

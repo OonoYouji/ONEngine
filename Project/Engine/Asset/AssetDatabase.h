@@ -4,7 +4,7 @@
 #include <unordered_map>
 #include <filesystem>
 
-namespace Engine {
+namespace Engine::Asset {
 
 ///
 /// アセットのパスとGUIDの対応を管理するデータベース
@@ -37,4 +37,4 @@ private:
     std::unordered_map<std::string, std::string> guidToPath_;
 };
 
-} // namespace Engine
+} // namespace Engine::Asset

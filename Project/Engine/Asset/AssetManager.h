@@ -13,7 +13,7 @@ namespace Engine::Graphics {
     class RenderDevice;
 }
 
-namespace Engine {
+namespace Engine::Asset {
 
 ///
 /// アセット全体を統合管理するクラス
@@ -33,10 +33,10 @@ public:
     void LoadModel(const std::string& pathOrGuid);
 
     /// @brief AssetRegistry経由でのロード
-    std::shared_ptr<Graphics::Model> LoadModelAsAsset(const std::string& pathOrGuid);
+    std::shared_ptr<Model> LoadModelAsAsset(const std::string& pathOrGuid);
     
     /// @brief ロード済みメッシュリストを取得
-    const std::vector<std::unique_ptr<Graphics::Mesh>>& GetMeshes(const std::string& pathOrGuid);
+    const std::vector<std::unique_ptr<Mesh>>& GetMeshes(const std::string& pathOrGuid);
 
 private:
     AssetManager() = default;
@@ -48,7 +48,7 @@ private:
 private:
     Graphics::RenderDevice* device_ = nullptr;
     // キャッシュはGUIDで管理
-    std::unordered_map<std::string, std::shared_ptr<Graphics::Model>> models_;
+    std::unordered_map<std::string, std::shared_ptr<Model>> models_;
 };
 
-} // namespace Engine
+} // namespace Engine::Asset

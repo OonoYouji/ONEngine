@@ -5,9 +5,7 @@
 #include <memory>
 #include "Mesh.h"
 
-namespace Engine::Graphics {
-
-class RenderDevice;
+namespace Engine::Asset {
 
 ///
 /// 3Dモデルをロードするためのクラス (Assimp使用)
@@ -18,7 +16,7 @@ public:
     /// @param device デバイス
     /// @param filePath モデルファイルのパス
     /// @return ロードされたメッシュのリスト（サブメッシュ対応のため vector）
-    static std::vector<std::unique_ptr<Mesh>> LoadModel(RenderDevice* device, const std::string& filePath);
+    static std::vector<std::unique_ptr<Mesh>> LoadModel(Graphics::RenderDevice* device, const std::string& filePath);
 };
 
-} // namespace Engine::Graphics
+} // namespace Engine::Asset

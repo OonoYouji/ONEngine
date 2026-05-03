@@ -16,6 +16,7 @@
 #include "Schema/Schema.h"
 
 using namespace Engine::GeneratedSchema;
+using namespace Engine::Asset;
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     Engine::Console::Initialize();
@@ -29,13 +30,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     auto& shaderManager = Engine::Graphics::ShaderManager::GetInstance();
     shaderManager.Initialize(graphicsEngine.GetRenderDevice());
     
-    auto& textureManager = Engine::Graphics::TextureManager::GetInstance();
+    auto& textureManager = TextureManager::GetInstance();
     textureManager.Initialize(graphicsEngine.GetRenderDevice());
 
-    auto& materialManager = Engine::Graphics::MaterialManager::GetInstance();
+    auto& materialManager = MaterialManager::GetInstance();
     materialManager.Initialize(graphicsEngine.GetRenderDevice());
 
-    auto& assetManager = Engine::AssetManager::GetInstance();
+    auto& assetManager = AssetManager::GetInstance();
     assetManager.Initialize(graphicsEngine.GetRenderDevice());
 
     auto& renderer = Engine::Graphics::Renderer::GetInstance();

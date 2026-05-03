@@ -1,11 +1,11 @@
-#pragma once
+﻿#pragma once
 
-#include "GpuBuffer.h"
+#include "Engine/Graphics/Resource/GpuBuffer.h"
 #include <memory>
 #include <vector>
 #include "Engine/Core/Math/Math.h"
 
-namespace Engine::Graphics {
+namespace Engine::Asset {
 
 struct Vertex {
     Engine::Math::Vector3 position;
@@ -20,16 +20,16 @@ public:
     Mesh();
     ~Mesh();
 
-    void Create(RenderDevice* device, const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices);
+    void Create(Graphics::RenderDevice* device, const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices);
 
     void Draw(ID3D12GraphicsCommandList* commandList);
 
-    StructuredBuffer* GetVertexBuffer() { return vertexBuffer_.get(); }
-    IndexBuffer* GetIndexBuffer() { return indexBuffer_.get(); }
+    Graphics::StructuredBuffer* GetVertexBuffer() { return vertexBuffer_.get(); }
+    Graphics::IndexBuffer* GetIndexBuffer() { return indexBuffer_.get(); }
 
 private:
-    std::unique_ptr<StructuredBuffer> vertexBuffer_;
-    std::unique_ptr<IndexBuffer> indexBuffer_;
+    std::unique_ptr<Graphics::StructuredBuffer> vertexBuffer_;
+    std::unique_ptr<Graphics::IndexBuffer> indexBuffer_;
 };
 
-} // namespace Engine::Graphics
+} // namespace Engine::Asset

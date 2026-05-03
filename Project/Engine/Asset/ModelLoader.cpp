@@ -1,4 +1,4 @@
-#include "ModelLoader.h"
+﻿#include "ModelLoader.h"
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
@@ -12,9 +12,9 @@
 #pragma comment(lib, "Externals/assimp/lib/Release/assimp-vc143-mt.lib")
 #endif
 
-namespace Engine::Graphics {
+namespace Engine::Asset {
 
-std::vector<std::unique_ptr<Mesh>> ModelLoader::LoadModel(RenderDevice* device, const std::string& filePath) {
+std::vector<std::unique_ptr<Mesh>> ModelLoader::LoadModel(Graphics::RenderDevice* device, const std::string& filePath) {
     if (!std::filesystem::exists(filePath)) {
         Engine::Console::LogError(std::format("Model file not found: {}", filePath));
         return {};
@@ -83,4 +83,4 @@ std::vector<std::unique_ptr<Mesh>> ModelLoader::LoadModel(RenderDevice* device, 
     return resultMeshes;
 }
 
-} // namespace Engine::Graphics
+} // namespace Engine::Asset

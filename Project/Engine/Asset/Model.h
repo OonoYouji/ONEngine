@@ -5,7 +5,7 @@
 #include "IAsset.h"
 #include "Mesh.h"
 
-namespace Engine::Graphics {
+namespace Engine::Asset {
 
 ///
 /// モデルアセット（複数のメッシュで構成される）
@@ -31,4 +31,4 @@ private:
     std::vector<std::unique_ptr<Mesh>> meshes_;
 };
 
-} // namespace Engine::Graphics
+} // namespace Engine::Asset

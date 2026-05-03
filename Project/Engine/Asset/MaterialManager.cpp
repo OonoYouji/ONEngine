@@ -10,12 +10,12 @@
 
 using json = nlohmann::json;
 
-namespace Engine::Graphics {
+namespace Engine::Asset {
 
 MaterialManager::MaterialManager() = default;
 MaterialManager::~MaterialManager() = default; // 前方宣言対応
 
-void MaterialManager::Initialize(RenderDevice* device) {
+void MaterialManager::Initialize(Graphics::RenderDevice* device) {
     device_ = device;
 
     // AssetRegistryへの登録
@@ -108,4 +108,4 @@ Material* MaterialManager::GetMaterial(const std::string& pathOrGuid) {
     return (it != materials_.end()) ? it->second.get() : nullptr;
 }
 
-} // namespace Engine::Graphics
+} // namespace Engine::Asset

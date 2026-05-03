@@ -35,9 +35,9 @@ void Renderer::ClearQueue() {
 void Renderer::Render(ID3D12GraphicsCommandList* commandList, const D3D12_GPU_VIRTUAL_ADDRESS sceneCBAddress) {
     if (queue_.empty()) return;
 
-    auto& assetManager = AssetManager::GetInstance();
-    auto& materialManager = MaterialManager::GetInstance();
-    auto& textureManager = TextureManager::GetInstance();
+    auto& assetManager = Asset::AssetManager::GetInstance();
+    auto& materialManager = Asset::MaterialManager::GetInstance();
+    auto& textureManager = Asset::TextureManager::GetInstance();
     auto& shaderManager = ShaderManager::GetInstance();
 
     // 1. ソートしてバッチングしやすくする（Model -> Material順）

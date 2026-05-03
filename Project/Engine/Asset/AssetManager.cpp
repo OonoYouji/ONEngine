@@ -1,4 +1,4 @@
-#include "AssetManager.h"
+﻿#include "AssetManager.h"
 #include "AssetDatabase.h"
 #include "ModelLoader.h"
 #include "Mesh.h"
@@ -6,7 +6,7 @@
 #include "Engine/Graphics/Core/RenderDevice.h"
 #include "Engine/Common/Console.h"
 
-namespace Engine {
+namespace Engine::Asset {
 
 void AssetManager::Initialize(Graphics::RenderDevice* device) {
     device_ = device;
@@ -15,7 +15,7 @@ void AssetManager::Initialize(Graphics::RenderDevice* device) {
     AssetDatabase::GetInstance().Scan("Project/Packages");
 
     // AssetRegistryへの登録
-    AssetRegistry::GetInstance().RegisterType<Graphics::Model>(AssetType::Model);
+    AssetRegistry::GetInstance().RegisterType<Model>(AssetType::Model);
     AssetRegistry::GetInstance().RegisterLoader(AssetType::Model, [this](const std::string& pathOrGuid) {
         return this->LoadModelAsAsset(pathOrGuid);
     });
@@ -42,7 +42,7 @@ void AssetManager::LoadModel(const std::string& pathOrGuid) {
     LoadModelAsAsset(pathOrGuid);
 }
 
-std::shared_ptr<Graphics::Model> AssetManager::LoadModelAsAsset(const std::string& pathOrGuid) {
+std::shared_ptr<Model> AssetManager::LoadModelAsAsset(const std::string& pathOrGuid) {
     std::string guid = ToGuid(pathOrGuid);
     if (models_.count(guid)) return models_[guid];
     
@@ -50,9 +50,9 @@ std::shared_ptr<Graphics::Model> AssetManager::LoadModelAsAsset(const std::strin
     std::string path = AssetDatabase::GetInstance().GetPathFromGuid(guid);
     if (path == "") path = pathOrGuid; // GUIDで見つからなければパスとして扱う
 
-    auto meshes = Graphics::ModelLoader::LoadModel(device_, path);
+    auto meshes = ModelLoader::LoadModel(device_, path);
     if (!meshes.empty()) {
-        auto model = std::make_shared<Graphics::Model>();
+        auto model = std::make_shared<Model>();
         model->SetMeshes(std::move(meshes));
         models_[guid] = model;
         Engine::Console::Log(std::format("AssetManager: Loaded Model [{}] from {}", guid, path));
@@ -61,11 +61,11 @@ std::shared_ptr<Graphics::Model> AssetManager::LoadModelAsAsset(const std::strin
     return nullptr;
 }
 
-const std::vector<std::unique_ptr<Graphics::Mesh>>& AssetManager::GetMeshes(const std::string& pathOrGuid) {
-    static std::vector<std::unique_ptr<Graphics::Mesh>> empty;
+const std::vector<std::unique_ptr<Mesh>>& AssetManager::GetMeshes(const std::string& pathOrGuid) {
+    static std::vector<std::unique_ptr<Mesh>> empty;
     std::string guid = ToGuid(pathOrGuid);
     auto it = models_.find(guid);
     return (it != models_.end()) ? it->second->GetMeshes() : empty;
 }
 
-} // namespace Engine
+} // namespace Engine::Asset

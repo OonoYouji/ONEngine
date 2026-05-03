@@ -6,7 +6,7 @@
 #include "Engine/Common/Assert.h"
 #include "Engine/Common/Console.h"
 
-namespace Engine::Graphics {
+namespace Engine::Asset {
 
 Texture::Texture() = default;
 Texture::~Texture() = default;
@@ -35,7 +35,7 @@ bool Texture::Load(const std::wstring& filePath) {
     return true;
 }
 
-void Texture::CreateResource(RenderDevice* device, D3D12_CPU_DESCRIPTOR_HANDLE srvHandle) {
+void Texture::CreateResource(Graphics::RenderDevice* device, D3D12_CPU_DESCRIPTOR_HANDLE srvHandle) {
     if (!image_) return;
 
     auto metadata = image_->GetMetadata();
@@ -53,4 +53,4 @@ void Texture::CreateResource(RenderDevice* device, D3D12_CPU_DESCRIPTOR_HANDLE s
     device->GetDevice()->CreateShaderResourceView(resource_.Get(), &srvDesc, srvHandle);
 }
 
-} // namespace Engine::Graphics
+} // namespace Engine::Asset

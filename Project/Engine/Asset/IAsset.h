@@ -2,7 +2,7 @@
 
 #include <string>
 
-namespace Engine {
+namespace Engine::Asset {
 
 ///
 /// アセットの種類を定義する列挙型
@@ -55,4 +55,4 @@ protected:
     AssetLoadState state_ = AssetLoadState::Unloaded;
 };
 
-} // namespace Engine
+} // namespace Engine::Asset

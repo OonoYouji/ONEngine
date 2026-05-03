@@ -1,16 +1,18 @@
-#pragma once
+﻿#pragma once
 
 #include <string>
 #include <vector>
 #include <memory>
 #include <unordered_map>
 #include "AssetHandle.h"
+#include "Texture.h"
 
 namespace Engine::Graphics {
+	class RenderDevice;
+	class DescriptorHeap;
+}
 
-class RenderDevice;
-class DescriptorHeap;
-class Texture;
+namespace Engine::Asset {
 
 ///
 /// Bindlessテクスチャを管理するクラス
@@ -22,7 +24,7 @@ public:
         return instance;
     }
 
-    void Initialize(RenderDevice* device);
+    void Initialize(Graphics::RenderDevice* device);
     void Shutdown();
 
     /// @brief パスまたはGUIDからテクスチャをロード
@@ -36,7 +38,7 @@ public:
     /// @brief パスまたはGUIDからテクスチャを取得
     Texture* GetTexture(const std::string& pathOrGuid);
 
-    DescriptorHeap* GetSrvHeap() const { return srvHeap_.get(); }
+    Graphics::DescriptorHeap* GetSrvHeap() const { return srvHeap_.get(); }
 
 private:
     TextureManager();
@@ -46,11 +48,11 @@ private:
     std::string ToGuid(const std::string& pathOrGuid);
 
 private:
-    RenderDevice* device_ = nullptr;
-    std::unique_ptr<DescriptorHeap> srvHeap_;
+    Graphics::RenderDevice* device_ = nullptr;
+    std::unique_ptr<Graphics::DescriptorHeap> srvHeap_;
     
     // GUIDをキーにした管理（AssetRegistryと共有するか、こちらで実体を持ち続けるか）
     std::unordered_map<std::string, std::shared_ptr<Texture>> textureMap_;
 };
 
-} // namespace Engine::Graphics
+} // namespace Engine::Asset
