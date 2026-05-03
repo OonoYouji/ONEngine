@@ -98,8 +98,19 @@ PipelineState* ShaderManager::GetOrCreatePSO(const std::string& templateName, co
     ShaderObject* as = ensureShader(templateName + "_AS", asset.as);
     ShaderObject* ms = ensureShader(templateName + "_MS", asset.ms);
 
-    if (!ps || (!vs && !ms)) {
-        Engine::Console::LogError(std::format("Failed to ensure shaders for template: {}", templateName));
+    // ログ出力
+    if (asset.vs.isValid) Engine::Console::Log(std::format("VS Check: {} -> {}", templateName + "_VS", vs ? "SUCCESS" : "FAILED"));
+    if (asset.ps.isValid) Engine::Console::Log(std::format("PS Check: {} -> {}", templateName + "_PS", ps ? "SUCCESS" : "FAILED"));
+    if (asset.ms.isValid) Engine::Console::Log(std::format("MS Check: {} -> {}", templateName + "_MS", ms ? "SUCCESS" : "FAILED"));
+
+    // 必須シェーダーのチェック（VSまたはMSが必須、PSも基本必須）
+    bool hasValidShaders = true;
+    if (asset.vs.isValid && !vs) hasValidShaders = false;
+    if (asset.ps.isValid && !ps) hasValidShaders = false;
+    if (asset.ms.isValid && !ms) hasValidShaders = false;
+
+    if (!hasValidShaders || (!vs && !ms)) {
+        Engine::Console::LogError(std::format("Failed to ensure required shaders for template: {}", templateName));
         return nullptr;
     }
 

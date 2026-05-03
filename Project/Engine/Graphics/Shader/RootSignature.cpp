@@ -1,4 +1,4 @@
-﻿#include "RootSignature.h"
+#include "RootSignature.h"
 #include "Engine/Graphics/Core/RenderDevice.h"
 #include "Engine/Common/Assert.h"
 #include "Engine/Common/Console.h"
@@ -13,11 +13,9 @@ RootSignature::~RootSignature() = default;
 
 bool RootSignature::Create(RenderDevice* device, const std::vector<ShaderReflectionData>& reflectionDataList) {
     nameToParameterIndex_.clear();
-    std::vector<D3D12_ROOT_PARAMETER> rootParameters;
-    std::vector<std::unique_ptr<D3D12_DESCRIPTOR_RANGE[]>> rangeArrays; // メモリ確保用
+    std::vector<D3D12_ROOT_PARAMETER1> rootParameters;
+    std::vector<std::unique_ptr<D3D12_DESCRIPTOR_RANGE1[]>> rangeArrays;
 
-    // 重複を避けるためにバインドポイントで管理
-    // キー: (bindPoint, registerSpace), 値: リソース情報
     struct ResourceKey {
         uint32_t bindPoint;
         uint32_t space;
@@ -32,7 +30,6 @@ bool RootSignature::Create(RenderDevice* device, const std::vector<ShaderReflect
     std::map<ResourceKey, ShaderResourceInfo> uavs;
     std::map<ResourceKey, ShaderResourceInfo> samplers;
 
-    // 1. 全シェーダーの情報を収集
     for (const auto& data : reflectionDataList) {
         for (const auto& cb : data.constantBuffers) cbvs[{cb.bindPoint, cb.space}] = cb;
         for (const auto& srv : data.srvs) srvs[{srv.bindPoint, srv.space}] = srv;
@@ -40,108 +37,113 @@ bool RootSignature::Create(RenderDevice* device, const std::vector<ShaderReflect
         for (const auto& sampler : data.samplers) samplers[{sampler.bindPoint, sampler.space}] = sampler;
     }
 
-    // 2. ルートパラメータの構築 (CBV は DescriptorTable ではなく直接 ConstantBufferView にする設計も可能だが、
-    //    今回は汎用性を考え DescriptorTable を使用する)
+    std::vector<D3D12_STATIC_SAMPLER_DESC> staticSamplers;
 
-    // CBVs
-    for (const auto& [key, cb] : cbvs) {
-        auto ranges = std::make_unique<D3D12_DESCRIPTOR_RANGE[]>(1);
-        ranges[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
-        ranges[0].NumDescriptors = cb.bindCount;
-        ranges[0].BaseShaderRegister = cb.bindPoint;
-        ranges[0].RegisterSpace = cb.space;
-        ranges[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+    auto addParam = [&](const auto& res, D3D12_DESCRIPTOR_RANGE_TYPE type) {
+        if (type == D3D12_DESCRIPTOR_RANGE_TYPE_CBV) {
+            // ... (省略なしで書く)
+            D3D12_ROOT_PARAMETER1 param = {};
+            param.ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+            param.Descriptor.ShaderRegister = res.bindPoint;
+            param.Descriptor.RegisterSpace = res.space;
+            param.Descriptor.Flags = D3D12_ROOT_DESCRIPTOR_FLAG_NONE;
+            param.ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 
-        D3D12_ROOT_PARAMETER param = {};
-        param.ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-        param.DescriptorTable.NumDescriptorRanges = 1;
-        param.DescriptorTable.pDescriptorRanges = ranges.get();
-        param.ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+            nameToParameterIndex_[res.name] = static_cast<uint32_t>(rootParameters.size());
+            Engine::Console::Log(std::format("RootSig Bind (CBV): {} -> Index {}", res.name, rootParameters.size()));
+            rootParameters.push_back(param);
+        }
+        else if (type == D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER) {
+            // s0, space0 の場合は静的サンプラーとして登録
+            if (res.bindPoint == 0 && res.space == 0) {
+                D3D12_STATIC_SAMPLER_DESC samplerDesc = {};
+                samplerDesc.Filter = D3D12_FILTER_MIN_MAG_LINEAR_MIP_POINT;
+                samplerDesc.AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+                samplerDesc.AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+                samplerDesc.AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+                samplerDesc.MipLODBias = 0;
+                samplerDesc.MaxAnisotropy = 1;
+                samplerDesc.ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
+                samplerDesc.BorderColor = D3D12_STATIC_BORDER_COLOR_TRANSPARENT_BLACK;
+                samplerDesc.MinLOD = 0.0f;
+                samplerDesc.MaxLOD = D3D12_FLOAT32_MAX;
+                samplerDesc.ShaderRegister = res.bindPoint;
+                samplerDesc.RegisterSpace = res.space;
+                samplerDesc.ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+                staticSamplers.push_back(samplerDesc);
+                Engine::Console::Log(std::format("RootSig Static Sampler Bind: s{} (space{})", res.bindPoint, res.space));
+            }
+            else {
+                // それ以外は Descriptor Table として作成
+                auto ranges = std::make_unique<D3D12_DESCRIPTOR_RANGE1[]>(1);
+                ranges[0].RangeType = type;
+                ranges[0].BaseShaderRegister = res.bindPoint;
+                ranges[0].RegisterSpace = res.space;
+                ranges[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+                ranges[0].NumDescriptors = res.bindCount;
+                ranges[0].Flags = D3D12_DESCRIPTOR_RANGE_FLAG_NONE;
 
-        nameToParameterIndex_[cb.name] = static_cast<uint32_t>(rootParameters.size());
-        Engine::Console::Log(std::format("RootSig Bind: {} -> Index {}", cb.name, rootParameters.size()));
-        rootParameters.push_back(param);
-        rangeArrays.push_back(std::move(ranges));
-    }
+                D3D12_ROOT_PARAMETER1 param = {};
+                param.ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+                param.DescriptorTable.NumDescriptorRanges = 1;
+                param.DescriptorTable.pDescriptorRanges = ranges.get();
+                param.ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 
-    // SRVs
-    for (const auto& [key, srv] : srvs) {
-        auto ranges = std::make_unique<D3D12_DESCRIPTOR_RANGE[]>(1);
-        ranges[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-        ranges[0].NumDescriptors = srv.bindCount;
-        ranges[0].BaseShaderRegister = srv.bindPoint;
-        ranges[0].RegisterSpace = srv.space;
-        ranges[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+                nameToParameterIndex_[res.name] = static_cast<uint32_t>(rootParameters.size());
+                Engine::Console::Log(std::format("RootSig Bind (Sampler Table): {} -> Index {}", res.name, rootParameters.size()));
+                rootParameters.push_back(param);
+                rangeArrays.push_back(std::move(ranges));
+            }
+        }
+        else {
+            // SRV, UAV は Descriptor Table として作成
+            auto ranges = std::make_unique<D3D12_DESCRIPTOR_RANGE1[]>(1);
+            ranges[0].RangeType = type;
+            ranges[0].BaseShaderRegister = res.bindPoint;
+            ranges[0].RegisterSpace = res.space;
+            ranges[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+            ranges[0].Flags = D3D12_DESCRIPTOR_RANGE_FLAG_NONE;
 
-        D3D12_ROOT_PARAMETER param = {};
-        param.ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-        param.DescriptorTable.NumDescriptorRanges = 1;
-        param.DescriptorTable.pDescriptorRanges = ranges.get();
-        param.ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+            if (res.bindCount == 0) { // Bindless
+                ranges[0].NumDescriptors = 1024; // kMaxBindlessTextures に合わせる
+                ranges[0].Flags = D3D12_DESCRIPTOR_RANGE_FLAG_DESCRIPTORS_VOLATILE;
+            }
+            else {
+                ranges[0].NumDescriptors = res.bindCount;
+            }
 
-        nameToParameterIndex_[srv.name] = static_cast<uint32_t>(rootParameters.size());
-        Engine::Console::Log(std::format("RootSig Bind: {} -> Index {}", srv.name, rootParameters.size()));
-        rootParameters.push_back(param);
-        rangeArrays.push_back(std::move(ranges));
-    }
+            D3D12_ROOT_PARAMETER1 param = {};
+            param.ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+            param.DescriptorTable.NumDescriptorRanges = 1;
+            param.DescriptorTable.pDescriptorRanges = ranges.get();
+            param.ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 
-    // UAVs
-    for (const auto& [key, uav] : uavs) {
-        auto ranges = std::make_unique<D3D12_DESCRIPTOR_RANGE[]>(1);
-        ranges[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_UAV;
-        ranges[0].NumDescriptors = uav.bindCount;
-        ranges[0].BaseShaderRegister = uav.bindPoint;
-        ranges[0].RegisterSpace = uav.space;
-        ranges[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+            nameToParameterIndex_[res.name] = static_cast<uint32_t>(rootParameters.size());
+            Engine::Console::Log(std::format("RootSig Bind (Table): {} -> Index {}", res.name, rootParameters.size()));
+            rootParameters.push_back(param);
+            rangeArrays.push_back(std::move(ranges));
+        }
+    };
 
-        D3D12_ROOT_PARAMETER param = {};
-        param.ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-        param.DescriptorTable.NumDescriptorRanges = 1;
-        param.DescriptorTable.pDescriptorRanges = ranges.get();
-        param.ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+    for (const auto& [key, cb] : cbvs) addParam(cb, D3D12_DESCRIPTOR_RANGE_TYPE_CBV);
+    for (const auto& [key, srv] : srvs) addParam(srv, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
+    for (const auto& [key, uav] : uavs) addParam(uav, D3D12_DESCRIPTOR_RANGE_TYPE_UAV);
+    for (const auto& [key, sampler] : samplers) addParam(sampler, D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER);
 
-        nameToParameterIndex_[uav.name] = static_cast<uint32_t>(rootParameters.size());
-        Engine::Console::Log(std::format("RootSig Bind: {} -> Index {}", uav.name, rootParameters.size()));
-        rootParameters.push_back(param);
-        rangeArrays.push_back(std::move(ranges));
-    }
-
-    // Samplers
-    for (const auto& [key, sampler] : samplers) {
-        auto ranges = std::make_unique<D3D12_DESCRIPTOR_RANGE[]>(1);
-        ranges[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER;
-        ranges[0].NumDescriptors = sampler.bindCount;
-        ranges[0].BaseShaderRegister = sampler.bindPoint;
-        ranges[0].RegisterSpace = sampler.space;
-        ranges[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
-
-        D3D12_ROOT_PARAMETER param = {};
-        param.ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-        param.DescriptorTable.NumDescriptorRanges = 1;
-        param.DescriptorTable.pDescriptorRanges = ranges.get();
-        param.ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
-
-        nameToParameterIndex_[sampler.name] = static_cast<uint32_t>(rootParameters.size());
-        Engine::Console::Log(std::format("RootSig Bind: {} -> Index {}", sampler.name, rootParameters.size()));
-        rootParameters.push_back(param);
-        rangeArrays.push_back(std::move(ranges));
-    }
-
-    // 3. ルートシグネチャのシリアライズと作成
-    D3D12_ROOT_SIGNATURE_DESC rootSigDesc = {};
-    rootSigDesc.NumParameters = static_cast<uint32_t>(rootParameters.size());
-    rootSigDesc.pParameters = rootParameters.data();
-    rootSigDesc.NumStaticSamplers = 0;
-    rootSigDesc.pStaticSamplers = nullptr;
-    rootSigDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
+    D3D12_VERSIONED_ROOT_SIGNATURE_DESC rootSigDesc = {};
+    rootSigDesc.Version = D3D_ROOT_SIGNATURE_VERSION_1_1;
+    rootSigDesc.Desc_1_1.NumParameters = static_cast<uint32_t>(rootParameters.size());
+    rootSigDesc.Desc_1_1.pParameters = rootParameters.data();
+    rootSigDesc.Desc_1_1.NumStaticSamplers = static_cast<uint32_t>(staticSamplers.size());
+    rootSigDesc.Desc_1_1.pStaticSamplers = staticSamplers.data();
+    rootSigDesc.Desc_1_1.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
     ComPtr<ID3DBlob> signature;
     ComPtr<ID3DBlob> error;
-    HRESULT hr = D3D12SerializeRootSignature(&rootSigDesc, D3D_ROOT_SIGNATURE_VERSION_1, &signature, &error);
+    HRESULT hr = D3D12SerializeVersionedRootSignature(&rootSigDesc, &signature, &error);
+
     if (FAILED(hr)) {
-        if (error) {
-            Console::Log(std::format("Root signature serialization error: {}", (const char*)error->GetBufferPointer()));
-        }
+        if (error) Console::Log(std::format("Root signature serialization error: {}", (const char*)error->GetBufferPointer()));
         return false;
     }
 
@@ -158,11 +160,9 @@ uint32_t RootSignature::GetParameterIndex(const std::string& name) const {
     auto it = nameToParameterIndex_.find(name);
     if (it == nameToParameterIndex_.end()) {
         std::string available;
-        for (const auto& pair : nameToParameterIndex_) {
-            available += pair.first + ", ";
-        }
+        for (const auto& pair : nameToParameterIndex_) available += pair.first + ", ";
         Engine::Console::LogError(std::format("Root parameter '{}' not found. Available: {}", name, available));
-        return 0; // クラッシュを避けるためにとりあえず0を返す（またはエラーハンドリングを上位で行う）
+        return 0;
     }
     return it->second;
 }

@@ -1,4 +1,4 @@
-#include "ShaderCompiler.h"
+﻿#include "ShaderCompiler.h"
 
 #include <format>
 #include <vector>
@@ -94,13 +94,24 @@ std::unique_ptr<ShaderObject> ShaderCompiler::Compile(
     
     // バイナリ取得
     hr = result->GetOutput(DXC_OUT_OBJECT, IID_PPV_ARGS(&shaderObject->blob), nullptr);
-    Assert(SUCCEEDED(hr), "Failed to get DXC_OUT_OBJECT");
+    if (FAILED(hr) || !shaderObject->blob || shaderObject->blob->GetBufferSize() == 0) {
+        Console::LogError(ConvertString(std::format(L"Failed to get shader object blob for: {}", filePath)));
+        return nullptr;
+    }
 
     // 反射情報取得
     ComPtr<IDxcBlob> reflectionBlob;
-    hr = result->GetOutput(DXC_OUT_REFLECTION, IID_PPV_ARGS(&reflectionBlob), nullptr);
-    if (SUCCEEDED(hr)) {
+    // まず個別の反射出力を試す
+    if (SUCCEEDED(result->GetOutput(DXC_OUT_REFLECTION, IID_PPV_ARGS(&reflectionBlob), nullptr)) && reflectionBlob) {
         ExtractReflection(reflectionBlob.Get(), shaderObject->reflectionData);
+    } else {
+        // 失敗した場合はバイナリ自体から抽出を試みる（埋め込まれている可能性があるため）
+        ExtractReflection(shaderObject->blob.Get(), shaderObject->reflectionData);
+    }
+
+    // 最終チェック: 反射情報が取得できているか、またはバイナリが本当に有効か
+    if (shaderObject->blob->GetBufferSize() == 0) {
+        return nullptr;
     }
 
     return shaderObject;
@@ -122,6 +133,8 @@ void ShaderCompiler::ExtractReflection(IDxcBlob* reflectionBlob, ShaderReflectio
     D3D12_SHADER_DESC shaderDesc;
     reflection->GetDesc(&shaderDesc);
 
+    Engine::Console::Log(std::format("Extracting reflection: {} resources found.", shaderDesc.BoundResources));
+
     // バインドされている全リソースを走査
     for (uint32_t i = 0; i < shaderDesc.BoundResources; ++i) {
         D3D12_SHADER_INPUT_BIND_DESC bindDesc;
@@ -129,8 +142,7 @@ void ShaderCompiler::ExtractReflection(IDxcBlob* reflectionBlob, ShaderReflectio
 
         std::string resName = bindDesc.Name;
         
-        // Debug出力
-        OutputDebugStringA(std::format("Shader Resource Found: {} (Type: {})\n", resName, (int)bindDesc.Type).c_str());
+        Engine::Console::Log(std::format("  Resource: {} (Type: {}, Bind: {}, Space: {})", resName, (int)bindDesc.Type, bindDesc.BindPoint, bindDesc.Space));
 
         if (bindDesc.Type == D3D_SIT_CBUFFER) {
             // 定数バッファの場合

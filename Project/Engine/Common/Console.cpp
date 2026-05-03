@@ -111,6 +111,7 @@ Console::~Console() {}
 void Console::Log(const std::string& msg) {
 	AddToBuffer(msg);
 	spdlog::info(msg);
+	OutputDebugStringA((msg + "\n").c_str());
 }
 
 void Console::Log(const std::wstring& msg) {
@@ -120,16 +121,19 @@ void Console::Log(const std::wstring& msg) {
 void Console::LogInfo(const std::string& msg) {
 	AddToBuffer("[info] " + msg);
 	spdlog::info(msg);
+	OutputDebugStringA(("[info] " + msg + "\n").c_str());
 }
 
 void Console::LogError(const std::string& msg) {
 	AddToBuffer("[error] " + msg);
 	spdlog::error(msg);
+	OutputDebugStringA(("[error] " + msg + "\n").c_str());
 }
 
 void Console::LogWarning(const std::string& msg) {
 	AddToBuffer("[warning] " + msg);
 	spdlog::warn(msg);
+	OutputDebugStringA(("[warning] " + msg + "\n").c_str());
 }
 
 const std::vector<std::string>& Console::GetLogVector() {

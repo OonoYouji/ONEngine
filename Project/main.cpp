@@ -1,11 +1,9 @@
 ﻿#include <Windows.h>
 #include <vector>
-#include <cmath>
 #include "Engine/Core/Window.h"
 #include "Engine/Graphics/Core/GraphicsEngine.h"
 #include "Engine/Graphics/Shader/ShaderManager.h"
-#include "Engine/Graphics/Resource/Mesh.h"
-#include "Engine/Graphics/Resource/ModelLoader.h"
+#include "Engine/Graphics/Resource/TextureManager.h"
 #include "Engine/Graphics/Resource/ConstantBuffer.h"
 #include "Engine/Common/Console.h"
 
@@ -13,118 +11,84 @@ struct SceneData {
     Engine::Math::Matrix4x4 viewProj;
 };
 
-struct ObjectData {
-    Engine::Math::Matrix4x4 world;
+struct MaterialData {
+    uint32_t textureIndex;
+    float _pad[3];
 };
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     Engine::Console::Initialize();
 
     Engine::Core::Window window;
-    window.Initialize(L"ModelLoaderTest", Engine::Math::Vector2Int::HD);
+    window.Initialize(L"BindlessTest", Engine::Math::Vector2Int::HD);
 
     auto& graphicsEngine = Engine::Graphics::GraphicsEngine::GetInstance();
     graphicsEngine.Initialize(window.GetHWND(), Engine::Math::Vector2Int::HD);
 
     auto& shaderManager = Engine::Graphics::ShaderManager::GetInstance();
     shaderManager.Initialize(graphicsEngine.GetRenderDevice());
+    
+    auto& textureManager = Engine::Graphics::TextureManager::GetInstance();
+    textureManager.Initialize(graphicsEngine.GetRenderDevice());
 
-    // 1. テンプレートロード
-    shaderManager.LoadPipelineAsset("Assets/Pipelines/TestTemplate.json");
-    Engine::Graphics::PipelineStateDesc psoDesc;
-    psoDesc.depthEnable = true;
-    psoDesc.dsvFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
-    psoDesc.cullMode = D3D12_CULL_MODE_BACK;
-
-    auto* pso = shaderManager.GetOrCreatePSO("TestTemplate", psoDesc);
-    auto* rootSig = shaderManager.GetRootSignature("TestTemplate");
-
-    // 2. モデルロード (GLTFテスト: walk)
-    auto meshes = Engine::Graphics::ModelLoader::LoadModel(graphicsEngine.GetRenderDevice(), "Packages/Models/Human/walk.gltf");
-
-
-    if (meshes.empty()) {
-        Engine::Console::LogError("Model failed to load or has no meshes.");
+    // 1. テクスチャをロード
+    int32_t texIndex = textureManager.LoadTexture("TestTex", L"Packages/Textures/uvChecker.png");
+    if (texIndex < 0) {
+        Engine::Console::LogError("Failed to load test texture.");
     }
 
+    // 2. パイプライン設定
+    shaderManager.LoadPipelineAsset("Assets/Pipelines/BindlessTest.json"); // 新しいパイプライン定義
+    Engine::Graphics::PipelineStateDesc psoDesc;
+    psoDesc.depthEnable = false; // 2Dなので深度不要
+    psoDesc.dsvFormat = DXGI_FORMAT_UNKNOWN;
+    auto* pso = shaderManager.GetOrCreatePSO("BindlessTest", psoDesc);
+    auto* rootSig = shaderManager.GetRootSignature("BindlessTest");
+    
     // 3. 定数バッファ作成
     Engine::Graphics::ConstantBuffer sceneCB;
     sceneCB.Create(graphicsEngine.GetRenderDevice(), sizeof(SceneData));
 
-    // 4. デスクリプタの作成 (SRVHeapを使用)
-    auto* device = graphicsEngine.GetRenderDevice()->GetDevice();
-    auto* srvHeap = graphicsEngine.GetSRVHeap();
+    Engine::Graphics::ConstantBuffer materialCB;
+    materialCB.Create(graphicsEngine.GetRenderDevice(), sizeof(MaterialData));
 
-    const uint32_t kIdxScene = 0;
-    const uint32_t kIdxMesh  = 1;
+    MaterialData matData = { static_cast<uint32_t>(texIndex) };
+    materialCB.Update(&matData, sizeof(matData));
 
-    // Viewの作成
-    D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc = {};
-    cbvDesc.BufferLocation = sceneCB.GetGPUVirtualAddress();
-    cbvDesc.SizeInBytes = 256;
-    device->CreateConstantBufferView(&cbvDesc, srvHeap->GetCPUHandle(kIdxScene));
-
-    float angle = 0.0f;
+    // メインループ
     while(true) {
         window.Update();
         if(window.GetIsProcessEnd()) break;
 
-        angle += 0.01f;
+        SceneData sceneData;
+        sceneData.viewProj = Engine::Math::Matrix4x4::kIdentity; // 2Dなので単位行列
+        sceneCB.Update(&sceneData, sizeof(sceneData));
 
-        // --- カメラ行列の計算 ---
-        Engine::Math::Matrix4x4 view = Engine::Math::Matrix4x4::MakeLookAtLH(
-            { 0.0f, 2.0f, -5.0f }, // Eye (少し上から)
-            { 0.0f, 0.0f, 0.0f },  // Target
-            { 0.0f, 1.0f, 0.0f }   // Up
-        );
-        Engine::Math::Matrix4x4 proj = Engine::Math::Matrix4x4::MakePerspectiveFovLH(
-            0.8f,
-            (float)Engine::Math::Vector2Int::HD.x / Engine::Math::Vector2Int::HD.y,
-            0.1f, 100.0f
-        );
-        
         graphicsEngine.BeginFrame();
         graphicsEngine.Clear({ 0.1f, 0.1f, 0.1f, 1.0f });
-        graphicsEngine.ClearDepth();
-
+        
         auto* commandList = graphicsEngine.GetCommandQueue()->GetCommandList();
         commandList->SetGraphicsRootSignature(rootSig->Get());
         commandList->SetPipelineState(pso->Get());
 
-        ID3D12DescriptorHeap* heaps[] = { srvHeap->GetHeap() };
+        ID3D12DescriptorHeap* heaps[] = { textureManager.GetSrvHeap()->GetHeap() };
         commandList->SetDescriptorHeaps(_countof(heaps), heaps);
 
         uint32_t sceneIdx = rootSig->GetParameterIndex("gSceneData");
-        uint32_t meshIdx  = rootSig->GetParameterIndex("gVertices");
+        uint32_t matIdx = rootSig->GetParameterIndex("gMaterial");
+        uint32_t texIdxRoot = rootSig->GetParameterIndex("gTextures");
+
+        commandList->SetGraphicsRootConstantBufferView(sceneIdx, sceneCB.GetGPUVirtualAddress());
+        commandList->SetGraphicsRootConstantBufferView(matIdx, materialCB.GetGPUVirtualAddress());
+        commandList->SetGraphicsRootDescriptorTable(texIdxRoot, textureManager.GetSrvHeap()->GetGPUHandle(0));
 
         commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-        // 各メッシュを描画
-        for (const auto& mesh : meshes) {
-            // World * ViewProj
-            Engine::Math::Matrix4x4 world = Engine::Math::Matrix4x4::MakeRotateY(angle);
-            SceneData drawData;
-            drawData.viewProj = world * view * proj;
-            sceneCB.Update(&drawData, sizeof(SceneData));
-
-            // Mesh SRV をヒープの特定の場所に動的に作る（今回はテストなので固定1スロットを使い回す）
-            D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
-            srvDesc.Format = DXGI_FORMAT_UNKNOWN;
-            srvDesc.ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
-            srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-            srvDesc.Buffer.NumElements = mesh->GetVertexBuffer()->GetCount();
-            srvDesc.Buffer.StructureByteStride = mesh->GetVertexBuffer()->GetStride();
-            device->CreateShaderResourceView(mesh->GetVertexBuffer()->GetResource(), &srvDesc, srvHeap->GetCPUHandle(kIdxMesh));
-
-            commandList->SetGraphicsRootDescriptorTable(sceneIdx, srvHeap->GetGPUHandle(kIdxScene));
-            commandList->SetGraphicsRootDescriptorTable(meshIdx, srvHeap->GetGPUHandle(kIdxMesh));
-            
-            mesh->Draw(commandList);
-        }
+        commandList->DrawInstanced(3, 1, 0, 0); // 頂点3つで三角形を描画
 
         graphicsEngine.EndFrame();
     }
 
+    textureManager.Shutdown();
     shaderManager.Shutdown();
     graphicsEngine.Shutdown();
     window.Shutdown();
