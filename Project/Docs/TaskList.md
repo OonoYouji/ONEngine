@@ -12,19 +12,9 @@
 - [x] **アセット管理システム**: マテリアル (`.mat`)、モデル (`.obj`)、テクスチャのロード・管理。
 - [x] **Pipeline の外部ファイル化**: PSO 設定を JSON から動的にロードする仕組み。
 - [x] **Shader Reflection の統合**: HLSL コンパイル結果からルートシグネチャを自動構築。
+- [x] **Extract Phase の実装**: ロジックとレンダリングの分離（Triple Buffering）。
 
 ## ■ 現在進行中 (In Progress)
-- [ ] **ループの正常化**: フレームレート非依存の更新処理（デルタタイム）の実装。
-- [ ] **C# スクリプトホスティングの統合**: CoreCLR の組み込みと Interop 層の構築。
-- [ ] **Texture Bindless の完全統合**: 全アセットの種類を問わず Descriptor Heap を一元管理。
-
-
-## ■ 今後の予定 (Future Tasks)
-
-### フェーズ 1: 基盤強化 (短期)
-- [ ] **ループの正常化**: フレームレート非依存の更新処理（デルタタイム）の実装。
-- [ ] **Extract Phase の実装**: ロジックとレンダリングの分離（Double Buffering）。
-- [ ] **Frame Resource (Triple Buffering)**: コマンドアロケータ等のフレーム単位管理。
 - [ ] **Texture Bindless の完全統合**: 全アセットの種類を問わず Descriptor Heap を一元管理。
 - [ ] **D3D12MA の導入**: メモリ管理の最適化。
 

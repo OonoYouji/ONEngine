@@ -36,6 +36,9 @@ public:
 	/// @brief 描画リクエストの追加
 	void PushRequest(const RenderRequest& request);
 
+	/// @brief データの抽出（ロジックの後に呼ばれる）
+	void Extract();
+
 	/// @brief 描画実行（フレームの最後に一括で呼ばれる）
 	void Render(ID3D12GraphicsCommandList* commandList, const D3D12_GPU_VIRTUAL_ADDRESS sceneCBAddress);
 
@@ -45,8 +48,10 @@ private:
 	RenderDevice* device_ = nullptr;
 	std::vector<RenderRequest> queue_;
 	
-	// インスタンスデータ用バッファ（動的にリサイズするか、十分に大きく確保）
-	std::unique_ptr<StructuredBuffer> instanceSB_;
+	// インスタンスデータ用バッファ（二重バッファリング）
+	static constexpr uint32_t kBufferCount = 3; // Triple Buffering を見越して 3 に設定
+	std::unique_ptr<StructuredBuffer> instanceSBs_[kBufferCount];
+	uint32_t currentFrameIndex_ = 0;
 	const uint32_t kMaxInstances = 2048;
 };
 

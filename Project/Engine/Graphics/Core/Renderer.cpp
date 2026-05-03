@@ -14,12 +14,16 @@ namespace Engine::Graphics {
 
 void Renderer::Initialize(RenderDevice* device) {
     device_ = device;
-    instanceSB_ = std::make_unique<StructuredBuffer>();
-    instanceSB_->Create(device, sizeof(GeneratedSchema::InstanceData), kMaxInstances);
+    for (uint32_t i = 0; i < kBufferCount; ++i) {
+        instanceSBs_[i] = std::make_unique<StructuredBuffer>();
+        instanceSBs_[i]->Create(device, sizeof(GeneratedSchema::InstanceData), kMaxInstances);
+    }
 }
 
 void Renderer::Shutdown() {
-    instanceSB_.reset();
+    for (uint32_t i = 0; i < kBufferCount; ++i) {
+        instanceSBs_[i].reset();
+    }
 }
 
 void Renderer::PushRequest(const RenderRequest& request) {
@@ -32,21 +36,22 @@ void Renderer::ClearQueue() {
     queue_.clear();
 }
 
-void Renderer::Render(ID3D12GraphicsCommandList* commandList, const D3D12_GPU_VIRTUAL_ADDRESS sceneCBAddress) {
+void Renderer::Extract() {
     if (queue_.empty()) return;
 
-    auto& assetManager = Asset::AssetManager::GetInstance();
     auto& materialManager = Asset::MaterialManager::GetInstance();
     auto& textureManager = Asset::TextureManager::GetInstance();
-    auto& shaderManager = ShaderManager::GetInstance();
 
-    // 1. ソートしてバッチングしやすくする（Model -> Material順）
+    // 1. フレームインデックスの更新
+    currentFrameIndex_ = (currentFrameIndex_ + 1) % kBufferCount;
+
+    // 2. ソートしてバッチングしやすくする（Model -> Material順）
     std::sort(queue_.begin(), queue_.end(), [](const RenderRequest& a, const RenderRequest& b) {
         if (a.modelName != b.modelName) return a.modelName < b.modelName;
         return a.materialName < b.materialName;
     });
 
-    // 2. 全インスタンスデータの抽出とアップロード
+    // 3. 全インスタンスデータの抽出
     std::vector<GeneratedSchema::InstanceData> instanceData;
     instanceData.reserve(queue_.size());
     for (const auto& req : queue_) {
@@ -68,9 +73,23 @@ void Renderer::Render(ID3D12GraphicsCommandList* commandList, const D3D12_GPU_VI
         }
         instanceData.push_back(data);
     }
-    instanceSB_->Update(instanceData.data(), static_cast<uint32_t>(instanceData.size() * sizeof(GeneratedSchema::InstanceData)));
 
-    // 3. 描画ループ（バッチング実行）
+    // 4. GPUバッファへのアップロード
+    instanceSBs_[currentFrameIndex_]->Update(instanceData.data(), static_cast<uint32_t>(instanceData.size() * sizeof(GeneratedSchema::InstanceData)));
+}
+
+void Renderer::Render(ID3D12GraphicsCommandList* commandList, const D3D12_GPU_VIRTUAL_ADDRESS sceneCBAddress) {
+    if (queue_.empty()) return;
+
+    auto& assetManager = Asset::AssetManager::GetInstance();
+    auto& materialManager = Asset::MaterialManager::GetInstance();
+    auto& textureManager = Asset::TextureManager::GetInstance();
+    auto& shaderManager = ShaderManager::GetInstance();
+
+    // 使用するインスタンスバッファを取得
+    auto* currentSB = instanceSBs_[currentFrameIndex_].get();
+
+    // 描画ループ（バッチング実行）
     uint32_t currentInstanceStart = 0;
     while (currentInstanceStart < queue_.size()) {
         const auto& batchStartReq = queue_[currentInstanceStart];
@@ -103,7 +122,7 @@ void Renderer::Render(ID3D12GraphicsCommandList* commandList, const D3D12_GPU_VI
             commandList->SetGraphicsRootDescriptorTable(rootSig->GetParameterIndex("gTextures"), textureManager.GetSrvHeap()->GetGPUHandle(0));
             
             // インスタンスバッファを現在のバッチの開始位置にオフセットしてセット
-            D3D12_GPU_VIRTUAL_ADDRESS instBufferAddr = instanceSB_->GetResource()->GetGPUVirtualAddress();
+            D3D12_GPU_VIRTUAL_ADDRESS instBufferAddr = currentSB->GetResource()->GetGPUVirtualAddress();
             instBufferAddr += currentInstanceStart * sizeof(GeneratedSchema::InstanceData);
             commandList->SetGraphicsRootShaderResourceView(rootSig->GetParameterIndex("gInstances"), instBufferAddr);
 

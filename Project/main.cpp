@@ -89,6 +89,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
         // 描画準備
         renderer.ClearQueue();
         renderSystem.Update(registry);
+        renderer.Extract();
 
         // 描画実行
         graphicsEngine.BeginFrame();
