@@ -9,8 +9,8 @@ namespace Engine::ECS {
 /// メッシュレンダラーコンポーネント
 ///
 struct MeshRenderer {
-	std::string meshPath;
-	uint32_t textureIndex = 0;
+	std::string modelName;    // AssetManagerに登録されたモデル名
+	std::string materialName; // MaterialManagerに登録されたマテリアル名
 };
 
 } // namespace Engine::ECS
