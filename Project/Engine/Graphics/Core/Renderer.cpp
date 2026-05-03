@@ -28,7 +28,7 @@ void Renderer::Shutdown() {
 }
 
 void Renderer::PushRequest(const RenderRequest& request) {
-    if (queue_.size() < kMaxInstances) {
+    if (static_cast<uint32_t>(queue_.size()) < kMaxInstances) {
         queue_.push_back(request);
     }
 }
@@ -47,7 +47,7 @@ void Renderer::Extract() {
     // 中央管理のフレームインデックスを取得
     uint32_t frameIndex = graphicsEngine.GetCurrentFrameIndex();
 
-    // 1. ソートしてバッチングしやすくする（Model -> Material順）
+    // 1. ソートしてバッチングしやすくする
     std::sort(queue_.begin(), queue_.end(), [](const RenderRequest& a, const RenderRequest& b) {
         if (a.modelName != b.modelName) return a.modelName < b.modelName;
         return a.materialName < b.materialName;
@@ -73,10 +73,11 @@ void Renderer::Extract() {
             data.baseColor = { 1, 1, 1, 1 };
             data.textureIndex = 0;
         }
+        data._padding[0] = data._padding[1] = data._padding[2] = 0.0f;
         instanceData.push_back(data);
     }
 
-    // 3. GPUバッファへのアップロード
+    // 3. GPUバッファへのアップロード（frameIndex を使用）
     instanceSBs_[frameIndex]->Update(instanceData.data(), static_cast<uint32_t>(instanceData.size() * sizeof(GeneratedSchema::InstanceData)));
 }
 
@@ -89,18 +90,19 @@ void Renderer::Render(ID3D12GraphicsCommandList* commandList, const D3D12_GPU_VI
     auto& textureManager = Asset::TextureManager::GetInstance();
     auto& shaderManager = ShaderManager::GetInstance();
 
-    // 中央管理のフレームインデックスを使用
+    // 中央管理のフレームインデックスを取得
     uint32_t frameIndex = graphicsEngine.GetCurrentFrameIndex();
+    // ここで frameIndex を正しく使用する
     auto* currentSB = instanceSBs_[frameIndex].get();
 
-    // 描画ループ（バッチング実行）
     uint32_t currentInstanceStart = 0;
-    while (currentInstanceStart < queue_.size()) {
+    const uint32_t totalInstances = static_cast<uint32_t>(queue_.size());
+
+    while (currentInstanceStart < totalInstances) {
         const auto& batchStartReq = queue_[currentInstanceStart];
         
-        // 同じModelとMaterialが続く範囲を特定
         uint32_t batchSize = 0;
-        for (uint32_t i = currentInstanceStart; i < queue_.size(); ++i) {
+        for (uint32_t i = currentInstanceStart; i < totalInstances; ++i) {
             if (queue_[i].modelName == batchStartReq.modelName && 
                 queue_[i].materialName == batchStartReq.materialName) {
                 batchSize++;
@@ -109,7 +111,6 @@ void Renderer::Render(ID3D12GraphicsCommandList* commandList, const D3D12_GPU_VI
             }
         }
 
-        // 描画設定
         auto* mat = materialManager.GetMaterial(batchStartReq.materialName);
         if (mat) {
             auto* pso = shaderManager.GetOrCreatePSO(mat->pipelineName, {});
@@ -118,30 +119,30 @@ void Renderer::Render(ID3D12GraphicsCommandList* commandList, const D3D12_GPU_VI
             commandList->SetGraphicsRootSignature(rootSig->Get());
             commandList->SetPipelineState(pso->Get());
 
-            // 共通リソースのセット
             ID3D12DescriptorHeap* heaps[] = { textureManager.GetSrvHeap()->GetHeap() };
             commandList->SetDescriptorHeaps(_countof(heaps), heaps);
 
             commandList->SetGraphicsRootConstantBufferView(rootSig->GetParameterIndex("gSceneData"), sceneCBAddress);
             commandList->SetGraphicsRootDescriptorTable(rootSig->GetParameterIndex("gTextures"), textureManager.GetSrvHeap()->GetGPUHandle(0));
             
-            // インスタンスバッファを現在のバッチの開始位置にオフセットしてセット
+            // インスタンスバッファをオフセット（正しいインデックスのバッファを使用）
             D3D12_GPU_VIRTUAL_ADDRESS instBufferAddr = currentSB->GetResource()->GetGPUVirtualAddress();
-            instBufferAddr += currentInstanceStart * sizeof(GeneratedSchema::InstanceData);
+            instBufferAddr += static_cast<UINT64>(currentInstanceStart) * sizeof(GeneratedSchema::InstanceData);
             commandList->SetGraphicsRootShaderResourceView(rootSig->GetParameterIndex("gInstances"), instBufferAddr);
 
             commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-            // メッシュごとの描画
             const auto& meshes = assetManager.GetMeshes(batchStartReq.modelName);
             for (const auto& mesh : meshes) {
                 commandList->SetGraphicsRootShaderResourceView(rootSig->GetParameterIndex("gVertices"), mesh->GetVertexBuffer()->GetResource()->GetGPUVirtualAddress());
-                
                 D3D12_INDEX_BUFFER_VIEW ibv = mesh->GetIndexBuffer()->GetView();
                 commandList->IASetIndexBuffer(&ibv);
                 
-                // バッファ自体をオフセットしているため、StartInstance は 0 固定にする
-                commandList->DrawIndexedInstanced(mesh->GetIndexBuffer()->GetCount(), batchSize, 0, 0, 0);
+                // 全ての引数を明示的にキャストして警告を回避
+                commandList->DrawIndexedInstanced(
+                    static_cast<UINT>(mesh->GetIndexBuffer()->GetCount()), 
+                    static_cast<UINT>(batchSize), 
+                    0, 0, 0);
             }
         }
 

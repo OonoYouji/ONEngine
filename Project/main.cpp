@@ -79,7 +79,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
             transform.rotation.y += 0.01f;
         });
 
-        // カメラ更新
+        // 描画準備
+        renderer.ClearQueue();
+        renderSystem.Update(registry);
+
+        // 描画実行
+        graphicsEngine.BeginFrame();
+        
+        // カメラ更新 (BeginFrameの後に行うことで、正しいフレームのリソースに書き込む)
         SceneData sceneData;
         auto view = Engine::Math::Matrix4x4::MakeLookAtLH({ 0, 20, -50 }, { 0, 0, 0 }, { 0, 1, 0 });
         auto proj = Engine::Math::Matrix4x4::MakePerspectiveFovLH(0.45f, 16.0f/9.0f, 0.1f, 1000.0f);
@@ -88,20 +95,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
         auto* currentFrameRes = graphicsEngine.GetCurrentFrameResource();
         currentFrameRes->GetSceneCB()->Update(&sceneData, sizeof(sceneData));
 
-        // 描画準備
-        renderer.ClearQueue();
-        renderSystem.Update(registry);
         renderer.Extract();
-
-        // 描画実行
-        graphicsEngine.BeginFrame();
+        
         graphicsEngine.Clear({ 0.7f, 0.7f, 0.7f, 1.0f });
         graphicsEngine.ClearDepth();
         
         auto* commandList = graphicsEngine.GetCommandQueue()->GetCommandList();
         
         // Rendererに全てを任せる
-        renderer.Render(commandList, sceneCB.GetGPUVirtualAddress());
+        renderer.Render(commandList, currentFrameRes->GetSceneCB()->GetGPUVirtualAddress());
 
         graphicsEngine.EndFrame();
     }
