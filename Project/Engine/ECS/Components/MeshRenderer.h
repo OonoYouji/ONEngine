@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <cstdint>
 
 namespace Engine::ECS {
 
@@ -9,7 +10,7 @@ namespace Engine::ECS {
 ///
 struct MeshRenderer {
 	std::string meshPath;
-	// マテリアル等の情報も本来はここに入る
+	uint32_t textureIndex = 0;
 };
 
 } // namespace Engine::ECS

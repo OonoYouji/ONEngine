@@ -30,11 +30,16 @@ void StructuredBuffer::Create(RenderDevice* device, uint32_t stride, uint32_t co
     Assert(SUCCEEDED(hr), "Failed to create Structured Buffer.");
 
     if (initialData) {
-        void* mapped = nullptr;
-        resource_->Map(0, nullptr, &mapped);
-        memcpy(mapped, initialData, totalSize);
-        resource_->Unmap(0, nullptr);
+        Update(initialData, totalSize);
     }
+}
+
+void StructuredBuffer::Update(const void* data, uint32_t size) {
+    if (!resource_ || !data) return;
+    void* mapped = nullptr;
+    resource_->Map(0, nullptr, &mapped);
+    memcpy(mapped, data, size);
+    resource_->Unmap(0, nullptr);
 }
 
 // --- IndexBuffer ---

@@ -1,4 +1,4 @@
-﻿struct Vertex {
+struct Vertex {
     float3 position;
     float2 uv;
 };
@@ -6,6 +6,7 @@
 struct VSOutput {
     float4 position : SV_POSITION;
     float2 uv : TEXCOORD;
+    uint instanceID : SV_InstanceID;
 };
 
 // --- Bindless Resources ---
@@ -24,28 +25,36 @@ struct SceneData {
 };
 ConstantBuffer<SceneData> gSceneData : register(b0);
 
-// --- Per Object/Material Data ---
-struct MaterialData {
+// --- Instanced Data ---
+struct InstanceData {
+    float4x4 world;
     uint textureIndex;
-    // other params...
+    uint3 _pad;
 };
-ConstantBuffer<MaterialData> gMaterial : register(b1);
+StructuredBuffer<InstanceData> gInstances : register(t1, space0);
 
-
-VSOutput vs_main(uint vID : SV_VertexID) {
+VSOutput vs_main(uint vID : SV_VertexID, uint iID : SV_InstanceID) {
     VSOutput output;
     
-    // 頂点バッファからデータを取得 (Manual Vertex Fetching)
+    // 頂点バッファからデータを取得
     Vertex v = gVertices[vID];
     
-    output.position = mul(float4(v.position, 1.0f), gSceneData.viewProj);
+    // インスタンスデータを取得
+    InstanceData inst = gInstances[iID];
+    
+    // World変換 -> ViewProjection変換
+    float4 worldPos = mul(float4(v.position, 1.0f), inst.world);
+    output.position = mul(worldPos, gSceneData.viewProj);
     output.uv = v.uv;
+    output.instanceID = iID;
     
     return output;
 }
 
 float4 ps_main(VSOutput input) : SV_TARGET {
-    uint texIdx = gMaterial.textureIndex;
+    // インスタンスデータを取得
+    InstanceData inst = gInstances[input.instanceID];
+    uint texIdx = inst.textureIndex;
 
     // テクスチャをサンプリング
     float4 color = gTextures[NonUniformResourceIndex(texIdx)].Sample(gSampler, input.uv);

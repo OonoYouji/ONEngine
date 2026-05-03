@@ -19,6 +19,7 @@ public:
     ~StructuredBuffer();
 
     void Create(RenderDevice* device, uint32_t stride, uint32_t count, const void* initialData = nullptr);
+    void Update(const void* data, uint32_t size);
     
     ID3D12Resource* GetResource() const { return resource_.Get(); }
     uint32_t GetStride() const { return stride_; }
