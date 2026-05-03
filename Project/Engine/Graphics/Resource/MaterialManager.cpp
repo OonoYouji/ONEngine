@@ -1,4 +1,4 @@
-#include "MaterialManager.h"
+﻿#include "MaterialManager.h"
 #include "TextureManager.h"
 #include "AssetDatabase.h"
 #include "Engine/Graphics/Core/RenderDevice.h"
@@ -52,8 +52,26 @@ std::string MaterialManager::LoadMaterial(const std::string& pathOrGuid) {
         // テクスチャの依存解決
         material->textureName = data.value("texture", "");
         if (!material->textureName.empty()) {
-            // 自動ロード！
             TextureManager::GetInstance().LoadTexture(material->textureName);
+        }
+
+        // パラメータの読み込み
+        if (data.contains("parameters")) {
+            auto& params = data["parameters"];
+            Engine::Console::Log(std::format("Material [{}]: 'parameters' found.", material->name));
+            if (params.contains("baseColor")) {
+                auto& c = params["baseColor"];
+                if (c.is_array() && c.size() >= 3) {
+                    material->baseColor.x = c[0].get<float>();
+                    material->baseColor.y = c[1].get<float>();
+                    material->baseColor.z = c[2].get<float>();
+                    material->baseColor.w = (c.size() > 3) ? c[3].get<float>() : 1.0f;
+                    Engine::Console::Log(std::format("  baseColor loaded: ({}, {}, {}, {})", 
+                        material->baseColor.x, material->baseColor.y, material->baseColor.z, material->baseColor.w));
+                }
+            }
+        } else {
+            Engine::Console::LogWarning(std::format("Material [{}]: 'parameters' NOT found. Using defaults.", material->name));
         }
 
         materials_[guid] = std::move(material);

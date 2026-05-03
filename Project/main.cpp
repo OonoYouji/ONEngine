@@ -1,4 +1,4 @@
-#include <Windows.h>
+﻿#include <Windows.h>
 #include <vector>
 #include "Engine/Core/Window.h"
 #include "Engine/Graphics/Core/GraphicsEngine.h"
@@ -21,7 +21,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     Engine::Console::Initialize();
 
     Engine::Core::Window window;
-    window.Initialize(L"FinalAssetSystemTest", Engine::Math::Vector2Int::HD);
+    window.Initialize(L"AssetSystemUnifiedTest", Engine::Math::Vector2Int::HD);
 
     auto& graphicsEngine = Engine::Graphics::GraphicsEngine::GetInstance();
     graphicsEngine.Initialize(window.GetHWND(), Engine::Math::Vector2Int::HD);
@@ -41,14 +41,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     auto& renderer = Engine::Graphics::Renderer::GetInstance();
     renderer.Initialize(graphicsEngine.GetRenderDevice());
 
-    // 1. アセットのロード
-    // テクスチャの手動ロードは不要！マテリアルが自動で読み込む
+    // 1. アセットのロード (テクスチャはマテリアルが自動ロードする)
     std::string gridMat = materialManager.LoadMaterial("Assets/Materials/Grid.mat");
     std::string whiteMat = materialManager.LoadMaterial("Assets/Materials/White.mat");
 
     shaderManager.LoadPipelineAsset("Assets/Pipelines/BindlessTest.json");
-    
-    std::string modelName = "Cube";
     assetManager.LoadModel("Packages/Models/primitive/cube.obj");
 
     // 2. エンティティの作成
@@ -62,10 +59,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
         transform.scale = { 0.5f, 0.5f, 0.5f };
         
         auto& meshRenderer = registry.AddComponent<Engine::ECS::MeshRenderer>(entity);
-        meshRenderer.modelName = "Packages/Models/primitive/cube.obj"; // パス指定でもGUIDに自動変換される
+        meshRenderer.modelName = "Packages/Models/primitive/cube.obj";
         meshRenderer.materialName = (i % 2 == 0) ? gridMat : whiteMat;
     }
 
+    // 3. システムと共通定数バッファ
     Engine::ECS::RenderSystem renderSystem;
     Engine::Graphics::ConstantBuffer sceneCB;
     sceneCB.Create(graphicsEngine.GetRenderDevice(), sizeof(SceneData));
@@ -75,24 +73,30 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
         window.Update();
         if(window.GetIsProcessEnd()) break;
 
+        // 更新フェーズ
         registry.GetView<Engine::ECS::Transform>().Each([](auto entity, auto& transform) {
             transform.rotation.y += 0.01f;
         });
 
+        // カメラ更新
         SceneData sceneData;
         auto view = Engine::Math::Matrix4x4::MakeLookAtLH({ 0, 20, -50 }, { 0, 0, 0 }, { 0, 1, 0 });
         auto proj = Engine::Math::Matrix4x4::MakePerspectiveFovLH(0.45f, 16.0f/9.0f, 0.1f, 1000.0f);
         sceneData.viewProj = view * proj;
         sceneCB.Update(&sceneData, sizeof(sceneData));
 
+        // 描画準備
         renderer.ClearQueue();
         renderSystem.Update(registry);
 
+        // 描画実行
         graphicsEngine.BeginFrame();
-        graphicsEngine.Clear({ 0.02f, 0.02f, 0.04f, 1.0f });
+        graphicsEngine.Clear({ 0.7f, 0.7f, 0.7f, 1.0f });
         graphicsEngine.ClearDepth();
         
         auto* commandList = graphicsEngine.GetCommandQueue()->GetCommandList();
+        
+        // Rendererに全てを任せる
         renderer.Render(commandList, sceneCB.GetGPUVirtualAddress());
 
         graphicsEngine.EndFrame();

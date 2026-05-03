@@ -6,10 +6,12 @@ struct SceneData {
 
 struct InstanceData {
     float4x4 world;
+    float4 baseColor;
     uint textureIndex;
 };
 
 struct MaterialData {
+    float4 baseColor;
     uint textureIndex;
     uint _final_pad0[3];
 };

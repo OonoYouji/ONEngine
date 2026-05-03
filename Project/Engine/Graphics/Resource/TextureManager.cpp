@@ -6,15 +6,19 @@
 #include "Engine/Common/Console.h"
 #include "Engine/Graphics/Core/CommandQueue.h"
 #include "Engine/Graphics/Core/GraphicsEngine.h"
+#include "Externals/nlohmann/json.hpp"
 #include <d3dx12.h>
 #include <DirectXTex.h>
+#include <fstream>
+
+using json = nlohmann::json;
 
 namespace Engine::Graphics {
 
 const uint32_t kMaxBindlessTextures = 1024;
 
 TextureManager::TextureManager() = default;
-TextureManager::~TextureManager() = default; // 前方宣言された型を扱うため、ここで定義
+TextureManager::~TextureManager() = default;
 
 void TextureManager::Initialize(RenderDevice* device) {
     device_ = device;
@@ -48,9 +52,25 @@ int32_t TextureManager::LoadTexture(const std::string& pathOrGuid) {
     std::string path = AssetDatabase::GetInstance().GetPathFromGuid(guid);
     if (path == "") path = pathOrGuid;
 
+    // --- インポート設定の読み込み ---
+    bool isSRGB = true; // デフォルト
+    std::string metaPath = path + ".meta";
+    std::ifstream metaFile(metaPath);
+    if (metaFile.is_open()) {
+        try {
+            json metaData = json::parse(metaFile);
+            if (metaData.contains("colorSpace")) {
+                std::string colorSpace = metaData["colorSpace"];
+                isSRGB = (colorSpace == "sRGB");
+            }
+        } catch (...) {}
+    }
+
     auto texture = std::make_unique<Texture>();
-    // std::string を std::wstring に変換（簡易実装）
     std::wstring wpath(path.begin(), path.end());
+    
+    // Texture::Load 側で sRGB 指定を受け取れるように拡張するのが理想的だが、
+    // 一旦ここでは標準ロード
     if (!texture->Load(wpath)) {
         return -1;
     }
@@ -59,10 +79,13 @@ int32_t TextureManager::LoadTexture(const std::string& pathOrGuid) {
     D3D12_CPU_DESCRIPTOR_HANDLE srvHandle = srvHeap_->GetCPUHandle(index);
     texture->CreateResource(device_, srvHandle);
 
-    // データ転送 (以前実装したコードを適用)
+    // データ転送
     auto* image = texture->GetImage();
     auto* res = texture->GetResource();
     const auto& metadata = image->GetMetadata();
+    
+    // もし Meta で強制的なフォーマット指定があればここで上書き等の処理を行う
+    
     std::vector<D3D12_SUBRESOURCE_DATA> subresources;
     if (SUCCEEDED(DirectX::PrepareUpload(device_->GetDevice(), image->GetImages(), image->GetImageCount(), metadata, subresources))) {
         const UINT64 uploadBufferSize = GetRequiredIntermediateSize(res, 0, static_cast<UINT>(subresources.size()));
@@ -84,11 +107,10 @@ int32_t TextureManager::LoadTexture(const std::string& pathOrGuid) {
     }
 
     texture->SetIndex(index);
-    int32_t finalIndex = static_cast<int32_t>(index);
     textureMap_[guid] = std::move(texture);
 
-    Engine::Console::Log(std::format("TextureManager: Loaded [{}] (Index: {})", path, finalIndex));
-    return finalIndex;
+    Engine::Console::Log(std::format("TextureManager: Loaded [{}] (sRGB: {})", path, isSRGB));
+    return static_cast<int32_t>(index);
 }
 
 Texture* TextureManager::GetTexture(const std::string& pathOrGuid) {

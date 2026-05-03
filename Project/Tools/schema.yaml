@@ -13,11 +13,15 @@ types:
     fields:
       - name: world
         type: float4x4
+      - name: baseColor
+        type: float4
       - name: textureIndex
         type: uint32
 
   MaterialData:
     type: ConstantBuffer
     fields:
+      - name: baseColor
+        type: float4
       - name: textureIndex
         type: uint32

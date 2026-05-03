@@ -55,14 +55,15 @@ void Renderer::Render(ID3D12GraphicsCommandList* commandList, const D3D12_GPU_VI
         
         auto* mat = materialManager.GetMaterial(req.materialName);
         if (mat) {
+            data.baseColor = mat->baseColor;
             auto* tex = textureManager.GetTexture(mat->textureName);
             if (tex) {
                 data.textureIndex = tex->GetIndex();
             } else {
-                Engine::Console::LogWarning(std::format("Renderer: Texture '{}' not found for material '{}'", mat->textureName, req.materialName));
-                data.textureIndex = 0; // ここでエラー回避用のデフォルトテクスチャを指定するのが理想
+                data.textureIndex = 0;
             }
         } else {
+            data.baseColor = { 1, 1, 1, 1 };
             data.textureIndex = 0;
         }
         instanceData.push_back(data);
@@ -101,9 +102,10 @@ void Renderer::Render(ID3D12GraphicsCommandList* commandList, const D3D12_GPU_VI
             commandList->SetGraphicsRootConstantBufferView(rootSig->GetParameterIndex("gSceneData"), sceneCBAddress);
             commandList->SetGraphicsRootDescriptorTable(rootSig->GetParameterIndex("gTextures"), textureManager.GetSrvHeap()->GetGPUHandle(0));
             
-            // 全体のインスタンスバッファをセット（シェーダー側で SV_InstanceID でオフセットを考慮してアクセスするか、
-            // もしくはバッファ自体をオフセットして渡す。今回は単純化のため全体を渡し、Drawの引数で制御）
-            commandList->SetGraphicsRootShaderResourceView(rootSig->GetParameterIndex("gInstances"), instanceSB_->GetResource()->GetGPUVirtualAddress());
+            // インスタンスバッファを現在のバッチの開始位置にオフセットしてセット
+            D3D12_GPU_VIRTUAL_ADDRESS instBufferAddr = instanceSB_->GetResource()->GetGPUVirtualAddress();
+            instBufferAddr += currentInstanceStart * sizeof(GeneratedSchema::InstanceData);
+            commandList->SetGraphicsRootShaderResourceView(rootSig->GetParameterIndex("gInstances"), instBufferAddr);
 
             commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
@@ -115,9 +117,8 @@ void Renderer::Render(ID3D12GraphicsCommandList* commandList, const D3D12_GPU_VI
                 D3D12_INDEX_BUFFER_VIEW ibv = mesh->GetIndexBuffer()->GetView();
                 commandList->IASetIndexBuffer(&ibv);
                 
-                // DrawIndexedInstanced(IndexCount, InstanceCount, StartIndex, BaseVertex, StartInstance)
-                // StartInstance を指定することで、StructuredBuffer内の正しい位置からデータが読み込まれる
-                commandList->DrawIndexedInstanced(mesh->GetIndexBuffer()->GetCount(), batchSize, 0, 0, currentInstanceStart);
+                // バッファ自体をオフセットしているため、StartInstance は 0 固定にする
+                commandList->DrawIndexedInstanced(mesh->GetIndexBuffer()->GetCount(), batchSize, 0, 0, 0);
             }
         }
 

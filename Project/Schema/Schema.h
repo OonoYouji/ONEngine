@@ -10,10 +10,12 @@ struct SceneData {
 
 struct InstanceData {
     Engine::Math::Matrix4x4 world;
+    Engine::Math::Vector4 baseColor;
     uint32_t textureIndex;
 };
 
 struct MaterialData {
+    Engine::Math::Vector4 baseColor;
     uint32_t textureIndex;
     uint32_t _final_pad0[3];
 };

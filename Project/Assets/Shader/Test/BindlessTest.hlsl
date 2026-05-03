@@ -1,4 +1,4 @@
-struct Vertex {
+﻿struct Vertex {
     float3 position;
     float2 uv;
 };
@@ -6,7 +6,7 @@ struct Vertex {
 struct VSOutput {
     float4 position : SV_POSITION;
     float2 uv : TEXCOORD;
-    uint instanceID : SV_InstanceID;
+    nointerpolation uint instanceID : SV_InstanceID;
 };
 
 // --- Bindless Resources ---
@@ -45,11 +45,10 @@ VSOutput vs_main(uint vID : SV_VertexID, uint iID : SV_InstanceID) {
 float4 ps_main(VSOutput input) : SV_TARGET {
     // インスタンスデータを取得
     InstanceData inst = gInstances[input.instanceID];
-    uint texIdx = inst.textureIndex;
 
     // テクスチャをサンプリング
-    float4 color = gTextures[NonUniformResourceIndex(texIdx)].Sample(gSampler, input.uv);
+    float4 texColor = gTextures[NonUniformResourceIndex(inst.textureIndex)].Sample(gSampler, input.uv);
 
-    // 最終的な色を出力
-    return float4(color.rgb, 1.0f);
+    // 最終的な色 = テクスチャ色 * マテリアルベースカラー
+	return texColor * inst.baseColor;
 }
