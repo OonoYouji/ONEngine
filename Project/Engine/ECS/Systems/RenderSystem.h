@@ -4,40 +4,28 @@
 #include "Engine/ECS/Registry.h"
 #include "Engine/ECS/Components/Transform.h"
 #include "Engine/ECS/Components/MeshRenderer.h"
-#include "Engine/ECS/Components/Light.h"
 #include "Engine/Graphics/Core/Renderer.h"
 
 namespace Engine::ECS {
 
 ///
-/// 描画リクエストをキューに送るシステム
+/// 描画リクエストを収集してRendererに送るシステム
 ///
 class RenderSystem final : public System {
 public:
 	void Update(Registry& registry) override {
 		auto& renderer = Engine::Graphics::Renderer::GetInstance();
 
-		// メッシュの収集
-		auto meshView = registry.GetView<Transform, MeshRenderer>();
-		meshView.Each([&]([[maybe_unused]] Entity entity, Transform& transform, MeshRenderer& meshRenderer) {
+		// メッシュレンダラーを持つエンティティを収集
+		registry.GetView<Transform, MeshRenderer>().Each([&](Entity entity, Transform& transform, MeshRenderer& meshRenderer) {
 			Engine::Graphics::RenderRequest request;
-			request.meshPath = meshRenderer.meshPath;
-			request.position = transform.position;
-			request.rotation = transform.rotation;
-			request.scale = transform.scale;
+			request.modelName = meshRenderer.modelName;
+			request.materialName = meshRenderer.materialName;
+			
+			// Transformから行列を計算
+			request.world = Engine::Math::Matrix4x4::MakeAffine(transform.scale, transform.rotation, transform.position);
+			
 			renderer.PushRequest(request);
-		});
-
-		// 平行光源の収集
-		auto dirLightView = registry.GetView<DirectionalLight>();
-		dirLightView.Each([&]([[maybe_unused]] Entity entity, DirectionalLight& light) {
-			renderer.AddDirectionalLight({ light.color, light.intensity, light.direction });
-		});
-
-		// 点光源の収集
-		auto pointLightView = registry.GetView<Transform, PointLight>();
-		pointLightView.Each([&]([[maybe_unused]] Entity entity, Transform& transform, PointLight& light) {
-			renderer.AddPointLight({ transform.position, light.color, light.intensity, light.radius });
 		});
 	}
 };

@@ -2,38 +2,26 @@
 
 #include <vector>
 #include <string>
+#include <map>
 #include "Engine/Core/Math/Math.h"
+#include "Engine/Graphics/Resource/GpuBuffer.h"
+#include "Schema/Schema.h"
 
 namespace Engine::Graphics {
 
+class RenderDevice;
+
 ///
-/// 描画リクエストのデータ構造
+/// 描画リクエスト
 ///
 struct RenderRequest {
-	std::string meshPath;
-	Engine::Math::Vector3 position;
-	Engine::Math::Vector3 rotation;
-	Engine::Math::Vector3 scale;
+	std::string modelName;
+	std::string materialName;
+	Engine::Math::Matrix4x4 world;
 };
 
 ///
-/// 光源データ
-///
-struct DirectionalLightData {
-	Engine::Math::Vector3 color;
-	float intensity;
-	Engine::Math::Vector3 direction;
-};
-
-struct PointLightData {
-	Engine::Math::Vector3 position;
-	Engine::Math::Vector3 color;
-	float intensity;
-	float radius;
-};
-
-///
-/// 簡易レンダラークラス
+/// 描画を一括管理するクラス
 ///
 class Renderer {
 public:
@@ -42,35 +30,24 @@ public:
 		return instance;
 	}
 
-	void PushRequest(const RenderRequest& request) {
-		queue_.push_back(request);
-	}
+	void Initialize(RenderDevice* device);
+	void Shutdown();
 
-	void AddDirectionalLight(const DirectionalLightData& light) {
-		dirLights_.push_back(light);
-	}
+	/// @brief 描画リクエストの追加
+	void PushRequest(const RenderRequest& request);
 
-	void AddPointLight(const PointLightData& light) {
-		pointLights_.push_back(light);
-	}
+	/// @brief 描画実行（フレームの最後に一括で呼ばれる）
+	void Render(ID3D12GraphicsCommandList* commandList, const D3D12_GPU_VIRTUAL_ADDRESS sceneCBAddress);
 
-	void ClearQueue() {
-		queue_.clear();
-		dirLights_.clear();
-		pointLights_.clear();
-	}
-
-	const std::vector<RenderRequest>& GetQueue() const {
-		return queue_;
-	}
-
-	const std::vector<DirectionalLightData>& GetDirectionalLights() const { return dirLights_; }
-	const std::vector<PointLightData>& GetPointLights() const { return pointLights_; }
+	void ClearQueue();
 
 private:
+	RenderDevice* device_ = nullptr;
 	std::vector<RenderRequest> queue_;
-	std::vector<DirectionalLightData> dirLights_;
-	std::vector<PointLightData> pointLights_;
+	
+	// インスタンスデータ用バッファ（動的にリサイズするか、十分に大きく確保）
+	std::unique_ptr<StructuredBuffer> instanceSB_;
+	const uint32_t kMaxInstances = 2048;
 };
 
 } // namespace Engine::Graphics

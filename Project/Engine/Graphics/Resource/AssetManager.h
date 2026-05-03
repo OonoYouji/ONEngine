@@ -1,12 +1,14 @@
-#pragma once
+﻿#pragma once
 
 #include <string>
 #include <unordered_map>
 #include <memory>
 #include <vector>
 
+#include "Engine/Graphics/Resource/Mesh.h"
+
 namespace Engine::Graphics {
-    class Mesh;
+    //class Mesh;
     class RenderDevice;
 }
 
