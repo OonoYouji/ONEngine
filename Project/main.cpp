@@ -54,7 +54,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
     shaderManager.LoadPipelineAsset("Assets/Pipelines/BindlessTest.json");
     
-    std::string modelName = "Enemy";
+    std::string modelName = "Cube";
     assetManager.LoadModel(modelName, "Packages/Models/primitive/cube.obj");
 
     // 2. エンティティの作成
