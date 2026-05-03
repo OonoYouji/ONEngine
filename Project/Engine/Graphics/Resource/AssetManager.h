@@ -27,18 +27,23 @@ public:
     void Initialize(Graphics::RenderDevice* device);
     void Shutdown();
 
-    /// @brief モデルをロードしてキャッシュ
-    void LoadModel(const std::string& name, const std::string& filePath);
+    /// @brief パスまたはGUIDからモデルをロードしてキャッシュ
+    /// @param pathOrGuid ファイルパスまたはGUID
+    void LoadModel(const std::string& pathOrGuid);
     
-    /// @brief キャッシュされたメッシュリストを取得
-    const std::vector<std::unique_ptr<Graphics::Mesh>>& GetMeshes(const std::string& name);
+    /// @brief ロード済みメッシュリストを取得
+    const std::vector<std::unique_ptr<Graphics::Mesh>>& GetMeshes(const std::string& pathOrGuid);
 
 private:
     AssetManager() = default;
     ~AssetManager() = default;
 
+    /// @brief 入力がパスかGUIDかを判定し、常にGUIDを返す
+    std::string ToGuid(const std::string& pathOrGuid);
+
 private:
     Graphics::RenderDevice* device_ = nullptr;
+    // キャッシュはGUIDで管理
     std::unordered_map<std::string, std::vector<std::unique_ptr<Graphics::Mesh>>> models_;
 };
 

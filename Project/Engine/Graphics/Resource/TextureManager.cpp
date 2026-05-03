@@ -1,109 +1,100 @@
 #include "TextureManager.h"
-#include <DirectXTex.h>
+#include "AssetDatabase.h"
+#include "Texture.h"
 #include "Engine/Graphics/Core/RenderDevice.h"
 #include "Engine/Graphics/Core/DescriptorHeap.h"
 #include "Engine/Common/Console.h"
-#include <d3dx12.h>
 #include "Engine/Graphics/Core/CommandQueue.h"
 #include "Engine/Graphics/Core/GraphicsEngine.h"
+#include <d3dx12.h>
+#include <DirectXTex.h>
 
 namespace Engine::Graphics {
 
-// Bindlessで確保するテクスチャの最大数
 const uint32_t kMaxBindlessTextures = 1024;
 
 TextureManager::TextureManager() = default;
-TextureManager::~TextureManager() = default;
+TextureManager::~TextureManager() = default; // 前方宣言された型を扱うため、ここで定義
 
 void TextureManager::Initialize(RenderDevice* device) {
     device_ = device;
     srvHeap_ = std::make_unique<DescriptorHeap>();
     srvHeap_->Initialize(device, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, kMaxBindlessTextures, true);
-    texturePool_.reserve(kMaxBindlessTextures);
 }
 
 void TextureManager::Shutdown() {
     textureMap_.clear();
-    texturePool_.clear();
     srvHeap_.reset();
 }
 
-int32_t TextureManager::LoadTexture(const std::string& name, const std::wstring& filePath) {
-    if (textureMap_.count(name)) {
-        return textureMap_[name]->GetIndex();
+std::string TextureManager::ToGuid(const std::string& pathOrGuid) {
+    if (AssetDatabase::GetInstance().GetPathFromGuid(pathOrGuid) != "") return pathOrGuid;
+    std::string guid = AssetDatabase::GetInstance().GetGuidFromPath(pathOrGuid);
+    return (guid != "") ? guid : pathOrGuid;
+}
+
+int32_t TextureManager::LoadTexture(const std::string& pathOrGuid) {
+    std::string guid = ToGuid(pathOrGuid);
+    
+    if (textureMap_.count(guid)) {
+        return textureMap_[guid]->GetIndex();
     }
 
-    if (texturePool_.size() >= kMaxBindlessTextures) {
-        Engine::Console::LogError("Texture pool is full. Cannot load more textures.");
+    if (textureMap_.size() >= kMaxBindlessTextures) {
+        Engine::Console::LogError("Texture pool is full.");
         return -1;
     }
+
+    std::string path = AssetDatabase::GetInstance().GetPathFromGuid(guid);
+    if (path == "") path = pathOrGuid;
 
     auto texture = std::make_unique<Texture>();
-    if (!texture->Load(filePath)) {
+    // std::string を std::wstring に変換（簡易実装）
+    std::wstring wpath(path.begin(), path.end());
+    if (!texture->Load(wpath)) {
         return -1;
     }
 
-    // SRVヒープの次の空きスロットにSRVを作成
-    uint32_t index = static_cast<uint32_t>(texturePool_.size());
+    uint32_t index = static_cast<uint32_t>(textureMap_.size());
     D3D12_CPU_DESCRIPTOR_HANDLE srvHandle = srvHeap_->GetCPUHandle(index);
     texture->CreateResource(device_, srvHandle);
 
-    // GPUへのデータアップロード
+    // データ転送 (以前実装したコードを適用)
     auto* image = texture->GetImage();
     auto* res = texture->GetResource();
     const auto& metadata = image->GetMetadata();
-    
     std::vector<D3D12_SUBRESOURCE_DATA> subresources;
-    HRESULT hr = DirectX::PrepareUpload(device_->GetDevice(), image->GetImages(), image->GetImageCount(), metadata, subresources);
-    if (SUCCEEDED(hr)) {
+    if (SUCCEEDED(DirectX::PrepareUpload(device_->GetDevice(), image->GetImages(), image->GetImageCount(), metadata, subresources))) {
         const UINT64 uploadBufferSize = GetRequiredIntermediateSize(res, 0, static_cast<UINT>(subresources.size()));
-        
         ComPtr<ID3D12Resource> uploadHeap;
         auto heapProps = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD);
         auto bufferDesc = CD3DX12_RESOURCE_DESC::Buffer(uploadBufferSize);
-        device_->GetDevice()->CreateCommittedResource(
-            &heapProps,
-            D3D12_HEAP_FLAG_NONE,
-            &bufferDesc,
-            D3D12_RESOURCE_STATE_GENERIC_READ,
-            nullptr,
-            IID_PPV_ARGS(&uploadHeap));
+        device_->GetDevice()->CreateCommittedResource(&heapProps, D3D12_HEAP_FLAG_NONE, &bufferDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&uploadHeap));
 
         auto* queue = GraphicsEngine::GetInstance().GetCommandQueue();
         queue->Reset();
         auto* commandList = queue->GetCommandList();
-
-        // 状態を明示的に強制 (COMMON -> COPY_DEST)
-        // 初期状態が不明な場合もあるため、一度バリアを張る
-        D3D12_RESOURCE_BARRIER preBarrier = CD3DX12_RESOURCE_BARRIER::Transition(res, D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_COPY_DEST);
-        commandList->ResourceBarrier(1, &preBarrier);
-
+        auto barrier = CD3DX12_RESOURCE_BARRIER::Transition(res, D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_COPY_DEST);
+        commandList->ResourceBarrier(1, &barrier);
         UpdateSubresources(commandList, res, uploadHeap.Get(), 0, 0, static_cast<UINT>(subresources.size()), subresources.data());
-        
-        // COPY_DEST -> PIXEL_SHADER_RESOURCE
-        D3D12_RESOURCE_BARRIER postBarrier = CD3DX12_RESOURCE_BARRIER::Transition(res, D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
-        commandList->ResourceBarrier(1, &postBarrier);
-
-        // アップロード完了まで待機（uploadHeapがスコープを抜ける前に必ず待つ）
+        barrier = CD3DX12_RESOURCE_BARRIER::Transition(res, D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+        commandList->ResourceBarrier(1, &barrier);
         queue->Execute();
         queue->SignalAndWait();
-        
-        Engine::Console::Log(std::format("Uploaded Texture: {}x{}, Mips: {}, Format: {}", metadata.width, metadata.height, metadata.mipLevels, (int)metadata.format));
-    } else {
-        Engine::Console::LogError("Failed to prepare texture upload.");
     }
 
     texture->SetIndex(index);
-    textureMap_[name] = texture.get();
-    texturePool_.push_back(std::move(texture));
+    int32_t finalIndex = static_cast<int32_t>(index);
+    textureMap_[guid] = std::move(texture);
 
-    Engine::Console::Log(std::format("Texture '{}' loaded and uploaded. Assigned Index: {}", name, index));
-    return index;
+    Engine::Console::Log(std::format("TextureManager: Loaded [{}] (Index: {})", path, finalIndex));
+    return finalIndex;
 }
 
-Texture* TextureManager::GetTexture(const std::string& name) {
-    auto it = textureMap_.find(name);
-    return (it != textureMap_.end()) ? it->second : nullptr;
+Texture* TextureManager::GetTexture(const std::string& pathOrGuid) {
+    std::string guid = ToGuid(pathOrGuid);
+    auto it = textureMap_.find(guid);
+    return (it != textureMap_.end()) ? it->second.get() : nullptr;
 }
 
 } // namespace Engine::Graphics

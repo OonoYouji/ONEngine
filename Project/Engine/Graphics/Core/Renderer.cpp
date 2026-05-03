@@ -5,6 +5,7 @@
 #include "Engine/Graphics/Resource/TextureManager.h"
 #include "Engine/Graphics/Shader/ShaderManager.h"
 #include "Engine/Graphics/Resource/Mesh.h"
+#include "Engine/Graphics/Resource/Texture.h"
 #include "Engine/Common/Console.h"
 #include <algorithm>
 #include "Engine/Graphics/Core/DescriptorHeap.h"
@@ -55,7 +56,12 @@ void Renderer::Render(ID3D12GraphicsCommandList* commandList, const D3D12_GPU_VI
         auto* mat = materialManager.GetMaterial(req.materialName);
         if (mat) {
             auto* tex = textureManager.GetTexture(mat->textureName);
-            data.textureIndex = tex ? tex->GetIndex() : 0;
+            if (tex) {
+                data.textureIndex = tex->GetIndex();
+            } else {
+                Engine::Console::LogWarning(std::format("Renderer: Texture '{}' not found for material '{}'", mat->textureName, req.materialName));
+                data.textureIndex = 0; // ここでエラー回避用のデフォルトテクスチャを指定するのが理想
+            }
         } else {
             data.textureIndex = 0;
         }

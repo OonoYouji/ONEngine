@@ -1,5 +1,5 @@
 {
   "name": "WhiteMat",
   "pipeline": "BindlessTest",
-  "texture": "White"
+  "texture": "Packages/Textures/white.png"
 }
