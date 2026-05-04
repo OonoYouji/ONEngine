@@ -21,7 +21,7 @@ public:
 
     std::string name;
     std::string pipelineName; // 使用するパイプライン
-    std::string textureName;  // メインテクスチャ名
+    uint32_t textureIndex = 0xFFFFFFFF; // メインテクスチャインデックス
     Engine::Math::Vector4 baseColor = { 1.0f, 1.0f, 1.0f, 1.0f };
 
     // ロード成功時に呼ぶ

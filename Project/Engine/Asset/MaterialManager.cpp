@@ -27,11 +27,20 @@ void MaterialManager::Initialize(Graphics::RenderDevice* device) {
 
 void MaterialManager::Shutdown() {
     materials_.clear();
+    indexedMaterials_.clear();
 }
 
-std::string MaterialManager::LoadMaterial(const std::string& pathOrGuid) {
+int32_t MaterialManager::LoadMaterial(const std::string& pathOrGuid) {
     auto mat = LoadMaterialAsAsset(pathOrGuid);
-    return mat ? mat->GetGuid() : "";
+    if (!mat) return -1;
+
+    // 既に登録済みかチェック
+    for (size_t i = 0; i < indexedMaterials_.size(); ++i) {
+        if (indexedMaterials_[i]->GetGuid() == mat->GetGuid()) return static_cast<int32_t>(i);
+    }
+
+    indexedMaterials_.push_back(mat);
+    return static_cast<int32_t>(indexedMaterials_.size() - 1);
 }
 
 std::shared_ptr<Material> MaterialManager::LoadMaterialAsAsset(const std::string& pathOrGuid) {
@@ -63,10 +72,12 @@ std::shared_ptr<Material> MaterialManager::LoadMaterialAsAsset(const std::string
         material->name = data.value("name", "");
         material->pipelineName = data.value("pipeline", "");
         
-        // テクスチャの依存解決
-        material->textureName = data.value("texture", "");
-        if (!material->textureName.empty()) {
-            TextureManager::GetInstance().LoadTexture(material->textureName);
+        // テクスチャの依存解決 (インデックス化)
+        std::string textureName = data.value("texture", "");
+        if (!textureName.empty()) {
+            material->textureIndex = TextureManager::GetInstance().LoadTexture(textureName);
+        } else {
+            material->textureIndex = 0xFFFFFFFF;
         }
 
         // パラメータの読み込み
@@ -108,6 +119,11 @@ Material* MaterialManager::GetMaterial(const std::string& pathOrGuid) {
 
     auto it = materials_.find(guid);
     return (it != materials_.end()) ? it->second.get() : nullptr;
+}
+
+Material* MaterialManager::GetMaterialByIndex(uint32_t index) {
+    if (index >= indexedMaterials_.size()) return nullptr;
+    return indexedMaterials_[index].get();
 }
 
 } // namespace Engine::Asset

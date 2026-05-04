@@ -22,8 +22,34 @@ extern "C" {
         return registry->GetStorage<Engine::ECS::Transform>().GetChunkPtr(chunkIndex);
     }
 
+    __declspec(dllexport) void* GetMeshRendererChunk(Engine::ECS::Registry* registry, uint32_t chunkIndex) {
+        return registry->GetStorage<Engine::ECS::MeshRenderer>().GetChunkPtr(chunkIndex);
+    }
+
     __declspec(dllexport) uint32_t GetEntityCount(Engine::ECS::Registry* registry) {
         return (uint32_t)registry->GetStorage<Engine::ECS::Transform>().GetEntities().size();
+    }
+
+    __declspec(dllexport) uint32_t GetEntityId(Engine::ECS::Registry* registry, uint32_t index) {
+        auto& entities = registry->GetStorage<Engine::ECS::Transform>().GetEntities();
+        if (index >= entities.size()) return 0;
+        return entities[index];
+    }
+
+    __declspec(dllexport) uint32_t CreateEntity(Engine::ECS::Registry* registry) {
+        return registry->CreateEntity();
+    }
+
+    __declspec(dllexport) void DestroyEntity(Engine::ECS::Registry* registry, uint32_t entity) {
+        registry->DestroyEntity(entity);
+    }
+
+    __declspec(dllexport) void AddTransform(Engine::ECS::Registry* registry, uint32_t entity) {
+        registry->AddComponent<Engine::ECS::Transform>(entity);
+    }
+
+    __declspec(dllexport) void AddMeshRenderer(Engine::ECS::Registry* registry, uint32_t entity) {
+        registry->AddComponent<Engine::ECS::MeshRenderer>(entity);
     }
 }
 
@@ -81,12 +107,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     renderer.Initialize(graphicsEngine.GetRenderDevice());
 
     // 1. アセットのロード (テクスチャはマテリアルが自動ロードする)
-    std::string gridMat = materialManager.LoadMaterial("Assets/Materials/Grid.mat");
-    std::string whiteMat = materialManager.LoadMaterial("Assets/Materials/White.mat");
+    int32_t gridMatIdx = materialManager.LoadMaterial("Assets/Materials/Grid.mat");
+    int32_t whiteMatIdx = materialManager.LoadMaterial("Assets/Materials/White.mat");
 
     shaderManager.LoadPipelineAsset("Assets/Pipelines/BindlessTest.json");
     shaderManager.LoadPipelineAsset("Assets/Pipelines/Blit.json");
-    assetManager.LoadModel("Packages/Models/primitive/cube.obj");
+    int32_t cubeModelIdx = assetManager.LoadModel("Packages/Models/primitive/cube.obj");
 
     // 2. エンティティの作成
     for (int i = 0; i < 20; ++i) {
@@ -98,8 +124,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
         transform.scale = { 0.5f, 0.5f, 0.5f };
         
         auto& meshRenderer = registry.AddComponent<MeshRenderer>(entity);
-        meshRenderer.modelIndex = 0; // Temporary
-        meshRenderer.materialIndex = (i % 2 == 0) ? 0 : 1;
+        meshRenderer.modelIndex = cubeModelIdx;
+        meshRenderer.materialIndex = (i % 2 == 0) ? gridMatIdx : whiteMatIdx;
     }
 
     // 3. システムと共通定数バッファ

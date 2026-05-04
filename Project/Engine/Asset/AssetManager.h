@@ -30,13 +30,15 @@ public:
 
     /// @brief パスまたはGUIDからモデルをロードしてキャッシュ
     /// @param pathOrGuid ファイルパスまたはGUID
-    void LoadModel(const std::string& pathOrGuid);
+    /// @return モデルのインデックス
+    int32_t LoadModel(const std::string& pathOrGuid);
 
     /// @brief AssetRegistry経由でのロード
     std::shared_ptr<Model> LoadModelAsAsset(const std::string& pathOrGuid);
     
     /// @brief ロード済みメッシュリストを取得
     const std::vector<std::unique_ptr<Mesh>>& GetMeshes(const std::string& pathOrGuid);
+    const std::vector<std::unique_ptr<Mesh>>& GetMeshesByIndex(uint32_t index);
 
 private:
     AssetManager() = default;
@@ -49,6 +51,7 @@ private:
     Graphics::RenderDevice* device_ = nullptr;
     // キャッシュはGUIDで管理
     std::unordered_map<std::string, std::shared_ptr<Model>> models_;
+    std::vector<std::shared_ptr<Model>> indexedModels_;
 };
 
 } // namespace Engine::Asset

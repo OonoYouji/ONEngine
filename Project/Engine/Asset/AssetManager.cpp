@@ -23,6 +23,7 @@ void AssetManager::Initialize(Graphics::RenderDevice* device) {
 
 void AssetManager::Shutdown() {
     models_.clear();
+    indexedModels_.clear();
 }
 
 std::string AssetManager::ToGuid(const std::string& pathOrGuid) {
@@ -38,8 +39,16 @@ std::string AssetManager::ToGuid(const std::string& pathOrGuid) {
     return pathOrGuid;
 }
 
-void AssetManager::LoadModel(const std::string& pathOrGuid) {
-    LoadModelAsAsset(pathOrGuid);
+int32_t AssetManager::LoadModel(const std::string& pathOrGuid) {
+    auto model = LoadModelAsAsset(pathOrGuid);
+    if (!model) return -1;
+
+    for (size_t i = 0; i < indexedModels_.size(); ++i) {
+        if (indexedModels_[i]->GetGuid() == model->GetGuid()) return static_cast<int32_t>(i);
+    }
+
+    indexedModels_.push_back(model);
+    return static_cast<int32_t>(indexedModels_.size() - 1);
 }
 
 std::shared_ptr<Model> AssetManager::LoadModelAsAsset(const std::string& pathOrGuid) {
@@ -68,6 +77,12 @@ const std::vector<std::unique_ptr<Mesh>>& AssetManager::GetMeshes(const std::str
     std::string guid = ToGuid(pathOrGuid);
     auto it = models_.find(guid);
     return (it != models_.end()) ? it->second->GetMeshes() : empty;
+}
+
+const std::vector<std::unique_ptr<Mesh>>& AssetManager::GetMeshesByIndex(uint32_t index) {
+    static std::vector<std::unique_ptr<Mesh>> empty;
+    if (index >= indexedModels_.size()) return empty;
+    return indexedModels_[index]->GetMeshes();
 }
 
 } // namespace Engine::Asset

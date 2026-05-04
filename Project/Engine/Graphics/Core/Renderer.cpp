@@ -47,10 +47,10 @@ void Renderer::Extract() {
     // 中央管理のフレームインデックスを取得
     uint32_t frameIndex = graphicsEngine.GetCurrentFrameIndex();
 
-    // 1. ソートしてバッチングしやすくする
+    // 1. ソートしてバッチングしやすくする (インデックス比較なので高速)
     std::sort(queue_.begin(), queue_.end(), [](const RenderRequest& a, const RenderRequest& b) {
-        if (a.modelName != b.modelName) return a.modelName < b.modelName;
-        return a.materialName < b.materialName;
+        if (a.modelIndex != b.modelIndex) return a.modelIndex < b.modelIndex;
+        return a.materialIndex < b.materialIndex;
     });
 
     // 2. 全インスタンスデータの抽出
@@ -60,15 +60,10 @@ void Renderer::Extract() {
         GeneratedSchema::InstanceData data;
         data.world = req.world;
         
-        auto* mat = materialManager.GetMaterial(req.materialName);
+        auto* mat = materialManager.GetMaterialByIndex(req.materialIndex);
         if (mat) {
             data.baseColor = mat->baseColor;
-            auto* tex = textureManager.GetTexture(mat->textureName);
-            if (tex) {
-                data.textureIndex = tex->GetIndex();
-            } else {
-                data.textureIndex = 0;
-            }
+            data.textureIndex = (mat->textureIndex != 0xFFFFFFFF) ? mat->textureIndex : 0;
         } else {
             data.baseColor = { 1, 1, 1, 1 };
             data.textureIndex = 0;
@@ -119,15 +114,15 @@ void Renderer::RenderInternal(ID3D12GraphicsCommandList* commandList, const D3D1
         
         uint32_t batchSize = 0;
         for (uint32_t i = currentInstanceStart; i < totalInstances; ++i) {
-            if (queue_[i].modelName == batchStartReq.modelName && 
-                queue_[i].materialName == batchStartReq.materialName) {
+            if (queue_[i].modelIndex == batchStartReq.modelIndex && 
+                queue_[i].materialIndex == batchStartReq.materialIndex) {
                 batchSize++;
             } else {
                 break;
             }
         }
 
-        auto* mat = materialManager.GetMaterial(batchStartReq.materialName);
+        auto* mat = materialManager.GetMaterialByIndex(batchStartReq.materialIndex);
         if (mat) {
             auto* pso = shaderManager.GetOrCreatePSO(mat->pipelineName, baseDesc);
             auto* rootSig = shaderManager.GetRootSignature(mat->pipelineName);
@@ -157,7 +152,7 @@ void Renderer::RenderInternal(ID3D12GraphicsCommandList* commandList, const D3D1
 
             commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-            const auto& meshes = assetManager.GetMeshes(batchStartReq.modelName);
+            const auto& meshes = assetManager.GetMeshesByIndex(batchStartReq.modelIndex);
             for (const auto& mesh : meshes) {
                 auto vertIdx = rootSig->GetParameterIndex("gVertices");
                 if (vertIdx != RootSignature::kInvalidIndex) {

@@ -11,7 +11,25 @@ namespace ONEngine.Scripting
         public static extern void* GetTransformChunk(IntPtr registry, uint chunkIndex);
 
         [DllImport("ONEngine.exe")]
+        public static extern void* GetMeshRendererChunk(IntPtr registry, uint chunkIndex);
+
+        [DllImport("ONEngine.exe")]
         public static extern uint GetEntityCount(IntPtr registry);
+
+        [DllImport("ONEngine.exe")]
+        public static extern uint GetEntityId(IntPtr registry, uint index);
+
+        [DllImport("ONEngine.exe")]
+        public static extern uint CreateEntity(IntPtr registry);
+
+        [DllImport("ONEngine.exe")]
+        public static extern void DestroyEntity(IntPtr registry, uint entity);
+
+        [DllImport("ONEngine.exe")]
+        public static extern void AddTransform(IntPtr registry, uint entity);
+
+        [DllImport("ONEngine.exe")]
+        public static extern void AddMeshRenderer(IntPtr registry, uint entity);
     }
 
     public unsafe delegate void* GetChunkDelegate(IntPtr registry, uint chunkIndex);

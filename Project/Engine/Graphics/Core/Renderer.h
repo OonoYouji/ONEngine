@@ -16,8 +16,8 @@ class RenderDevice;
 /// 描画リクエスト
 ///
 struct RenderRequest {
-	std::string modelName;
-	std::string materialName;
+	uint32_t modelIndex;
+	uint32_t materialIndex;
 	Engine::Math::Matrix4x4 world;
 };
 
