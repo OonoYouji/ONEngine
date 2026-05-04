@@ -20,10 +20,20 @@ namespace ONEngine.Scripting
             Debug.Log("[C#] EngineHost initialized with Zero-Copy ECS.");
         }
 
+        private static float _logTimer = 0.0f;
+
         [UnmanagedCallersOnly]
         public static void Update(float deltaTime)
         {
             uint entityCount = ECS.GetEntityCount(_registryPtr);
+            
+            _logTimer += deltaTime;
+            if (_logTimer > 2.0f)
+            {
+                Debug.Log($"[C#] Update called. DeltaTime: {deltaTime}, Entities: {entityCount}");
+                _logTimer = 0.0f;
+            }
+
             for (uint i = 0; i < entityCount; i++)
             {
                 Transform* transform = _transformView.GetPointer(i);

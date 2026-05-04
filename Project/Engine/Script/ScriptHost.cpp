@@ -54,23 +54,23 @@ bool ScriptHost::LoadHostFxr() {
 }
 
 load_assembly_and_get_function_pointer_fn ScriptHost::GetNet8LoadAssembly(const char_t* configPath) {
-    void* load_assembly_and_get_function_pointer = nullptr;
+    void* load_assembly_fptr = nullptr;
     int rc = init_fptr(configPath, nullptr, &context);
     if (rc != 0 || context == nullptr) {
-        close_fptr(context);
+        if (context) close_fptr(context);
         return nullptr;
     }
 
     rc = get_delegate_fptr(
         context,
         hdt_load_assembly_and_get_function_pointer,
-        &load_assembly_and_get_function_pointer);
+        &load_assembly_fptr);
     
-    if (rc != 0 || load_assembly_and_get_function_pointer == nullptr) {
+    if (rc != 0 || load_assembly_fptr == nullptr) {
         return nullptr;
     }
 
-    return (load_assembly_and_get_function_pointer_fn)load_assembly_and_get_function_pointer;
+    return (load_assembly_and_get_function_pointer_fn)load_assembly_fptr;
 }
 
 void* ScriptHost::GetMethodDelegate(const std::wstring& typeName, const std::wstring& methodName, const std::wstring& delegateTypeName) {
@@ -84,7 +84,7 @@ void* ScriptHost::GetMethodDelegate(const std::wstring& typeName, const std::wst
         assemblyPath.c_str(),
         typeName.c_str(),
         methodName.c_str(),
-        delegateTypeName.length() > 0 ? delegateTypeName.c_str() : nullptr,
+        delegateTypeName.length() > 0 ? delegateTypeName.c_str() : UNMANAGEDCALLERSONLY_METHOD,
         nullptr,
         &delegate_ptr);
 

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ONEngine.Scripting")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+25c231a07b1bba02ff36251f089e9afb936062b5")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6d3bf46387239c0fac65e98288db666f30f19916")]
 [assembly: System.Reflection.AssemblyProductAttribute("ONEngine.Scripting")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ONEngine.Scripting")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
