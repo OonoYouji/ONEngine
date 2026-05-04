@@ -114,6 +114,12 @@ void Console::Log(const std::string& msg) {
 	OutputDebugStringA((msg + "\n").c_str());
 }
 
+extern "C" {
+    __declspec(dllexport) void LogFromRuntime(const char* msg) {
+        Engine::Console::Log(msg);
+    }
+}
+
 void Console::Log(const std::wstring& msg) {
 	Log(ConvertString(msg));
 }

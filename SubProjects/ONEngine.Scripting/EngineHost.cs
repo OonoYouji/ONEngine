@@ -6,9 +6,10 @@ namespace ONEngine.Scripting
     public static class EngineHost
     {
         [UnmanagedCallersOnly]
-        public static void Initialize()
+        public static void Initialize(IntPtr logHandler)
         {
-            Console.WriteLine("[C#] EngineHost initialized.");
+            Debug.SetLogHandler(logHandler);
+            Debug.Log("[C#] EngineHost initialized with custom log handler.");
         }
 
         [UnmanagedCallersOnly]

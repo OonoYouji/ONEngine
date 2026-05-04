@@ -17,6 +17,8 @@
 #include "Engine/Common/Console.h"
 #include "Schema/Schema.h"
 
+extern "C" void LogFromRuntime(const char*);
+
 using namespace Engine::GeneratedSchema;
 using namespace Engine::Asset;
 
@@ -46,11 +48,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     void(*shutdownDelegate)() = nullptr;
 
     if (scriptHost.Initialize()) {
-        auto initDelegate = (void(*)())scriptHost.GetMethodDelegate(
+        auto initDelegate = (void(*)(void*))scriptHost.GetMethodDelegate(
             L"ONEngine.Scripting.EngineHost, ONEngine.Scripting",
             L"Initialize",
             L"");
-        if (initDelegate) initDelegate();
+        
+        if (initDelegate) initDelegate((void*)LogFromRuntime);
 
         updateDelegate = (void(*)())scriptHost.GetMethodDelegate(
             L"ONEngine.Scripting.EngineHost, ONEngine.Scripting",
