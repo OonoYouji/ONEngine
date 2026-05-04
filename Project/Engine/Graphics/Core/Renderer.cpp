@@ -42,7 +42,6 @@ void Renderer::Extract() {
 
     auto& graphicsEngine = GraphicsEngine::GetInstance();
     auto& materialManager = Asset::MaterialManager::GetInstance();
-    auto& textureManager = Asset::TextureManager::GetInstance();
 
     // 中央管理のフレームインデックスを取得
     uint32_t frameIndex = graphicsEngine.GetCurrentFrameIndex();
@@ -76,35 +75,34 @@ void Renderer::Extract() {
     instanceSBs_[frameIndex]->Update(instanceData.data(), static_cast<uint32_t>(instanceData.size() * sizeof(GeneratedSchema::InstanceData)));
 }
 
-void Renderer::RenderZPrepass(ID3D12GraphicsCommandList* commandList, const D3D12_GPU_VIRTUAL_ADDRESS sceneCBAddress) {
+void Renderer::RenderZPrepass(const RenderContext& context) {
     PipelineStateDesc desc;
     desc.usePS = false;
     desc.numRenderTargets = 0;
     desc.depthWriteEnable = true;
     desc.depthFunc = D3D12_COMPARISON_FUNC_LESS;
-    RenderInternal(commandList, sceneCBAddress, desc);
+    RenderInternal(context, desc);
 }
 
-void Renderer::Render(ID3D12GraphicsCommandList* commandList, const D3D12_GPU_VIRTUAL_ADDRESS sceneCBAddress) {
+void Renderer::Render(const RenderContext& context) {
     PipelineStateDesc desc;
     desc.usePS = true;
     desc.numRenderTargets = 1;
     desc.depthWriteEnable = false;
     desc.depthFunc = D3D12_COMPARISON_FUNC_EQUAL;
-    RenderInternal(commandList, sceneCBAddress, desc);
+    RenderInternal(context, desc);
 }
 
-void Renderer::RenderInternal(ID3D12GraphicsCommandList* commandList, const D3D12_GPU_VIRTUAL_ADDRESS sceneCBAddress, const PipelineStateDesc& baseDesc) {
+void Renderer::RenderInternal(const RenderContext& context, const PipelineStateDesc& baseDesc) {
     if (queue_.empty()) return;
 
-    auto& graphicsEngine = GraphicsEngine::GetInstance();
     auto& assetManager = Asset::AssetManager::GetInstance();
     auto& materialManager = Asset::MaterialManager::GetInstance();
     auto& textureManager = Asset::TextureManager::GetInstance();
     auto& shaderManager = ShaderManager::GetInstance();
 
-    uint32_t frameIndex = graphicsEngine.GetCurrentFrameIndex();
-    auto* currentSB = instanceSBs_[frameIndex].get();
+    ID3D12GraphicsCommandList* commandList = context.commandList;
+    auto* currentSB = instanceSBs_[context.frameIndex].get();
 
     uint32_t currentInstanceStart = 0;
     const uint32_t totalInstances = static_cast<uint32_t>(queue_.size());
@@ -135,7 +133,7 @@ void Renderer::RenderInternal(ID3D12GraphicsCommandList* commandList, const D3D1
 
             auto sceneIdx = rootSig->GetParameterIndex("gSceneData");
             if (sceneIdx != RootSignature::kInvalidIndex) {
-                commandList->SetGraphicsRootConstantBufferView(sceneIdx, sceneCBAddress);
+                commandList->SetGraphicsRootConstantBufferView(sceneIdx, context.sceneCBAddress);
             }
 
             auto texIdx = rootSig->GetParameterIndex("gTextures");

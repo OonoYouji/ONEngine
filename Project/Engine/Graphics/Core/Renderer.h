@@ -13,6 +13,15 @@ namespace Engine::Graphics {
 class RenderDevice;
 
 ///
+/// 描画コンテキスト
+///
+struct RenderContext {
+	ID3D12GraphicsCommandList* commandList;
+	D3D12_GPU_VIRTUAL_ADDRESS sceneCBAddress;
+	uint32_t frameIndex;
+};
+
+///
 /// 描画リクエスト
 ///
 struct RenderRequest {
@@ -41,20 +50,20 @@ public:
 	void Extract();
 
 	/// @brief Z-Prepassの実行
-	void RenderZPrepass(ID3D12GraphicsCommandList* commandList, const D3D12_GPU_VIRTUAL_ADDRESS sceneCBAddress);
+	void RenderZPrepass(const RenderContext& context);
 
 	/// @brief メイン描画の実行
-	void Render(ID3D12GraphicsCommandList* commandList, const D3D12_GPU_VIRTUAL_ADDRESS sceneCBAddress);
+	void Render(const RenderContext& context);
 
 	void ClearQueue();
 
 private:
-	void RenderInternal(ID3D12GraphicsCommandList* commandList, const D3D12_GPU_VIRTUAL_ADDRESS sceneCBAddress, const PipelineStateDesc& baseDesc);
+	void RenderInternal(const RenderContext& context, const PipelineStateDesc& baseDesc);
 
 	RenderDevice* device_ = nullptr;
 	std::vector<RenderRequest> queue_;
 	
-	// インスタンスデータ用バッファ（二重バッファリング）
+	// インスタンスデータ用バッファ（三重バッファリング）
 	static constexpr uint32_t kBufferCount = 3;
 	std::unique_ptr<StructuredBuffer> instanceSBs_[kBufferCount];
 	const uint32_t kMaxInstances = 2048;

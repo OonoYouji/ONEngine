@@ -174,11 +174,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
         graphicsEngine.Clear({ 0.7f, 0.7f, 0.7f, 1.0f });
         graphicsEngine.ClearDepth();
         
-        auto* commandList = graphicsEngine.GetCommandQueue()->GetCommandList();
+        // 描画コンテキストの構築
+        Engine::Graphics::RenderContext context;
+        context.commandList = graphicsEngine.GetCommandQueue()->GetCommandList();
+        context.sceneCBAddress = currentFrameRes->GetSceneCB()->GetGPUVirtualAddress();
+        context.frameIndex = graphicsEngine.GetCurrentFrameIndex();
         
         // Rendererに全てを任せる
-        renderer.RenderZPrepass(commandList, currentFrameRes->GetSceneCB()->GetGPUVirtualAddress());
-        renderer.Render(commandList, currentFrameRes->GetSceneCB()->GetGPUVirtualAddress());
+        renderer.RenderZPrepass(context);
+        renderer.Render(context);
 
         graphicsEngine.EndFrame();
     }

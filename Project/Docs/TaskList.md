@@ -22,6 +22,10 @@
 - [x] **Texture Bindless の完全統合 (2026/05/04)**: 全アセットの種類を問わず Descriptor Heap を一元管理し、描画ループから文字列を排除。
 - [x] **C# スクリプト API の洗練 (2026/05/04)**: Unity ライクな `GetComponent` や `transform` アクセスの実装。
 - [x] **C# 側からの Entity 生成・破棄 (2026/05/04)**: `Instantiate` / `Destroy` の Interop 実装。
+- [x] **ECS 層の最適化 (2026/05/04)**: Sparse Set の実装改善、Entity ID の再利用、View 性能の向上。
+- [x] **レンダリングインターフェースのリファクタリング (2026/05/04)**: `RenderContext` の導入、`Renderer` の責任分離。
+- [x] **C# ホスト層のクリーンアップ (2026/05/04)**: `EngineHost` の整理、スクリプトライフサイクルの基盤整備。
+
 
 ### フェーズ 2: レンダリングパイプラインの高度化 (中期)
 - [ ] **Clustered Light Culling**: 画面分割による効率的なライト計算。
