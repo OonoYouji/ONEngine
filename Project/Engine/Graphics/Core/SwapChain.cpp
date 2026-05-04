@@ -66,7 +66,7 @@ void SwapChain::Initialize(HWND hwnd, const Engine::Math::Vector2Int& size) {
 			HRESULT hr = swapChain_->GetBuffer(i, IID_PPV_ARGS(&buffers_[i]));
 			Assert(SUCCEEDED(hr), "Failed to create buffer");
 
-			rtvHandles_[i] = rtvHeap->GetCPUHandle(i);
+			rtvHandles_[i] = rtvHeap->Allocate();
 
 			renderDevice->GetDevice()->CreateRenderTargetView(
 				buffers_[i].Get(), nullptr, rtvHandles_[i]);
@@ -115,8 +115,8 @@ void SwapChain::BeginFrame(ID3D12GraphicsCommandList* commandList) {
 	commandList->RSSetViewports(1, &viewport_);
 	commandList->RSSetScissorRects(1, &scissorRect_);
 
-	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = GetRTVHandle();
-	commandList->OMSetRenderTargets(1, &rtvHandle, FALSE, nullptr);
+	//D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = GetRTVHandle();
+	//commandList->OMSetRenderTargets(1, &rtvHandle, FALSE, nullptr);
 }
 
 void SwapChain::EndFrame(ID3D12GraphicsCommandList* commandList) {

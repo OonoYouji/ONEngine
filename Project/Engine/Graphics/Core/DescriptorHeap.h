@@ -31,6 +31,12 @@ public:
 	D3D12_CPU_DESCRIPTOR_HANDLE GetCPUHandle(uint32_t index) const;
 	D3D12_GPU_DESCRIPTOR_HANDLE GetGPUHandle(uint32_t index) const;
 
+    /// @brief 新しいデスクリプタを割り当て、CPUハンドルを返す
+    D3D12_CPU_DESCRIPTOR_HANDLE Allocate();
+
+    /// @brief 新しいデスクリプタを割り当て、インデックスを返す
+    uint32_t AllocateIndex();
+
 	ID3D12DescriptorHeap* GetHeap() const { return descriptorHeap_.Get(); }
 
 private:
@@ -39,6 +45,8 @@ private:
 	uint32_t descriptorSize_;
 	D3D12_CPU_DESCRIPTOR_HANDLE startCPUHandle_;
 	D3D12_GPU_DESCRIPTOR_HANDLE startGPUHandle_;
+    uint32_t numDescriptors_ = 0;
+    uint32_t allocatedCount_ = 0;
 
 };
 

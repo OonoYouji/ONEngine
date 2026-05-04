@@ -31,10 +31,14 @@ void DescriptorHeap::Initialize(RenderDevice* renderDevice, D3D12_DESCRIPTOR_HEA
 		startGPUHandle_ = descriptorHeap_->GetGPUDescriptorHandleForHeapStart();
 	}
 
+    numDescriptors_ = numDescriptors;
+    allocatedCount_ = 0;
+
 	Console::Log("dx descriptor heap create success!!");
 }
 
 void DescriptorHeap::Shutdown() {
+    allocatedCount_ = 0;
 }
 
 D3D12_CPU_DESCRIPTOR_HANDLE DescriptorHeap::GetCPUHandle(uint32_t index) const {
@@ -47,6 +51,16 @@ D3D12_GPU_DESCRIPTOR_HANDLE DescriptorHeap::GetGPUHandle(uint32_t index) const {
 	D3D12_GPU_DESCRIPTOR_HANDLE handle = startGPUHandle_;
 	handle.ptr += static_cast<size_t>(descriptorSize_) * index;
 	return handle;
+}
+
+D3D12_CPU_DESCRIPTOR_HANDLE DescriptorHeap::Allocate() {
+    Assert(allocatedCount_ < numDescriptors_, "Descriptor heap is full!");
+    return GetCPUHandle(allocatedCount_++);
+}
+
+uint32_t DescriptorHeap::AllocateIndex() {
+    Assert(allocatedCount_ < numDescriptors_, "Descriptor heap is full!");
+    return allocatedCount_++;
 }
 
 } /// namespace Engine::Graphics

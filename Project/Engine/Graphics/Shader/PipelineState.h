@@ -26,7 +26,7 @@ struct PipelineStateDesc {
     D3D12_BLEND_DESC blendDesc = {};
     
     // レンダーターゲット設定
-    DXGI_FORMAT rtvFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
+    DXGI_FORMAT rtvFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
     DXGI_FORMAT dsvFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 
     PipelineStateDesc() {

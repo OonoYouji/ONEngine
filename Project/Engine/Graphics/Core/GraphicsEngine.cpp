@@ -1,9 +1,9 @@
-#include "GraphicsEngine.h"
+﻿#include "GraphicsEngine.h"
 
 /// directX
 #include <d3d12.h>
 #include "Engine/Graphics/Resource/DepthBuffer.h"
-
+#include "Engine/Graphics/Shader/ShaderManager.h"
 
 namespace Engine::Graphics {
 
@@ -11,6 +11,7 @@ GraphicsEngine::GraphicsEngine() = default;
 GraphicsEngine::~GraphicsEngine() = default;
 
 void GraphicsEngine::Initialize(HWND hwnd, const Engine::Math::Vector2Int& windowSize) {
+	windowSize_ = windowSize;
 
 	///
 	/// 基盤レイヤーの初期化
@@ -27,7 +28,7 @@ void GraphicsEngine::Initialize(HWND hwnd, const Engine::Math::Vector2Int& windo
 	commandQueue_->Initialize(renderDevice_.get());
 
 	rtvHeap_ = std::make_unique<DescriptorHeap>();
-	rtvHeap_->Initialize(renderDevice_.get(), D3D12_DESCRIPTOR_HEAP_TYPE_RTV, SwapChain::kBufferCount, false);
+	rtvHeap_->Initialize(renderDevice_.get(), D3D12_DESCRIPTOR_HEAP_TYPE_RTV, SwapChain::kBufferCount + 1, false); // +1 for MainColorBuffer
 
 	srvHeap_ = std::make_unique<DescriptorHeap>();
 	srvHeap_->Initialize(renderDevice_.get(), D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 1024, true);
@@ -51,6 +52,10 @@ void GraphicsEngine::Initialize(HWND hwnd, const Engine::Math::Vector2Int& windo
 	depthBuffer_ = std::make_unique<DepthBuffer>();
 	depthBuffer_->Create(renderDevice_.get(), dsvHeap_.get(), windowSize.x, windowSize.y);
 
+    // HDR用中間バッファの作成
+    mainColorBuffer_ = std::make_unique<RenderTexture>();
+    mainColorBuffer_->Create(renderDevice_.get(), rtvHeap_.get(), srvHeap_.get(), windowSize, DXGI_FORMAT_R16G16B16A16_FLOAT, {0.1f, 0.1f, 0.1f, 1.0f});
+
 }
 
 void GraphicsEngine::Shutdown() {
@@ -66,33 +71,71 @@ void GraphicsEngine::BeginFrame() {
     // 2. そのフレームリソースのGPU処理が終わるまで待機
     commandQueue_->Wait(frameResources_[currentFrameIndex_]->GetFenceValue());
 
-    // 3. コマンドリストのリセット (現在のフレームのアロケータを使用)
+    // 3. コマンドリストのリセット
     commandQueue_->Reset(frameResources_[currentFrameIndex_]->GetAllocator());
 
-    swapChain_->BeginFrame(commandQueue_->GetCommandList());
-
-    // 深度バッファをセット
-    auto rtvHandle = swapChain_->GetRTVHandle();
+    // 中間バッファを描画ターゲットに設定
+    mainColorBuffer_->Transition(commandQueue_->GetCommandList(), D3D12_RESOURCE_STATE_RENDER_TARGET);
+    
+    auto rtvHandle = mainColorBuffer_->GetRTVHandle();
     auto dsvHandle = depthBuffer_->GetDSVHandle();
     commandQueue_->GetCommandList()->OMSetRenderTargets(1, &rtvHandle, FALSE, &dsvHandle);
+    
+    // SwapChainのバックバッファも状態だけ遷移させておく
+    swapChain_->BeginFrame(commandQueue_->GetCommandList());
 }
 
 void GraphicsEngine::EndFrame() {
-    swapChain_->EndFrame(commandQueue_->GetCommandList());
+    auto* commandList = commandQueue_->GetCommandList();
+
+    // 1. 中間バッファをシェーダー参照用に遷移 (Visibility: ALL に合わせるため ALL_SHADER_RESOURCE を使用)
+    mainColorBuffer_->Transition(commandList, D3D12_RESOURCE_STATE_ALL_SHADER_RESOURCE);
+
+    // 2. バックバッファを RTV として設定
+    auto backBufferRTV = swapChain_->GetRTVHandle();
+    commandList->OMSetRenderTargets(1, &backBufferRTV, FALSE, nullptr);
+
+    // 3. Blit (中間バッファ -> バックバッファ)
+    auto& shaderManager = ShaderManager::GetInstance();
     
-    // 4. コマンドの実行
+    PipelineStateDesc blitDesc;
+    blitDesc.rtvFormat = DXGI_FORMAT_R8G8B8A8_UNORM; // バックバッファ用
+    blitDesc.dsvFormat = DXGI_FORMAT_UNKNOWN;        // 深度バッファは使用しない
+    blitDesc.depthEnable = false;
+    blitDesc.depthWriteEnable = false;
+
+    auto* pso = shaderManager.GetOrCreatePSO("Blit", blitDesc);
+    auto* rootSig = shaderManager.GetRootSignature("Blit");
+
+    commandList->SetGraphicsRootSignature(rootSig->Get());
+    commandList->SetPipelineState(pso->Get());
+
+    // 共通サンプラーをセット (Static Sampler を想定)
+    ID3D12DescriptorHeap* heaps[] = { srvHeap_->GetHeap() };
+    commandList->SetDescriptorHeaps(_countof(heaps), heaps);
+
+    // 中間バッファをセット
+    commandList->SetGraphicsRootDescriptorTable(rootSig->GetParameterIndex("gMainTexture"), mainColorBuffer_->GetSRVHandle());
+
+    commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+    commandList->DrawInstanced(3, 1, 0, 0); // 全画面三角形
+
+    // 4. SwapChain の終了処理 (PRESENTへ遷移)
+    swapChain_->EndFrame(commandList);
+    
+    // 5. 実行
     commandQueue_->Execute();
     
-    // 5. 画面表示
+    // 6. 画面表示
     swapChain_->Present();
     
-    // 6. 実行完了を追跡するためのシグナルを送り、フェンス値を保存
+    // 7. フェンス値保存
     frameResources_[currentFrameIndex_]->SetFenceValue(commandQueue_->Signal());
 }
 
 void GraphicsEngine::Clear(const Engine::Math::Vector4& color) {
-	float clearColor[] = { color.x, color.y, color.z, color.w };
-	commandQueue_->GetCommandList()->ClearRenderTargetView(swapChain_->GetRTVHandle(), clearColor, 0, nullptr);
+    // 中間バッファをクリア
+    mainColorBuffer_->Clear(commandQueue_->GetCommandList());
 }
 
 void GraphicsEngine::ClearDepth() {

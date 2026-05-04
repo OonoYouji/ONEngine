@@ -116,7 +116,7 @@ std::shared_ptr<Texture> TextureManager::LoadTextureAsAsset(const std::string& p
         auto barrier = CD3DX12_RESOURCE_BARRIER::Transition(res, D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_COPY_DEST);
         commandList->ResourceBarrier(1, &barrier);
         UpdateSubresources(commandList, res, uploadHeap.Get(), 0, 0, static_cast<UINT>(subresources.size()), subresources.data());
-        barrier = CD3DX12_RESOURCE_BARRIER::Transition(res, D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+        barrier = CD3DX12_RESOURCE_BARRIER::Transition(res, D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_ALL_SHADER_RESOURCE);
         commandList->ResourceBarrier(1, &barrier);
         queue->Execute();
         

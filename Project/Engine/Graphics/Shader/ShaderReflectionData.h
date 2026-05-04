@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 #include <cstdint>
+#include <d3d12.h>
+#include <d3dcommon.h>
 
 namespace Engine::Graphics {
 
@@ -24,6 +26,7 @@ struct ShaderConstantBufferInfo {
     uint32_t bindCount;
     uint32_t space;
     uint32_t size;
+    D3D_SHADER_INPUT_TYPE type; // 追加: D3D_SIT_CBUFFER固定
     std::vector<ShaderVariableInfo> variables;
 };
 
@@ -35,6 +38,7 @@ struct ShaderResourceInfo {
     uint32_t bindPoint;
     uint32_t bindCount;
     uint32_t space;
+    D3D_SHADER_INPUT_TYPE type; // 追加
 };
 
 ///

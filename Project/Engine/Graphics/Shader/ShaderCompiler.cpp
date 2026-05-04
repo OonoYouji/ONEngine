@@ -157,6 +157,7 @@ void ShaderCompiler::ExtractReflection(IDxcBlob* reflectionBlob, ShaderReflectio
                 cbInfo.bindCount = bindDesc.BindCount;
                 cbInfo.space = bindDesc.Space;
                 cbInfo.size = bufferDesc.Size;
+                cbInfo.type = bindDesc.Type; // D3D_SIT_CBUFFER を設定
 
                 for (uint32_t j = 0; j < bufferDesc.Variables; ++j) {
                     ID3D12ShaderReflectionVariable* var = cb->GetVariableByIndex(j);
@@ -179,6 +180,7 @@ void ShaderCompiler::ExtractReflection(IDxcBlob* reflectionBlob, ShaderReflectio
             resInfo.bindPoint = bindDesc.BindPoint;
             resInfo.bindCount = bindDesc.BindCount;
             resInfo.space = bindDesc.Space;
+            resInfo.type = bindDesc.Type; // type を保存
 
             switch (bindDesc.Type) {
             case D3D_SIT_TEXTURE:

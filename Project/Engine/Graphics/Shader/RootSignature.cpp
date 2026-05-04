@@ -1,4 +1,4 @@
-#include "RootSignature.h"
+﻿#include "RootSignature.h"
 #include "Engine/Graphics/Core/RenderDevice.h"
 #include "Engine/Common/Assert.h"
 #include "Engine/Common/Console.h"
@@ -41,7 +41,6 @@ bool RootSignature::Create(RenderDevice* device, const std::vector<ShaderReflect
 
     auto addParam = [&](const auto& res, D3D12_DESCRIPTOR_RANGE_TYPE type) {
         if (type == D3D12_DESCRIPTOR_RANGE_TYPE_CBV) {
-            // ... (省略なしで書く)
             D3D12_ROOT_PARAMETER1 param = {};
             param.ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
             param.Descriptor.ShaderRegister = res.bindPoint;
@@ -54,7 +53,7 @@ bool RootSignature::Create(RenderDevice* device, const std::vector<ShaderReflect
             rootParameters.push_back(param);
         }
         else if (type == D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER) {
-            // s0, space0 の場合は静的サンプラーとして登録
+            // ... (s0, space0 の場合は静的サンプラーとして登録、それ以外は Descriptor Table)
             if (res.bindPoint == 0 && res.space == 0) {
                 D3D12_STATIC_SAMPLER_DESC samplerDesc = {};
                 samplerDesc.Filter = D3D12_FILTER_MIN_MAG_LINEAR_MIP_POINT;
@@ -74,7 +73,6 @@ bool RootSignature::Create(RenderDevice* device, const std::vector<ShaderReflect
                 Engine::Console::Log(std::format("RootSig Static Sampler Bind: s{} (space{})", res.bindPoint, res.space));
             }
             else {
-                // それ以外は Descriptor Table として作成
                 auto ranges = std::make_unique<D3D12_DESCRIPTOR_RANGE1[]>(1);
                 ranges[0].RangeType = type;
                 ranges[0].BaseShaderRegister = res.bindPoint;
@@ -96,16 +94,24 @@ bool RootSignature::Create(RenderDevice* device, const std::vector<ShaderReflect
             }
         }
         else {
-            // SRV, UAV
-            if (res.bindCount == 0) { // Bindless
-                // Descriptor Table として作成
+            // SRV, UAV (res は ShaderResourceInfo であることが確定)
+            bool isTexture = (res.type == D3D_SIT_TEXTURE || res.type == D3D_SIT_UAV_RWTYPED);
+            bool isBindless = (res.bindCount == 0);
+
+            if (isBindless || isTexture) {
                 auto ranges = std::make_unique<D3D12_DESCRIPTOR_RANGE1[]>(1);
                 ranges[0].RangeType = type;
                 ranges[0].BaseShaderRegister = res.bindPoint;
                 ranges[0].RegisterSpace = res.space;
                 ranges[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
-                ranges[0].NumDescriptors = 1024; // kMaxBindlessTextures に合わせる
-                ranges[0].Flags = D3D12_DESCRIPTOR_RANGE_FLAG_DESCRIPTORS_VOLATILE;
+                
+                if (isBindless) {
+                    ranges[0].NumDescriptors = 1024;
+                    ranges[0].Flags = D3D12_DESCRIPTOR_RANGE_FLAG_DESCRIPTORS_VOLATILE;
+                } else {
+                    ranges[0].NumDescriptors = res.bindCount;
+                    ranges[0].Flags = D3D12_DESCRIPTOR_RANGE_FLAG_NONE;
+                }
 
                 D3D12_ROOT_PARAMETER1 param = {};
                 param.ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
@@ -119,7 +125,6 @@ bool RootSignature::Create(RenderDevice* device, const std::vector<ShaderReflect
                 rangeArrays.push_back(std::move(ranges));
             }
             else {
-                // 固定サイズの場合は Root SRV/UAV として作成 (Buffer用)
                 D3D12_ROOT_PARAMETER1 param = {};
                 param.ParameterType = (type == D3D12_DESCRIPTOR_RANGE_TYPE_SRV) ? D3D12_ROOT_PARAMETER_TYPE_SRV : D3D12_ROOT_PARAMETER_TYPE_UAV;
                 param.Descriptor.ShaderRegister = res.bindPoint;

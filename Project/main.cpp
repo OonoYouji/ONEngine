@@ -47,6 +47,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     std::string whiteMat = materialManager.LoadMaterial("Assets/Materials/White.mat");
 
     shaderManager.LoadPipelineAsset("Assets/Pipelines/BindlessTest.json");
+    shaderManager.LoadPipelineAsset("Assets/Pipelines/Blit.json");
     assetManager.LoadModel("Packages/Models/primitive/cube.obj");
 
     // 2. エンティティの作成

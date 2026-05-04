@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /// std
 #include <memory>
@@ -10,6 +10,7 @@
 #include "SwapChain.h"
 #include "DescriptorHeap.h"
 #include "FrameResource.h"
+#include "Engine/Graphics/Resource/RenderTexture.h"
 
 namespace Engine::Graphics {
 
@@ -52,6 +53,8 @@ public:
 	DescriptorHeap* GetDSVHeap() const { return dsvHeap_.get(); }
 	SwapChain* GetSwapChain() const { return swapChain_.get(); }
     class DepthBuffer* GetDepthBuffer() const { return depthBuffer_.get(); }
+	RenderTexture* GetMainColorBuffer() const { return mainColorBuffer_.get(); }
+	const Engine::Math::Vector2Int& GetWindowSize() const { return windowSize_; }
 
 	uint32_t GetCurrentFrameIndex() const { return currentFrameIndex_; }
 	FrameResource* GetCurrentFrameResource() const { return frameResources_[currentFrameIndex_].get(); }
@@ -87,6 +90,9 @@ private:
 
 	std::unique_ptr<SwapChain> swapChain_ = nullptr;
 	std::unique_ptr<class DepthBuffer> depthBuffer_ = nullptr;
+	std::unique_ptr<RenderTexture> mainColorBuffer_ = nullptr;
+
+	Engine::Math::Vector2Int windowSize_;
 
 };
 
