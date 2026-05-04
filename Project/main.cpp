@@ -1,6 +1,7 @@
 ﻿#include <Windows.h>
 #include <vector>
 #include "Engine/Core/Window.h"
+#include "Engine/Core/Timer.h"
 #include "Engine/Graphics/Core/GraphicsEngine.h"
 #include "Engine/Graphics/Core/Renderer.h"
 #include "Engine/Graphics/Shader/ShaderManager.h"
@@ -70,14 +71,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     Engine::Graphics::ConstantBuffer sceneCB;
     sceneCB.Create(graphicsEngine.GetRenderDevice(), sizeof(SceneData));
 
+    Engine::Core::Timer timer;
+    timer.Reset();
+
     // メインループ
     while(true) {
         window.Update();
         if(window.GetIsProcessEnd()) break;
 
+        timer.Tick();
+        float dt = timer.GetDeltaTime();
+
         // 更新フェーズ
-        registry.GetView<Engine::ECS::Transform>().Each([](auto entity, auto& transform) {
-            transform.rotation.y += 0.01f;
+        registry.GetView<Engine::ECS::Transform>().Each([dt](auto entity, auto& transform) {
+            transform.rotation.y += 1.0f * dt; // 1 radian per second
         });
 
         // 描画準備
