@@ -31,20 +31,22 @@ void RenderTexture::Create(RenderDevice* device, DescriptorHeap* rtvHeap, Descri
     optimizedClearValue.Color[2] = clearColor.z;
     optimizedClearValue.Color[3] = clearColor.w;
 
-    auto heapProps = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
-    HRESULT hr = device->GetDevice()->CreateCommittedResource(
-        &heapProps,
-        D3D12_HEAP_FLAG_NONE,
+    D3D12MA::ALLOCATION_DESC allocDesc = {};
+    allocDesc.HeapType = D3D12_HEAP_TYPE_DEFAULT;
+
+    HRESULT hr = device->GetAllocator()->CreateResource(
+        &allocDesc,
         &desc,
         D3D12_RESOURCE_STATE_COMMON,
         &optimizedClearValue,
-        IID_PPV_ARGS(&resource_)
+        &allocation_,
+        IID_NULL, nullptr
     );
     Assert(SUCCEEDED(hr), "Failed to create RenderTexture resource.");
 
     // RTVの作成
     rtvHandle_ = rtvHeap->Allocate();
-    device->GetDevice()->CreateRenderTargetView(resource_.Get(), nullptr, rtvHandle_);
+    device->GetDevice()->CreateRenderTargetView(allocation_->GetResource(), nullptr, rtvHandle_);
 
     // SRVの作成
     srvIndex_ = srvHeap->AllocateIndex();
@@ -55,11 +57,11 @@ void RenderTexture::Create(RenderDevice* device, DescriptorHeap* rtvHeap, Descri
     srvDesc.Format = format;
     srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
     srvDesc.Texture2D.MipLevels = 1;
-    device->GetDevice()->CreateShaderResourceView(resource_.Get(), &srvDesc, srvHeap->GetCPUHandle(srvIndex_));
+    device->GetDevice()->CreateShaderResourceView(allocation_->GetResource(), &srvDesc, srvHeap->GetCPUHandle(srvIndex_));
 }
 
 void RenderTexture::Release() {
-    resource_.Reset();
+    allocation_.Reset();
 }
 
 void RenderTexture::Clear(ID3D12GraphicsCommandList* commandList) {
@@ -69,7 +71,7 @@ void RenderTexture::Clear(ID3D12GraphicsCommandList* commandList) {
 
 void RenderTexture::Transition(ID3D12GraphicsCommandList* commandList, D3D12_RESOURCE_STATES stateAfter) {
     if (currentState_ == stateAfter) return;
-    auto barrier = CD3DX12_RESOURCE_BARRIER::Transition(resource_.Get(), currentState_, stateAfter);
+    auto barrier = CD3DX12_RESOURCE_BARRIER::Transition(allocation_->GetResource(), currentState_, stateAfter);
     commandList->ResourceBarrier(1, &barrier);
     currentState_ = stateAfter;
 }

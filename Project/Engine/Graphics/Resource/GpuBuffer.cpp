@@ -15,16 +15,18 @@ void StructuredBuffer::Create(RenderDevice* device, uint32_t stride, uint32_t co
     count_ = count;
     uint32_t totalSize = stride * count;
 
-    auto heapProps = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD);
+    D3D12MA::ALLOCATION_DESC allocDesc = {};
+    allocDesc.HeapType = D3D12_HEAP_TYPE_UPLOAD;
+
     auto resourceDesc = CD3DX12_RESOURCE_DESC::Buffer(totalSize);
 
-    HRESULT hr = device->GetDevice()->CreateCommittedResource(
-        &heapProps,
-        D3D12_HEAP_FLAG_NONE,
+    HRESULT hr = device->GetAllocator()->CreateResource(
+        &allocDesc,
         &resourceDesc,
         D3D12_RESOURCE_STATE_GENERIC_READ,
         nullptr,
-        IID_PPV_ARGS(&resource_)
+        &allocation_,
+        IID_NULL, nullptr
     );
 
     Assert(SUCCEEDED(hr), "Failed to create Structured Buffer.");
@@ -35,11 +37,11 @@ void StructuredBuffer::Create(RenderDevice* device, uint32_t stride, uint32_t co
 }
 
 void StructuredBuffer::Update(const void* data, uint32_t size) {
-    if (!resource_ || !data) return;
+    if (!allocation_ || !data) return;
     void* mapped = nullptr;
-    resource_->Map(0, nullptr, &mapped);
+    allocation_->GetResource()->Map(0, nullptr, &mapped);
     memcpy(mapped, data, size);
-    resource_->Unmap(0, nullptr);
+    allocation_->GetResource()->Unmap(0, nullptr);
 }
 
 // --- IndexBuffer ---
@@ -51,28 +53,30 @@ void IndexBuffer::Create(RenderDevice* device, uint32_t count, const uint32_t* i
     count_ = count;
     uint32_t totalSize = sizeof(uint32_t) * count;
 
-    auto heapProps = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD);
+    D3D12MA::ALLOCATION_DESC allocDesc = {};
+    allocDesc.HeapType = D3D12_HEAP_TYPE_UPLOAD;
+
     auto resourceDesc = CD3DX12_RESOURCE_DESC::Buffer(totalSize);
 
-    HRESULT hr = device->GetDevice()->CreateCommittedResource(
-        &heapProps,
-        D3D12_HEAP_FLAG_NONE,
+    HRESULT hr = device->GetAllocator()->CreateResource(
+        &allocDesc,
         &resourceDesc,
         D3D12_RESOURCE_STATE_GENERIC_READ,
         nullptr,
-        IID_PPV_ARGS(&resource_)
+        &allocation_,
+        IID_NULL, nullptr
     );
 
     Assert(SUCCEEDED(hr), "Failed to create Index Buffer.");
 
     if (initialData) {
         void* mapped = nullptr;
-        resource_->Map(0, nullptr, &mapped);
+        allocation_->GetResource()->Map(0, nullptr, &mapped);
         memcpy(mapped, initialData, totalSize);
-        resource_->Unmap(0, nullptr);
+        allocation_->GetResource()->Unmap(0, nullptr);
     }
 
-    view_.BufferLocation = resource_->GetGPUVirtualAddress();
+    view_.BufferLocation = allocation_->GetResource()->GetGPUVirtualAddress();
     view_.SizeInBytes = totalSize;
     view_.Format = DXGI_FORMAT_R32_UINT;
 }

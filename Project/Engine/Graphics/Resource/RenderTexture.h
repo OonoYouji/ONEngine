@@ -3,6 +3,7 @@
 #include <string>
 #include <memory>
 #include <d3d12.h>
+#include "D3D12MemAlloc.h"
 #include "Engine/Graphics/Utils/ComPtr.h"
 #include "Engine/Core/Math/Math.h"
 
@@ -37,13 +38,13 @@ public:
     /// @brief 状態遷移（描画用 <-> シェーダー参照用）
     void Transition(ID3D12GraphicsCommandList* commandList, D3D12_RESOURCE_STATES stateAfter);
 
-    ID3D12Resource* GetResource() const { return resource_.Get(); }
+    ID3D12Resource* GetResource() const { return allocation_->GetResource(); }
     D3D12_CPU_DESCRIPTOR_HANDLE GetRTVHandle() const { return rtvHandle_; }
     D3D12_GPU_DESCRIPTOR_HANDLE GetSRVHandle() const { return srvHandle_; }
     uint32_t GetSRVIndex() const { return srvIndex_; }
 
 private:
-    ComPtr<ID3D12Resource> resource_;
+    ComPtr<D3D12MA::Allocation> allocation_;
     D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle_ = {};
     D3D12_GPU_DESCRIPTOR_HANDLE srvHandle_ = {};
     uint32_t srvIndex_ = 0xFFFFFFFF;

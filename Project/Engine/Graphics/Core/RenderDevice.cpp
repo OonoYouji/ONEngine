@@ -76,10 +76,20 @@ void RenderDevice::Initialize() {
 	/// ---------------------------------------------------
 	hr = device_->QueryInterface(IID_PPV_ARGS(&device10_));
 	Assert(SUCCEEDED(hr), "Device10 creation failed.");
+
+    /// ---------------------------------------------------
+    /// allocator
+    /// ---------------------------------------------------
+    D3D12MA::ALLOCATOR_DESC allocatorDesc = {};
+    allocatorDesc.pDevice = device_.Get();
+    allocatorDesc.pAdapter = useAdapter_.Get();
+
+    hr = D3D12MA::CreateAllocator(&allocatorDesc, &allocator_);
+    Assert(SUCCEEDED(hr), "Allocator creation failed.");
 }
 
 void RenderDevice::Shutdown() {
-
+    allocator_.Reset();
 }
 
 
@@ -89,6 +99,10 @@ IDXGIFactory7* RenderDevice::GetDxgiFactory() const {
 
 ID3D12Device* RenderDevice::GetDevice() const {
 	return device_.Get();
+}
+
+D3D12MA::Allocator* RenderDevice::GetAllocator() const {
+    return allocator_.Get();
 }
 
 

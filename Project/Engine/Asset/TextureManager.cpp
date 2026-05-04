@@ -102,10 +102,13 @@ std::shared_ptr<Texture> TextureManager::LoadTextureAsAsset(const std::string& p
     std::vector<D3D12_SUBRESOURCE_DATA> subresources;
     if (SUCCEEDED(DirectX::PrepareUpload(device_->GetDevice(), image->GetImages(), image->GetImageCount(), metadata, subresources))) {
         const UINT64 uploadBufferSize = GetRequiredIntermediateSize(res, 0, static_cast<UINT>(subresources.size()));
-        ComPtr<ID3D12Resource> uploadHeap;
-        auto heapProps = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD);
+        
+        ComPtr<D3D12MA::Allocation> uploadAllocation;
+        D3D12MA::ALLOCATION_DESC allocDesc = {};
+        allocDesc.HeapType = D3D12_HEAP_TYPE_UPLOAD;
+
         auto bufferDesc = CD3DX12_RESOURCE_DESC::Buffer(uploadBufferSize);
-        device_->GetDevice()->CreateCommittedResource(&heapProps, D3D12_HEAP_FLAG_NONE, &bufferDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&uploadHeap));
+        device_->GetAllocator()->CreateResource(&allocDesc, &bufferDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, &uploadAllocation, IID_NULL, nullptr);
 
         auto& graphicsEngine = Graphics::GraphicsEngine::GetInstance();
         auto* queue = graphicsEngine.GetCommandQueue();
@@ -115,7 +118,7 @@ std::shared_ptr<Texture> TextureManager::LoadTextureAsAsset(const std::string& p
         auto* commandList = queue->GetCommandList();
         auto barrier = CD3DX12_RESOURCE_BARRIER::Transition(res, D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_COPY_DEST);
         commandList->ResourceBarrier(1, &barrier);
-        UpdateSubresources(commandList, res, uploadHeap.Get(), 0, 0, static_cast<UINT>(subresources.size()), subresources.data());
+        UpdateSubresources(commandList, res, uploadAllocation->GetResource(), 0, 0, static_cast<UINT>(subresources.size()), subresources.data());
         barrier = CD3DX12_RESOURCE_BARRIER::Transition(res, D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_ALL_SHADER_RESOURCE);
         commandList->ResourceBarrier(1, &barrier);
         queue->Execute();

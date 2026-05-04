@@ -7,8 +7,8 @@ namespace Engine::Graphics {
 ConstantBuffer::ConstantBuffer() = default;
 
 ConstantBuffer::~ConstantBuffer() {
-    if (resource_ && mappedData_) {
-        resource_->Unmap(0, nullptr);
+    if (allocation_ && mappedData_) {
+        allocation_->GetResource()->Unmap(0, nullptr);
     }
 }
 
@@ -16,22 +16,24 @@ void ConstantBuffer::Create(RenderDevice* device, uint32_t size) {
     // 256バイトアライメント
     bufferSize_ = (size + 255) & ~255;
 
-    auto heapProps = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD);
+    D3D12MA::ALLOCATION_DESC allocDesc = {};
+    allocDesc.HeapType = D3D12_HEAP_TYPE_UPLOAD;
+
     auto resourceDesc = CD3DX12_RESOURCE_DESC::Buffer(bufferSize_);
 
-    HRESULT hr = device->GetDevice()->CreateCommittedResource(
-        &heapProps,
-        D3D12_HEAP_FLAG_NONE,
+    HRESULT hr = device->GetAllocator()->CreateResource(
+        &allocDesc,
         &resourceDesc,
         D3D12_RESOURCE_STATE_GENERIC_READ,
         nullptr,
-        IID_PPV_ARGS(&resource_)
+        &allocation_,
+        IID_NULL, nullptr
     );
 
     Assert(SUCCEEDED(hr), "Failed to create Constant Buffer.");
 
     // 常時マップ
-    hr = resource_->Map(0, nullptr, &mappedData_);
+    hr = allocation_->GetResource()->Map(0, nullptr, &mappedData_);
     Assert(SUCCEEDED(hr), "Failed to map Constant Buffer.");
 }
 

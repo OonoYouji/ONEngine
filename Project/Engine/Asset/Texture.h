@@ -3,6 +3,7 @@
 #include <string>
 #include <memory>
 #include <d3d12.h>
+#include "D3D12MemAlloc.h"
 #include "Engine/Graphics/Utils/ComPtr.h"
 #include "IAsset.h"
 
@@ -34,14 +35,14 @@ public:
     /// @brief GPUリソースの作成とSRVの生成
     void CreateResource(Graphics::RenderDevice* device, D3D12_CPU_DESCRIPTOR_HANDLE srvHandle);
 
-    ID3D12Resource* GetResource() const { return resource_.Get(); }
+    ID3D12Resource* GetResource() const { return allocation_->GetResource(); }
     DirectX::ScratchImage* GetImage() const { return image_.get(); }
     uint32_t GetIndex() const { return index_; }
     void SetIndex(uint32_t index) { index_ = index; }
 
 private:
     std::unique_ptr<DirectX::ScratchImage> image_;
-    ComPtr<ID3D12Resource> resource_;
+    ComPtr<D3D12MA::Allocation> allocation_;
     uint32_t index_ = 0xFFFFFFFF; // Bindless Index
 };
 

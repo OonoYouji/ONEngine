@@ -87,6 +87,40 @@ project "ImGui"
 
 
 -- 
+-- Project: D3D12MA
+--
+project "D3D12MA"
+    kind "StaticLib"
+    language "C++"
+    location "Externals/D3D12MA/"
+    targetdir "../Generated/Outputs/%{cfg.buildcfg}/"
+    objdir "../Generated/Obj/%{cfg.buildcfg}/D3D12MA/"
+
+    includedirs {
+        "$(ProjectDir)",
+        "$(ProjectDir)/D3D12MA"
+    }
+
+    files { "Externals/D3D12MA/**.h", "Externals/D3D12MA/**.cpp" }
+
+    filter "configurations:Debug"
+         runtime "Debug"
+         symbols "On"
+         staticruntime "On"
+
+    filter "configurations:Development"
+        runtime "Release"
+        symbols "On"
+        editandcontinue "Off"
+        staticruntime "On"
+
+    filter "configurations:Release"
+         runtime "Release"
+         optimize "Full"
+         staticruntime "On"
+
+
+-- 
 -- Project: ONEngine
 --
 project "ONEngine"
@@ -111,6 +145,7 @@ project "ONEngine"
         "$(ProjectDir)Engine",
         "$(ProjectDir)Externals/assimp/include",
         "$(ProjectDir)Externals/imgui",
+        "$(ProjectDir)Externals/D3D12MA",
         "$(ProjectDir)Externals/glib",
         "$(ProjectDir)Externals/mono",
         "$(ProjectDir)Externals/DirectXTex",
@@ -122,12 +157,13 @@ project "ONEngine"
         "Packages/Scripts/lib"
     }
 
-    dependson { "DirectXTex", "ImGui" }
+    dependson { "DirectXTex", "ImGui", "D3D12MA" }
     
     links {
         "$(ProjectDir)Packages/Scripts/lib/mono-2.0-sgen.lib",
         "DirectXTex",
-        "ImGui"
+        "ImGui",
+        "D3D12MA"
     }
 
     warnings "Extra"

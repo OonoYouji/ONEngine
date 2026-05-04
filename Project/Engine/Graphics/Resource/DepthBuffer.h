@@ -3,6 +3,7 @@
 #include <d3d12.h>
 #include <dxgi1_6.h>
 #include <cstdint>
+#include "D3D12MemAlloc.h"
 #include "Engine/Graphics/Utils/ComPtr.h"
 
 namespace Engine::Graphics {
@@ -21,11 +22,11 @@ public:
     /// @brief 深度バッファの作成
     void Create(RenderDevice* device, DescriptorHeap* dsvHeap, uint32_t width, uint32_t height);
 
-    ID3D12Resource* GetResource() const { return resource_.Get(); }
+    ID3D12Resource* GetResource() const { return allocation_->GetResource(); }
     D3D12_CPU_DESCRIPTOR_HANDLE GetDSVHandle() const { return dsvHandle_; }
 
 private:
-    ComPtr<ID3D12Resource> resource_;
+    ComPtr<D3D12MA::Allocation> allocation_;
     D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle_ = {};
 };
 

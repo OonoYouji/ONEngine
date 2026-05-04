@@ -41,7 +41,29 @@ void Texture::CreateResource(Graphics::RenderDevice* device, D3D12_CPU_DESCRIPTO
     auto metadata = image_->GetMetadata();
     
     // 1. GPUリソースの作成
-    HRESULT hr = DirectX::CreateTexture(device->GetDevice(), metadata, &resource_);
+    D3D12_RESOURCE_DESC desc = {};
+    desc.Dimension = static_cast<D3D12_RESOURCE_DIMENSION>(metadata.dimension);
+    desc.Width = static_cast<UINT64>(metadata.width);
+    desc.Height = static_cast<UINT>(metadata.height);
+    desc.DepthOrArraySize = static_cast<UINT16>(metadata.arraySize);
+    desc.MipLevels = static_cast<UINT16>(metadata.mipLevels);
+    desc.Format = metadata.format;
+    desc.SampleDesc.Count = 1;
+    desc.SampleDesc.Quality = 0;
+    desc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
+    desc.Flags = D3D12_RESOURCE_FLAG_NONE;
+
+    D3D12MA::ALLOCATION_DESC allocDesc = {};
+    allocDesc.HeapType = D3D12_HEAP_TYPE_DEFAULT;
+
+    HRESULT hr = device->GetAllocator()->CreateResource(
+        &allocDesc,
+        &desc,
+        D3D12_RESOURCE_STATE_COMMON,
+        nullptr,
+        &allocation_,
+        IID_NULL, nullptr
+    );
     Assert(SUCCEEDED(hr), "Failed to create Texture resource.");
 
     // 2. SRVの作成
@@ -50,7 +72,7 @@ void Texture::CreateResource(Graphics::RenderDevice* device, D3D12_CPU_DESCRIPTO
     srvDesc.Format = metadata.format;
     srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D; // 2Dテクスチャとして決め打ち
     srvDesc.Texture2D.MipLevels = static_cast<UINT>(metadata.mipLevels);
-    device->GetDevice()->CreateShaderResourceView(resource_.Get(), &srvDesc, srvHandle);
+    device->GetDevice()->CreateShaderResourceView(allocation_->GetResource(), &srvDesc, srvHandle);
 }
 
 } // namespace Engine::Asset
