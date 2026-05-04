@@ -146,24 +146,23 @@ project "ONEngine"
         "$(ProjectDir)Externals/assimp/include",
         "$(ProjectDir)Externals/imgui",
         "$(ProjectDir)Externals/D3D12MA",
-        "$(ProjectDir)Externals/glib",
-        "$(ProjectDir)Externals/mono",
+        "$(ProjectDir)Externals/DotNetHost",
         "$(ProjectDir)Externals/DirectXTex",
         "$(ProjectDir)Externals"
     }
 
     libdirs {
         "Externals/assimp/lib",
-        "Packages/Scripts/lib"
+        "Externals/DotNetHost"
     }
 
     dependson { "DirectXTex", "ImGui", "D3D12MA" }
     
     links {
-        "$(ProjectDir)Packages/Scripts/lib/mono-2.0-sgen.lib",
         "DirectXTex",
         "ImGui",
-        "D3D12MA"
+        "D3D12MA",
+        "nethost.lib"
     }
 
     warnings "Extra"
@@ -183,7 +182,7 @@ project "ONEngine"
         postbuildcommands {
             "copy \"$(WindowsSdkDir)bin\\$(TargetPlatformVersion)\\x64\\dxcompiler.dll\" \"$(TargetDir)dxcompiler.dll\"",
             "copy \"$(WindowsSdkDir)bin\\$(TargetPlatformVersion)\\x64\\dxil.dll\" \"$(TargetDir)dxil.dll\"",
-            "copy \"$(ProjectDir)Packages\\Scripts\\lib\\mono-2.0-sgen.dll\" \"$(TargetDir)mono-2.0-sgen.dll\"",
+            "copy \"$(ProjectDir)Externals\\DotNetHost\\nethost.dll\" \"$(TargetDir)nethost.dll\"",
         }
 
     -- Release Configuration
@@ -200,7 +199,7 @@ project "ONEngine"
         postbuildcommands {
             "copy \"$(WindowsSdkDir)bin\\$(TargetPlatformVersion)\\x64\\dxcompiler.dll\" \"$(TargetDir)dxcompiler.dll\"",
             "copy \"$(WindowsSdkDir)bin\\$(TargetPlatformVersion)\\x64\\dxil.dll\" \"$(TargetDir)dxil.dll\"",
-            "copy \"$(ProjectDir)Packages\\Scripts\\lib\\mono-2.0-sgen.dll\" \"$(TargetDir)mono-2.0-sgen.dll\"",
+            "copy \"$(ProjectDir)Externals\\DotNetHost\\nethost.dll\" \"$(TargetDir)nethost.dll\"",
             "xcopy /E /Y /I \"$(ProjectDir)Assets\" \"$(TargetDir)Assets\"",
             "xcopy /E /Y /I \"$(ProjectDir)Packages\" \"$(TargetDir)Packages\""
         }
@@ -233,5 +232,5 @@ project "ONEngine"
         postbuildcommands {
             "copy \"$(WindowsSdkDir)bin\\$(TargetPlatformVersion)\\x64\\dxcompiler.dll\" \"$(TargetDir)dxcompiler.dll\"",
             "copy \"$(WindowsSdkDir)bin\\$(TargetPlatformVersion)\\x64\\dxil.dll\" \"$(TargetDir)dxil.dll\"",
-            "copy \"$(ProjectDir)Packages\\Scripts\\lib\\mono-2.0-sgen.dll\" \"$(TargetDir)mono-2.0-sgen.dll\""
+            "copy \"$(ProjectDir)Externals\\DotNetHost\\nethost.dll\" \"$(TargetDir)nethost.dll\""
         }

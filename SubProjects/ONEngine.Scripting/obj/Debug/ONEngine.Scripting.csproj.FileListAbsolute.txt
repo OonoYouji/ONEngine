@@ -1,0 +1,14 @@
+C:\Users\k023g\source\repos\ONEngine\Project\Packages\Scripts\ONEngine.Scripting.deps.json
+C:\Users\k023g\source\repos\ONEngine\Project\Packages\Scripts\ONEngine.Scripting.dll
+C:\Users\k023g\source\repos\ONEngine\Project\Packages\Scripts\ONEngine.Scripting.pdb
+C:\Users\k023g\source\repos\ONEngine\SubProjects\ONEngine.Scripting\obj\Debug\ONEngine.Scripting.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\k023g\source\repos\ONEngine\SubProjects\ONEngine.Scripting\obj\Debug\ONEngine.Scripting.AssemblyInfoInputs.cache
+C:\Users\k023g\source\repos\ONEngine\SubProjects\ONEngine.Scripting\obj\Debug\ONEngine.Scripting.AssemblyInfo.cs
+C:\Users\k023g\source\repos\ONEngine\SubProjects\ONEngine.Scripting\obj\Debug\ONEngine.Scripting.csproj.CoreCompileInputs.cache
+C:\Users\k023g\source\repos\ONEngine\SubProjects\ONEngine.Scripting\obj\Debug\ONEngine.Scripting.sourcelink.json
+C:\Users\k023g\source\repos\ONEngine\SubProjects\ONEngine.Scripting\obj\Debug\ONEngine.Scripting.dll
+C:\Users\k023g\source\repos\ONEngine\SubProjects\ONEngine.Scripting\obj\Debug\refint\ONEngine.Scripting.dll
+C:\Users\k023g\source\repos\ONEngine\SubProjects\ONEngine.Scripting\obj\Debug\ONEngine.Scripting.pdb
+C:\Users\k023g\source\repos\ONEngine\SubProjects\ONEngine.Scripting\obj\Debug\ref\ONEngine.Scripting.dll
+C:\Users\k023g\source\repos\ONEngine\Project\Packages\Scripts\ONEngine.Scripting.runtimeconfig.json
+C:\Users\k023g\source\repos\ONEngine\SubProjects\ONEngine.Scripting\obj\Debug\ONEngine.Scripting.genruntimeconfig.cache

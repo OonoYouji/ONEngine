@@ -2,6 +2,7 @@
 #include <vector>
 #include "Engine/Core/Window.h"
 #include "Engine/Core/Timer.h"
+#include "Engine/Script/ScriptHost.h"
 #include "Engine/Graphics/Core/GraphicsEngine.h"
 #include "Engine/Graphics/Core/Renderer.h"
 #include "Engine/Graphics/Shader/ShaderManager.h"
@@ -39,6 +40,28 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
     auto& assetManager = AssetManager::GetInstance();
     assetManager.Initialize(graphicsEngine.GetRenderDevice());
+
+    auto& scriptHost = Engine::Script::ScriptHost::GetInstance();
+    void(*updateDelegate)() = nullptr;
+    void(*shutdownDelegate)() = nullptr;
+
+    if (scriptHost.Initialize()) {
+        auto initDelegate = (void(*)())scriptHost.GetMethodDelegate(
+            L"ONEngine.Scripting.EngineHost, ONEngine.Scripting",
+            L"Initialize",
+            L"");
+        if (initDelegate) initDelegate();
+
+        updateDelegate = (void(*)())scriptHost.GetMethodDelegate(
+            L"ONEngine.Scripting.EngineHost, ONEngine.Scripting",
+            L"Update",
+            L"");
+
+        shutdownDelegate = (void(*)())scriptHost.GetMethodDelegate(
+            L"ONEngine.Scripting.EngineHost, ONEngine.Scripting",
+            L"Shutdown",
+            L"");
+    }
 
     auto& renderer = Engine::Graphics::Renderer::GetInstance();
     renderer.Initialize(graphicsEngine.GetRenderDevice());
@@ -82,6 +105,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
         timer.Tick();
         float dt = timer.GetDeltaTime();
 
+        if (updateDelegate) updateDelegate();
+
         // 更新フェーズ
         registry.GetView<Engine::ECS::Transform>().Each([dt](auto entity, auto& transform) {
             transform.rotation.y += 1.0f * dt; // 1 radian per second
@@ -118,6 +143,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     }
 
     renderer.Shutdown();
+    if (shutdownDelegate) shutdownDelegate();
+    scriptHost.Shutdown();
     assetManager.Shutdown();
     materialManager.Shutdown();
     textureManager.Shutdown();
