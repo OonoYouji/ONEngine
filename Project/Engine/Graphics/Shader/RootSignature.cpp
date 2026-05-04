@@ -173,10 +173,7 @@ bool RootSignature::Create(RenderDevice* device, const std::vector<ShaderReflect
 uint32_t RootSignature::GetParameterIndex(const std::string& name) const {
     auto it = nameToParameterIndex_.find(name);
     if (it == nameToParameterIndex_.end()) {
-        std::string available;
-        for (const auto& pair : nameToParameterIndex_) available += pair.first + ", ";
-        Engine::Console::LogError(std::format("Root parameter '{}' not found. Available: {}", name, available));
-        return 0;
+        return kInvalidIndex;
     }
     return it->second;
 }

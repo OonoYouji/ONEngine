@@ -6,7 +6,7 @@
 - [x] **アセットシステムの抽象化と統合**: `IAsset`, `AssetHandle`, `AssetRegistry` による統一管理基盤の実装。
 - [x] **ECS 基礎基盤の実装**: Sparse Set ベース의 Registry と View システム。
 - [x] **レンダリングコアの構築**: DirectX 12 基盤、コマンドキュー、スワップチェーン。
-- [x] **インスタンスバッチング**: `Renderer` による `InstanceData` の集約と一括描画。
+- [x] **インスタンスバッチング**: `Renderer` による `InstanceData` の集約 e 一括描画。
 - [x] **Bindless Texture 基礎**: 大規模 Descriptor Heap によるテクスチャ管理とシェーダー参照。
 - [x] **データ構造の自動生成**: `schema.yaml` から C++/HLSL 構造体の一斉生成 (`codegen.py`)。
 - [x] **アセット管理システム**: マテリアル (`.mat`)、モデル (`.obj`)、テクスチャのロード・管理。
@@ -14,6 +14,7 @@
 - [x] **Shader Reflection の統合**: HLSL コンパイル結果からルートシグネチャを自動構築。
 - [x] **Extract Phase の実装**: ロジックとレンダリングの分離（Triple Buffering）。
 - [x] **Frame Resource (Triple Buffering)**: コマンドアロケータ等のフレーム単位管理。
+- [x] **Z-Prepass**: 深度先行描画によるピクセル負荷削減。
 
 ## ■ 現在進行中 (In Progress)
 - [ ] **ループの正常化**: フレームレート非依存の更新処理（デルタタイム）の実装。
@@ -21,7 +22,6 @@
 - [ ] **D3D12MA の導入**: メモリ管理の最適化。
 
 ### フェーズ 2: レンダリングパイプラインの高度化 (中期)
-- [ ] **Z-Prepass**: 深度先行描画によるピクセル負荷削減。
 - [ ] **Clustered Light Culling**: 画面分割による効率的なライト計算。
 - [ ] **Geometry Pool の完全統合**: 全モデルの頂点データを単一バッファに集約。
 - [ ] **Post-Processing 基盤**: トーンマッピング、ブルームの実装。

@@ -24,12 +24,17 @@ struct PipelineStateDesc {
     D3D12_COMPARISON_FUNC depthFunc = D3D12_COMPARISON_FUNC_LESS;
     bool blendEnable = false;
     D3D12_BLEND_DESC blendDesc = {};
-    
+
     // レンダーターゲット設定
     DXGI_FORMAT rtvFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
     DXGI_FORMAT dsvFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 
+    // Z-Prepass対応
+    bool usePS = true;
+    uint32_t numRenderTargets = 1;
+
     PipelineStateDesc() {
+
         blendDesc.AlphaToCoverageEnable = FALSE;
         blendDesc.IndependentBlendEnable = FALSE;
         for (auto& rt : blendDesc.RenderTarget) {

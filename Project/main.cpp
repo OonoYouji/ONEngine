@@ -104,6 +104,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
         auto* commandList = graphicsEngine.GetCommandQueue()->GetCommandList();
         
         // Rendererに全てを任せる
+        renderer.RenderZPrepass(commandList, currentFrameRes->GetSceneCB()->GetGPUVirtualAddress());
         renderer.Render(commandList, currentFrameRes->GetSceneCB()->GetGPUVirtualAddress());
 
         graphicsEngine.EndFrame();

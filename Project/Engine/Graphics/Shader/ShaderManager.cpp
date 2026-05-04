@@ -103,10 +103,9 @@ PipelineState* ShaderManager::GetOrCreatePSO(const std::string& templateName, co
     if (asset.ps.isValid) Engine::Console::Log(std::format("PS Check: {} -> {}", templateName + "_PS", ps ? "SUCCESS" : "FAILED"));
     if (asset.ms.isValid) Engine::Console::Log(std::format("MS Check: {} -> {}", templateName + "_MS", ms ? "SUCCESS" : "FAILED"));
 
-    // 必須シェーダーのチェック（VSまたはMSが必須、PSも基本必須）
+    // 必須シェーダーのチェック（VSまたはMSが必須）
     bool hasValidShaders = true;
     if (asset.vs.isValid && !vs) hasValidShaders = false;
-    if (asset.ps.isValid && !ps) hasValidShaders = false;
     if (asset.ms.isValid && !ms) hasValidShaders = false;
 
     if (!hasValidShaders || (!vs && !ms)) {
@@ -115,6 +114,7 @@ PipelineState* ShaderManager::GetOrCreatePSO(const std::string& templateName, co
     }
 
     // 4. ルートシグネチャの作成または取得（テンプレートごとに1つ）
+    // テンプレートに含まれる全シェーダーの反射情報を統合して作成する
     if (!rootSignatures_.count(templateName)) {
         std::vector<ShaderReflectionData> reflections;
         if (vs) reflections.push_back(vs->reflectionData);
@@ -129,8 +129,10 @@ PipelineState* ShaderManager::GetOrCreatePSO(const std::string& templateName, co
     RootSignature* rootSig = rootSignatures_[templateName].get();
 
     // 5. PSOの作成
+    // 現在の描画パスの設定（desc.usePS）に応じて、ピクセルシェーダーを渡すかどうか決める
+    ShaderObject* psForPSO = desc.usePS ? ps : nullptr;
     auto pso = std::make_unique<PipelineState>();
-    if (!pso->Create(device_, rootSig, vs, ps, as, ms, desc)) {
+    if (!pso->Create(device_, rootSig, vs, psForPSO, as, ms, desc)) {
         return nullptr;
     }
 
@@ -140,7 +142,7 @@ PipelineState* ShaderManager::GetOrCreatePSO(const std::string& templateName, co
 
 std::string ShaderManager::GeneratePSOKey(const std::string& templateName, const PipelineStateDesc& desc) {
     // 設定値を文字列連結して簡易的なハッシュキーとする
-    return std::format("{}_{}_{}_{}_{}_{}_{}_{}",
+    return std::format("{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}",
         templateName,
         (int)desc.cullMode,
         (int)desc.fillMode,
@@ -148,7 +150,10 @@ std::string ShaderManager::GeneratePSOKey(const std::string& templateName, const
         desc.depthWriteEnable,
         (int)desc.depthFunc,
         desc.blendEnable,
-        (int)desc.rtvFormat
+        (int)desc.rtvFormat,
+        (int)desc.dsvFormat,
+        desc.usePS,
+        desc.numRenderTargets
     );
 }
 

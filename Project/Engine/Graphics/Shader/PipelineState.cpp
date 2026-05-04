@@ -65,11 +65,13 @@ bool PipelineState::Create(
         stream.RootSignature = rootSignature->Get();
         if (as && as->blob) stream.AS = { as->blob->GetBufferPointer(), as->blob->GetBufferSize() };
         if (ms && ms->blob) stream.MS = { ms->blob->GetBufferPointer(), ms->blob->GetBufferSize() };
-        if (ps && ps->blob) stream.PS = { ps->blob->GetBufferPointer(), ps->blob->GetBufferSize() };
+        if (desc.usePS && ps && ps->blob) stream.PS = { ps->blob->GetBufferPointer(), ps->blob->GetBufferSize() };
 
         D3D12_RT_FORMAT_ARRAY rtvFormats = {};
-        rtvFormats.NumRenderTargets = 1;
-        rtvFormats.RTFormats[0] = desc.rtvFormat;
+        rtvFormats.NumRenderTargets = desc.numRenderTargets;
+        for (uint32_t i = 0; i < desc.numRenderTargets; ++i) {
+            rtvFormats.RTFormats[i] = desc.rtvFormat;
+        }
         stream.RTVFormats = rtvFormats;
         stream.DSVFormat = desc.dsvFormat;
 
@@ -105,7 +107,7 @@ bool PipelineState::Create(
         psoDesc.pRootSignature = rootSignature->Get();
         
         if (vs && vs->blob) psoDesc.VS = { vs->blob->GetBufferPointer(), vs->blob->GetBufferSize() };
-        if (ps && ps->blob) psoDesc.PS = { ps->blob->GetBufferPointer(), ps->blob->GetBufferSize() };
+        if (desc.usePS && ps && ps->blob) psoDesc.PS = { ps->blob->GetBufferPointer(), ps->blob->GetBufferSize() };
 
         psoDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
         psoDesc.RasterizerState.FillMode = desc.fillMode;
@@ -129,8 +131,10 @@ bool PipelineState::Create(
 
         psoDesc.SampleMask = UINT_MAX;
         psoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-        psoDesc.NumRenderTargets = 1;
-        psoDesc.RTVFormats[0] = desc.rtvFormat;
+        psoDesc.NumRenderTargets = desc.numRenderTargets;
+        for (uint32_t i = 0; i < desc.numRenderTargets; ++i) {
+            psoDesc.RTVFormats[i] = desc.rtvFormat;
+        }
         psoDesc.DSVFormat = desc.dsvFormat;
         psoDesc.SampleDesc.Count = 1;
 

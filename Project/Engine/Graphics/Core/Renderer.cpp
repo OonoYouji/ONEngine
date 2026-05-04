@@ -81,7 +81,25 @@ void Renderer::Extract() {
     instanceSBs_[frameIndex]->Update(instanceData.data(), static_cast<uint32_t>(instanceData.size() * sizeof(GeneratedSchema::InstanceData)));
 }
 
+void Renderer::RenderZPrepass(ID3D12GraphicsCommandList* commandList, const D3D12_GPU_VIRTUAL_ADDRESS sceneCBAddress) {
+    PipelineStateDesc desc;
+    desc.usePS = false;
+    desc.numRenderTargets = 0;
+    desc.depthWriteEnable = true;
+    desc.depthFunc = D3D12_COMPARISON_FUNC_LESS;
+    RenderInternal(commandList, sceneCBAddress, desc);
+}
+
 void Renderer::Render(ID3D12GraphicsCommandList* commandList, const D3D12_GPU_VIRTUAL_ADDRESS sceneCBAddress) {
+    PipelineStateDesc desc;
+    desc.usePS = true;
+    desc.numRenderTargets = 1;
+    desc.depthWriteEnable = false;
+    desc.depthFunc = D3D12_COMPARISON_FUNC_EQUAL;
+    RenderInternal(commandList, sceneCBAddress, desc);
+}
+
+void Renderer::RenderInternal(ID3D12GraphicsCommandList* commandList, const D3D12_GPU_VIRTUAL_ADDRESS sceneCBAddress, const PipelineStateDesc& baseDesc) {
     if (queue_.empty()) return;
 
     auto& graphicsEngine = GraphicsEngine::GetInstance();
@@ -90,9 +108,7 @@ void Renderer::Render(ID3D12GraphicsCommandList* commandList, const D3D12_GPU_VI
     auto& textureManager = Asset::TextureManager::GetInstance();
     auto& shaderManager = ShaderManager::GetInstance();
 
-    // 中央管理のフレームインデックスを取得
     uint32_t frameIndex = graphicsEngine.GetCurrentFrameIndex();
-    // ここで frameIndex を正しく使用する
     auto* currentSB = instanceSBs_[frameIndex].get();
 
     uint32_t currentInstanceStart = 0;
@@ -113,7 +129,7 @@ void Renderer::Render(ID3D12GraphicsCommandList* commandList, const D3D12_GPU_VI
 
         auto* mat = materialManager.GetMaterial(batchStartReq.materialName);
         if (mat) {
-            auto* pso = shaderManager.GetOrCreatePSO(mat->pipelineName, {});
+            auto* pso = shaderManager.GetOrCreatePSO(mat->pipelineName, baseDesc);
             auto* rootSig = shaderManager.GetRootSignature(mat->pipelineName);
             
             commandList->SetGraphicsRootSignature(rootSig->Get());
@@ -122,23 +138,34 @@ void Renderer::Render(ID3D12GraphicsCommandList* commandList, const D3D12_GPU_VI
             ID3D12DescriptorHeap* heaps[] = { textureManager.GetSrvHeap()->GetHeap() };
             commandList->SetDescriptorHeaps(_countof(heaps), heaps);
 
-            commandList->SetGraphicsRootConstantBufferView(rootSig->GetParameterIndex("gSceneData"), sceneCBAddress);
-            commandList->SetGraphicsRootDescriptorTable(rootSig->GetParameterIndex("gTextures"), textureManager.GetSrvHeap()->GetGPUHandle(0));
+            auto sceneIdx = rootSig->GetParameterIndex("gSceneData");
+            if (sceneIdx != RootSignature::kInvalidIndex) {
+                commandList->SetGraphicsRootConstantBufferView(sceneIdx, sceneCBAddress);
+            }
+
+            auto texIdx = rootSig->GetParameterIndex("gTextures");
+            if (texIdx != RootSignature::kInvalidIndex) {
+                commandList->SetGraphicsRootDescriptorTable(texIdx, textureManager.GetSrvHeap()->GetGPUHandle(0));
+            }
             
-            // インスタンスバッファをオフセット（正しいインデックスのバッファを使用）
-            D3D12_GPU_VIRTUAL_ADDRESS instBufferAddr = currentSB->GetResource()->GetGPUVirtualAddress();
-            instBufferAddr += static_cast<UINT64>(currentInstanceStart) * sizeof(GeneratedSchema::InstanceData);
-            commandList->SetGraphicsRootShaderResourceView(rootSig->GetParameterIndex("gInstances"), instBufferAddr);
+            auto instIdx = rootSig->GetParameterIndex("gInstances");
+            if (instIdx != RootSignature::kInvalidIndex) {
+                D3D12_GPU_VIRTUAL_ADDRESS instBufferAddr = currentSB->GetResource()->GetGPUVirtualAddress();
+                instBufferAddr += static_cast<UINT64>(currentInstanceStart) * sizeof(GeneratedSchema::InstanceData);
+                commandList->SetGraphicsRootShaderResourceView(instIdx, instBufferAddr);
+            }
 
             commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
             const auto& meshes = assetManager.GetMeshes(batchStartReq.modelName);
             for (const auto& mesh : meshes) {
-                commandList->SetGraphicsRootShaderResourceView(rootSig->GetParameterIndex("gVertices"), mesh->GetVertexBuffer()->GetResource()->GetGPUVirtualAddress());
+                auto vertIdx = rootSig->GetParameterIndex("gVertices");
+                if (vertIdx != RootSignature::kInvalidIndex) {
+                    commandList->SetGraphicsRootShaderResourceView(vertIdx, mesh->GetVertexBuffer()->GetResource()->GetGPUVirtualAddress());
+                }
                 D3D12_INDEX_BUFFER_VIEW ibv = mesh->GetIndexBuffer()->GetView();
                 commandList->IASetIndexBuffer(&ibv);
                 
-                // 全ての引数を明示的にキャストして警告を回避
                 commandList->DrawIndexedInstanced(
                     static_cast<UINT>(mesh->GetIndexBuffer()->GetCount()), 
                     static_cast<UINT>(batchSize), 

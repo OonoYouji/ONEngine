@@ -1,10 +1,11 @@
-#pragma once
+﻿#pragma once
 
 #include <vector>
 #include <string>
 #include <map>
 #include "Engine/Core/Math/Math.h"
 #include "Engine/Graphics/Resource/GpuBuffer.h"
+#include "Engine/Graphics/Shader/PipelineState.h"
 #include "Schema/Schema.h"
 
 namespace Engine::Graphics {
@@ -39,12 +40,17 @@ public:
 	/// @brief データの抽出（ロジックの後に呼ばれる）
 	void Extract();
 
-	/// @brief 描画実行（フレームの最後に一括で呼ばれる）
+	/// @brief Z-Prepassの実行
+	void RenderZPrepass(ID3D12GraphicsCommandList* commandList, const D3D12_GPU_VIRTUAL_ADDRESS sceneCBAddress);
+
+	/// @brief メイン描画の実行
 	void Render(ID3D12GraphicsCommandList* commandList, const D3D12_GPU_VIRTUAL_ADDRESS sceneCBAddress);
 
 	void ClearQueue();
 
 private:
+	void RenderInternal(ID3D12GraphicsCommandList* commandList, const D3D12_GPU_VIRTUAL_ADDRESS sceneCBAddress, const PipelineStateDesc& baseDesc);
+
 	RenderDevice* device_ = nullptr;
 	std::vector<RenderRequest> queue_;
 	

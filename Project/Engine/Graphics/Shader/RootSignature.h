@@ -31,6 +31,8 @@ public:
     /// @brief 名前からルートパラメータのインデックスを取得
     uint32_t GetParameterIndex(const std::string& name) const;
 
+    static constexpr uint32_t kInvalidIndex = 0xFFFFFFFF;
+
 private:
     ComPtr<ID3D12RootSignature> rootSignature_;
     std::unordered_map<std::string, uint32_t> nameToParameterIndex_;
