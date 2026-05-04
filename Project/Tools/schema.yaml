@@ -25,5 +25,21 @@ types:
     fields:
       - name: baseColor
         type: float4
-      - name: textureIndex
+  
+  Transform:
+    type: Component
+    fields:
+      - name: position
+        type: float3
+      - name: rotation
+        type: float3
+      - name: scale
+        type: float3
+
+  MeshRenderer:
+    type: Component
+    fields:
+      - name: modelIndex
+        type: uint32
+      - name: materialIndex
         type: uint32

@@ -11,19 +11,30 @@
 #include "Engine/Asset/AssetManager.h"
 #include "Engine/Graphics/Resource/ConstantBuffer.h"
 #include "Engine/ECS/Registry.h"
-#include "Engine/ECS/Components/Transform.h"
-#include "Engine/ECS/Components/MeshRenderer.h"
 #include "Engine/ECS/Systems/RenderSystem.h"
 #include "Engine/Common/Console.h"
 #include "Schema/Schema.h"
 
 extern "C" void LogFromRuntime(const char*);
 
+extern "C" {
+    __declspec(dllexport) void* GetTransformChunk(Engine::ECS::Registry* registry, uint32_t chunkIndex) {
+        return registry->GetStorage<Engine::ECS::Transform>().GetChunkPtr(chunkIndex);
+    }
+
+    __declspec(dllexport) uint32_t GetEntityCount(Engine::ECS::Registry* registry) {
+        return (uint32_t)registry->GetStorage<Engine::ECS::Transform>().GetEntities().size();
+    }
+}
+
 using namespace Engine::GeneratedSchema;
 using namespace Engine::Asset;
+using namespace Engine::ECS;
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     Engine::Console::Initialize();
+
+    Engine::ECS::Registry registry;
 
     Engine::Core::Window window;
     window.Initialize(L"AssetSystemUnifiedTest", Engine::Math::Vector2Int::HD);
@@ -48,12 +59,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     void(*shutdownDelegate)() = nullptr;
 
     if (scriptHost.Initialize()) {
-        auto initDelegate = (void(*)(void*))scriptHost.GetMethodDelegate(
+        auto initDelegate = (void(*)(void*, void*))scriptHost.GetMethodDelegate(
             L"ONEngine.Scripting.EngineHost, ONEngine.Scripting",
             L"Initialize",
             L"");
         
-        if (initDelegate) initDelegate((void*)LogFromRuntime);
+        if (initDelegate) initDelegate((void*)LogFromRuntime, &registry);
 
         updateDelegate = (void(*)())scriptHost.GetMethodDelegate(
             L"ONEngine.Scripting.EngineHost, ONEngine.Scripting",
@@ -78,18 +89,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     assetManager.LoadModel("Packages/Models/primitive/cube.obj");
 
     // 2. エンティティの作成
-    Engine::ECS::Registry registry;
     for (int i = 0; i < 20; ++i) {
         auto entity = registry.CreateEntity();
-        auto& transform = registry.AddComponent<Engine::ECS::Transform>(entity);
+        auto& transform = registry.AddComponent<Transform>(entity);
         float angle = (i / 20.0f) * 3.141592f * 2.0f;
         transform.position = { cos(angle) * 15.0f, 0.0f, sin(angle) * 15.0f };
         transform.rotation = { 0.0f, -angle, 0.0f };
         transform.scale = { 0.5f, 0.5f, 0.5f };
         
-        auto& meshRenderer = registry.AddComponent<Engine::ECS::MeshRenderer>(entity);
-        meshRenderer.modelName = "Packages/Models/primitive/cube.obj";
-        meshRenderer.materialName = (i % 2 == 0) ? gridMat : whiteMat;
+        auto& meshRenderer = registry.AddComponent<MeshRenderer>(entity);
+        meshRenderer.modelIndex = 0; // Temporary
+        meshRenderer.materialIndex = (i % 2 == 0) ? 0 : 1;
     }
 
     // 3. システムと共通定数バッファ
@@ -108,12 +118,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
         timer.Tick();
         float dt = timer.GetDeltaTime();
 
-        if (updateDelegate) updateDelegate();
+        if (updateDelegate) ((void(*)(float))updateDelegate)(dt);
 
         // 更新フェーズ
-        registry.GetView<Engine::ECS::Transform>().Each([dt](auto entity, auto& transform) {
+        /*
+        registry.GetView<Transform>().Each([dt](auto entity, auto& transform) {
             transform.rotation.y += 1.0f * dt; // 1 radian per second
         });
+        */
 
         // 描画準備
         renderer.ClearQueue();

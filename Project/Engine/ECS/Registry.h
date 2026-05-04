@@ -25,31 +25,37 @@ public:
 template <typename T>
 class ComponentStorage final : public IComponentStorage {
 public:
+    static constexpr size_t kChunkSize = 1024;
+
 	T& Add(Entity entity, T&& component) {
 		if (Has(entity)) {
-			components_[entityToIndex_[entity]] = std::move(component);
-			return components_[entityToIndex_[entity]];
+			*GetPtr(entityToIndex_[entity]) = std::move(component);
+			return *GetPtr(entityToIndex_[entity]);
 		}
 
-		entityToIndex_[entity] = static_cast<uint32_t>(components_.size());
+		uint32_t index = static_cast<uint32_t>(count_);
+        EnsureCapacity(index + 1);
+
+		entityToIndex_[entity] = index;
 		indexToEntity_.push_back(entity);
-		components_.push_back(std::move(component));
-		return components_.back();
+        *GetPtr(index) = std::move(component);
+        count_++;
+		return *GetPtr(index);
 	}
 
 	void Remove(Entity entity) override {
 		if (!Has(entity)) return;
 
 		uint32_t index = entityToIndex_[entity];
-		uint32_t lastIndex = static_cast<uint32_t>(components_.size() - 1);
+		uint32_t lastIndex = static_cast<uint32_t>(count_ - 1);
 		Entity lastEntity = indexToEntity_[lastIndex];
 
 		// 末尾要素と入れ替えて削除
-		components_[index] = std::move(components_[lastIndex]);
+		*GetPtr(index) = std::move(*GetPtr(lastIndex));
 		indexToEntity_[index] = lastEntity;
 		entityToIndex_[lastEntity] = index;
 
-		components_.pop_back();
+		count_--;
 		indexToEntity_.pop_back();
 		entityToIndex_.erase(entity);
 	}
@@ -59,14 +65,46 @@ public:
 	}
 
 	T& Get(Entity entity) {
-		return components_[entityToIndex_[entity]];
+		return *GetPtr(entityToIndex_[entity]);
 	}
 
-	const std::vector<T>& GetComponents() const { return components_; }
-	const std::vector<Entity>& GetEntities() const { return indexToEntity_; }
+    T* GetPtr(uint32_t index) {
+        size_t chunkIdx = index / kChunkSize;
+        size_t localIdx = index % kChunkSize;
+        return &chunks_[chunkIdx][localIdx];
+    }
+
+    const T* GetPtr(uint32_t index) const {
+        size_t chunkIdx = index / kChunkSize;
+        size_t localIdx = index % kChunkSize;
+        return &chunks_[chunkIdx][localIdx];
+    }
+
+	const std::vector<Entity>& GetEntities() const override { return indexToEntity_; }
+
+    // Interop 用: チャンクのポインタを返す
+    T* GetChunkPtr(size_t chunkIndex) {
+        if (chunkIndex >= chunks_.size()) return nullptr;
+        return chunks_[chunkIndex].get();
+    }
 
 private:
-	std::vector<T> components_;
+    void EnsureCapacity(size_t capacity) {
+        while (count_ < capacity) {
+            if (count_ % kChunkSize == 0) {
+                chunks_.push_back(std::make_unique<T[]>(kChunkSize));
+            }
+            break; // Once we have enough for 'capacity', we can stop if we only add one at a time
+        }
+        // Correct logic:
+        size_t neededChunks = (capacity + kChunkSize - 1) / kChunkSize;
+        while (chunks_.size() < neededChunks) {
+            chunks_.push_back(std::make_unique<T[]>(kChunkSize));
+        }
+    }
+
+	std::vector<std::unique_ptr<T[]>> chunks_;
+    size_t count_ = 0;
 	std::vector<Entity> indexToEntity_;
 	std::unordered_map<Entity, uint32_t> entityToIndex_;
 };

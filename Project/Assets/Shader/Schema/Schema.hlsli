@@ -13,7 +13,20 @@ struct InstanceData {
 
 struct MaterialData {
     float4 baseColor;
-    uint textureIndex;
-    uint _final_pad0[3];
+};
+
+struct Transform {
+    float3 position;
+    uint _pad0[1];
+    float3 rotation;
+    uint _pad1[1];
+    float3 scale;
+    uint _final_pad2[1];
+};
+
+struct MeshRenderer {
+    uint modelIndex;
+    uint materialIndex;
+    uint _final_pad0[2];
 };
 

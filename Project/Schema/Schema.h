@@ -12,13 +12,31 @@ struct InstanceData {
     Engine::Math::Matrix4x4 world;
     Engine::Math::Vector4 baseColor;
     uint32_t textureIndex;
-    float _padding[3];
+    Engine::Math::Vector3 padding;
 };
 
 struct MaterialData {
     Engine::Math::Vector4 baseColor;
-    uint32_t textureIndex;
-    uint32_t _final_pad0[3];
 };
 
+
 } // namespace Engine::GeneratedSchema
+
+namespace Engine::ECS {
+
+struct Transform {
+    Engine::Math::Vector3 position;
+    uint8_t _pad0[4];
+    Engine::Math::Vector3 rotation;
+    uint8_t _pad1[4];
+    Engine::Math::Vector3 scale;
+    uint8_t _final_pad2[4];
+};
+
+struct MeshRenderer {
+    uint32_t modelIndex;
+    uint32_t materialIndex;
+    uint8_t _final_pad0[8];
+};
+
+} // namespace Engine::ECS

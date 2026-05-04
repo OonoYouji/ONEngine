@@ -1,27 +1,44 @@
 using System;
 using System.Runtime.InteropServices;
+using ONEngine.Scripting.Generated;
 
 namespace ONEngine.Scripting
 {
-    public static class EngineHost
+    public unsafe static class EngineHost
     {
+        private static IntPtr _registryPtr;
+        private static ComponentView<Transform> _transformView;
+
         [UnmanagedCallersOnly]
-        public static void Initialize(IntPtr logHandler)
+        public static void Initialize(IntPtr logHandler, IntPtr registryPtr)
         {
+            _registryPtr = registryPtr;
             Debug.SetLogHandler(logHandler);
-            Debug.Log("[C#] EngineHost initialized with custom log handler.");
+            
+            _transformView = new ComponentView<Transform>(registryPtr, ECS.GetTransformChunk);
+
+            Debug.Log("[C#] EngineHost initialized with Zero-Copy ECS.");
         }
 
         [UnmanagedCallersOnly]
-        public static void Update()
+        public static void Update(float deltaTime)
         {
-            // Update logic here
+            uint entityCount = ECS.GetEntityCount(_registryPtr);
+            for (uint i = 0; i < entityCount; i++)
+            {
+                Transform* transform = _transformView.GetPointer(i);
+                if (transform != null)
+                {
+                    // Rotate on Y axis from C#!
+                    transform->rotation.y += 2.0f * deltaTime;
+                }
+            }
         }
 
         [UnmanagedCallersOnly]
         public static void Shutdown()
         {
-            Console.WriteLine("[C#] EngineHost shutdown.");
+            Debug.Log("[C#] EngineHost shutdown.");
         }
     }
 }

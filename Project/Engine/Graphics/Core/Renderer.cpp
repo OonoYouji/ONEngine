@@ -73,7 +73,7 @@ void Renderer::Extract() {
             data.baseColor = { 1, 1, 1, 1 };
             data.textureIndex = 0;
         }
-        data._padding[0] = data._padding[1] = data._padding[2] = 0.0f;
+        data.padding = { 0, 0, 0 };
         instanceData.push_back(data);
     }
 
