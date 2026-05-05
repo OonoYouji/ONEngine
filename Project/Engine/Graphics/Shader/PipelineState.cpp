@@ -23,6 +23,7 @@ struct GraphicsPipelineStateStream {
 // Mesh Shader Pipeline 用のストリーム構造体
 struct MeshPipelineStateStream {
     CD3DX12_PIPELINE_STATE_STREAM_ROOT_SIGNATURE RootSignature;
+    CD3DX12_PIPELINE_STATE_STREAM_PRIMITIVE_TOPOLOGY PrimitiveTopology;
     CD3DX12_PIPELINE_STATE_STREAM_AS AS;
     CD3DX12_PIPELINE_STATE_STREAM_MS MS;
     CD3DX12_PIPELINE_STATE_STREAM_PS PS;
@@ -74,6 +75,7 @@ bool PipelineState::Create(
         }
         stream.RTVFormats = rtvFormats;
         stream.DSVFormat = desc.dsvFormat;
+        stream.PrimitiveTopology = desc.primitiveTopologyType;
 
         CD3DX12_RASTERIZER_DESC rasterizerDesc(D3D12_DEFAULT);
         rasterizerDesc.FillMode = desc.fillMode;
@@ -130,7 +132,7 @@ bool PipelineState::Create(
         psoDesc.DepthStencilState.DepthFunc = desc.depthFunc;
 
         psoDesc.SampleMask = UINT_MAX;
-        psoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+        psoDesc.PrimitiveTopologyType = desc.primitiveTopologyType;
         psoDesc.NumRenderTargets = desc.numRenderTargets;
         for (uint32_t i = 0; i < desc.numRenderTargets; ++i) {
             psoDesc.RTVFormats[i] = desc.rtvFormat;

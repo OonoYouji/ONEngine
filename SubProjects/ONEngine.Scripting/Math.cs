@@ -6,6 +6,7 @@ namespace ONEngine.Scripting.Math
     public struct Vector2
     {
         public float x, y;
+        public Vector2(float x, float y) { this.x = x; this.y = y; }
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -19,6 +20,7 @@ namespace ONEngine.Scripting.Math
     public struct Vector4
     {
         public float x, y, z, w;
+        public Vector4(float x, float y, float z, float w) { this.x = x; this.y = y; this.z = z; this.w = w; }
     }
 
     [StructLayout(LayoutKind.Sequential)]

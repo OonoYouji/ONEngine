@@ -33,6 +33,9 @@ struct PipelineStateDesc {
     bool usePS = true;
     uint32_t numRenderTargets = 1;
 
+    // プリミティブ設定
+    D3D12_PRIMITIVE_TOPOLOGY_TYPE primitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+
     PipelineStateDesc() {
 
         blendDesc.AlphaToCoverageEnable = FALSE;
