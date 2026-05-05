@@ -52,12 +52,44 @@ bool ShaderManager::LoadPipelineAsset(const std::string& filePath) {
         parseShader(data["as"], asset.as);
         parseShader(data["ms"], asset.ms);
 
+        // --- Render States ---
+        auto& desc = asset.baseDesc;
+
+        if (data.contains("rasterizer")) {
+            auto& r = data["rasterizer"];
+            std::string cull = r.value("cull", "BACK");
+            if (cull == "NONE") desc.cullMode = D3D12_CULL_MODE_NONE;
+            else if (cull == "FRONT") desc.cullMode = D3D12_CULL_MODE_FRONT;
+            else desc.cullMode = D3D12_CULL_MODE_BACK;
+
+            std::string fill = r.value("fill", "SOLID");
+            if (fill == "WIREFRAME") desc.fillMode = D3D12_FILL_MODE_WIREFRAME;
+            else desc.fillMode = D3D12_FILL_MODE_SOLID;
+        }
+
+        if (data.contains("depth")) {
+            auto& d = data["depth"];
+            desc.depthEnable = d.value("enable", true);
+            desc.depthWriteEnable = d.value("write", true);
+            
+            std::string func = d.value("func", "LESS");
+            if (func == "LESS_EQUAL") desc.depthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
+            else if (func == "EQUAL") desc.depthFunc = D3D12_COMPARISON_FUNC_EQUAL;
+            else if (func == "ALWAYS") desc.depthFunc = D3D12_COMPARISON_FUNC_ALWAYS;
+            else desc.depthFunc = D3D12_COMPARISON_FUNC_LESS;
+        }
+
+        if (data.contains("blend")) {
+            desc.blendEnable = data["blend"].value("enable", false);
+        }
+
         if (asset.name.empty()) {
             asset.name = std::filesystem::path(filePath).stem().string();
         }
 
         pipelineAssets_[asset.name] = asset;
-        Engine::Console::Log(std::format("Loaded Pipeline Asset: {}", asset.name));
+        Engine::Console::Log(std::format("Loaded Pipeline Asset: {} (Cull:{}, DepthWrite:{}, Blend:{})", 
+            asset.name, (int)desc.cullMode, desc.depthWriteEnable, desc.blendEnable));
         return true;
     }
     catch (const std::exception& e) {
@@ -66,13 +98,7 @@ bool ShaderManager::LoadPipelineAsset(const std::string& filePath) {
     }
 }
 
-PipelineState* ShaderManager::GetOrCreatePSO(const std::string& templateName, const PipelineStateDesc& desc) {
-    // 1. キャッシュキーの生成
-    std::string key = GeneratePSOKey(templateName, desc);
-    if (pipelineStates_.count(key)) {
-        return pipelineStates_[key].get();
-    }
-
+PipelineState* ShaderManager::GetOrCreatePSO(const std::string& templateName, const PipelineStateDesc& overrideDesc) {
     // 2. テンプレートの取得
     auto assetIt = pipelineAssets_.find(templateName);
     if (assetIt == pipelineAssets_.end()) {
@@ -81,7 +107,40 @@ PipelineState* ShaderManager::GetOrCreatePSO(const std::string& templateName, co
     }
     const auto& asset = assetIt->second;
 
-    // 3. 必要に応じてシェーダーをロード（既にロード済みならスキップされる）
+    // テンプレートの設定をベースに、渡された設定をマージする
+    PipelineStateDesc finalDesc = asset.baseDesc;
+    
+    // 特定のフィールドをマージ（上書き）
+    // ルール: JSONに定義があればそれを優先するが、Pass固有の設定（usePSやrtvFormat）は overrideDesc を優先する
+    finalDesc.usePS = overrideDesc.usePS;
+    finalDesc.numRenderTargets = overrideDesc.numRenderTargets;
+    finalDesc.rtvFormat = overrideDesc.rtvFormat;
+    finalDesc.dsvFormat = overrideDesc.dsvFormat;
+    finalDesc.primitiveTopologyType = overrideDesc.primitiveTopologyType;
+
+    // 深度書き込み設定は、マテリアル側が書き込みONの場合のみ、Pass側でOFFにできる（逆は不可など）
+    // とりあえずシンプルに overrideDesc に値がセットされていれば（デフォルトでないなら）上書き
+    // しかし C++ の構造体に "セットされているか" の判別は難しいので、
+    // ここでは「overrideDesc のデフォルト値でないものだけ上書き」等の処理が必要。
+    
+    // 暫定: Z-Prepass (usePS=false) の時は強制的に深度書き込みONにするなどのロジックを入れる
+    if (!overrideDesc.usePS) {
+        finalDesc.depthWriteEnable = true;
+        finalDesc.depthFunc = D3D12_COMPARISON_FUNC_LESS;
+        finalDesc.numRenderTargets = 0;
+    } else if (overrideDesc.depthFunc == D3D12_COMPARISON_FUNC_EQUAL) {
+        // メインパス (EQUAL) の時は、テンプレート側の設定を維持しつつ func だけ EQUAL にする
+        finalDesc.depthFunc = D3D12_COMPARISON_FUNC_EQUAL;
+        finalDesc.depthWriteEnable = false;
+    }
+
+    // キャッシュキーの生成 (finalDesc を使用)
+    std::string key = GeneratePSOKey(templateName, finalDesc);
+    if (pipelineStates_.count(key)) {
+        return pipelineStates_[key].get();
+    }
+
+    // シェーダーのロード
     auto ensureShader = [&](const std::string& shaderKey, const ShaderFileInfo& info) {
         if (!info.isValid) return (ShaderObject*)nullptr;
         if (!GetShader(shaderKey)) {
@@ -92,29 +151,11 @@ PipelineState* ShaderManager::GetOrCreatePSO(const std::string& templateName, co
         return GetShader(shaderKey);
     };
 
-    // シェーダーのキー名は "TemplateName_VS" のようにして管理
     ShaderObject* vs = ensureShader(templateName + "_VS", asset.vs);
     ShaderObject* ps = ensureShader(templateName + "_PS", asset.ps);
     ShaderObject* as = ensureShader(templateName + "_AS", asset.as);
     ShaderObject* ms = ensureShader(templateName + "_MS", asset.ms);
 
-    // ログ出力
-    if (asset.vs.isValid) Engine::Console::Log(std::format("VS Check: {} -> {}", templateName + "_VS", vs ? "SUCCESS" : "FAILED"));
-    if (asset.ps.isValid) Engine::Console::Log(std::format("PS Check: {} -> {}", templateName + "_PS", ps ? "SUCCESS" : "FAILED"));
-    if (asset.ms.isValid) Engine::Console::Log(std::format("MS Check: {} -> {}", templateName + "_MS", ms ? "SUCCESS" : "FAILED"));
-
-    // 必須シェーダーのチェック（VSまたはMSが必須）
-    bool hasValidShaders = true;
-    if (asset.vs.isValid && !vs) hasValidShaders = false;
-    if (asset.ms.isValid && !ms) hasValidShaders = false;
-
-    if (!hasValidShaders || (!vs && !ms)) {
-        Engine::Console::LogError(std::format("Failed to ensure required shaders for template: {}", templateName));
-        return nullptr;
-    }
-
-    // 4. ルートシグネチャの作成または取得（テンプレートごとに1つ）
-    // テンプレートに含まれる全シェーダーの反射情報を統合して作成する
     if (!rootSignatures_.count(templateName)) {
         std::vector<ShaderReflectionData> reflections;
         if (vs) reflections.push_back(vs->reflectionData);
@@ -128,11 +169,9 @@ PipelineState* ShaderManager::GetOrCreatePSO(const std::string& templateName, co
     }
     RootSignature* rootSig = rootSignatures_[templateName].get();
 
-    // 5. PSOの作成
-    // 現在の描画パスの設定（desc.usePS）に応じて、ピクセルシェーダーを渡すかどうか決める
-    ShaderObject* psForPSO = desc.usePS ? ps : nullptr;
+    ShaderObject* psForPSO = finalDesc.usePS ? ps : nullptr;
     auto pso = std::make_unique<PipelineState>();
-    if (!pso->Create(device_, rootSig, vs, psForPSO, as, ms, desc)) {
+    if (!pso->Create(device_, rootSig, vs, psForPSO, as, ms, finalDesc)) {
         return nullptr;
     }
 
@@ -141,8 +180,7 @@ PipelineState* ShaderManager::GetOrCreatePSO(const std::string& templateName, co
 }
 
 std::string ShaderManager::GeneratePSOKey(const std::string& templateName, const PipelineStateDesc& desc) {
-    // 設定値を文字列連結して簡易的なハッシュキーとする
-    return std::format("{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}",
+    return std::format("{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}",
         templateName,
         (int)desc.cullMode,
         (int)desc.fillMode,
@@ -153,7 +191,8 @@ std::string ShaderManager::GeneratePSOKey(const std::string& templateName, const
         (int)desc.rtvFormat,
         (int)desc.dsvFormat,
         desc.usePS,
-        desc.numRenderTargets
+        desc.numRenderTargets,
+        (int)desc.primitiveTopologyType
     );
 }
 

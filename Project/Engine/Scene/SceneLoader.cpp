@@ -4,6 +4,7 @@
 #include "Schema/Schema.h"
 #include "Engine/Asset/AssetManager.h"
 #include "Engine/Asset/MaterialManager.h"
+#include "Engine/Asset/TextureManager.h"
 #include "Engine/Script/ScriptHost.h"
 #include <fstream>
 #include <filesystem>
@@ -98,6 +99,32 @@ namespace {
         l.radius = j.value("radius", 10.0f);
     }
 
+    void DeserializeSpriteRenderer(const json& j, Engine::ECS::SpriteRenderer& sr) {
+        if (j.contains("texturePath")) {
+            sr.textureIndex = Engine::Asset::TextureManager::GetInstance().LoadTexture(j["texturePath"]);
+        } else {
+            sr.textureIndex = j.value("textureIndex", 0);
+        }
+
+        if (j.contains("color")) {
+            sr.color.x = j["color"].value("x", 1.0f);
+            sr.color.y = j["color"].value("y", 1.0f);
+            sr.color.z = j["color"].value("z", 1.0f);
+            sr.color.w = j["color"].value("w", 1.0f);
+        } else {
+            sr.color = { 1, 1, 1, 1 };
+        }
+
+        if (j.contains("size")) {
+            sr.size.x = j["size"].value("x", 1.0f);
+            sr.size.y = j["size"].value("y", 1.0f);
+        } else {
+            sr.size = { 1, 1 };
+        }
+
+        sr.isBillboard = j.value("isBillboard", 1) ? 1 : 0;
+    }
+
     void DeserializeEntity(const json& jEntity, Engine::ECS::Registry& registry) {
         auto entity = registry.CreateEntity();
         
@@ -121,6 +148,9 @@ namespace {
                 } else if (type == "PointLight") {
                     auto& l = registry.AddComponent<Engine::ECS::PointLight>(entity);
                     DeserializePointLight(jComp, l);
+                } else if (type == "SpriteRenderer") {
+                    auto& sr = registry.AddComponent<Engine::ECS::SpriteRenderer>(entity);
+                    DeserializeSpriteRenderer(jComp, sr);
                 } else if (type == "Script") {
                     EnsureScriptDelegate();
                     if (gAddScriptDelegate && jComp.contains("scripts") && jComp["scripts"].is_array()) {
@@ -144,16 +174,14 @@ namespace {
 bool SceneLoader::LoadScene(const std::string& path, Engine::ECS::Registry& registry) {
     Engine::Console::Log(std::format("SceneLoader: Loading scene from {}", path));
     
-    std::ifstream file(path, std::ios::binary); // バイナリモードで開く
+    std::ifstream file(path, std::ios::binary);
     if (!file.is_open()) {
         Engine::Console::LogError(std::format("Failed to open scene file: {}", path));
         return false;
     }
 
-    // ファイル内容を文字列に読み込む
     std::string content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
     
-    // UTF-8 BOM (0xEF, 0xBB, 0xBF) の除去
     if (content.size() >= 3 && 
         (unsigned char)content[0] == 0xEF && 
         (unsigned char)content[1] == 0xBB && 
@@ -172,7 +200,6 @@ bool SceneLoader::LoadScene(const std::string& path, Engine::ECS::Registry& regi
         return true;
     } catch (const json::parse_error& e) {
         Engine::Console::LogError(std::format("JSON Parse Error in {}: {} (at byte {})", path, e.what(), e.byte));
-        // 問題箇所の周辺を表示するためのデバッグ情報
         size_t start = (e.byte > 20) ? e.byte - 20 : 0;
         std::string context = content.substr(start, 40);
         Engine::Console::LogError(std::format("Context around error: ... {} ...", context));
@@ -210,6 +237,9 @@ Engine::ECS::Entity SceneLoader::InstantiatePrefab(const std::string& path, Engi
                 } else if (type == "PointLight") {
                     auto& l = registry.AddComponent<Engine::ECS::PointLight>(entity);
                     DeserializePointLight(jComp, l);
+                } else if (type == "SpriteRenderer") {
+                    auto& sr = registry.AddComponent<Engine::ECS::SpriteRenderer>(entity);
+                    DeserializeSpriteRenderer(jComp, sr);
                 } else if (type == "Script") {
                     EnsureScriptDelegate();
                     if (gAddScriptDelegate && jComp.contains("scripts") && jComp["scripts"].is_array()) {

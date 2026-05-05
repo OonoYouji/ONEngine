@@ -107,3 +107,27 @@ types:
         type: float3
       - name: radius
         type: float
+
+  SpriteRenderer:
+    type: Component
+    fields:
+      - name: textureIndex
+        type: uint32
+      - name: color
+        type: float4
+      - name: size
+        type: float2
+      - name: isBillboard
+        type: uint32 # bool equivalent
+
+  SpriteData:
+    type: StructuredBuffer
+    fields:
+      - name: world
+        type: float4x4
+      - name: color
+        type: float4
+      - name: textureIndex
+        type: uint32
+      - name: padding
+        type: float3

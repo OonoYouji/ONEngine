@@ -26,6 +26,15 @@ struct Transform {
     uint _final_pad2[1];
 };
 
+struct SpriteRenderer {
+    uint textureIndex;
+    uint _pad0[3];
+    float4 color;
+    float2 size;
+    uint isBillboard;
+    uint _final_pad1[1];
+};
+
 struct Camera {
     float fov;
     float nearZ;
@@ -57,6 +66,13 @@ struct DirectionalLight {
     float intensity;
     float3 direction;
     uint _final_pad0[1];
+};
+
+struct SpriteData {
+    float4x4 world;
+    float4 color;
+    uint textureIndex;
+    float3 padding;
 };
 
 struct InstanceData {

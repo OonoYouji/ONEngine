@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include "PipelineState.h"
 
 namespace Engine::Graphics {
 
@@ -23,6 +24,8 @@ struct PipelineAsset {
     ShaderFileInfo ps;
     ShaderFileInfo as; // Optional
     ShaderFileInfo ms; // Optional
+
+    PipelineStateDesc baseDesc;
 };
 
 } // namespace Engine::Graphics

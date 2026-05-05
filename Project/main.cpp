@@ -14,6 +14,7 @@
 #include "Engine/ECS/Systems/RenderSystem.h"
 #include "Engine/ECS/Systems/CameraSystem.h"
 #include "Engine/ECS/Systems/LightSystem.h"
+#include "Engine/ECS/Systems/SpriteSystem.h"
 #include "Engine/Graphics/Resource/GeometryPool.h"
 #include "Engine/Graphics/PostProcess/DebugRenderer.h"
 #include "Engine/Common/Console.h"
@@ -173,7 +174,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     shaderManager.LoadPipelineAsset("Assets/Pipelines/Blit.json");
     shaderManager.LoadPipelineAsset("Assets/Pipelines/PostProcess.json");
     shaderManager.LoadPipelineAsset("Assets/Pipelines/DebugLine.json");
-
+    shaderManager.LoadPipelineAsset("Assets/Pipelines/Sprite.json");
     Engine::Scene::SceneLoader::LoadScene("Assets/Scene/Main.scene", registry);
 
     Engine::ECS::RenderSystem renderSystem;
@@ -185,6 +186,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     Engine::Graphics::StructuredBuffer pointLightSB;
     const uint32_t kMaxPointLights = 64;
     pointLightSB.Create(graphicsEngine.GetRenderDevice(), sizeof(PointLightData), kMaxPointLights);
+
+    Engine::Graphics::StructuredBuffer spriteSB;
+    const uint32_t kMaxSprites = 1024;
+    spriteSB.Create(graphicsEngine.GetRenderDevice(), sizeof(SpriteData), kMaxSprites);
 
     Engine::Core::Timer timer;
     timer.Reset();
@@ -204,6 +209,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
         lightSystem.Reset();
         lightSystem.Update(registry);
+
+        Engine::ECS::SpriteSystem spriteSystem;
+        spriteSystem.Reset();
+        spriteSystem.Update(registry);
 
         debugRenderer.Clear();
         // テスト用のグリッド表示
@@ -240,6 +249,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
         if (!lightRes.pointLights.empty()) {
             pointLightSB.Update(lightRes.pointLights.data(), (uint32_t)(lightRes.pointLights.size() * sizeof(PointLightData)));
         }
+
+        auto spriteRes = spriteSystem.GetResult();
+        if (!spriteRes.sprites.empty()) {
+            spriteSB.Update(spriteRes.sprites.data(), (uint32_t)(spriteRes.sprites.size() * sizeof(SpriteData)));
+        }
         
         auto* currentFrameRes = graphicsEngine.GetCurrentFrameResource();
         currentFrameRes->GetSceneCB()->Update(&sceneData, sizeof(sceneData));
@@ -259,6 +273,26 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
         // Rendererに全てを任せる
         renderer.RenderZPrepass(context);
         renderer.Render(context);
+
+        // --- スプライト描画 ---
+        if (!spriteRes.sprites.empty()) {
+            auto* pso = shaderManager.GetOrCreatePSO("Sprite", Engine::Graphics::PipelineStateDesc());
+            auto* rootSig = shaderManager.GetRootSignature("Sprite");
+            auto* commandList = context.commandList;
+
+            commandList->SetGraphicsRootSignature(rootSig->Get());
+            commandList->SetPipelineState(pso->Get());
+
+            ID3D12DescriptorHeap* srvHeaps[] = { textureManager.GetSrvHeap()->GetHeap() };
+            commandList->SetDescriptorHeaps(_countof(srvHeaps), srvHeaps);
+
+            commandList->SetGraphicsRootConstantBufferView(rootSig->GetParameterIndex("gSceneData"), context.sceneCBAddress);
+            commandList->SetGraphicsRootDescriptorTable(rootSig->GetParameterIndex("gTextures"), textureManager.GetSrvHeap()->GetGPUHandle(0));
+            commandList->SetGraphicsRootShaderResourceView(rootSig->GetParameterIndex("gSprites"), spriteSB.GetResource()->GetGPUVirtualAddress());
+
+            commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+            commandList->DrawInstanced(4, (UINT)spriteRes.sprites.size(), 0, 0);
+        }
 
         // デバッグ表示
         debugRenderer.Render(context.commandList, context.sceneCBAddress);

@@ -21,6 +21,13 @@ struct SceneData {
     float padding;
 };
 
+struct SpriteData {
+    Engine::Math::Matrix4x4 world;
+    Engine::Math::Vector4 color;
+    uint32_t textureIndex;
+    Engine::Math::Vector3 padding;
+};
+
 struct InstanceData {
     Engine::Math::Matrix4x4 world;
     Engine::Math::Vector4 baseColor;
@@ -45,6 +52,15 @@ struct Transform {
     uint8_t _pad1[4];
     Engine::Math::Vector3 scale;
     uint8_t _final_pad2[4];
+};
+
+struct SpriteRenderer {
+    uint32_t textureIndex;
+    uint8_t _pad0[12];
+    Engine::Math::Vector4 color;
+    Engine::Math::Vector2 size;
+    uint32_t isBillboard;
+    uint8_t _final_pad1[4];
 };
 
 struct Camera {
