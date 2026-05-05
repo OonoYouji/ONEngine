@@ -1,4 +1,4 @@
-#include <Windows.h>
+﻿#include <Windows.h>
 #include <vector>
 #include "Engine/Core/Window.h"
 #include "Engine/Core/Timer.h"
@@ -9,81 +9,53 @@
 #include "Engine/Asset/TextureManager.h"
 #include "Engine/Asset/MaterialManager.h"
 #include "Engine/Asset/AssetManager.h"
+#include "Engine/Asset/FontManager.h"
 #include "Engine/Graphics/Resource/ConstantBuffer.h"
 #include "Engine/ECS/Registry.h"
+#include "Engine/ECS/ComponentRegistry.h"
 #include "Engine/ECS/Systems/RenderSystem.h"
+#include "Engine/ECS/Systems/TransformSystem.h"
 #include "Engine/ECS/Systems/CameraSystem.h"
 #include "Engine/ECS/Systems/LightSystem.h"
-#include "Engine/ECS/Systems/SpriteSystem.h"
 #include "Engine/ECS/Systems/SkyboxSystem.h"
 #include "Engine/ECS/Systems/TextSystem.h"
+#include "Engine/ECS/Systems/SpriteSystem.h"
 #include "Engine/Graphics/Resource/GeometryPool.h"
 #include "Engine/Graphics/PostProcess/DebugRenderer.h"
-#include "Engine/Asset/FontManager.h"
 #include "Engine/Common/Console.h"
 #include "Engine/Scene/SceneLoader.h"
 #include "Schema/Schema.h"
 
 extern "C" void LogFromRuntime(const char*);
 
-extern "C" {
-    // --- Component Type IDs ---
-    __declspec(dllexport) uint32_t Ecs_GetTypeId_Transform() { return 1; }
-    __declspec(dllexport) uint32_t Ecs_GetTypeId_MeshRenderer() { return 2; }
-    __declspec(dllexport) uint32_t Ecs_GetTypeId_ScriptComponent() { return 3; }
+// 汎用 Interop
+namespace Engine::ECS {
+    void InitializeComponentRegistry();
+}
 
-    // --- Generic Storage Access ---
+extern "C" {
     __declspec(dllexport) void* ecs_get_sparse_pages(Engine::ECS::Registry* registry, uint32_t typeId, uint32_t* pageCount) {
-        if (typeId == 1) return registry->GetStorage<Engine::ECS::Transform>().GetSparsePagesPtr(pageCount);
-        if (typeId == 2) return registry->GetStorage<Engine::ECS::MeshRenderer>().GetSparsePagesPtr(pageCount);
-        if (typeId == 3) return registry->GetStorage<Engine::ECS::ScriptComponent>().GetSparsePagesPtr(pageCount);
-        return nullptr;
+        auto* info = Engine::ECS::ComponentRegistry::GetInstance().GetInfo(typeId);
+        if (!info) return nullptr;
+        return info->getStorageFunc(*registry).GetSparsePagesPtr(pageCount);
     }
 
     __declspec(dllexport) void* ecs_get_chunk_ptr(Engine::ECS::Registry* registry, uint32_t typeId, uint32_t chunkIndex) {
-        if (typeId == 1) return registry->GetStorage<Engine::ECS::Transform>().GetChunkPtr(chunkIndex);
-        if (typeId == 2) return registry->GetStorage<Engine::ECS::MeshRenderer>().GetChunkPtr(chunkIndex);
-        if (typeId == 3) return registry->GetStorage<Engine::ECS::ScriptComponent>().GetChunkPtr(chunkIndex);
-        return nullptr;
+        auto* info = Engine::ECS::ComponentRegistry::GetInstance().GetInfo(typeId);
+        if (!info) return nullptr;
+        return info->getStorageFunc(*registry).GetChunkPtr(chunkIndex);
     }
 
     __declspec(dllexport) uint32_t ecs_get_chunk_count(Engine::ECS::Registry* registry, uint32_t typeId) {
-        if (typeId == 1) return (uint32_t)((registry->GetStorage<Engine::ECS::Transform>().Size() + 1023) / 1024);
-        if (typeId == 2) return (uint32_t)((registry->GetStorage<Engine::ECS::MeshRenderer>().Size() + 1023) / 1024);
-        if (typeId == 3) return (uint32_t)((registry->GetStorage<Engine::ECS::ScriptComponent>().Size() + 1023) / 1024);
-        return 0;
+        auto* info = Engine::ECS::ComponentRegistry::GetInstance().GetInfo(typeId);
+        if (!info) return 0;
+        return (uint32_t)((info->getStorageFunc(*registry).Size() + 1023) / 1024);
     }
 
     __declspec(dllexport) uint32_t ecs_get_storage_size(Engine::ECS::Registry* registry, uint32_t typeId) {
-        if (typeId == 1) return (uint32_t)registry->GetStorage<Engine::ECS::Transform>().Size();
-        if (typeId == 2) return (uint32_t)registry->GetStorage<Engine::ECS::MeshRenderer>().Size();
-        if (typeId == 3) return (uint32_t)registry->GetStorage<Engine::ECS::ScriptComponent>().Size();
-        return 0;
-    }
-
-    __declspec(dllexport) uint32_t* ecs_get_entities_ptr(Engine::ECS::Registry* registry, uint32_t typeId, uint32_t* count) {
-        if (typeId == 1) { 
-            auto& s = registry->GetStorage<Engine::ECS::Transform>();
-            *count = (uint32_t)s.GetEntities().size();
-            return (uint32_t*)s.GetEntities().data();
-        }
-        if (typeId == 2) {
-            auto& s = registry->GetStorage<Engine::ECS::MeshRenderer>();
-            *count = (uint32_t)s.GetEntities().size();
-            return (uint32_t*)s.GetEntities().data();
-        }
-        if (typeId == 3) {
-            auto& s = registry->GetStorage<Engine::ECS::ScriptComponent>();
-            *count = (uint32_t)s.GetEntities().size();
-            return (uint32_t*)s.GetEntities().data();
-        }
-        return nullptr;
-    }
-
-    __declspec(dllexport) uint32_t GetEntityId(Engine::ECS::Registry* registry, uint32_t index) {
-        auto& entities = registry->GetStorage<Engine::ECS::Transform>().GetEntities();
-        if (index >= entities.size()) return 0;
-        return entities[index];
+        auto* info = Engine::ECS::ComponentRegistry::GetInstance().GetInfo(typeId);
+        if (!info) return 0;
+        return (uint32_t)info->getStorageFunc(*registry).Size();
     }
 
     __declspec(dllexport) uint32_t CreateEntity(Engine::ECS::Registry* registry) {
@@ -112,6 +84,11 @@ extern "C" {
     __declspec(dllexport) void Debug_DrawLine(float sx, float sy, float sz, float ex, float ey, float ez, float r, float g, float b, float a) {
         Engine::Graphics::DebugRenderer::GetInstance().DrawLine({sx, sy, sz}, {ex, ey, ez}, {r, g, b, a});
     }
+
+    // 型IDのエクスポート (Registryから動的に取得可能だが、C#側の定数と合わせるために残す)
+    __declspec(dllexport) uint32_t Ecs_GetTypeId_Transform() { return 1; }
+    __declspec(dllexport) uint32_t Ecs_GetTypeId_MeshRenderer() { return 2; }
+    __declspec(dllexport) uint32_t Ecs_GetTypeId_ScriptComponent() { return 3; }
 }
 
 using namespace Engine::GeneratedSchema;
@@ -121,6 +98,8 @@ using namespace Engine::ECS;
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     Engine::Console::Initialize();
 
+    // Registry の初期化
+    Engine::ECS::InitializeComponentRegistry();
     Engine::ECS::Registry registry;
 
     Engine::Core::Window window;
@@ -183,14 +162,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     shaderManager.LoadPipelineAsset("Assets/Pipelines/Sprite.json");
     shaderManager.LoadPipelineAsset("Assets/Pipelines/Skybox.json");
     shaderManager.LoadPipelineAsset("Assets/Pipelines/Text.json");
+
     Engine::Scene::SceneLoader::LoadScene("Assets/Scene/Main.scene", registry);
 
+    Engine::ECS::TransformSystem transformSystem;
     Engine::ECS::RenderSystem renderSystem;
     Engine::ECS::CameraSystem cameraSystem;
     Engine::ECS::LightSystem lightSystem;
     Engine::ECS::SkyboxSystem skyboxSystem;
     Engine::Graphics::ConstantBuffer sceneCB;
-
     sceneCB.Create(graphicsEngine.GetRenderDevice(), sizeof(SceneData));
 
     Engine::Graphics::StructuredBuffer pointLightSB;
@@ -218,6 +198,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
         if (updateDelegate) updateDelegate(dt);
 
         // システム更新
+        transformSystem.Update(registry);
+
         cameraSystem.Reset();
         cameraSystem.Update(registry);
 
@@ -302,40 +284,31 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
         // --- スカイボックス描画 ---
         if (skyboxSystem.HasSkybox()) {
-        	auto* pso = shaderManager.GetOrCreatePSO("Skybox", Engine::Graphics::PipelineStateDesc());
-        	auto* rootSig = shaderManager.GetRootSignature("Skybox");
-        	auto* commandList = context.commandList;
-
-        	commandList->SetGraphicsRootSignature(rootSig->Get());
-        	commandList->SetPipelineState(pso->Get());
-
-        	ID3D12DescriptorHeap* srvHeaps[] = { textureManager.GetSrvHeap()->GetHeap() };
-        	commandList->SetDescriptorHeaps(_countof(srvHeaps), srvHeaps);
-
-        	commandList->SetGraphicsRootConstantBufferView(rootSig->GetParameterIndex("gSceneData"), context.sceneCBAddress);
-        	commandList->SetGraphicsRootDescriptorTable(rootSig->GetParameterIndex("gSkybox"), textureManager.GetSrvHeap()->GetGPUHandle(skyboxSystem.GetTextureIndex()));
-
-        	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-        	commandList->DrawInstanced(36, 1, 0, 0); // 立方体の36頂点
+            auto* pso = shaderManager.GetOrCreatePSO("Skybox", Engine::Graphics::PipelineStateDesc());
+            auto* rootSig = shaderManager.GetRootSignature("Skybox");
+            auto* commandList = context.commandList;
+            commandList->SetGraphicsRootSignature(rootSig->Get());
+            commandList->SetPipelineState(pso->Get());
+            ID3D12DescriptorHeap* srvHeaps[] = { textureManager.GetSrvHeap()->GetHeap() };
+            commandList->SetDescriptorHeaps(_countof(srvHeaps), srvHeaps);
+            commandList->SetGraphicsRootConstantBufferView(rootSig->GetParameterIndex("gSceneData"), context.sceneCBAddress);
+            commandList->SetGraphicsRootDescriptorTable(rootSig->GetParameterIndex("gSkybox"), textureManager.GetSrvHeap()->GetGPUHandle(skyboxSystem.GetTextureIndex()));
+            commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+            commandList->DrawInstanced(36, 1, 0, 0);
         }
 
         // --- スプライト描画 ---
-
         if (!spriteRes.sprites.empty()) {
             auto* pso = shaderManager.GetOrCreatePSO("Sprite", Engine::Graphics::PipelineStateDesc());
             auto* rootSig = shaderManager.GetRootSignature("Sprite");
             auto* commandList = context.commandList;
-
             commandList->SetGraphicsRootSignature(rootSig->Get());
             commandList->SetPipelineState(pso->Get());
-
             ID3D12DescriptorHeap* srvHeaps[] = { textureManager.GetSrvHeap()->GetHeap() };
             commandList->SetDescriptorHeaps(_countof(srvHeaps), srvHeaps);
-
             commandList->SetGraphicsRootConstantBufferView(rootSig->GetParameterIndex("gSceneData"), context.sceneCBAddress);
             commandList->SetGraphicsRootDescriptorTable(rootSig->GetParameterIndex("gTextures"), textureManager.GetSrvHeap()->GetGPUHandle(0));
             commandList->SetGraphicsRootShaderResourceView(rootSig->GetParameterIndex("gSprites"), spriteSB.GetResource()->GetGPUVirtualAddress());
-
             commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
             commandList->DrawInstanced(4, (UINT)spriteRes.sprites.size(), 0, 0);
         }
@@ -345,17 +318,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
             auto* pso = shaderManager.GetOrCreatePSO("Text", Engine::Graphics::PipelineStateDesc());
             auto* rootSig = shaderManager.GetRootSignature("Text");
             auto* commandList = context.commandList;
-
             commandList->SetGraphicsRootSignature(rootSig->Get());
             commandList->SetPipelineState(pso->Get());
-
             ID3D12DescriptorHeap* srvHeaps[] = { textureManager.GetSrvHeap()->GetHeap() };
             commandList->SetDescriptorHeaps(_countof(srvHeaps), srvHeaps);
-
             commandList->SetGraphicsRootConstantBufferView(rootSig->GetParameterIndex("gSceneData"), context.sceneCBAddress);
             commandList->SetGraphicsRootDescriptorTable(rootSig->GetParameterIndex("gTextures"), textureManager.GetSrvHeap()->GetGPUHandle(0));
             commandList->SetGraphicsRootShaderResourceView(rootSig->GetParameterIndex("gChars"), textSB.GetResource()->GetGPUVirtualAddress());
-
             commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
             commandList->DrawInstanced(4, (UINT)textRes.charInstances.size(), 0, 0);
         }

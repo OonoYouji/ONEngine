@@ -67,12 +67,13 @@ struct TextRenderer {
 };
 
 struct Transform {
+    uint32_t parent;
     Engine::Math::Vector3 position;
-    uint8_t _pad0[4];
     Engine::Math::Vector3 rotation;
-    uint8_t _pad1[4];
+    uint8_t _pad0[4];
     Engine::Math::Vector3 scale;
-    uint8_t _final_pad2[4];
+    uint8_t _pad1[4];
+    Engine::Math::Matrix4x4 world;
 };
 
 struct SpriteRenderer {

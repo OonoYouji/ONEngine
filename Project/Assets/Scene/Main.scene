@@ -1,6 +1,7 @@
 {
     "entities": [
         {
+            "id": 1,
             "name": "MainCamera", 
             "components": [
                 {
@@ -17,6 +18,17 @@
             ]
         },
         {
+            "id": 2,
+            "name": "Sky",
+            "components": [
+                {
+                    "type": "Skybox",
+                    "texturePath": "Assets/Textures/circle.png"
+                }
+            ]
+        },
+        {
+            "id": 3,
             "name": "Sun",
             "components": [
                 {
@@ -32,6 +44,49 @@
             ]
         },
         {
+            "id": 4,
+            "name": "CenterSphere",
+            "components": [
+                {
+                    "position": { "y": 5, "x": 0, "z": 0 },
+                    "scale": { "x": 5, "y": 5, "z": 5 },
+                    "type": "Transform"
+                },
+                {
+                    "meshPath": "Packages/Models/primitive/sphere.obj",
+                    "type": "MeshRenderer",
+                    "materialPath": "Assets/Materials/White.mat"
+                },
+                {
+                    "type": "Script",
+                    "scripts": [
+                        {
+                            "name": "InternalCubeRotator",
+                            "variables": { "Speed": 1.0 }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 5,
+            "name": "SatelliteCube",
+            "parent": 4,
+            "components": [
+                {
+                    "position": { "y": 0, "x": 10, "z": 0 },
+                    "scale": { "x": 0.2, "y": 0.2, "z": 0.2 },
+                    "type": "Transform"
+                },
+                {
+                    "meshPath": "Packages/Models/primitive/cube.obj",
+                    "type": "MeshRenderer",
+                    "materialPath": "Assets/Materials/Grid.mat"
+                }
+            ]
+        },
+        {
+            "id": 6,
             "name": "Ground",
             "components": [
                 {
@@ -47,6 +102,7 @@
             ]
         },
         {
+            "id": 7,
             "name": "SphereLabel",
             "components": [
                 {
@@ -60,22 +116,6 @@
                     "color": { "x": 1, "y": 1, "z": 0, "w": 1 },
                     "size": 3.0,
                     "isScreenSpace": 0
-                }
-            ]
-        },
-        {
-            "name": "Sprite_Test",
-            "components": [
-                {
-                    "position": { "y": 10, "x": 10, "z": 0 },
-                    "type": "Transform"
-                },
-                {
-                    "type": "SpriteRenderer",
-                    "texturePath": "Assets/Textures/circle.png",
-                    "color": { "x": 1, "y": 1, "z": 1, "w": 1 },
-                    "size": { "x": 10, "y": 10 },
-                    "isBillboard": 1
                 }
             ]
         }

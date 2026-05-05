@@ -21,6 +21,10 @@ public:
 	virtual uint32_t GetIndex(Entity entity) const = 0;
 	virtual const std::vector<Entity>& GetEntities() const = 0;
 	virtual size_t Size() const = 0;
+
+	// 汎用データアクセスのための仮想関数
+	virtual void** GetSparsePagesPtr(uint32_t* outPageCount) = 0;
+	virtual void* GetChunkPtr(size_t chunkIndex) = 0;
 };
 
 ///
@@ -109,12 +113,12 @@ public:
 	size_t Size() const override { return count_; }
 
 	// Interop 用: 
-	T* GetChunkPtr(size_t chunkIndex) {
+	void* GetChunkPtr(size_t chunkIndex) override {
 		if (chunkIndex >= chunks_.size()) return nullptr;
 		return chunks_[chunkIndex].get();
 	}
 
-	void** GetSparsePagesPtr(uint32_t* outPageCount) {
+	void** GetSparsePagesPtr(uint32_t* outPageCount) override {
 		*outPageCount = static_cast<uint32_t>(sparsePages_.size());
 		return (void**)sparsePages_.data();
 	}

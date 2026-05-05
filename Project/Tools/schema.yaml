@@ -43,12 +43,16 @@ types:
   Transform:
     type: Component
     fields:
+      - name: parent
+        type: uint32 # Entity ID of the parent
       - name: position
         type: float3
       - name: rotation
         type: float3
       - name: scale
         type: float3
+      - name: world
+        type: float4x4 # Pre-computed world matrix
 
   MeshRenderer:
     type: Component

@@ -28,12 +28,13 @@ struct SceneData {
 };
 
 struct Transform {
+    uint parent;
     float3 position;
-    uint _pad0[1];
     float3 rotation;
-    uint _pad1[1];
+    uint _pad0[1];
     float3 scale;
-    uint _final_pad2[1];
+    uint _pad1[1];
+    float4x4 world;
 };
 
 struct TextData {

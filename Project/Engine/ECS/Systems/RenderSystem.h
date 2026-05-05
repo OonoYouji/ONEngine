@@ -23,7 +23,6 @@ public:
 			request.modelIndex = meshRenderer.modelIndex;
 			request.materialIndex = meshRenderer.materialIndex;
 			
-			// メッシュの頂点オフセットを取得 (GeometryPool用)
 			const auto& meshes = Engine::Asset::AssetManager::GetInstance().GetMeshesByIndex(meshRenderer.modelIndex);
 			if (!meshes.empty()) {
 				request.vertexOffset = meshes[0]->GetVertexOffset();
@@ -31,8 +30,8 @@ public:
 				request.vertexOffset = 0;
 			}
 			
-			// Transformから行列を計算
-			request.world = Engine::Math::Matrix4x4::MakeAffine(transform.scale, transform.rotation, transform.position);
+			// TransformSystem で計算済みの行列をそのまま使用
+			request.world = transform.world;
 			
 			renderer.PushRequest(request);
 		});
