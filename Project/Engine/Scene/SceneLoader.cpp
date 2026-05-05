@@ -1,0 +1,166 @@
+#include "SceneLoader.h"
+#include "Externals/nlohmann/json.hpp"
+#include "Engine/Common/Console.h"
+#include "Schema/Schema.h"
+#include "Engine/ECS/Components/Camera.h"
+#include "Engine/ECS/Components/Light.h"
+#include "Engine/Asset/AssetManager.h"
+#include "Engine/Asset/MaterialManager.h"
+#include "Engine/Script/ScriptHost.h"
+#include <fstream>
+#include <filesystem>
+
+using json = nlohmann::json;
+namespace fs = std::filesystem;
+
+namespace Engine::Scene {
+
+namespace {
+    // スクリプト追加用のデリゲート（キャッシュ）
+    void(*gAddScriptDelegate)(uint32_t, const char*) = nullptr;
+
+    void EnsureScriptDelegate() {
+        if (gAddScriptDelegate) return;
+        auto& host = Engine::Script::ScriptHost::GetInstance();
+        gAddScriptDelegate = (void(*)(uint32_t, const char*))host.GetMethodDelegate(
+            L"ONEngine.Scripting.EngineHost, ONEngine.Scripting",
+            L"AddScriptByName",
+            L"");
+    }
+
+    // コンポーネントのデシリアライズ関数
+    void DeserializeTransform(const json& j, Engine::ECS::Transform& t) {
+        try {
+            if (j.contains("position") && j["position"].is_object()) {
+                t.position.x = j["position"].value("x", 0.0f);
+                t.position.y = j["position"].value("y", 0.0f);
+                t.position.z = j["position"].value("z", 0.0f);
+            }
+            if (j.contains("rotate") && j["rotate"].is_object()) {
+                t.rotation = { 0, 0, 0 }; // TODO: Quaternion support
+            } else if (j.contains("rotation") && j["rotation"].is_object()) {
+                t.rotation.x = j["rotation"].value("x", 0.0f);
+                t.rotation.y = j["rotation"].value("y", 0.0f);
+                t.rotation.z = j["rotation"].value("z", 0.0f);
+            }
+            if (j.contains("scale") && j["scale"].is_object()) {
+                t.scale.x = j["scale"].value("x", 1.0f);
+                t.scale.y = j["scale"].value("y", 1.0f);
+                t.scale.z = j["scale"].value("z", 1.0f);
+            }
+        } catch (const std::exception& e) {
+            Engine::Console::LogError(std::format("SceneLoader: Error deserializing Transform: {}", e.what()));
+        }
+    }
+
+    void DeserializeMeshRenderer(const json& j, Engine::ECS::MeshRenderer& mr) {
+        try {
+            if (j.contains("meshPath") && j["meshPath"].is_string()) {
+                mr.modelIndex = Engine::Asset::AssetManager::GetInstance().LoadModel(j["meshPath"]);
+            } else if (j.contains("modelIndex") && j["modelIndex"].is_number()) {
+                mr.modelIndex = j["modelIndex"];
+            }
+
+            if (j.contains("materialPath") && j["materialPath"].is_string()) {
+                mr.materialIndex = Engine::Asset::MaterialManager::GetInstance().LoadMaterial(j["materialPath"]);
+            } else if (j.contains("materialIndex") && j["materialIndex"].is_number()) {
+                mr.materialIndex = j["materialIndex"];
+            }
+        } catch (const std::exception& e) {
+            Engine::Console::LogError(std::format("SceneLoader: Error deserializing MeshRenderer: {}", e.what()));
+        }
+    }
+
+    void DeserializeEntity(const json& jEntity, Engine::ECS::Registry& registry) {
+        auto entity = registry.CreateEntity();
+        
+        if (jEntity.contains("components") && jEntity["components"].is_array()) {
+            for (const auto& jComp : jEntity["components"]) {
+                if (!jComp.contains("type") || !jComp["type"].is_string()) continue;
+                std::string type = jComp["type"];
+                if (type == "Transform") {
+                    auto& t = registry.AddComponent<Engine::ECS::Transform>(entity);
+                    DeserializeTransform(jComp, t);
+                } else if (type == "MeshRenderer") {
+                    auto& mr = registry.AddComponent<Engine::ECS::MeshRenderer>(entity);
+                    DeserializeMeshRenderer(jComp, mr);
+                } else if (type == "Script") {
+                    EnsureScriptDelegate();
+                    if (gAddScriptDelegate && jComp.contains("scripts") && jComp["scripts"].is_array()) {
+                        for (const auto& jScript : jComp["scripts"]) {
+                            if (jScript.contains("name") && jScript["name"].is_string()) {
+                                std::string scriptName = jScript["name"];
+                                gAddScriptDelegate(entity, scriptName.c_str());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+bool SceneLoader::LoadScene(const std::string& path, Engine::ECS::Registry& registry) {
+    Engine::Console::Log(std::format("SceneLoader: Loading scene from {}", path));
+    std::ifstream file(path);
+    if (!file.is_open()) {
+        Engine::Console::LogError(std::format("Failed to open scene file: {}", path));
+        return false;
+    }
+
+    try {
+        json data = json::parse(file);
+        if (data.contains("entities") && data["entities"].is_array()) {
+            for (const auto& jEntity : data["entities"]) {
+                DeserializeEntity(jEntity, registry);
+            }
+        }
+        Engine::Console::Log(std::format("SceneLoader: Successfully loaded scene {}", path));
+        return true;
+    } catch (const json::parse_error& e) {
+        Engine::Console::LogError(std::format("JSON Parse Error in scene file {}: {} (at offset {})", path, e.what(), e.byte));
+        return false;
+    } catch (const std::exception& e) {
+        Engine::Console::LogError(std::format("Error loading scene file {}: {}", path, e.what()));
+        return false;
+    }
+}
+
+Engine::ECS::Entity SceneLoader::InstantiatePrefab(const std::string& path, Engine::ECS::Registry& registry) {
+    std::ifstream file(path);
+    if (!file.is_open()) return Engine::ECS::kNullEntity;
+
+    try {
+        json jEntity = json::parse(file);
+        auto entity = registry.CreateEntity();
+        
+        if (jEntity.contains("components") && jEntity["components"].is_array()) {
+            for (const auto& jComp : jEntity["components"]) {
+                if (!jComp.contains("type") || !jComp["type"].is_string()) continue;
+                std::string type = jComp["type"];
+                if (type == "Transform") {
+                    auto& t = registry.AddComponent<Engine::ECS::Transform>(entity);
+                    DeserializeTransform(jComp, t);
+                } else if (type == "MeshRenderer") {
+                    auto& mr = registry.AddComponent<Engine::ECS::MeshRenderer>(entity);
+                    DeserializeMeshRenderer(jComp, mr);
+                } else if (type == "Script") {
+                    EnsureScriptDelegate();
+                    if (gAddScriptDelegate && jComp.contains("scripts") && jComp["scripts"].is_array()) {
+                        for (const auto& jScript : jComp["scripts"]) {
+                            if (jScript.contains("name") && jScript["name"].is_string()) {
+                                std::string scriptName = jScript["name"];
+                                gAddScriptDelegate(entity, scriptName.c_str());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return entity;
+    } catch (...) {
+        return Engine::ECS::kNullEntity;
+    }
+}
+
+} // namespace Engine::Scene

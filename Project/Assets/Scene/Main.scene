@@ -1,0 +1,745 @@
+{
+    "entities": [
+        {
+            "name": "Cube_0", 
+            "components": [
+                {
+                    "position": {
+                        "y": 0.0, 
+                        "x": 15.0, 
+                        "z": 0.0
+                    },
+                    "rotation": {
+                        "y": -0.0,
+                        "x": 0.0,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "y": 0.5,
+                        "x": 0.5,
+                        "z": 0.5
+                    },
+                    "type": "Transform"
+                },
+                {
+                    "meshPath": "Packages/Models/primitive/cube.obj",
+                    "type": "MeshRenderer",
+                    "materialPath": "Assets/Materials/Grid.mat"
+                },
+                {
+                    "type": "Script",
+                    "scripts": [
+                        {
+                            "name": "InternalCubeRotator"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Cube_1",
+            "components": [
+                {
+                    "position": {
+                        "y": 0.0,
+                        "x": 14.265847744427303,
+                        "z": 4.635254915624211
+                    },
+                    "rotation": {
+                        "y": -0.3141592653589793,
+                        "x": 0.0,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "y": 0.5,
+                        "x": 0.5,
+                        "z": 0.5
+                    },
+                    "type": "Transform"
+                },
+                {
+                    "meshPath": "Packages/Models/primitive/cube.obj",
+                    "type": "MeshRenderer",
+                    "materialPath": "Assets/Materials/White.mat"
+                },
+                {
+                    "type": "Script",
+                    "scripts": [
+                        {
+                            "name": "InternalCubeRotator"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Cube_2",
+            "components": [
+                {
+                    "position": {
+                        "y": 0.0,
+                        "x": 12.135254915624213,
+                        "z": 8.816778784387097
+                    },
+                    "rotation": {
+                        "y": -0.6283185307179586,
+                        "x": 0.0,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "y": 0.5,
+                        "x": 0.5,
+                        "z": 0.5
+                    },
+                    "type": "Transform"
+                },
+                {
+                    "meshPath": "Packages/Models/primitive/cube.obj",
+                    "type": "MeshRenderer",
+                    "materialPath": "Assets/Materials/Grid.mat"
+                },
+                {
+                    "type": "Script",
+                    "scripts": [
+                        {
+                            "name": "InternalCubeRotator"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Cube_3",
+            "components": [
+                {
+                    "position": {
+                        "y": 0.0,
+                        "x": 8.816778784387097,
+                        "z": 12.135254915624213
+                    },
+                    "rotation": {
+                        "y": -0.9424777960769379,
+                        "x": 0.0,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "y": 0.5,
+                        "x": 0.5,
+                        "z": 0.5
+                    },
+                    "type": "Transform"
+                },
+                {
+                    "meshPath": "Packages/Models/primitive/cube.obj",
+                    "type": "MeshRenderer",
+                    "materialPath": "Assets/Materials/White.mat"
+                },
+                {
+                    "type": "Script",
+                    "scripts": [
+                        {
+                            "name": "InternalCubeRotator"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Cube_4",
+            "components": [
+                {
+                    "position": {
+                        "y": 0.0,
+                        "x": 4.635254915624212,
+                        "z": 14.265847744427303
+                    },
+                    "rotation": {
+                        "y": -1.2566370614359172, 
+                        "x": 0.0,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "y": 0.5,
+                        "x": 0.5,
+                        "z": 0.5
+                    },
+                    "type": "Transform"
+                },
+                {
+                    "meshPath": "Packages/Models/primitive/cube.obj",
+                    "type": "MeshRenderer",
+                    "materialPath": "Assets/Materials/Grid.mat"
+                },
+                {
+                    "type": "Script",
+                    "scripts": [
+                        {
+                            "name": "InternalCubeRotator"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Cube_5",
+            "components": [
+                {
+                    "position": {
+                        "y": 0.0,
+                        "x": 9.18485099360515e-16,
+                        "z": 15.0
+                    },
+                    "rotation": {
+                        "y": -1.5707963267948966,
+                        "x": 0.0,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "y": 0.5,
+                        "x": 0.5,
+                        "z": 0.5
+                    },
+                    "type": "Transform"
+                },
+                {
+                    "meshPath": "Packages/Models/primitive/cube.obj",
+                    "type": "MeshRenderer",
+                    "materialPath": "Assets/Materials/White.mat"
+                },
+                {
+                    "type": "Script",
+                    "scripts": [
+                        {
+                            "name": "InternalCubeRotator"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Cube_6",
+            "components": [
+                {
+                    "position": {
+                        "y": 0.0,
+                        "x": -4.63525491562421,
+                        "z": 14.265847744427305
+                    },
+                    "rotation": {
+                        "y": -1.8849555921538759,
+                        "x": 0.0,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "y": 0.5,
+                        "x": 0.5,
+                        "z": 0.5
+                    },
+                    "type": "Transform"
+                },
+                {
+                    "meshPath": "Packages/Models/primitive/cube.obj",
+                    "type": "MeshRenderer",
+                    "materialPath": "Assets/Materials/Grid.mat"
+                },
+                {
+                    "type": "Script",
+                    "scripts": [
+                        {
+                            "name": "InternalCubeRotator"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Cube_7",
+            "components": [
+                {
+                    "position": {
+                        "y": 0.0,
+                        "x": -8.816778784387095,
+                        "z": 12.135254915624213
+                    },
+                    "rotation": {
+                        "y": -2.199114857512855,
+                        "x": 0.0,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "y": 0.5,
+                        "x": 0.5,
+                        "z": 0.5
+                    },
+                    "type": "Transform"
+                },
+                {
+                    "meshPath": "Packages/Models/primitive/cube.obj",
+                    "type": "MeshRenderer",
+                    "materialPath": "Assets/Materials/White.mat"
+                },
+                {
+                    "type": "Script",
+                    "scripts": [
+                        {
+                            "name": "InternalCubeRotator"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Cube_8",
+            "components": [
+                {
+                    "position": {
+                        "y": 0.0,
+                        "x": -12.13525491562421,
+                        "z": 8.816778784387099
+                    },
+                    "rotation": {
+                        "y": -2.5132741228718345,
+                        "x": 0.0,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "y": 0.5,
+                        "x": 0.5,
+                        "z": 0.5
+                    },
+                    "type": "Transform"
+                },
+                {
+                    "meshPath": "Packages/Models/primitive/cube.obj",
+                    "type": "MeshRenderer",
+                    "materialPath": "Assets/Materials/Grid.mat"
+                },
+                {
+                    "type": "Script",
+                    "scripts": [
+                        {
+                            "name": "InternalCubeRotator"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Cube_9",
+            "components": [
+                {
+                    "position": {
+                        "y": 0.0,
+                        "x": -14.265847744427303,
+                        "z": 4.635254915624213
+                    },
+                    "rotation": {
+                        "y": -2.827433388230814,
+                        "x": 0.0,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "y": 0.5,
+                        "x": 0.5,
+                        "z": 0.5
+                    },
+                    "type": "Transform"
+                },
+                {
+                    "meshPath": "Packages/Models/primitive/cube.obj",
+                    "type": "MeshRenderer",
+                    "materialPath": "Assets/Materials/White.mat"
+                },
+                {
+                    "type": "Script",
+                    "scripts": [
+                        {
+                            "name": "InternalCubeRotator"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Cube_10",
+            "components": [
+                {
+                    "position": {
+                        "y": 0.0,
+                        "x": -15.0,
+                        "z": 1.83697019872103e-15
+                    },
+                    "rotation": {
+                        "y": -3.141592653589793,
+                        "x": 0.0,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "y": 0.5,
+                        "x": 0.5,
+                        "z": 0.5
+                    },
+                    "type": "Transform"
+                },
+                {
+                    "meshPath": "Packages/Models/primitive/cube.obj",
+                    "type": "MeshRenderer",
+                    "materialPath": "Assets/Materials/Grid.mat"
+                },
+                {
+                    "type": "Script",
+                    "scripts": [
+                        {
+                            "name": "InternalCubeRotator"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Cube_11",
+            "components": [
+                {
+                    "position": {
+                        "y": 0.0,
+                        "x": -14.265847744427303,
+                        "z": -4.635254915624216
+                    },
+                    "rotation": {
+                        "y": -3.455751918948773,
+                        "x": 0.0,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "y": 0.5,
+                        "x": 0.5,
+                        "z": 0.5
+                    },
+                    "type": "Transform"
+                },
+                {
+                    "meshPath": "Packages/Models/primitive/cube.obj",
+                    "type": "MeshRenderer",
+                    "materialPath": "Assets/Materials/White.mat"
+                },
+                {
+                    "type": "Script",
+                    "scripts": [
+                        {
+                            "name": "InternalCubeRotator"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Cube_12",
+            "components": [
+                {
+                    "position": {
+                        "y": 0.0,
+                        "x": -12.135254915624213,
+                        "z": -8.816778784387095
+                    },
+                    "rotation": {
+                        "y": -3.7699111843077517,
+                        "x": 0.0,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "y": 0.5,
+                        "x": 0.5,
+                        "z": 0.5
+                    },
+                    "type": "Transform"
+                },
+                {
+                    "meshPath": "Packages/Models/primitive/cube.obj",
+                    "type": "MeshRenderer",
+                    "materialPath": "Assets/Materials/Grid.mat"
+                },
+                {
+                    "type": "Script",
+                    "scripts": [
+                        {
+                            "name": "InternalCubeRotator"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Cube_13",
+            "components": [
+                {
+                    "position": {
+                        "y": 0.0,
+                        "x": -8.816778784387099,
+                        "z": -12.13525491562421
+                    },
+                    "rotation": {
+                        "y": -4.084070449666731,
+                        "x": 0.0,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "y": 0.5,
+                        "x": 0.5,
+                        "z": 0.5
+                    },
+                    "type": "Transform"
+                },
+                {
+                    "meshPath": "Packages/Models/primitive/cube.obj",
+                    "type": "MeshRenderer",
+                    "materialPath": "Assets/Materials/White.mat"
+                },
+                {
+                    "type": "Script",
+                    "scripts": [
+                        {
+                            "name": "InternalCubeRotator"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Cube_14",
+            "components": [
+                {
+                    "position": {
+                        "y": 0.0,
+                        "x": -4.6352549156242135,
+                        "z": -14.265847744427303
+                    },
+                    "rotation": {
+                        "y": -4.39822971502571,
+                        "x": 0.0,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "y": 0.5,
+                        "x": 0.5,
+                        "z": 0.5
+                    },
+                    "type": "Transform"
+                },
+                {
+                    "meshPath": "Packages/Models/primitive/cube.obj",
+                    "type": "MeshRenderer",
+                    "materialPath": "Assets/Materials/Grid.mat"
+                },
+                {
+                    "type": "Script",
+                    "scripts": [
+                        {
+                            "name": "InternalCubeRotator"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Cube_15",
+            "components": [
+                {
+                    "position": {
+                        "y": 0.0,
+                        "x": -2.7554552980815444e-15,
+                        "z": -15.0
+                    },
+                    "rotation": {
+                        "y": -4.71238898038469,
+                        "x": 0.0,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "y": 0.5,
+                        "x": 0.5,
+                        "z": 0.5
+                    },
+                    "type": "Transform"
+                },
+                {
+                    "meshPath": "Packages/Models/primitive/cube.obj",
+                    "type": "MeshRenderer",
+                    "materialPath": "Assets/Materials/White.mat"
+                },
+                {
+                    "type": "Script",
+                    "scripts": [
+                        {
+                            "name": "InternalCubeRotator"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Cube_16",
+            "components": [
+                {
+                    "position": {
+                        "y": 0.0,
+                        "x": 4.635254915624208,
+                        "z": -14.265847744427305
+                    },
+                    "rotation": {
+                        "y": -5.026548245743669,
+                        "x": 0.0,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "y": 0.5,
+                        "x": 0.5,
+                        "z": 0.5
+                    },
+                    "type": "Transform"
+                },
+                {
+                    "meshPath": "Packages/Models/primitive/cube.obj",
+                    "type": "MeshRenderer",
+                    "materialPath": "Assets/Materials/Grid.mat"
+                },
+                {
+                    "type": "Script",
+                    "scripts": [
+                        {
+                            "name": "InternalCubeRotator"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Cube_17",
+            "components": [
+                {
+                    "position": {
+                        "y": 0.0,
+                        "x": 8.816778784387093,
+                        "z": -12.135254915624213
+                    },
+                    "rotation": {
+                        "y": -5.340707511102648,
+                        "x": 0.0,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "y": 0.5,
+                        "x": 0.5,
+                        "z": 0.5
+                    },
+                    "type": "Transform"
+                },
+                {
+                    "meshPath": "Packages/Models/primitive/cube.obj",
+                    "type": "MeshRenderer",
+                    "materialPath": "Assets/Materials/White.mat"
+                },
+                {
+                    "type": "Script",
+                    "scripts": [
+                        {
+                            "name": "InternalCubeRotator"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Cube_18",
+            "components": [
+                {
+                    "position": {
+                        "y": 0.0,
+                        "x": 12.13525491562421,
+                        "z": -8.8167787843871
+                    },
+                    "rotation": {
+                        "y": -5.654866776461628,
+                        "x": 0.0,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "y": 0.5,
+                        "x": 0.5,
+                        "z": 0.5
+                    },
+                    "type": "Transform"
+                },
+                {
+                    "meshPath": "Packages/Models/primitive/cube.obj",
+                    "type": "MeshRenderer",
+                    "materialPath": "Assets/Materials/Grid.mat"
+                },
+                {
+                    "type": "Script",
+                    "scripts": [
+                        {
+                            "name": "InternalCubeRotator"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Cube_19",
+            "components": [
+                {
+                    "position": {
+                        "y": 0.0,
+                        "x": 14.265847744427303,
+                        "z": -4.635254915624215
+                    },
+                    "rotation": {
+                        "y": -5.969026041820607,
+                        "x": 0.0,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "y": 0.5,
+                        "x": 0.5,
+                        "z": 0.5
+                    },
+                    "type": "Transform"
+                },
+                {
+                    "meshPath": "Packages/Models/primitive/cube.obj",
+                    "type": "MeshRenderer",
+                    "materialPath": "Assets/Materials/White.mat"
+                },
+                {
+                    "type": "Script",
+                    "scripts": [
+                        {
+                            "name": "InternalCubeRotator"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Spawner",
+            "components": [
+                {
+                    "position": {
+                        "y": 10,
+                        "x": 0,
+                        "z": 0
+                    },
+                    "type": "Transform"
+                },
+                {
+                    "type": "Script",
+                    "scripts": [
+                        {
+                            "name": "InternalSpawner"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

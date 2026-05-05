@@ -45,13 +45,26 @@ namespace ONEngine.Scripting
             }
         }
 
+        [UnmanagedCallersOnly]
+        public static void AddScriptByName(uint entityId, IntPtr namePtr)
+        {
+            string name = Marshal.PtrToStringAnsi(namePtr);
+            uint entityCount = ECS.GetEntityCount(_registryPtr);
+            
+            // Find the entity in the cache (it should be there if SyncEntities was called)
+            if (_entityCache.TryGetValue(entityId, out var entity))
+            {
+                if (name == "InternalCubeRotator") AddScript(new InternalCubeRotator { Entity = entity });
+                else if (name == "InternalSpawner") AddScript(new InternalSpawner { Entity = entity });
+                // TODO: Dynamic instantiation using Reflection
+                else Debug.Log($"[C#] Script {name} not found.");
+            }
+        }
+
         private static void SyncEntities()
         {
             uint entityCount = ECS.GetEntityCount(_registryPtr);
             
-            // Clear current cache to handle shifts in Sparse Set
-            // Note: In a production engine, we would use a more efficient way to track changes,
-            // but for now, we resync to ensure Index-to-Id consistency.
             _entityCache.Clear();
 
             for (uint i = 0; i < entityCount; i++)
@@ -59,22 +72,6 @@ namespace ONEngine.Scripting
                 uint id = ECS.GetEntityId(_registryPtr, i);
                 var entity = new Entity(i, id, _registryPtr);
                 _entityCache[id] = entity;
-                
-                // Temporary: ensure initial entities have their logic
-                // This should be replaced by a proper serialization/prefab system later
-                if (id <= 20 && !_activeScripts.Exists(s => s.Entity.Id == id))
-                {
-                    AddScript(new InternalCubeRotator { Entity = entity });
-                }
-            }
-
-            // Simple spawner for demo purposes
-            if (!_activeScripts.Exists(s => s is InternalSpawner))
-            {
-                if (_entityCache.Count > 0)
-                {
-                    AddScript(new InternalSpawner { Entity = _entityCache[ECS.GetEntityId(_registryPtr, 0)] });
-                }
             }
         }
 

@@ -13,6 +13,7 @@
 #include "Engine/ECS/Registry.h"
 #include "Engine/ECS/Systems/RenderSystem.h"
 #include "Engine/Common/Console.h"
+#include "Engine/Scene/SceneLoader.h"
 #include "Schema/Schema.h"
 
 extern "C" void LogFromRuntime(const char*);
@@ -106,27 +107,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     auto& renderer = Engine::Graphics::Renderer::GetInstance();
     renderer.Initialize(graphicsEngine.GetRenderDevice());
 
-    // 1. アセットのロード (テクスチャはマテリアルが自動ロードする)
-    int32_t gridMatIdx = materialManager.LoadMaterial("Assets/Materials/Grid.mat");
-    int32_t whiteMatIdx = materialManager.LoadMaterial("Assets/Materials/White.mat");
-
+    // 1. パイプラインのロード
     shaderManager.LoadPipelineAsset("Assets/Pipelines/BindlessTest.json");
     shaderManager.LoadPipelineAsset("Assets/Pipelines/Blit.json");
-    int32_t cubeModelIdx = assetManager.LoadModel("Packages/Models/primitive/cube.obj");
 
-    // 2. エンティティの作成
-    for (int i = 0; i < 20; ++i) {
-        auto entity = registry.CreateEntity();
-        auto& transform = registry.AddComponent<Transform>(entity);
-        float angle = (i / 20.0f) * 3.141592f * 2.0f;
-        transform.position = { cos(angle) * 15.0f, 0.0f, sin(angle) * 15.0f };
-        transform.rotation = { 0.0f, -angle, 0.0f };
-        transform.scale = { 0.5f, 0.5f, 0.5f };
-        
-        auto& meshRenderer = registry.AddComponent<MeshRenderer>(entity);
-        meshRenderer.modelIndex = cubeModelIdx;
-        meshRenderer.materialIndex = (i % 2 == 0) ? gridMatIdx : whiteMatIdx;
-    }
+    // 2. シーンのロード (外部ファイル化)
+    Engine::Scene::SceneLoader::LoadScene("Assets/Scene/Main.scene", registry);
 
     // 3. システムと共通定数バッファ
     Engine::ECS::RenderSystem renderSystem;

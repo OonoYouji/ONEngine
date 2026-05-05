@@ -1,0 +1,14 @@
+{
+    "name": "CubePrefab",
+    "components": [
+        {
+            "type": "Transform",
+            "scale": { "x": 0.5, "y": 0.5, "z": 0.5 }
+        },
+        {
+            "type": "MeshRenderer",
+            "meshPath": "Packages/Models/primitive/cube.obj",
+            "materialPath": "Assets/Materials/White.mat"
+        }
+    ]
+}
