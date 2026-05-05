@@ -4,12 +4,19 @@
 
 namespace Engine::GeneratedSchema {
 
+struct PointLightData {
+    Engine::Math::Vector3 position;
+    float intensity;
+    Engine::Math::Vector3 color;
+    float radius;
+};
+
 struct SceneData {
     Engine::Math::Matrix4x4 viewProj;
     Engine::Math::Vector3 cameraPos;
+    uint32_t numPointLights;
     float dirLightIntensity;
     Engine::Math::Vector3 dirLightColor;
-    uint8_t _pad0[4];
     Engine::Math::Vector3 dirLightDirection;
     float padding;
 };

@@ -148,6 +148,11 @@ void Renderer::RenderInternal(const RenderContext& context, const PipelineStateD
                 commandList->SetGraphicsRootShaderResourceView(instIdx, instBufferAddr);
             }
 
+            auto pointLightIdx = rootSig->GetParameterIndex("gPointLights");
+            if (pointLightIdx != RootSignature::kInvalidIndex && context.pointLightBufferAddress != 0) {
+                commandList->SetGraphicsRootShaderResourceView(pointLightIdx, context.pointLightBufferAddress);
+            }
+
             commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
             const auto& meshes = assetManager.GetMeshesByIndex(batchStartReq.modelIndex);

@@ -18,6 +18,7 @@ class RenderDevice;
 struct RenderContext {
 	ID3D12GraphicsCommandList* commandList;
 	D3D12_GPU_VIRTUAL_ADDRESS sceneCBAddress;
+	D3D12_GPU_VIRTUAL_ADDRESS pointLightBufferAddress; // 追加
 	uint32_t frameIndex;
 };
 

@@ -6,6 +6,7 @@
 
 struct VSOutput {
     float4 position : SV_POSITION;
+    float3 worldPos : POSITION;
     float2 uv : TEXCOORD;
     float3 normal : NORMAL;
     nointerpolation uint instanceID : SV_InstanceID;
@@ -22,6 +23,7 @@ StructuredBuffer<Vertex> gVertices : register(t0, space0);
 
 ConstantBuffer<SceneData> gSceneData : register(b0);
 StructuredBuffer<InstanceData> gInstances : register(t1, space0);
+StructuredBuffer<PointLightData> gPointLights : register(t2, space0);
 
 VSOutput vs_main(uint vID : SV_VertexID, uint iID : SV_InstanceID) {
     VSOutput output;
@@ -30,9 +32,10 @@ VSOutput vs_main(uint vID : SV_VertexID, uint iID : SV_InstanceID) {
     
     float4 worldPos = mul(float4(v.position, 1.0f), inst.world);
     output.position = mul(worldPos, gSceneData.viewProj);
+    output.worldPos = worldPos.xyz;
     output.uv = v.uv;
     
-    // 法線の変換（回転のみ適用するため world 行列の 3x3 部分を使用）
+    // 法線の変換
     output.normal = mul(v.normal, (float3x3)inst.world);
     output.instanceID = iID;
     
@@ -43,18 +46,50 @@ float4 ps_main(VSOutput input) : SV_TARGET {
     InstanceData inst = gInstances[input.instanceID];
     float4 texColor = gTextures[NonUniformResourceIndex(inst.textureIndex)].Sample(gSampler, input.uv);
 
-    // ライティング計算
     float3 normal = normalize(input.normal);
-    float3 lightDir = normalize(-gSceneData.dirLightDirection); // ライトの向きの逆
+    float3 viewDir = normalize(gSceneData.cameraPos - input.worldPos);
     
-    // Lambert
-    float diffuse = max(dot(normal, lightDir), 0.0f);
-    float3 lightColor = gSceneData.dirLightColor * gSceneData.dirLightIntensity;
+    float3 diffuseTotal = 0;
+    float3 specularTotal = 0;
     
-    // 環境光 (Ambient) - 簡易的に定数
-    float3 ambient = 0.2f;
+    // --- Directional Light ---
+    {
+        float3 lightDir = normalize(-gSceneData.dirLightDirection);
+        float3 lightColor = gSceneData.dirLightColor * gSceneData.dirLightIntensity;
+        
+        // Diffuse (Lambert)
+        diffuseTotal += lightColor * max(dot(normal, lightDir), 0.0f);
+        
+        // Specular (Blinn-Phong)
+        float3 halfDir = normalize(lightDir + viewDir);
+        specularTotal += lightColor * pow(max(dot(normal, halfDir), 0.0f), 32.0f);
+    }
+    
+    // --- Point Lights ---
+    for (uint i = 0; i < gSceneData.numPointLights; ++i) {
+        PointLightData light = gPointLights[i];
+        float3 lightVec = light.position - input.worldPos;
+        float dist = length(lightVec);
+        float3 lightDir = normalize(lightVec);
+        
+        // 減衰計算
+        float attenuation = saturate(1.0f - (dist / light.radius));
+        attenuation *= attenuation; // 2乗減衰
+        
+        float3 lightIntensity = light.color * light.intensity * attenuation;
+        
+        // Diffuse
+        diffuseTotal += lightIntensity * max(dot(normal, lightDir), 0.0f);
+        
+        // Specular
+        float3 halfDir = normalize(lightDir + viewDir);
+        specularTotal += lightIntensity * pow(max(dot(normal, halfDir), 0.0f), 32.0f);
+    }
+    
+    // 環境光
+    float3 ambient = 0.1f * inst.baseColor.rgb;
 
-    float3 finalRGB = texColor.rgb * inst.baseColor.rgb * (lightColor * diffuse + ambient);
+    float3 finalRGB = texColor.rgb * inst.baseColor.rgb * (diffuseTotal + ambient) + specularTotal;
     
 	return float4(finalRGB, texColor.a * inst.baseColor.a);
 }

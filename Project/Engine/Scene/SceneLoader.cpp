@@ -143,14 +143,26 @@ namespace {
 
 bool SceneLoader::LoadScene(const std::string& path, Engine::ECS::Registry& registry) {
     Engine::Console::Log(std::format("SceneLoader: Loading scene from {}", path));
-    std::ifstream file(path);
+    
+    std::ifstream file(path, std::ios::binary); // バイナリモードで開く
     if (!file.is_open()) {
         Engine::Console::LogError(std::format("Failed to open scene file: {}", path));
         return false;
     }
 
+    // ファイル内容を文字列に読み込む
+    std::string content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+    
+    // UTF-8 BOM (0xEF, 0xBB, 0xBF) の除去
+    if (content.size() >= 3 && 
+        (unsigned char)content[0] == 0xEF && 
+        (unsigned char)content[1] == 0xBB && 
+        (unsigned char)content[2] == 0xBF) {
+        content.erase(0, 3);
+    }
+
     try {
-        json data = json::parse(file);
+        json data = json::parse(content);
         if (data.contains("entities") && data["entities"].is_array()) {
             for (const auto& jEntity : data["entities"]) {
                 DeserializeEntity(jEntity, registry);
@@ -159,7 +171,11 @@ bool SceneLoader::LoadScene(const std::string& path, Engine::ECS::Registry& regi
         Engine::Console::Log(std::format("SceneLoader: Successfully loaded scene {}", path));
         return true;
     } catch (const json::parse_error& e) {
-        Engine::Console::LogError(std::format("JSON Parse Error in scene file {}: {} (at offset {})", path, e.what(), e.byte));
+        Engine::Console::LogError(std::format("JSON Parse Error in {}: {} (at byte {})", path, e.what(), e.byte));
+        // 問題箇所の周辺を表示するためのデバッグ情報
+        size_t start = (e.byte > 20) ? e.byte - 20 : 0;
+        std::string context = content.substr(start, 40);
+        Engine::Console::LogError(std::format("Context around error: ... {} ...", context));
         return false;
     } catch (const std::exception& e) {
         Engine::Console::LogError(std::format("Error loading scene file {}: {}", path, e.what()));

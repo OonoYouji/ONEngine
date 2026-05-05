@@ -9,6 +9,8 @@ types:
         type: float4x4
       - name: cameraPos
         type: float3
+      - name: numPointLights
+        type: uint32
       - name: dirLightIntensity
         type: float
       - name: dirLightColor
@@ -89,5 +91,17 @@ types:
         type: float3
       - name: intensity
         type: float
+      - name: radius
+        type: float
+
+  PointLightData:
+    type: StructuredBuffer
+    fields:
+      - name: position
+        type: float3
+      - name: intensity
+        type: float
+      - name: color
+        type: float3
       - name: radius
         type: float

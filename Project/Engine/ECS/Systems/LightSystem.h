@@ -16,6 +16,8 @@ public:
         Engine::Math::Vector3 dirLightColor = { 1, 1, 1 };
         float dirLightIntensity = 0.0f;
         Engine::Math::Vector3 dirLightDirection = { 0, -1, 1 };
+        
+        std::vector<GeneratedSchema::PointLightData> pointLights;
     };
 
     void Update(Registry& registry) override {
@@ -28,10 +30,23 @@ public:
             result_.dirLightDirection = light.direction;
             dirLightFound_ = true;
         });
+
+        // 点光源を全て収集
+        registry.GetView<Transform, PointLight>().Each([&](Entity entity, Transform& transform, PointLight& light) {
+            GeneratedSchema::PointLightData data;
+            data.position = transform.position;
+            data.intensity = light.intensity;
+            data.color = light.color;
+            data.radius = light.radius;
+            result_.pointLights.push_back(data);
+        });
     }
 
     const LightResult& GetResult() const { return result_; }
-    void Reset() { dirLightFound_ = false; }
+    void Reset() { 
+        dirLightFound_ = false; 
+        result_.pointLights.clear();
+    }
 
 private:
     bool dirLightFound_ = false;
