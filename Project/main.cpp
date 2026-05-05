@@ -14,6 +14,7 @@
 #include "Engine/ECS/Systems/RenderSystem.h"
 #include "Engine/ECS/Systems/CameraSystem.h"
 #include "Engine/ECS/Systems/LightSystem.h"
+#include "Engine/Graphics/Resource/GeometryPool.h"
 #include "Engine/Common/Console.h"
 #include "Engine/Scene/SceneLoader.h"
 #include "Schema/Schema.h"
@@ -131,6 +132,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	auto& assetManager = AssetManager::GetInstance();
 	assetManager.Initialize(graphicsEngine.GetRenderDevice());
 
+	auto& geoPool = Engine::Graphics::GeometryPool::GetInstance();
+	geoPool.Initialize(graphicsEngine.GetRenderDevice());
 	auto& scriptHost = Engine::Script::ScriptHost::GetInstance();
 	void(*updateDelegate)(float) = nullptr;
 	void(*shutdownDelegate)() = nullptr;
@@ -243,7 +246,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	}
 
 	renderer.Shutdown();
-	if(shutdownDelegate) shutdownDelegate();
+	geoPool.Shutdown();
+	if (shutdownDelegate) shutdownDelegate();
+
 	scriptHost.Shutdown();
 	assetManager.Shutdown();
 	materialManager.Shutdown();

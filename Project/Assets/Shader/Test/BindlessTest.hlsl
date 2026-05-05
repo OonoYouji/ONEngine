@@ -1,7 +1,8 @@
-﻿struct Vertex {
-    float3 position;
-    float2 uv;
-    float3 normal;
+struct Vertex {
+    float4 position; // 16 bytes
+    float4 normal;   // 16 bytes
+    float2 uv;       // 8 bytes
+    float2 _pad;     // 8 bytes (Total 48 bytes)
 };
 
 struct VSOutput {
@@ -27,16 +28,19 @@ StructuredBuffer<PointLightData> gPointLights : register(t2, space0);
 
 VSOutput vs_main(uint vID : SV_VertexID, uint iID : SV_InstanceID) {
     VSOutput output;
-    Vertex v = gVertices[vID];
     InstanceData inst = gInstances[iID];
     
-    float4 worldPos = mul(float4(v.position, 1.0f), inst.world);
+    // 明示的なオフセットを使用して頂点データを取得
+    Vertex v = gVertices[inst.vertexOffset + vID];
+    
+    // Position
+    float4 worldPos = mul(v.position, inst.world);
     output.position = mul(worldPos, gSceneData.viewProj);
     output.worldPos = worldPos.xyz;
     output.uv = v.uv;
     
-    // 法線の変換
-    output.normal = mul(v.normal, (float3x3)inst.world);
+    // Normal
+    output.normal = mul(v.normal.xyz, (float3x3)inst.world);
     output.instanceID = iID;
     
     return output;

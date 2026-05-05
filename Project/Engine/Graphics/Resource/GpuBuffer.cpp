@@ -36,11 +36,12 @@ void StructuredBuffer::Create(RenderDevice* device, uint32_t stride, uint32_t co
     }
 }
 
-void StructuredBuffer::Update(const void* data, uint32_t size) {
+void StructuredBuffer::Update(const void* data, uint32_t size, uint32_t offset) {
     if (!allocation_ || !data) return;
     void* mapped = nullptr;
     allocation_->GetResource()->Map(0, nullptr, &mapped);
-    memcpy(mapped, data, size);
+    char* dest = static_cast<char*>(mapped) + offset;
+    memcpy(dest, data, size);
     allocation_->GetResource()->Unmap(0, nullptr);
 }
 
@@ -70,15 +71,21 @@ void IndexBuffer::Create(RenderDevice* device, uint32_t count, const uint32_t* i
     Assert(SUCCEEDED(hr), "Failed to create Index Buffer.");
 
     if (initialData) {
-        void* mapped = nullptr;
-        allocation_->GetResource()->Map(0, nullptr, &mapped);
-        memcpy(mapped, initialData, totalSize);
-        allocation_->GetResource()->Unmap(0, nullptr);
+        Update(initialData, count, 0);
     }
 
     view_.BufferLocation = allocation_->GetResource()->GetGPUVirtualAddress();
     view_.SizeInBytes = totalSize;
     view_.Format = DXGI_FORMAT_R32_UINT;
+}
+
+void IndexBuffer::Update(const uint32_t* data, uint32_t count, uint32_t offset) {
+    if (!allocation_ || !data) return;
+    void* mapped = nullptr;
+    allocation_->GetResource()->Map(0, nullptr, &mapped);
+    uint32_t* dest = static_cast<uint32_t*>(mapped) + offset;
+    memcpy(dest, data, count * sizeof(uint32_t));
+    allocation_->GetResource()->Unmap(0, nullptr);
 }
 
 } // namespace Engine::Graphics

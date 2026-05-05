@@ -29,8 +29,10 @@ types:
         type: float4
       - name: textureIndex
         type: uint32
+      - name: vertexOffset
+        type: uint32
       - name: padding
-        type: float3 # 12 bytes padding (84 + 12 = 96)
+        type: float2 # 8 bytes padding (80 + 8 + 8 = 96)
 
   MaterialData:
     type: ConstantBuffer

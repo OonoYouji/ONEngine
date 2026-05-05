@@ -1,5 +1,6 @@
 #include "Mesh.h"
 #include "Engine/Graphics/Core/RenderDevice.h"
+#include "Engine/Graphics/Resource/GeometryPool.h"
 
 namespace Engine::Asset {
 
@@ -7,19 +8,22 @@ Mesh::Mesh() = default;
 Mesh::~Mesh() = default;
 
 void Mesh::Create(Graphics::RenderDevice* device, const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices) {
-    vertexBuffer_ = std::make_unique<Graphics::StructuredBuffer>();
-    vertexBuffer_->Create(device, sizeof(Vertex), static_cast<uint32_t>(vertices.size()), vertices.data());
-
-    indexBuffer_ = std::make_unique<Graphics::IndexBuffer>();
-    indexBuffer_->Create(device, static_cast<uint32_t>(indices.size()), indices.data());
+    auto alloc = Graphics::GeometryPool::GetInstance().Allocate(vertices, indices);
+    
+    vertexOffset_ = alloc.vertexOffset;
+    indexOffset_ = alloc.indexOffset;
+    vertexCount_ = static_cast<uint32_t>(vertices.size());
+    indexCount_ = static_cast<uint32_t>(indices.size());
 }
 
-void Mesh::Draw(ID3D12GraphicsCommandList* commandList) {
-    if (!vertexBuffer_ || !indexBuffer_) return;
-
-    D3D12_INDEX_BUFFER_VIEW ibv = indexBuffer_->GetView();
-    commandList->IASetIndexBuffer(&ibv);
-    commandList->DrawIndexedInstanced(indexBuffer_->GetCount(), 1, 0, 0, 0);
+void Mesh::Draw(ID3D12GraphicsCommandList* commandList, uint32_t instanceCount) {
+    commandList->DrawIndexedInstanced(
+        indexCount_, 
+        instanceCount, 
+        indexOffset_, 
+        0, // BaseVertexLocation を 0 に固定 (シェーダー側で解決)
+        0
+    );
 }
 
 } // namespace Engine::Asset

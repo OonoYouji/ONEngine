@@ -10,6 +10,7 @@
 #include "Engine/Common/Console.h"
 #include <algorithm>
 #include "Engine/Graphics/Core/DescriptorHeap.h"
+#include "Engine/Graphics/Resource/GeometryPool.h"
 
 namespace Engine::Graphics {
 
@@ -58,6 +59,7 @@ void Renderer::Extract() {
     for (const auto& req : queue_) {
         GeneratedSchema::InstanceData data;
         data.world = req.world;
+        data.vertexOffset = req.vertexOffset; // 追加
         
         auto* mat = materialManager.GetMaterialByIndex(req.materialIndex);
         if (mat) {
@@ -67,7 +69,7 @@ void Renderer::Extract() {
             data.baseColor = { 1, 1, 1, 1 };
             data.textureIndex = 0;
         }
-        data.padding = { 0, 0, 0 };
+        data.padding = { 0, 0 };
         instanceData.push_back(data);
     }
 
@@ -153,21 +155,20 @@ void Renderer::RenderInternal(const RenderContext& context, const PipelineStateD
                 commandList->SetGraphicsRootShaderResourceView(pointLightIdx, context.pointLightBufferAddress);
             }
 
+            // --- ジオメトリプールのバインド ---
+            auto& geoPool = GeometryPool::GetInstance();
+            auto vertIdx = rootSig->GetParameterIndex("gVertices");
+            if (vertIdx != RootSignature::kInvalidIndex) {
+                commandList->SetGraphicsRootShaderResourceView(vertIdx, geoPool.GetVertexBuffer()->GetResource()->GetGPUVirtualAddress());
+            }
+            D3D12_INDEX_BUFFER_VIEW ibv = geoPool.GetIndexBuffer()->GetView();
+            commandList->IASetIndexBuffer(&ibv);
+
             commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
             const auto& meshes = assetManager.GetMeshesByIndex(batchStartReq.modelIndex);
             for (const auto& mesh : meshes) {
-                auto vertIdx = rootSig->GetParameterIndex("gVertices");
-                if (vertIdx != RootSignature::kInvalidIndex) {
-                    commandList->SetGraphicsRootShaderResourceView(vertIdx, mesh->GetVertexBuffer()->GetResource()->GetGPUVirtualAddress());
-                }
-                D3D12_INDEX_BUFFER_VIEW ibv = mesh->GetIndexBuffer()->GetView();
-                commandList->IASetIndexBuffer(&ibv);
-                
-                commandList->DrawIndexedInstanced(
-                    static_cast<UINT>(mesh->GetIndexBuffer()->GetCount()), 
-                    static_cast<UINT>(batchSize), 
-                    0, 0, 0);
+                mesh->Draw(commandList, batchSize);
             }
         }
 

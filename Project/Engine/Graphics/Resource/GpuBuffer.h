@@ -20,7 +20,7 @@ public:
     ~StructuredBuffer();
 
     void Create(RenderDevice* device, uint32_t stride, uint32_t count, const void* initialData = nullptr);
-    void Update(const void* data, uint32_t size);
+    void Update(const void* data, uint32_t size, uint32_t offset = 0);
     
     ID3D12Resource* GetResource() const { return allocation_->GetResource(); }
     uint32_t GetStride() const { return stride_; }
@@ -41,6 +41,7 @@ public:
     ~IndexBuffer();
 
     void Create(RenderDevice* device, uint32_t count, const uint32_t* initialData = nullptr);
+    void Update(const uint32_t* data, uint32_t count, uint32_t offset = 0);
 
     ID3D12Resource* GetResource() const { return allocation_->GetResource(); }
     D3D12_INDEX_BUFFER_VIEW GetView() const { return view_; }

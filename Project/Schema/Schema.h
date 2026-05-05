@@ -25,7 +25,8 @@ struct InstanceData {
     Engine::Math::Matrix4x4 world;
     Engine::Math::Vector4 baseColor;
     uint32_t textureIndex;
-    Engine::Math::Vector3 padding;
+    uint32_t vertexOffset;
+    Engine::Math::Vector2 padding;
 };
 
 struct MaterialData {

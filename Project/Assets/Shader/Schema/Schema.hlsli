@@ -63,7 +63,8 @@ struct InstanceData {
     float4x4 world;
     float4 baseColor;
     uint textureIndex;
-    float3 padding;
+    uint vertexOffset;
+    float2 padding;
 };
 
 struct MaterialData {

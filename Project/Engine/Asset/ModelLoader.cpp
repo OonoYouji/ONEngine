@@ -49,12 +49,23 @@ std::vector<std::unique_ptr<Mesh>> ModelLoader::LoadModel(Graphics::RenderDevice
         for (unsigned int v = 0; v < aiMeshPtr->mNumVertices; ++v) {
             Vertex vertex;
             
-            // 位置
+            // 位置 (w=1.0)
             vertex.position.x = aiMeshPtr->mVertices[v].x;
             vertex.position.y = aiMeshPtr->mVertices[v].y;
             vertex.position.z = aiMeshPtr->mVertices[v].z;
+            vertex.position.w = 1.0f;
 
-            // UV (存在する場合)
+            // 法線 (w=0.0)
+            if (aiMeshPtr->HasNormals()) {
+                vertex.normal.x = aiMeshPtr->mNormals[v].x;
+                vertex.normal.y = aiMeshPtr->mNormals[v].y;
+                vertex.normal.z = aiMeshPtr->mNormals[v].z;
+            } else {
+                vertex.normal = { 0, 1, 0, 0 };
+            }
+            vertex.normal.w = 0.0f;
+
+            // UV
             if (aiMeshPtr->mTextureCoords[0]) {
                 vertex.uv.x = aiMeshPtr->mTextureCoords[0][v].x;
                 vertex.uv.y = aiMeshPtr->mTextureCoords[0][v].y;
@@ -62,14 +73,8 @@ std::vector<std::unique_ptr<Mesh>> ModelLoader::LoadModel(Graphics::RenderDevice
                 vertex.uv = { 0.0f, 0.0f };
             }
 
-            // 法線 (存在する場合)
-            if (aiMeshPtr->HasNormals()) {
-                vertex.normal.x = aiMeshPtr->mNormals[v].x;
-                vertex.normal.y = aiMeshPtr->mNormals[v].y;
-                vertex.normal.z = aiMeshPtr->mNormals[v].z;
-            } else {
-                vertex.normal = { 0, 1, 0 };
-            }
+            vertex._pad[0] = 0;
+            vertex._pad[1] = 0;
 
             vertices.push_back(vertex);
         }

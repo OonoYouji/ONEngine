@@ -28,6 +28,7 @@ struct RenderContext {
 struct RenderRequest {
 	uint32_t modelIndex;
 	uint32_t materialIndex;
+	uint32_t vertexOffset; // 追加
 	Engine::Math::Matrix4x4 world;
 };
 
