@@ -1,0 +1,28 @@
+{
+  "name": "MainScene",
+  "entities": [
+    {
+      "prefab": "data/player.json",
+      "components": {
+        "LocalTransform": { "position": [0, 99, 0] }
+      }
+    },
+    {
+      "prefab": "data/enemy.json",
+      "components": {
+        "LocalTransform": { "position": [50, 0, 50] },
+        "PhysicsProperties": { "mass": 10.0 }
+      }
+    },
+    {
+      "name": "StaticBox",
+      "components": {
+        "LocalTransform": {
+          "position": [0, 0, 0],
+          "scale": [10, 1, 10]
+        },
+        "RenderMesh": { "meshId": "00000000-0000-0000-0000-000000000010" }
+      }
+    }
+  ]
+}

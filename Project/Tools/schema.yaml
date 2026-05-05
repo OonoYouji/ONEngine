@@ -43,3 +43,41 @@ types:
         type: uint32
       - name: materialIndex
         type: uint32
+
+  ScriptComponent:
+    type: Component
+    fields:
+      - name: gcHandle
+        type: uint64
+      - name: typeId
+        type: uint32
+
+  Camera:
+    type: Component
+    fields:
+      - name: fov
+        type: float
+      - name: nearZ
+        type: float
+      - name: farZ
+        type: float
+
+  DirectionalLight:
+    type: Component
+    fields:
+      - name: color
+        type: float3
+      - name: intensity
+        type: float
+      - name: direction
+        type: float3
+
+  PointLight:
+    type: Component
+    fields:
+      - name: color
+        type: float3
+      - name: intensity
+        type: float
+      - name: radius
+        type: float

@@ -1,148 +1,217 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Reflection;
+using System.Text.Json;
 using ONEngine.Scripting.Generated;
 
 namespace ONEngine.Scripting
 {
     public unsafe static class EngineHost
     {
-        private static IntPtr _registryPtr;
-        private static Dictionary<uint, Entity> _entityCache = new Dictionary<uint, Entity>();
-        private static List<GameScript> _activeScripts = new List<GameScript>();
-
-        public static IntPtr RegistryPtr => _registryPtr;
+        private static EcsWorld? _world;
+        private static Dictionary<uint, GCHandle> _scriptHandles = new();
 
         [UnmanagedCallersOnly]
         public static void Initialize(IntPtr logHandler, IntPtr registryPtr)
         {
-            _registryPtr = registryPtr;
-            Debug.SetLogHandler(logHandler);
-            
-            Entity.RegistryPtr = registryPtr;
-            Entity.TransformView = new ComponentView<Generated.Transform>(registryPtr, ECS.GetTransformChunk);
-            Entity.MeshRendererView = new ComponentView<Generated.MeshRenderer>(registryPtr, ECS.GetMeshRendererChunk);
-
-            Debug.Log("[C#] EngineHost: Initialized.");
+            try
+            {
+                Debug.SetLogHandler(logHandler);
+                _world = new EcsWorld(registryPtr);
+                Debug.Log("[C#] EngineHost: Initialized (Zero-allocation architecture).");
+            }
+            catch (Exception e)
+            {
+                // UnmanagedCallersOnly must catch all exceptions
+                Console.WriteLine($"[C#] FATAL Error in Initialize: {e}");
+            }
         }
 
         [UnmanagedCallersOnly]
         public static void Update(float deltaTime)
         {
-            SyncEntities();
+            if (_world == null) return;
 
-            // Update all active scripts
-            for (int i = _activeScripts.Count - 1; i >= 0; i--)
+            try
             {
-                try
+                // スクリプトの実行
+                uint chunkCount = _world.GetChunkCount<ScriptComponent>();
+                for (uint i = 0; i < chunkCount; i++)
                 {
-                    _activeScripts[i].Update(deltaTime);
+                    var chunk = _world.GetChunkSpan<ScriptComponent>(i);
+                    foreach (var comp in chunk)
+                    {
+                        if (comp.gcHandle == 0) continue;
+                        
+                        var handle = GCHandle.FromIntPtr((IntPtr)comp.gcHandle);
+                        if (handle.IsAllocated && handle.Target is GameScript script)
+                        {
+                            try { script.Update(deltaTime); }
+                            catch (Exception e) { Debug.Log($"[C#] Error in script Update: {e.Message}"); }
+                        }
+                    }
                 }
-                catch (Exception e)
-                {
-                    Debug.Log($"[C#] Error updating script on Entity {_activeScripts[i].Entity.Id}: {e.Message}");
-                }
+
+                CleanupDestroyedEntities();
+            }
+            catch (Exception e)
+            {
+                Debug.Log($"[C#] FATAL Error in EngineHost.Update: {e}");
+            }
+        }
+
+        private static void CleanupDestroyedEntities()
+        {
+            if (_world == null) return;
+            
+            // 破棄されたエンティティを検出してハンドルを解放
+            var toRemove = new List<uint>();
+            foreach (var id in _scriptHandles.Keys)
+            {
+                if (!_world.HasComponent<ScriptComponent>(id)) toRemove.Add(id);
+            }
+            foreach (var id in toRemove)
+            {
+                if (_scriptHandles[id].IsAllocated) _scriptHandles[id].Free();
+                _scriptHandles.Remove(id);
             }
         }
 
         [UnmanagedCallersOnly]
-        public static void AddScriptByName(uint entityId, IntPtr namePtr)
+        public static void AddScriptByName(uint entityId, IntPtr namePtr, IntPtr varsJsonPtr)
         {
-            string name = Marshal.PtrToStringAnsi(namePtr);
-            uint entityCount = ECS.GetEntityCount(_registryPtr);
-            
-            // Find the entity in the cache (it should be there if SyncEntities was called)
-            if (_entityCache.TryGetValue(entityId, out var entity))
+            if (_world == null) return;
+
+            try
             {
-                if (name == "InternalCubeRotator") AddScript(new InternalCubeRotator { Entity = entity });
-                else if (name == "InternalSpawner") AddScript(new InternalSpawner { Entity = entity });
-                // TODO: Dynamic instantiation using Reflection
-                else Debug.Log($"[C#] Script {name} not found.");
+                string name = Marshal.PtrToStringAnsi(namePtr) ?? "";
+                string varsJson = Marshal.PtrToStringAnsi(varsJsonPtr) ?? "{}";
+
+                GameScript? script = null;
+                if (name == "InternalCubeRotator") script = new InternalCubeRotator();
+                else if (name == "InternalSpawner") script = new InternalSpawner();
+                
+                if (script != null)
+                {
+                    script.EntityId = entityId;
+                    script.World = _world;
+                    ApplyVariables(script, varsJson);
+                    
+                    var handle = GCHandle.Alloc(script);
+                    _scriptHandles[entityId] = handle;
+                    
+                    _world.AddScriptComponent(entityId, (ulong)GCHandle.ToIntPtr(handle), 0);
+                    script.Start();
+                }
+                else
+                {
+                    Debug.Log($"[C#] Script type '{name}' not found.");
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.Log($"[C#] Error in AddScriptByName: {e}");
             }
         }
 
-        private static void SyncEntities()
+        private static void ApplyVariables(GameScript script, string json)
         {
-            uint entityCount = ECS.GetEntityCount(_registryPtr);
-            
-            _entityCache.Clear();
-
-            for (uint i = 0; i < entityCount; i++)
+            try
             {
-                uint id = ECS.GetEntityId(_registryPtr, i);
-                var entity = new Entity(i, id, _registryPtr);
-                _entityCache[id] = entity;
-            }
-        }
+                using var doc = JsonDocument.Parse(json);
+                var root = doc.RootElement;
+                if (root.ValueKind != JsonValueKind.Object) return;
 
-        public static void AddScript(GameScript script)
-        {
-            _activeScripts.Add(script);
-            script.Start();
+                var type = script.GetType();
+                foreach (var prop in root.EnumerateObject())
+                {
+                    var field = type.GetField(prop.Name, BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
+                    if (field != null)
+                    {
+                        object? val = null;
+                        var fieldType = field.FieldType;
+                        if (fieldType == typeof(float)) val = (float)prop.Value.GetDouble();
+                        else if (fieldType == typeof(int)) val = prop.Value.GetInt32();
+                        else if (fieldType == typeof(bool)) val = prop.Value.GetBoolean();
+                        else if (fieldType == typeof(string)) val = prop.Value.GetString();
+                        else if (fieldType == typeof(Math.Vector3))
+                        {
+                            val = new Math.Vector3(
+                                (float)prop.Value.GetProperty("x").GetDouble(),
+                                (float)prop.Value.GetProperty("y").GetDouble(),
+                                (float)prop.Value.GetProperty("z").GetDouble()
+                            );
+                        }
+                        if (val != null) field.SetValue(script, val);
+                    }
+                }
+            }
+            catch (Exception e) { Debug.Log($"[C#] Error applying variables: {e.Message}"); }
         }
 
         [UnmanagedCallersOnly]
         public static void Shutdown()
         {
-            foreach (var script in _activeScripts)
+            try
             {
-                script.OnDisable();
+                foreach (var handle in _scriptHandles.Values)
+                {
+                    if (handle.IsAllocated) handle.Free();
+                }
+                _scriptHandles.Clear();
+                _world = null;
+                Debug.Log("[C#] EngineHost: Shutdown.");
             }
-            _activeScripts.Clear();
-            _entityCache.Clear();
-            Debug.Log("[C#] EngineHost: Shutdown.");
+            catch (Exception e)
+            {
+                Console.WriteLine($"[C#] Error in Shutdown: {e}");
+            }
         }
 
-        // --- Internal Classes for Testing ---
-        // These should eventually move to a separate user assembly.
-
+        // --- Test Scripts ---
         internal class InternalCubeRotator : GameScript
         {
             public float Speed = 2.0f;
             public override void Update(float deltaTime)
             {
-                var rot = transform.Rotation;
-                rot.y += Speed * deltaTime;
-                transform.Rotation = rot;
+                ref var t = ref transformRef;
+                t.rotation.y += Speed * deltaTime;
             }
         }
 
         internal class InternalSpawner : GameScript
         {
             private float _timer = 0.0f;
-            private List<Entity> _spawned = new List<Entity>();
-
+            private List<uint> _spawned = new List<uint>();
             public override void Update(float deltaTime)
             {
                 _timer += deltaTime;
                 if (_timer > 2.0f)
                 {
-                    var e = Entity.Create();
-                    e.AddComponent<Transform>();
-                    var mr = e.AddComponent<MeshRenderer>();
-                    mr.ModelIndex = 0;
-                    mr.MaterialIndex = 1; // White
+                    uint e = World.CreateEntity();
+                    World.AddTransform(e);
+                    World.AddMeshRenderer(e);
+                    
+                    ref var mr = ref World.GetComponent<MeshRenderer>(e);
+                    mr.modelIndex = 0; 
+                    mr.materialIndex = 1;
 
-                    e.transform.Position = new Math.Vector3(0, 10, 0);
-                    e.transform.Scale = new Math.Vector3(1, 1, 1);
-
+                    ref var t = ref World.GetComponent<Transform>(e);
+                    t.position = new Math.Vector3(0, 10, 0);
+                    t.rotation = new Math.Vector3(0, 0, 0);
+                    t.scale = new Math.Vector3(1, 1, 1);
                     _spawned.Add(e);
-                    Debug.Log($"[C#] Spawned Entity ID: {e.Id}");
                     _timer = 0.0f;
                 }
-
                 for (int i = _spawned.Count - 1; i >= 0; i--)
                 {
-                    var e = _spawned[i];
-                    var pos = e.transform.Position;
-                    pos.y += 2.0f * deltaTime;
-                    e.transform.Position = pos;
-
-                    if (pos.y > 20.0f)
-                    {
-                        e.Destroy();
-                        _spawned.RemoveAt(i);
-                    }
+                    uint e = _spawned[i];
+                    if (World.HasComponent<Transform>(e)) {
+                        ref var t = ref World.GetComponent<Transform>(e);
+                        t.position.y += 2.0f * deltaTime;
+                        if (t.position.y > 20.0f) { World.DestroyEntity(e); _spawned.RemoveAt(i); }
+                    } else { _spawned.RemoveAt(i); }
                 }
             }
         }

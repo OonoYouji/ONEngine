@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Platforms>x64</Platforms>
+    <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+    <OutputPath>..\..\bin\$(Configuration)\</OutputPath>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+  </PropertyGroup>
+
+  <!-- Visual Studio 内でのビルド時のみ C++ EXE をビルド・コピーする設定 -->
+  <Target Name="BuildCppHost" BeforeTargets="Build" Condition="'$(BuildingInsideVisualStudio)' == 'true'">
+    <MSBuild Projects="..\host\Temp.vcxproj" Properties="Configuration=$(Configuration);Platform=x64" />
+  </Target>
+
+  <!-- 実行に必要な成果物を bin フォルダへ集約する設定 -->
+  <ItemGroup>
+    <Content Include="..\host\x64\$(Configuration)\Temp.exe" Condition="Exists('..\host\x64\$(Configuration)\Temp.exe')">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>Temp.exe</Link>
+    </Content>
+  </ItemGroup>
+
+</Project>

@@ -33,10 +33,37 @@ struct Transform {
     uint8_t _final_pad2[4];
 };
 
+struct Camera {
+    float fov;
+    float nearZ;
+    float farZ;
+    uint8_t _final_pad0[4];
+};
+
+struct PointLight {
+    Engine::Math::Vector3 color;
+    float intensity;
+    float radius;
+    uint8_t _final_pad0[12];
+};
+
+struct ScriptComponent {
+    uint64_t gcHandle;
+    uint32_t typeId;
+    uint8_t _final_pad0[4];
+};
+
 struct MeshRenderer {
     uint32_t modelIndex;
     uint32_t materialIndex;
     uint8_t _final_pad0[8];
+};
+
+struct DirectionalLight {
+    Engine::Math::Vector3 color;
+    float intensity;
+    Engine::Math::Vector3 direction;
+    uint8_t _final_pad0[4];
 };
 
 } // namespace Engine::ECS

@@ -1,0 +1,22 @@
+{
+  "name": "Player",
+  "components": {
+    "LocalTransform": {
+      "position": [5.0, 2.0, -1.0],
+      "rotation": [0.0, 0.0, 0.0, 1.0],
+      "scale": [1.0, 1.0, 1.0]
+    },
+    "RenderMesh": {
+      "meshId": "00000000-0000-0000-0000-000000000001",
+      "materialId": "00000000-0000-0000-0000-000000000001",
+      "isVisible": true
+    },
+    "PhysicsProperties": {
+      "mass": 1.0,
+      "useGravity": true
+    }
+  },
+  "scripts": [
+    "PlayerMoveScript"
+  ]
+}

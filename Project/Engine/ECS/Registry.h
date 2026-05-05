@@ -18,6 +18,7 @@ public:
 	virtual ~IComponentStorage() = default;
 	virtual void Remove(Entity entity) = 0;
 	virtual bool Has(Entity entity) const = 0;
+	virtual uint32_t GetIndex(Entity entity) const = 0;
 	virtual const std::vector<Entity>& GetEntities() const = 0;
 	virtual size_t Size() const = 0;
 };
@@ -30,22 +31,21 @@ class ComponentStorage final : public IComponentStorage {
 public:
 	static constexpr size_t kChunkSize = 1024;
 	static constexpr uint32_t kInvalidIndex = 0xFFFFFFFF;
+	static constexpr size_t kPageSize = 4096;
 
 	T& Add(Entity entity, T&& component) {
-		if (Has(entity)) {
-			uint32_t index = entityToIndex_[entity];
+		uint32_t index = GetIndex(entity);
+		if (index != kInvalidIndex) {
 			*GetPtr(index) = std::move(component);
 			return *GetPtr(index);
 		}
 
-		uint32_t index = static_cast<uint32_t>(count_);
+		index = static_cast<uint32_t>(count_);
 		EnsureCapacity(index + 1);
 
-		if (entity >= entityToIndex_.size()) {
-			entityToIndex_.resize(entity + 1, kInvalidIndex);
-		}
-
-		entityToIndex_[entity] = index;
+		EnsureSparsePage(entity);
+		sparsePages_[entity / kPageSize][entity % kPageSize] = index;
+		
 		indexToEntity_.push_back(entity);
 		*GetPtr(index) = std::move(component);
 		count_++;
@@ -53,9 +53,9 @@ public:
 	}
 
 	void Remove(Entity entity) override {
-		if (!Has(entity)) return;
+		uint32_t index = GetIndex(entity);
+		if (index == kInvalidIndex) return;
 
-		uint32_t index = entityToIndex_[entity];
 		uint32_t lastIndex = static_cast<uint32_t>(count_ - 1);
 		Entity lastEntity = indexToEntity_[lastIndex];
 
@@ -63,26 +63,34 @@ public:
 		if (index != lastIndex) {
 			*GetPtr(index) = std::move(*GetPtr(lastIndex));
 			indexToEntity_[index] = lastEntity;
-			entityToIndex_[lastEntity] = index;
+			sparsePages_[lastEntity / kPageSize][lastEntity % kPageSize] = index;
 		}
 
 		count_--;
 		indexToEntity_.pop_back();
-		entityToIndex_[entity] = kInvalidIndex;
+		sparsePages_[entity / kPageSize][entity % kPageSize] = kInvalidIndex;
 	}
 
 	bool Has(Entity entity) const override {
-		return entity < entityToIndex_.size() && entityToIndex_[entity] != kInvalidIndex;
+		return GetIndex(entity) != kInvalidIndex;
+	}
+
+	uint32_t GetIndex(Entity entity) const override {
+		size_t pageIdx = entity / kPageSize;
+		if (pageIdx >= sparsePages_.size() || !sparsePages_[pageIdx]) return kInvalidIndex;
+		return sparsePages_[pageIdx][entity % kPageSize];
 	}
 
 	T& Get(Entity entity) {
-		assert(Has(entity));
-		return *GetPtr(entityToIndex_[entity]);
+		uint32_t index = GetIndex(entity);
+		assert(index != kInvalidIndex);
+		return *GetPtr(index);
 	}
 
 	const T& Get(Entity entity) const {
-		assert(Has(entity));
-		return *GetPtr(entityToIndex_[entity]);
+		uint32_t index = GetIndex(entity);
+		assert(index != kInvalidIndex);
+		return *GetPtr(index);
 	}
 
 	T* GetPtr(uint32_t index) {
@@ -100,10 +108,15 @@ public:
 	const std::vector<Entity>& GetEntities() const override { return indexToEntity_; }
 	size_t Size() const override { return count_; }
 
-	// Interop 用: チャンクのポインタを返す
+	// Interop 用: 
 	T* GetChunkPtr(size_t chunkIndex) {
 		if (chunkIndex >= chunks_.size()) return nullptr;
 		return chunks_[chunkIndex].get();
+	}
+
+	void** GetSparsePagesPtr(uint32_t* outPageCount) {
+		*outPageCount = static_cast<uint32_t>(sparsePages_.size());
+		return (void**)sparsePages_.data();
 	}
 
 private:
@@ -114,10 +127,21 @@ private:
 		}
 	}
 
+	void EnsureSparsePage(Entity entity) {
+		size_t pageIdx = entity / kPageSize;
+		if (pageIdx >= sparsePages_.size()) {
+			sparsePages_.resize(pageIdx + 1, nullptr);
+		}
+		if (!sparsePages_[pageIdx]) {
+			sparsePages_[pageIdx] = new uint32_t[kPageSize];
+			std::fill(sparsePages_[pageIdx], sparsePages_[pageIdx] + kPageSize, kInvalidIndex);
+		}
+	}
+
 	std::vector<std::unique_ptr<T[]>> chunks_;
 	size_t count_ = 0;
 	std::vector<Entity> indexToEntity_;
-	std::vector<uint32_t> entityToIndex_; // Sparse array
+	std::vector<uint32_t*> sparsePages_; // Paged sparse array
 };
 
 ///

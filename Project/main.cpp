@@ -1,4 +1,4 @@
-﻿#include <Windows.h>
+#include <Windows.h>
 #include <vector>
 #include "Engine/Core/Window.h"
 #include "Engine/Core/Timer.h"
@@ -19,16 +19,57 @@
 extern "C" void LogFromRuntime(const char*);
 
 extern "C" {
-    __declspec(dllexport) void* GetTransformChunk(Engine::ECS::Registry* registry, uint32_t chunkIndex) {
-        return registry->GetStorage<Engine::ECS::Transform>().GetChunkPtr(chunkIndex);
+    // --- Component Type IDs ---
+    __declspec(dllexport) uint32_t Ecs_GetTypeId_Transform() { return 1; }
+    __declspec(dllexport) uint32_t Ecs_GetTypeId_MeshRenderer() { return 2; }
+    __declspec(dllexport) uint32_t Ecs_GetTypeId_ScriptComponent() { return 3; }
+
+    // --- Generic Storage Access ---
+    __declspec(dllexport) void* ecs_get_sparse_pages(Engine::ECS::Registry* registry, uint32_t typeId, uint32_t* pageCount) {
+        if (typeId == 1) return registry->GetStorage<Engine::ECS::Transform>().GetSparsePagesPtr(pageCount);
+        if (typeId == 2) return registry->GetStorage<Engine::ECS::MeshRenderer>().GetSparsePagesPtr(pageCount);
+        if (typeId == 3) return registry->GetStorage<Engine::ECS::ScriptComponent>().GetSparsePagesPtr(pageCount);
+        return nullptr;
     }
 
-    __declspec(dllexport) void* GetMeshRendererChunk(Engine::ECS::Registry* registry, uint32_t chunkIndex) {
-        return registry->GetStorage<Engine::ECS::MeshRenderer>().GetChunkPtr(chunkIndex);
+    __declspec(dllexport) void* ecs_get_chunk_ptr(Engine::ECS::Registry* registry, uint32_t typeId, uint32_t chunkIndex) {
+        if (typeId == 1) return registry->GetStorage<Engine::ECS::Transform>().GetChunkPtr(chunkIndex);
+        if (typeId == 2) return registry->GetStorage<Engine::ECS::MeshRenderer>().GetChunkPtr(chunkIndex);
+        if (typeId == 3) return registry->GetStorage<Engine::ECS::ScriptComponent>().GetChunkPtr(chunkIndex);
+        return nullptr;
     }
 
-    __declspec(dllexport) uint32_t GetEntityCount(Engine::ECS::Registry* registry) {
-        return (uint32_t)registry->GetStorage<Engine::ECS::Transform>().GetEntities().size();
+    __declspec(dllexport) uint32_t ecs_get_chunk_count(Engine::ECS::Registry* registry, uint32_t typeId) {
+        if (typeId == 1) return (uint32_t)((registry->GetStorage<Engine::ECS::Transform>().Size() + 1023) / 1024);
+        if (typeId == 2) return (uint32_t)((registry->GetStorage<Engine::ECS::MeshRenderer>().Size() + 1023) / 1024);
+        if (typeId == 3) return (uint32_t)((registry->GetStorage<Engine::ECS::ScriptComponent>().Size() + 1023) / 1024);
+        return 0;
+    }
+
+    __declspec(dllexport) uint32_t ecs_get_storage_size(Engine::ECS::Registry* registry, uint32_t typeId) {
+        if (typeId == 1) return (uint32_t)registry->GetStorage<Engine::ECS::Transform>().Size();
+        if (typeId == 2) return (uint32_t)registry->GetStorage<Engine::ECS::MeshRenderer>().Size();
+        if (typeId == 3) return (uint32_t)registry->GetStorage<Engine::ECS::ScriptComponent>().Size();
+        return 0;
+    }
+
+    __declspec(dllexport) uint32_t* ecs_get_entities_ptr(Engine::ECS::Registry* registry, uint32_t typeId, uint32_t* count) {
+        if (typeId == 1) { 
+            auto& s = registry->GetStorage<Engine::ECS::Transform>();
+            *count = (uint32_t)s.GetEntities().size();
+            return (uint32_t*)s.GetEntities().data();
+        }
+        if (typeId == 2) {
+            auto& s = registry->GetStorage<Engine::ECS::MeshRenderer>();
+            *count = (uint32_t)s.GetEntities().size();
+            return (uint32_t*)s.GetEntities().data();
+        }
+        if (typeId == 3) {
+            auto& s = registry->GetStorage<Engine::ECS::ScriptComponent>();
+            *count = (uint32_t)s.GetEntities().size();
+            return (uint32_t*)s.GetEntities().data();
+        }
+        return nullptr;
     }
 
     __declspec(dllexport) uint32_t GetEntityId(Engine::ECS::Registry* registry, uint32_t index) {
@@ -51,6 +92,13 @@ extern "C" {
 
     __declspec(dllexport) void AddMeshRenderer(Engine::ECS::Registry* registry, uint32_t entity) {
         registry->AddComponent<Engine::ECS::MeshRenderer>(entity);
+    }
+
+    __declspec(dllexport) void AddScriptComponent(Engine::ECS::Registry* registry, uint32_t entity, uint64_t gcHandle, uint32_t typeId) {
+        Engine::ECS::ScriptComponent sc;
+        sc.gcHandle = gcHandle;
+        sc.typeId = typeId;
+        registry->AddComponent<Engine::ECS::ScriptComponent>(entity, std::move(sc));
     }
 }
 
@@ -82,7 +130,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     assetManager.Initialize(graphicsEngine.GetRenderDevice());
 
     auto& scriptHost = Engine::Script::ScriptHost::GetInstance();
-    void(*updateDelegate)() = nullptr;
+    void(*updateDelegate)(float) = nullptr;
     void(*shutdownDelegate)() = nullptr;
 
     if (scriptHost.Initialize()) {
@@ -93,7 +141,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
         
         if (initDelegate) initDelegate((void*)LogFromRuntime, &registry);
 
-        updateDelegate = (void(*)())scriptHost.GetMethodDelegate(
+        updateDelegate = (void(*)(float))scriptHost.GetMethodDelegate(
             L"ONEngine.Scripting.EngineHost, ONEngine.Scripting",
             L"Update",
             L"");
@@ -107,14 +155,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     auto& renderer = Engine::Graphics::Renderer::GetInstance();
     renderer.Initialize(graphicsEngine.GetRenderDevice());
 
-    // 1. パイプラインのロード
     shaderManager.LoadPipelineAsset("Assets/Pipelines/BindlessTest.json");
     shaderManager.LoadPipelineAsset("Assets/Pipelines/Blit.json");
 
-    // 2. シーンのロード (外部ファイル化)
     Engine::Scene::SceneLoader::LoadScene("Assets/Scene/Main.scene", registry);
 
-    // 3. システムと共通定数バッファ
     Engine::ECS::RenderSystem renderSystem;
     Engine::Graphics::ConstantBuffer sceneCB;
     sceneCB.Create(graphicsEngine.GetRenderDevice(), sizeof(SceneData));
@@ -122,7 +167,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     Engine::Core::Timer timer;
     timer.Reset();
 
-    // メインループ
     while(true) {
         window.Update();
         if(window.GetIsProcessEnd()) break;
@@ -130,23 +174,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
         timer.Tick();
         float dt = timer.GetDeltaTime();
 
-        if (updateDelegate) ((void(*)(float))updateDelegate)(dt);
+        if (updateDelegate) updateDelegate(dt);
 
-        // 更新フェーズ
-        /*
-        registry.GetView<Transform>().Each([dt](auto entity, auto& transform) {
-            transform.rotation.y += 1.0f * dt; // 1 radian per second
-        });
-        */
-
-        // 描画準備
         renderer.ClearQueue();
         renderSystem.Update(registry);
 
-        // 描画実行
         graphicsEngine.BeginFrame();
         
-        // カメラ更新 (BeginFrameの後に行うことで、正しいフレームのリソースに書き込む)
         SceneData sceneData;
         auto view = Engine::Math::Matrix4x4::MakeLookAtLH({ 0, 20, -50 }, { 0, 0, 0 }, { 0, 1, 0 });
         auto proj = Engine::Math::Matrix4x4::MakePerspectiveFovLH(0.45f, 16.0f/9.0f, 0.1f, 1000.0f);
@@ -160,13 +194,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
         graphicsEngine.Clear({ 0.7f, 0.7f, 0.7f, 1.0f });
         graphicsEngine.ClearDepth();
         
-        // 描画コンテキストの構築
         Engine::Graphics::RenderContext context;
         context.commandList = graphicsEngine.GetCommandQueue()->GetCommandList();
         context.sceneCBAddress = currentFrameRes->GetSceneCB()->GetGPUVirtualAddress();
         context.frameIndex = graphicsEngine.GetCurrentFrameIndex();
         
-        // Rendererに全てを任せる
         renderer.RenderZPrepass(context);
         renderer.Render(context);
 

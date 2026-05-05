@@ -4,17 +4,6 @@ struct SceneData {
     float4x4 viewProj;
 };
 
-struct InstanceData {
-    float4x4 world;
-    float4 baseColor;
-    uint textureIndex;
-    float3 padding;
-};
-
-struct MaterialData {
-    float4 baseColor;
-};
-
 struct Transform {
     float3 position;
     uint _pad0[1];
@@ -24,9 +13,47 @@ struct Transform {
     uint _final_pad2[1];
 };
 
+struct Camera {
+    float fov;
+    float nearZ;
+    float farZ;
+    uint _final_pad0[1];
+};
+
+struct PointLight {
+    float3 color;
+    float intensity;
+    float radius;
+    uint _final_pad0[3];
+};
+
+struct ScriptComponent {
+    uint2 gcHandle;
+    uint typeId;
+    uint _final_pad0[1];
+};
+
 struct MeshRenderer {
     uint modelIndex;
     uint materialIndex;
     uint _final_pad0[2];
+};
+
+struct DirectionalLight {
+    float3 color;
+    float intensity;
+    float3 direction;
+    uint _final_pad0[1];
+};
+
+struct InstanceData {
+    float4x4 world;
+    float4 baseColor;
+    uint textureIndex;
+    float3 padding;
+};
+
+struct MaterialData {
+    float4 baseColor;
 };
 

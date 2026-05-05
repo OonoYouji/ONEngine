@@ -1,0 +1,5 @@
+EXPORTS
+   DotNetRuntimeDebugHeader DATA
+   engine_init
+   engine_update
+   engine_shutdown

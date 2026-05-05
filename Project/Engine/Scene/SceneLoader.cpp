@@ -2,8 +2,6 @@
 #include "Externals/nlohmann/json.hpp"
 #include "Engine/Common/Console.h"
 #include "Schema/Schema.h"
-#include "Engine/ECS/Components/Camera.h"
-#include "Engine/ECS/Components/Light.h"
 #include "Engine/Asset/AssetManager.h"
 #include "Engine/Asset/MaterialManager.h"
 #include "Engine/Script/ScriptHost.h"
@@ -17,18 +15,19 @@ namespace Engine::Scene {
 
 namespace {
     // スクリプト追加用のデリゲート（キャッシュ）
-    void(*gAddScriptDelegate)(uint32_t, const char*) = nullptr;
+    void(*gAddScriptDelegate)(uint32_t, const char*, const char*) = nullptr;
 
     void EnsureScriptDelegate() {
         if (gAddScriptDelegate) return;
         auto& host = Engine::Script::ScriptHost::GetInstance();
-        gAddScriptDelegate = (void(*)(uint32_t, const char*))host.GetMethodDelegate(
+        gAddScriptDelegate = (void(*)(uint32_t, const char*, const char*))host.GetMethodDelegate(
             L"ONEngine.Scripting.EngineHost, ONEngine.Scripting",
             L"AddScriptByName",
             L"");
     }
 
-    // コンポーネントのデシリアライズ関数
+    // --- コンポーネントのデシリアライズ関数 ---
+
     void DeserializeTransform(const json& j, Engine::ECS::Transform& t) {
         try {
             if (j.contains("position") && j["position"].is_object()) {
@@ -36,9 +35,7 @@ namespace {
                 t.position.y = j["position"].value("y", 0.0f);
                 t.position.z = j["position"].value("z", 0.0f);
             }
-            if (j.contains("rotate") && j["rotate"].is_object()) {
-                t.rotation = { 0, 0, 0 }; // TODO: Quaternion support
-            } else if (j.contains("rotation") && j["rotation"].is_object()) {
+            if (j.contains("rotation") && j["rotation"].is_object()) {
                 t.rotation.x = j["rotation"].value("x", 0.0f);
                 t.rotation.y = j["rotation"].value("y", 0.0f);
                 t.rotation.z = j["rotation"].value("z", 0.0f);
@@ -71,6 +68,36 @@ namespace {
         }
     }
 
+    void DeserializeCamera(const json& j, Engine::ECS::Camera& c) {
+        c.fov = j.value("fov", 45.0f);
+        c.nearZ = j.value("nearZ", 0.1f);
+        c.farZ = j.value("farZ", 1000.0f);
+    }
+
+    void DeserializeDirectionalLight(const json& j, Engine::ECS::DirectionalLight& l) {
+        if (j.contains("color")) {
+            l.color.x = j["color"].value("x", 1.0f);
+            l.color.y = j["color"].value("y", 1.0f);
+            l.color.z = j["color"].value("z", 1.0f);
+        }
+        l.intensity = j.value("intensity", 1.0f);
+        if (j.contains("direction")) {
+            l.direction.x = j["direction"].value("x", 0.0f);
+            l.direction.y = j["direction"].value("y", -1.0f);
+            l.direction.z = j["direction"].value("z", 1.0f);
+        }
+    }
+
+    void DeserializePointLight(const json& j, Engine::ECS::PointLight& l) {
+        if (j.contains("color")) {
+            l.color.x = j["color"].value("x", 1.0f);
+            l.color.y = j["color"].value("y", 1.0f);
+            l.color.z = j["color"].value("z", 1.0f);
+        }
+        l.intensity = j.value("intensity", 1.0f);
+        l.radius = j.value("radius", 10.0f);
+    }
+
     void DeserializeEntity(const json& jEntity, Engine::ECS::Registry& registry) {
         auto entity = registry.CreateEntity();
         
@@ -78,19 +105,33 @@ namespace {
             for (const auto& jComp : jEntity["components"]) {
                 if (!jComp.contains("type") || !jComp["type"].is_string()) continue;
                 std::string type = jComp["type"];
+                
                 if (type == "Transform") {
                     auto& t = registry.AddComponent<Engine::ECS::Transform>(entity);
                     DeserializeTransform(jComp, t);
                 } else if (type == "MeshRenderer") {
                     auto& mr = registry.AddComponent<Engine::ECS::MeshRenderer>(entity);
                     DeserializeMeshRenderer(jComp, mr);
+                } else if (type == "Camera") {
+                    auto& c = registry.AddComponent<Engine::ECS::Camera>(entity);
+                    DeserializeCamera(jComp, c);
+                } else if (type == "DirectionalLight") {
+                    auto& l = registry.AddComponent<Engine::ECS::DirectionalLight>(entity);
+                    DeserializeDirectionalLight(jComp, l);
+                } else if (type == "PointLight") {
+                    auto& l = registry.AddComponent<Engine::ECS::PointLight>(entity);
+                    DeserializePointLight(jComp, l);
                 } else if (type == "Script") {
                     EnsureScriptDelegate();
                     if (gAddScriptDelegate && jComp.contains("scripts") && jComp["scripts"].is_array()) {
                         for (const auto& jScript : jComp["scripts"]) {
                             if (jScript.contains("name") && jScript["name"].is_string()) {
                                 std::string scriptName = jScript["name"];
-                                gAddScriptDelegate(entity, scriptName.c_str());
+                                std::string varsJson = "{}";
+                                if (jScript.contains("variables") && jScript["variables"].is_object()) {
+                                    varsJson = jScript["variables"].dump();
+                                }
+                                gAddScriptDelegate(entity, scriptName.c_str(), varsJson.c_str());
                             }
                         }
                     }
@@ -144,13 +185,26 @@ Engine::ECS::Entity SceneLoader::InstantiatePrefab(const std::string& path, Engi
                 } else if (type == "MeshRenderer") {
                     auto& mr = registry.AddComponent<Engine::ECS::MeshRenderer>(entity);
                     DeserializeMeshRenderer(jComp, mr);
+                } else if (type == "Camera") {
+                    auto& c = registry.AddComponent<Engine::ECS::Camera>(entity);
+                    DeserializeCamera(jComp, c);
+                } else if (type == "DirectionalLight") {
+                    auto& l = registry.AddComponent<Engine::ECS::DirectionalLight>(entity);
+                    DeserializeDirectionalLight(jComp, l);
+                } else if (type == "PointLight") {
+                    auto& l = registry.AddComponent<Engine::ECS::PointLight>(entity);
+                    DeserializePointLight(jComp, l);
                 } else if (type == "Script") {
                     EnsureScriptDelegate();
                     if (gAddScriptDelegate && jComp.contains("scripts") && jComp["scripts"].is_array()) {
                         for (const auto& jScript : jComp["scripts"]) {
                             if (jScript.contains("name") && jScript["name"].is_string()) {
                                 std::string scriptName = jScript["name"];
-                                gAddScriptDelegate(entity, scriptName.c_str());
+                                std::string varsJson = "{}";
+                                if (jScript.contains("variables") && jScript["variables"].is_object()) {
+                                    varsJson = jScript["variables"].dump();
+                                }
+                                gAddScriptDelegate(entity, scriptName.c_str(), varsJson.c_str());
                             }
                         }
                     }

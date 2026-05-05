@@ -1,0 +1,25 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Temp", "source\host\Temp.vcxproj", "{21FB831A-AD73-4DAE-A018-99192BC6E2CA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EcsApp", "source\script_api\EcsApp.csproj", "{4E28A9CF-E114-4B2E-8A9E-146E339C91B0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{21FB831A-AD73-4DAE-A018-99192BC6E2CA}.Debug|x64.ActiveCfg = Debug|x64
+		{21FB831A-AD73-4DAE-A018-99192BC6E2CA}.Debug|x64.Build.0 = Debug|x64
+		{21FB831A-AD73-4DAE-A018-99192BC6E2CA}.Release|x64.ActiveCfg = Release|x64
+		{21FB831A-AD73-4DAE-A018-99192BC6E2CA}.Release|x64.Build.0 = Release|x64
+		{4E28A9CF-E114-4B2E-8A9E-146E339C91B0}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{4E28A9CF-E114-4B2E-8A9E-146E339C91B0}.Debug|x64.Build.0 = Debug|Any CPU
+		{4E28A9CF-E114-4B2E-8A9E-146E339C91B0}.Release|x64.ActiveCfg = Release|Any CPU
+		{4E28A9CF-E114-4B2E-8A9E-146E339C91B0}.Release|x64.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

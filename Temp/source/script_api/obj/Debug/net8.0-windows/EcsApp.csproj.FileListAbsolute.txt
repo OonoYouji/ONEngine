@@ -1,0 +1,11 @@
+C:\Users\k023g\source\repos\Temp\bin\Debug\net8.0-windows\EcsApp.deps.json
+C:\Users\k023g\source\repos\Temp\bin\Debug\net8.0-windows\EcsApp.dll
+C:\Users\k023g\source\repos\Temp\bin\Debug\net8.0-windows\EcsApp.pdb
+C:\Users\k023g\source\repos\Temp\source\script_api\obj\Debug\net8.0-windows\EcsApp.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\k023g\source\repos\Temp\source\script_api\obj\Debug\net8.0-windows\EcsApp.AssemblyInfoInputs.cache
+C:\Users\k023g\source\repos\Temp\source\script_api\obj\Debug\net8.0-windows\EcsApp.AssemblyInfo.cs
+C:\Users\k023g\source\repos\Temp\source\script_api\obj\Debug\net8.0-windows\EcsApp.csproj.CoreCompileInputs.cache
+C:\Users\k023g\source\repos\Temp\source\script_api\obj\Debug\net8.0-windows\EcsApp.dll
+C:\Users\k023g\source\repos\Temp\source\script_api\obj\Debug\net8.0-windows\refint\EcsApp.dll
+C:\Users\k023g\source\repos\Temp\source\script_api\obj\Debug\net8.0-windows\EcsApp.pdb
+C:\Users\k023g\source\repos\Temp\source\script_api\obj\Debug\net8.0-windows\ref\EcsApp.dll

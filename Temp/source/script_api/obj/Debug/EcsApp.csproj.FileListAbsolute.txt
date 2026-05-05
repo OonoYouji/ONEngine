@@ -1,0 +1,13 @@
+C:\Users\k023g\source\repos\Temp\source\script_api\obj\Debug\EcsApp.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\k023g\source\repos\Temp\source\script_api\obj\Debug\EcsApp.AssemblyInfoInputs.cache
+C:\Users\k023g\source\repos\Temp\source\script_api\obj\Debug\EcsApp.AssemblyInfo.cs
+C:\Users\k023g\source\repos\Temp\source\script_api\obj\Debug\EcsApp.csproj.CoreCompileInputs.cache
+C:\Users\k023g\source\repos\Temp\bin\Debug\EcsApp.deps.json
+C:\Users\k023g\source\repos\Temp\bin\Debug\EcsApp.runtimeconfig.json
+C:\Users\k023g\source\repos\Temp\bin\Debug\EcsApp.dll
+C:\Users\k023g\source\repos\Temp\bin\Debug\EcsApp.pdb
+C:\Users\k023g\source\repos\Temp\source\script_api\obj\Debug\EcsApp.dll
+C:\Users\k023g\source\repos\Temp\source\script_api\obj\Debug\refint\EcsApp.dll
+C:\Users\k023g\source\repos\Temp\source\script_api\obj\Debug\EcsApp.pdb
+C:\Users\k023g\source\repos\Temp\source\script_api\obj\Debug\EcsApp.genruntimeconfig.cache
+C:\Users\k023g\source\repos\Temp\source\script_api\obj\Debug\ref\EcsApp.dll

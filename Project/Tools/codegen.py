@@ -14,6 +14,7 @@ TYPE_MAP_CPP = {
     "float2": "Engine::Math::Vector2",
     "float": "float",
     "uint32": "uint32_t",
+    "uint64": "uint64_t",
 }
 
 TYPE_MAP_HLSL = {
@@ -23,6 +24,7 @@ TYPE_MAP_HLSL = {
     "float2": "float2",
     "float": "float",
     "uint32": "uint",
+    "uint64": "uint2", # HLSL doesn't have uint64 easily in all profiles, use uint2
 }
 
 TYPE_MAP_CS = {
@@ -32,6 +34,7 @@ TYPE_MAP_CS = {
     "float2": "Vector2",
     "float": "float",
     "uint32": "uint",
+    "uint64": "ulong",
 }
 
 TYPE_SIZES = {
@@ -41,11 +44,12 @@ TYPE_SIZES = {
     "float2": 8,
     "float": 4,
     "uint32": 4,
+    "uint64": 8,
 }
 
 def generate():
     if not os.path.exists(INPUT_FILE):
-        print(f"Error: {INPUT_FILE} not found.")
+        print("Error: {} not found.".format(INPUT_FILE))
         return
 
     with open(INPUT_FILE, "r") as f:
@@ -74,32 +78,38 @@ def generate():
             f_type = field["type"]
             f_size = TYPE_SIZES[f_type]
             
-            # アライメントチェック (16バイト境界を跨ぐ場合はパディング)
+            # Alignment check
             remaining_in_chunk = 16 - (current_offset % 16)
             if f_size > remaining_in_chunk and remaining_in_chunk < 16:
                 pad_size = remaining_in_chunk
-                cpp_struct_body += f"    uint8_t _pad{pad_index}[{pad_size}];\n"
-                hlsl_struct_body += f"    uint _pad{pad_index}[{pad_size // 4}];\n" if pad_size % 4 == 0 else f"    uint8_t _pad{pad_index}[{pad_size}];\n"
-                cs_struct_body += f"    private unsafe fixed byte _pad{pad_index}[{pad_size}];\n"
+                cpp_struct_body += "    uint8_t _pad{}[{}];\n".format(pad_index, pad_size)
+                if pad_size % 4 == 0:
+                    hlsl_struct_body += "    uint _pad{}[{}];\n".format(pad_index, pad_size // 4)
+                else:
+                    hlsl_struct_body += "    uint8_t _pad{}[{}];\n".format(pad_index, pad_size)
+                cs_struct_body += "        private unsafe fixed byte _pad{}[{}];\n".format(pad_index, pad_size)
                 pad_index += 1
                 current_offset += pad_size
 
-            cpp_struct_body += f"    {TYPE_MAP_CPP[f_type]} {f_name};\n"
-            hlsl_struct_body += f"    {TYPE_MAP_HLSL[f_type]} {f_name};\n"
-            cs_struct_body += f"        public {TYPE_MAP_CS[f_type]} {f_name};\n"
+            cpp_struct_body += "    {} {};\n".format(TYPE_MAP_CPP[f_type], f_name)
+            hlsl_struct_body += "    {} {};\n".format(TYPE_MAP_HLSL[f_type], f_name)
+            cs_struct_body += "        public {} {};\n".format(TYPE_MAP_CS[f_type], f_name)
             current_offset += f_size
 
-        # 構造体全体のサイズを16バイトに切り上げ (CBやSBでの安全のため)
+        # Round up to 16 bytes
         if current_offset % 16 != 0:
             pad_size = 16 - (current_offset % 16)
-            cpp_struct_body += f"    uint8_t _final_pad{pad_index}[{pad_size}];\n"
-            hlsl_struct_body += f"    uint _final_pad{pad_index}[{pad_size // 4}];\n" if pad_size % 4 == 0 else f"    uint8_t _final_pad{pad_index}[{pad_size}];\n"
-            cs_struct_body += f"    private unsafe fixed byte _final_pad{pad_index}[{pad_size}];\n"
+            cpp_struct_body += "    uint8_t _final_pad{}[{}];\n".format(pad_index, pad_size)
+            if pad_size % 4 == 0:
+                hlsl_struct_body += "    uint _final_pad{}[{}];\n".format(pad_index, pad_size // 4)
+            else:
+                hlsl_struct_body += "    uint8_t _final_pad{}[{}];\n".format(pad_index, pad_size)
+            cs_struct_body += "        private unsafe fixed byte _final_pad{}[{}];\n".format(pad_index, pad_size)
             current_offset += pad_size
 
-        struct_decl_cpp = f"struct {type_name} {{\n{cpp_struct_body}}};\n\n"
-        struct_decl_hlsl = f"struct {type_name} {{\n{hlsl_struct_body}}};\n\n"
-        struct_decl_cs = f"    [StructLayout(LayoutKind.Sequential)]\n    public struct {type_name}\n    {{\n{cs_struct_body}    }}\n\n"
+        struct_decl_cpp = "struct {} {{\n{}}};\n\n".format(type_name, cpp_struct_body)
+        struct_decl_hlsl = "struct {} {{\n{}}};\n\n".format(type_name, hlsl_struct_body)
+        struct_decl_cs = "    [StructLayout(LayoutKind.Sequential)]\n    public struct {}\n    {{\n{}{}    }}\n\n".format(type_name, "", cs_struct_body)
         
         if is_comp:
             ecs_content += struct_decl_cpp
@@ -112,14 +122,14 @@ def generate():
     cpp_content += ecs_content + "} // namespace Engine::ECS\n"
     cs_content += "}\n"
 
-    os.makedirs(os.path.dirname(CPP_OUTPUT), exist_ok=True)
-    os.makedirs(os.path.dirname(HLSL_OUTPUT), exist_ok=True)
-    os.makedirs(os.path.dirname(CS_OUTPUT), exist_ok=True)
+    if not os.path.exists(os.path.dirname(CPP_OUTPUT)): os.makedirs(os.path.dirname(CPP_OUTPUT))
+    if not os.path.exists(os.path.dirname(HLSL_OUTPUT)): os.makedirs(os.path.dirname(HLSL_OUTPUT))
+    if not os.path.exists(os.path.dirname(CS_OUTPUT)): os.makedirs(os.path.dirname(CS_OUTPUT))
 
     with open(CPP_OUTPUT, "w") as f: f.write(cpp_content)
     with open(HLSL_OUTPUT, "w") as f: f.write(hlsl_content)
     with open(CS_OUTPUT, "w") as f: f.write(cs_content)
-    print(f"Generated {CPP_OUTPUT}, {HLSL_OUTPUT}, and {CS_OUTPUT}")
+    print("Generated {}, {}, and {}".format(CPP_OUTPUT, HLSL_OUTPUT, CS_OUTPUT))
 
 if __name__ == "__main__":
     generate()

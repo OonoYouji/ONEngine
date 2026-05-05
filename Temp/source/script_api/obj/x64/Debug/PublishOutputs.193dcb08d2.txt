@@ -1,0 +1,2 @@
+C:\Users\k023g\source\repos\Temp\bin\Debug\win-x64\publish\EcsApp.dll
+C:\Users\k023g\source\repos\Temp\bin\Debug\win-x64\publish\EcsApp.pdb

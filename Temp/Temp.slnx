@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="source/host/Temp.vcxproj" Id="21fb831a-ad73-4dae-a018-99192bc6e2ca" />
+  <Project Path="source/script_api/EcsApp.csproj" />
+</Solution>

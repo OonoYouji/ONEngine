@@ -1,0 +1,208 @@
+# Engine Component Schemas (Single Source of Truth)
+# Based on components.md design
+
+components:
+  # --- 1. General ---
+  LocalTransform:
+    description: "ユーザー（C#）が操作するローカル座標。"
+    fields:
+      position: { type: vec3, default: [0.0, 0.0, 0.0] }
+      rotation: { type: vec4, default: [0.0, 0.0, 0.0, 1.0] } # Quaternion
+      scale: { type: vec3, default: [1.0, 1.0, 1.0] }
+
+  WorldMatrix:
+    description: "C++システムが計算し、GPUや物理エンジンに渡す絶対座標行列。"
+    is_gpu_buffer: true
+    fields:
+      matrix: { type: mat4 }
+
+  Parent:
+    description: "階層構造の構築。"
+    fields:
+      parentId: { type: uint32, default: 0 }
+
+  LocalRect:
+    description: "UIのアンカー、ピボット、ローカル配置データ。"
+    fields:
+      anchorMin: { type: vec2, default: [0.5, 0.5] }
+      anchorMax: { type: vec2, default: [0.5, 0.5] }
+      pivot: { type: vec2, default: [0.5, 0.5] }
+      anchoredPosition: { type: vec2, default: [0.0, 0.0] }
+      sizeDelta: { type: vec2, default: [100.0, 100.0] }
+
+  CanvasWorldMatrix:
+    description: "Canvasの解像度計算を加味した最終的なUI描画用行列。"
+    is_gpu_buffer: true
+    fields:
+      matrix: { type: mat4 }
+
+  # --- 2. Physics ---
+  Velocity:
+    description: "毎フレームの物理更新・移動処理に使われる動的データ。"
+    fields:
+      linear: { type: vec3, default: [0.0, 0.0, 0.0] }
+      angular: { type: vec3, default: [0.0, 0.0, 0.0] }
+
+  PhysicsProperties:
+    description: "質量や重力設定などの静的パラメータ。"
+    fields:
+      inverseMass: { type: float, default: 1.0 }
+      inverseInertia: { type: vec3, default: [1.0, 1.0, 1.0] }
+      useGravity: { type: bool, default: true }
+      isKinematic: { type: bool, default: false }
+
+  BoxGeometry:
+    description: "立方体形状データ。"
+    fields:
+      center: { type: vec3, default: [0.0, 0.0, 0.0] }
+      extents: { type: vec3, default: [0.5, 0.5, 0.5] }
+
+  SphereGeometry:
+    description: "球形状データ。"
+    fields:
+      center: { type: vec3, default: [0.0, 0.0, 0.0] }
+      radius: { type: float, default: 0.5 }
+
+  CapsuleGeometry:
+    description: "カプセル形状データ。"
+    fields:
+      center: { type: vec3, default: [0.0, 0.0, 0.0] }
+      radius: { type: float, default: 0.5 }
+      height: { type: float, default: 2.0 }
+      direction: { type: int, default: 1 } # 0:X, 1:Y, 2:Z
+
+  ColliderFilter:
+    description: "衝突レイヤーとマスク設定。"
+    fields:
+      layer: { type: uint32, default: 1 }
+      collisionMask: { type: uint32, default: 0xFFFFFFFF }
+      isTrigger: { type: bool, default: false }
+
+  # --- 3. Rendering ---
+  CameraData:
+    description: "カメラの投影設定。"
+    fields:
+      fov: { type: float, default: 60.0 }
+      nearClip: { type: float, default: 0.1 }
+      farClip: { type: float, default: 1000.0 }
+      cullingMask: { type: uint32, default: 0xFFFFFFFF }
+
+  LightData:
+    description: "光源設定。"
+    is_gpu_buffer: true
+    fields:
+      type: { type: int, default: 0 }
+      color: { type: vec3, default: [1.0, 1.0, 1.0] }
+      intensity: { type: float, default: 1.0 }
+      range: { type: float, default: 10.0 }
+      spotAngle: { type: float, default: 30.0 }
+
+  RenderMesh:
+    description: "描画するメッシュとマテリアルのハンドル。"
+    is_gpu_buffer: true
+    fields:
+      meshId: { type: guid }
+      materialId: { type: guid }
+      renderLayer: { type: uint32, default: 0 }
+      isVisible: { type: bool, default: true }
+
+  SpriteRenderData:
+    description: "2Dスプライトの描画情報。"
+    is_gpu_buffer: true
+    fields:
+      spriteId: { type: guid }
+      materialId: { type: guid }
+      color: { type: vec4, default: [1.0, 1.0, 1.0, 1.0] }
+      flipX: { type: bool, default: false }
+      flipY: { type: bool, default: false }
+
+  # --- 4. Audio ---
+  AudioSourceData:
+    description: "音源の設定パラメータ。"
+    fields:
+      clipId: { type: guid }
+      volume: { type: float, default: 1.0 }
+      pitch: { type: float, default: 1.0 }
+      spatialBlend: { type: float, default: 0.0 }
+      loop: { type: bool, default: false }
+
+  AudioPlayState:
+    description: "現在の再生状況。"
+    fields:
+      isPlaying: { type: bool, default: false }
+      time: { type: float, default: 0.0 }
+      triggerPlay: { type: bool, default: false }
+
+  AudioListenerTag:
+    description: "マイクとなるエンティティを示すタグ。"
+    fields: {} # Tag component (empty)
+
+  # --- 5. UI ---
+  CanvasData:
+    description: "UIのルート設定。"
+    fields:
+      renderMode: { type: int, default: 0 }
+      scaleFactor: { type: float, default: 1.0 }
+
+  UIImageData:
+    description: "UI画像の描画情報。"
+    is_gpu_buffer: true
+    fields:
+      spriteId: { type: guid }
+      color: { type: vec4, default: [1.0, 1.0, 1.0, 1.0] }
+      materialId: { type: guid }
+
+  UITextData:
+    description: "テキストの描画情報。"
+    is_gpu_buffer: true
+    fields:
+      fontId: { type: guid }
+      textHashId: { type: uint32, default: 0 }
+      fontSize: { type: float, default: 14.0 }
+      color: { type: vec4, default: [1.0, 1.0, 1.0, 1.0] }
+
+  UIButtonState:
+    description: "ボタンのインタラクション状態。"
+    fields:
+      isHovered: { type: bool, default: false }
+      isPressed: { type: bool, default: false }
+      interactable: { type: bool, default: true }
+
+  # --- 6. Animation ---
+  AnimatorState:
+    description: "アニメーションコントローラーの現在状態。"
+    fields:
+      controllerId: { type: guid }
+      currentClipHash: { type: uint32, default: 0 }
+      normalizedTime: { type: float, default: 0.0 }
+      speed: { type: float, default: 1.0 }
+
+  # --- 7. Navigation ---
+  NavAgentParams:
+    description: "エージェントの静的パラメータ。"
+    fields:
+      radius: { type: float, default: 0.5 }
+      height: { type: float, default: 2.0 }
+      maxSpeed: { type: float, default: 3.5 }
+      avoidancePriority: { type: int, default: 50 }
+
+  NavAgentState:
+    description: "移動の目標と現在の状況。"
+    fields:
+      destination: { type: vec3, default: [0.0, 0.0, 0.0] }
+      currentVelocity: { type: vec3, default: [0.0, 0.0, 0.0] }
+      hasPath: { type: bool, default: false }
+      remainingDistance: { type: float, default: 0.0 }
+
+  # --- 8. System ---
+  ScriptComponent:
+    description: "C#のGameScriptインスタンスへの参照を保持。"
+    requires_dispose: true
+    fields:
+      typeId: { type: int, default: -1 }
+      gcHandle: { type: uint64, default: 0 }
+
+  SceneMask:
+    description: "マルチシーン実行時のフィルタリング用ビットマスク。"
+    fields:
+      mask: { type: uint32, default: 1 }
