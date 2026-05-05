@@ -26,12 +26,14 @@ float3 ACESFilm(float3 x) {
 float4 ps_main(VSOutput input) : SV_TARGET {
     float4 color = gMainTexture.Sample(gSampler, input.uv);
     
-    // Grayscale calculation for verification
-    float luminance = dot(color.rgb, float3(0.2126f, 0.7152f, 0.0722f));
-    float3 grayscale = float3(luminance, luminance, luminance);
+    // 露出調整 (簡易版)
+    float3 x = color.rgb * 1.0f; 
+    
+    // HDR -> SDR (ACES Filmic)
+    float3 mapped = ACESFilm(x);
     
     // Gamma Correction
-    float3 corrected = pow(grayscale, 1.0f / 2.2f);
+    float3 corrected = pow(mapped, 1.0f / 2.2f);
     
     return float4(corrected, color.a);
 }
