@@ -133,3 +133,39 @@ types:
         type: uint32
       - name: padding
         type: float2
+
+  Skybox:
+    type: Component
+    fields:
+      - name: textureIndex
+        type: uint32
+
+  TextRenderer:
+    type: Component
+    fields:
+      - name: text
+        type: string
+      - name: fontIndex
+        type: uint32
+      - name: color
+        type: float4
+      - name: size
+        type: float
+      - name: isScreenSpace
+        type: uint32
+
+  TextData:
+    type: StructuredBuffer
+    fields:
+      - name: world
+        type: float4x4
+      - name: color
+        type: float4
+      - name: uvMin
+        type: float2
+      - name: uvMax
+        type: float2
+      - name: textureIndex
+        type: uint32
+      - name: padding
+        type: uint32

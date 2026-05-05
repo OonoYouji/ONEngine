@@ -35,6 +35,9 @@ public:
     /// @brief GPUリソースの作成とSRVの生成
     void CreateResource(Graphics::RenderDevice* device, D3D12_CPU_DESCRIPTOR_HANDLE srvHandle);
 
+    /// @brief メモリ上のピクセルデータからテクスチャを作成
+    bool CreateFromPixels(Graphics::RenderDevice* device, const uint8_t* pixels, uint32_t width, uint32_t height, DXGI_FORMAT format);
+
     ID3D12Resource* GetResource() const { return allocation_->GetResource(); }
     DirectX::ScratchImage* GetImage() const { return image_.get(); }
     uint32_t GetIndex() const { return index_; }

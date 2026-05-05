@@ -15,8 +15,11 @@
 #include "Engine/ECS/Systems/CameraSystem.h"
 #include "Engine/ECS/Systems/LightSystem.h"
 #include "Engine/ECS/Systems/SpriteSystem.h"
+#include "Engine/ECS/Systems/SkyboxSystem.h"
+#include "Engine/ECS/Systems/TextSystem.h"
 #include "Engine/Graphics/Resource/GeometryPool.h"
 #include "Engine/Graphics/PostProcess/DebugRenderer.h"
+#include "Engine/Asset/FontManager.h"
 #include "Engine/Common/Console.h"
 #include "Engine/Scene/SceneLoader.h"
 #include "Schema/Schema.h"
@@ -132,6 +135,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     auto& textureManager = TextureManager::GetInstance();
     textureManager.Initialize(graphicsEngine.GetRenderDevice());
 
+    auto& fontManager = Engine::Asset::FontManager::GetInstance();
+    fontManager.Initialize(graphicsEngine.GetRenderDevice());
+
     auto& materialManager = MaterialManager::GetInstance();
     materialManager.Initialize(graphicsEngine.GetRenderDevice());
 
@@ -175,12 +181,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     shaderManager.LoadPipelineAsset("Assets/Pipelines/PostProcess.json");
     shaderManager.LoadPipelineAsset("Assets/Pipelines/DebugLine.json");
     shaderManager.LoadPipelineAsset("Assets/Pipelines/Sprite.json");
+    shaderManager.LoadPipelineAsset("Assets/Pipelines/Skybox.json");
+    shaderManager.LoadPipelineAsset("Assets/Pipelines/Text.json");
     Engine::Scene::SceneLoader::LoadScene("Assets/Scene/Main.scene", registry);
 
     Engine::ECS::RenderSystem renderSystem;
     Engine::ECS::CameraSystem cameraSystem;
     Engine::ECS::LightSystem lightSystem;
+    Engine::ECS::SkyboxSystem skyboxSystem;
     Engine::Graphics::ConstantBuffer sceneCB;
+
     sceneCB.Create(graphicsEngine.GetRenderDevice(), sizeof(SceneData));
 
     Engine::Graphics::StructuredBuffer pointLightSB;
@@ -190,6 +200,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     Engine::Graphics::StructuredBuffer spriteSB;
     const uint32_t kMaxSprites = 1024;
     spriteSB.Create(graphicsEngine.GetRenderDevice(), sizeof(SpriteData), kMaxSprites);
+
+    Engine::Graphics::StructuredBuffer textSB;
+    const uint32_t kMaxTextChars = 4096;
+    textSB.Create(graphicsEngine.GetRenderDevice(), sizeof(TextData), kMaxTextChars);
 
     Engine::Core::Timer timer;
     timer.Reset();
@@ -209,6 +223,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
         lightSystem.Reset();
         lightSystem.Update(registry);
+
+        skyboxSystem.Reset();
+        skyboxSystem.Update(registry);
+
+        Engine::ECS::TextSystem textSystem;
+        textSystem.Reset();
+        textSystem.Update(registry);
 
         Engine::ECS::SpriteSystem spriteSystem;
         spriteSystem.Reset();
@@ -254,6 +275,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
         if (!spriteRes.sprites.empty()) {
             spriteSB.Update(spriteRes.sprites.data(), (uint32_t)(spriteRes.sprites.size() * sizeof(SpriteData)));
         }
+
+        auto textRes = textSystem.GetResult();
+        if (!textRes.charInstances.empty()) {
+            textSB.Update(textRes.charInstances.data(), (uint32_t)(textRes.charInstances.size() * sizeof(TextData)));
+        }
         
         auto* currentFrameRes = graphicsEngine.GetCurrentFrameResource();
         currentFrameRes->GetSceneCB()->Update(&sceneData, sizeof(sceneData));
@@ -274,7 +300,27 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
         renderer.RenderZPrepass(context);
         renderer.Render(context);
 
+        // --- スカイボックス描画 ---
+        if (skyboxSystem.HasSkybox()) {
+        	auto* pso = shaderManager.GetOrCreatePSO("Skybox", Engine::Graphics::PipelineStateDesc());
+        	auto* rootSig = shaderManager.GetRootSignature("Skybox");
+        	auto* commandList = context.commandList;
+
+        	commandList->SetGraphicsRootSignature(rootSig->Get());
+        	commandList->SetPipelineState(pso->Get());
+
+        	ID3D12DescriptorHeap* srvHeaps[] = { textureManager.GetSrvHeap()->GetHeap() };
+        	commandList->SetDescriptorHeaps(_countof(srvHeaps), srvHeaps);
+
+        	commandList->SetGraphicsRootConstantBufferView(rootSig->GetParameterIndex("gSceneData"), context.sceneCBAddress);
+        	commandList->SetGraphicsRootDescriptorTable(rootSig->GetParameterIndex("gSkybox"), textureManager.GetSrvHeap()->GetGPUHandle(skyboxSystem.GetTextureIndex()));
+
+        	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+        	commandList->DrawInstanced(36, 1, 0, 0); // 立方体の36頂点
+        }
+
         // --- スプライト描画 ---
+
         if (!spriteRes.sprites.empty()) {
             auto* pso = shaderManager.GetOrCreatePSO("Sprite", Engine::Graphics::PipelineStateDesc());
             auto* rootSig = shaderManager.GetRootSignature("Sprite");
@@ -294,6 +340,26 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
             commandList->DrawInstanced(4, (UINT)spriteRes.sprites.size(), 0, 0);
         }
 
+        // --- テキスト描画 ---
+        if (!textRes.charInstances.empty()) {
+            auto* pso = shaderManager.GetOrCreatePSO("Text", Engine::Graphics::PipelineStateDesc());
+            auto* rootSig = shaderManager.GetRootSignature("Text");
+            auto* commandList = context.commandList;
+
+            commandList->SetGraphicsRootSignature(rootSig->Get());
+            commandList->SetPipelineState(pso->Get());
+
+            ID3D12DescriptorHeap* srvHeaps[] = { textureManager.GetSrvHeap()->GetHeap() };
+            commandList->SetDescriptorHeaps(_countof(srvHeaps), srvHeaps);
+
+            commandList->SetGraphicsRootConstantBufferView(rootSig->GetParameterIndex("gSceneData"), context.sceneCBAddress);
+            commandList->SetGraphicsRootDescriptorTable(rootSig->GetParameterIndex("gTextures"), textureManager.GetSrvHeap()->GetGPUHandle(0));
+            commandList->SetGraphicsRootShaderResourceView(rootSig->GetParameterIndex("gChars"), textSB.GetResource()->GetGPUVirtualAddress());
+
+            commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+            commandList->DrawInstanced(4, (UINT)textRes.charInstances.size(), 0, 0);
+        }
+
         // デバッグ表示
         debugRenderer.Render(context.commandList, context.sceneCBAddress);
 
@@ -302,6 +368,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
     renderer.Shutdown();
     debugRenderer.Shutdown();
+    fontManager.Shutdown();
     geoPool.Shutdown();
     if (shutdownDelegate) shutdownDelegate();
     scriptHost.Shutdown();

@@ -7,6 +7,16 @@ struct PointLightData {
     float radius;
 };
 
+struct TextRenderer {
+    uint text[64];
+    uint fontIndex;
+    uint _pad0[3];
+    float4 color;
+    float size;
+    uint isScreenSpace;
+    uint _final_pad1[2];
+};
+
 struct SceneData {
     float4x4 viewProj;
     float3 cameraPos;
@@ -26,6 +36,16 @@ struct Transform {
     uint _final_pad2[1];
 };
 
+struct TextData {
+    float4x4 world;
+    float4 color;
+    float2 uvMin;
+    float2 uvMax;
+    uint textureIndex;
+    uint padding;
+    uint _final_pad0[2];
+};
+
 struct SpriteRenderer {
     uint textureIndex;
     uint _pad0[3];
@@ -33,6 +53,13 @@ struct SpriteRenderer {
     float2 size;
     uint isBillboard;
     uint _final_pad1[1];
+};
+
+struct DirectionalLight {
+    float3 color;
+    float intensity;
+    float3 direction;
+    uint _final_pad0[1];
 };
 
 struct Camera {
@@ -61,11 +88,9 @@ struct MeshRenderer {
     uint _final_pad0[2];
 };
 
-struct DirectionalLight {
-    float3 color;
-    float intensity;
-    float3 direction;
-    uint _final_pad0[1];
+struct Skybox {
+    uint textureIndex;
+    uint _final_pad0[3];
 };
 
 struct SpriteData {

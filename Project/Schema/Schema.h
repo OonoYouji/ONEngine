@@ -21,6 +21,16 @@ struct SceneData {
     float padding;
 };
 
+struct TextData {
+    Engine::Math::Matrix4x4 world;
+    Engine::Math::Vector4 color;
+    Engine::Math::Vector2 uvMin;
+    Engine::Math::Vector2 uvMax;
+    uint32_t textureIndex;
+    uint32_t padding;
+    uint8_t _final_pad0[8];
+};
+
 struct SpriteData {
     Engine::Math::Matrix4x4 world;
     Engine::Math::Vector4 color;
@@ -46,6 +56,16 @@ struct MaterialData {
 
 namespace Engine::ECS {
 
+struct TextRenderer {
+    char text[256];
+    uint32_t fontIndex;
+    uint8_t _pad0[12];
+    Engine::Math::Vector4 color;
+    float size;
+    uint32_t isScreenSpace;
+    uint8_t _final_pad1[8];
+};
+
 struct Transform {
     Engine::Math::Vector3 position;
     uint8_t _pad0[4];
@@ -62,6 +82,13 @@ struct SpriteRenderer {
     Engine::Math::Vector2 size;
     uint32_t isBillboard;
     uint8_t _final_pad1[4];
+};
+
+struct DirectionalLight {
+    Engine::Math::Vector3 color;
+    float intensity;
+    Engine::Math::Vector3 direction;
+    uint8_t _final_pad0[4];
 };
 
 struct Camera {
@@ -90,11 +117,9 @@ struct MeshRenderer {
     uint8_t _final_pad0[8];
 };
 
-struct DirectionalLight {
-    Engine::Math::Vector3 color;
-    float intensity;
-    Engine::Math::Vector3 direction;
-    uint8_t _final_pad0[4];
+struct Skybox {
+    uint32_t textureIndex;
+    uint8_t _final_pad0[12];
 };
 
 } // namespace Engine::ECS

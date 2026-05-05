@@ -5,6 +5,7 @@
 #include "Engine/Asset/AssetManager.h"
 #include "Engine/Asset/MaterialManager.h"
 #include "Engine/Asset/TextureManager.h"
+#include "Engine/Asset/FontManager.h"
 #include "Engine/Script/ScriptHost.h"
 #include <fstream>
 #include <filesystem>
@@ -125,6 +126,38 @@ namespace {
         sr.isBillboard = j.value("isBillboard", 1) ? 1 : 0;
     }
 
+    void DeserializeSkybox(const json& j, Engine::ECS::Skybox& s) {
+        if (j.contains("texturePath")) {
+            s.textureIndex = Engine::Asset::TextureManager::GetInstance().LoadTexture(j["texturePath"]);
+        } else {
+            s.textureIndex = j.value("textureIndex", 0);
+        }
+    }
+
+    void DeserializeTextRenderer(const json& j, Engine::ECS::TextRenderer& tr) {
+        std::string text = j.value("text", "");
+        memset(tr.text, 0, sizeof(tr.text));
+        strncpy_s(tr.text, text.c_str(), _TRUNCATE);
+
+        if (j.contains("fontPath")) {
+            tr.fontIndex = Engine::Asset::FontManager::GetInstance().LoadFont(j["fontPath"]);
+        } else {
+            tr.fontIndex = j.value("fontIndex", 0);
+        }
+
+        if (j.contains("color")) {
+            tr.color.x = j["color"].value("x", 1.0f);
+            tr.color.y = j["color"].value("y", 1.0f);
+            tr.color.z = j["color"].value("z", 1.0f);
+            tr.color.w = j["color"].value("w", 1.0f);
+        } else {
+            tr.color = { 1, 1, 1, 1 };
+        }
+
+        tr.size = j.value("size", 1.0f);
+        tr.isScreenSpace = j.value("isScreenSpace", 0) ? 1 : 0;
+    }
+
     void DeserializeEntity(const json& jEntity, Engine::ECS::Registry& registry) {
         auto entity = registry.CreateEntity();
         
@@ -151,6 +184,12 @@ namespace {
                 } else if (type == "SpriteRenderer") {
                     auto& sr = registry.AddComponent<Engine::ECS::SpriteRenderer>(entity);
                     DeserializeSpriteRenderer(jComp, sr);
+                } else if (type == "Skybox") {
+                    auto& s = registry.AddComponent<Engine::ECS::Skybox>(entity);
+                    DeserializeSkybox(jComp, s);
+                } else if (type == "TextRenderer") {
+                    auto& tr = registry.AddComponent<Engine::ECS::TextRenderer>(entity);
+                    DeserializeTextRenderer(jComp, tr);
                 } else if (type == "Script") {
                     EnsureScriptDelegate();
                     if (gAddScriptDelegate && jComp.contains("scripts") && jComp["scripts"].is_array()) {
@@ -240,6 +279,12 @@ Engine::ECS::Entity SceneLoader::InstantiatePrefab(const std::string& path, Engi
                 } else if (type == "SpriteRenderer") {
                     auto& sr = registry.AddComponent<Engine::ECS::SpriteRenderer>(entity);
                     DeserializeSpriteRenderer(jComp, sr);
+                } else if (type == "Skybox") {
+                    auto& s = registry.AddComponent<Engine::ECS::Skybox>(entity);
+                    DeserializeSkybox(jComp, s);
+                } else if (type == "TextRenderer") {
+                    auto& tr = registry.AddComponent<Engine::ECS::TextRenderer>(entity);
+                    DeserializeTextRenderer(jComp, tr);
                 } else if (type == "Script") {
                     EnsureScriptDelegate();
                     if (gAddScriptDelegate && jComp.contains("scripts") && jComp["scripts"].is_array()) {

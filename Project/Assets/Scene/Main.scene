@@ -47,10 +47,27 @@
             ]
         },
         {
-            "name": "Sprite_Test",
+            "name": "SphereLabel",
             "components": [
                 {
                     "position": { "y": 15, "x": 0, "z": 0 },
+                    "type": "Transform"
+                },
+                {
+                    "type": "TextRenderer",
+                    "text": "ONEngine Dynamic Font",
+                    "fontPath": "Assets/Fonts/FiraMono-Regular_0.ttf",
+                    "color": { "x": 1, "y": 1, "z": 0, "w": 1 },
+                    "size": 3.0,
+                    "isScreenSpace": 0
+                }
+            ]
+        },
+        {
+            "name": "Sprite_Test",
+            "components": [
+                {
+                    "position": { "y": 10, "x": 10, "z": 0 },
                     "type": "Transform"
                 },
                 {
@@ -59,23 +76,6 @@
                     "color": { "x": 1, "y": 1, "z": 1, "w": 1 },
                     "size": { "x": 10, "y": 10 },
                     "isBillboard": 1
-                }
-            ]
-        },
-        {
-            "name": "Sprite_Static",
-            "components": [
-                {
-                    "position": { "y": 2, "x": 10, "z": 5 },
-                    "rotation": { "y": 0, "x": 0, "z": 0.7 },
-                    "type": "Transform"
-                },
-                {
-                    "type": "SpriteRenderer",
-                    "texturePath": "Assets/Textures/gradation.png",
-                    "color": { "x": 0, "y": 1, "z": 1, "w": 1 },
-                    "size": { "x": 3, "y": 3 },
-                    "isBillboard": 0
                 }
             ]
         }
