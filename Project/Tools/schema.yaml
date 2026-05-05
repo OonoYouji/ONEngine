@@ -129,5 +129,7 @@ types:
         type: float4
       - name: textureIndex
         type: uint32
+      - name: isBillboard
+        type: uint32
       - name: padding
-        type: float3
+        type: float2

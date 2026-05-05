@@ -72,7 +72,8 @@ struct SpriteData {
     float4x4 world;
     float4 color;
     uint textureIndex;
-    float3 padding;
+    uint isBillboard;
+    float2 padding;
 };
 
 struct InstanceData {

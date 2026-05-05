@@ -25,20 +25,16 @@ public:
         registry.GetView<Transform, SpriteRenderer>().Each([&](Entity entity, Transform& transform, SpriteRenderer& renderer) {
             GeneratedSchema::SpriteData data;
             
+            // 半径（Sizeの半分）をスケールとして使用することで、JSONのsizeが実サイズになるようにする
+            Engine::Math::Vector3 scale = {renderer.size.x * 0.5f, renderer.size.y * 0.5f, 1.0f};
+
             if (renderer.isBillboard) {
-                // ビルボード: 回転を無視し、カメラの方向を向く行列を作成
-                // TODO: 厳密なビルボード計算
-                data.world = Engine::Math::Matrix4x4::MakeAffine(
-                    {renderer.size.x, renderer.size.y, 1.0f}, 
-                    {0, 0, 0}, 
-                    transform.position
-                );
+                // ビルボードの場合は回転を一旦ゼロにする（シェーダー側でカメラを向ける）
+                data.world = Engine::Math::Matrix4x4::MakeAffine(scale, {0, 0, 0}, transform.position);
+                data.isBillboard = 1;
             } else {
-                data.world = Engine::Math::Matrix4x4::MakeAffine(
-                    {renderer.size.x, renderer.size.y, 1.0f}, 
-                    transform.rotation, 
-                    transform.position
-                );
+                data.world = Engine::Math::Matrix4x4::MakeAffine(scale, transform.rotation, transform.position);
+                data.isBillboard = 0;
             }
 
             data.color = renderer.color;

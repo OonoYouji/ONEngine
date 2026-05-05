@@ -50,14 +50,14 @@
             "name": "Sprite_Test",
             "components": [
                 {
-                    "position": { "y": 10, "x": 0, "z": 0 },
+                    "position": { "y": 15, "x": 0, "z": 0 },
                     "type": "Transform"
                 },
                 {
                     "type": "SpriteRenderer",
                     "texturePath": "Assets/Textures/circle.png",
                     "color": { "x": 1, "y": 1, "z": 1, "w": 1 },
-                    "size": { "x": 20, "y": 20 },
+                    "size": { "x": 10, "y": 10 },
                     "isBillboard": 1
                 }
             ]

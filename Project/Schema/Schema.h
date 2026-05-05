@@ -25,7 +25,8 @@ struct SpriteData {
     Engine::Math::Matrix4x4 world;
     Engine::Math::Vector4 color;
     uint32_t textureIndex;
-    Engine::Math::Vector3 padding;
+    uint32_t isBillboard;
+    Engine::Math::Vector2 padding;
 };
 
 struct InstanceData {
