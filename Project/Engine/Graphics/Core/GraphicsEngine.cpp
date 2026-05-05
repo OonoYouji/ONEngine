@@ -4,6 +4,7 @@
 #include <d3d12.h>
 #include "Engine/Graphics/Resource/DepthBuffer.h"
 #include "Engine/Graphics/Shader/ShaderManager.h"
+#include "Engine/Graphics/PostProcess/PostProcessSystem.h"
 
 namespace Engine::Graphics {
 
@@ -56,6 +57,8 @@ void GraphicsEngine::Initialize(HWND hwnd, const Engine::Math::Vector2Int& windo
     mainColorBuffer_ = std::make_unique<RenderTexture>();
     mainColorBuffer_->Create(renderDevice_.get(), rtvHeap_.get(), srvHeap_.get(), windowSize, DXGI_FORMAT_R16G16B16A16_FLOAT, {0.1f, 0.1f, 0.1f, 1.0f});
 
+    // ポストプロセスシステムの初期化
+    PostProcessSystem::GetInstance().Initialize(renderDevice_.get(), rtvHeap_.get(), srvHeap_.get(), windowSize);
 }
 
 void GraphicsEngine::Shutdown() {
@@ -88,48 +91,22 @@ void GraphicsEngine::BeginFrame() {
 void GraphicsEngine::EndFrame() {
     auto* commandList = commandQueue_->GetCommandList();
 
-    // 1. 中間バッファをシェーダー参照用に遷移 (Visibility: ALL に合わせるため ALL_SHADER_RESOURCE を使用)
+    // 1. 中間バッファをシェーダー参照用に遷移
     mainColorBuffer_->Transition(commandList, D3D12_RESOURCE_STATE_ALL_SHADER_RESOURCE);
 
-    // 2. バックバッファを RTV として設定
-    auto backBufferRTV = swapChain_->GetRTVHandle();
-    commandList->OMSetRenderTargets(1, &backBufferRTV, FALSE, nullptr);
+    // 2. ポストプロセス（トーンマッピング等）を実行してSwapChainへ出力
+    PostProcessSystem::GetInstance().Render(commandList, mainColorBuffer_.get(), swapChain_->GetRTVHandle());
 
-    // 3. Blit (中間バッファ -> バックバッファ)
-    auto& shaderManager = ShaderManager::GetInstance();
-    
-    PipelineStateDesc blitDesc;
-    blitDesc.rtvFormat = DXGI_FORMAT_R8G8B8A8_UNORM; // バックバッファ用
-    blitDesc.dsvFormat = DXGI_FORMAT_UNKNOWN;        // 深度バッファは使用しない
-    blitDesc.depthEnable = false;
-    blitDesc.depthWriteEnable = false;
-
-    auto* pso = shaderManager.GetOrCreatePSO("Blit", blitDesc);
-    auto* rootSig = shaderManager.GetRootSignature("Blit");
-
-    commandList->SetGraphicsRootSignature(rootSig->Get());
-    commandList->SetPipelineState(pso->Get());
-
-    // 共通サンプラーをセット (Static Sampler を想定)
-    ID3D12DescriptorHeap* heaps[] = { srvHeap_->GetHeap() };
-    commandList->SetDescriptorHeaps(_countof(heaps), heaps);
-
-    // 中間バッファをセット
-    commandList->SetGraphicsRootDescriptorTable(rootSig->GetParameterIndex("gMainTexture"), mainColorBuffer_->GetSRVHandle());
-
-    commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-    commandList->DrawInstanced(3, 1, 0, 0); // 全画面三角形
-
-    // 4. SwapChain の終了処理 (PRESENTへ遷移)
+    // 3. SwapChain の終了処理 (PRESENTへ遷移)
     swapChain_->EndFrame(commandList);
     
-    // 5. 実行
+    // 4. 実行
     commandQueue_->Execute();
     
-    // 6. 画面表示
+    // 5. 画面表示
     swapChain_->Present();
     
-    // 7. フェンス値保存
+    // 6. フェンス値保存
     frameResources_[currentFrameIndex_]->SetFenceValue(commandQueue_->Signal());
 }
 

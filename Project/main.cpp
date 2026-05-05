@@ -162,7 +162,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	shaderManager.LoadPipelineAsset("Assets/Pipelines/BindlessTest.json");
 	shaderManager.LoadPipelineAsset("Assets/Pipelines/Blit.json");
-
+	shaderManager.LoadPipelineAsset("Assets/Pipelines/PostProcess.json");
 	Engine::Scene::SceneLoader::LoadScene("Assets/Scene/Main.scene", registry);
 
 	Engine::ECS::RenderSystem renderSystem;
