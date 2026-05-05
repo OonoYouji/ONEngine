@@ -7,6 +7,16 @@ types:
     fields:
       - name: viewProj
         type: float4x4
+      - name: cameraPos
+        type: float3
+      - name: dirLightIntensity
+        type: float
+      - name: dirLightColor
+        type: float3
+      - name: dirLightDirection
+        type: float3
+      - name: padding
+        type: float
   
   InstanceData:
     type: StructuredBuffer

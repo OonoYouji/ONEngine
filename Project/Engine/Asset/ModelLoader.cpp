@@ -62,6 +62,15 @@ std::vector<std::unique_ptr<Mesh>> ModelLoader::LoadModel(Graphics::RenderDevice
                 vertex.uv = { 0.0f, 0.0f };
             }
 
+            // 法線 (存在する場合)
+            if (aiMeshPtr->HasNormals()) {
+                vertex.normal.x = aiMeshPtr->mNormals[v].x;
+                vertex.normal.y = aiMeshPtr->mNormals[v].y;
+                vertex.normal.z = aiMeshPtr->mNormals[v].z;
+            } else {
+                vertex.normal = { 0, 1, 0 };
+            }
+
             vertices.push_back(vertex);
         }
 

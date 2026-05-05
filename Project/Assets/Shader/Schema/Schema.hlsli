@@ -2,6 +2,12 @@
 
 struct SceneData {
     float4x4 viewProj;
+    float3 cameraPos;
+    float dirLightIntensity;
+    float3 dirLightColor;
+    uint _pad0[1];
+    float3 dirLightDirection;
+    float padding;
 };
 
 struct Transform {

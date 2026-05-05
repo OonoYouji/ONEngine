@@ -6,6 +6,12 @@ namespace Engine::GeneratedSchema {
 
 struct SceneData {
     Engine::Math::Matrix4x4 viewProj;
+    Engine::Math::Vector3 cameraPos;
+    float dirLightIntensity;
+    Engine::Math::Vector3 dirLightColor;
+    uint8_t _pad0[4];
+    Engine::Math::Vector3 dirLightDirection;
+    float padding;
 };
 
 struct InstanceData {

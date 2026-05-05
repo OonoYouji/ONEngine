@@ -10,6 +10,7 @@ namespace Engine::Asset {
 struct Vertex {
     Engine::Math::Vector3 position;
     Engine::Math::Vector2 uv;
+    Engine::Math::Vector3 normal;
 };
 
 ///

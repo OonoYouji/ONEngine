@@ -13,6 +13,7 @@
 #include "Engine/ECS/Registry.h"
 #include "Engine/ECS/Systems/RenderSystem.h"
 #include "Engine/ECS/Systems/CameraSystem.h"
+#include "Engine/ECS/Systems/LightSystem.h"
 #include "Engine/Common/Console.h"
 #include "Engine/Scene/SceneLoader.h"
 #include "Schema/Schema.h"
@@ -163,6 +164,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
     Engine::ECS::RenderSystem renderSystem;
     Engine::ECS::CameraSystem cameraSystem;
+    Engine::ECS::LightSystem lightSystem;
     Engine::Graphics::ConstantBuffer sceneCB;
     sceneCB.Create(graphicsEngine.GetRenderDevice(), sizeof(SceneData));
 
@@ -181,21 +183,32 @@ if (updateDelegate) updateDelegate(dt);
 cameraSystem.Reset();
 cameraSystem.Update(registry);
 
+lightSystem.Reset();
+lightSystem.Update(registry);
+
 renderer.ClearQueue();
 renderSystem.Update(registry);
 
 // 描画実行
 graphicsEngine.BeginFrame();
 
-// カメラ・シーンデータの更新
+// カメラ・ライト・シーンデータの更新
 SceneData sceneData;
 if (cameraSystem.HasCamera()) {
     sceneData.viewProj = cameraSystem.GetResult().viewProj;
+    sceneData.cameraPos = cameraSystem.GetResult().position;
 } else {
     auto view = Engine::Math::Matrix4x4::MakeLookAtLH({ 0, 20, -50 }, { 0, 0, 0 }, { 0, 1, 0 });
     auto proj = Engine::Math::Matrix4x4::MakePerspectiveFovLH(0.45f, 16.0f/9.0f, 0.1f, 1000.0f);
     sceneData.viewProj = view * proj;
+    sceneData.cameraPos = { 0, 20, -50 };
 }
+
+auto lightRes = lightSystem.GetResult();
+sceneData.dirLightColor = lightRes.dirLightColor;
+sceneData.dirLightIntensity = lightRes.dirLightIntensity;
+sceneData.dirLightDirection = lightRes.dirLightDirection;
+sceneData.padding = 0.0f;
 
 auto* currentFrameRes = graphicsEngine.GetCurrentFrameResource();
 currentFrameRes->GetSceneCB()->Update(&sceneData, sizeof(sceneData));
