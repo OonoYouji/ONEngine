@@ -241,6 +241,12 @@ public:
 		return View<Components...>(*this);
 	}
 
+	void Clear() {
+		storages_.clear();
+		freeEntities_.clear();
+		nextEntityId_ = 0;
+	}
+
 private:
 	Entity nextEntityId_ = 0;
 	std::vector<Entity> freeEntities_;

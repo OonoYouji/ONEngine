@@ -173,3 +173,57 @@ types:
         type: uint32
       - name: padding
         type: uint32
+
+  ParticleEmitter:
+    type: Component
+    fields:
+      - name: count
+        type: uint32
+      - name: speed
+        type: float
+      - name: lifetime
+        type: float
+      - name: gravity
+        type: float
+      - name: color
+        type: float4
+      - name: modelIndex
+        type: uint32 # 0 for Sprite
+      - name: textureIndex
+        type: uint32
+      - name: bufferIndex
+        type: uint32 # Reserved for internal GPU buffer management
+
+  ParticleGPUData:
+    type: StructuredBuffer
+    fields:
+      - name: position
+        type: float3
+      - name: age
+        type: float
+      - name: velocity
+        type: float3
+      - name: maxLifetime
+        type: float
+      - name: color
+        type: float4
+      - name: rotation
+        type: float3
+      - name: scale
+        type: float
+      - name: modelIndex
+        type: uint32
+      - name: textureIndex
+        type: uint32 # 追加
+
+  MeshInfo:
+    type: StructuredBuffer
+    fields:
+      - name: vertexOffset
+        type: uint32
+      - name: indexOffset
+        type: uint32
+      - name: vertexCount
+        type: uint32
+      - name: indexCount
+        type: uint32

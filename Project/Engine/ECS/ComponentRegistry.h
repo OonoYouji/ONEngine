@@ -74,4 +74,7 @@ private:
     std::unordered_map<std::string, ComponentTypeInfo> nameToInfo_;
 };
 
+/// @brief 全てのコンポーネントをレジストリに登録
+void InitializeComponentRegistry();
+
 } // namespace Engine::ECS

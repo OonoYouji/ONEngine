@@ -96,7 +96,7 @@ bool RootSignature::Create(RenderDevice* device, const std::vector<ShaderReflect
         else {
             // SRV, UAV (res は ShaderResourceInfo であることが確定)
             bool isTexture = (res.type == D3D_SIT_TEXTURE || res.type == D3D_SIT_UAV_RWTYPED);
-            bool isBindless = (res.bindCount == 0);
+            bool isBindless = (res.bindCount == 0 || res.bindCount == 0xFFFFFFFF);
 
             if (isBindless || isTexture) {
                 auto ranges = std::make_unique<D3D12_DESCRIPTOR_RANGE1[]>(1);
@@ -106,7 +106,7 @@ bool RootSignature::Create(RenderDevice* device, const std::vector<ShaderReflect
                 ranges[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
                 
                 if (isBindless) {
-                    ranges[0].NumDescriptors = 1024;
+                    ranges[0].NumDescriptors = 1024; // Bindless用暫定数
                     ranges[0].Flags = D3D12_DESCRIPTOR_RANGE_FLAG_DESCRIPTORS_VOLATILE;
                 } else {
                     ranges[0].NumDescriptors = res.bindCount;

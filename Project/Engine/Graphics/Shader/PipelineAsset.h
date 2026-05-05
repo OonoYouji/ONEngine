@@ -24,6 +24,7 @@ struct PipelineAsset {
     ShaderFileInfo ps;
     ShaderFileInfo as; // Optional
     ShaderFileInfo ms; // Optional
+    ShaderFileInfo cs; // Optional (Compute Shader)
 
     PipelineStateDesc baseDesc;
 };

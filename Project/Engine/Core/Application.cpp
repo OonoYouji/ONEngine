@@ -1,0 +1,285 @@
+#include "Application.h"
+#include "Engine/Common/Console.h"
+#include "Engine/Graphics/Core/GraphicsEngine.h"
+#include "Engine/Graphics/Core/Renderer.h"
+#include "Engine/Graphics/Shader/ShaderManager.h"
+#include "Engine/Asset/TextureManager.h"
+#include "Engine/Asset/MaterialManager.h"
+#include "Engine/Asset/AssetManager.h"
+#include "Engine/Asset/FontManager.h"
+#include "Engine/Graphics/Resource/GeometryPool.h"
+#include "Engine/Graphics/PostProcess/DebugRenderer.h"
+#include "Engine/Scene/SceneLoader.h"
+#include "Engine/Script/ScriptHost.h"
+#include "Engine/ECS/ComponentRegistry.h"
+#include "Engine/ECS/Systems/SpriteSystem.h"
+
+extern "C" void LogFromRuntime(const char*);
+
+namespace Engine::Core {
+
+bool Application::Initialize(HINSTANCE hInstance, int nCmdShow) {
+    Console::Initialize();
+
+    // 1. 基本システムの初期化
+    ECS::InitializeComponentRegistry();
+    window_.Initialize(L"ONEngine", Math::Vector2Int::HD);
+
+    auto& graphics = Graphics::GraphicsEngine::GetInstance();
+    graphics.Initialize(window_.GetHWND(), Math::Vector2Int::HD);
+
+    Graphics::ShaderManager::GetInstance().Initialize(graphics.GetRenderDevice());
+    Asset::TextureManager::GetInstance().Initialize(graphics.GetRenderDevice());
+    Asset::FontManager::GetInstance().Initialize(graphics.GetRenderDevice());
+    Asset::MaterialManager::GetInstance().Initialize(graphics.GetRenderDevice());
+    Asset::AssetManager::GetInstance().Initialize(graphics.GetRenderDevice());
+    Graphics::GeometryPool::GetInstance().Initialize(graphics.GetRenderDevice());
+    Graphics::DebugRenderer::GetInstance().Initialize(graphics.GetRenderDevice());
+
+    // 2. スクリプトの初期化
+    auto& scriptHost = Script::ScriptHost::GetInstance();
+    if (scriptHost.Initialize()) {
+        auto initDelegate = (void(*)(void*, void*))scriptHost.GetMethodDelegate(
+            L"ONEngine.Scripting.EngineHost, ONEngine.Scripting", L"Initialize", L"");
+        if (initDelegate) initDelegate((void*)LogFromRuntime, &registry_);
+
+        updateDelegate_ = (void(*)(float))scriptHost.GetMethodDelegate(
+            L"ONEngine.Scripting.EngineHost, ONEngine.Scripting", L"Update", L"");
+        shutdownDelegate_ = (void(*)())scriptHost.GetMethodDelegate(
+            L"ONEngine.Scripting.EngineHost, ONEngine.Scripting", L"Shutdown", L"");
+    }
+
+    // 3. レンダラーとパイプラインの初期化
+    auto& renderer = Graphics::Renderer::GetInstance();
+    renderer.Initialize(graphics.GetRenderDevice());
+
+    auto& sm = Graphics::ShaderManager::GetInstance();
+    sm.LoadPipelineAsset("Assets/Pipelines/BindlessTest.json");
+    sm.LoadPipelineAsset("Assets/Pipelines/Blit.json");
+    sm.LoadPipelineAsset("Assets/Pipelines/PostProcess.json");
+    sm.LoadPipelineAsset("Assets/Pipelines/BloomThreshold.json");
+    sm.LoadPipelineAsset("Assets/Pipelines/Blur.json");
+    sm.LoadPipelineAsset("Assets/Pipelines/DebugLine.json");
+    sm.LoadPipelineAsset("Assets/Pipelines/Sprite.json");
+    sm.LoadPipelineAsset("Assets/Pipelines/Skybox.json");
+    sm.LoadPipelineAsset("Assets/Pipelines/Text.json");
+    sm.LoadPipelineAsset("Assets/Pipelines/ParticleUpdate.json");
+    sm.LoadPipelineAsset("Assets/Pipelines/ParticleRender.json");
+
+    // 4. ECSシステムのインスタンス化
+    transformSystem_ = std::make_unique<ECS::TransformSystem>();
+    renderSystem_ = std::make_unique<ECS::RenderSystem>();
+    cameraSystem_ = std::make_unique<ECS::CameraSystem>();
+    lightSystem_ = std::make_unique<ECS::LightSystem>();
+    skyboxSystem_ = std::make_unique<ECS::SkyboxSystem>();
+    textSystem_ = std::make_unique<ECS::TextSystem>();
+    particleSystem_ = std::make_unique<ECS::ParticleSystem>();
+    particleSystem_->Initialize(graphics.GetRenderDevice());
+
+    // 5. バッファの作成
+    pointLightSB_ = std::make_unique<Graphics::StructuredBuffer>();
+    pointLightSB_->Create(graphics.GetRenderDevice(), sizeof(GeneratedSchema::PointLightData), 64);
+    
+    spriteSB_ = std::make_unique<Graphics::StructuredBuffer>();
+    spriteSB_->Create(graphics.GetRenderDevice(), sizeof(GeneratedSchema::SpriteData), 1024);
+
+    textSB_ = std::make_unique<Graphics::StructuredBuffer>();
+    textSB_->Create(graphics.GetRenderDevice(), sizeof(GeneratedSchema::TextData), 4096);
+
+    // 6. シーンのロード
+    Scene::SceneLoader::LoadScene("Assets/Scene/Main.scene", registry_);
+
+    timer_.Reset();
+    return true;
+}
+
+void Application::Run() {
+    while (true) {
+        window_.Update();
+        if (window_.GetIsProcessEnd()) break;
+
+        timer_.Tick();
+        Update(timer_.GetDeltaTime());
+        Render();
+    }
+}
+
+void Application::Update(float dt) {
+    if (updateDelegate_) updateDelegate_(dt);
+
+    transformSystem_->Update(registry_);
+    cameraSystem_->Reset();
+    cameraSystem_->Update(registry_);
+    lightSystem_->Reset();
+    lightSystem_->Update(registry_);
+    skyboxSystem_->Reset();
+    skyboxSystem_->Update(registry_);
+    textSystem_->Reset();
+    textSystem_->Update(registry_);
+}
+
+void Application::Render() {
+    auto& graphics = Graphics::GraphicsEngine::GetInstance();
+    auto& renderer = Graphics::Renderer::GetInstance();
+    auto& debug = Graphics::DebugRenderer::GetInstance();
+    auto& sm = Graphics::ShaderManager::GetInstance();
+    auto& tm = Asset::TextureManager::GetInstance();
+
+    // データ集計
+    auto lightRes = lightSystem_->GetResult();
+    if (!lightRes.pointLights.empty()) {
+        pointLightSB_->Update(lightRes.pointLights.data(), (uint32_t)(lightRes.pointLights.size() * sizeof(GeneratedSchema::PointLightData)));
+    }
+
+    ECS::SpriteSystem spriteSystem;
+    spriteSystem.Update(registry_);
+    auto spriteRes = spriteSystem.GetResult();
+    if (!spriteRes.sprites.empty()) {
+        spriteSB_->Update(spriteRes.sprites.data(), (uint32_t)(spriteRes.sprites.size() * sizeof(GeneratedSchema::SpriteData)));
+    }
+
+    auto textRes = textSystem_->GetResult();
+    if (!textRes.charInstances.empty()) {
+        textSB_->Update(textRes.charInstances.data(), (uint32_t)(textRes.charInstances.size() * sizeof(GeneratedSchema::TextData)));
+    }
+
+    debug.Clear();
+    for (int i = -10; i <= 10; ++i) {
+        debug.DrawLine({ (float)i * 5, 0.1f, -50 }, { (float)i * 5, 0.1f, 50 }, { 0.5f, 0.5f, 0.5f, 1.0f });
+        debug.DrawLine({ -50, 0.1f, (float)i * 5 }, { 50, 0.1f, (float)i * 5 }, { 0.5f, 0.5f, 0.5f, 1.0f });
+    }
+
+    renderer.ClearQueue();
+    renderSystem_->Update(registry_);
+
+    // 描画実行
+    graphics.BeginFrame();
+    auto* currentFrameRes = graphics.GetCurrentFrameResource();
+
+    // パーティクルの更新（Compute Shaderを実行するため、BeginFrameの後でコマンドリストが開いている必要がある）
+    particleSystem_->Update(registry_);
+
+    GeneratedSchema::SceneData sceneData;
+    if (cameraSystem_->HasCamera()) {
+        sceneData.viewProj = cameraSystem_->GetResult().viewProj;
+        sceneData.cameraPos = cameraSystem_->GetResult().position;
+    } else {
+        auto view = Math::Matrix4x4::MakeLookAtLH({ 0, 20, -50 }, { 0, 0, 0 }, { 0, 1, 0 });
+        auto proj = Math::Matrix4x4::MakePerspectiveFovLH(0.45f, 16.0f/9.0f, 0.1f, 1000.0f);
+        sceneData.viewProj = view * proj;
+        sceneData.cameraPos = { 0, 20, -50 };
+    }
+    sceneData.dirLightColor = lightRes.dirLightColor;
+    sceneData.dirLightIntensity = lightRes.dirLightIntensity;
+    sceneData.dirLightDirection = lightRes.dirLightDirection;
+    sceneData.numPointLights = (uint32_t)lightRes.pointLights.size();
+    currentFrameRes->GetSceneCB()->Update(&sceneData, sizeof(sceneData));
+
+    renderer.Extract();
+    graphics.Clear({ 0.7f, 0.7f, 0.7f, 1.0f });
+    graphics.ClearDepth();
+
+    Graphics::RenderContext context;
+    context.commandList = graphics.GetCommandQueue()->GetCommandList();
+    context.sceneCBAddress = currentFrameRes->GetSceneCB()->GetGPUVirtualAddress();
+    context.pointLightBufferAddress = pointLightSB_->GetResource()->GetGPUVirtualAddress();
+    context.frameIndex = graphics.GetCurrentFrameIndex();
+    context.rtvFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
+
+    renderer.RenderZPrepass(context);
+    renderer.Render(context);
+
+    Graphics::PipelineStateDesc baseDesc;
+    baseDesc.rtvFormat = context.rtvFormat;
+
+    // Skybox
+    if (skyboxSystem_->HasSkybox()) {
+        auto* pso = sm.GetOrCreatePSO("Skybox", baseDesc);
+        auto* rootSig = sm.GetRootSignature("Skybox");
+        context.commandList->SetGraphicsRootSignature(rootSig->Get());
+        context.commandList->SetPipelineState(pso->Get());
+        ID3D12DescriptorHeap* heaps[] = { tm.GetSrvHeap()->GetHeap() };
+        context.commandList->SetDescriptorHeaps(1, heaps);
+        context.commandList->SetGraphicsRootConstantBufferView(rootSig->GetParameterIndex("gSceneData"), context.sceneCBAddress);
+        context.commandList->SetGraphicsRootDescriptorTable(rootSig->GetParameterIndex("gSkybox"), tm.GetSrvHeap()->GetGPUHandle(skyboxSystem_->GetTextureIndex()));
+        context.commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+        context.commandList->DrawInstanced(36, 1, 0, 0);
+    }
+    
+    // Particle
+    particleSystem_->Render(registry_, context.commandList, context.sceneCBAddress, context.rtvFormat);
+
+    // Sprite
+    if (!spriteRes.sprites.empty()) {
+        auto* pso = sm.GetOrCreatePSO("Sprite", baseDesc);
+        auto* rootSig = sm.GetRootSignature("Sprite");
+        context.commandList->SetGraphicsRootSignature(rootSig->Get());
+        context.commandList->SetPipelineState(pso->Get());
+        ID3D12DescriptorHeap* heaps[] = { tm.GetSrvHeap()->GetHeap() };
+        context.commandList->SetDescriptorHeaps(1, heaps);
+        context.commandList->SetGraphicsRootConstantBufferView(rootSig->GetParameterIndex("gSceneData"), context.sceneCBAddress);
+        context.commandList->SetGraphicsRootDescriptorTable(rootSig->GetParameterIndex("gTextures"), tm.GetSrvHeap()->GetGPUHandle(0));
+        context.commandList->SetGraphicsRootShaderResourceView(rootSig->GetParameterIndex("gSprites"), spriteSB_->GetResource()->GetGPUVirtualAddress());
+        context.commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+        context.commandList->DrawInstanced(4, (UINT)spriteRes.sprites.size(), 0, 0);
+    }
+
+    // Text
+    if (!textRes.charInstances.empty()) {
+        auto* pso = sm.GetOrCreatePSO("Text", baseDesc);
+        auto* rootSig = sm.GetRootSignature("Text");
+        context.commandList->SetGraphicsRootSignature(rootSig->Get());
+        context.commandList->SetPipelineState(pso->Get());
+        ID3D12DescriptorHeap* heaps[] = { tm.GetSrvHeap()->GetHeap() };
+        context.commandList->SetDescriptorHeaps(1, heaps);
+        context.commandList->SetGraphicsRootConstantBufferView(rootSig->GetParameterIndex("gSceneData"), context.sceneCBAddress);
+        context.commandList->SetGraphicsRootDescriptorTable(rootSig->GetParameterIndex("gTextures"), tm.GetSrvHeap()->GetGPUHandle(0));
+        context.commandList->SetGraphicsRootShaderResourceView(rootSig->GetParameterIndex("gChars"), textSB_->GetResource()->GetGPUVirtualAddress());
+        context.commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+        context.commandList->DrawInstanced(4, (UINT)textRes.charInstances.size(), 0, 0);
+    }
+
+    debug.Render(context.commandList, context.sceneCBAddress, context.rtvFormat);
+    graphics.EndFrame();
+}
+
+void Application::Shutdown() {
+    if (shutdownDelegate_) shutdownDelegate_();
+
+    // 先に GPU の完了を待機しないと、各種リソースの破棄時にクラッシュする可能性がある
+    Graphics::GraphicsEngine::GetInstance().Shutdown();
+
+    // 1. 各システムの終了処理
+    particleSystem_->Shutdown();
+    Graphics::Renderer::GetInstance().Shutdown();
+    Graphics::DebugRenderer::GetInstance().Shutdown();
+    Asset::FontManager::GetInstance().Shutdown();
+    Graphics::GeometryPool::GetInstance().Shutdown();
+    Script::ScriptHost::GetInstance().Shutdown();
+    Asset::AssetManager::GetInstance().Shutdown();
+    Asset::MaterialManager::GetInstance().Shutdown();
+    Asset::TextureManager::GetInstance().Shutdown();
+    Graphics::ShaderManager::GetInstance().Shutdown();
+
+    // 2. Application が保持する GPU リソースを明示的に破棄
+    pointLightSB_.reset();
+    spriteSB_.reset();
+    textSB_.reset();
+
+    // 3. レジストリをクリア（コンポーネントが保持する GPU リソースを破棄）
+    registry_.Clear();
+
+    // 4. 各システムのポインタをリセット
+    transformSystem_.reset();
+    renderSystem_.reset();
+    cameraSystem_.reset();
+    lightSystem_.reset();
+    skyboxSystem_.reset();
+    textSystem_.reset();
+    particleSystem_.reset();
+
+    window_.Shutdown();
+    Console::Shutdown();
+}
+
+} // namespace Engine::Core

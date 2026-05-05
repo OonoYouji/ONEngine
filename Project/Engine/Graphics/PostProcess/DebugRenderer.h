@@ -36,7 +36,7 @@ public:
     void DrawBox(const Engine::Math::Vector3& center, const Engine::Math::Vector3& size, const Engine::Math::Vector4& color = {1, 1, 1, 1});
 
     /// @brief 描画実行
-    void Render(ID3D12GraphicsCommandList* commandList, D3D12_GPU_VIRTUAL_ADDRESS sceneCBAddress);
+    void Render(ID3D12GraphicsCommandList* commandList, D3D12_GPU_VIRTUAL_ADDRESS sceneCBAddress, DXGI_FORMAT rtvFormat);
 
     /// @brief キューのクリア（毎フレーム呼ぶ）
     void Clear();

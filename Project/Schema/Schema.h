@@ -4,13 +4,6 @@
 
 namespace Engine::GeneratedSchema {
 
-struct PointLightData {
-    Engine::Math::Vector3 position;
-    float intensity;
-    Engine::Math::Vector3 color;
-    float radius;
-};
-
 struct SceneData {
     Engine::Math::Matrix4x4 viewProj;
     Engine::Math::Vector3 cameraPos;
@@ -31,19 +24,46 @@ struct TextData {
     uint8_t _final_pad0[8];
 };
 
-struct SpriteData {
-    Engine::Math::Matrix4x4 world;
-    Engine::Math::Vector4 color;
-    uint32_t textureIndex;
-    uint32_t isBillboard;
-    Engine::Math::Vector2 padding;
-};
-
 struct InstanceData {
     Engine::Math::Matrix4x4 world;
     Engine::Math::Vector4 baseColor;
     uint32_t textureIndex;
     uint32_t vertexOffset;
+    Engine::Math::Vector2 padding;
+};
+
+struct PointLightData {
+    Engine::Math::Vector3 position;
+    float intensity;
+    Engine::Math::Vector3 color;
+    float radius;
+};
+
+struct ParticleGPUData {
+    Engine::Math::Vector3 position;
+    float age;
+    Engine::Math::Vector3 velocity;
+    float maxLifetime;
+    Engine::Math::Vector4 color;
+    Engine::Math::Vector3 rotation;
+    float scale;
+    uint32_t modelIndex;
+    uint32_t textureIndex;
+    uint8_t _final_pad0[8];
+};
+
+struct MeshInfo {
+    uint32_t vertexOffset;
+    uint32_t indexOffset;
+    uint32_t vertexCount;
+    uint32_t indexCount;
+};
+
+struct SpriteData {
+    Engine::Math::Matrix4x4 world;
+    Engine::Math::Vector4 color;
+    uint32_t textureIndex;
+    uint32_t isBillboard;
     Engine::Math::Vector2 padding;
 };
 
@@ -76,22 +96,6 @@ struct Transform {
     Engine::Math::Matrix4x4 world;
 };
 
-struct SpriteRenderer {
-    uint32_t textureIndex;
-    uint8_t _pad0[12];
-    Engine::Math::Vector4 color;
-    Engine::Math::Vector2 size;
-    uint32_t isBillboard;
-    uint8_t _final_pad1[4];
-};
-
-struct DirectionalLight {
-    Engine::Math::Vector3 color;
-    float intensity;
-    Engine::Math::Vector3 direction;
-    uint8_t _final_pad0[4];
-};
-
 struct Camera {
     float fov;
     float nearZ;
@@ -104,6 +108,34 @@ struct PointLight {
     float intensity;
     float radius;
     uint8_t _final_pad0[12];
+};
+
+struct ParticleEmitter {
+    uint32_t count;
+    float speed;
+    float lifetime;
+    float gravity;
+    Engine::Math::Vector4 color;
+    uint32_t modelIndex;
+    uint32_t textureIndex;
+    uint32_t bufferIndex;
+    uint8_t _final_pad0[4];
+};
+
+struct DirectionalLight {
+    Engine::Math::Vector3 color;
+    float intensity;
+    Engine::Math::Vector3 direction;
+    uint8_t _final_pad0[4];
+};
+
+struct SpriteRenderer {
+    uint32_t textureIndex;
+    uint8_t _pad0[12];
+    Engine::Math::Vector4 color;
+    Engine::Math::Vector2 size;
+    uint32_t isBillboard;
+    uint8_t _final_pad1[4];
 };
 
 struct ScriptComponent {

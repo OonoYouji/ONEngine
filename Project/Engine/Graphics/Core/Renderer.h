@@ -18,8 +18,9 @@ class RenderDevice;
 struct RenderContext {
 	ID3D12GraphicsCommandList* commandList;
 	D3D12_GPU_VIRTUAL_ADDRESS sceneCBAddress;
-	D3D12_GPU_VIRTUAL_ADDRESS pointLightBufferAddress; // 追加
+	D3D12_GPU_VIRTUAL_ADDRESS pointLightBufferAddress;
 	uint32_t frameIndex;
+	DXGI_FORMAT rtvFormat; // 追加: 現在の描画ターゲットの形式
 };
 
 ///

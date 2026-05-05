@@ -44,7 +44,7 @@ void DebugRenderer::DrawBox(const Engine::Math::Vector3& center, const Engine::M
     DrawLine({min.x, min.y, max.z}, {min.x, max.y, max.z}, color);
 }
 
-void DebugRenderer::Render(ID3D12GraphicsCommandList* commandList, D3D12_GPU_VIRTUAL_ADDRESS sceneCBAddress) {
+void DebugRenderer::Render(ID3D12GraphicsCommandList* commandList, D3D12_GPU_VIRTUAL_ADDRESS sceneCBAddress, DXGI_FORMAT rtvFormat) {
     if (vertices_.empty()) return;
 
     // バッファ転送
@@ -53,6 +53,7 @@ void DebugRenderer::Render(ID3D12GraphicsCommandList* commandList, D3D12_GPU_VIR
     auto& shaderManager = ShaderManager::GetInstance();
     
     PipelineStateDesc desc;
+    desc.rtvFormat = rtvFormat; // 追加
     desc.primitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE;
     desc.depthWriteEnable = false; 
     

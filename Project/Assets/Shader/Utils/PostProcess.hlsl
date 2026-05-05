@@ -11,6 +11,7 @@ VSOutput vs_main(uint vID : SV_VertexID) {
 }
 
 Texture2D gMainTexture : register(t0);
+Texture2D gBloomTexture : register(t1);
 SamplerState gSampler : register(s0);
 
 // ACES Filmic Tonemapping
@@ -24,16 +25,17 @@ float3 ACESFilm(float3 x) {
 }
 
 float4 ps_main(VSOutput input) : SV_TARGET {
-    float4 color = gMainTexture.Sample(gSampler, input.uv);
+    float4 baseColor = gMainTexture.Sample(gSampler, input.uv);
+    float4 bloomColor = gBloomTexture.Sample(gSampler, input.uv);
     
-    // 露出調整 (簡易版)
-    float3 x = color.rgb * 1.0f; 
+    // ブルームを加算合成
+    float3 combined = baseColor.rgb + bloomColor.rgb * 1.5f; // 強度を1.5倍に
     
     // HDR -> SDR (ACES Filmic)
-    float3 mapped = ACESFilm(x);
+    float3 mapped = ACESFilm(combined);
     
     // Gamma Correction
     float3 corrected = pow(mapped, 1.0f / 2.2f);
     
-    return float4(corrected, color.a);
+    return float4(corrected, baseColor.a);
 }

@@ -12,8 +12,7 @@ void InitializeComponentRegistry() {
 
     // Transform
     reg.Register<Transform>(1, "Transform", [](const json& j, Transform& t) {
-        t.parent = j.value("parent", 0); // 0 (kNullEntity) by default
-        
+        t.parent = j.value("parent", 0);
         if (j.contains("position")) {
             t.position.x = j["position"].value("x", 0.0f);
             t.position.y = j["position"].value("y", 0.0f);
@@ -35,7 +34,6 @@ void InitializeComponentRegistry() {
     reg.Register<MeshRenderer>(2, "MeshRenderer", [](const json& j, MeshRenderer& mr) {
         if (j.contains("meshPath")) mr.modelIndex = Asset::AssetManager::GetInstance().LoadModel(j["meshPath"]);
         else mr.modelIndex = j.value("modelIndex", 0);
-
         if (j.contains("materialPath")) mr.materialIndex = Asset::MaterialManager::GetInstance().LoadMaterial(j["materialPath"]);
         else mr.materialIndex = j.value("materialIndex", 0);
     });
@@ -77,7 +75,6 @@ void InitializeComponentRegistry() {
     reg.Register<SpriteRenderer>(7, "SpriteRenderer", [](const json& j, SpriteRenderer& sr) {
         if (j.contains("texturePath")) sr.textureIndex = Asset::TextureManager::GetInstance().LoadTexture(j["texturePath"]);
         else sr.textureIndex = j.value("textureIndex", 0);
-
         if (j.contains("color")) {
             sr.color.x = j["color"].value("x", 1.0f);
             sr.color.y = j["color"].value("y", 1.0f);
@@ -102,10 +99,8 @@ void InitializeComponentRegistry() {
         std::string text = j.value("text", "");
         memset(tr.text, 0, sizeof(tr.text));
         strncpy_s(tr.text, text.c_str(), _TRUNCATE);
-
         if (j.contains("fontPath")) tr.fontIndex = Asset::FontManager::GetInstance().LoadFont(j["fontPath"]);
         else tr.fontIndex = j.value("fontIndex", 0);
-
         if (j.contains("color")) {
             tr.color.x = j["color"].value("x", 1.0f);
             tr.color.y = j["color"].value("y", 1.0f);
@@ -116,8 +111,25 @@ void InitializeComponentRegistry() {
         tr.isScreenSpace = j.value("isScreenSpace", 0) ? 1 : 0;
     });
 
-    // Script (特別扱い: AddScriptByName を呼ぶ必要があるため、Registry 自体はここでは ScriptComponent を持たないかもしれないが、
-    // 将来的には ScriptComponent も他のコンポーネントと同じように扱えるようにする。)
+    // ParticleEmitter
+    reg.Register<ParticleEmitter>(10, "ParticleEmitter", [](const json& j, ParticleEmitter& e) {
+        e.count = j.value("count", 100);
+        e.speed = j.value("speed", 5.0f);
+        e.lifetime = j.value("lifetime", 2.0f);
+        e.gravity = j.value("gravity", 0.0f);
+        if (j.contains("color")) {
+            e.color.x = j["color"].value("x", 1.0f);
+            e.color.y = j["color"].value("y", 1.0f);
+            e.color.z = j["color"].value("z", 1.0f);
+            e.color.w = j["color"].value("w", 1.0f);
+        } else {
+            e.color = { 1, 1, 1, 1 };
+        }
+        e.modelIndex = j.value("modelIndex", 0);
+        if (j.contains("texturePath")) e.textureIndex = Asset::TextureManager::GetInstance().LoadTexture(j["texturePath"]);
+        else e.textureIndex = j.value("textureIndex", 0);
+        e.bufferIndex = 0;
+    });
 }
 
 } // namespace Engine::ECS

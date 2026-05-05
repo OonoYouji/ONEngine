@@ -19,9 +19,12 @@ public:
     StructuredBuffer();
     ~StructuredBuffer();
 
-    void Create(RenderDevice* device, uint32_t stride, uint32_t count, const void* initialData = nullptr);
+    void Create(RenderDevice* device, uint32_t stride, uint32_t count, const void* initialData = nullptr, bool isUAV = false);
     void Update(const void* data, uint32_t size, uint32_t offset = 0);
     
+    /// @brief リソース状態を遷移させる
+    void Transition(ID3D12GraphicsCommandList* commandList, D3D12_RESOURCE_STATES stateAfter);
+
     ID3D12Resource* GetResource() const { return allocation_->GetResource(); }
     uint32_t GetStride() const { return stride_; }
     uint32_t GetCount() const { return count_; }
@@ -30,6 +33,8 @@ private:
     ComPtr<D3D12MA::Allocation> allocation_;
     uint32_t stride_ = 0;
     uint32_t count_ = 0;
+    bool isUAV_ = false;
+    D3D12_RESOURCE_STATES currentState_ = D3D12_RESOURCE_STATE_COMMON;
 };
 
 ///
