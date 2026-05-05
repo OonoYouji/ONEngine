@@ -12,6 +12,7 @@
 #include "Engine/Graphics/Resource/ConstantBuffer.h"
 #include "Engine/ECS/Registry.h"
 #include "Engine/ECS/Systems/RenderSystem.h"
+#include "Engine/ECS/Systems/CameraSystem.h"
 #include "Engine/Common/Console.h"
 #include "Engine/Scene/SceneLoader.h"
 #include "Schema/Schema.h"
@@ -161,6 +162,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     Engine::Scene::SceneLoader::LoadScene("Assets/Scene/Main.scene", registry);
 
     Engine::ECS::RenderSystem renderSystem;
+    Engine::ECS::CameraSystem cameraSystem;
     Engine::Graphics::ConstantBuffer sceneCB;
     sceneCB.Create(graphicsEngine.GetRenderDevice(), sizeof(SceneData));
 
@@ -173,21 +175,31 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
         timer.Tick();
         float dt = timer.GetDeltaTime();
+if (updateDelegate) updateDelegate(dt);
 
-        if (updateDelegate) updateDelegate(dt);
+// システム更新
+cameraSystem.Reset();
+cameraSystem.Update(registry);
 
-        renderer.ClearQueue();
-        renderSystem.Update(registry);
+renderer.ClearQueue();
+renderSystem.Update(registry);
 
-        graphicsEngine.BeginFrame();
-        
-        SceneData sceneData;
-        auto view = Engine::Math::Matrix4x4::MakeLookAtLH({ 0, 20, -50 }, { 0, 0, 0 }, { 0, 1, 0 });
-        auto proj = Engine::Math::Matrix4x4::MakePerspectiveFovLH(0.45f, 16.0f/9.0f, 0.1f, 1000.0f);
-        sceneData.viewProj = view * proj;
-        
-        auto* currentFrameRes = graphicsEngine.GetCurrentFrameResource();
-        currentFrameRes->GetSceneCB()->Update(&sceneData, sizeof(sceneData));
+// 描画実行
+graphicsEngine.BeginFrame();
+
+// カメラ・シーンデータの更新
+SceneData sceneData;
+if (cameraSystem.HasCamera()) {
+    sceneData.viewProj = cameraSystem.GetResult().viewProj;
+} else {
+    auto view = Engine::Math::Matrix4x4::MakeLookAtLH({ 0, 20, -50 }, { 0, 0, 0 }, { 0, 1, 0 });
+    auto proj = Engine::Math::Matrix4x4::MakePerspectiveFovLH(0.45f, 16.0f/9.0f, 0.1f, 1000.0f);
+    sceneData.viewProj = view * proj;
+}
+
+auto* currentFrameRes = graphicsEngine.GetCurrentFrameResource();
+currentFrameRes->GetSceneCB()->Update(&sceneData, sizeof(sceneData));
+
 
         renderer.Extract();
         
