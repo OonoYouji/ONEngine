@@ -89,6 +89,7 @@ void Renderer::Extract() {
 }
 
 void Renderer::RenderZPrepass(const RenderContext& context) {
+    if (context.cullingManager) context.cullingManager->ResetBatchIndex(); // インデックスリセット
     PipelineStateDesc desc;
     desc.usePS = false;
     desc.numRenderTargets = 0;
@@ -98,6 +99,7 @@ void Renderer::RenderZPrepass(const RenderContext& context) {
 }
 
 void Renderer::Render(const RenderContext& context) {
+    if (context.cullingManager) context.cullingManager->ResetBatchIndex(); // インデックスリセット
     PipelineStateDesc desc;
     desc.usePS = true;
     desc.numRenderTargets = context.numRenderTargets;

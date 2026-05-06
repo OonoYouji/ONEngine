@@ -95,7 +95,7 @@ struct InstanceData {
     uint vertexOffset;
     uint entityID;
     uint postProcessFlags;
-    uint padding;
+    uint unused_pad;
     uint _final_pad0[2];
 };
 

@@ -12,23 +12,15 @@ GPUCullingManager::~GPUCullingManager() = default;
 void GPUCullingManager::Initialize(RenderDevice* device) {
     device_ = device;
 
-    // 出力バッファ
     outputInstances_ = std::make_unique<StructuredBuffer>();
     outputInstances_->Create(device, sizeof(GeneratedSchema::InstanceData), 2048 * kMaxBatches, nullptr, true); 
 
-    // 間接描画コマンドバッファ
     indirectCommandBuffer_ = std::make_unique<StructuredBuffer>();
     indirectCommandBuffer_->Create(device, sizeof(uint32_t) * 5, 2048 * kMaxBatches, nullptr, true); 
 
-    // 描画引数 / カウンタ
     drawArgsBuffer_ = std::make_unique<StructuredBuffer>();
     drawArgsBuffer_->Create(device, sizeof(uint32_t), kMaxBatches, nullptr, true);
 
-    // 初期状態を INDIRECT_ARGUMENT / ALL_SHADER_RESOURCE に統一 (初回 Execute の Before と合わせる)
-    // ※ StructuredBuffer::Create は COMMON 状態で作成される
-    // ここではあえて何もしない（COMMONはどの状態へも昇格可能なため）が、
-    // 明示的に初期遷移を行うのが最も安全。
-    
     frustumCB_ = std::make_unique<ConstantBuffer>();
     frustumCB_->Create(device, sizeof(FrustumPlanes));
 
@@ -71,8 +63,6 @@ void GPUCullingManager::ResetCounters(ID3D12GraphicsCommandList* commandList) {
 
     if (!pso || !rootSig) return;
 
-    // 現在の状態から UAV 状態へ
-    // ※ フレームの最初なので、前フレーム終了時の INDIRECT_ARGUMENT から遷移
     D3D12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(drawArgsBuffer_->GetResource(), D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
     commandList->ResourceBarrier(1, &barrier);
 
@@ -82,8 +72,6 @@ void GPUCullingManager::ResetCounters(ID3D12GraphicsCommandList* commandList) {
 
     commandList->Dispatch(1, 1, 1); 
 
-    // リセット完了後、再度 INDIRECT_ARGUMENT 状態に戻しておく
-    // これにより、後続の Execute() の Before 状態 (INDIRECT_ARGUMENT) と一致する
     barrier = CD3DX12_RESOURCE_BARRIER::Transition(drawArgsBuffer_->GetResource(), D3D12_RESOURCE_STATE_UNORDERED_ACCESS, D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT);
     commandList->ResourceBarrier(1, &barrier);
 
@@ -105,22 +93,14 @@ void GPUCullingManager::Execute(ID3D12GraphicsCommandList* commandList,
 
     if (!pso || !rootSig) return;
 
-    // 視錐台平面の計算
     FrustumPlanes frustum;
-    // Left
     frustum.planes[0] = { vp.m[0][3] + vp.m[0][0], vp.m[1][3] + vp.m[1][0], vp.m[2][3] + vp.m[2][0], vp.m[3][3] + vp.m[3][0] };
-    // Right
     frustum.planes[1] = { vp.m[0][3] - vp.m[0][0], vp.m[1][3] - vp.m[1][0], vp.m[2][3] - vp.m[2][0], vp.m[3][3] - vp.m[3][0] };
-    // Bottom
     frustum.planes[2] = { vp.m[0][3] + vp.m[0][1], vp.m[1][3] + vp.m[1][1], vp.m[2][3] + vp.m[2][1], vp.m[3][3] + vp.m[3][1] };
-    // Top
     frustum.planes[3] = { vp.m[0][3] - vp.m[0][1], vp.m[1][3] - vp.m[1][1], vp.m[2][3] - vp.m[2][1], vp.m[3][3] - vp.m[3][1] };
-    // Near
     frustum.planes[4] = { vp.m[0][2], vp.m[1][2], vp.m[2][2], vp.m[3][2] };
-    // Far
     frustum.planes[5] = { vp.m[0][3] - vp.m[0][2], vp.m[1][3] - vp.m[1][2], vp.m[2][3] - vp.m[2][2], vp.m[3][3] - vp.m[3][2] };
 
-    // 正規化
     for (int i = 0; i < 6; ++i) {
         float len = sqrtf(frustum.planes[i].x * frustum.planes[i].x + frustum.planes[i].y * frustum.planes[i].y + frustum.planes[i].z * frustum.planes[i].z);
         frustum.planes[i].x /= len;
@@ -130,7 +110,6 @@ void GPUCullingManager::Execute(ID3D12GraphicsCommandList* commandList,
     }
     frustumCB_->Update(&frustum, sizeof(frustum));
 
-    // バッチごとの定数バッファを選択
     auto& paramsCB = cullingParamsCBs_[currentBatchCBIndex_];
     CullingParams cParams = { targetModelIndex, maxInstances, instanceOffset, batchIndex };
     paramsCB->Update(&cParams, sizeof(cParams));
@@ -151,7 +130,6 @@ void GPUCullingManager::Execute(ID3D12GraphicsCommandList* commandList,
         if (idx != RootSignature::kInvalidIndex) commandList->SetComputeRootUnorderedAccessView(idx, addr);
     };
 
-    // リソース状態の確認 (Executeごとに必要)
     {
         D3D12_RESOURCE_BARRIER preBarriers[3];
         preBarriers[0] = CD3DX12_RESOURCE_BARRIER::Transition(outputInstances_->GetResource(), D3D12_RESOURCE_STATE_ALL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
@@ -171,10 +149,8 @@ void GPUCullingManager::Execute(ID3D12GraphicsCommandList* commandList,
 
     commandList->Dispatch((maxInstances + 63) / 64, 1, 1);
 
-    // インデックスを進める
     currentBatchCBIndex_ = (currentBatchCBIndex_ + 1) % kMaxBatches;
 
-    // バリア: UAV -> SRV/INDIRECT_ARGUMENT (描画パスで使用)
     D3D12_RESOURCE_BARRIER postBarriers[3];
     postBarriers[0] = CD3DX12_RESOURCE_BARRIER::Transition(outputInstances_->GetResource(), D3D12_RESOURCE_STATE_UNORDERED_ACCESS, D3D12_RESOURCE_STATE_ALL_SHADER_RESOURCE);
     postBarriers[1] = CD3DX12_RESOURCE_BARRIER::Transition(drawArgsBuffer_->GetResource(), D3D12_RESOURCE_STATE_UNORDERED_ACCESS, D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT);

@@ -38,20 +38,20 @@ types:
       - name: aabbMax
         type: float4   # 16 bytes
       - name: baseColor
-        type: float4   # 16 bytes (Total 112)
+        type: float4   # 16 bytes
       - name: modelIndex
-        type: uint32   # 4 bytes
-      - name: textureIndex
-        type: uint32   # 4 bytes
-      - name: vertexOffset
-        type: uint32   # 4 bytes
-      - name: entityID
-        type: uint32   # 4 bytes (Total 128 - Perfect!)
-      - name: postProcessFlags
-        type: uint32   # This will start a new 16-byte block, adding 4 bytes
-      - name: padding
         type: uint32
-        count: 3       # Pad to 16 bytes (Total 144)
+      - name: textureIndex
+        type: uint32
+      - name: vertexOffset
+        type: uint32
+      - name: entityID
+        type: uint32   # 16 bytes (Packed slot)
+      - name: postProcessFlags
+        type: uint32
+      - name: unused_pad
+        type: uint32
+        count: 3       # Final 16 bytes (Total 128 + 16 = 144)
 
   MaterialData:
     type: ConstantBuffer

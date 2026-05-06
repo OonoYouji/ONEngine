@@ -39,7 +39,7 @@ struct InstanceData {
     uint32_t vertexOffset;
     uint32_t entityID;
     uint32_t postProcessFlags;
-    uint32_t padding;
+    uint32_t unused_pad;
     uint8_t _final_pad0[8];
 };
 

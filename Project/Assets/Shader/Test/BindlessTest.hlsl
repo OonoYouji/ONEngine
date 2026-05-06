@@ -1,8 +1,7 @@
 struct Vertex {
-    float4 position; // 16 bytes
-    float4 normal;   // 16 bytes
-    float2 uv;       // 8 bytes
-    float2 _pad;     // 8 bytes (Total 48 bytes)
+    float3 position;
+    float3 normal;
+    float2 uv;
 };
 
 struct VSOutput {
@@ -28,13 +27,15 @@ StructuredBuffer<PointLightData> gPointLights : register(t2, space0);
 
 VSOutput vs_main(uint vID : SV_VertexID, uint iID : SV_InstanceID) {
     VSOutput output;
+    
+    // SV_InstanceID を直接インデックスとして使用 (ExecuteIndirectのオフセットが含まれる)
     InstanceData inst = gInstances[iID];
     
     // vID は既に絶対的な頂点インデックス (オフセット込み) なので直接使用する
     Vertex v = gVertices[vID];
     
     // Position
-    float4 worldPos = mul(v.position, inst.world);
+    float4 worldPos = mul(float4(v.position, 1.0f), inst.world);
     output.position = mul(worldPos, gSceneData.viewProj);
     output.worldPos = worldPos.xyz;
     output.uv = v.uv;

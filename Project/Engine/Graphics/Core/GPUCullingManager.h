@@ -35,6 +35,9 @@ public:
     /// @brief カウンタのリセット (全フレームの最初)
     void ResetCounters(ID3D12GraphicsCommandList* commandList);
 
+    /// @brief バッチインデックスのリセット (Passの最初)
+    void ResetBatchIndex() { currentBatchCBIndex_ = 0; }
+
     StructuredBuffer* GetOutputInstances() const { return outputInstances_.get(); }
     StructuredBuffer* GetDrawArgsBuffer() const { return drawArgsBuffer_.get(); }
     StructuredBuffer* GetIndirectCommandBuffer() const { return indirectCommandBuffer_.get(); }
