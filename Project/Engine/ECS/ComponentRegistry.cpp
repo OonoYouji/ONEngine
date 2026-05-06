@@ -115,16 +115,25 @@ void InitializeComponentRegistry() {
     reg.Register<ParticleEmitter>(10, "ParticleEmitter", [](const json& j, ParticleEmitter& e) {
         e.count = j.value("count", 100);
         e.speed = j.value("speed", 5.0f);
+        e.speedRandom = j.value("speedRandom", 0.5f);
         e.lifetime = j.value("lifetime", 2.0f);
+        e.lifetimeRandom = j.value("lifetimeRandom", 0.5f);
+        e.spreadAngle = j.value("spreadAngle", 30.0f);
         e.gravity = j.value("gravity", 0.0f);
-        if (j.contains("color")) {
-            e.color.x = j["color"].value("x", 1.0f);
-            e.color.y = j["color"].value("y", 1.0f);
-            e.color.z = j["color"].value("z", 1.0f);
-            e.color.w = j["color"].value("w", 1.0f);
-        } else {
-            e.color = { 1, 1, 1, 1 };
-        }
+        
+        auto parseColor = [&](const json& jj, const char* name, Engine::Math::Vector4 defaultVal) -> Engine::Math::Vector4 {
+            if (jj.contains(name)) {
+                return { jj[name].value("x", 1.0f), jj[name].value("y", 1.0f), jj[name].value("z", 1.0f), jj[name].value("w", 1.0f) };
+            }
+            return defaultVal;
+        };
+
+        e.startColor = parseColor(j, "startColor", parseColor(j, "color", { 1,1,1,1 }));
+        e.endColor = parseColor(j, "endColor", e.startColor);
+
+        e.startScale = j.value("startScale", 1.0f);
+        e.endScale = j.value("endScale", 0.0f);
+
         e.modelIndex = j.value("modelIndex", 0);
         if (j.contains("texturePath")) e.textureIndex = Asset::TextureManager::GetInstance().LoadTexture(j["texturePath"]);
         else e.textureIndex = j.value("textureIndex", 0);

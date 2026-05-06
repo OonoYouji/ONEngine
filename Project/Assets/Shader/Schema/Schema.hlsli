@@ -57,13 +57,20 @@ struct PointLight {
 struct ParticleEmitter {
     uint count;
     float speed;
+    float speedRandom;
     float lifetime;
+    float lifetimeRandom;
+    float spreadAngle;
     float gravity;
-    float4 color;
+    uint _pad0[1];
+    float4 startColor;
+    float4 endColor;
+    float startScale;
+    float endScale;
     uint modelIndex;
     uint textureIndex;
     uint bufferIndex;
-    uint _final_pad0[1];
+    uint _final_pad1[3];
 };
 
 struct DirectionalLight {

@@ -20,6 +20,7 @@ class ParticleSystem final : public System {
 public:
 	struct EmitterState {
 		std::unique_ptr<Graphics::StructuredBuffer> particleBuffer;
+		std::unique_ptr<Graphics::ConstantBuffer> updateCB; // エミッターごとに定数バッファを持つ
 		std::vector<std::unique_ptr<Graphics::StructuredBuffer>> stagingBuffers;
 		uint32_t count = 0;
 		bool initialized = false;
@@ -37,18 +38,32 @@ private:
 	Graphics::RenderDevice* device_ = nullptr;
 	std::unordered_map<Entity, EmitterState> emitters_;
 
-	std::unique_ptr<Graphics::StructuredBuffer> meshInfoBuffer_; // 追加
+	std::unique_ptr<Graphics::StructuredBuffer> meshInfoBuffer_;
 
 	// Compute Shader 用
 	struct UpdateParams {
 		float dt;
 		Engine::Math::Vector3 emitterPos;
 		uint32_t totalParticles;
+
 		float seed;
+		float speed;
+		float speedRandom;
+		float lifetime;
+
+		float lifetimeRandom;
+		float spreadAngle;
+		float gravity;
+		float startScale;
+
+		float endScale;
 		uint32_t modelIndex;
-		uint32_t textureIndex; // 追加
+		uint32_t textureIndex;
+		float padding;
+
+		Engine::Math::Vector4 startColor;
+		Engine::Math::Vector4 endColor;
 	};
-	std::unique_ptr<Graphics::ConstantBuffer> updateCB_;
 	float time_ = 0.0f; // シード用
 };
 

@@ -13,8 +13,6 @@ namespace Engine::ECS {
 
 void ParticleSystem::Initialize(Graphics::RenderDevice* device) {
     device_ = device;
-    updateCB_ = std::make_unique<Graphics::ConstantBuffer>();
-    updateCB_->Create(device, sizeof(UpdateParams));
 
     meshInfoBuffer_ = std::make_unique<Graphics::StructuredBuffer>();
     meshInfoBuffer_->Create(device, sizeof(GeneratedSchema::MeshInfo), 1024);
@@ -22,7 +20,6 @@ void ParticleSystem::Initialize(Graphics::RenderDevice* device) {
 
 void ParticleSystem::Shutdown() {
     emitters_.clear();
-    updateCB_.reset();
     meshInfoBuffer_.reset();
 }
 
@@ -59,16 +56,19 @@ void ParticleSystem::Update(Registry& registry) {
             state.particleBuffer = std::make_unique<Graphics::StructuredBuffer>();
             state.particleBuffer->Create(device_, sizeof(GeneratedSchema::ParticleGPUData), emitter.count, nullptr, true); // isUAV = true
             
+            state.updateCB = std::make_unique<Graphics::ConstantBuffer>();
+            state.updateCB->Create(device_, sizeof(UpdateParams));
+
             std::vector<GeneratedSchema::ParticleGPUData> initial(emitter.count);
             for(uint32_t i=0; i<emitter.count; ++i) {
                 initial[i].age = emitter.lifetime * ((float)i / (float)emitter.count);
                 initial[i].maxLifetime = emitter.lifetime;
-                initial[i].color = emitter.color;
-                initial[i].scale = 1.0f;
+                initial[i].color = emitter.startColor;
+                initial[i].scale = emitter.startScale;
                 initial[i].modelIndex = emitter.modelIndex;
                 initial[i].textureIndex = emitter.textureIndex;
                 initial[i].entityID = static_cast<uint32_t>(entity);
-                initial[i].postProcessFlags = 0; // ひとまず0
+                initial[i].postProcessFlags = 0;
             }
             
             // DEFAULTヒープへの初期化（ステージングバッファ経由）
@@ -99,14 +99,30 @@ void ParticleSystem::Update(Registry& registry) {
             params.dt = dt;
             params.emitterPos = transform.position;
             params.totalParticles = emitter.count;
+
             params.seed = time_;
+            params.speed = emitter.speed;
+            params.speedRandom = emitter.speedRandom;
+            params.lifetime = emitter.lifetime;
+
+            params.lifetimeRandom = emitter.lifetimeRandom;
+            params.spreadAngle = emitter.spreadAngle;
+            params.gravity = emitter.gravity;
+            params.startScale = emitter.startScale;
+
+            params.endScale = emitter.endScale;
             params.modelIndex = emitter.modelIndex;
             params.textureIndex = emitter.textureIndex;
-            updateCB_->Update(&params, sizeof(params));
+            params.padding = 0.0f;
+
+            params.startColor = emitter.startColor;
+            params.endColor = emitter.endColor;
+
+            state.updateCB->Update(&params, sizeof(params));
 
             auto paramsIdx = rootSig->GetParameterIndex("gParams");
             if (paramsIdx != ::Engine::Graphics::RootSignature::kInvalidIndex)
-                commandList->SetComputeRootConstantBufferView(paramsIdx, updateCB_->GetGPUVirtualAddress());
+                commandList->SetComputeRootConstantBufferView(paramsIdx, state.updateCB->GetGPUVirtualAddress());
 
             auto uavIdx = rootSig->GetParameterIndex("gParticles");
             if (uavIdx != ::Engine::Graphics::RootSignature::kInvalidIndex)
@@ -170,7 +186,7 @@ void ParticleSystem::Render(Registry& registry, const Graphics::RenderContext& c
                 pCmd6->SetGraphicsRootDescriptorTable(texIdx, tm.GetSrvHeap()->GetGPUHandle(0));
 
             pCmd6->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-            pCmd6->DispatchMesh(emitter.count, 1, 1);
+            pCmd6->DispatchMesh((emitter.count + 127) / 128, 1, 1);
         }
     });
 }

@@ -185,12 +185,24 @@ types:
         type: uint32
       - name: speed
         type: float
+      - name: speedRandom
+        type: float # 0.0 to 1.0 variation
       - name: lifetime
         type: float
+      - name: lifetimeRandom
+        type: float # 0.0 to 1.0 variation
+      - name: spreadAngle
+        type: float # emission cone angle in degrees
       - name: gravity
         type: float
-      - name: color
+      - name: startColor
         type: float4
+      - name: endColor
+        type: float4
+      - name: startScale
+        type: float
+      - name: endScale
+        type: float
       - name: modelIndex
         type: uint32 # 0 for Sprite
       - name: textureIndex
