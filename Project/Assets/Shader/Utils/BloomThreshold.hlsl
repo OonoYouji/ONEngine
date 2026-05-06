@@ -3,11 +3,11 @@ struct VSOutput {
     float2 uv : TEXCOORD;
 };
 
-cbuffer BloomParams : register(b1) {
+cbuffer PostProcessParams : register(b1) {
     float gThreshold;
     float gIntensity;
     float gExposure;
-    float padding;
+    float gPadding;
 };
 
 Texture2D gMainTexture : register(t0);

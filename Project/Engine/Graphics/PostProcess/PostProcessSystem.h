@@ -44,13 +44,17 @@ private:
     };
     std::unique_ptr<ConstantBuffer> blurCB_;
 
-    struct BloomParams {
+    struct PostProcessParams {
         float threshold;
         float intensity;
         float exposure;
         float padding;
+        Engine::Math::Vector4 outlineColor;
+        float outlineThreshold;
+        float outlineWidth;
+        float padding2[2];
     };
-    std::unique_ptr<ConstantBuffer> bloomCB_;
+    std::unique_ptr<ConstantBuffer> postProcessCB_;
 };
 
 } // namespace Engine::Graphics

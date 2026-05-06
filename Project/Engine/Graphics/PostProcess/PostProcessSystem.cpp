@@ -29,8 +29,8 @@ void PostProcessSystem::Initialize(RenderDevice* device, DescriptorHeap* rtvHeap
     blurCB_ = std::make_unique<ConstantBuffer>();
     blurCB_->Create(device, sizeof(BlurParams));
 
-    bloomCB_ = std::make_unique<ConstantBuffer>();
-    bloomCB_->Create(device, sizeof(BloomParams));
+    postProcessCB_ = std::make_unique<ConstantBuffer>();
+    postProcessCB_->Create(device, sizeof(PostProcessParams));
 }
 
 void PostProcessSystem::Shutdown() {
@@ -39,7 +39,7 @@ void PostProcessSystem::Shutdown() {
         upsampleBuffers_[i].reset();
     }
     blurCB_.reset();
-    bloomCB_.reset();
+    postProcessCB_.reset();
 }
 
 void PostProcessSystem::Render(ID3D12GraphicsCommandList* commandList, RenderTexture* inputSource, D3D12_CPU_DESCRIPTOR_HANDLE outputDestination) {
@@ -48,11 +48,14 @@ void PostProcessSystem::Render(ID3D12GraphicsCommandList* commandList, RenderTex
     auto* srvHeap = graphics.GetSRVHeap();
 
     // パラメータ更新
-    BloomParams bloomParams;
-    bloomParams.threshold = 0.5f; 
-    bloomParams.intensity = 2.0f; 
-    bloomParams.exposure = 1.0f;
-    bloomCB_->Update(&bloomParams, sizeof(bloomParams));
+    PostProcessParams params;
+    params.threshold = 0.5f; 
+    params.intensity = 2.0f; 
+    params.exposure = 1.0f;
+    params.outlineColor = { 0.0f, 0.0f, 0.0f, 1.0f };
+    params.outlineThreshold = 0.1f;
+    params.outlineWidth = 1.0f;
+    postProcessCB_->Update(&params, sizeof(params));
 
     ID3D12DescriptorHeap* heaps[] = { srvHeap->GetHeap() };
     commandList->SetDescriptorHeaps(1, heaps);
@@ -82,7 +85,7 @@ void PostProcessSystem::Render(ID3D12GraphicsCommandList* commandList, RenderTex
         commandList->SetGraphicsRootSignature(rootSig->Get());
         commandList->SetPipelineState(pso->Get());
         commandList->SetGraphicsRootDescriptorTable(rootSig->GetParameterIndex("gMainTexture"), inputSource->GetSRVHandle());
-        commandList->SetGraphicsRootConstantBufferView(rootSig->GetParameterIndex("BloomParams"), bloomCB_->GetGPUVirtualAddress());
+        commandList->SetGraphicsRootConstantBufferView(rootSig->GetParameterIndex("PostProcessParams"), postProcessCB_->GetGPUVirtualAddress());
 
         commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
         commandList->DrawInstanced(3, 1, 0, 0);
@@ -197,6 +200,11 @@ void PostProcessSystem::Render(ID3D12GraphicsCommandList* commandList, RenderTex
         downsampleBuffers_[0]->Transition(commandList, D3D12_RESOURCE_STATE_ALL_SHADER_RESOURCE);
         inputSource->Transition(commandList, D3D12_RESOURCE_STATE_ALL_SHADER_RESOURCE);
 
+        auto* normalBuffer = graphics.GetNormalBuffer();
+        auto* idBuffer = graphics.GetIDBuffer();
+        normalBuffer->Transition(commandList, D3D12_RESOURCE_STATE_ALL_SHADER_RESOURCE);
+        idBuffer->Transition(commandList, D3D12_RESOURCE_STATE_ALL_SHADER_RESOURCE);
+
         commandList->OMSetRenderTargets(1, &outputDestination, FALSE, nullptr);
         
         D3D12_VIEWPORT fullViewport = { 0.0f, 0.0f, (float)size_.x, (float)size_.y, 0.0f, 1.0f };
@@ -216,7 +224,9 @@ void PostProcessSystem::Render(ID3D12GraphicsCommandList* commandList, RenderTex
 
         commandList->SetGraphicsRootDescriptorTable(rootSig->GetParameterIndex("gMainTexture"), inputSource->GetSRVHandle());
         commandList->SetGraphicsRootDescriptorTable(rootSig->GetParameterIndex("gBloomTexture"), downsampleBuffers_[0]->GetSRVHandle());
-        commandList->SetGraphicsRootConstantBufferView(rootSig->GetParameterIndex("BloomParams"), bloomCB_->GetGPUVirtualAddress());
+        commandList->SetGraphicsRootDescriptorTable(rootSig->GetParameterIndex("gNormalTexture"), normalBuffer->GetSRVHandle());
+        commandList->SetGraphicsRootDescriptorTable(rootSig->GetParameterIndex("gIDTexture"), idBuffer->GetSRVHandle());
+        commandList->SetGraphicsRootConstantBufferView(rootSig->GetParameterIndex("PostProcessParams"), postProcessCB_->GetGPUVirtualAddress());
 
         commandList->DrawInstanced(3, 1, 0, 0);
     }
