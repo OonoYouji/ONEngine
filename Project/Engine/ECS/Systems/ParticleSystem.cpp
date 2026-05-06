@@ -68,7 +68,7 @@ void ParticleSystem::Update(Registry& registry) {
                 initial[i].modelIndex = emitter.modelIndex;
                 initial[i].textureIndex = emitter.textureIndex;
                 initial[i].entityID = static_cast<uint32_t>(entity);
-                initial[i].postProcessFlags = 0;
+                initial[i].postProcessFlags = 0x1; // アウトライン有効
             }
             
             // DEFAULTヒープへの初期化（ステージングバッファ経由）

@@ -63,6 +63,8 @@ types:
         type: uint32
       - name: materialIndex
         type: uint32
+      - name: postProcessFlags
+        type: uint32
 
   ScriptComponent:
     type: Component

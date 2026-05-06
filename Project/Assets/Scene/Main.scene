@@ -55,7 +55,8 @@
                 {
                     "meshPath": "Packages/Models/primitive/plane.obj",
                     "type": "MeshRenderer",
-                    "materialPath": "Assets/Materials/Grid.mat"
+                    "materialPath": "Assets/Materials/Grid.mat",
+                    "postProcessFlags": 0
                 }
             ]
         },

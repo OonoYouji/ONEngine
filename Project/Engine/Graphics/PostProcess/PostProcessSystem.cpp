@@ -52,7 +52,7 @@ void PostProcessSystem::Render(ID3D12GraphicsCommandList* commandList, RenderTex
     params.threshold = 0.5f; 
     params.intensity = 2.0f; 
     params.exposure = 1.0f;
-    params.outlineColor = { 0.0f, 0.0f, 0.0f, 1.0f };
+    params.outlineColor = { 0.0f, 1.0f, 0.0f, 1.0f }; // 分かりやすく緑に変更
     params.outlineThreshold = 0.1f;
     params.outlineWidth = 1.0f;
     postProcessCB_->Update(&params, sizeof(params));

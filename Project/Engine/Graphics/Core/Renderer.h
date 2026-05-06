@@ -30,8 +30,9 @@ struct RenderContext {
 struct RenderRequest {
 	uint32_t modelIndex;
 	uint32_t materialIndex;
-	uint32_t vertexOffset; // 追加
-	uint32_t entityID;     // 追加
+	uint32_t vertexOffset;
+	uint32_t entityID;
+	uint32_t postProcessFlags; // 追加
 	Engine::Math::Matrix4x4 world;
 };
 

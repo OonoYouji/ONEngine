@@ -157,7 +157,8 @@ struct ScriptComponent {
 struct MeshRenderer {
     uint32_t modelIndex;
     uint32_t materialIndex;
-    uint8_t _final_pad0[8];
+    uint32_t postProcessFlags;
+    uint8_t _final_pad0[4];
 };
 
 struct Skybox {

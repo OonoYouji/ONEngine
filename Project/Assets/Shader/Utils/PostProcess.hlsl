@@ -46,32 +46,37 @@ float4 ps_main(VSOutput input) : SV_TARGET {
     
     // Screen-space coordinates for Load
     int3 pos = int3(input.position.xy, 0);
-    uint currentID = gIDTexture.Load(pos).x;
+    uint2 idData = gIDTexture.Load(pos);
+    uint currentID = idData.x;
+    uint currentFlags = idData.y;
     float3 currentNormal = gNormalTexture.Load(pos).xyz * 2.0 - 1.0;
     
-    // Neighbors (simple cross pattern)
-    int offset = (int)max(1.0, gOutlineWidth);
-    int3 offsets[4] = {
-        int3(offset, 0, 0), int3(-offset, 0, 0),
-        int3(0, offset, 0), int3(0, -offset, 0)
-    };
-    
-    for (int i = 0; i < 4; ++i) {
-        int3 nPos = pos + offsets[i];
+    // アウトラインフラグ (Bit 0: 0x1) が立っている場合のみ抽出
+    if (currentFlags & 0x1) {
+        // Neighbors (simple cross pattern)
+        int offset = (int)max(1.0, gOutlineWidth);
+        int3 offsets[4] = {
+            int3(offset, 0, 0), int3(-offset, 0, 0),
+            int3(0, offset, 0), int3(0, -offset, 0)
+        };
         
-        // ID Edge
-        uint nID = gIDTexture.Load(nPos).x;
-        if (nID != currentID) {
-            outlineMask = 1.0;
-            break;
-        }
-        
-        // Normal Edge
-        float3 nNormal = gNormalTexture.Load(nPos).xyz * 2.0 - 1.0;
-        float normalDiff = 1.0 - saturate(dot(currentNormal, nNormal));
-        if (normalDiff > gOutlineThreshold) {
-            outlineMask = 1.0;
-            break;
+        for (int i = 0; i < 4; ++i) {
+            int3 nPos = pos + offsets[i];
+            
+            // ID Edge
+            uint nID = gIDTexture.Load(nPos).x;
+            if (nID != currentID) {
+                outlineMask = 1.0;
+                break;
+            }
+            
+            // Normal Edge
+            float3 nNormal = gNormalTexture.Load(nPos).xyz * 2.0 - 1.0;
+            float normalDiff = 1.0 - saturate(dot(currentNormal, nNormal));
+            if (normalDiff > gOutlineThreshold) {
+                outlineMask = 1.0;
+                break;
+            }
         }
     }
     

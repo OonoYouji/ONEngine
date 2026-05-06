@@ -36,6 +36,7 @@ void InitializeComponentRegistry() {
         else mr.modelIndex = j.value("modelIndex", 0);
         if (j.contains("materialPath")) mr.materialIndex = Asset::MaterialManager::GetInstance().LoadMaterial(j["materialPath"]);
         else mr.materialIndex = j.value("materialIndex", 0);
+        mr.postProcessFlags = j.value("postProcessFlags", 0);
     });
 
     // Camera

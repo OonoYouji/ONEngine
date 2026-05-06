@@ -61,7 +61,7 @@ void Renderer::Extract() {
         data.world = req.world;
         data.vertexOffset = req.vertexOffset;
         data.entityID = req.entityID;
-        data.postProcessFlags = 0; // ひとまず0 (将来的にコンポーネントから取得)
+        data.postProcessFlags = req.postProcessFlags;
         
         auto* mat = materialManager.GetMaterialByIndex(req.materialIndex);
         if (mat) {

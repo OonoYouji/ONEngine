@@ -33,8 +33,10 @@ public:
 			// TransformSystem で計算済みの行列をそのまま使用
 			request.world = transform.world;
 			request.entityID = static_cast<uint32_t>(entity);
-			
+			request.postProcessFlags = meshRenderer.postProcessFlags;
+
 			renderer.PushRequest(request);
+
 		});
 	}
 };
