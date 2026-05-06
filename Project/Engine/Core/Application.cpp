@@ -65,6 +65,11 @@ bool Application::Initialize(HINSTANCE hInstance, int nCmdShow) {
     sm.LoadPipelineAsset("Assets/Pipelines/Text.json");
     sm.LoadPipelineAsset("Assets/Pipelines/ParticleUpdate.json");
     sm.LoadPipelineAsset("Assets/Pipelines/ParticleRender.json");
+    sm.LoadPipelineAsset("Assets/Pipelines/CelShader.json");
+    sm.LoadPipelineAsset("Assets/Pipelines/ClusterBuilding.json");
+    sm.LoadPipelineAsset("Assets/Pipelines/LightAssignment.json");
+    sm.LoadPipelineAsset("Assets/Pipelines/Culling.json");
+    sm.LoadPipelineAsset("Assets/Pipelines/CullingReset.json");
 
     // 4. ECSシステムのインスタンス化
     transformSystem_ = std::make_unique<ECS::TransformSystem>();
@@ -75,6 +80,12 @@ bool Application::Initialize(HINSTANCE hInstance, int nCmdShow) {
     textSystem_ = std::make_unique<ECS::TextSystem>();
     particleSystem_ = std::make_unique<ECS::ParticleSystem>();
     particleSystem_->Initialize(graphics.GetRenderDevice());
+
+    clusteredLightManager_ = std::make_unique<Graphics::ClusteredLightManager>();
+    clusteredLightManager_->Initialize(graphics.GetRenderDevice());
+
+    gpuCullingManager_ = std::make_unique<Graphics::GPUCullingManager>();
+    gpuCullingManager_->Initialize(graphics.GetRenderDevice());
 
     // 5. バッファの作成
     pointLightSB_ = std::make_unique<Graphics::StructuredBuffer>();
@@ -155,17 +166,30 @@ void Application::Render() {
     // 描画実行
     graphics.BeginFrame();
     auto* currentFrameRes = graphics.GetCurrentFrameResource();
+    auto* commandList = graphics.GetCommandQueue()->GetCommandList();
 
-    // パーティクルの更新（Compute Shaderを実行するため、BeginFrameの後でコマンドリストが開いている必要がある）
+    // カリングカウンタの初期化
+    gpuCullingManager_->ResetCounters(commandList);
+
+    // パーティクルの更新
     particleSystem_->Update(registry_);
 
     GeneratedSchema::SceneData sceneData;
+    float nearZ = 0.1f, farZ = 1000.0f;
+    Math::Matrix4x4 proj;
+
     if (cameraSystem_->HasCamera()) {
-        sceneData.viewProj = cameraSystem_->GetResult().viewProj;
-        sceneData.cameraPos = cameraSystem_->GetResult().position;
+        const auto& camRes = cameraSystem_->GetResult();
+        sceneData.view = camRes.view;
+        sceneData.viewProj = camRes.viewProj;
+        sceneData.cameraPos = camRes.position;
+        nearZ = camRes.nearZ;
+        farZ = camRes.farZ;
+        proj = camRes.proj;
     } else {
         auto view = Math::Matrix4x4::MakeLookAtLH({ 0, 20, -50 }, { 0, 0, 0 }, { 0, 1, 0 });
-        auto proj = Math::Matrix4x4::MakePerspectiveFovLH(0.45f, 16.0f/9.0f, 0.1f, 1000.0f);
+        proj = Math::Matrix4x4::MakePerspectiveFovLH(0.45f, 16.0f/9.0f, 0.1f, 1000.0f);
+        sceneData.view = view;
         sceneData.viewProj = view * proj;
         sceneData.cameraPos = { 0, 20, -50 };
     }
@@ -173,9 +197,22 @@ void Application::Render() {
     sceneData.dirLightIntensity = lightRes.dirLightIntensity;
     sceneData.dirLightDirection = lightRes.dirLightDirection;
     sceneData.numPointLights = (uint32_t)lightRes.pointLights.size();
+    sceneData.screenWidth = (float)window_.GetWindowSize().x;
+    sceneData.screenHeight = (float)window_.GetWindowSize().y;
+    sceneData.nearZ = nearZ;
+    sceneData.farZ = farZ;
     currentFrameRes->GetSceneCB()->Update(&sceneData, sizeof(sceneData));
 
+    // クラスタライトカリングの更新
+    clusteredLightManager_->BuildClusters(static_cast<ID3D12GraphicsCommandList*>(commandList), proj.Inverse(), window_.GetWindowSize(), nearZ, farZ);
+    clusteredLightManager_->AssignLights(commandList, currentFrameRes->GetSceneCB()->GetGPUVirtualAddress(), pointLightSB_->GetResource()->GetGPUVirtualAddress(), sceneData.numPointLights);
+
+    // メッシュ情報の同期 (カリングとExecuteIndirectで使用)
+    particleSystem_->UpdateMeshInfoBuffer();
+
     renderer.Extract();
+
+
     graphics.Clear({ 0.7f, 0.7f, 0.7f, 1.0f });
     graphics.ClearDepth();
 
@@ -188,6 +225,15 @@ void Application::Render() {
     context.rtvFormats[0] = DXGI_FORMAT_R16G16B16A16_FLOAT;
     context.rtvFormats[1] = DXGI_FORMAT_R16G16B16A16_FLOAT;
     context.rtvFormats[2] = DXGI_FORMAT_R32G32_UINT;
+
+    context.lightGridBufferAddress = clusteredLightManager_->GetLightGridBuffer()->GetResource()->GetGPUVirtualAddress();
+    context.lightIndexListBufferAddress = clusteredLightManager_->GetLightIndexListBuffer()->GetResource()->GetGPUVirtualAddress();
+
+    context.cullingManager = gpuCullingManager_.get();
+    context.meshInfoBufferAddress = particleSystem_->GetMeshInfoBufferAddress();
+    if (cameraSystem_->HasCamera()) {
+        context.viewProj = cameraSystem_->GetResult().viewProj;
+    }
 
     renderer.RenderZPrepass(context);
     renderer.Render(context);
@@ -257,6 +303,8 @@ void Application::Shutdown() {
 
     // 1. 各システムの終了処理
     particleSystem_->Shutdown();
+    clusteredLightManager_->Shutdown();
+    gpuCullingManager_->Shutdown();
     Graphics::Renderer::GetInstance().Shutdown();
     Graphics::DebugRenderer::GetInstance().Shutdown();
     Asset::FontManager::GetInstance().Shutdown();

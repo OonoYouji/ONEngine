@@ -13,8 +13,12 @@ namespace Engine::ECS {
 class CameraSystem final : public System {
 public:
     struct CameraResult {
+        Engine::Math::Matrix4x4 view;
+        Engine::Math::Matrix4x4 proj;
         Engine::Math::Matrix4x4 viewProj;
         Engine::Math::Vector3 position;
+        float nearZ;
+        float farZ;
     };
 
     void Update(Registry& registry) override {
@@ -22,15 +26,7 @@ public:
         registry.GetView<Transform, Camera>().Each([&](Entity entity, Transform& transform, Camera& camera) {
             if (found_) return;
 
-            // ビュー行列の計算 (Transformの情報を元に)
-            // 注: 本来は Quaternion から Forward ベクトルを出すのが望ましいが、現状は Euler (rotation)
-            // 簡単のため LookAtLH を使用するか、あるいは Transform の逆行列を使用する
-            
-            // 1. Transform からワールド行列を作成
-            auto world = Engine::Math::Matrix4x4::MakeAffine(transform.scale, transform.rotation, transform.position);
-            
-            // 2. ビュー行列はワールド行列の逆行列 (Scaleは1と仮定)
-            // もしくは回転と平行移動から直接作成
+            // 1. ビュー行列の計算
             auto view = Engine::Math::Matrix4x4::MakeLookAtLH(
                 transform.position, 
                 transform.position + Engine::Math::Vector3{ 
@@ -41,13 +37,17 @@ public:
                 {0, 1, 0}
             );
             
-            // 3. プロジェクション行列の計算
+            // 2. プロジェクション行列の計算
             auto proj = Engine::Math::Matrix4x4::MakePerspectiveFovLH(
                 camera.fov * (3.141592f / 180.0f), 16.0f / 9.0f, camera.nearZ, camera.farZ
             );
 
+            result_.view = view;
+            result_.proj = proj;
             result_.viewProj = view * proj;
             result_.position = transform.position;
+            result_.nearZ = camera.nearZ;
+            result_.farZ = camera.farZ;
             found_ = true;
         });
     }

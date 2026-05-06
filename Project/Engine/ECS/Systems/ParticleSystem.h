@@ -31,8 +31,10 @@ public:
 	void Initialize(Graphics::RenderDevice* device);
 	void Shutdown();
 
+	void UpdateMeshInfoBuffer(); // publicに移動
+	D3D12_GPU_VIRTUAL_ADDRESS GetMeshInfoBufferAddress() const { return meshInfoBuffer_->GetResource()->GetGPUVirtualAddress(); }
+
 private:
-	void UpdateMeshInfoBuffer();
 
 private:
 	Graphics::RenderDevice* device_ = nullptr;

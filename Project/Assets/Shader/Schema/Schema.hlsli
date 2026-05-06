@@ -11,13 +11,18 @@ struct TextRenderer {
 };
 
 struct SceneData {
+    float4x4 view;
     float4x4 viewProj;
     float3 cameraPos;
     uint numPointLights;
     float dirLightIntensity;
     float3 dirLightColor;
     float3 dirLightDirection;
-    float padding;
+    float screenWidth;
+    float screenHeight;
+    float nearZ;
+    float farZ;
+    uint _final_pad0[1];
 };
 
 struct Transform {
@@ -82,11 +87,16 @@ struct DirectionalLight {
 
 struct InstanceData {
     float4x4 world;
+    float4 aabbMin;
+    float4 aabbMax;
     float4 baseColor;
+    uint modelIndex;
     uint textureIndex;
     uint vertexOffset;
     uint entityID;
     uint postProcessFlags;
+    uint padding;
+    uint _final_pad0[2];
 };
 
 struct PointLightData {

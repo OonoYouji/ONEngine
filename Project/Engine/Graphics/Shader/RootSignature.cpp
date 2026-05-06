@@ -129,7 +129,7 @@ bool RootSignature::Create(RenderDevice* device, const std::vector<ShaderReflect
                 param.ParameterType = (type == D3D12_DESCRIPTOR_RANGE_TYPE_SRV) ? D3D12_ROOT_PARAMETER_TYPE_SRV : D3D12_ROOT_PARAMETER_TYPE_UAV;
                 param.Descriptor.ShaderRegister = res.bindPoint;
                 param.Descriptor.RegisterSpace = res.space;
-                param.Descriptor.Flags = D3D12_ROOT_DESCRIPTOR_FLAG_NONE;
+                param.Descriptor.Flags = D3D12_ROOT_DESCRIPTOR_FLAG_DATA_VOLATILE; // 更新: 静的と決めつけない
                 param.ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 
                 nameToParameterIndex_[res.name] = static_cast<uint32_t>(rootParameters.size());

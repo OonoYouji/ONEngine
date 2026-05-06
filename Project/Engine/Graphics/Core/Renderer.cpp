@@ -1,6 +1,7 @@
 #include "Renderer.h"
 #include "Engine/Graphics/Core/RenderDevice.h"
 #include "Engine/Graphics/Core/GraphicsEngine.h"
+#include "Engine/Graphics/Core/GPUCullingManager.h"
 #include "Engine/Asset/AssetManager.h"
 #include "Engine/Asset/MaterialManager.h"
 #include "Engine/Asset/TextureManager.h"
@@ -43,6 +44,7 @@ void Renderer::Extract() {
 
     auto& graphicsEngine = GraphicsEngine::GetInstance();
     auto& materialManager = Asset::MaterialManager::GetInstance();
+    auto& assetManager = Asset::AssetManager::GetInstance();
 
     // 中央管理のフレームインデックスを取得
     uint32_t frameIndex = graphicsEngine.GetCurrentFrameIndex();
@@ -59,9 +61,17 @@ void Renderer::Extract() {
     for (const auto& req : queue_) {
         GeneratedSchema::InstanceData data;
         data.world = req.world;
-        data.vertexOffset = req.vertexOffset;
         data.entityID = req.entityID;
         data.postProcessFlags = req.postProcessFlags;
+        data.modelIndex = req.modelIndex;
+
+        const auto& meshes = assetManager.GetMeshesByIndex(req.modelIndex);
+        if (!meshes.empty()) {
+            const auto& min3 = meshes[0]->GetAABBMin();
+            const auto& max3 = meshes[0]->GetAABBMax();
+            data.aabbMin = { min3.x, min3.y, min3.z, 1.0f };
+            data.aabbMax = { max3.x, max3.y, max3.z, 1.0f };
+        }
         
         auto* mat = materialManager.GetMaterialByIndex(req.materialIndex);
         if (mat) {
@@ -106,14 +116,17 @@ void Renderer::RenderInternal(const RenderContext& context, const PipelineStateD
     auto& materialManager = Asset::MaterialManager::GetInstance();
     auto& textureManager = Asset::TextureManager::GetInstance();
     auto& shaderManager = ShaderManager::GetInstance();
+    auto& geoPool = GeometryPool::GetInstance();
+    auto& graphics = GraphicsEngine::GetInstance();
 
     ID3D12GraphicsCommandList* commandList = context.commandList;
-    auto* currentSB = instanceSBs_[context.frameIndex].get();
 
+    // バッチ処理ループ
     uint32_t currentInstanceStart = 0;
+    uint32_t batchIndex = 0;
     const uint32_t totalInstances = static_cast<uint32_t>(queue_.size());
 
-    while (currentInstanceStart < totalInstances) {
+    while (currentInstanceStart < totalInstances && batchIndex < 64 /* GPUCullingManager::kMaxBatches */) {
         const auto& batchStartReq = queue_[currentInstanceStart];
         
         uint32_t batchSize = 0;
@@ -131,52 +144,82 @@ void Renderer::RenderInternal(const RenderContext& context, const PipelineStateD
             auto* pso = shaderManager.GetOrCreatePSO(mat->pipelineName, baseDesc);
             auto* rootSig = shaderManager.GetRootSignature(mat->pipelineName);
             
+            // 1. このバッチ専用に GPU カリングを実行
+            if (context.cullingManager) {
+                context.cullingManager->Execute(
+                    commandList,
+                    context.sceneCBAddress,
+                    instanceSBs_[context.frameIndex].get(),
+                    batchSize,
+                    context.viewProj,
+                    context.meshInfoBufferAddress,
+                    batchStartReq.modelIndex,
+                    currentInstanceStart,
+                    batchIndex
+                );
+            }
+
+            // 2. 描画設定
             commandList->SetGraphicsRootSignature(rootSig->Get());
             commandList->SetPipelineState(pso->Get());
 
             ID3D12DescriptorHeap* heaps[] = { textureManager.GetSrvHeap()->GetHeap() };
             commandList->SetDescriptorHeaps(_countof(heaps), heaps);
 
-            auto sceneIdx = rootSig->GetParameterIndex("gSceneData");
-            if (sceneIdx != RootSignature::kInvalidIndex) {
-                commandList->SetGraphicsRootConstantBufferView(sceneIdx, context.sceneCBAddress);
-            }
+            auto setCBV = [&](const std::string& name, D3D12_GPU_VIRTUAL_ADDRESS addr) {
+                auto idx = rootSig->GetParameterIndex(name);
+                if (idx != RootSignature::kInvalidIndex) commandList->SetGraphicsRootConstantBufferView(idx, addr);
+            };
+            auto setSRV = [&](const std::string& name, D3D12_GPU_VIRTUAL_ADDRESS addr) {
+                auto idx = rootSig->GetParameterIndex(name);
+                if (idx != RootSignature::kInvalidIndex) commandList->SetGraphicsRootShaderResourceView(idx, addr);
+            };
 
-            auto texIdx = rootSig->GetParameterIndex("gTextures");
-            if (texIdx != RootSignature::kInvalidIndex) {
-                commandList->SetGraphicsRootDescriptorTable(texIdx, textureManager.GetSrvHeap()->GetGPUHandle(0));
-            }
+            setCBV("gSceneData", context.sceneCBAddress);
             
-            auto instIdx = rootSig->GetParameterIndex("gInstances");
-            if (instIdx != RootSignature::kInvalidIndex) {
-                D3D12_GPU_VIRTUAL_ADDRESS instBufferAddr = currentSB->GetResource()->GetGPUVirtualAddress();
-                instBufferAddr += static_cast<UINT64>(currentInstanceStart) * sizeof(GeneratedSchema::InstanceData);
-                commandList->SetGraphicsRootShaderResourceView(instIdx, instBufferAddr);
+            auto texIdx = rootSig->GetParameterIndex("gTextures");
+            if (texIdx != RootSignature::kInvalidIndex)
+                commandList->SetGraphicsRootDescriptorTable(texIdx, textureManager.GetSrvHeap()->GetGPUHandle(0));
+
+            // GPUカリング後のバッファをバインド
+            if (context.cullingManager) {
+                D3D12_GPU_VIRTUAL_ADDRESS culledAddr = context.cullingManager->GetOutputInstances()->GetGPUVirtualAddress();
+                culledAddr += static_cast<UINT64>(batchIndex * 2048) * sizeof(GeneratedSchema::InstanceData);
+                setSRV("gInstances", culledAddr);
             }
 
-            auto pointLightIdx = rootSig->GetParameterIndex("gPointLights");
-            if (pointLightIdx != RootSignature::kInvalidIndex && context.pointLightBufferAddress != 0) {
-                commandList->SetGraphicsRootShaderResourceView(pointLightIdx, context.pointLightBufferAddress);
-            }
+            setSRV("gPointLights", context.pointLightBufferAddress);
+            setSRV("gLightGrid", context.lightGridBufferAddress);
+            setSRV("gLightIndexList", context.lightIndexListBufferAddress);
+            setSRV("gVertices", geoPool.GetVertexBuffer()->GetResource()->GetGPUVirtualAddress());
 
-            // --- ジオメトリプールのバインド ---
-            auto& geoPool = GeometryPool::GetInstance();
-            auto vertIdx = rootSig->GetParameterIndex("gVertices");
-            if (vertIdx != RootSignature::kInvalidIndex) {
-                commandList->SetGraphicsRootShaderResourceView(vertIdx, geoPool.GetVertexBuffer()->GetResource()->GetGPUVirtualAddress());
-            }
             D3D12_INDEX_BUFFER_VIEW ibv = geoPool.GetIndexBuffer()->GetView();
             commandList->IASetIndexBuffer(&ibv);
-
             commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-            const auto& meshes = assetManager.GetMeshesByIndex(batchStartReq.modelIndex);
-            for (const auto& mesh : meshes) {
-                mesh->Draw(commandList, batchSize);
+            // 3. ExecuteIndirect の実行
+            if (context.cullingManager && context.cullingManager->GetCommandSignature()) {
+                ID3D12Resource* cmdBuf = context.cullingManager->GetIndirectCommandBuffer()->GetResource();
+                ID3D12Resource* cntBuf = context.cullingManager->GetDrawArgsBuffer()->GetResource();
+                
+                commandList->ExecuteIndirect(
+                    context.cullingManager->GetCommandSignature(),
+                    2048, 
+                    cmdBuf,
+                    static_cast<UINT64>(batchIndex * 2048) * sizeof(uint32_t) * 5,
+                    cntBuf,
+                    static_cast<UINT64>(batchIndex) * sizeof(uint32_t)
+                );
+            } else {
+                const auto& meshes = assetManager.GetMeshesByIndex(batchStartReq.modelIndex);
+                for (const auto& mesh : meshes) {
+                    mesh->Draw(commandList, batchSize);
+                }
             }
         }
 
         currentInstanceStart += batchSize;
+        batchIndex++;
     }
 }
 

@@ -11,6 +11,7 @@
 namespace Engine::Graphics {
 
 class RenderDevice;
+class GPUCullingManager;
 
 ///
 /// 描画コンテキスト
@@ -20,8 +21,17 @@ struct RenderContext {
 	D3D12_GPU_VIRTUAL_ADDRESS sceneCBAddress = 0;
 	D3D12_GPU_VIRTUAL_ADDRESS pointLightBufferAddress = 0;
 	uint32_t frameIndex = 0;
-	DXGI_FORMAT rtvFormats[8] = {}; // ゼロ初期化
+	DXGI_FORMAT rtvFormats[8] = {};
 	uint32_t numRenderTargets = 1;
+
+	// クラスタライトカリング用
+	D3D12_GPU_VIRTUAL_ADDRESS lightGridBufferAddress = 0;
+	D3D12_GPU_VIRTUAL_ADDRESS lightIndexListBufferAddress = 0;
+
+	// GPU駆動カリング用
+	GPUCullingManager* cullingManager = nullptr;
+	D3D12_GPU_VIRTUAL_ADDRESS meshInfoBufferAddress = 0;
+	Engine::Math::Matrix4x4 viewProj;
 };
 
 ///
@@ -62,6 +72,10 @@ public:
 	void Render(const RenderContext& context);
 
 	void ClearQueue();
+
+	// 追加: GPU駆動カリング用のアクセサ
+	StructuredBuffer* GetInstanceBuffer(uint32_t frameIndex) const { return instanceSBs_[frameIndex].get(); }
+	uint32_t GetInstanceCount() const { return static_cast<uint32_t>(queue_.size()); }
 
 private:
 	void RenderInternal(const RenderContext& context, const PipelineStateDesc& baseDesc);

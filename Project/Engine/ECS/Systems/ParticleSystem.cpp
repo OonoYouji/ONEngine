@@ -26,9 +26,10 @@ void ParticleSystem::Shutdown() {
 void ParticleSystem::UpdateMeshInfoBuffer() {
     auto& assetManager = Asset::AssetManager::GetInstance();
     std::vector<GeneratedSchema::MeshInfo> infos(1024);
-    
-    for (uint32_t i = 1; i < 1024; ++i) {
+
+    for (uint32_t i = 0; i < 1024; ++i) {
         const auto& meshes = assetManager.GetMeshesByIndex(i);
+
         if (!meshes.empty()) {
             infos[i].vertexOffset = meshes[0]->GetVertexOffset();
             infos[i].indexOffset = meshes[0]->GetIndexOffset();

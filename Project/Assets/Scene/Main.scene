@@ -5,8 +5,8 @@
             "name": "MainCamera", 
             "components": [
                 {
-                    "position": { "y": 30, "x": 0, "z": -60 },
-                    "rotation": { "y": 0, "x": 0.5, "z": 0 },
+                    "position": { "y": 20, "x": 0, "z": -40 },
+                    "rotation": { "y": 0, "x": 0.4, "z": 0 },
                     "type": "Transform"
                 },
                 {
@@ -14,16 +14,6 @@
                     "type": "Camera",
                     "nearZ": 0.1,
                     "farZ": 1000.0
-                }
-            ]
-        },
-        {
-            "id": 2,
-            "name": "Sky",
-            "components": [
-                {
-                    "type": "Skybox",
-                    "texturePath": "Assets/Textures/circle.png"
                 }
             ]
         },
@@ -37,7 +27,7 @@
                 },
                 {
                     "color": { "y": 1, "x": 1, "z": 1 },
-                    "intensity": 0.5,
+                    "intensity": 0.8,
                     "type": "DirectionalLight",
                     "direction": { "y": -1.0, "x": 0.5, "z": 0.5 }
                 }
@@ -48,8 +38,8 @@
             "name": "Ground",
             "components": [
                 {
-                    "position": { "y": -1, "x": 0, "z": 0 },
-                    "scale": { "x": 50, "y": 1, "z": 50 },
+                    "position": { "y": 0, "x": 0, "z": 0 },
+                    "scale": { "x": 100, "y": 1, "z": 100 },
                     "type": "Transform"
                 },
                 {
@@ -61,54 +51,183 @@
             ]
         },
         {
-            "id": 100,
-            "name": "SpriteEmitter",
+            "id": 10,
+            "name": "Cube_0",
             "components": [
-                {
-                    "position": { "y": 0, "x": -15, "z": 0 },
-                    "type": "Transform"
-                },
-                {
-                    "type": "ParticleEmitter",
-                    "count": 1000,
-                    "speed": 15.0,
-                    "speedRandom": 0.3,
-                    "lifetime": 2.0,
-                    "lifetimeRandom": 0.5,
-                    "spreadAngle": 20.0,
-                    "gravity": 5.0,
-                    "startColor": { "x": 1.0, "y": 0.5, "z": 0.1, "w": 1.0 },
-                    "endColor": { "x": 1.0, "y": 0.2, "z": 0.0, "w": 0.0 },
-                    "startScale": 1.5,
-                    "endScale": 0.2,
-                    "modelIndex": 0,
-                    "texturePath": "Assets/Textures/circle.png"
-                }
+                { "position": { "x": 20.0, "y": 1.0, "z": 0.0 }, "type": "Transform" },
+                { "meshPath": "Packages/Models/primitive/cube.obj", "materialPath": "Assets/Materials/CelTest.mat", "postProcessFlags": 1, "type": "MeshRenderer" },
+                { "type": "ScriptComponent", "className": "Scripts.RotatingCube" }
             ]
         },
         {
-            "id": 101,
-            "name": "MeshEmitter",
+            "id": 11,
+            "name": "Cube_1",
             "components": [
-                {
-                    "position": { "y": 0, "x": 15, "z": 0 },
-                    "type": "Transform"
-                },
-                {
-                    "type": "ParticleEmitter",
-                    "count": 500,
-                    "speed": 12.0,
-                    "speedRandom": 0.5,
-                    "lifetime": 3.0,
-                    "lifetimeRandom": 0.2,
-                    "spreadAngle": 45.0,
-                    "gravity": 9.8,
-                    "startColor": { "x": 0.2, "y": 0.8, "z": 1.0, "w": 1.0 },
-                    "endColor": { "x": 0.1, "y": 0.2, "z": 1.0, "w": 1.0 },
-                    "startScale": 1.0,
-                    "endScale": 1.0,
-                    "modelIndex": 1
-                }
+                { "position": { "x": 19.02, "y": 1.0, "z": 6.18 }, "type": "Transform" },
+                { "meshPath": "Packages/Models/primitive/cube.obj", "materialPath": "Assets/Materials/CelTest.mat", "postProcessFlags": 1, "type": "MeshRenderer" },
+                { "type": "ScriptComponent", "className": "Scripts.RotatingCube" }
+            ]
+        },
+        {
+            "id": 12,
+            "name": "Cube_2",
+            "components": [
+                { "position": { "x": 16.18, "y": 1.0, "z": 11.76 }, "type": "Transform" },
+                { "meshPath": "Packages/Models/primitive/cube.obj", "materialPath": "Assets/Materials/CelTest.mat", "postProcessFlags": 1, "type": "MeshRenderer" },
+                { "type": "ScriptComponent", "className": "Scripts.RotatingCube" }
+            ]
+        },
+        {
+            "id": 13,
+            "name": "Cube_3",
+            "components": [
+                { "position": { "x": 11.76, "y": 1.0, "z": 16.18 }, "type": "Transform" },
+                { "meshPath": "Packages/Models/primitive/cube.obj", "materialPath": "Assets/Materials/CelTest.mat", "postProcessFlags": 1, "type": "MeshRenderer" },
+                { "type": "ScriptComponent", "className": "Scripts.RotatingCube" }
+            ]
+        },
+        {
+            "id": 14,
+            "name": "Cube_4",
+            "components": [
+                { "position": { "x": 6.18, "y": 1.0, "z": 19.02 }, "type": "Transform" },
+                { "meshPath": "Packages/Models/primitive/cube.obj", "materialPath": "Assets/Materials/CelTest.mat", "postProcessFlags": 1, "type": "MeshRenderer" },
+                { "type": "ScriptComponent", "className": "Scripts.RotatingCube" }
+            ]
+        },
+        {
+            "id": 15,
+            "name": "Cube_5",
+            "components": [
+                { "position": { "x": 0.0, "y": 1.0, "z": 20.0 }, "type": "Transform" },
+                { "meshPath": "Packages/Models/primitive/cube.obj", "materialPath": "Assets/Materials/CelTest.mat", "postProcessFlags": 1, "type": "MeshRenderer" },
+                { "type": "ScriptComponent", "className": "Scripts.RotatingCube" }
+            ]
+        },
+        {
+            "id": 16,
+            "name": "Cube_6",
+            "components": [
+                { "position": { "x": -6.18, "y": 1.0, "z": 19.02 }, "type": "Transform" },
+                { "meshPath": "Packages/Models/primitive/cube.obj", "materialPath": "Assets/Materials/CelTest.mat", "postProcessFlags": 1, "type": "MeshRenderer" },
+                { "type": "ScriptComponent", "className": "Scripts.RotatingCube" }
+            ]
+        },
+        {
+            "id": 17,
+            "name": "Cube_7",
+            "components": [
+                { "position": { "x": -11.76, "y": 1.0, "z": 16.18 }, "type": "Transform" },
+                { "meshPath": "Packages/Models/primitive/cube.obj", "materialPath": "Assets/Materials/CelTest.mat", "postProcessFlags": 1, "type": "MeshRenderer" },
+                { "type": "ScriptComponent", "className": "Scripts.RotatingCube" }
+            ]
+        },
+        {
+            "id": 18,
+            "name": "Cube_8",
+            "components": [
+                { "position": { "x": -16.18, "y": 1.0, "z": 11.76 }, "type": "Transform" },
+                { "meshPath": "Packages/Models/primitive/cube.obj", "materialPath": "Assets/Materials/CelTest.mat", "postProcessFlags": 1, "type": "MeshRenderer" },
+                { "type": "ScriptComponent", "className": "Scripts.RotatingCube" }
+            ]
+        },
+        {
+            "id": 19,
+            "name": "Cube_9",
+            "components": [
+                { "position": { "x": -19.02, "y": 1.0, "z": 6.18 }, "type": "Transform" },
+                { "meshPath": "Packages/Models/primitive/cube.obj", "materialPath": "Assets/Materials/CelTest.mat", "postProcessFlags": 1, "type": "MeshRenderer" },
+                { "type": "ScriptComponent", "className": "Scripts.RotatingCube" }
+            ]
+        },
+        {
+            "id": 20,
+            "name": "Cube_10",
+            "components": [
+                { "position": { "x": -20.0, "y": 1.0, "z": 0.0 }, "type": "Transform" },
+                { "meshPath": "Packages/Models/primitive/cube.obj", "materialPath": "Assets/Materials/CelTest.mat", "postProcessFlags": 1, "type": "MeshRenderer" },
+                { "type": "ScriptComponent", "className": "Scripts.RotatingCube" }
+            ]
+        },
+        {
+            "id": 21,
+            "name": "Cube_11",
+            "components": [
+                { "position": { "x": -19.02, "y": 1.0, "z": -6.18 }, "type": "Transform" },
+                { "meshPath": "Packages/Models/primitive/cube.obj", "materialPath": "Assets/Materials/CelTest.mat", "postProcessFlags": 1, "type": "MeshRenderer" },
+                { "type": "ScriptComponent", "className": "Scripts.RotatingCube" }
+            ]
+        },
+        {
+            "id": 22,
+            "name": "Cube_12",
+            "components": [
+                { "position": { "x": -16.18, "y": 1.0, "z": -11.76 }, "type": "Transform" },
+                { "meshPath": "Packages/Models/primitive/cube.obj", "materialPath": "Assets/Materials/CelTest.mat", "postProcessFlags": 1, "type": "MeshRenderer" },
+                { "type": "ScriptComponent", "className": "Scripts.RotatingCube" }
+            ]
+        },
+        {
+            "id": 23,
+            "name": "Cube_13",
+            "components": [
+                { "position": { "x": -11.76, "y": 1.0, "z": -16.18 }, "type": "Transform" },
+                { "meshPath": "Packages/Models/primitive/cube.obj", "materialPath": "Assets/Materials/CelTest.mat", "postProcessFlags": 1, "type": "MeshRenderer" },
+                { "type": "ScriptComponent", "className": "Scripts.RotatingCube" }
+            ]
+        },
+        {
+            "id": 24,
+            "name": "Cube_14",
+            "components": [
+                { "position": { "x": -6.18, "y": 1.0, "z": -19.02 }, "type": "Transform" },
+                { "meshPath": "Packages/Models/primitive/cube.obj", "materialPath": "Assets/Materials/CelTest.mat", "postProcessFlags": 1, "type": "MeshRenderer" },
+                { "type": "ScriptComponent", "className": "Scripts.RotatingCube" }
+            ]
+        },
+        {
+            "id": 25,
+            "name": "Cube_15",
+            "components": [
+                { "position": { "x": -0.0, "y": 1.0, "z": -20.0 }, "type": "Transform" },
+                { "meshPath": "Packages/Models/primitive/cube.obj", "materialPath": "Assets/Materials/CelTest.mat", "postProcessFlags": 1, "type": "MeshRenderer" },
+                { "type": "ScriptComponent", "className": "Scripts.RotatingCube" }
+            ]
+        },
+        {
+            "id": 26,
+            "name": "Cube_16",
+            "components": [
+                { "position": { "x": 6.18, "y": 1.0, "z": -19.02 }, "type": "Transform" },
+                { "meshPath": "Packages/Models/primitive/cube.obj", "materialPath": "Assets/Materials/CelTest.mat", "postProcessFlags": 1, "type": "MeshRenderer" },
+                { "type": "ScriptComponent", "className": "Scripts.RotatingCube" }
+            ]
+        },
+        {
+            "id": 27,
+            "name": "Cube_17",
+            "components": [
+                { "position": { "x": 11.76, "y": 1.0, "z": -16.18 }, "type": "Transform" },
+                { "meshPath": "Packages/Models/primitive/cube.obj", "materialPath": "Assets/Materials/CelTest.mat", "postProcessFlags": 1, "type": "MeshRenderer" },
+                { "type": "ScriptComponent", "className": "Scripts.RotatingCube" }
+            ]
+        },
+        {
+            "id": 28,
+            "name": "Cube_18",
+            "components": [
+                { "position": { "x": 16.18, "y": 1.0, "z": -11.76 }, "type": "Transform" },
+                { "meshPath": "Packages/Models/primitive/cube.obj", "materialPath": "Assets/Materials/CelTest.mat", "postProcessFlags": 1, "type": "MeshRenderer" },
+                { "type": "ScriptComponent", "className": "Scripts.RotatingCube" }
+            ]
+        },
+        {
+            "id": 29,
+            "name": "Cube_19",
+            "components": [
+                { "position": { "x": 19.02, "y": 1.0, "z": -6.18 }, "type": "Transform" },
+                { "meshPath": "Packages/Models/primitive/cube.obj", "materialPath": "Assets/Materials/CelTest.mat", "postProcessFlags": 1, "type": "MeshRenderer" },
+                { "type": "ScriptComponent", "className": "Scripts.RotatingCube" }
             ]
         }
     ]

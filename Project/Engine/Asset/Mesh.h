@@ -33,11 +33,17 @@ public:
     uint32_t GetVertexCount() const { return vertexCount_; }
     uint32_t GetIndexCount() const { return indexCount_; }
 
+    const Engine::Math::Vector3& GetAABBMin() const { return aabbMin_; }
+    const Engine::Math::Vector3& GetAABBMax() const { return aabbMax_; }
+
 private:
     uint32_t vertexOffset_ = 0;
     uint32_t indexOffset_ = 0;
     uint32_t vertexCount_ = 0;
     uint32_t indexCount_ = 0;
+
+    Engine::Math::Vector3 aabbMin_;
+    Engine::Math::Vector3 aabbMax_;
 };
 
 } // namespace Engine::Asset

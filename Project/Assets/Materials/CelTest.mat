@@ -1,0 +1,8 @@
+{
+  "name": "CelMat",
+  "pipeline": "CelShader",
+  "texture": "Packages/Textures/white.png",
+  "parameters": {
+    "baseColor": [1.0, 1.0, 1.0, 1.0]
+  }
+}

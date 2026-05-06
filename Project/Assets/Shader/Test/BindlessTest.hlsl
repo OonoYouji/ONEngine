@@ -30,8 +30,8 @@ VSOutput vs_main(uint vID : SV_VertexID, uint iID : SV_InstanceID) {
     VSOutput output;
     InstanceData inst = gInstances[iID];
     
-    // 明示的なオフセットを使用して頂点データを取得
-    Vertex v = gVertices[inst.vertexOffset + vID];
+    // vID は既に絶対的な頂点インデックス (オフセット込み) なので直接使用する
+    Vertex v = gVertices[vID];
     
     // Position
     float4 worldPos = mul(v.position, inst.world);

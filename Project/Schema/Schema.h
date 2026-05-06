@@ -5,13 +5,18 @@
 namespace Engine::GeneratedSchema {
 
 struct SceneData {
+    Engine::Math::Matrix4x4 view;
     Engine::Math::Matrix4x4 viewProj;
     Engine::Math::Vector3 cameraPos;
     uint32_t numPointLights;
     float dirLightIntensity;
     Engine::Math::Vector3 dirLightColor;
     Engine::Math::Vector3 dirLightDirection;
-    float padding;
+    float screenWidth;
+    float screenHeight;
+    float nearZ;
+    float farZ;
+    uint8_t _final_pad0[4];
 };
 
 struct TextData {
@@ -26,11 +31,16 @@ struct TextData {
 
 struct InstanceData {
     Engine::Math::Matrix4x4 world;
+    Engine::Math::Vector4 aabbMin;
+    Engine::Math::Vector4 aabbMax;
     Engine::Math::Vector4 baseColor;
+    uint32_t modelIndex;
     uint32_t textureIndex;
     uint32_t vertexOffset;
     uint32_t entityID;
     uint32_t postProcessFlags;
+    uint32_t padding;
+    uint8_t _final_pad0[8];
 };
 
 struct PointLightData {

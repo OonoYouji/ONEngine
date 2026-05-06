@@ -26,8 +26,11 @@ public:
     void Transition(ID3D12GraphicsCommandList* commandList, D3D12_RESOURCE_STATES stateAfter);
 
     ID3D12Resource* GetResource() const { return allocation_->GetResource(); }
+    D3D12_GPU_VIRTUAL_ADDRESS GetGPUVirtualAddress() const { return allocation_->GetResource()->GetGPUVirtualAddress(); }
+
     uint32_t GetStride() const { return stride_; }
     uint32_t GetCount() const { return count_; }
+
 
 private:
     ComPtr<D3D12MA::Allocation> allocation_;

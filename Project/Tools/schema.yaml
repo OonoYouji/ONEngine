@@ -5,6 +5,8 @@ types:
   SceneData:
     type: ConstantBuffer
     fields:
+      - name: view
+        type: float4x4
       - name: viewProj
         type: float4x4
       - name: cameraPos
@@ -17,24 +19,39 @@ types:
         type: float3
       - name: dirLightDirection
         type: float3
-      - name: padding
+      - name: screenWidth
+        type: float
+      - name: screenHeight
+        type: float
+      - name: nearZ
+        type: float
+      - name: farZ
         type: float
   
   InstanceData:
     type: StructuredBuffer
     fields:
       - name: world
-        type: float4x4
+        type: float4x4 # 64 bytes
+      - name: aabbMin
+        type: float4   # 16 bytes
+      - name: aabbMax
+        type: float4   # 16 bytes
       - name: baseColor
-        type: float4
+        type: float4   # 16 bytes (Total 112)
+      - name: modelIndex
+        type: uint32   # 4 bytes
       - name: textureIndex
-        type: uint32
+        type: uint32   # 4 bytes
       - name: vertexOffset
-        type: uint32
+        type: uint32   # 4 bytes
       - name: entityID
-        type: uint32
+        type: uint32   # 4 bytes (Total 128 - Perfect!)
       - name: postProcessFlags
+        type: uint32   # This will start a new 16-byte block, adding 4 bytes
+      - name: padding
         type: uint32
+        count: 3       # Pad to 16 bytes (Total 144)
 
   MaterialData:
     type: ConstantBuffer

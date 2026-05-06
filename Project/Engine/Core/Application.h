@@ -1,6 +1,8 @@
 #pragma once
 
 #include <Windows.h>
+#include "Engine/Graphics/Core/ClusteredLightManager.h"
+#include "Engine/Graphics/Core/GPUCullingManager.h"
 #include <memory>
 #include "Engine/Core/Window.h"
 #include "Engine/Core/Timer.h"
@@ -54,6 +56,8 @@ private:
     std::unique_ptr<Graphics::StructuredBuffer> pointLightSB_;
     std::unique_ptr<Graphics::StructuredBuffer> spriteSB_;
     std::unique_ptr<Graphics::StructuredBuffer> textSB_;
+    std::unique_ptr<Graphics::ClusteredLightManager> clusteredLightManager_;
+    std::unique_ptr<Graphics::GPUCullingManager> gpuCullingManager_;
 
     // Scripting
     void(*updateDelegate_)(float) = nullptr;

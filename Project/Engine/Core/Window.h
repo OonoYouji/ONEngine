@@ -28,6 +28,7 @@ public:
 
 	bool GetIsProcessEnd() const { return isProcessEnd_; }
 	HWND GetHWND() const { return hwnd_; }
+	const Engine::Math::Vector2Int& GetWindowSize() const { return windowSize_; }
 
 private:
 
