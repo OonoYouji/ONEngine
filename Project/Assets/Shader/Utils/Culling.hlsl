@@ -77,15 +77,16 @@ void main(uint3 DTid : SV_DispatchThreadID) {
         uint writeIdx = gCullingParams.batchIndex * 2048 + outputIdx;
 
         gOutputInstances[writeIdx] = inst;
+// 描画コマンドを生成
+MeshInfo mesh = gMeshInfos[inst.modelIndex];
+DrawIndexedArguments args;
+args.indexCountPerInstance = mesh.indexCount;
+args.instanceCount = 1;
+args.startIndexLocation = mesh.indexOffset;
+args.baseVertexLocation = 0;
+args.startInstanceLocation = outputIdx; // バッチ内相対位置に変更 (Renderer側のオフセットバインドと合わせる)
 
-        MeshInfo mesh = gMeshInfos[inst.modelIndex];
-        DrawIndexedArguments args;
-        args.indexCountPerInstance = mesh.indexCount;
-        args.instanceCount = 1;
-        args.startIndexLocation = mesh.indexOffset;
-        args.baseVertexLocation = 0;
-        args.startInstanceLocation = writeIdx;
-
-        gOutCommands[writeIdx] = args;
-    }
+gOutCommands[writeIdx] = args;
 }
+}
+
