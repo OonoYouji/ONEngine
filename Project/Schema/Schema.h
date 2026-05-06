@@ -29,7 +29,8 @@ struct InstanceData {
     Engine::Math::Vector4 baseColor;
     uint32_t textureIndex;
     uint32_t vertexOffset;
-    Engine::Math::Vector2 padding;
+    uint32_t entityID;
+    uint32_t postProcessFlags;
 };
 
 struct PointLightData {
@@ -49,7 +50,8 @@ struct ParticleGPUData {
     float scale;
     uint32_t modelIndex;
     uint32_t textureIndex;
-    uint8_t _final_pad0[8];
+    uint32_t entityID;
+    uint32_t postProcessFlags;
 };
 
 struct MeshInfo {
@@ -64,7 +66,8 @@ struct SpriteData {
     Engine::Math::Vector4 color;
     uint32_t textureIndex;
     uint32_t isBillboard;
-    Engine::Math::Vector2 padding;
+    uint32_t entityID;
+    uint32_t postProcessFlags;
 };
 
 struct MaterialData {

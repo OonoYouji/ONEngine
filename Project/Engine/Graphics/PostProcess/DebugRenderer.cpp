@@ -1,5 +1,6 @@
 #include "DebugRenderer.h"
 #include "Engine/Graphics/Core/RenderDevice.h"
+#include "Engine/Graphics/Core/Renderer.h"
 #include "Engine/Graphics/Shader/ShaderManager.h"
 #include <d3dx12.h>
 
@@ -44,7 +45,7 @@ void DebugRenderer::DrawBox(const Engine::Math::Vector3& center, const Engine::M
     DrawLine({min.x, min.y, max.z}, {min.x, max.y, max.z}, color);
 }
 
-void DebugRenderer::Render(ID3D12GraphicsCommandList* commandList, D3D12_GPU_VIRTUAL_ADDRESS sceneCBAddress, DXGI_FORMAT rtvFormat) {
+void DebugRenderer::Render(const RenderContext& context) {
     if (vertices_.empty()) return;
 
     // バッファ転送
@@ -53,28 +54,32 @@ void DebugRenderer::Render(ID3D12GraphicsCommandList* commandList, D3D12_GPU_VIR
     auto& shaderManager = ShaderManager::GetInstance();
     
     PipelineStateDesc desc;
-    desc.rtvFormat = rtvFormat; // 追加
+    desc.numRenderTargets = context.numRenderTargets;
+    for (uint32_t i = 0; i < context.numRenderTargets; ++i) {
+        desc.rtvFormats[i] = context.rtvFormats[i];
+    }
+
     desc.primitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE;
     desc.depthWriteEnable = false; 
     
     auto* pso = shaderManager.GetOrCreatePSO("DebugLine", desc);
     auto* rootSig = shaderManager.GetRootSignature("DebugLine");
 
-    commandList->SetGraphicsRootSignature(rootSig->Get());
-    commandList->SetPipelineState(pso->Get());
+    context.commandList->SetGraphicsRootSignature(rootSig->Get());
+    context.commandList->SetPipelineState(pso->Get());
 
     auto sceneIdx = rootSig->GetParameterIndex("gSceneData");
     if (sceneIdx != RootSignature::kInvalidIndex) {
-        commandList->SetGraphicsRootConstantBufferView(sceneIdx, sceneCBAddress);
+        context.commandList->SetGraphicsRootConstantBufferView(sceneIdx, context.sceneCBAddress);
     }
 
     auto vertIdx = rootSig->GetParameterIndex("gVertices");
     if (vertIdx != RootSignature::kInvalidIndex) {
-        commandList->SetGraphicsRootShaderResourceView(vertIdx, vertexBuffer_->GetResource()->GetGPUVirtualAddress());
+        context.commandList->SetGraphicsRootShaderResourceView(vertIdx, vertexBuffer_->GetResource()->GetGPUVirtualAddress());
     }
 
-    commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
-    commandList->DrawInstanced(static_cast<UINT>(vertices_.size()), 1, 0, 0);
+    context.commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
+    context.commandList->DrawInstanced(static_cast<UINT>(vertices_.size()), 1, 0, 0);
 }
 
 void DebugRenderer::Clear() {

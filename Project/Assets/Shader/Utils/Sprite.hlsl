@@ -53,8 +53,20 @@ VSOutput vs_main(uint vID : SV_VertexID, uint iID : SV_InstanceID) {
     return output;
 }
 
-float4 ps_main(VSOutput input) : SV_TARGET {
+struct PSOutput {
+    float4 color : SV_Target0;
+    float4 normal : SV_Target1;
+    uint2 idFlags : SV_Target2;
+};
+
+PSOutput ps_main(VSOutput input) {
     SpriteData sprite = gSprites[input.instanceID];
     float4 texColor = gTextures[NonUniformResourceIndex(sprite.textureIndex)].Sample(gSampler, input.uv);
-    return texColor * sprite.color;
+    
+    PSOutput output;
+    output.color = texColor * sprite.color;
+    output.normal = float4(0.5f, 0.5f, 1.0f, 1.0f); // スプライトは常に正面(0,0,1)向きと仮定
+    output.idFlags = uint2(sprite.entityID, sprite.postProcessFlags);
+    
+    return output;
 }

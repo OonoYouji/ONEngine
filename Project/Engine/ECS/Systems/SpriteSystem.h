@@ -39,6 +39,8 @@ public:
 
             data.color = renderer.color;
             data.textureIndex = renderer.textureIndex;
+            data.entityID = static_cast<uint32_t>(entity);
+            data.postProcessFlags = 0; // ひとまず0
             result_.sprites.push_back(data);
         });
     }

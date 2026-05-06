@@ -1,4 +1,4 @@
-#include "PipelineState.h"
+﻿#include "PipelineState.h"
 #include <d3dx12.h>
 #include "Engine/Graphics/Core/RenderDevice.h"
 #include "Engine/Common/Assert.h"
@@ -71,7 +71,7 @@ bool PipelineState::Create(
         D3D12_RT_FORMAT_ARRAY rtvFormats = {};
         rtvFormats.NumRenderTargets = desc.numRenderTargets;
         for (uint32_t i = 0; i < desc.numRenderTargets; ++i) {
-            rtvFormats.RTFormats[i] = desc.rtvFormat;
+            rtvFormats.RTFormats[i] = desc.rtvFormats[i];
         }
         stream.RTVFormats = rtvFormats;
         stream.DSVFormat = desc.dsvFormat;
@@ -84,13 +84,15 @@ bool PipelineState::Create(
 
         CD3DX12_BLEND_DESC blendDesc(D3D12_DEFAULT);
         if (desc.blendEnable) {
+            blendDesc.IndependentBlendEnable = TRUE; // 複数のレンダーターゲットで異なるブレンド設定を許可
             blendDesc.RenderTarget[0].BlendEnable = TRUE;
             blendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
             blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
             blendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
+            // 他のターゲット (1-7) はデフォルト (BlendEnable = FALSE) のまま
         }
         else {
-            blendDesc.RenderTarget[0] = desc.blendDesc.RenderTarget[0];
+            blendDesc = CD3DX12_BLEND_DESC(desc.blendDesc);
         }
         stream.Blend = blendDesc;
 
@@ -117,6 +119,7 @@ bool PipelineState::Create(
 
         if (desc.blendEnable) {
             psoDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
+            psoDesc.BlendState.IndependentBlendEnable = TRUE; // 複数のレンダーターゲットで異なるブレンド設定を許可
             psoDesc.BlendState.RenderTarget[0].BlendEnable = TRUE;
             psoDesc.BlendState.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
             psoDesc.BlendState.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
@@ -135,7 +138,7 @@ bool PipelineState::Create(
         psoDesc.PrimitiveTopologyType = desc.primitiveTopologyType;
         psoDesc.NumRenderTargets = desc.numRenderTargets;
         for (uint32_t i = 0; i < desc.numRenderTargets; ++i) {
-            psoDesc.RTVFormats[i] = desc.rtvFormat;
+            psoDesc.RTVFormats[i] = desc.rtvFormats[i];
         }
         psoDesc.DSVFormat = desc.dsvFormat;
         psoDesc.SampleDesc.Count = 1;

@@ -42,9 +42,13 @@ public:
     D3D12_CPU_DESCRIPTOR_HANDLE GetRTVHandle() const { return rtvHandle_; }
     D3D12_GPU_DESCRIPTOR_HANDLE GetSRVHandle() const { return srvHandle_; }
     uint32_t GetSRVIndex() const { return srvIndex_; }
+    const Math::Vector2Int& GetSize() const { return size_; }
+    DXGI_FORMAT GetFormat() const { return format_; }
 
 private:
     ComPtr<D3D12MA::Allocation> allocation_;
+    Math::Vector2Int size_;
+    DXGI_FORMAT format_ = DXGI_FORMAT_UNKNOWN;
     D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle_ = {};
     D3D12_GPU_DESCRIPTOR_HANDLE srvHandle_ = {};
     uint32_t srvIndex_ = 0xFFFFFFFF;

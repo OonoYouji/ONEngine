@@ -114,15 +114,28 @@ void ms_main(
     }
 }
 
-float4 ps_main(VSOutput input) : SV_TARGET {
+struct PSOutput {
+    float4 color : SV_Target0;
+    float4 normal : SV_Target1;
+    uint2 idFlags : SV_Target2;
+};
+
+PSOutput ps_main(VSOutput input) {
     ParticleGPUData p = gParticles[input.particleIdx];
     float4 texColor = gTextures[NonUniformResourceIndex(p.textureIndex)].Sample(gSampler, input.uv);
     
+    PSOutput output;
+    
     if (p.modelIndex == 0) {
-        return texColor * input.color;
+        output.color = texColor * input.color;
+        output.normal = float4(0.5f, 0.5f, 1.0f, 1.0f);
     } else {
         float3 lightDir = normalize(float3(1, 1, -1));
         float diff = max(dot(normalize(input.worldPos - gSceneData.cameraPos), -lightDir), 0.5);
-        return input.color * diff;
+        output.color = input.color * diff;
+        output.normal = float4(0.5f, 0.5f, 1.0f, 1.0f); // メッシュ用法線の取得は別途必要だが一旦固定
     }
+    
+    output.idFlags = uint2(p.entityID, p.postProcessFlags);
+    return output;
 }

@@ -57,6 +57,14 @@ void GraphicsEngine::Initialize(HWND hwnd, const Engine::Math::Vector2Int& windo
     mainColorBuffer_ = std::make_unique<RenderTexture>();
     mainColorBuffer_->Create(renderDevice_.get(), rtvHeap_.get(), srvHeap_.get(), windowSize, DXGI_FORMAT_R16G16B16A16_FLOAT, {0.1f, 0.1f, 0.1f, 1.0f});
 
+    // 法線バッファの作成
+    normalBuffer_ = std::make_unique<RenderTexture>();
+    normalBuffer_->Create(renderDevice_.get(), rtvHeap_.get(), srvHeap_.get(), windowSize, DXGI_FORMAT_R16G16B16A16_FLOAT, {0.0f, 0.0f, 0.0f, 0.0f});
+
+    // ID/Flagsバッファの作成 (R32G32_UINT: EntityID, PostProcessFlags)
+    idBuffer_ = std::make_unique<RenderTexture>();
+    idBuffer_->Create(renderDevice_.get(), rtvHeap_.get(), srvHeap_.get(), windowSize, DXGI_FORMAT_R32G32_UINT, {0.0f, 0.0f, 0.0f, 0.0f});
+
     // ポストプロセスシステムの初期化
     PostProcessSystem::GetInstance().Initialize(renderDevice_.get(), rtvHeap_.get(), srvHeap_.get(), windowSize);
 }
@@ -79,10 +87,16 @@ void GraphicsEngine::BeginFrame() {
 
     // 中間バッファを描画ターゲットに設定
     mainColorBuffer_->Transition(commandQueue_->GetCommandList(), D3D12_RESOURCE_STATE_RENDER_TARGET);
+    normalBuffer_->Transition(commandQueue_->GetCommandList(), D3D12_RESOURCE_STATE_RENDER_TARGET);
+    idBuffer_->Transition(commandQueue_->GetCommandList(), D3D12_RESOURCE_STATE_RENDER_TARGET);
     
-    auto rtvHandle = mainColorBuffer_->GetRTVHandle();
+    D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles[] = {
+        mainColorBuffer_->GetRTVHandle(),
+        normalBuffer_->GetRTVHandle(),
+        idBuffer_->GetRTVHandle()
+    };
     auto dsvHandle = depthBuffer_->GetDSVHandle();
-    commandQueue_->GetCommandList()->OMSetRenderTargets(1, &rtvHandle, FALSE, &dsvHandle);
+    commandQueue_->GetCommandList()->OMSetRenderTargets(_countof(rtvHandles), rtvHandles, FALSE, &dsvHandle);
     
     // SwapChainのバックバッファも状態だけ遷移させておく
     swapChain_->BeginFrame(commandQueue_->GetCommandList());
@@ -91,8 +105,10 @@ void GraphicsEngine::BeginFrame() {
 void GraphicsEngine::EndFrame() {
     auto* commandList = commandQueue_->GetCommandList();
 
-    // 1. 中間バッファをシェーダー参照用に遷移
+    // 1. 各バッファをシェーダー参照用に遷移
     mainColorBuffer_->Transition(commandList, D3D12_RESOURCE_STATE_ALL_SHADER_RESOURCE);
+    normalBuffer_->Transition(commandList, D3D12_RESOURCE_STATE_ALL_SHADER_RESOURCE);
+    idBuffer_->Transition(commandList, D3D12_RESOURCE_STATE_ALL_SHADER_RESOURCE);
 
     // 2. ポストプロセス（トーンマッピング等）を実行してSwapChainへ出力
     PostProcessSystem::GetInstance().Render(commandList, mainColorBuffer_.get(), swapChain_->GetRTVHandle());
@@ -111,8 +127,10 @@ void GraphicsEngine::EndFrame() {
 }
 
 void GraphicsEngine::Clear(const Engine::Math::Vector4& color) {
-    // 中間バッファをクリア
-    mainColorBuffer_->Clear(commandQueue_->GetCommandList());
+    auto* commandList = commandQueue_->GetCommandList();
+    mainColorBuffer_->Clear(commandList);
+    normalBuffer_->Clear(commandList);
+    idBuffer_->Clear(commandList);
 }
 
 void GraphicsEngine::ClearDepth() {

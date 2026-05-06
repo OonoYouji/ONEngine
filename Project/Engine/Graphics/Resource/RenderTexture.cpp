@@ -12,6 +12,8 @@ RenderTexture::~RenderTexture() { Release(); }
 void RenderTexture::Create(RenderDevice* device, DescriptorHeap* rtvHeap, DescriptorHeap* srvHeap, 
                            const Math::Vector2Int& size, DXGI_FORMAT format, const Math::Vector4& clearColor) {
     clearColor_ = clearColor;
+    size_ = size;
+    format_ = format;
     
     D3D12_RESOURCE_DESC desc = {};
     desc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;

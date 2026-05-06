@@ -21,6 +21,16 @@ VSOutput vs_main(uint vID : SV_VertexID) {
     return output;
 }
 
-float4 ps_main(VSOutput input) : SV_TARGET {
-    return input.color;
+struct PSOutput {
+    float4 color : SV_Target0;
+    float4 normal : SV_Target1;
+    uint2 idFlags : SV_Target2;
+};
+
+PSOutput ps_main(VSOutput input) {
+    PSOutput output;
+    output.color = input.color;
+    output.normal = float4(0.5f, 0.5f, 0.5f, 1.0f);
+    output.idFlags = uint2(0, 0);
+    return output;
 }

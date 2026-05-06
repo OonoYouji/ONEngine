@@ -54,6 +54,8 @@ public:
 	SwapChain* GetSwapChain() const { return swapChain_.get(); }
     class DepthBuffer* GetDepthBuffer() const { return depthBuffer_.get(); }
 	RenderTexture* GetMainColorBuffer() const { return mainColorBuffer_.get(); }
+	RenderTexture* GetNormalBuffer() const { return normalBuffer_.get(); }
+	RenderTexture* GetIDBuffer() const { return idBuffer_.get(); }
 	const Engine::Math::Vector2Int& GetWindowSize() const { return windowSize_; }
 
 	uint32_t GetCurrentFrameIndex() const { return currentFrameIndex_; }
@@ -91,6 +93,8 @@ private:
 	std::unique_ptr<SwapChain> swapChain_ = nullptr;
 	std::unique_ptr<class DepthBuffer> depthBuffer_ = nullptr;
 	std::unique_ptr<RenderTexture> mainColorBuffer_ = nullptr;
+	std::unique_ptr<RenderTexture> normalBuffer_ = nullptr;
+	std::unique_ptr<RenderTexture> idBuffer_ = nullptr;
 
 	Engine::Math::Vector2Int windowSize_;
 

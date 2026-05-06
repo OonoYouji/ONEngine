@@ -184,13 +184,19 @@ void Application::Render() {
     context.sceneCBAddress = currentFrameRes->GetSceneCB()->GetGPUVirtualAddress();
     context.pointLightBufferAddress = pointLightSB_->GetResource()->GetGPUVirtualAddress();
     context.frameIndex = graphics.GetCurrentFrameIndex();
-    context.rtvFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
+    context.numRenderTargets = 3;
+    context.rtvFormats[0] = DXGI_FORMAT_R16G16B16A16_FLOAT;
+    context.rtvFormats[1] = DXGI_FORMAT_R16G16B16A16_FLOAT;
+    context.rtvFormats[2] = DXGI_FORMAT_R32G32_UINT;
 
     renderer.RenderZPrepass(context);
     renderer.Render(context);
 
     Graphics::PipelineStateDesc baseDesc;
-    baseDesc.rtvFormat = context.rtvFormat;
+    for (uint32_t i = 0; i < context.numRenderTargets; ++i) {
+        baseDesc.rtvFormats[i] = context.rtvFormats[i];
+    }
+    baseDesc.numRenderTargets = context.numRenderTargets;
 
     // Skybox
     if (skyboxSystem_->HasSkybox()) {
@@ -207,7 +213,7 @@ void Application::Render() {
     }
     
     // Particle
-    particleSystem_->Render(registry_, context.commandList, context.sceneCBAddress, context.rtvFormat);
+    particleSystem_->Render(registry_, context);
 
     // Sprite
     if (!spriteRes.sprites.empty()) {
@@ -239,7 +245,7 @@ void Application::Render() {
         context.commandList->DrawInstanced(4, (UINT)textRes.charInstances.size(), 0, 0);
     }
 
-    debug.Render(context.commandList, context.sceneCBAddress, context.rtvFormat);
+    debug.Render(context);
     graphics.EndFrame();
 }
 
@@ -277,6 +283,11 @@ void Application::Shutdown() {
     skyboxSystem_.reset();
     textSystem_.reset();
     particleSystem_.reset();
+
+    // 5. エンジン内部のバッファも破棄されるように明示的にリセット
+    // ※GraphicsEngine 自体はシングルトンだが、保持している unique_ptr をリセット
+    // ただし、現在はシングルトン内の unique_ptr を外部からリセットする口がないため、
+    // 将来的に必要であれば追加。現状は Shutdown() で GPU 待機のみ。
 
     window_.Shutdown();
     Console::Shutdown();

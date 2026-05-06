@@ -59,7 +59,9 @@ void Renderer::Extract() {
     for (const auto& req : queue_) {
         GeneratedSchema::InstanceData data;
         data.world = req.world;
-        data.vertexOffset = req.vertexOffset; // 追加
+        data.vertexOffset = req.vertexOffset;
+        data.entityID = req.entityID;
+        data.postProcessFlags = 0; // ひとまず0 (将来的にコンポーネントから取得)
         
         auto* mat = materialManager.GetMaterialByIndex(req.materialIndex);
         if (mat) {
@@ -69,7 +71,6 @@ void Renderer::Extract() {
             data.baseColor = { 1, 1, 1, 1 };
             data.textureIndex = 0;
         }
-        data.padding = { 0, 0 };
         instanceData.push_back(data);
     }
 
@@ -89,7 +90,10 @@ void Renderer::RenderZPrepass(const RenderContext& context) {
 void Renderer::Render(const RenderContext& context) {
     PipelineStateDesc desc;
     desc.usePS = true;
-    desc.numRenderTargets = 1;
+    desc.numRenderTargets = context.numRenderTargets;
+    for (uint32_t i = 0; i < context.numRenderTargets; ++i) {
+        desc.rtvFormats[i] = context.rtvFormats[i];
+    }
     desc.depthWriteEnable = false;
     desc.depthFunc = D3D12_COMPARISON_FUNC_EQUAL;
     RenderInternal(context, desc);

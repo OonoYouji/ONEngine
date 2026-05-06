@@ -16,11 +16,12 @@ class RenderDevice;
 /// 描画コンテキスト
 ///
 struct RenderContext {
-	ID3D12GraphicsCommandList* commandList;
-	D3D12_GPU_VIRTUAL_ADDRESS sceneCBAddress;
-	D3D12_GPU_VIRTUAL_ADDRESS pointLightBufferAddress;
-	uint32_t frameIndex;
-	DXGI_FORMAT rtvFormat; // 追加: 現在の描画ターゲットの形式
+	ID3D12GraphicsCommandList* commandList = nullptr;
+	D3D12_GPU_VIRTUAL_ADDRESS sceneCBAddress = 0;
+	D3D12_GPU_VIRTUAL_ADDRESS pointLightBufferAddress = 0;
+	uint32_t frameIndex = 0;
+	DXGI_FORMAT rtvFormats[8] = {}; // ゼロ初期化
+	uint32_t numRenderTargets = 1;
 };
 
 ///
@@ -30,6 +31,7 @@ struct RenderRequest {
 	uint32_t modelIndex;
 	uint32_t materialIndex;
 	uint32_t vertexOffset; // 追加
+	uint32_t entityID;     // 追加
 	Engine::Math::Matrix4x4 world;
 };
 

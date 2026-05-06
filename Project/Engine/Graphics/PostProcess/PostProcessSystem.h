@@ -32,9 +32,10 @@ private:
     RenderDevice* device_ = nullptr;
     Engine::Math::Vector2Int size_;
     
-    // ブルーム用中間バッファ (1/2サイズ)
-    std::unique_ptr<RenderTexture> brightBuffer_;
-    std::unique_ptr<RenderTexture> blurBuffer_; // ぼかし用ワークバッファ
+    // ブルーム用中間バッファ (4レベル)
+    static constexpr uint32_t kBloomLevels = 4;
+    std::unique_ptr<RenderTexture> downsampleBuffers_[kBloomLevels];
+    std::unique_ptr<RenderTexture> upsampleBuffers_[kBloomLevels];
     
     struct BlurParams {
         Engine::Math::Vector2 direction;
@@ -42,6 +43,14 @@ private:
         float padding;
     };
     std::unique_ptr<ConstantBuffer> blurCB_;
+
+    struct BloomParams {
+        float threshold;
+        float intensity;
+        float exposure;
+        float padding;
+    };
+    std::unique_ptr<ConstantBuffer> bloomCB_;
 };
 
 } // namespace Engine::Graphics

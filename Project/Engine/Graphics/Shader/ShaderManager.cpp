@@ -94,9 +94,18 @@ PipelineState* ShaderManager::GetOrCreatePSO(const std::string& templateName, co
     PipelineStateDesc finalDesc = asset.baseDesc;
     finalDesc.usePS = overrideDesc.usePS;
     finalDesc.numRenderTargets = overrideDesc.numRenderTargets;
-    finalDesc.rtvFormat = overrideDesc.rtvFormat;
+    for (uint32_t i = 0; i < 8; ++i) {
+        finalDesc.rtvFormats[i] = overrideDesc.rtvFormats[i];
+    }
     finalDesc.dsvFormat = overrideDesc.dsvFormat;
     finalDesc.primitiveTopologyType = overrideDesc.primitiveTopologyType;
+    finalDesc.cullMode = overrideDesc.cullMode;
+    finalDesc.fillMode = overrideDesc.fillMode;
+    finalDesc.depthEnable = overrideDesc.depthEnable;
+    finalDesc.depthWriteEnable = overrideDesc.depthWriteEnable;
+    finalDesc.depthFunc = overrideDesc.depthFunc;
+    finalDesc.blendEnable = overrideDesc.blendEnable;
+    finalDesc.blendDesc = overrideDesc.blendDesc;
 
     if (!overrideDesc.usePS) {
         finalDesc.depthWriteEnable = true;
@@ -109,6 +118,9 @@ PipelineState* ShaderManager::GetOrCreatePSO(const std::string& templateName, co
 
     std::string key = GeneratePSOKey(templateName, finalDesc);
     if (pipelineStates_.count(key)) return pipelineStates_[key].get();
+
+    Engine::Console::Log(std::format("Creating PSO: {} (Targets: {}, RT0: {}, RT1: {})", 
+        templateName, finalDesc.numRenderTargets, (int)finalDesc.rtvFormats[0], (int)finalDesc.rtvFormats[1]));
 
     auto ensureShader = [&](const std::string& shaderKey, const ShaderFileInfo& info) {
         if (!info.isValid) return (ShaderObject*)nullptr;
@@ -171,11 +183,26 @@ PipelineState* ShaderManager::GetOrCreateMeshPSO(const std::string& templateName
     const auto& asset = assetIt->second;
 
     PipelineStateDesc finalDesc = asset.baseDesc;
-    finalDesc.rtvFormat = overrideDesc.rtvFormat;
+    finalDesc.usePS = overrideDesc.usePS;
+    finalDesc.numRenderTargets = overrideDesc.numRenderTargets;
+    for (uint32_t i = 0; i < 8; ++i) {
+        finalDesc.rtvFormats[i] = overrideDesc.rtvFormats[i];
+    }
     finalDesc.dsvFormat = overrideDesc.dsvFormat;
+    finalDesc.primitiveTopologyType = overrideDesc.primitiveTopologyType;
+    finalDesc.cullMode = overrideDesc.cullMode;
+    finalDesc.fillMode = overrideDesc.fillMode;
+    finalDesc.depthEnable = overrideDesc.depthEnable;
+    finalDesc.depthWriteEnable = overrideDesc.depthWriteEnable;
+    finalDesc.depthFunc = overrideDesc.depthFunc;
+    finalDesc.blendEnable = overrideDesc.blendEnable;
+    finalDesc.blendDesc = overrideDesc.blendDesc;
 
     std::string key = "Mesh_" + GeneratePSOKey(templateName, finalDesc);
     if (pipelineStates_.count(key)) return pipelineStates_[key].get();
+
+    Engine::Console::Log(std::format("Creating Mesh PSO: {} (Targets: {}, RT0: {}, RT1: {})", 
+        templateName, finalDesc.numRenderTargets, (int)finalDesc.rtvFormats[0], (int)finalDesc.rtvFormats[1]));
 
     auto ensureShader = [&](const std::string& shaderKey, const ShaderFileInfo& info) {
         if (!info.isValid) return (ShaderObject*)nullptr;
@@ -205,10 +232,16 @@ PipelineState* ShaderManager::GetOrCreateMeshPSO(const std::string& templateName
 }
 
 std::string ShaderManager::GeneratePSOKey(const std::string& templateName, const PipelineStateDesc& desc) {
-    return std::format("{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}",
+    std::string key = std::format("{}_{}_{}_{}_{}_{}_{}_{}_{}",
         templateName, (int)desc.cullMode, (int)desc.fillMode, desc.depthEnable,
         desc.depthWriteEnable, (int)desc.depthFunc, desc.blendEnable,
-        (int)desc.rtvFormat, (int)desc.dsvFormat, desc.usePS, (int)desc.primitiveTopologyType);
+        desc.numRenderTargets, (int)desc.primitiveTopologyType);
+    
+    for (uint32_t i = 0; i < 8; ++i) {
+        key += std::format("_{}", (int)desc.rtvFormats[i]);
+    }
+    key += std::format("_{}_{}", (int)desc.dsvFormat, desc.usePS);
+    return key;
 }
 
 bool ShaderManager::LoadShader(const std::string& name, const std::wstring& filePath, const std::wstring& entryPoint, const std::wstring& profile) {

@@ -3,7 +3,12 @@ struct VSOutput {
     float2 uv : TEXCOORD;
 };
 
-#include "../Schema/Schema.hlsli"
+cbuffer BloomParams : register(b1) {
+    float gThreshold;
+    float gIntensity;
+    float gExposure;
+    float padding;
+};
 
 Texture2D gMainTexture : register(t0);
 SamplerState gSampler : register(s0);
@@ -21,9 +26,8 @@ float4 ps_main(VSOutput input) : SV_TARGET {
     // 輝度の計算 (Rec.709)
     float luminance = dot(color.rgb, float3(0.2126, 0.7152, 0.0722));
     
-    // 閾値処理 (1.0以上の明るさのみ残す)
-    float threshold = 1.0f;
-    float3 brightColor = color.rgb * max(luminance - threshold, 0.0f) / max(luminance, 0.0001f);
+    // 閾値処理 (パラメータを使用)
+    float3 brightColor = color.rgb * max(luminance - gThreshold, 0.0f) / max(luminance, 0.0001f);
     
     return float4(brightColor, color.a);
 }

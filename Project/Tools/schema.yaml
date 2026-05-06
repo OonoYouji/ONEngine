@@ -31,8 +31,10 @@ types:
         type: uint32
       - name: vertexOffset
         type: uint32
-      - name: padding
-        type: float2 # 8 bytes padding (80 + 8 + 8 = 96)
+      - name: entityID
+        type: uint32
+      - name: postProcessFlags
+        type: uint32
 
   MaterialData:
     type: ConstantBuffer
@@ -135,8 +137,10 @@ types:
         type: uint32
       - name: isBillboard
         type: uint32
-      - name: padding
-        type: float2
+      - name: entityID
+        type: uint32
+      - name: postProcessFlags
+        type: uint32
 
   Skybox:
     type: Component
@@ -214,7 +218,11 @@ types:
       - name: modelIndex
         type: uint32
       - name: textureIndex
-        type: uint32 # 追加
+        type: uint32
+      - name: entityID
+        type: uint32
+      - name: postProcessFlags
+        type: uint32
 
   MeshInfo:
     type: StructuredBuffer

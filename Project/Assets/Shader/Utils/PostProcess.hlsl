@@ -14,6 +14,13 @@ Texture2D gMainTexture : register(t0);
 Texture2D gBloomTexture : register(t1);
 SamplerState gSampler : register(s0);
 
+cbuffer BloomParams : register(b1) {
+    float gThreshold;
+    float gIntensity;
+    float gExposure;
+    float padding;
+};
+
 // ACES Filmic Tonemapping
 float3 ACESFilm(float3 x) {
     float a = 2.51f;
@@ -28,8 +35,8 @@ float4 ps_main(VSOutput input) : SV_TARGET {
     float4 baseColor = gMainTexture.Sample(gSampler, input.uv);
     float4 bloomColor = gBloomTexture.Sample(gSampler, input.uv);
     
-    // ブルームを加算合成
-    float3 combined = baseColor.rgb + bloomColor.rgb * 1.5f; // 強度を1.5倍に
+    // ブルームを加算合成 (パラメータを使用)
+    float3 combined = baseColor.rgb * gExposure + bloomColor.rgb * gIntensity;
     
     // HDR -> SDR (ACES Filmic)
     float3 mapped = ACESFilm(combined);

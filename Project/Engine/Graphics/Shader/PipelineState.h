@@ -26,7 +26,10 @@ struct PipelineStateDesc {
     D3D12_BLEND_DESC blendDesc = {};
 
     // レンダーターゲット設定
-    DXGI_FORMAT rtvFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
+    union {
+        DXGI_FORMAT rtvFormats[8];
+        DXGI_FORMAT rtvFormat;
+    };
     DXGI_FORMAT dsvFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 
     // Z-Prepass対応
@@ -37,6 +40,8 @@ struct PipelineStateDesc {
     D3D12_PRIMITIVE_TOPOLOGY_TYPE primitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 
     PipelineStateDesc() {
+        rtvFormats[0] = DXGI_FORMAT_R16G16B16A16_FLOAT;
+        for (int i = 1; i < 8; ++i) rtvFormats[i] = DXGI_FORMAT_UNKNOWN;
 
         blendDesc.AlphaToCoverageEnable = FALSE;
         blendDesc.IndependentBlendEnable = FALSE;

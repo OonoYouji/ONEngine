@@ -46,7 +46,13 @@ VSOutput vs_main(uint vID : SV_VertexID, uint iID : SV_InstanceID) {
     return output;
 }
 
-float4 ps_main(VSOutput input) : SV_TARGET {
+struct PSOutput {
+    float4 color : SV_Target0;
+    float4 normal : SV_Target1;
+    uint2 idFlags : SV_Target2;
+};
+
+PSOutput ps_main(VSOutput input) {
     InstanceData inst = gInstances[input.instanceID];
     float4 texColor = gTextures[NonUniformResourceIndex(inst.textureIndex)].Sample(gSampler, input.uv);
 
@@ -95,5 +101,10 @@ float4 ps_main(VSOutput input) : SV_TARGET {
 
     float3 finalRGB = texColor.rgb * inst.baseColor.rgb * (diffuseTotal + ambient) + specularTotal;
     
-	return float4(finalRGB, texColor.a * inst.baseColor.a);
+    PSOutput output;
+    output.color = float4(finalRGB, texColor.a * inst.baseColor.a);
+    output.normal = float4(normal * 0.5f + 0.5f, 1.0f); // 0.0~1.0 範囲にマッピング
+    output.idFlags = uint2(inst.entityID, inst.postProcessFlags);
+    
+	return output;
 }

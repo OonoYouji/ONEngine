@@ -9,6 +9,8 @@
 #include "Engine/Graphics/Resource/ConstantBuffer.h"
 #include "Schema/Schema.h"
 
+namespace Engine::Graphics { struct RenderContext; }
+
 namespace Engine::ECS {
 
 ///
@@ -24,7 +26,7 @@ public:
 	};
 
 	void Update(Registry& registry) override;
-	void Render(Registry& registry, ID3D12GraphicsCommandList* commandList, D3D12_GPU_VIRTUAL_ADDRESS sceneCBAddress, DXGI_FORMAT rtvFormat);
+	void Render(Registry& registry, const Graphics::RenderContext& context);
 	void Initialize(Graphics::RenderDevice* device);
 	void Shutdown();
 

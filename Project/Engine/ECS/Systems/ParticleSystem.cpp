@@ -1,5 +1,6 @@
 ﻿#include "ParticleSystem.h"
 #include "Engine/Graphics/Core/RenderDevice.h"
+#include "Engine/Graphics/Core/Renderer.h"
 #include "Engine/Graphics/Shader/ShaderManager.h"
 #include "Engine/Graphics/Core/GraphicsEngine.h"
 #include "Engine/Graphics/Resource/GeometryPool.h"
@@ -66,6 +67,8 @@ void ParticleSystem::Update(Registry& registry) {
                 initial[i].scale = 1.0f;
                 initial[i].modelIndex = emitter.modelIndex;
                 initial[i].textureIndex = emitter.textureIndex;
+                initial[i].entityID = static_cast<uint32_t>(entity);
+                initial[i].postProcessFlags = 0; // ひとまず0
             }
             
             // DEFAULTヒープへの初期化（ステージングバッファ経由）
@@ -115,18 +118,21 @@ void ParticleSystem::Update(Registry& registry) {
     });
 }
 
-void ParticleSystem::Render(Registry& registry, ID3D12GraphicsCommandList* commandList, D3D12_GPU_VIRTUAL_ADDRESS sceneCBAddress, DXGI_FORMAT rtvFormat) {
+void ParticleSystem::Render(Registry& registry, const Graphics::RenderContext& context) {
     auto& sm = ::Engine::Graphics::ShaderManager::GetInstance();
     auto& geoPool = ::Engine::Graphics::GeometryPool::GetInstance();
     auto& tm = ::Engine::Asset::TextureManager::GetInstance();
 
     Graphics::PipelineStateDesc desc;
-    desc.rtvFormat = rtvFormat;
+    desc.numRenderTargets = context.numRenderTargets;
+    for (uint32_t i = 0; i < context.numRenderTargets; ++i) {
+        desc.rtvFormats[i] = context.rtvFormats[i];
+    }
 
     // Mesh Shader を使用するため ID3D12GraphicsCommandList6 にキャスト
-    auto* pCmd6 = static_cast<ID3D12GraphicsCommandList6*>(commandList);
+    auto* pCmd6 = static_cast<ID3D12GraphicsCommandList6*>(context.commandList);
 
-    registry.GetView<Transform, ParticleEmitter>().Each([pCmd6, &sm, &geoPool, &tm, &desc, sceneCBAddress, this](Entity entity, Transform& transform, ParticleEmitter& emitter) {
+    registry.GetView<Transform, ParticleEmitter>().Each([pCmd6, &sm, &geoPool, &tm, &desc, &context, this](Entity entity, Transform& transform, ParticleEmitter& emitter) {
         auto it = emitters_.find(entity);
         if (it == emitters_.end() || !it->second.initialized) return;
         auto& state = it->second;
@@ -153,7 +159,7 @@ void ParticleSystem::Render(Registry& registry, ID3D12GraphicsCommandList* comma
                     pCmd6->SetGraphicsRootConstantBufferView(idx, addr);
             };
 
-            setCBV("gSceneData", sceneCBAddress);
+            setCBV("gSceneData", context.sceneCBAddress);
             setSRV("gParticles", state.particleBuffer->GetResource()->GetGPUVirtualAddress());
             setSRV("gVertices", geoPool.GetVertexBuffer()->GetResource()->GetGPUVirtualAddress());
             setSRV("gIndices", geoPool.GetIndexBuffer()->GetResource()->GetGPUVirtualAddress());

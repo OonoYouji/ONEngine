@@ -78,7 +78,8 @@ struct InstanceData {
     float4 baseColor;
     uint textureIndex;
     uint vertexOffset;
-    float2 padding;
+    uint entityID;
+    uint postProcessFlags;
 };
 
 struct PointLightData {
@@ -98,7 +99,8 @@ struct ParticleGPUData {
     float scale;
     uint modelIndex;
     uint textureIndex;
-    uint _final_pad0[2];
+    uint entityID;
+    uint postProcessFlags;
 };
 
 struct MeshInfo {
@@ -139,7 +141,8 @@ struct SpriteData {
     float4 color;
     uint textureIndex;
     uint isBillboard;
-    float2 padding;
+    uint entityID;
+    uint postProcessFlags;
 };
 
 struct MaterialData {

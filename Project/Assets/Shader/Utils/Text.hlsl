@@ -33,7 +33,13 @@ VSOutput vs_main(uint vID : SV_VertexID, uint iID : SV_InstanceID) {
     return output;
 }
 
-float4 ps_main(VSOutput input) : SV_TARGET {
+struct PSOutput {
+    float4 color : SV_Target0;
+    float4 normal : SV_Target1;
+    uint2 idFlags : SV_Target2;
+};
+
+PSOutput ps_main(VSOutput input) {
     TextData data = gChars[input.instanceID];
     
     // フォントテクスチャは R8_UNORM (アルファ値として使用)
@@ -42,5 +48,9 @@ float4 ps_main(VSOutput input) : SV_TARGET {
     // 透明度が低すぎる部分はカット (テクスチャの端のノイズ対策)
     if (alpha < 0.1f) discard;
     
-    return float4(data.color.rgb, alpha * data.color.a);
+    PSOutput output;
+    output.color = float4(data.color.rgb, alpha * data.color.a);
+    output.normal = float4(0.5f, 0.5f, 1.0f, 1.0f);
+    output.idFlags = uint2(data.entityID, 0);
+    return output;
 }

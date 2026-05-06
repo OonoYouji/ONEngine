@@ -36,7 +36,13 @@ VSOutput vs_cube(uint vID : SV_VertexID) {
     return output;
 }
 
-float4 ps_main(VSOutput input) : SV_TARGET {
+struct PSOutput {
+    float4 color : SV_Target0;
+    float4 normal : SV_Target1;
+    uint2 idFlags : SV_Target2;
+};
+
+PSOutput ps_main(VSOutput input) {
     float3 dir = normalize(input.viewDir);
     
     // 視線ベクトルからパノラマUV（Lat-Long）を計算
@@ -45,6 +51,9 @@ float4 ps_main(VSOutput input) : SV_TARGET {
     uv *= invAtan;
     uv += 0.5;
 
-    float4 color = gSkybox.Sample(gSampler, uv);
-    return color;
+    PSOutput output;
+    output.color = gSkybox.Sample(gSampler, uv);
+    output.normal = float4(0.5f, 0.5f, 0.5f, 1.0f); // 無効な法線
+    output.idFlags = uint2(0, 0); // 背景はID 0
+    return output;
 }
