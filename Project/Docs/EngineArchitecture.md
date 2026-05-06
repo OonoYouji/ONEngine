@@ -6,9 +6,9 @@
 ### 特徴
 - **CoreCLR Hosting:** C++ 側から直接 .NET ランタイムを起動し、JIT実行による高速なスクリプト更新（ホットリロード）を実現。
 - **Zero-Copy Interop:** C++ 側のコンポーネントメモリ（Sparse Set）を C# 側からポインタで直接参照。
-- **Unity-like API:** `this.transform` や `GetComponent<T>` といった Unity 互換の記述スタイルを提供。
+- **Hybrid Rendering:** Forward 描画の柔軟性と MRT による詳細なポストプロセス制御（アウトライン等）を統合。フォトリアルとアニメ調の混在をサポート。
 - **Automated Codegen:** `schema.yaml` を SSOT（単一の信頼源）とし、C++/C#/HLSL/Interop コードを全自動生成。
-- **Data-Driven Scene:** JSON 形式によるシーン定義とプリファブの差分オーバーライドをサポート。
+- **GPU-Driven Systems:** Mesh Shader による描画と Compute Shader による更新を統合したパーティクルエンジン。
 
 ---
 
@@ -19,9 +19,10 @@
 - **アドレス固定チャンク:** 1024 単位の固定メモリブロックでデータを保持。C# 側でポインタをキャッシュしても安全。
 - **Add-or-Replace セマンティクス:** 既に存在するコンポーネントへの `add` 要求を自動的に `update` として処理。
 
-### 2.2. ホスティング機能 (`ScriptHost`)
-- `nethost.dll` / `hostfxr.dll` を介した CoreCLR 統合。
-- **ホットリロード:** DLL ロード時に一時ファイルへコピーすることで、実行中の C# 再ビルド・再ロードを可能にしている。
+### 2.2. レンダリング基盤 (`GraphicsEngine`)
+- **Advanced G-Buffer:** Color(HDR), Normal, ID/Flags の 3 ターゲット構成を標準化。
+- **Shader Manager:** Shader Reflection によるルートシグネチャの自動構築と、マルチレンダーターゲット構成の自動 PSO キャッシュ管理。
+- **Post-Process Pipeline:** ブルーム、選択的アウトライン抽出、ACES トーンマッピング。
 
 ---
 
@@ -41,36 +42,26 @@
 ## 4. データ・ツール層
 
 ### 4.1. Codegen パイプライン (`codegen.py`)
-- **SSOT (schema.yaml):** Unity 互換の 29 種類のコンポーネント（Physics, Rendering, Nav, UI等）を定義。
+- **SSOT (schema.yaml):** レンダリング、物理、ECS 全体のデータ構造を定義。
 - **自動生成対象:**
-    - C++ 構造体ヘッダー
-    - C# 構造体、拡張メソッド、型 ID マップ、JSON レジストリ
-    - HLSL 定数バッファ用構造体
-    - C++ Interop 用 DLL Export コード
+    - C++ 構造体ヘッダー (`Schema.h`)
+    - C# 構造体、型 ID マップ
+    - HLSL 構造体 (`Schema.hlsli`)
 
 ### 4.2. シーン・プリファブシステム
 - **JSON シリアライズ:** 階層化された JSON によるエンティティ定義。
-- **差分オーバーライド (UpdateComponentFromJson):** シーンファイルで指定されたプロパティのみをプリファブに対してパッチ適用する仕組み。
+- **初期化同期:** `ComponentRegistry` による JSON からの動的コンポーネント復元。
 
 ---
 
 ## 5. 実行フロー (Main Loop)
 
-1.  **C++:** 起動、絶対パス解決、.NET ランタイム初期化。
-2.  **C#:** `data/main_scene.json` から初期シーン（プリファブ＋インライン）をロード。
-3.  **Frame Loop:**
-    - **C++:** 経過時間の計測（※現在は `Sleep(500)` による制限中）。
-    - **C++ -> C#:** `EngineHost.Update()` を呼び出し。
-        - **C#:** 全スクリプトの `Update()` をバッチ実行（※現在は 10 フレームに 1 回）。
-        - **C#:** コンポーネントの書き換え、エンティティ生成・破棄。
-    - **C++:** 構造変更の適用（Command Buffer）。
-    - **C++:** DLL の更新チェックと自動リロード。
+1.  **C++:** 起動、.NET ランタイム初期化、グラフィックスデバイス初期化。
+2.  **Frame Loop:**
+    - **Update Phase:** C# 側でのロジック実行（1024エンティティ/ms 級の性能）。
+    - **Extract Phase:** レンダリング用定数バッファ・構造化バッファへのデータ転送。
+    - **Render Phase:** カリング、Z-Prepass、Main Pass (G-Buffer)、Post-Processing。
+    - **Execute & Present:** GPU 実行とスワップチェーン提示。
 
 ---
-
-## 6. デバッグ環境
-- **混合モード（手動）:** Visual Studio からマネージドデバッガをアタッチ。
-- **起動時待機:** 引数 `--debug` を渡すことでデバッガ接続まで C# 側をサスペンド可能。
-
----
-*設計ドキュメント v8.0*
+*設計ドキュメント v9.0 - 2026/05/06*
