@@ -207,6 +207,7 @@ void Renderer::RenderInternal(const RenderContext& context, const PipelineStateD
             setSRV("gLightGrid", context.lightGridBufferAddress);
             setSRV("gLightIndexList", context.lightIndexListBufferAddress);
             setSRV("gVertices", geoPool.GetVertexBuffer()->GetResource()->GetGPUVirtualAddress());
+            setSRV("gMeshInfos", context.meshInfoBufferAddress);
 
             D3D12_INDEX_BUFFER_VIEW ibv = geoPool.GetIndexBuffer()->GetView();
             commandList->IASetIndexBuffer(&ibv);

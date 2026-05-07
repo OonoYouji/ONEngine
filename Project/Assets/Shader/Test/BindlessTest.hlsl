@@ -19,8 +19,8 @@ SamplerState gSampler : register(s0);
 
 // --- Proper Mesh Resources ---
 StructuredBuffer<Vertex> gVertices : register(t0, space0); 
-
 #include "../Schema/Schema.hlsli"
+StructuredBuffer<MeshInfo> gMeshInfos : register(t5);
 
 ConstantBuffer<SceneData> gSceneData : register(b0);
 StructuredBuffer<InstanceData> gInstances : register(t1, space0);
@@ -32,8 +32,11 @@ VSOutput vs_main(uint vID : SV_VertexID, uint iID : SV_InstanceID) {
     // SV_InstanceID を直接インデックスとして使用 (ExecuteIndirectのオフセットが含まれる)
     InstanceData inst = gInstances[iID];
     
-    // inst.vertexOffset を使用して頂点プールから取得
-    Vertex v = gVertices[inst.vertexOffset + vID];
+    // この描画コマンドに対応するメッシュ情報を取得
+    MeshInfo mesh = gMeshInfos[inst.modelIndex];
+    
+    // mesh.vertexOffset を使用して頂点プールから取得
+    Vertex v = gVertices[mesh.vertexOffset + vID];
     
     // Position
     float4 worldPos = mul(v.position, inst.world);

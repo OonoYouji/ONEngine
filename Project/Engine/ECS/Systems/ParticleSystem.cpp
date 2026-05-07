@@ -27,14 +27,24 @@ void ParticleSystem::UpdateMeshInfoBuffer() {
     auto& assetManager = Asset::AssetManager::GetInstance();
     std::vector<GeneratedSchema::MeshInfo> infos(1024);
 
-    for (uint32_t i = 0; i < 1024; ++i) {
+    uint32_t currentInfoIndex = 256; // 0-255 はモデルの開始インデックス用、256以降はサブメッシュ用
+
+    for (uint32_t i = 0; i < 256; ++i) {
         const auto& meshes = assetManager.GetMeshesByIndex(i);
 
         if (!meshes.empty()) {
-            infos[i].vertexOffset = meshes[0]->GetVertexOffset();
-            infos[i].indexOffset = meshes[0]->GetIndexOffset();
-            infos[i].vertexCount = meshes[0]->GetVertexCount();
-            infos[i].indexCount = meshes[0]->GetIndexCount();
+            infos[i].meshCount = static_cast<uint32_t>(meshes.size());
+            infos[i].vertexOffset = currentInfoIndex; // サブメッシュ情報の開始位置を格納 (再利用)
+            
+            for (const auto& mesh : meshes) {
+                if (currentInfoIndex < 1024) {
+                    infos[currentInfoIndex].vertexOffset = mesh->GetVertexOffset();
+                    infos[currentInfoIndex].indexOffset = mesh->GetIndexOffset();
+                    infos[currentInfoIndex].vertexCount = mesh->GetVertexCount();
+                    infos[currentInfoIndex].indexCount = mesh->GetIndexCount();
+                    currentInfoIndex++;
+                }
+            }
         }
     }
     meshInfoBuffer_->Update(infos.data(), (uint32_t)(infos.size() * sizeof(GeneratedSchema::MeshInfo)));

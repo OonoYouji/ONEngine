@@ -69,6 +69,8 @@ struct MeshInfo {
     uint32_t indexOffset;
     uint32_t vertexCount;
     uint32_t indexCount;
+    uint32_t meshCount; // 追加: モデルに含まれるメッシュ数
+    uint8_t _pad[12];    // 16byteアラインメント調整
 };
 
 struct SpriteData {

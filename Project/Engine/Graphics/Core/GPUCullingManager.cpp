@@ -111,7 +111,14 @@ void GPUCullingManager::Execute(ID3D12GraphicsCommandList* commandList,
     frustumCB_->Update(&frustum, sizeof(frustum));
 
     auto& paramsCB = cullingParamsCBs_[currentBatchCBIndex_];
-    CullingParams cParams = { targetModelIndex, maxInstances, instanceOffset, batchIndex };
+    struct CullingParams {
+        uint32_t targetModelIndex;
+        uint32_t maxInstances;
+        uint32_t instanceOffset;
+        uint32_t batchIndex;
+        uint32_t forceVisible;
+    };
+    CullingParams cParams = { targetModelIndex, maxInstances, instanceOffset, batchIndex, 1 };
     paramsCB->Update(&cParams, sizeof(cParams));
 
     commandList->SetComputeRootSignature(rootSig->Get());

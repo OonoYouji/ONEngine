@@ -125,6 +125,8 @@ struct MeshInfo {
     uint indexOffset;
     uint vertexCount;
     uint indexCount;
+    uint meshCount;
+    uint3 _pad;
 };
 
 struct SpriteRenderer {

@@ -1,44 +1,54 @@
+#include "../Schema/Schema.hlsli"
+#include "../Utils/Clustered/ClusteredLight.hlsli"
+
+// --- Resource Declarations ---
+ConstantBuffer<SceneData> gSceneData : register(b0);
+StructuredBuffer<InstanceData> gInstances : register(t1);
+StructuredBuffer<PointLightData> gPointLights : register(t2);
+StructuredBuffer<LightGrid> gLightGrid : register(t3);
+StructuredBuffer<uint> gLightIndexList : register(t4);
+StructuredBuffer<MeshInfo> gMeshInfos : register(t5);
+
+// Bindless Textures (Space 1)
+Texture2D gTextures[] : register(t0, space1); 
+SamplerState gSampler : register(s0);
+
+// Geometry Pool
 struct Vertex {
     float4 position;
     float4 normal;
     float2 uv;
     float2 _pad;
 };
+StructuredBuffer<Vertex> gVertices : register(t0); 
 
+// --- VS/PS Structures ---
 struct VSOutput {
     float4 position : SV_POSITION;
     float3 worldPos : POSITION;
     float2 uv : TEXCOORD;
     float3 normal : NORMAL;
-    nointerpolation uint instanceID : TEXCOORD10; // SV_InstanceID から変更
+    nointerpolation uint instanceID : TEXCOORD10;
 };
 
-#include "../Schema/Schema.hlsli"
-#include "../Utils/Clustered/ClusteredLight.hlsli"
+struct PSOutput {
+    float4 color : SV_Target0;
+    float4 normal : SV_Target1;
+    uint2 idFlags : SV_Target2;
+};
 
-ConstantBuffer<SceneData> gSceneData : register(b0);
-StructuredBuffer<InstanceData> gInstances : register(t1, space0);
-StructuredBuffer<PointLightData> gPointLights : register(t2, space0);
-
-// クラスタライト用バッファ
-StructuredBuffer<LightGrid> gLightGrid : register(t3, space0);
-StructuredBuffer<uint> gLightIndexList : register(t4, space0);
-
-// --- Bindless Resources ---
-Texture2D gTextures[] : register(t0, space1); 
-SamplerState gSampler : register(s0);
-
-// --- Proper Mesh Resources ---
-StructuredBuffer<Vertex> gVertices : register(t0, space0); 
-
+// --- Vertex Shader ---
 VSOutput vs_main(uint vID : SV_VertexID, uint iID : SV_InstanceID) {
     VSOutput output;
     
-    // SV_InstanceID を直接インデックスとして使用 (ExecuteIndirectのオフセットが含まれる)
+    // SV_InstanceID を直接インデックスとして使用
     InstanceData inst = gInstances[iID];
     
-    // inst.vertexOffset を使用して頂点プールから取得
-    Vertex v = gVertices[inst.vertexOffset + vID];
+    // この描画コマンドに対応するメッシュ情報を取得
+    MeshInfo mesh = gMeshInfos[inst.modelIndex];
+    
+    // 頂点プールから取得 (オフセット加算)
+    Vertex v = gVertices[mesh.vertexOffset + vID];
     
     float4 worldPos = mul(v.position, inst.world);
     output.position = mul(worldPos, gSceneData.viewProj);
@@ -50,22 +60,12 @@ VSOutput vs_main(uint vID : SV_VertexID, uint iID : SV_InstanceID) {
     return output;
 }
 
-struct PSOutput {
-    float4 color : SV_Target0;
-    float4 normal : SV_Target1;
-    uint2 idFlags : SV_Target2;
-};
-
-// セルルック用の階調化関数
-float Posterize(float v, int steps) {
-    return floor(v * (float)steps) / max((float)steps - 1.0f, 1.0f);
-}
-
-// 滑らかなステップ関数 (境界を少しぼかす)
+// --- Helper Functions ---
 float SmoothStepThreshold(float v, float threshold, float smoothness) {
     return smoothstep(threshold - smoothness, threshold + smoothness, v);
 }
 
+// --- Pixel Shader ---
 PSOutput ps_main(VSOutput input) {
     InstanceData inst = gInstances[input.instanceID];
     float4 texColor = gTextures[NonUniformResourceIndex(inst.textureIndex)].Sample(gSampler, input.uv);
@@ -81,7 +81,7 @@ PSOutput ps_main(VSOutput input) {
     float shadowSmoothness = 0.02f;
     float3 shadowColorMul = float3(0.6f, 0.6f, 0.8f);
 
-    // --- Directional Light ---
+    // Directional Light
     {
         float3 lightDir = normalize(-gSceneData.dirLightDirection);
         float3 lightColor = gSceneData.dirLightColor * gSceneData.dirLightIntensity;
@@ -93,12 +93,10 @@ PSOutput ps_main(VSOutput input) {
         specularTotal += lightColor * step(0.5f, pow(max(dot(normal, halfDir), 0.0f), 64.0f));
     }
     
-    // --- Clustered Point Lights ---
-    // 1. クラスタインデックスの計算
+    // Clustered Point Lights
     uint clusterX = (uint)(input.position.x / (gSceneData.screenWidth / CLUSTER_GRID_X));
     uint clusterY = (uint)(input.position.y / (gSceneData.screenHeight / CLUSTER_GRID_Y));
     
-    // Zクラスタ (指数分割の逆算)
     float viewZ = mul(float4(input.worldPos, 1.0f), gSceneData.view).z;
     uint clusterZ = (uint)(max(0.0f, log(viewZ / gSceneData.nearZ) / log(gSceneData.farZ / gSceneData.nearZ)) * CLUSTER_GRID_Z);
     
@@ -124,9 +122,7 @@ PSOutput ps_main(VSOutput input) {
         diffuseTotal += lerp(light.color * light.intensity * shadowColorMul, light.color * light.intensity, lightIntensity) * attenuation;
     }
     
-    // 環境光
     float3 ambient = 0.2f * inst.baseColor.rgb;
-
     float3 finalRGB = texColor.rgb * inst.baseColor.rgb * (diffuseTotal + ambient) + specularTotal;
     
     PSOutput output;
@@ -134,5 +130,5 @@ PSOutput ps_main(VSOutput input) {
     output.normal = float4(normal * 0.5f + 0.5f, 1.0f);
     output.idFlags = uint2(inst.entityID, inst.postProcessFlags);
     
-	return output;
+    return output;
 }
