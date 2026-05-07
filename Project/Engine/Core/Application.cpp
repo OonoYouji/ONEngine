@@ -168,9 +168,6 @@ void Application::Render() {
     auto* currentFrameRes = graphics.GetCurrentFrameResource();
     auto* commandList = graphics.GetCommandQueue()->GetCommandList();
 
-    // カリングカウンタの初期化
-    gpuCullingManager_->ResetCounters(commandList);
-
     // パーティクルの更新
     particleSystem_->Update(registry_);
 

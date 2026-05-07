@@ -1,7 +1,8 @@
 struct Vertex {
-    float3 position;
-    float3 normal;
+    float4 position;
+    float4 normal;
     float2 uv;
+    float2 _pad;
 };
 
 struct VSOutput {
@@ -36,10 +37,10 @@ VSOutput vs_main(uint vID : SV_VertexID, uint iID : SV_InstanceID) {
     // SV_InstanceID を直接インデックスとして使用 (ExecuteIndirectのオフセットが含まれる)
     InstanceData inst = gInstances[iID];
     
-    // vID は既に絶対的な頂点インデックス (オフセット込み) なので直接使用する
-    Vertex v = gVertices[vID];
+    // inst.vertexOffset を使用して頂点プールから取得
+    Vertex v = gVertices[inst.vertexOffset + vID];
     
-    float4 worldPos = mul(float4(v.position, 1.0f), inst.world);
+    float4 worldPos = mul(v.position, inst.world);
     output.position = mul(worldPos, gSceneData.viewProj);
     output.worldPos = worldPos.xyz;
     output.uv = v.uv;

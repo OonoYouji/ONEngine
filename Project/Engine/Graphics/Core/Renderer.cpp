@@ -71,6 +71,7 @@ void Renderer::Extract() {
             const auto& max3 = meshes[0]->GetAABBMax();
             data.aabbMin = { min3.x, min3.y, min3.z, 1.0f };
             data.aabbMax = { max3.x, max3.y, max3.z, 1.0f };
+            data.vertexOffset = meshes[0]->GetVertexOffset();
         }
         
         auto* mat = materialManager.GetMaterialByIndex(req.materialIndex);
@@ -89,7 +90,10 @@ void Renderer::Extract() {
 }
 
 void Renderer::RenderZPrepass(const RenderContext& context) {
-    if (context.cullingManager) context.cullingManager->ResetBatchIndex(); // インデックスリセット
+    if (context.cullingManager) {
+        context.cullingManager->ResetBatchIndex(); // インデックスリセット
+        context.cullingManager->ResetCounters(context.commandList); // カウンタリセット
+    }
     PipelineStateDesc desc;
     desc.usePS = false;
     desc.numRenderTargets = 0;
@@ -99,7 +103,10 @@ void Renderer::RenderZPrepass(const RenderContext& context) {
 }
 
 void Renderer::Render(const RenderContext& context) {
-    if (context.cullingManager) context.cullingManager->ResetBatchIndex(); // インデックスリセット
+    if (context.cullingManager) {
+        context.cullingManager->ResetBatchIndex(); // インデックスリセット
+        context.cullingManager->ResetCounters(context.commandList); // カウンタリセット
+    }
     PipelineStateDesc desc;
     desc.usePS = true;
     desc.numRenderTargets = context.numRenderTargets;
@@ -183,11 +190,17 @@ void Renderer::RenderInternal(const RenderContext& context, const PipelineStateD
             if (texIdx != RootSignature::kInvalidIndex)
                 commandList->SetGraphicsRootDescriptorTable(texIdx, textureManager.GetSrvHeap()->GetGPUHandle(0));
 
-            // GPUカリング後のバッファをバインド
+            // インスタンスバッファをバインド
             if (context.cullingManager) {
+                // GPUカリング後のバッファをバインド
                 D3D12_GPU_VIRTUAL_ADDRESS culledAddr = context.cullingManager->GetOutputInstances()->GetGPUVirtualAddress();
                 culledAddr += static_cast<UINT64>(batchIndex * 2048) * sizeof(GeneratedSchema::InstanceData);
                 setSRV("gInstances", culledAddr);
+            } else {
+                // カリングなしの場合は元のインスタンスバッファをオフセット付きでバインド
+                D3D12_GPU_VIRTUAL_ADDRESS addr = instanceSBs_[context.frameIndex]->GetResource()->GetGPUVirtualAddress();
+                addr += static_cast<UINT64>(currentInstanceStart) * sizeof(GeneratedSchema::InstanceData);
+                setSRV("gInstances", addr);
             }
 
             setSRV("gPointLights", context.pointLightBufferAddress);

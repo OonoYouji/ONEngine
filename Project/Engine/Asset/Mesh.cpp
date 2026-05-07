@@ -35,7 +35,7 @@ void Mesh::Draw(ID3D12GraphicsCommandList* commandList, uint32_t instanceCount) 
         indexCount_, 
         instanceCount, 
         indexOffset_, 
-        0, // BaseVertexLocation を 0 に固定 (シェーダー側で解決)
+        0, // vertexOffset はシェーダー側で解決するようになったため 0 固定
         0
     );
 }
