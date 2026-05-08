@@ -23,6 +23,7 @@
 - **Advanced G-Buffer:** Color(HDR), Normal, ID/Flags の 3 ターゲット構成を標準化。
 - **Shader Manager:** Shader Reflection によるルートシグネチャの自動構築と、マルチレンダーターゲット構成の自動 PSO キャッシュ管理。
 - **Post-Process Pipeline:** ブルーム、選択的アウトライン抽出、ACES トーンマッピング。
+- **実装ガイドライン:** 詳細は [RenderingGuidelines.md](./RenderingGuidelines.md) を参照。
 
 ---
 
