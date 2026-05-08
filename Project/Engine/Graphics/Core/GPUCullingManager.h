@@ -43,10 +43,18 @@ public:
     StructuredBuffer* GetIndirectCommandBuffer() const { return indirectCommandBuffer_.get(); }
     ID3D12CommandSignature* GetCommandSignature() const { return commandSignature_.Get(); }
 
+    struct DrawIndexedArguments {
+        uint32_t indexCountPerInstance;
+        uint32_t instanceCount;
+        uint32_t startIndexLocation;
+        int32_t  baseVertexLocation;
+        uint32_t startInstanceLocation;
+        uint32_t padding[3]; // 32 bytes alignment
+    };
+
 private:
     void CreateCommandSignature();
 
-private:
     RenderDevice* device_ = nullptr;
 
     static constexpr uint32_t kMaxBatches = 64;
@@ -56,6 +64,7 @@ private:
     std::unique_ptr<StructuredBuffer> indirectCommandBuffer_;
     std::unique_ptr<ConstantBuffer> frustumCB_;
     std::unique_ptr<ConstantBuffer> cullingParamsCBs_[kMaxBatches];
+    std::unique_ptr<ConstantBuffer> buildParamsCBs_[kMaxBatches]; // 追加
     uint32_t currentBatchCBIndex_ = 0;
 
     ComPtr<ID3D12CommandSignature> commandSignature_;

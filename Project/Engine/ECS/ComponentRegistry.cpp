@@ -13,6 +13,10 @@ void InitializeComponentRegistry() {
     // Transform
     reg.Register<Transform>(1, "Transform", [](const json& j, Transform& t) {
         t.parent = j.value("parent", 0);
+        t.position = { 0, 0, 0 };
+        t.rotation = { 0, 0, 0 };
+        t.scale = { 1, 1, 1 };
+
         if (j.contains("position")) {
             t.position.x = j["position"].value("x", 0.0f);
             t.position.y = j["position"].value("y", 0.0f);

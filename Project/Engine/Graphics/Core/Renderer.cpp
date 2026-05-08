@@ -216,15 +216,15 @@ void Renderer::RenderInternal(const RenderContext& context, const PipelineStateD
             // 3. ExecuteIndirect の実行
             if (context.cullingManager && context.cullingManager->GetCommandSignature()) {
                 ID3D12Resource* cmdBuf = context.cullingManager->GetIndirectCommandBuffer()->GetResource();
-                ID3D12Resource* cntBuf = context.cullingManager->GetDrawArgsBuffer()->GetResource();
+                ID3D12Resource* cntBuf = nullptr; // カウントバッファは使用せず常に1回実行 (コマンド自体に0が入る可能性はあるが、Dispatchの1回は確実に回る)
                 
                 commandList->ExecuteIndirect(
                     context.cullingManager->GetCommandSignature(),
-                    2048, 
+                    1, // 常に1バッチ1コマンド
                     cmdBuf,
-                    static_cast<UINT64>(batchIndex * 2048) * sizeof(uint32_t) * 5,
-                    cntBuf,
-                    static_cast<UINT64>(batchIndex) * sizeof(uint32_t)
+                    static_cast<UINT64>(batchIndex) * sizeof(GPUCullingManager::DrawIndexedArguments),
+                    nullptr,
+                    0
                 );
             } else {
                 const auto& meshes = assetManager.GetMeshesByIndex(batchStartReq.modelIndex);

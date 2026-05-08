@@ -70,6 +70,7 @@ bool Application::Initialize(HINSTANCE hInstance, int nCmdShow) {
     sm.LoadPipelineAsset("Assets/Pipelines/LightAssignment.json");
     sm.LoadPipelineAsset("Assets/Pipelines/Culling.json");
     sm.LoadPipelineAsset("Assets/Pipelines/CullingReset.json");
+    sm.LoadPipelineAsset("Assets/Pipelines/BuildCommands.json");
 
     // 4. ECSシステムのインスタンス化
     transformSystem_ = std::make_unique<ECS::TransformSystem>();

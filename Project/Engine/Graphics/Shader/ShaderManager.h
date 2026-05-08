@@ -38,6 +38,7 @@ public:
     PipelineState* GetOrCreateMeshPSO(const std::string& templateName, const PipelineStateDesc& desc = PipelineStateDesc());
     RootSignature* GetRootSignature(const std::string& name);
     ShaderObject* GetShader(const std::string& name);
+    bool LoadShader(const std::string& name, const std::wstring& filePath, const std::wstring& entryPoint, const std::wstring& profile);
 
 private:
     ShaderManager();
@@ -45,7 +46,6 @@ private:
     ShaderManager(const ShaderManager&) = delete;
     ShaderManager& operator=(const ShaderManager&) = delete;
 
-    bool LoadShader(const std::string& name, const std::wstring& filePath, const std::wstring& entryPoint, const std::wstring& profile);
     std::string GeneratePSOKey(const std::string& templateName, const PipelineStateDesc& desc);
 
 private:

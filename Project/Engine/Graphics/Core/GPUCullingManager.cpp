@@ -16,7 +16,7 @@ void GPUCullingManager::Initialize(RenderDevice* device) {
     outputInstances_->Create(device, sizeof(GeneratedSchema::InstanceData), 2048 * kMaxBatches, nullptr, true); 
 
     indirectCommandBuffer_ = std::make_unique<StructuredBuffer>();
-    indirectCommandBuffer_->Create(device, sizeof(uint32_t) * 5, 2048 * kMaxBatches, nullptr, true); 
+    indirectCommandBuffer_->Create(device, sizeof(DrawIndexedArguments), kMaxBatches, nullptr, true); // バッチごとに1コマンド
 
     drawArgsBuffer_ = std::make_unique<StructuredBuffer>();
     drawArgsBuffer_->Create(device, sizeof(uint32_t), kMaxBatches, nullptr, true);
@@ -26,7 +26,10 @@ void GPUCullingManager::Initialize(RenderDevice* device) {
 
     for (uint32_t i = 0; i < kMaxBatches; ++i) {
         cullingParamsCBs_[i] = std::make_unique<ConstantBuffer>();
-        cullingParamsCBs_[i]->Create(device, sizeof(CullingParams));
+        cullingParamsCBs_[i]->Create(device, sizeof(CullingParams) + 4 /* forceVisible */);
+        
+        buildParamsCBs_[i] = std::make_unique<ConstantBuffer>();
+        buildParamsCBs_[i]->Create(device, 16); // BuildParams (16bytes)
     }
 
     CreateCommandSignature();
@@ -39,6 +42,7 @@ void GPUCullingManager::Shutdown() {
     frustumCB_.reset();
     for (uint32_t i = 0; i < kMaxBatches; ++i) {
         cullingParamsCBs_[i].reset();
+        buildParamsCBs_[i].reset();
     }
     commandSignature_.Reset();
 }
@@ -48,7 +52,7 @@ void GPUCullingManager::CreateCommandSignature() {
     args[0].Type = D3D12_INDIRECT_ARGUMENT_TYPE_DRAW_INDEXED;
 
     D3D12_COMMAND_SIGNATURE_DESC desc = {};
-    desc.ByteStride = sizeof(uint32_t) * 5;
+    desc.ByteStride = sizeof(DrawIndexedArguments);
     desc.NumArgumentDescs = 1;
     desc.pArgumentDescs = args;
 
@@ -63,8 +67,10 @@ void GPUCullingManager::ResetCounters(ID3D12GraphicsCommandList* commandList) {
 
     if (!pso || !rootSig) return;
 
-    D3D12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(drawArgsBuffer_->GetResource(), D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
-    commandList->ResourceBarrier(1, &barrier);
+    {
+        D3D12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(drawArgsBuffer_->GetResource(), D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+        commandList->ResourceBarrier(1, &barrier);
+    }
 
     commandList->SetComputeRootSignature(rootSig->Get());
     commandList->SetPipelineState(pso);
@@ -72,10 +78,10 @@ void GPUCullingManager::ResetCounters(ID3D12GraphicsCommandList* commandList) {
 
     commandList->Dispatch(1, 1, 1); 
 
-    barrier = CD3DX12_RESOURCE_BARRIER::Transition(drawArgsBuffer_->GetResource(), D3D12_RESOURCE_STATE_UNORDERED_ACCESS, D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT);
-    commandList->ResourceBarrier(1, &barrier);
-
-    currentBatchCBIndex_ = 0; 
+    {
+        D3D12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(drawArgsBuffer_->GetResource(), D3D12_RESOURCE_STATE_UNORDERED_ACCESS, D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT);
+        commandList->ResourceBarrier(1, &barrier);
+    }
 }
 
 void GPUCullingManager::Execute(ID3D12GraphicsCommandList* commandList, 
@@ -88,11 +94,14 @@ void GPUCullingManager::Execute(ID3D12GraphicsCommandList* commandList,
                               uint32_t instanceOffset,
                               uint32_t batchIndex) {
     auto& sm = ShaderManager::GetInstance();
-    auto* pso = sm.GetComputePSO("Culling");
-    auto* rootSig = sm.GetRootSignature("Culling");
+    auto* cullingPSO = sm.GetComputePSO("Culling");
+    auto* cullingRootSig = sm.GetRootSignature("Culling");
+    auto* buildPSO = sm.GetComputePSO("BuildCommands");
+    auto* buildRootSig = sm.GetRootSignature("BuildCommands");
 
-    if (!pso || !rootSig) return;
+    if (!cullingPSO || !cullingRootSig || !buildPSO || !buildRootSig) return;
 
+    // 1. Frustum Planes
     FrustumPlanes frustum;
     frustum.planes[0] = { vp.m[0][3] + vp.m[0][0], vp.m[1][3] + vp.m[1][0], vp.m[2][3] + vp.m[2][0], vp.m[3][3] + vp.m[3][0] };
     frustum.planes[1] = { vp.m[0][3] - vp.m[0][0], vp.m[1][3] - vp.m[1][0], vp.m[2][3] - vp.m[2][0], vp.m[3][3] - vp.m[3][0] };
@@ -110,59 +119,73 @@ void GPUCullingManager::Execute(ID3D12GraphicsCommandList* commandList,
     }
     frustumCB_->Update(&frustum, sizeof(frustum));
 
-    auto& paramsCB = cullingParamsCBs_[currentBatchCBIndex_];
-    struct CullingParams {
-        uint32_t targetModelIndex;
-        uint32_t maxInstances;
-        uint32_t instanceOffset;
-        uint32_t batchIndex;
-        uint32_t forceVisible;
-    };
-    CullingParams cParams = { targetModelIndex, maxInstances, instanceOffset, batchIndex, 1 };
-    paramsCB->Update(&cParams, sizeof(cParams));
+    // 2. Parameters
+    auto& cullingCB = cullingParamsCBs_[currentBatchCBIndex_];
+    uint32_t cParams[5] = { targetModelIndex, maxInstances, instanceOffset, batchIndex, 0 }; // forceVisible=0
+    cullingCB->Update(cParams, sizeof(cParams));
 
-    commandList->SetComputeRootSignature(rootSig->Get());
-    commandList->SetPipelineState(pso);
+    auto& buildCB = buildParamsCBs_[currentBatchCBIndex_];
+    uint32_t bParams[4] = { targetModelIndex, batchIndex, kMaxBatches, 0 };
+    buildCB->Update(bParams, sizeof(bParams));
 
-    auto setCBV = [&](const std::string& name, D3D12_GPU_VIRTUAL_ADDRESS addr) {
-        auto idx = rootSig->GetParameterIndex(name);
-        if (idx != RootSignature::kInvalidIndex) commandList->SetComputeRootConstantBufferView(idx, addr);
-    };
-    auto setSRV = [&](const std::string& name, D3D12_GPU_VIRTUAL_ADDRESS addr) {
-        auto idx = rootSig->GetParameterIndex(name);
-        if (idx != RootSignature::kInvalidIndex) commandList->SetComputeRootShaderResourceView(idx, addr);
-    };
-    auto setUAV = [&](const std::string& name, D3D12_GPU_VIRTUAL_ADDRESS addr) {
-        auto idx = rootSig->GetParameterIndex(name);
-        if (idx != RootSignature::kInvalidIndex) commandList->SetComputeRootUnorderedAccessView(idx, addr);
-    };
-
+    // 3. Culling Pass
     {
-        D3D12_RESOURCE_BARRIER preBarriers[3];
-        preBarriers[0] = CD3DX12_RESOURCE_BARRIER::Transition(outputInstances_->GetResource(), D3D12_RESOURCE_STATE_ALL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
-        preBarriers[1] = CD3DX12_RESOURCE_BARRIER::Transition(drawArgsBuffer_->GetResource(), D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
-        preBarriers[2] = CD3DX12_RESOURCE_BARRIER::Transition(indirectCommandBuffer_->GetResource(), D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
-        commandList->ResourceBarrier(3, preBarriers);
+        D3D12_RESOURCE_BARRIER barriers[3];
+        barriers[0] = CD3DX12_RESOURCE_BARRIER::Transition(outputInstances_->GetResource(), D3D12_RESOURCE_STATE_ALL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+        barriers[1] = CD3DX12_RESOURCE_BARRIER::Transition(drawArgsBuffer_->GetResource(), D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+        barriers[2] = CD3DX12_RESOURCE_BARRIER::Transition(indirectCommandBuffer_->GetResource(), D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+        commandList->ResourceBarrier(3, barriers);
     }
 
-    setCBV("gSceneData", sceneCBAddress);
-    setCBV("gFrustum", frustumCB_->GetGPUVirtualAddress());
-    setCBV("gCullingParams", paramsCB->GetGPUVirtualAddress());
-    setSRV("gInputInstances", inputInstances->GetResource()->GetGPUVirtualAddress());
-    setSRV("gMeshInfos", meshInfoBufferAddress);
-    setUAV("gOutputInstances", outputInstances_->GetResource()->GetGPUVirtualAddress());
-    setUAV("gOutCommands", indirectCommandBuffer_->GetResource()->GetGPUVirtualAddress());
-    setUAV("gCountBuffer", drawArgsBuffer_->GetResource()->GetGPUVirtualAddress());
+    commandList->SetComputeRootSignature(cullingRootSig->Get());
+    commandList->SetPipelineState(cullingPSO);
+
+    auto setParam = [&](RootSignature* sig, const std::string& name, D3D12_GPU_VIRTUAL_ADDRESS addr, bool isUAV = false, bool isSRV = false) {
+        auto idx = sig->GetParameterIndex(name);
+        if (idx == RootSignature::kInvalidIndex) return;
+        if (isUAV) commandList->SetComputeRootUnorderedAccessView(idx, addr);
+        else if (isSRV) commandList->SetComputeRootShaderResourceView(idx, addr);
+        else commandList->SetComputeRootConstantBufferView(idx, addr);
+    };
+
+    setParam(cullingRootSig, "gSceneData", sceneCBAddress);
+    setParam(cullingRootSig, "gFrustum", frustumCB_->GetGPUVirtualAddress());
+    setParam(cullingRootSig, "gCullingParams", cullingCB->GetGPUVirtualAddress());
+    setParam(cullingRootSig, "gInputInstances", inputInstances->GetResource()->GetGPUVirtualAddress(), false, true);
+    setParam(cullingRootSig, "gMeshInfos", meshInfoBufferAddress, false, true);
+    setParam(cullingRootSig, "gOutputInstances", outputInstances_->GetResource()->GetGPUVirtualAddress(), true);
+    setParam(cullingRootSig, "gCountBuffer", drawArgsBuffer_->GetResource()->GetGPUVirtualAddress(), true);
 
     commandList->Dispatch((maxInstances + 63) / 64, 1, 1);
 
-    currentBatchCBIndex_ = (currentBatchCBIndex_ + 1) % kMaxBatches;
+    // 4. Build Commands Pass
+    {
+        D3D12_RESOURCE_BARRIER barriers[2];
+        barriers[0] = CD3DX12_RESOURCE_BARRIER::UAV(drawArgsBuffer_->GetResource());
+        barriers[1] = CD3DX12_RESOURCE_BARRIER::Transition(drawArgsBuffer_->GetResource(), D3D12_RESOURCE_STATE_UNORDERED_ACCESS, D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
+        commandList->ResourceBarrier(2, barriers);
+    }
 
-    D3D12_RESOURCE_BARRIER postBarriers[3];
-    postBarriers[0] = CD3DX12_RESOURCE_BARRIER::Transition(outputInstances_->GetResource(), D3D12_RESOURCE_STATE_UNORDERED_ACCESS, D3D12_RESOURCE_STATE_ALL_SHADER_RESOURCE);
-    postBarriers[1] = CD3DX12_RESOURCE_BARRIER::Transition(drawArgsBuffer_->GetResource(), D3D12_RESOURCE_STATE_UNORDERED_ACCESS, D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT);
-    postBarriers[2] = CD3DX12_RESOURCE_BARRIER::Transition(indirectCommandBuffer_->GetResource(), D3D12_RESOURCE_STATE_UNORDERED_ACCESS, D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT);
-    commandList->ResourceBarrier(3, postBarriers);
+    commandList->SetComputeRootSignature(buildRootSig->Get());
+    commandList->SetPipelineState(buildPSO);
+
+    setParam(buildRootSig, "gParams", buildCB->GetGPUVirtualAddress());
+    setParam(buildRootSig, "gMeshInfos", meshInfoBufferAddress, false, true);
+    setParam(buildRootSig, "gCountBuffer", drawArgsBuffer_->GetResource()->GetGPUVirtualAddress(), false, true);
+    setParam(buildRootSig, "gOutCommands", indirectCommandBuffer_->GetResource()->GetGPUVirtualAddress(), true);
+
+    commandList->Dispatch(1, 1, 1);
+
+    // 5. Post Barriers
+    {
+        D3D12_RESOURCE_BARRIER postBarriers[3];
+        postBarriers[0] = CD3DX12_RESOURCE_BARRIER::Transition(outputInstances_->GetResource(), D3D12_RESOURCE_STATE_UNORDERED_ACCESS, D3D12_RESOURCE_STATE_ALL_SHADER_RESOURCE);
+        postBarriers[1] = CD3DX12_RESOURCE_BARRIER::Transition(drawArgsBuffer_->GetResource(), D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT);
+        postBarriers[2] = CD3DX12_RESOURCE_BARRIER::Transition(indirectCommandBuffer_->GetResource(), D3D12_RESOURCE_STATE_UNORDERED_ACCESS, D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT);
+        commandList->ResourceBarrier(3, postBarriers);
+    }
+
+    currentBatchCBIndex_ = (currentBatchCBIndex_ + 1) % kMaxBatches;
 }
 
 } // namespace Engine::Graphics

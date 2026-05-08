@@ -41,14 +41,11 @@ struct PSOutput {
 VSOutput vs_main(uint vID : SV_VertexID, uint iID : SV_InstanceID) {
     VSOutput output;
     
-    // SV_InstanceID を直接インデックスとして使用
+    // インスタンスデータを取得 (SV_InstanceID は 0..instanceCount-1)
     InstanceData inst = gInstances[iID];
     
-    // この描画コマンドに対応するメッシュ情報を取得
-    MeshInfo mesh = gMeshInfos[inst.modelIndex];
-    
-    // 頂点プールから取得 (オフセット加算)
-    Vertex v = gVertices[mesh.vertexOffset + vID];
+    // 頂点取得 (inst.vertexOffset を使用)
+    Vertex v = gVertices[inst.vertexOffset + vID];
     
     float4 worldPos = mul(v.position, inst.world);
     output.position = mul(worldPos, gSceneData.viewProj);
