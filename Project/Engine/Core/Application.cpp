@@ -71,6 +71,7 @@ bool Application::Initialize(HINSTANCE hInstance, int nCmdShow) {
     sm.LoadPipelineAsset("Assets/Pipelines/Culling.json");
     sm.LoadPipelineAsset("Assets/Pipelines/CullingReset.json");
     sm.LoadPipelineAsset("Assets/Pipelines/BuildCommands.json");
+    sm.LoadPipelineAsset("Assets/Pipelines/Skinning.json");
 
     // 4. ECSシステムのインスタンス化
     transformSystem_ = std::make_unique<ECS::TransformSystem>();
@@ -81,6 +82,9 @@ bool Application::Initialize(HINSTANCE hInstance, int nCmdShow) {
     textSystem_ = std::make_unique<ECS::TextSystem>();
     particleSystem_ = std::make_unique<ECS::ParticleSystem>();
     particleSystem_->Initialize(graphics.GetRenderDevice());
+
+    animationSystem_ = std::make_unique<ECS::AnimationSystem>();
+    animationSystem_->Initialize(graphics.GetRenderDevice());
 
     clusteredLightManager_ = std::make_unique<Graphics::ClusteredLightManager>();
     clusteredLightManager_->Initialize(graphics.GetRenderDevice());
@@ -132,6 +136,7 @@ void Application::Update(float dt) {
 
 void Application::Render() {
     auto& graphics = Graphics::GraphicsEngine::GetInstance();
+    auto* currentFrameRes = graphics.GetCurrentFrameResource();
     auto& renderer = Graphics::Renderer::GetInstance();
     auto& debug = Graphics::DebugRenderer::GetInstance();
     auto& sm = Graphics::ShaderManager::GetInstance();
@@ -161,17 +166,21 @@ void Application::Render() {
         debug.DrawLine({ -50, 0.1f, (float)i * 5 }, { 50, 0.1f, (float)i * 5 }, { 0.5f, 0.5f, 0.5f, 1.0f });
     }
 
+    // --- 描画前準備フェーズ ---
+    // 1. 先にアニメーションを更新し、動的な頂点オフセット (internalVertexOffset) を確定させる
+    // ※内部で Dispatch するためコマンドリストが必要
+    graphics.BeginFrame();
+    auto* commandList = graphics.GetCommandQueue()->GetCommandList();
+    animationSystem_->Update(registry_, static_cast<ID3D12GraphicsCommandList*>(commandList));
+
+    // 確定したオフセットを用いて描画リクエストを収集
     renderer.ClearQueue();
     renderSystem_->Update(registry_);
-
-    // 描画実行
-    graphics.BeginFrame();
-    auto* currentFrameRes = graphics.GetCurrentFrameResource();
-    auto* commandList = graphics.GetCommandQueue()->GetCommandList();
 
     // パーティクルの更新
     particleSystem_->Update(registry_);
 
+    // --- メインレンダリングフェーズ ---
     GeneratedSchema::SceneData sceneData;
     float nearZ = 0.1f, farZ = 1000.0f;
     Math::Matrix4x4 proj;
@@ -228,6 +237,7 @@ void Application::Render() {
     context.lightIndexListBufferAddress = clusteredLightManager_->GetLightIndexListBuffer()->GetResource()->GetGPUVirtualAddress();
 
     context.cullingManager = gpuCullingManager_.get();
+    context.animationSystem = animationSystem_.get();
     context.meshInfoBufferAddress = particleSystem_->GetMeshInfoBufferAddress();
     if (cameraSystem_->HasCamera()) {
         context.viewProj = cameraSystem_->GetResult().viewProj;
@@ -301,6 +311,7 @@ void Application::Shutdown() {
 
     // 1. 各システムの終了処理
     particleSystem_->Shutdown();
+    animationSystem_->Shutdown();
     clusteredLightManager_->Shutdown();
     gpuCullingManager_->Shutdown();
     Graphics::Renderer::GetInstance().Shutdown();

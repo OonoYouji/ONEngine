@@ -8,7 +8,7 @@ Mesh::Mesh() = default;
 Mesh::~Mesh() = default;
 
 void Mesh::Create(Graphics::RenderDevice* device, const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices) {
-    auto alloc = Graphics::GeometryPool::GetInstance().Allocate(vertices, indices);
+    auto alloc = Graphics::GeometryPool::GetInstance().Allocate(vertices, indices, boneWeights_);
     
     vertexOffset_ = alloc.vertexOffset;
     indexOffset_ = alloc.indexOffset;

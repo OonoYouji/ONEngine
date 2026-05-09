@@ -14,6 +14,7 @@
 #include "Engine/ECS/Systems/SkyboxSystem.h"
 #include "Engine/ECS/Systems/TextSystem.h"
 #include "Engine/ECS/Systems/ParticleSystem.h"
+#include "Engine/ECS/Systems/AnimationSystem.h"
 #include "Engine/Graphics/Resource/GpuBuffer.h"
 
 namespace Engine::Core {
@@ -51,6 +52,7 @@ private:
     std::unique_ptr<ECS::SkyboxSystem> skyboxSystem_;
     std::unique_ptr<ECS::TextSystem> textSystem_;
     std::unique_ptr<ECS::ParticleSystem> particleSystem_;
+    std::unique_ptr<ECS::AnimationSystem> animationSystem_;
 
     // Rendering Resources
     std::unique_ptr<Graphics::StructuredBuffer> pointLightSB_;

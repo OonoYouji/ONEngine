@@ -8,6 +8,10 @@
 #include "Engine/Graphics/Shader/PipelineState.h"
 #include "Schema/Schema.h"
 
+namespace Engine::ECS {
+	class AnimationSystem;
+}
+
 namespace Engine::Graphics {
 
 class RenderDevice;
@@ -31,6 +35,7 @@ struct RenderContext {
 	// GPU駆動カリング用
 	GPUCullingManager* cullingManager = nullptr;
 	D3D12_GPU_VIRTUAL_ADDRESS meshInfoBufferAddress = 0;
+	Engine::ECS::AnimationSystem* animationSystem = nullptr;
 	Engine::Math::Matrix4x4 viewProj;
 };
 
@@ -40,9 +45,12 @@ struct RenderContext {
 struct RenderRequest {
 	uint32_t modelIndex;
 	uint32_t materialIndex;
+	uint32_t subMeshIndex; // 追加
 	uint32_t vertexOffset;
 	uint32_t entityID;
-	uint32_t postProcessFlags; // 追加
+	uint32_t postProcessFlags;
+	bool isSkinned;
+	uint32_t skeletonIndex;
 	Engine::Math::Matrix4x4 world;
 };
 

@@ -29,6 +29,7 @@ public:
                  const Engine::Math::Matrix4x4& viewProj,
                  D3D12_GPU_VIRTUAL_ADDRESS meshInfoBufferAddress,
                  uint32_t targetModelIndex,
+                 uint32_t subMeshIndex, // 追加
                  uint32_t instanceOffset,
                  uint32_t batchIndex);
 

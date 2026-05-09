@@ -19,7 +19,7 @@ RWStructuredBuffer<DrawIndexedArguments> gOutCommands : register(u0);
 struct BuildParams {
     uint modelIndex;
     uint batchIndex;
-    uint maxBatches;
+    uint subMeshIndex; // 追加
     uint padding;
 };
 ConstantBuffer<BuildParams> gParams : register(b0);
@@ -39,8 +39,8 @@ void main(uint3 DTid : SV_DispatchThreadID) {
     MeshInfo modelHeader = gMeshInfos[gParams.modelIndex];
     
     // サブメッシュ情報の取得 (ParticleSystem::UpdateMeshInfoBuffer の仕様に合わせる)
-    // 最初のサブメッシュのみを対象とする
-    uint infoIdx = (modelHeader.meshCount > 0) ? modelHeader.vertexOffset : gParams.modelIndex;
+    // 指定されたサブメッシュ情報を取得
+    uint infoIdx = modelHeader.vertexOffset + gParams.subMeshIndex;
     MeshInfo mesh = gMeshInfos[infoIdx];
 
     DrawIndexedArguments args;

@@ -2,6 +2,7 @@
 #include "Engine/Graphics/Core/RenderDevice.h"
 #include "Engine/Graphics/Core/GraphicsEngine.h"
 #include "Engine/Graphics/Core/GPUCullingManager.h"
+#include "Engine/ECS/Systems/AnimationSystem.h"
 #include "Engine/Asset/AssetManager.h"
 #include "Engine/Asset/MaterialManager.h"
 #include "Engine/Asset/TextureManager.h"
@@ -52,7 +53,9 @@ void Renderer::Extract() {
     // 1. ソートしてバッチングしやすくする (インデックス比較なので高速)
     std::sort(queue_.begin(), queue_.end(), [](const RenderRequest& a, const RenderRequest& b) {
         if (a.modelIndex != b.modelIndex) return a.modelIndex < b.modelIndex;
-        return a.materialIndex < b.materialIndex;
+        if (a.materialIndex != b.materialIndex) return a.materialIndex < b.materialIndex;
+        if (a.isSkinned != b.isSkinned) return a.isSkinned < b.isSkinned;
+        return a.vertexOffset < b.vertexOffset;
     });
 
     // 2. 全インスタンスデータの抽出
@@ -71,8 +74,9 @@ void Renderer::Extract() {
             const auto& max3 = meshes[0]->GetAABBMax();
             data.aabbMin = { min3.x, min3.y, min3.z, 1.0f };
             data.aabbMax = { max3.x, max3.y, max3.z, 1.0f };
-            data.vertexOffset = meshes[0]->GetVertexOffset();
         }
+        
+        data.vertexOffset = req.vertexOffset; // RenderSystem で計算された正確なオフセットを使用
         
         auto* mat = materialManager.GetMaterialByIndex(req.materialIndex);
         if (mat) {
@@ -141,7 +145,10 @@ void Renderer::RenderInternal(const RenderContext& context, const PipelineStateD
         uint32_t batchSize = 0;
         for (uint32_t i = currentInstanceStart; i < totalInstances; ++i) {
             if (queue_[i].modelIndex == batchStartReq.modelIndex && 
-                queue_[i].materialIndex == batchStartReq.materialIndex) {
+                queue_[i].materialIndex == batchStartReq.materialIndex &&
+                queue_[i].subMeshIndex == batchStartReq.subMeshIndex && // 追加
+                queue_[i].isSkinned == batchStartReq.isSkinned &&
+                queue_[i].vertexOffset == batchStartReq.vertexOffset) {
                 batchSize++;
             } else {
                 break;
@@ -163,6 +170,7 @@ void Renderer::RenderInternal(const RenderContext& context, const PipelineStateD
                     context.viewProj,
                     context.meshInfoBufferAddress,
                     batchStartReq.modelIndex,
+                    batchStartReq.subMeshIndex, // 追加
                     currentInstanceStart,
                     batchIndex
                 );
@@ -206,7 +214,14 @@ void Renderer::RenderInternal(const RenderContext& context, const PipelineStateD
             setSRV("gPointLights", context.pointLightBufferAddress);
             setSRV("gLightGrid", context.lightGridBufferAddress);
             setSRV("gLightIndexList", context.lightIndexListBufferAddress);
-            setSRV("gVertices", geoPool.GetVertexBuffer()->GetResource()->GetGPUVirtualAddress());
+            
+            // 頂点バッファの切り替え (Additive)
+            if (batchStartReq.isSkinned && context.animationSystem) {
+                setSRV("gVertices", context.animationSystem->GetSkinnedVertexBuffer()->GetResource()->GetGPUVirtualAddress());
+            } else {
+                setSRV("gVertices", geoPool.GetVertexBuffer()->GetResource()->GetGPUVirtualAddress());
+            }
+
             setSRV("gMeshInfos", context.meshInfoBufferAddress);
 
             D3D12_INDEX_BUFFER_VIEW ibv = geoPool.GetIndexBuffer()->GetView();

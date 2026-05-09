@@ -39,8 +39,7 @@ struct InstanceData {
     uint32_t vertexOffset;
     uint32_t entityID;
     uint32_t postProcessFlags;
-    uint32_t unused_pad;
-    uint8_t _final_pad0[8];
+    uint32_t unused_pad[3];
 };
 
 struct PointLightData {
@@ -69,8 +68,12 @@ struct MeshInfo {
     uint32_t indexOffset;
     uint32_t vertexCount;
     uint32_t indexCount;
-    uint32_t meshCount; // 追加: モデルに含まれるメッシュ数
-    uint8_t _pad[12];    // 16byteアラインメント調整
+    uint32_t meshCount;
+    uint8_t _final_pad0[12];
+};
+
+struct BoneData {
+    Engine::Math::Matrix4x4 transform;
 };
 
 struct SpriteData {
@@ -86,6 +89,20 @@ struct MaterialData {
     Engine::Math::Vector4 baseColor;
 };
 
+struct BoneWeightData {
+    uint32_t boneIndices[4];
+    Engine::Math::Vector4 boneWeights;
+};
+
+struct SkinningParams {
+    uint32_t vertexCount;
+    uint32_t inputVertexOffset;
+    uint32_t outputVertexOffset;
+    uint32_t boneOffset;
+    uint32_t skinningEnabled;
+    uint8_t _final_pad0[12];
+};
+
 
 } // namespace Engine::GeneratedSchema
 
@@ -99,6 +116,15 @@ struct TextRenderer {
     float size;
     uint32_t isScreenSpace;
     uint8_t _final_pad1[8];
+};
+
+struct SkinnedMeshRenderer {
+    uint32_t modelIndex;
+    uint32_t materialIndex;
+    uint32_t skeletonIndex;
+    uint32_t postProcessFlags;
+    uint32_t internalVertexOffset;
+    uint8_t _final_pad0[12];
 };
 
 struct Transform {

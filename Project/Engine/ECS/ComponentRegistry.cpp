@@ -43,6 +43,16 @@ void InitializeComponentRegistry() {
         mr.postProcessFlags = j.value("postProcessFlags", 0);
     });
 
+    // SkinnedMeshRenderer (Additive)
+    reg.Register<SkinnedMeshRenderer>(11, "SkinnedMeshRenderer", [](const json& j, SkinnedMeshRenderer& smr) {
+        if (j.contains("meshPath")) smr.modelIndex = Asset::AssetManager::GetInstance().LoadModel(j["meshPath"]);
+        else smr.modelIndex = j.value("modelIndex", 0);
+        if (j.contains("materialPath")) smr.materialIndex = Asset::MaterialManager::GetInstance().LoadMaterial(j["materialPath"]);
+        else smr.materialIndex = j.value("materialIndex", 0);
+        smr.skeletonIndex = j.value("skeletonIndex", 0);
+        smr.postProcessFlags = j.value("postProcessFlags", 0);
+    });
+
     // Camera
     reg.Register<Camera>(4, "Camera", [](const json& j, Camera& c) {
         c.fov = j.value("fov", 45.0f);

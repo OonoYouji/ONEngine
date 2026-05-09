@@ -229,6 +229,25 @@
                 { "meshPath": "Packages/Models/primitive/cube.obj", "materialPath": "Assets/Materials/CelTest.mat", "postProcessFlags": 1, "type": "MeshRenderer" },
                 { "type": "ScriptComponent", "className": "Scripts.RotatingCube" }
             ]
+        },
+        {
+            "id": 100,
+            "name": "SkinnedCharacter",
+            "components": [
+                {
+                    "position": { "y": 0, "x": 10, "z": 0 },
+                    "rotation": { "y": 0, "x": 0, "z": 0 },
+                    "scale": { "y": 1, "x": 1, "z": 1 },
+                    "type": "Transform"
+                },
+                { 
+                    "meshPath": "Packages/Models/Human/sneakWalk.gltf", 
+                    "materialPath": "Assets/Materials/CelTest.mat", 
+                    "skeletonIndex": 0,
+                    "postProcessFlags": 1, 
+                    "type": "SkinnedMeshRenderer" 
+                }
+            ]
         }
     ]
 }

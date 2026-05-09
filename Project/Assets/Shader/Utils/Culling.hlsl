@@ -10,6 +10,7 @@ struct CullingParams {
     uint instanceOffset; // 入力バッファ内の開始位置
     uint batchIndex;     // このバッチが使用するカウンタ/バッファの番号
     uint forceVisible;   // 1 ならカリングをスキップ (デバッグ用)
+    uint subMeshIndex;   // 追加
 };
 
 ConstantBuffer<SceneData> gSceneData : register(b0);

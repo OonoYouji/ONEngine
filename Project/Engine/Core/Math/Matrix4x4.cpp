@@ -243,10 +243,6 @@ Vector4 Matrix4x4::Transform(const Vector4& _v, const Matrix4x4& _m) {
 	return { v[0], v[1], v[2], v[3] };
 }
 
-Matrix4x4 Matrix4x4::Transpose() const {
-	return MakeTranspose(*this);
-}
-
 Matrix4x4 Matrix4x4::Inverse() const {
 	return MakeInverse(*this);
 }

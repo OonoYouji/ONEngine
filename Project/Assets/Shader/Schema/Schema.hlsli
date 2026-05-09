@@ -10,6 +10,15 @@ struct TextRenderer {
     uint _final_pad1[2];
 };
 
+struct SkinnedMeshRenderer {
+    uint modelIndex;
+    uint materialIndex;
+    uint skeletonIndex;
+    uint postProcessFlags;
+    uint internalVertexOffset;
+    uint _final_pad0[3];
+};
+
 struct SceneData {
     float4x4 view;
     float4x4 viewProj;
@@ -95,8 +104,7 @@ struct InstanceData {
     uint vertexOffset;
     uint entityID;
     uint postProcessFlags;
-    uint unused_pad;
-    uint _final_pad0[2];
+    uint unused_pad[3];
 };
 
 struct PointLightData {
@@ -126,7 +134,7 @@ struct MeshInfo {
     uint vertexCount;
     uint indexCount;
     uint meshCount;
-    uint3 _pad;
+    uint _final_pad0[3];
 };
 
 struct SpriteRenderer {
@@ -136,6 +144,10 @@ struct SpriteRenderer {
     float2 size;
     uint isBillboard;
     uint _final_pad1[1];
+};
+
+struct BoneData {
+    float4x4 transform;
 };
 
 struct ScriptComponent {
@@ -167,5 +179,19 @@ struct SpriteData {
 
 struct MaterialData {
     float4 baseColor;
+};
+
+struct BoneWeightData {
+    uint boneIndices[4];
+    float4 boneWeights;
+};
+
+struct SkinningParams {
+    uint vertexCount;
+    uint inputVertexOffset;
+    uint outputVertexOffset;
+    uint boneOffset;
+    uint skinningEnabled;
+    uint _final_pad0[3];
 };
 

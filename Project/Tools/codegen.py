@@ -94,9 +94,16 @@ def generate():
                 hlsl_struct_body += "    uint {}[64];\n".format(f_name)
                 cs_struct_body += "        public unsafe fixed byte {}[256];\n".format(f_name)
             else:
-                cpp_struct_body += "    {} {};\n".format(TYPE_MAP_CPP[f_type], f_name)
-                hlsl_struct_body += "    {} {};\n".format(TYPE_MAP_HLSL[f_type], f_name)
-                cs_struct_body += "        public {} {};\n".format(TYPE_MAP_CS[f_type], f_name)
+                f_count = field.get("count", 1)
+                if f_count > 1:
+                    cpp_struct_body += "    {} {}[{}];\n".format(TYPE_MAP_CPP[f_type], f_name, f_count)
+                    hlsl_struct_body += "    {} {}[{}];\n".format(TYPE_MAP_HLSL[f_type], f_name, f_count)
+                    cs_struct_body += "        public unsafe fixed {} {}[{}];\n".format(TYPE_MAP_CS[f_type], f_name, f_count)
+                    f_size *= f_count
+                else:
+                    cpp_struct_body += "    {} {};\n".format(TYPE_MAP_CPP[f_type], f_name)
+                    hlsl_struct_body += "    {} {};\n".format(TYPE_MAP_HLSL[f_type], f_name)
+                    cs_struct_body += "        public {} {};\n".format(TYPE_MAP_CS[f_type], f_name)
             
             current_offset += f_size
 

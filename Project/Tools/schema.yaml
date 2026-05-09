@@ -83,6 +83,50 @@ types:
       - name: postProcessFlags
         type: uint32
 
+  SkinnedMeshRenderer:
+    type: Component
+    fields:
+      - name: modelIndex
+        type: uint32
+      - name: materialIndex
+        type: uint32
+      - name: skeletonIndex # Start index in global bone buffer
+        type: uint32
+      - name: postProcessFlags
+        type: uint32
+      - name: internalVertexOffset # Engine managed offset for skinned result
+        type: uint32
+
+  # GPU Skinning structures (Separate from standard Vertex)
+  BoneWeightData:
+    type: StructuredBuffer
+    fields:
+      - name: boneIndices
+        type: uint32
+        count: 4
+      - name: boneWeights
+        type: float4
+
+  BoneData:
+    type: StructuredBuffer
+    fields:
+      - name: transform
+        type: float4x4
+
+  SkinningParams:
+    type: ConstantBuffer
+    fields:
+      - name: vertexCount
+        type: uint32
+      - name: inputVertexOffset
+        type: uint32
+      - name: outputVertexOffset
+        type: uint32
+      - name: boneOffset
+        type: uint32
+      - name: skinningEnabled
+        type: uint32
+
   ScriptComponent:
     type: Component
     fields:
@@ -265,4 +309,6 @@ types:
       - name: vertexCount
         type: uint32
       - name: indexCount
+        type: uint32
+      - name: meshCount
         type: uint32

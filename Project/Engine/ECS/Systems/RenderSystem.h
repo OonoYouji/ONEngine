@@ -10,33 +10,60 @@
 namespace Engine::ECS {
 
 ///
-/// 描画リクエストを収集してRendererに送るシステム
+/// 描画リクエストを収集するシステム
 ///
-class RenderSystem final : public System {
+class RenderSystem : public System {
 public:
 	void Update(Registry& registry) override {
 		auto& renderer = Engine::Graphics::Renderer::GetInstance();
+		auto& am = Engine::Asset::AssetManager::GetInstance();
 
-		// メッシュレンダラーを持つエンティティを収集
+		// 1. メッシュレンダラーを持つエンティティを収集
 		registry.GetView<Transform, MeshRenderer>().Each([&](Entity entity, Transform& transform, MeshRenderer& meshRenderer) {
-			Engine::Graphics::RenderRequest request;
-			request.modelIndex = meshRenderer.modelIndex;
-			request.materialIndex = meshRenderer.materialIndex;
+			const auto& meshes = am.GetMeshesByIndex(meshRenderer.modelIndex);
 			
-			const auto& meshes = Engine::Asset::AssetManager::GetInstance().GetMeshesByIndex(meshRenderer.modelIndex);
-			if (!meshes.empty()) {
-				request.vertexOffset = meshes[0]->GetVertexOffset();
-			} else {
-				request.vertexOffset = 0;
+			uint32_t subIdx = 0;
+			for (const auto& mesh : meshes) {
+				Engine::Graphics::RenderRequest request;
+				request.modelIndex = meshRenderer.modelIndex;
+				request.materialIndex = meshRenderer.materialIndex;
+				request.subMeshIndex = subIdx++;
+				request.vertexOffset = mesh->GetVertexOffset();
+				request.world = transform.world;
+				request.entityID = static_cast<uint32_t>(entity);
+				request.postProcessFlags = meshRenderer.postProcessFlags;
+				request.isSkinned = false;
+				request.skeletonIndex = 0;
+
+				renderer.PushRequest(request);
 			}
+		});
+
+		// 2. スキニングメッシュレンダラーを持つエンティティを収集
+		registry.GetView<Transform, SkinnedMeshRenderer>().Each([&](Entity entity, Transform& transform, SkinnedMeshRenderer& skinnedRenderer) {
+			const auto& meshes = am.GetMeshesByIndex(skinnedRenderer.modelIndex);
 			
-			// TransformSystem で計算済みの行列をそのまま使用
-			request.world = transform.world;
-			request.entityID = static_cast<uint32_t>(entity);
-			request.postProcessFlags = meshRenderer.postProcessFlags;
+			uint32_t currentSubMeshOffset = 0;
+			uint32_t subIdx = 0;
+			for (const auto& mesh : meshes) {
+				Engine::Graphics::RenderRequest request;
+				request.modelIndex = skinnedRenderer.modelIndex;
+				request.materialIndex = skinnedRenderer.materialIndex;
+				request.subMeshIndex = subIdx++;
+				
+				// AnimationSystem で割り当てられた動的オフセットを使用
+				// (全メッシュが連続して stack に積まれている前提)
+				request.vertexOffset = skinnedRenderer.internalVertexOffset + currentSubMeshOffset;
+				currentSubMeshOffset += mesh->GetVertexCount();
 
-			renderer.PushRequest(request);
+				request.world = transform.world;
+				request.entityID = static_cast<uint32_t>(entity);
+				request.postProcessFlags = skinnedRenderer.postProcessFlags;
+				request.isSkinned = true;
+				request.skeletonIndex = skinnedRenderer.skeletonIndex;
 
+				renderer.PushRequest(request);
+			}
 		});
 	}
 };

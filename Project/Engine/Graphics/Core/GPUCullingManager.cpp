@@ -91,6 +91,7 @@ void GPUCullingManager::Execute(ID3D12GraphicsCommandList* commandList,
                               const Engine::Math::Matrix4x4& vp,
                               D3D12_GPU_VIRTUAL_ADDRESS meshInfoBufferAddress,
                               uint32_t targetModelIndex,
+                              uint32_t subMeshIndex,
                               uint32_t instanceOffset,
                               uint32_t batchIndex) {
     auto& sm = ShaderManager::GetInstance();
@@ -121,11 +122,11 @@ void GPUCullingManager::Execute(ID3D12GraphicsCommandList* commandList,
 
     // 2. Parameters
     auto& cullingCB = cullingParamsCBs_[currentBatchCBIndex_];
-    uint32_t cParams[5] = { targetModelIndex, maxInstances, instanceOffset, batchIndex, 0 }; // forceVisible=0
+    uint32_t cParams[6] = { targetModelIndex, maxInstances, instanceOffset, batchIndex, 1, subMeshIndex }; 
     cullingCB->Update(cParams, sizeof(cParams));
 
     auto& buildCB = buildParamsCBs_[currentBatchCBIndex_];
-    uint32_t bParams[4] = { targetModelIndex, batchIndex, kMaxBatches, 0 };
+    uint32_t bParams[4] = { targetModelIndex, batchIndex, subMeshIndex, 0 };
     buildCB->Update(bParams, sizeof(bParams));
 
     // 3. Culling Pass

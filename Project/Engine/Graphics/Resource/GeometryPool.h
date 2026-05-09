@@ -4,12 +4,15 @@
 #include <vector>
 #include <cstdint>
 #include "GpuBuffer.h"
+#include "Schema/Schema.h"
 
 namespace Engine::Asset {
     struct Vertex;
 }
 
 namespace Engine::Graphics {
+
+class RenderDevice;
 
 ///
 /// 全てのジオメトリ（頂点・インデックス）を一括管理するプール
@@ -30,9 +33,10 @@ public:
         uint32_t vertexOffset;
         uint32_t indexOffset;
     };
-    Allocation Allocate(const std::vector<Asset::Vertex>& vertices, const std::vector<uint32_t>& indices);
+    Allocation Allocate(const std::vector<Asset::Vertex>& vertices, const std::vector<uint32_t>& indices, const std::vector<Engine::GeneratedSchema::BoneWeightData>& boneWeights = {});
 
     StructuredBuffer* GetVertexBuffer() { return vertexBuffer_.get(); }
+    StructuredBuffer* GetBoneWeightBuffer() { return boneWeightBuffer_.get(); }
     IndexBuffer* GetIndexBuffer() { return indexBuffer_.get(); }
 
 private:
@@ -42,6 +46,7 @@ private:
 private:
     RenderDevice* device_ = nullptr;
     std::unique_ptr<StructuredBuffer> vertexBuffer_;
+    std::unique_ptr<StructuredBuffer> boneWeightBuffer_;
     std::unique_ptr<IndexBuffer> indexBuffer_;
 
     uint32_t currentVertexOffset_ = 0;
