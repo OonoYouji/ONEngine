@@ -4,6 +4,7 @@
 #include "Engine/Asset/AssetManager.h"
 #include "Engine/Asset/Mesh.h"
 #include "Engine/Graphics/Resource/GeometryPool.h"
+#include "Engine/Common/Console.h"
 #include <d3dx12.h>
 
 namespace Engine::ECS {
@@ -11,11 +12,13 @@ namespace Engine::ECS {
 void AnimationSystem::Initialize(Graphics::RenderDevice* device) {
     device_ = device;
 
-    boneMatrixSB_ = std::make_unique<Graphics::StructuredBuffer>();
-    boneMatrixSB_->Create(device, sizeof(Engine::GeneratedSchema::BoneData), kMaxBones, nullptr, false); // isUAV = false
+    for (int i = 0; i < kBufferCount; ++i) {
+        boneMatrixSBs_[i] = std::make_unique<Graphics::StructuredBuffer>();
+        boneMatrixSBs_[i]->Create(device, sizeof(Engine::GeneratedSchema::BoneData), kMaxBones, nullptr, false);
+    }
 
     skinnedVertexBuffer_ = std::make_unique<Graphics::StructuredBuffer>();
-    skinnedVertexBuffer_->Create(device, sizeof(Asset::Vertex), kMaxSkinnedVertices, nullptr, true); // isUAV = true (Compute Output)
+    skinnedVertexBuffer_->Create(device, sizeof(Asset::Vertex), kMaxSkinnedVertices, nullptr, true);
 
     for (int i = 0; i < kMaxBatches; ++i) {
         skinningParamsCBs_[i] = std::make_unique<Graphics::ConstantBuffer>();
@@ -24,14 +27,12 @@ void AnimationSystem::Initialize(Graphics::RenderDevice* device) {
 }
 
 void AnimationSystem::Shutdown() {
-    boneMatrixSB_.reset();
+    for (int i = 0; i < kBufferCount; ++i) boneMatrixSBs_[i].reset();
     skinnedVertexBuffer_.reset();
-    for (int i = 0; i < kMaxBatches; ++i) {
-        skinningParamsCBs_[i].reset();
-    }
+    for (int i = 0; i < kMaxBatches; ++i) skinningParamsCBs_[i].reset();
 }
 
-void AnimationSystem::Update(Registry& registry, ID3D12GraphicsCommandList* commandList) {
+void AnimationSystem::Update(Registry& registry, ID3D12GraphicsCommandList* commandList, float dt, uint32_t frameIndex) {
     auto view = registry.GetView<Transform, SkinnedMeshRenderer>();
 
     auto& sm = Graphics::ShaderManager::GetInstance();
@@ -43,14 +44,20 @@ void AnimationSystem::Update(Registry& registry, ID3D12GraphicsCommandList* comm
 
     if (!pso || !rootSig) return;
 
-    // 1. ボーンデータの集計とアップロード
+    // エンジン全体のフレームインデックスに同期
+    auto& currentBoneSB = boneMatrixSBs_[frameIndex];
+
+    // 1. ボーンデータの集計
     static std::vector<GeneratedSchema::BoneData> boneData(kMaxBones);
-    static float accumulatedTime = 0;
-    accumulatedTime += 0.016f;
+    accumulatedTime_ += dt;
 
-    // boneData をリセット
-    std::fill(boneData.begin(), boneData.end(), GeneratedSchema::BoneData{});
+    // boneData を単位行列で初期化
+    for (auto& bd : boneData) {
+        bd.transform = Math::Matrix4x4::kIdentity;
+    }
 
+    uint32_t updatedEntities = 0;
+    uint32_t updatedBones = 0;
     view.Each([&](Entity entity, Transform& transform, SkinnedMeshRenderer& smr) {
         const auto& meshes = am.GetMeshesByIndex(smr.modelIndex);
         if (meshes.empty()) return;
@@ -65,20 +72,33 @@ void AnimationSystem::Update(Registry& registry, ID3D12GraphicsCommandList* comm
         
         if (!pMeshBones) return;
 
+        updatedEntities++;
         for (uint32_t i = 0; i < (uint32_t)pMeshBones->size(); ++i) {
-            GeneratedSchema::BoneData data;
-            float angle = std::sin(accumulatedTime * 4.0f + i * 0.5f) * 1.0f;
-            Math::Matrix4x4 anim = Math::Matrix4x4::MakeRotateZ(angle);
-            Math::Matrix4x4 finalMatrix = (*pMeshBones)[i].offsetMatrix * anim;
-            data.transform = finalMatrix.Transpose();
+            // アニメーション行列 (Y軸回転)
+            float freq = 1.0f + (i % 5) * 0.2f;
+            float angle = std::sin(accumulatedTime_ * freq) * 0.5f;
+            Math::Matrix4x4 anim = Math::Matrix4x4::MakeRotateY(angle);
             
+            // v_final = v_local * InverseBind * Animation * Bind
+            Math::Matrix4x4 invBind = (*pMeshBones)[i].offsetMatrix;
+            Math::Matrix4x4 bind = Math::Matrix4x4::MakeInverse(invBind);
+            Math::Matrix4x4 finalMatrix = invBind * anim * bind;
+
             if (smr.skeletonIndex + i < kMaxBones) {
-                boneData[smr.skeletonIndex + i] = data;
+                boneData[smr.skeletonIndex + i].transform = finalMatrix;
+                updatedBones++;
             }
         }
     });
     
-    boneMatrixSB_->Update(boneData.data(), (uint32_t)(boneData.size() * sizeof(GeneratedSchema::BoneData)));
+    // 診断ログ
+    static int logCounter = 0;
+    if (logCounter++ % 60 == 0 && updatedBones > 0) {
+        Engine::Console::Log(std::format("Anim Update: Time={:.2f}, Frame={}, Entities={}, Bones={}", accumulatedTime_, frameIndex, updatedEntities, updatedBones));
+    }
+
+    // GPUへアップロード
+    currentBoneSB->Update(boneData.data(), (uint32_t)(boneData.size() * sizeof(GeneratedSchema::BoneData)));
 
     // 2. スキニングの実行
     {
@@ -127,7 +147,7 @@ void AnimationSystem::Update(Registry& registry, ID3D12GraphicsCommandList* comm
                 };
 
                 setParam("gParams", skinningParamsCBs_[cbIndex]->GetGPUVirtualAddress());
-                setParam("gBones", boneMatrixSB_->GetResource()->GetGPUVirtualAddress(), false, true);
+                setParam("gBones", currentBoneSB->GetResource()->GetGPUVirtualAddress(), false, true);
                 setParam("gInputVertices", gp.GetVertexBuffer()->GetResource()->GetGPUVirtualAddress(), false, true);
                 setParam("gBoneWeights", gp.GetBoneWeightBuffer()->GetResource()->GetGPUVirtualAddress(), false, true);
                 setParam("gOutputVertices", skinnedVertexBuffer_->GetResource()->GetGPUVirtualAddress(), true);

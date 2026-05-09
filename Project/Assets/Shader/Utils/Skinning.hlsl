@@ -30,40 +30,21 @@ void main(uint3 DTid : SV_DispatchThreadID) {
         float4 skinnedNormal = 0;
         float totalWeight = 0;
 
-        // Bone 0
-        if (w.boneWeights.x > 0.0001f) {
-            float4x4 m = gBones[gParams.boneOffset + w.boneIndices[0]].transform;
-            skinnedPos += mul(v.position, m) * w.boneWeights.x;
-            skinnedNormal += mul(v.normal, m) * w.boneWeights.x;
-            totalWeight += w.boneWeights.x;
-        }
-        // Bone 1
-        if (w.boneWeights.y > 0.0001f) {
-            float4x4 m = gBones[gParams.boneOffset + w.boneIndices[1]].transform;
-            skinnedPos += mul(v.position, m) * w.boneWeights.y;
-            skinnedNormal += mul(v.normal, m) * w.boneWeights.y;
-            totalWeight += w.boneWeights.y;
-        }
-        // Bone 2
-        if (w.boneWeights.z > 0.0001f) {
-            float4x4 m = gBones[gParams.boneOffset + w.boneIndices[2]].transform;
-            skinnedPos += mul(v.position, m) * w.boneWeights.z;
-            skinnedNormal += mul(v.normal, m) * w.boneWeights.z;
-            totalWeight += w.boneWeights.z;
-        }
-        // Bone 3
-        if (w.boneWeights.w > 0.0001f) {
-            float4x4 m = gBones[gParams.boneOffset + w.boneIndices[3]].transform;
-            skinnedPos += mul(v.position, m) * w.boneWeights.w;
-            skinnedNormal += mul(v.normal, m) * w.boneWeights.w;
-            totalWeight += w.boneWeights.w;
+        [unroll]
+        for (int i = 0; i < 4; ++i) {
+            if (w.boneWeights[i] > 0.0001f) {
+                float4x4 m = gBones[gParams.boneOffset + w.boneIndices[i]].transform;
+                skinnedPos += mul(float4(v.position.xyz, 1.0f), m) * w.boneWeights[i];
+                skinnedNormal += mul(float4(v.normal.xyz, 0.0f), m) * w.boneWeights[i];
+                totalWeight += w.boneWeights[i];
+            }
         }
 
         if (totalWeight > 0.0001f) {
-            v.position = skinnedPos;
+            // W 成分を強制固定して破綻を防ぐ
+            v.position = float4(skinnedPos.xyz / totalWeight, 1.0f);
             v.normal = float4(normalize(skinnedNormal.xyz), 0.0f);
         }
-        // totalWeight が 0 の場合は、元の v のまま (Fallback)
     }
 
     gOutputVertices[outIdx] = v;

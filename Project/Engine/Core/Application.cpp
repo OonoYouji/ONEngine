@@ -171,7 +171,8 @@ void Application::Render() {
     // ※内部で Dispatch するためコマンドリストが必要
     graphics.BeginFrame();
     auto* commandList = graphics.GetCommandQueue()->GetCommandList();
-    animationSystem_->Update(registry_, static_cast<ID3D12GraphicsCommandList*>(commandList));
+    uint32_t frameIndex = graphics.GetCurrentFrameIndex();
+    animationSystem_->Update(registry_, static_cast<ID3D12GraphicsCommandList*>(commandList), timer_.GetDeltaTime(), frameIndex);
 
     // 確定したオフセットを用いて描画リクエストを収集
     renderer.ClearQueue();
