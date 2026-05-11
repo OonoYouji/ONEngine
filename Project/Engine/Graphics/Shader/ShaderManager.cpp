@@ -10,8 +10,12 @@ using json = nlohmann::json;
 
 namespace Engine::Graphics {
 
+ShaderManager* ShaderManager::instance_ = nullptr;
+
 ShaderManager::ShaderManager() = default;
-ShaderManager::~ShaderManager() = default;
+ShaderManager::~ShaderManager() {
+    Shutdown();
+}
 
 void ShaderManager::Initialize(RenderDevice* device) {
     device_ = device;

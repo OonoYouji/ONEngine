@@ -1,57 +1,60 @@
 #pragma once
 
-#include <vector>
-#include <memory>
 #include <d3d12.h>
+#include <memory>
+#include <vector>
+#include "Engine/Graphics/Utils/ComPtr.h"
 #include "Engine/Core/Math/Math.h"
-#include "Engine/Graphics/Resource/GpuBuffer.h"
-#include "Engine/Graphics/Shader/PipelineState.h"
+#include "Engine/Graphics/Core/RenderContext.h"
 
 namespace Engine::Graphics {
 
 class RenderDevice;
-struct RenderContext;
+class StructuredBuffer;
 
 ///
-/// デバッグ用の線やワイヤーフレームを描画するクラス
+/// デバッグ描画（ライン、グリッドなど）を管理するクラス
 ///
 class DebugRenderer {
 public:
-    struct Vertex {
-        Engine::Math::Vector3 position;
-        Engine::Math::Vector4 color;
-    };
+    static constexpr uint32_t kMaxVertices = 1000000;
 
     static DebugRenderer& GetInstance() {
-        static DebugRenderer instance;
-        return instance;
+        return *instance_;
+    }
+
+    static void CreateInstance() {
+        if (!instance_) instance_ = new DebugRenderer();
+    }
+
+    static void DestroyInstance() {
+        delete instance_;
+        instance_ = nullptr;
     }
 
     void Initialize(RenderDevice* device);
     void Shutdown();
 
-    /// @brief 線の描画
-    void DrawLine(const Engine::Math::Vector3& start, const Engine::Math::Vector3& end, const Engine::Math::Vector4& color = {1, 1, 1, 1});
-
-    /// @brief ワイヤーフレームボックスの描画
-    void DrawBox(const Engine::Math::Vector3& center, const Engine::Math::Vector3& size, const Engine::Math::Vector4& color = {1, 1, 1, 1});
-
-    /// @brief 描画実行
+    void DrawLine(const Engine::Math::Vector3& start, const Engine::Math::Vector3& end, const Engine::Math::Vector4& color);
+    void DrawSphere(const Engine::Math::Vector3& center, float radius, const Engine::Math::Vector4& color);
+    void DrawBox(const Engine::Math::Vector3& min, const Engine::Math::Vector3& max, const Engine::Math::Vector4& color);
+    
     void Render(const RenderContext& context);
-
-    /// @brief キューのクリア（毎フレーム呼ぶ）
     void Clear();
 
 private:
     DebugRenderer() = default;
     ~DebugRenderer() = default;
 
-private:
-    RenderDevice* device_ = nullptr;
+    static DebugRenderer* instance_;
+
+    struct Vertex {
+        Engine::Math::Vector3 position;
+        Engine::Math::Vector4 color;
+    };
+
     std::vector<Vertex> vertices_;
-    
     std::unique_ptr<StructuredBuffer> vertexBuffer_;
-    static constexpr uint32_t kMaxVertices = 100000;
 };
 
 } // namespace Engine::Graphics

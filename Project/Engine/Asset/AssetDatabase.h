@@ -12,29 +12,35 @@ namespace Engine::Asset {
 class AssetDatabase {
 public:
     static AssetDatabase& GetInstance() {
-        static AssetDatabase instance;
-        return instance;
+        return *instance_;
     }
 
-    /// @brief 指定したルートディレクトリ以下をスキャンしてデータベースを構築
-    void Scan(const std::string& rootDir);
+    static void CreateInstance() {
+        if (!instance_) instance_ = new AssetDatabase();
+    }
 
-    /// @brief パスからGUIDを取得
-    std::string GetGuidFromPath(const std::string& path) const;
+    static void DestroyInstance() {
+        delete instance_;
+        instance_ = nullptr;
+    }
 
-    /// @brief GUIDからパスを取得
-    std::string GetPathFromGuid(const std::string& guid) const;
+    /// @brief 指定ディレクトリをスキャンしてアセット情報を収集
+    void Scan(const std::string& directory);
 
-    /// @brief 全ての登録済みアセットをデバッグ出力
-    void Dump() const;
+    /// @brief GUIDからファイルパスを取得
+    std::string GetPathFromGuid(const std::string& guid);
+
+    /// @brief ファイルパスからGUIDを取得
+    std::string GetGuidFromPath(const std::string& path);
 
 private:
     AssetDatabase() = default;
     ~AssetDatabase() = default;
 
-private:
-    std::unordered_map<std::string, std::string> pathToGuid_;
+    static AssetDatabase* instance_;
+
     std::unordered_map<std::string, std::string> guidToPath_;
+    std::unordered_map<std::string, std::string> pathToGuid_;
 };
 
 } // namespace Engine::Asset

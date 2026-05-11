@@ -7,7 +7,10 @@
 
 namespace Engine::ECS {
 
+ComponentRegistry* ComponentRegistry::instance_ = nullptr;
+
 void InitializeComponentRegistry() {
+    ComponentRegistry::CreateInstance();
     auto& reg = ComponentRegistry::GetInstance();
 
     // Transform

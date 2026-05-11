@@ -1,11 +1,14 @@
-﻿#include "FontManager.h"
+#include "FontManager.h"
 #include "Engine/Graphics/Core/RenderDevice.h"
 #include "Engine/Asset/AssetDatabase.h"
 #include "Engine/Asset/TextureManager.h"
 #include "Engine/Common/Console.h"
 #include "Engine/Graphics/Core/DescriptorHeap.h"
+#include "Engine/Graphics/Core/GraphicsEngine.h"
 
 namespace Engine::Asset {
+
+FontManager* FontManager::instance_ = nullptr;
 
 void FontManager::Initialize(Graphics::RenderDevice* device) {
     device_ = device;
@@ -18,7 +21,6 @@ void FontManager::Shutdown() {
 
 int32_t FontManager::LoadFont(const std::string& pathOrGuid, float fontSize) {
     if (fontMap_.count(pathOrGuid)) {
-        // すでにロード済みならインデックスを返す
         auto font = fontMap_[pathOrGuid];
         for (int32_t i = 0; i < (int32_t)indexedFonts_.size(); ++i) {
             if (indexedFonts_[i] == font) return i;
@@ -33,18 +35,24 @@ int32_t FontManager::LoadFont(const std::string& pathOrGuid, float fontSize) {
         return -1;
     }
 
-    // フォントアトラスのテクスチャにBindlessインデックスを割り当てる
-    // TextureManagerを介してSRVを生成
-    auto& textureManager = TextureManager::GetInstance();
-    uint32_t bindlessIndex = textureManager.GetSrvHeap()->AllocateIndex();
-    font->GetAtlasTexture()->SetIndex(bindlessIndex);
-    font->GetAtlasTexture()->CreateResource(device_, textureManager.GetSrvHeap()->GetCPUHandle(bindlessIndex));
+    // グローバルヒープからハンドルを割り当て
+    auto& graphics = Graphics::GraphicsEngine::GetInstance();
+    auto* srvHeap = graphics.GetSRVHeap();
+    
+    // TextureManager と被らないようにオフセットを考慮する必要があるが、
+    // 現状は簡易的に、巨大なヒープ(1024)の後半を使用するなどして衝突を避ける
+    // TODO: 正確なデスクリプタ割り当てマネージャの実装
+    static uint32_t fontDescriptorOffset = 512;
+    uint32_t index = fontDescriptorOffset++;
 
-    int32_t index = (int32_t)indexedFonts_.size();
+    font->GetAtlasTexture()->CreateResource(device_, srvHeap->GetCPUHandle(index));
+    font->GetAtlasTexture()->SetIndex(index);
+    
+    int32_t fontIndex = (int32_t)indexedFonts_.size();
     fontMap_[pathOrGuid] = font;
     indexedFonts_.push_back(font);
 
-    return index;
+    return fontIndex;
 }
 
 Font* FontManager::GetFontByIndex(uint32_t index) {

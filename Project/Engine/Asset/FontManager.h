@@ -18,14 +18,22 @@ namespace Engine::Asset {
 class FontManager {
 public:
     static FontManager& GetInstance() {
-        static FontManager instance;
-        return instance;
+        return *instance_;
+    }
+
+    static void CreateInstance() {
+        if (!instance_) instance_ = new FontManager();
+    }
+
+    static void DestroyInstance() {
+        delete instance_;
+        instance_ = nullptr;
     }
 
     void Initialize(Graphics::RenderDevice* device);
     void Shutdown();
 
-    /// @brief TTFファイルからフォントをロード
+    /// @brief フォントをロードし、インデックスを返す
     int32_t LoadFont(const std::string& pathOrGuid, float fontSize = 32.0f);
 
     /// @brief インデックスからフォントを取得
@@ -35,7 +43,8 @@ private:
     FontManager() = default;
     ~FontManager() = default;
 
-private:
+    static FontManager* instance_;
+
     Graphics::RenderDevice* device_ = nullptr;
     std::unordered_map<std::string, std::shared_ptr<Font>> fontMap_;
     std::vector<std::shared_ptr<Font>> indexedFonts_;

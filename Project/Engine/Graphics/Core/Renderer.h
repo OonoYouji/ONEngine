@@ -1,100 +1,73 @@
-﻿#pragma once
+#pragma once
 
+#include <d3d12.h>
+#include <memory>
 #include <vector>
-#include <string>
-#include <map>
-#include "Engine/Core/Math/Math.h"
-#include "Engine/Graphics/Resource/GpuBuffer.h"
+#include "Engine/Graphics/Core/RenderContext.h"
 #include "Engine/Graphics/Shader/PipelineState.h"
-#include "Schema/Schema.h"
-
-namespace Engine::ECS {
-	class AnimationSystem;
-}
 
 namespace Engine::Graphics {
 
 class RenderDevice;
-class GPUCullingManager;
+class StructuredBuffer;
 
 ///
-/// 描画コンテキスト
-///
-struct RenderContext {
-	ID3D12GraphicsCommandList* commandList = nullptr;
-	D3D12_GPU_VIRTUAL_ADDRESS sceneCBAddress = 0;
-	D3D12_GPU_VIRTUAL_ADDRESS pointLightBufferAddress = 0;
-	uint32_t frameIndex = 0;
-	DXGI_FORMAT rtvFormats[8] = {};
-	uint32_t numRenderTargets = 1;
-
-	// クラスタライトカリング用
-	D3D12_GPU_VIRTUAL_ADDRESS lightGridBufferAddress = 0;
-	D3D12_GPU_VIRTUAL_ADDRESS lightIndexListBufferAddress = 0;
-
-	// GPU駆動カリング用
-	GPUCullingManager* cullingManager = nullptr;
-	D3D12_GPU_VIRTUAL_ADDRESS meshInfoBufferAddress = 0;
-	Engine::ECS::AnimationSystem* animationSystem = nullptr;
-	Engine::Math::Matrix4x4 viewProj;
-};
-
-///
-/// 描画リクエスト
+/// 1つの描画要求を表す構造体
 ///
 struct RenderRequest {
-	uint32_t modelIndex;
-	uint32_t materialIndex;
-	uint32_t subMeshIndex; // 追加
-	uint32_t vertexOffset;
-	uint32_t entityID;
-	uint32_t postProcessFlags;
-	bool isSkinned;
-	uint32_t skeletonIndex;
-	Engine::Math::Matrix4x4 world;
+    uint32_t modelIndex;
+    uint32_t materialIndex;
+    uint32_t subMeshIndex;
+    Engine::Math::Matrix4x4 world;
+    uint32_t entityID;
+    uint32_t postProcessFlags;
+    uint32_t vertexOffset;
+    bool isSkinned = false;
+    uint32_t skeletonIndex = 0;
 };
 
 ///
-/// 描画を一括管理するクラス
+/// 描画パイプライン全体を管理するクラス
 ///
 class Renderer {
 public:
-	static Renderer& GetInstance() {
-		static Renderer instance;
-		return instance;
-	}
+    static constexpr uint32_t kMaxInstances = 10000;
+    static constexpr uint32_t kBufferCount = 3;
 
-	void Initialize(RenderDevice* device);
-	void Shutdown();
+    static Renderer& GetInstance() {
+        return *instance_;
+    }
 
-	/// @brief 描画リクエストの追加
-	void PushRequest(const RenderRequest& request);
+    static void CreateInstance() {
+        if (!instance_) instance_ = new Renderer();
+    }
 
-	/// @brief データの抽出（ロジックの後に呼ばれる）
-	void Extract();
+    static void DestroyInstance() {
+        delete instance_;
+        instance_ = nullptr;
+    }
 
-	/// @brief Z-Prepassの実行
-	void RenderZPrepass(const RenderContext& context);
+    void Initialize(RenderDevice* device);
+    void Shutdown();
 
-	/// @brief メイン描画の実行
-	void Render(const RenderContext& context);
+    void PushRequest(const RenderRequest& request);
+    void ClearQueue();
+    void Extract();
 
-	void ClearQueue();
-
-	// 追加: GPU駆動カリング用のアクセサ
-	StructuredBuffer* GetInstanceBuffer(uint32_t frameIndex) const { return instanceSBs_[frameIndex].get(); }
-	uint32_t GetInstanceCount() const { return static_cast<uint32_t>(queue_.size()); }
+    void RenderZPrepass(const RenderContext& context);
+    void Render(const RenderContext& context);
 
 private:
-	void RenderInternal(const RenderContext& context, const PipelineStateDesc& baseDesc);
+    Renderer() = default;
+    ~Renderer() = default;
 
-	RenderDevice* device_ = nullptr;
-	std::vector<RenderRequest> queue_;
-	
-	// インスタンスデータ用バッファ（三重バッファリング）
-	static constexpr uint32_t kBufferCount = 3;
-	std::unique_ptr<StructuredBuffer> instanceSBs_[kBufferCount];
-	const uint32_t kMaxInstances = 2048;
+    static Renderer* instance_;
+
+    void RenderInternal(const RenderContext& context, const PipelineStateDesc& baseDesc);
+
+    RenderDevice* device_ = nullptr;
+    std::vector<RenderRequest> queue_;
+    std::unique_ptr<StructuredBuffer> instanceSBs_[kBufferCount];
 };
 
 } // namespace Engine::Graphics

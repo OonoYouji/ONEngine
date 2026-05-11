@@ -1,30 +1,34 @@
 #pragma once
 
-#include <d3d12.h>
 #include <string>
 #include <unordered_map>
 #include <memory>
 #include <vector>
-
-#include "Engine/Graphics/Utils/ComPtr.h"
-#include "ShaderCompiler.h"
-#include "RootSignature.h"
-#include "PipelineState.h"
-#include "PipelineAsset.h"
+#include <d3d12.h>
+#include "Engine/Graphics/Shader/PipelineState.h"
+#include "Engine/Graphics/Shader/RootSignature.h"
+#include "Engine/Graphics/Shader/ShaderCompiler.h"
 
 namespace Engine::Graphics {
 
 class RenderDevice;
 
 ///
-/// シェーダーとパイプライン状態を一括管理するクラス
-/// ※キャッシュ回避のため一時的に名称を変更
+/// シェーダーとパイプラインステートを管理するクラス
 ///
 class ShaderManager {
 public:
     static ShaderManager& GetInstance() {
-        static ShaderManager instance;
-        return instance;
+        return *instance_;
+    }
+
+    static void CreateInstance() {
+        if (!instance_) instance_ = new ShaderManager();
+    }
+
+    static void DestroyInstance() {
+        delete instance_;
+        instance_ = nullptr;
     }
 
     void Initialize(RenderDevice* device);
@@ -32,10 +36,10 @@ public:
 
     bool LoadPipelineAsset(const std::string& filePath);
 
-    // 確実に存在するはずのメソッド群
-    PipelineState* GetOrCreatePSO(const std::string& templateName, const PipelineStateDesc& desc = PipelineStateDesc());
+    PipelineState* GetOrCreatePSO(const std::string& templateName, const PipelineStateDesc& overrideDesc);
+    PipelineState* GetOrCreateMeshPSO(const std::string& templateName, const PipelineStateDesc& overrideDesc);
     ID3D12PipelineState* GetComputePSO(const std::string& templateName);
-    PipelineState* GetOrCreateMeshPSO(const std::string& templateName, const PipelineStateDesc& desc = PipelineStateDesc());
+    
     RootSignature* GetRootSignature(const std::string& name);
     ShaderObject* GetShader(const std::string& name);
     bool LoadShader(const std::string& name, const std::wstring& filePath, const std::wstring& entryPoint, const std::wstring& profile);
@@ -43,20 +47,33 @@ public:
 private:
     ShaderManager();
     ~ShaderManager();
-    ShaderManager(const ShaderManager&) = delete;
-    ShaderManager& operator=(const ShaderManager&) = delete;
 
-    std::string GeneratePSOKey(const std::string& templateName, const PipelineStateDesc& desc);
+    static ShaderManager* instance_;
 
-private:
     RenderDevice* device_ = nullptr;
     std::unique_ptr<ShaderCompiler> compiler_;
 
-    std::unordered_map<std::string, PipelineAsset> pipelineAssets_;
     std::unordered_map<std::string, std::unique_ptr<ShaderObject>> shaders_;
     std::unordered_map<std::string, std::unique_ptr<RootSignature>> rootSignatures_;
     std::unordered_map<std::string, std::unique_ptr<PipelineState>> pipelineStates_;
     std::unordered_map<std::string, ComPtr<ID3D12PipelineState>> computePipelineStates_;
+
+    struct ShaderFileInfo {
+        std::wstring path;
+        std::wstring entry;
+        std::wstring profile;
+        bool isValid = false;
+    };
+
+    struct PipelineAsset {
+        std::string name;
+        ShaderFileInfo vs, ps, as, ms, cs;
+        PipelineStateDesc baseDesc;
+    };
+
+    std::unordered_map<std::string, PipelineAsset> pipelineAssets_;
+
+    std::string GeneratePSOKey(const std::string& templateName, const PipelineStateDesc& desc);
 };
 
 } // namespace Engine::Graphics

@@ -1,7 +1,7 @@
 ﻿#include "MaterialManager.h"
 #include "TextureManager.h"
 #include "AssetDatabase.h"
-#include "AssetRegistry.h"
+#include "Engine/Asset/AssetRegistry.h"
 #include "Engine/Graphics/Core/RenderDevice.h"
 #include "Engine/Common/Console.h"
 #include "Externals/nlohmann/json.hpp"
@@ -12,8 +12,12 @@ using json = nlohmann::json;
 
 namespace Engine::Asset {
 
+MaterialManager* MaterialManager::instance_ = nullptr;
+
 MaterialManager::MaterialManager() = default;
-MaterialManager::~MaterialManager() = default; // 前方宣言対応
+MaterialManager::~MaterialManager() {
+    Shutdown();
+}
 
 void MaterialManager::Initialize(Graphics::RenderDevice* device) {
     device_ = device;

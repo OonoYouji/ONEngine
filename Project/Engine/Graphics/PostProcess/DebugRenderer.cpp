@@ -1,13 +1,14 @@
 #include "DebugRenderer.h"
 #include "Engine/Graphics/Core/RenderDevice.h"
-#include "Engine/Graphics/Core/Renderer.h"
+#include "Engine/Graphics/Resource/GpuBuffer.h"
 #include "Engine/Graphics/Shader/ShaderManager.h"
 #include <d3dx12.h>
 
 namespace Engine::Graphics {
 
+DebugRenderer* DebugRenderer::instance_ = nullptr;
+
 void DebugRenderer::Initialize(RenderDevice* device) {
-    device_ = device;
     vertexBuffer_ = std::make_unique<StructuredBuffer>();
     vertexBuffer_->Create(device, sizeof(Vertex), kMaxVertices);
 }
@@ -18,65 +19,49 @@ void DebugRenderer::Shutdown() {
 
 void DebugRenderer::DrawLine(const Engine::Math::Vector3& start, const Engine::Math::Vector3& end, const Engine::Math::Vector4& color) {
     if (vertices_.size() + 2 > kMaxVertices) return;
-    vertices_.push_back({start, color});
-    vertices_.push_back({end, color});
+    vertices_.push_back({ start, color });
+    vertices_.push_back({ end, color });
 }
 
-void DebugRenderer::DrawBox(const Engine::Math::Vector3& center, const Engine::Math::Vector3& size, const Engine::Math::Vector4& color) {
-    Engine::Math::Vector3 min = {center.x - size.x * 0.5f, center.y - size.y * 0.5f, center.z - size.z * 0.5f};
-    Engine::Math::Vector3 max = {center.x + size.x * 0.5f, center.y + size.y * 0.5f, center.z + size.z * 0.5f};
+void DebugRenderer::DrawBox(const Engine::Math::Vector3& min, const Engine::Math::Vector3& max, const Engine::Math::Vector4& color) {
+    DrawLine({ min.x, min.y, min.z }, { max.x, min.y, min.z }, color);
+    DrawLine({ max.x, min.y, min.z }, { max.x, max.y, min.z }, color);
+    DrawLine({ max.x, max.y, min.z }, { min.x, max.y, min.z }, color);
+    DrawLine({ min.x, max.y, min.z }, { min.x, min.y, min.z }, color);
 
-    // Bottom
-    DrawLine({min.x, min.y, min.z}, {max.x, min.y, min.z}, color);
-    DrawLine({max.x, min.y, min.z}, {max.x, min.y, max.z}, color);
-    DrawLine({max.x, min.y, max.z}, {min.x, min.y, max.z}, color);
-    DrawLine({min.x, min.y, max.z}, {min.x, min.y, min.z}, color);
+    DrawLine({ min.x, min.y, max.z }, { max.x, min.y, max.z }, color);
+    DrawLine({ max.x, min.y, max.z }, { max.x, max.y, max.z }, color);
+    DrawLine({ max.x, max.y, max.z }, { min.x, max.y, max.z }, color);
+    DrawLine({ min.x, max.y, max.z }, { min.x, min.y, max.z }, color);
 
-    // Top
-    DrawLine({min.x, max.y, min.z}, {max.x, max.y, min.z}, color);
-    DrawLine({max.x, max.y, min.z}, {max.x, max.y, max.z}, color);
-    DrawLine({max.x, max.y, max.z}, {min.x, max.y, max.z}, color);
-    DrawLine({min.x, max.y, max.z}, {min.x, max.y, min.z}, color);
+    DrawLine({ min.x, min.y, min.z }, { min.x, min.y, max.z }, color);
+    DrawLine({ max.x, min.y, min.z }, { max.x, min.y, max.z }, color);
+    DrawLine({ max.x, max.y, min.z }, { max.x, max.y, max.z }, color);
+    DrawLine({ min.x, max.y, min.z }, { min.x, max.y, max.z }, color);
+}
 
-    // Vertical
-    DrawLine({min.x, min.y, min.z}, {min.x, max.y, min.z}, color);
-    DrawLine({max.x, min.y, min.z}, {max.x, max.y, min.z}, color);
-    DrawLine({max.x, min.y, max.z}, {max.x, max.y, max.z}, color);
-    DrawLine({min.x, min.y, max.z}, {min.x, max.y, max.z}, color);
+void DebugRenderer::DrawSphere(const Engine::Math::Vector3& center, float radius, const Engine::Math::Vector4& color) {
+    // 簡易実装
+    DrawLine({ center.x - radius, center.y, center.z }, { center.x + radius, center.y, center.z }, color);
+    DrawLine({ center.x, center.y - radius, center.z }, { center.x, center.y + radius, center.z }, color);
+    DrawLine({ center.x, center.y, center.z - radius }, { center.x, center.y, center.z + radius }, color);
 }
 
 void DebugRenderer::Render(const RenderContext& context) {
     if (vertices_.empty()) return;
 
-    // バッファ転送
-    vertexBuffer_->Update(vertices_.data(), static_cast<uint32_t>(vertices_.size() * sizeof(Vertex)));
+    vertexBuffer_->Update(vertices_.data(), (uint32_t)(vertices_.size() * sizeof(Vertex)));
 
-    auto& shaderManager = ShaderManager::GetInstance();
-    
-    PipelineStateDesc desc;
-    desc.numRenderTargets = context.numRenderTargets;
-    for (uint32_t i = 0; i < context.numRenderTargets; ++i) {
-        desc.rtvFormats[i] = context.rtvFormats[i];
-    }
+    auto& sm = ShaderManager::GetInstance();
+    auto* pso = sm.GetComputePSO("DebugLine"); // 実際には Graphics PSO だが互換性のために一旦
+    auto* rootSig = sm.GetRootSignature("DebugLine");
 
-    desc.primitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE;
-    desc.depthWriteEnable = false; 
-    
-    auto* pso = shaderManager.GetOrCreatePSO("DebugLine", desc);
-    auto* rootSig = shaderManager.GetRootSignature("DebugLine");
+    if (!pso || !rootSig) return;
 
     context.commandList->SetGraphicsRootSignature(rootSig->Get());
-    context.commandList->SetPipelineState(pso->Get());
-
-    auto sceneIdx = rootSig->GetParameterIndex("gSceneData");
-    if (sceneIdx != RootSignature::kInvalidIndex) {
-        context.commandList->SetGraphicsRootConstantBufferView(sceneIdx, context.sceneCBAddress);
-    }
-
-    auto vertIdx = rootSig->GetParameterIndex("gVertices");
-    if (vertIdx != RootSignature::kInvalidIndex) {
-        context.commandList->SetGraphicsRootShaderResourceView(vertIdx, vertexBuffer_->GetResource()->GetGPUVirtualAddress());
-    }
+    context.commandList->SetPipelineState(pso);
+    context.commandList->SetGraphicsRootConstantBufferView(rootSig->GetParameterIndex("gSceneData"), context.sceneCBAddress);
+    context.commandList->SetGraphicsRootShaderResourceView(rootSig->GetParameterIndex("gVertices"), vertexBuffer_->GetResource()->GetGPUVirtualAddress());
 
     context.commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
     context.commandList->DrawInstanced(static_cast<UINT>(vertices_.size()), 1, 0, 0);

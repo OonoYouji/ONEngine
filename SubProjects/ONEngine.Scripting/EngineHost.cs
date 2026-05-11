@@ -17,6 +17,15 @@ namespace ONEngine.Scripting
         {
             try
             {
+                // NativeLibrary のリゾルバーを登録 (ONEngine.exe への参照を現在の EXE に向ける)
+                NativeLibrary.SetDllImportResolver(typeof(EngineHost).Assembly, (libraryName, assembly, searchPath) => {
+                    if (libraryName == "ONEngine.exe") {
+                        // 現在実行中のプロセスのモジュールハンドルを返す
+                        return NativeLibrary.GetMainProgramHandle();
+                    }
+                    return IntPtr.Zero;
+                });
+
                 Debug.SetLogHandler(logHandler);
                 _world = new EcsWorld(registryPtr);
                 Debug.Log("[C#] EngineHost: Initialized (Zero-allocation architecture).");
@@ -29,8 +38,9 @@ namespace ONEngine.Scripting
         }
 
         [UnmanagedCallersOnly]
-        public static void Update(float deltaTime)
+        public static void Update()
         {
+            float deltaTime = 1.0f / 60.0f; // Temporary fixed DT for debugging
             if (_world == null) return;
 
             try
@@ -39,17 +49,30 @@ namespace ONEngine.Scripting
                 uint chunkCount = _world.GetChunkCount<ScriptComponent>();
                 for (uint i = 0; i < chunkCount; i++)
                 {
-                    var chunk = _world.GetChunkSpan<ScriptComponent>(i);
-                    foreach (var comp in chunk)
+                    try
                     {
-                        if (comp.gcHandle == 0) continue;
-                        
-                        var handle = GCHandle.FromIntPtr((IntPtr)comp.gcHandle);
-                        if (handle.IsAllocated && handle.Target is GameScript script)
+                        var chunk = _world.GetChunkSpan<ScriptComponent>(i);
+                        foreach (var comp in chunk)
                         {
-                            try { script.Update(deltaTime); }
-                            catch (Exception e) { Debug.Log($"[C#] Error in script Update: {e.Message}"); }
+                            if (comp.gcHandle == 0) continue;
+                            
+                            try
+                            {
+                                var handle = GCHandle.FromIntPtr((IntPtr)comp.gcHandle);
+                                if (handle.IsAllocated && handle.Target is GameScript script)
+                                {
+                                    script.Update(deltaTime);
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                Debug.Log($"[C#] Error in Script Instance Update: {e.Message}");
+                            }
                         }
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.Log($"[C#] Error in Script Chunk Update: {e.Message}");
                     }
                 }
 
@@ -57,7 +80,8 @@ namespace ONEngine.Scripting
             }
             catch (Exception e)
             {
-                Debug.Log($"[C#] FATAL Error in EngineHost.Update: {e}");
+                // FATAL errors must not propagate to Native
+                Console.WriteLine($"[C#] FATAL Error in EngineHost.Update: {e}");
             }
         }
 

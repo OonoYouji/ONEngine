@@ -1,14 +1,15 @@
 #include "GeometryPool.h"
 #include "Engine/Asset/Mesh.h"
 #include "Engine/Graphics/Core/RenderDevice.h"
+#include "Engine/Graphics/Resource/GpuBuffer.h"
 #include "Engine/Common/Assert.h"
 #include "Engine/Common/Console.h"
 
 namespace Engine::Graphics {
 
+GeometryPool* GeometryPool::instance_ = nullptr;
+
 void GeometryPool::Initialize(RenderDevice* device) {
-    device_ = device;
-    
     vertexBuffer_ = std::make_unique<StructuredBuffer>();
     vertexBuffer_->Create(device, sizeof(Asset::Vertex), kMaxVertices);
 

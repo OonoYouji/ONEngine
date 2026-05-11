@@ -27,7 +27,6 @@ public:
 				Engine::Graphics::RenderRequest request;
 				request.modelIndex = meshRenderer.modelIndex;
 				request.materialIndex = meshRenderer.materialIndex;
-				request.subMeshIndex = subIdx++;
 				request.vertexOffset = mesh->GetVertexOffset();
 				request.world = transform.world;
 				request.entityID = static_cast<uint32_t>(entity);
@@ -49,7 +48,6 @@ public:
 				Engine::Graphics::RenderRequest request;
 				request.modelIndex = skinnedRenderer.modelIndex;
 				request.materialIndex = skinnedRenderer.materialIndex;
-				request.subMeshIndex = subIdx++;
 				
 				// AnimationSystem で割り当てられた動的オフセットを使用
 				// (全メッシュが連続して stack に積まれている前提)

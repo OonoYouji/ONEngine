@@ -1,18 +1,24 @@
-﻿#include "GraphicsEngine.h"
+#include "GraphicsEngine.h"
 
 /// directX
 #include <d3d12.h>
+#include <d3dx12.h>
 #include "Engine/Graphics/Resource/DepthBuffer.h"
 #include "Engine/Graphics/Shader/ShaderManager.h"
 #include "Engine/Graphics/PostProcess/PostProcessSystem.h"
 
 namespace Engine::Graphics {
 
+GraphicsEngine* GraphicsEngine::instance_ = nullptr;
+
 GraphicsEngine::GraphicsEngine() = default;
-GraphicsEngine::~GraphicsEngine() = default;
+GraphicsEngine::~GraphicsEngine() {
+	Shutdown();
+}
 
 void GraphicsEngine::Initialize(HWND hwnd, const Engine::Math::Vector2Int& windowSize) {
 	windowSize_ = windowSize;
+    hwnd_ = hwnd;
 
 	///
 	/// 基盤レイヤーの初期化
@@ -29,10 +35,10 @@ void GraphicsEngine::Initialize(HWND hwnd, const Engine::Math::Vector2Int& windo
 	commandQueue_->Initialize(renderDevice_.get());
 
 	rtvHeap_ = std::make_unique<DescriptorHeap>();
-	rtvHeap_->Initialize(renderDevice_.get(), D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 32, false); // 余裕を持って32個確保
+	rtvHeap_->Initialize(renderDevice_.get(), D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 32, false);
 
 	srvHeap_ = std::make_unique<DescriptorHeap>();
-	srvHeap_->Initialize(renderDevice_.get(), D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 1024, true);
+	srvHeap_->Initialize(renderDevice_.get(), D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 2048, true); // ヒープを拡張
 
 	dsvHeap_ = std::make_unique<DescriptorHeap>();
 	dsvHeap_->Initialize(renderDevice_.get(), D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 1, false);
@@ -64,9 +70,6 @@ void GraphicsEngine::Initialize(HWND hwnd, const Engine::Math::Vector2Int& windo
     // ID/Flagsバッファの作成 (R32G32_UINT: EntityID, PostProcessFlags)
     idBuffer_ = std::make_unique<RenderTexture>();
     idBuffer_->Create(renderDevice_.get(), rtvHeap_.get(), srvHeap_.get(), windowSize, DXGI_FORMAT_R32G32_UINT, {0.0f, 0.0f, 0.0f, 0.0f});
-
-    // ポストプロセスシステムの初期化
-    PostProcessSystem::GetInstance().Initialize(renderDevice_.get(), rtvHeap_.get(), srvHeap_.get(), windowSize);
 }
 
 void GraphicsEngine::Shutdown() {
@@ -76,72 +79,89 @@ void GraphicsEngine::Shutdown() {
 }
 
 void GraphicsEngine::BeginFrame() {
-    // 1. 次のフレームリソースへ
     currentFrameIndex_ = (currentFrameIndex_ + 1) % kFrameCount;
-
-    // 2. そのフレームリソースのGPU処理が終わるまで待機
     commandQueue_->Wait(frameResources_[currentFrameIndex_]->GetFenceValue());
-
-    // 3. コマンドリストのリセット
     commandQueue_->Reset(frameResources_[currentFrameIndex_]->GetAllocator());
 
-    // 中間バッファを描画ターゲットに設定
-    mainColorBuffer_->Transition(commandQueue_->GetCommandList(), D3D12_RESOURCE_STATE_RENDER_TARGET);
-    normalBuffer_->Transition(commandQueue_->GetCommandList(), D3D12_RESOURCE_STATE_RENDER_TARGET);
-    idBuffer_->Transition(commandQueue_->GetCommandList(), D3D12_RESOURCE_STATE_RENDER_TARGET);
+    auto* commandList = commandQueue_->GetCommandList();
+    
+    // 全員で共有するグローバル SRV ヒープをバインド
+    ID3D12DescriptorHeap* heaps[] = { srvHeap_->GetHeap() };
+    commandList->SetDescriptorHeaps(_countof(heaps), heaps);
+
+    // バックバッファの遷移 (PRESENT -> RENDER_TARGET)
+    swapChain_->BeginFrame(commandList);
+
+    // MRTs の遷移 (COMMON/SRV -> RENDER_TARGET)
+    mainColorBuffer_->Transition(commandList, D3D12_RESOURCE_STATE_RENDER_TARGET);
+    normalBuffer_->Transition(commandList, D3D12_RESOURCE_STATE_RENDER_TARGET);
+    idBuffer_->Transition(commandList, D3D12_RESOURCE_STATE_RENDER_TARGET);
     
     D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles[] = {
         mainColorBuffer_->GetRTVHandle(),
         normalBuffer_->GetRTVHandle(),
         idBuffer_->GetRTVHandle()
     };
-    auto dsvHandle = depthBuffer_->GetDSVHandle();
-    commandQueue_->GetCommandList()->OMSetRenderTargets(_countof(rtvHandles), rtvHandles, FALSE, &dsvHandle);
-    
-    // SwapChainのバックバッファも状態だけ遷移させておく
-    swapChain_->BeginFrame(commandQueue_->GetCommandList());
+    D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = depthBuffer_->GetDSVHandle();
+    commandList->OMSetRenderTargets(3, rtvHandles, FALSE, &dsvHandle);
 }
 
 void GraphicsEngine::EndFrame() {
     auto* commandList = commandQueue_->GetCommandList();
-
-    // 1. 各バッファをシェーダー参照用に遷移
+    
+    // MRTs を SHADER_RESOURCE に遷移 (ImGui で参照するため)
     mainColorBuffer_->Transition(commandList, D3D12_RESOURCE_STATE_ALL_SHADER_RESOURCE);
     normalBuffer_->Transition(commandList, D3D12_RESOURCE_STATE_ALL_SHADER_RESOURCE);
     idBuffer_->Transition(commandList, D3D12_RESOURCE_STATE_ALL_SHADER_RESOURCE);
 
-    // 2. ポストプロセス（トーンマッピング等）を実行してSwapChainへ出力
-    PostProcessSystem::GetInstance().Render(commandList, mainColorBuffer_.get(), swapChain_->GetRTVHandle());
+    // ImGui の描画前にバックバッファをターゲットに設定
+    D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = swapChain_->GetRTVHandle();
+    commandList->OMSetRenderTargets(1, &rtvHandle, FALSE, nullptr);
 
-    // 3. SwapChain の終了処理 (PRESENTへ遷移)
+    // ※ ImGui_ImplDX12_RenderDrawData はこの後に Application::Run 側で呼ばれる
+
+    // バックバッファを PRESENT に戻すのは、ImGui 描画後に行う必要がある
+    // 現状は EndFrame の役割を分割するか、Application::Run 側で最終遷移を行う
+}
+
+// 最終的な書き出しと提示
+void GraphicsEngine::Present() {
+    auto* commandList = commandQueue_->GetCommandList();
+    
+    // バックバッファの最終遷移 (RENDER_TARGET -> PRESENT)
     swapChain_->EndFrame(commandList);
-    
-    // 4. 実行
+
     commandQueue_->Execute();
-    
-    // 5. 画面表示
     swapChain_->Present();
-    
-    // 6. フェンス値保存
     frameResources_[currentFrameIndex_]->SetFenceValue(commandQueue_->Signal());
 }
 
 void GraphicsEngine::Clear(const Engine::Math::Vector4& color) {
     auto* commandList = commandQueue_->GetCommandList();
-    mainColorBuffer_->Clear(commandList);
-    normalBuffer_->Clear(commandList);
-    idBuffer_->Clear(commandList);
+    float mainClearColor[] = { 0.1f, 0.1f, 0.1f, 1.0f };
+    commandList->ClearRenderTargetView(mainColorBuffer_->GetRTVHandle(), mainClearColor, 0, nullptr);
+    float zero[] = { 0.0f, 0.0f, 0.0f, 0.0f };
+    commandList->ClearRenderTargetView(normalBuffer_->GetRTVHandle(), zero, 0, nullptr);
+    commandList->ClearRenderTargetView(idBuffer_->GetRTVHandle(), zero, 0, nullptr);
+    
+    // バックバッファもクリア (ImGui の背景用)
+    float backColor[] = { 0, 0, 0, 1 };
+    commandList->ClearRenderTargetView(swapChain_->GetRTVHandle(), backColor, 0, nullptr);
 }
 
 void GraphicsEngine::ClearDepth() {
-	commandQueue_->GetCommandList()->ClearDepthStencilView(depthBuffer_->GetDSVHandle(), D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
+    auto* commandList = commandQueue_->GetCommandList();
+    D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = depthBuffer_->GetDSVHandle();
+    commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 }
 
 void GraphicsEngine::SetDebugLayer() {
-	if(SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController_)))) {
-		debugController_->EnableDebugLayer();
-		debugController_->SetEnableGPUBasedValidation(TRUE);
+#ifdef _DEBUG
+	ComPtr<ID3D12Debug> debugController;
+	if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController)))) {
+		debugController->EnableDebugLayer();
 	}
+#endif
 }
 
 void GraphicsEngine::CreateDebugLayer() {
@@ -162,8 +182,15 @@ void GraphicsEngine::CreateDebugLayer() {
 		filter.DenyList.pSeverityList = severtities;
 
 		infoQueue->PushStorageFilter(&filter);
-		infoQueue.Reset();
 	}
+}
+
+D3D12_CPU_DESCRIPTOR_HANDLE GraphicsEngine::GetImGuiCPUHandle() const {
+    return srvHeap_->GetCPUHandle(0);
+}
+
+D3D12_GPU_DESCRIPTOR_HANDLE GraphicsEngine::GetImGuiGPUHandle() const {
+    return srvHeap_->GetGPUHandle(0);
 }
 
 } /// namespace Engine::Graphics

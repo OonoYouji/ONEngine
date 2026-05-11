@@ -4,6 +4,8 @@
 #include "Engine/Graphics/Core/ClusteredLightManager.h"
 #include "Engine/Graphics/Core/GPUCullingManager.h"
 #include <memory>
+#include <functional>
+#include <vector>
 #include "Engine/Core/Window.h"
 #include "Engine/Core/Timer.h"
 #include "Engine/ECS/Registry.h"
@@ -25,23 +27,45 @@ namespace Engine::Core {
 class Application {
 public:
     static Application& GetInstance() {
-        static Application instance;
-        return instance;
+        return *instance_;
+    }
+
+    static void CreateInstance() {
+        if (!instance_) instance_ = new Application();
+    }
+
+    static void DestroyInstance() {
+        delete instance_;
+        instance_ = nullptr;
     }
 
     bool Initialize(HINSTANCE hInstance, int nCmdShow);
     void Run();
     void Shutdown();
 
+    void SetEditorMode(bool enabled) { isEditorMode_ = enabled; }
+    bool IsEditorMode() const { return isEditorMode_; }
+
+    HWND GetHWND() const { return window_.GetHWND(); }
+
     ECS::Registry& GetRegistry() { return registry_; }
 
+    void RegisterUICallback(const std::function<void()>& callback) { uiCallbacks_.push_back(callback); }
+
 private:
+    Application();
+    ~Application();
+
+    static Application* instance_;
+
     void Update(float dt);
     void Render();
 
 private:
     Window window_;
     Timer timer_;
+    
+    std::vector<std::function<void()>> uiCallbacks_;
     
     // ECS
     ECS::Registry registry_;
@@ -54,7 +78,7 @@ private:
     std::unique_ptr<ECS::ParticleSystem> particleSystem_;
     std::unique_ptr<ECS::AnimationSystem> animationSystem_;
 
-    // Rendering Resources
+    // Temp buffers
     std::unique_ptr<Graphics::StructuredBuffer> pointLightSB_;
     std::unique_ptr<Graphics::StructuredBuffer> spriteSB_;
     std::unique_ptr<Graphics::StructuredBuffer> textSB_;
@@ -62,8 +86,10 @@ private:
     std::unique_ptr<Graphics::GPUCullingManager> gpuCullingManager_;
 
     // Scripting
-    void(*updateDelegate_)(float) = nullptr;
+    void(*updateDelegate_)() = nullptr;
     void(*shutdownDelegate_)() = nullptr;
+
+    bool isEditorMode_ = false;
 };
 
 } // namespace Engine::Core

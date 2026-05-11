@@ -1,13 +1,13 @@
-﻿#pragma once
+#pragma once
 
 #include <string>
 #include <unordered_map>
 #include <memory>
 #include <vector>
 
-#include "Mesh.h"
-#include "Model.h"
-#include "AssetHandle.h"
+#include "Asset/Mesh.h"
+#include "Asset/Model.h"
+#include "Asset/AssetHandle.h"
 
 namespace Engine::Graphics {
     class RenderDevice;
@@ -16,26 +16,32 @@ namespace Engine::Graphics {
 namespace Engine::Asset {
 
 ///
-/// アセット全体を統合管理するクラス
+/// アセット全体を管理するクラス
 ///
 class AssetManager {
 public:
     static AssetManager& GetInstance() {
-        static AssetManager instance;
-        return instance;
+        return *instance_;
+    }
+
+    static void CreateInstance() {
+        if (!instance_) instance_ = new AssetManager();
+    }
+
+    static void DestroyInstance() {
+        delete instance_;
+        instance_ = nullptr;
     }
 
     void Initialize(Graphics::RenderDevice* device);
     void Shutdown();
 
-    /// @brief パスまたはGUIDからモデルをロードしてキャッシュ
-    /// @param pathOrGuid ファイルパスまたはGUID
-    /// @return モデルのインデックス
-    int32_t LoadModel(const std::string& pathOrGuid);
-
-    /// @brief AssetRegistry経由でのロード
+    /// @brief ファイルパスまたはGUIDからモデルをアセットとしてロード
     std::shared_ptr<Model> LoadModelAsAsset(const std::string& pathOrGuid);
-    
+
+    /// @brief 旧方式の互換性用
+    uint32_t LoadModel(const std::string& pathOrGuid);
+
     /// @brief インデックスからモデルを取得
     std::shared_ptr<Model> GetModelByIndex(uint32_t index);
 
@@ -47,14 +53,13 @@ private:
     AssetManager() = default;
     ~AssetManager() = default;
 
-    /// @brief 入力がパスかGUIDかを判定し、常にGUIDを返す
-    std::string ToGuid(const std::string& pathOrGuid);
+    static AssetManager* instance_;
 
-private:
     Graphics::RenderDevice* device_ = nullptr;
-    // キャッシュはGUIDで管理
     std::unordered_map<std::string, std::shared_ptr<Model>> models_;
     std::vector<std::shared_ptr<Model>> indexedModels_;
+
+    std::string ToGuid(const std::string& pathOrGuid);
 };
 
 } // namespace Engine::Asset

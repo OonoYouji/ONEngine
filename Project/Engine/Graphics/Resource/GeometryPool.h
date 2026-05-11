@@ -1,60 +1,66 @@
 #pragma once
 
-#include <memory>
+#include <d3d12.h>
 #include <vector>
-#include <cstdint>
-#include "GpuBuffer.h"
+#include <memory>
+#include "Engine/Graphics/Utils/ComPtr.h"
 #include "Schema/Schema.h"
 
-namespace Engine::Asset {
-    struct Vertex;
-}
+namespace Engine::Asset { struct Vertex; }
 
 namespace Engine::Graphics {
 
 class RenderDevice;
+class StructuredBuffer;
+class IndexBuffer;
 
 ///
-/// 全てのジオメトリ（頂点・インデックス）を一括管理するプール
+/// 全てのメッシュ頂点・インデックス・ボーンウェイトを一括管理するプール
 ///
 class GeometryPool {
 public:
+    static constexpr uint32_t kMaxVertices = 1000000;
+    static constexpr uint32_t kMaxIndices = 3000000;
+
     static GeometryPool& GetInstance() {
-        static GeometryPool instance;
-        return instance;
+        return *instance_;
+    }
+
+    static void CreateInstance() {
+        if (!instance_) instance_ = new GeometryPool();
+    }
+
+    static void DestroyInstance() {
+        delete instance_;
+        instance_ = nullptr;
     }
 
     void Initialize(RenderDevice* device);
     void Shutdown();
 
-    /// @brief データの書き込みと領域の確保
-    /// @return 確保されたオフセット情報
     struct Allocation {
         uint32_t vertexOffset;
         uint32_t indexOffset;
     };
-    Allocation Allocate(const std::vector<Asset::Vertex>& vertices, const std::vector<uint32_t>& indices, const std::vector<Engine::GeneratedSchema::BoneWeightData>& boneWeights = {});
 
-    StructuredBuffer* GetVertexBuffer() { return vertexBuffer_.get(); }
-    StructuredBuffer* GetBoneWeightBuffer() { return boneWeightBuffer_.get(); }
-    IndexBuffer* GetIndexBuffer() { return indexBuffer_.get(); }
+    Allocation Allocate(const std::vector<Engine::Asset::Vertex>& vertices, const std::vector<uint32_t>& indices, const std::vector<Engine::GeneratedSchema::BoneWeightData>& weights);
+
+    StructuredBuffer* GetVertexBuffer() const { return vertexBuffer_.get(); }
+    IndexBuffer*      GetIndexBuffer()  const { return indexBuffer_.get(); }
+    StructuredBuffer* GetBoneWeightBuffer() const { return boneWeightBuffer_.get(); }
 
 private:
     GeometryPool() = default;
     ~GeometryPool() = default;
 
-private:
-    RenderDevice* device_ = nullptr;
+    static GeometryPool* instance_;
+
     std::unique_ptr<StructuredBuffer> vertexBuffer_;
+    std::unique_ptr<IndexBuffer>      indexBuffer_;
     std::unique_ptr<StructuredBuffer> boneWeightBuffer_;
-    std::unique_ptr<IndexBuffer> indexBuffer_;
 
     uint32_t currentVertexOffset_ = 0;
     uint32_t currentIndexOffset_ = 0;
-
-    // とりあえず固定の最大サイズ (必要に応じて拡張またはアロケータを実装)
-    static constexpr uint32_t kMaxVertices = 1000000;
-    static constexpr uint32_t kMaxIndices = 2000000;
 };
 
 } // namespace Engine::Graphics

@@ -1,4 +1,4 @@
-﻿#include "ParticleSystem.h"
+#include "ParticleSystem.h"
 #include "Engine/Graphics/Core/RenderDevice.h"
 #include "Engine/Graphics/Core/Renderer.h"
 #include "Engine/Graphics/Shader/ShaderManager.h"
@@ -148,7 +148,7 @@ void ParticleSystem::Update(Registry& registry) {
 void ParticleSystem::Render(Registry& registry, const Graphics::RenderContext& context) {
     auto& sm = ::Engine::Graphics::ShaderManager::GetInstance();
     auto& geoPool = ::Engine::Graphics::GeometryPool::GetInstance();
-    auto& tm = ::Engine::Asset::TextureManager::GetInstance();
+    auto& graphics = ::Engine::Graphics::GraphicsEngine::GetInstance();
 
     Graphics::PipelineStateDesc desc;
     desc.numRenderTargets = context.numRenderTargets;
@@ -159,7 +159,7 @@ void ParticleSystem::Render(Registry& registry, const Graphics::RenderContext& c
     // Mesh Shader を使用するため ID3D12GraphicsCommandList6 にキャスト
     auto* pCmd6 = static_cast<ID3D12GraphicsCommandList6*>(context.commandList);
 
-    registry.GetView<Transform, ParticleEmitter>().Each([pCmd6, &sm, &geoPool, &tm, &desc, &context, this](Entity entity, Transform& transform, ParticleEmitter& emitter) {
+    registry.GetView<Transform, ParticleEmitter>().Each([pCmd6, &sm, &geoPool, &graphics, &desc, &context, this](Entity entity, Transform& transform, ParticleEmitter& emitter) {
         auto it = emitters_.find(entity);
         if (it == emitters_.end() || !it->second.initialized) return;
         auto& state = it->second;
@@ -171,7 +171,7 @@ void ParticleSystem::Render(Registry& registry, const Graphics::RenderContext& c
             pCmd6->SetGraphicsRootSignature(rootSig->Get());
             pCmd6->SetPipelineState(pso->Get());
 
-            ID3D12DescriptorHeap* heaps[] = { tm.GetSrvHeap()->GetHeap() };
+            ID3D12DescriptorHeap* heaps[] = { graphics.GetSRVHeap()->GetHeap() };
             pCmd6->SetDescriptorHeaps(1, heaps);
 
             auto setSRV = [&](const std::string& name, D3D12_GPU_VIRTUAL_ADDRESS addr) {
@@ -194,7 +194,7 @@ void ParticleSystem::Render(Registry& registry, const Graphics::RenderContext& c
             
             auto texIdx = rootSig->GetParameterIndex("gTextures");
             if (texIdx != ::Engine::Graphics::RootSignature::kInvalidIndex)
-                pCmd6->SetGraphicsRootDescriptorTable(texIdx, tm.GetSrvHeap()->GetGPUHandle(0));
+                pCmd6->SetGraphicsRootDescriptorTable(texIdx, graphics.GetSRVHeap()->GetGPUHandle(0));
 
             pCmd6->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
             pCmd6->DispatchMesh((emitter.count + 127) / 128, 1, 1);

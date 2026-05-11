@@ -1,6 +1,7 @@
 #include "Engine/ECS/Registry.h"
 #include "Engine/ECS/ComponentRegistry.h"
 #include "Engine/Graphics/PostProcess/DebugRenderer.h"
+#include "Engine/Graphics/Resource/GpuBuffer.h"
 #include "Schema/Schema.h"
 #include <cstdint>
 

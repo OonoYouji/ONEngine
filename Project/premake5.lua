@@ -1,6 +1,6 @@
 workspace "ONEngine"
     architecture "x64"
-    startproject "ONEngine"
+    startproject "Editor"
     configurations { "Debug", "Release", "Development" }
 
     -- =========================================================
@@ -121,23 +121,17 @@ project "D3D12MA"
 
 
 -- 
--- Project: ONEngine
+-- Project: Engine
 --
-project "ONEngine"
-    kind "WindowedApp"
+project "Engine"
+    kind "StaticLib"
     language "C++"
-    -- cppdialect "C++latest" -- 共通設定から継承済み
-
     targetdir ("../Generated/Outputs/%{cfg.buildcfg}")
     objdir ("../Generated/Obj/%{prj.name}/%{cfg.buildcfg}")
-    debugdir "%{wks.location}"
-    
+
     files {
         "Engine/**.h",
-        "Engine/**.cpp",
-        "Game/**.h",
-        "Game/**.cpp",
-        "main.cpp"
+        "Engine/**.cpp"
     }
 
     includedirs {
@@ -165,37 +159,67 @@ project "ONEngine"
         "nethost.lib"
     }
 
-    warnings "Extra"
-    -- "/MP", "/utf-8" は共通設定にあるため、ここには "/bigobj" だけ追加
     buildoptions { "/bigobj" } 
 
-    -- Debug Configuration
     filter "configurations:Debug"
         runtime "Debug"
         symbols "On"
-        optimize "Off"
-        defines { "_DEBUG", "_WINDOWS", "DEBUG_MODE" }
+        defines { "_DEBUG", "_WINDOWS", "DEBUG_MODE", "ENGINE_BUILD" }
         staticruntime "On"
         libdirs { "$(ProjectDir)Externals/assimp/lib/Debug" }
-        links { "assimp-vc143-mtd.lib" } -- 既存のライブラリ名を使用（必要に応じて更新してください）
-        
-        postbuildcommands {
-            "copy \"$(WindowsSdkDir)bin\\$(TargetPlatformVersion)\\x64\\dxcompiler.dll\" \"$(TargetDir)dxcompiler.dll\"",
-            "copy \"$(WindowsSdkDir)bin\\$(TargetPlatformVersion)\\x64\\dxil.dll\" \"$(TargetDir)dxil.dll\"",
-            "copy \"$(ProjectDir)Externals\\DotNetHost\\nethost.dll\" \"$(TargetDir)nethost.dll\"",
-        }
+        links { "assimp-vc143-mtd.lib" }
 
-    -- Release Configuration
     filter "configurations:Release"
         runtime "Release"
         symbols "On"
         optimize "Speed"
-        defines { "NDEBUG", "_WINDOWS" }
+        defines { "NDEBUG", "_WINDOWS", "ENGINE_BUILD" }
         linktimeoptimization "On"
         staticruntime "On"
         libdirs { "$(ProjectDir)Externals/assimp/lib/Release" }
         links { "assimp-vc143-mt.lib" }
-        
+
+    filter "configurations:Development"
+        runtime "Release"
+        symbols "Full"
+        optimize "Speed"
+        defines { "DEBUG_BUILD", "_WINDOWS", "DEBUG_MODE", "ENGINE_BUILD" }
+        staticruntime "On"
+        libdirs { "$(ProjectDir)Externals/assimp/lib/Release" }
+        links { "assimp-vc143-mt.lib" }
+
+
+-- 
+-- Project: Runtime
+--
+project "Runtime"
+    kind "WindowedApp"
+    language "C++"
+    targetdir ("../Generated/Outputs/%{cfg.buildcfg}")
+    objdir ("../Generated/Obj/%{prj.name}/%{cfg.buildcfg}")
+    debugdir "%{wks.location}"
+    
+    files {
+        "Game/**.h",
+        "Game/**.cpp",
+        "main.cpp"
+    }
+
+    includedirs {
+        "$(ProjectDir)",
+        "$(ProjectDir)Engine",
+        "$(ProjectDir)Externals/D3D12MA",
+        "$(ProjectDir)Externals/imgui",
+        "$(ProjectDir)Externals"
+    }
+
+    dependson { "Engine" }
+    links { "Engine" }
+
+    filter "configurations:Debug"
+        runtime "Debug"
+        symbols "On"
+        staticruntime "On"
         postbuildcommands {
             "copy \"$(WindowsSdkDir)bin\\$(TargetPlatformVersion)\\x64\\dxcompiler.dll\" \"$(TargetDir)dxcompiler.dll\"",
             "copy \"$(WindowsSdkDir)bin\\$(TargetPlatformVersion)\\x64\\dxil.dll\" \"$(TargetDir)dxil.dll\"",
@@ -204,31 +228,87 @@ project "ONEngine"
             "xcopy /E /Y /I \"$(ProjectDir)Packages\" \"$(TargetDir)Packages\""
         }
 
-    -- Development Configuration
+    filter "configurations:Release"
+        runtime "Release"
+        symbols "On"
+        optimize "Speed"
+        staticruntime "On"
+        postbuildcommands {
+            "copy \"$(WindowsSdkDir)bin\\$(TargetPlatformVersion)\\x64\\dxcompiler.dll\" \"$(TargetDir)dxcompiler.dll\"",
+            "copy \"$(WindowsSdkDir)bin\\$(TargetPlatformVersion)\\x64\\dxil.dll\" \"$(TargetDir)dxil.dll\"",
+            "copy \"$(ProjectDir)Externals\\DotNetHost\\nethost.dll\" \"$(TargetDir)nethost.dll\"",
+            "xcopy /E /Y /I \"$(ProjectDir)Assets\" \"$(TargetDir)Assets\"",
+            "xcopy /E /Y /I \"$(ProjectDir)Packages\" \"$(TargetDir)Packages\""
+        }
+
     filter "configurations:Development"
         runtime "Release"
         symbols "Full"
         optimize "Speed"
-        defines { "DEBUG_BUILD", "_WINDOWS", "DEBUG_MODE" }
-        
-        -- 開発用ビルド向けの高度なデバッグ/最適化オプション
-        buildoptions {
-            "/Zo",  -- 最適化コードのデバッグ情報強化
-            "/Oi",  -- 組み込み関数使用
-            "/Ot",  -- 速度優先
-            "/GL",  -- プログラム全体の最適化
-        }
-        linkoptions {
-            "/OPT:REF",
-            "/OPT:ICF",
-            "/LTCG",
-        }
-        linktimeoptimization "On"
         staticruntime "On"
+        postbuildcommands {
+            "copy \"$(WindowsSdkDir)bin\\$(TargetPlatformVersion)\\x64\\dxcompiler.dll\" \"$(TargetDir)dxcompiler.dll\"",
+            "copy \"$(WindowsSdkDir)bin\\$(TargetPlatformVersion)\\x64\\dxil.dll\" \"$(TargetDir)dxil.dll\"",
+            "copy \"$(ProjectDir)Externals\\DotNetHost\\nethost.dll\" \"$(TargetDir)nethost.dll\""
+        }
 
-        libdirs { "$(ProjectDir)Externals/assimp/lib/Release" }
-        links { "assimp-vc143-mt.lib" }
 
+-- 
+-- Project: Editor
+--
+project "Editor"
+    kind "WindowedApp"
+    language "C++"
+    targetdir ("../Generated/Outputs/%{cfg.buildcfg}")
+    objdir ("../Generated/Obj/%{prj.name}/%{cfg.buildcfg}")
+    debugdir "%{wks.location}"
+    
+    files {
+        "Editor/**.h",
+        "Editor/**.cpp"
+    }
+
+    includedirs {
+        "$(ProjectDir)",
+        "$(ProjectDir)Engine",
+        "$(ProjectDir)Externals/D3D12MA",
+        "$(ProjectDir)Externals/imgui",
+        "$(ProjectDir)Externals"
+    }
+
+    dependson { "Engine" }
+    links { "Engine" }
+
+    filter "configurations:Debug"
+        runtime "Debug"
+        symbols "On"
+        staticruntime "On"
+        postbuildcommands {
+            "copy \"$(WindowsSdkDir)bin\\$(TargetPlatformVersion)\\x64\\dxcompiler.dll\" \"$(TargetDir)dxcompiler.dll\"",
+            "copy \"$(WindowsSdkDir)bin\\$(TargetPlatformVersion)\\x64\\dxil.dll\" \"$(TargetDir)dxil.dll\"",
+            "copy \"$(ProjectDir)Externals\\DotNetHost\\nethost.dll\" \"$(TargetDir)nethost.dll\"",
+            "xcopy /E /Y /I \"$(ProjectDir)Assets\" \"$(TargetDir)Assets\"",
+            "xcopy /E /Y /I \"$(ProjectDir)Packages\" \"$(TargetDir)Packages\""
+        }
+
+    filter "configurations:Release"
+        runtime "Release"
+        symbols "On"
+        optimize "Speed"
+        staticruntime "On"
+        postbuildcommands {
+            "copy \"$(WindowsSdkDir)bin\\$(TargetPlatformVersion)\\x64\\dxcompiler.dll\" \"$(TargetDir)dxcompiler.dll\"",
+            "copy \"$(WindowsSdkDir)bin\\$(TargetPlatformVersion)\\x64\\dxil.dll\" \"$(TargetDir)dxil.dll\"",
+            "copy \"$(ProjectDir)Externals\\DotNetHost\\nethost.dll\" \"$(TargetDir)nethost.dll\"",
+            "xcopy /E /Y /I \"$(ProjectDir)Assets\" \"$(TargetDir)Assets\"",
+            "xcopy /E /Y /I \"$(ProjectDir)Packages\" \"$(TargetDir)Packages\""
+        }
+
+    filter "configurations:Development"
+        runtime "Release"
+        symbols "Full"
+        optimize "Speed"
+        staticruntime "On"
         postbuildcommands {
             "copy \"$(WindowsSdkDir)bin\\$(TargetPlatformVersion)\\x64\\dxcompiler.dll\" \"$(TargetDir)dxcompiler.dll\"",
             "copy \"$(WindowsSdkDir)bin\\$(TargetPlatformVersion)\\x64\\dxil.dll\" \"$(TargetDir)dxil.dll\"",

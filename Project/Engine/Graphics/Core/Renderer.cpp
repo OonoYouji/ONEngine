@@ -16,6 +16,8 @@
 
 namespace Engine::Graphics {
 
+Renderer* Renderer::instance_ = nullptr;
+
 void Renderer::Initialize(RenderDevice* device) {
     device_ = device;
     for (uint32_t i = 0; i < kBufferCount; ++i) {
@@ -180,7 +182,8 @@ void Renderer::RenderInternal(const RenderContext& context, const PipelineStateD
             commandList->SetGraphicsRootSignature(rootSig->Get());
             commandList->SetPipelineState(pso->Get());
 
-            ID3D12DescriptorHeap* heaps[] = { textureManager.GetSrvHeap()->GetHeap() };
+            auto& graphics = GraphicsEngine::GetInstance();
+            ID3D12DescriptorHeap* heaps[] = { graphics.GetSRVHeap()->GetHeap() };
             commandList->SetDescriptorHeaps(_countof(heaps), heaps);
 
             auto setCBV = [&](const std::string& name, D3D12_GPU_VIRTUAL_ADDRESS addr) {
@@ -196,7 +199,7 @@ void Renderer::RenderInternal(const RenderContext& context, const PipelineStateD
             
             auto texIdx = rootSig->GetParameterIndex("gTextures");
             if (texIdx != RootSignature::kInvalidIndex)
-                commandList->SetGraphicsRootDescriptorTable(texIdx, textureManager.GetSrvHeap()->GetGPUHandle(0));
+                commandList->SetGraphicsRootDescriptorTable(texIdx, graphics.GetSRVHeap()->GetGPUHandle(0));
 
             // インスタンスバッファをバインド
             if (context.cullingManager) {

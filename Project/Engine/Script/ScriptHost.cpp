@@ -6,6 +6,13 @@
 
 namespace Engine::Script {
 
+ScriptHost* ScriptHost::instance_ = nullptr;
+
+ScriptHost::ScriptHost() = default;
+ScriptHost::~ScriptHost() {
+    Shutdown();
+}
+
 bool ScriptHost::Initialize() {
     if (initialized_) return true;
 
@@ -74,11 +81,19 @@ load_assembly_and_get_function_pointer_fn ScriptHost::GetNet8LoadAssembly(const 
 }
 
 void* ScriptHost::GetMethodDelegate(const std::wstring& typeName, const std::wstring& methodName, const std::wstring& delegateTypeName) {
-    if (!load_assembly_and_get_function_pointer) return nullptr;
+    if (!load_assembly_and_get_function_pointer) {
+        Console::LogError("GetMethodDelegate failed: load_assembly_and_get_function_pointer is null.");
+        return nullptr;
+    }
 
     // 今回は ONEngine.Scripting.dll をメインアセンブリとする
     std::filesystem::path assemblyPath = std::filesystem::current_path() / "Packages/Scripts/ONEngine.Scripting.dll";
     
+    if (!std::filesystem::exists(assemblyPath)) {
+        Console::LogError(std::format("Assembly not found: {}", assemblyPath.string()));
+        return nullptr;
+    }
+
     void* delegate_ptr = nullptr;
     int rc = load_assembly_and_get_function_pointer(
         assemblyPath.c_str(),
@@ -88,7 +103,13 @@ void* ScriptHost::GetMethodDelegate(const std::wstring& typeName, const std::wst
         nullptr,
         &delegate_ptr);
 
-    if (rc != 0) return nullptr;
+    if (rc != 0 || delegate_ptr == nullptr) {
+        Console::LogError("Failed to get method delegate.");
+        return nullptr;
+    }
+
+    Console::Log("Successfully retrieved delegate.");
+
     return delegate_ptr;
 }
 

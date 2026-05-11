@@ -1,49 +1,55 @@
-﻿#pragma once
+#pragma once
 
 #include <string>
 #include <unordered_map>
 #include <memory>
-#include "Material.h"
-#include "AssetHandle.h"
+#include <vector>
+#include "Asset/Material.h"
 
 namespace Engine::Graphics {
-	class RenderDevice;
+    class RenderDevice;
 }
 
 namespace Engine::Asset {
 
 ///
-/// マテリアルを管理するクラス
+/// マテリアルアセットを管理するクラス
 ///
 class MaterialManager {
 public:
-	static MaterialManager& GetInstance() {
-		static MaterialManager instance;
-		return instance;
-	}
+    static MaterialManager& GetInstance() {
+        return *instance_;
+    }
 
-	void Initialize(Graphics::RenderDevice* device);
-	void Shutdown();
+    static void CreateInstance() {
+        if (!instance_) instance_ = new MaterialManager();
+    }
 
-	/// @brief マテリアルファイルをロード (.mat / JSON)
-	/// @param filePath ファイルパス
-	/// @return ロードされたマテリアルのインデックス。失敗した場合は -1。
-	int32_t LoadMaterial(const std::string& filePath);
+    static void DestroyInstance() {
+        delete instance_;
+        instance_ = nullptr;
+    }
 
-	/// @brief AssetRegistry経由でのロード
-	std::shared_ptr<Material> LoadMaterialAsAsset(const std::string& pathOrGuid);
+    void Initialize(Graphics::RenderDevice* device);
+    void Shutdown();
 
-	/// @brief マテリアルを取得
-	Material* GetMaterial(const std::string& name);
+    /// @brief マテリアルをロードし、インデックスを返す
+    int32_t LoadMaterial(const std::string& pathOrGuid);
+
+    /// @brief インデックスからマテリアルを取得
+    Material* GetMaterial(const std::string& pathOrGuid);
     Material* GetMaterialByIndex(uint32_t index);
 
-private:
-	MaterialManager();
-	~MaterialManager();
+    std::shared_ptr<Material> LoadMaterialAsAsset(const std::string& pathOrGuid);
 
 private:
-	Graphics::RenderDevice* device_ = nullptr;
-	std::unordered_map<std::string, std::shared_ptr<Material>> materials_;
+    MaterialManager();
+    ~MaterialManager();
+
+    static MaterialManager* instance_;
+
+    Graphics::RenderDevice* device_ = nullptr;
+    std::unordered_map<std::string, std::shared_ptr<Material>> materials_;
     std::vector<std::shared_ptr<Material>> indexedMaterials_;
 };
 

@@ -5,86 +5,83 @@
 
 /// engine::graphics
 #include "Engine/Graphics/Utils/ComPtr.h"
-#include "CommandQueue.h"
-#include "RenderDevice.h"
-#include "SwapChain.h"
-#include "DescriptorHeap.h"
-#include "FrameResource.h"
+#include "Engine/Graphics/Core/CommandQueue.h"
+#include "Engine/Graphics/Core/RenderDevice.h"
+#include "Engine/Graphics/Core/SwapChain.h"
+#include "Engine/Graphics/Core/DescriptorHeap.h"
+#include "Engine/Graphics/Core/FrameResource.h"
 #include "Engine/Graphics/Resource/RenderTexture.h"
+#include "Engine/Core/Math/Math.h"
 
 namespace Engine::Graphics {
 
 ///
-/// DX12を使ったグラフィックスエンジン
+/// エンジンのグラフィックス機能全体を管理するクラス
 ///
-class GraphicsEngine final {
-	GraphicsEngine();
-	~GraphicsEngine();
+class GraphicsEngine {
 	GraphicsEngine(const GraphicsEngine&) = delete;
 	GraphicsEngine& operator=(const GraphicsEngine&) = delete;
 	GraphicsEngine(GraphicsEngine&&) = delete;
 	GraphicsEngine& operator=(GraphicsEngine&&) = delete;
 public:
 
-	/// @brief インスタンスの確保
-	/// @return インスタンスへの参照
 	static GraphicsEngine& GetInstance() {
-		static GraphicsEngine instance;
-		return instance;
+		return *instance_;
 	}
 
+	static void CreateInstance() {
+		if (!instance_) instance_ = new GraphicsEngine();
+	}
+
+	static void DestroyInstance() {
+		delete instance_;
+		instance_ = nullptr;
+	}
 
 	void Initialize(HWND hwnd, const Engine::Math::Vector2Int& windowSize);
 	void Shutdown();
 
-
 	void BeginFrame();
 	void EndFrame();
-
+	void Present();
 
 	void Clear(const Engine::Math::Vector4& color);
 	void ClearDepth();
 
-
 	RenderDevice* GetRenderDevice() const { return renderDevice_.get(); }
 	CommandQueue* GetCommandQueue() const { return commandQueue_.get(); }
-	DescriptorHeap* GetRTVHeap() const { return rtvHeap_.get(); }
-	DescriptorHeap* GetSRVHeap() const { return srvHeap_.get(); }
-	DescriptorHeap* GetDSVHeap() const { return dsvHeap_.get(); }
-	SwapChain* GetSwapChain() const { return swapChain_.get(); }
-    class DepthBuffer* GetDepthBuffer() const { return depthBuffer_.get(); }
-	RenderTexture* GetMainColorBuffer() const { return mainColorBuffer_.get(); }
-	RenderTexture* GetNormalBuffer() const { return normalBuffer_.get(); }
-	RenderTexture* GetIDBuffer() const { return idBuffer_.get(); }
-	const Engine::Math::Vector2Int& GetWindowSize() const { return windowSize_; }
-
-	uint32_t GetCurrentFrameIndex() const { return currentFrameIndex_; }
+	SwapChain*    GetSwapChain()    const { return swapChain_.get(); }
+	
+	DescriptorHeap* GetSRVHeap()    const { return srvHeap_.get(); }
+	DescriptorHeap* GetRTVHeap()    const { return rtvHeap_.get(); }
+	DescriptorHeap* GetDSVHeap()    const { return dsvHeap_.get(); }
+	
 	FrameResource* GetCurrentFrameResource() const { return frameResources_[currentFrameIndex_].get(); }
+	uint32_t GetCurrentFrameIndex() const { return currentFrameIndex_; }
+
+	RenderTexture* GetMainColorBuffer() const { return mainColorBuffer_.get(); }
+	RenderTexture* GetNormalBuffer()    const { return normalBuffer_.get(); }
+	RenderTexture* GetIDBuffer()        const { return idBuffer_.get(); }
+
+	D3D12_CPU_DESCRIPTOR_HANDLE GetImGuiCPUHandle() const;
+	D3D12_GPU_DESCRIPTOR_HANDLE GetImGuiGPUHandle() const;
+
+	HWND GetHWND() const { return hwnd_; }
 
 private:
+	GraphicsEngine();
+	~GraphicsEngine();
 
-	void SetDebugLayer();
-	void CreateDebugLayer();
+	static GraphicsEngine* instance_;
 
-private:
-
-	ComPtr<ID3D12Debug1> debugController_ = nullptr;
-
-
-	///
-	/// 基盤レイヤー
-	///
+	HWND hwnd_;
 
 	std::unique_ptr<RenderDevice> renderDevice_ = nullptr;
 	std::unique_ptr<CommandQueue> commandQueue_ = nullptr;
+	
 	std::unique_ptr<DescriptorHeap> rtvHeap_ = nullptr;
 	std::unique_ptr<DescriptorHeap> srvHeap_ = nullptr;
 	std::unique_ptr<DescriptorHeap> dsvHeap_ = nullptr;
-
-
-	///
-	/// 実行・同期レイヤー
-	///
 
 	static constexpr uint32_t kFrameCount = 3;
 	std::unique_ptr<FrameResource> frameResources_[kFrameCount];
@@ -97,6 +94,9 @@ private:
 	std::unique_ptr<RenderTexture> idBuffer_ = nullptr;
 
 	Engine::Math::Vector2Int windowSize_;
+
+	void SetDebugLayer();
+	void CreateDebugLayer();
 
 };
 

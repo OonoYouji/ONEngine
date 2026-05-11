@@ -1,12 +1,14 @@
-﻿#include "AssetManager.h"
+#include "AssetManager.h"
 #include "AssetDatabase.h"
 #include "ModelLoader.h"
 #include "Mesh.h"
-#include "AssetRegistry.h"
+#include "Engine/Asset/AssetRegistry.h"
 #include "Engine/Graphics/Core/RenderDevice.h"
 #include "Engine/Common/Console.h"
 
 namespace Engine::Asset {
+
+AssetManager* AssetManager::instance_ = nullptr;
 
 void AssetManager::Initialize(Graphics::RenderDevice* device) {
     device_ = device;
@@ -27,28 +29,22 @@ void AssetManager::Shutdown() {
 }
 
 std::string AssetManager::ToGuid(const std::string& pathOrGuid) {
-    // もし既に登録済みのGUIDならそのまま返す
-    if (AssetDatabase::GetInstance().GetPathFromGuid(pathOrGuid) != "") {
-        return pathOrGuid;
-    }
-    // パスとして扱ってGUIDを取得
+    if (AssetDatabase::GetInstance().GetPathFromGuid(pathOrGuid) != "") return pathOrGuid;
     std::string guid = AssetDatabase::GetInstance().GetGuidFromPath(pathOrGuid);
-    if (guid != "") return guid;
-
-    // 見つからない場合は入力自体を返す（未登録アセットの場合のフォールバック）
-    return pathOrGuid;
+    return (guid != "") ? guid : pathOrGuid;
 }
 
-int32_t AssetManager::LoadModel(const std::string& pathOrGuid) {
+uint32_t AssetManager::LoadModel(const std::string& pathOrGuid) {
     auto model = LoadModelAsAsset(pathOrGuid);
-    if (!model) return -1;
-
-    for (size_t i = 0; i < indexedModels_.size(); ++i) {
-        if (indexedModels_[i]->GetGuid() == model->GetGuid()) return static_cast<int32_t>(i);
+    if (!model) return 0xFFFFFFFF;
+    
+    // インデックス管理
+    for (uint32_t i = 0; i < (uint32_t)indexedModels_.size(); ++i) {
+        if (indexedModels_[i] == model) return i;
     }
-
+    
     indexedModels_.push_back(model);
-    return static_cast<int32_t>(indexedModels_.size() - 1);
+    return (uint32_t)indexedModels_.size() - 1;
 }
 
 std::shared_ptr<Model> AssetManager::LoadModelAsAsset(const std::string& pathOrGuid) {

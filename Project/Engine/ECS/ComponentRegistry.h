@@ -27,8 +27,16 @@ struct ComponentTypeInfo {
 class ComponentRegistry {
 public:
     static ComponentRegistry& GetInstance() {
-        static ComponentRegistry instance;
-        return instance;
+        return *instance_;
+    }
+
+    static void CreateInstance() {
+        if (!instance_) instance_ = new ComponentRegistry();
+    }
+
+    static void DestroyInstance() {
+        delete instance_;
+        instance_ = nullptr;
     }
 
     /// @brief 新しいコンポーネントを登録
@@ -69,6 +77,8 @@ public:
 
 private:
     ComponentRegistry() = default;
+
+    static ComponentRegistry* instance_;
 
     std::unordered_map<uint32_t, ComponentTypeInfo> idToInfo_;
     std::unordered_map<std::string, ComponentTypeInfo> nameToInfo_;
