@@ -59,17 +59,19 @@ std::shared_ptr<Model> AssetManager::LoadModelAsAsset(const std::string& pathOrG
     std::string path = AssetDatabase::GetInstance().GetPathFromGuid(guid);
     if (path == "") path = pathOrGuid; // GUIDで見つからなければパスとして扱う
 
-    auto meshes = ModelLoader::LoadModel(device_, path);
-    if (!meshes.empty()) {
-        auto model = std::make_shared<Model>();
+    auto model = ModelLoader::LoadModel(device_, path);
+    if (model) {
         model->SetGuid(guid);
         model->SetPath(path);
-        model->SetMeshes(std::move(meshes));
         models_[guid] = model;
-        Engine::Console::Log(std::format("AssetManager: Loaded Model [{}] from {}", guid, path));
         return model;
     }
     return nullptr;
+}
+
+std::shared_ptr<Model> AssetManager::GetModelByIndex(uint32_t index) {
+    if (index >= indexedModels_.size()) return nullptr;
+    return indexedModels_[index];
 }
 
 const std::vector<std::unique_ptr<Mesh>>& AssetManager::GetMeshes(const std::string& pathOrGuid) {

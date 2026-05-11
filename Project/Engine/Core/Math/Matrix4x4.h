@@ -73,6 +73,7 @@ struct Matrix4x4 final {
 	/// @param _translation 平行移動成分
 	/// @return アフィン行列
 	static Matrix4x4 MakeAffine(const Vector3& _scale, const Vector3& _rotation, const Vector3& _translation);
+	static Matrix4x4 MakeAffine(const Vector3& _scale, const struct Quaternion& _rotation, const Vector3& _translation);
 
 	/// @brief 転置行列の作成
 	/// @param _matrix 他の行列

@@ -175,6 +175,16 @@ Matrix4x4 Matrix4x4::MakeAffine(const Vector3& _scale, const Vector3& _rotation,
 	return result;
 }
 
+Matrix4x4 Matrix4x4::MakeAffine(const Vector3& _scale, const Quaternion& _rotation, const Vector3& _translation) {
+	Matrix4x4&& scale = MakeScale(_scale);
+	Matrix4x4&& rotate = MakeRotate(_rotation);
+	Matrix4x4&& translate = MakeTranslate(_translation);
+
+	Matrix4x4&& result = scale * rotate * translate;
+
+	return result;
+}
+
 Matrix4x4 Matrix4x4::MakeTranspose(const Matrix4x4& _matrix) {
 	Matrix4x4 result{};
 	for(size_t r = 0; r < 4; r++) {
@@ -248,17 +258,10 @@ Matrix4x4 Matrix4x4::Inverse() const {
 }
 
 Vector3 Matrix4x4::ExtractScale() const {
-	/// 3x3に変換
-	float m3x3[3][3] = {
-		{ m3x3[0][0], m3x3[0][1], m3x3[0][2] },
-		{ m3x3[1][0], m3x3[1][1], m3x3[1][2] },
-		{ m3x3[2][0], m3x3[2][1], m3x3[2][2] }
-	};
-
 	/// スケール成分を計算
 	float scale[3];
 	for(size_t i = 0; i < 3; i++) {
-		scale[i] = std::sqrt(m3x3[i][0] * m3x3[i][0] + m3x3[i][1] * m3x3[i][1] + m3x3[i][2] * m3x3[i][2]);
+		scale[i] = std::sqrt(m[i][0] * m[i][0] + m[i][1] * m[i][1] + m[i][2] * m[i][2]);
 	}
 
 	return Vector3(scale[0], scale[1], scale[2]);
@@ -268,15 +271,21 @@ Quaternion Matrix4x4::ExtractRotation() const {
 	Matrix4x4 matrix = *this;
 	Vector3 scale = matrix.ExtractScale();
 	/// スケールを除去
-	matrix.m[0][0] /= scale.x;
-	matrix.m[0][1] /= scale.x;
-	matrix.m[0][2] /= scale.x;
-	matrix.m[1][0] /= scale.y;
-	matrix.m[1][1] /= scale.y;
-	matrix.m[1][2] /= scale.y;
-	matrix.m[2][0] /= scale.z;
-	matrix.m[2][1] /= scale.z;
-	matrix.m[2][2] /= scale.z;
+	if (std::abs(scale.x) > 1e-6f) {
+		matrix.m[0][0] /= scale.x;
+		matrix.m[0][1] /= scale.x;
+		matrix.m[0][2] /= scale.x;
+	}
+	if (std::abs(scale.y) > 1e-6f) {
+		matrix.m[1][0] /= scale.y;
+		matrix.m[1][1] /= scale.y;
+		matrix.m[1][2] /= scale.y;
+	}
+	if (std::abs(scale.z) > 1e-6f) {
+		matrix.m[2][0] /= scale.z;
+		matrix.m[2][1] /= scale.z;
+		matrix.m[2][2] /= scale.z;
+	}
 
 	/// 回転成分を抽出
 	return Quaternion::FromRotationMatrix(matrix);

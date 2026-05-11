@@ -4,6 +4,7 @@
 #include <assimp/postprocess.h>
 #include <filesystem>
 #include <unordered_map>
+#include <functional>
 #include "Engine/Graphics/Core/RenderDevice.h"
 #include "Engine/Common/Console.h"
 
@@ -17,59 +18,128 @@ namespace Engine::Asset {
 
 namespace {
     Engine::Math::Matrix4x4 aiMatrixToEngine(const aiMatrix4x4& m) {
-        // Assimp (Row-Major) -> Engine (Row-Major) そのままコピー
-        return Engine::Math::Matrix4x4(
-            m.a1, m.a2, m.a3, m.a4,
-            m.b1, m.b2, m.b3, m.b4,
-            m.c1, m.c2, m.c3, m.c4,
-            m.d1, m.d2, m.d3, m.d4
-        );
+        // Assimp の行列を分解し、OldEngine 方式（X反転）で再構築する
+        aiVector3D   scale;
+        aiQuaternion rotate;
+        aiVector3D   position;
+        m.Decompose(scale, rotate, position);
+
+        // X軸を反転させる変換 (OldEngine 方式)
+        return Engine::Math::Matrix4x4::MakeScale({ scale.x, scale.y, scale.z })
+            * Engine::Math::Matrix4x4::MakeRotate(Engine::Math::Quaternion(rotate.x, -rotate.y, -rotate.z, rotate.w))
+            * Engine::Math::Matrix4x4::MakeTranslate({ -position.x, position.y, position.z });
     }
 }
 
-std::vector<std::unique_ptr<Mesh>> ModelLoader::LoadModel(Graphics::RenderDevice* device, const std::string& filePath) {
+std::shared_ptr<Model> ModelLoader::LoadModel(Graphics::RenderDevice* device, const std::string& filePath) {
     if (!std::filesystem::exists(filePath)) {
         Engine::Console::LogError(std::format("Model file not found: {}", filePath));
-        return {};
+        return nullptr;
     }
 
     Assimp::Importer importer;
+    // OldEngine と同じフラグ構成にする
     uint32_t flags = aiProcess_Triangulate | 
-                     aiProcess_ConvertToLeftHanded | 
+                     aiProcess_FlipWindingOrder | 
+                     aiProcess_FlipUVs |
                      aiProcess_JoinIdenticalVertices |
                      aiProcess_GenSmoothNormals |
-                     aiProcess_CalcTangentSpace;
+                     aiProcess_CalcTangentSpace |
+                     aiProcess_LimitBoneWeights;
 
     const aiScene* scene = importer.ReadFile(filePath, flags);
 
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
         Engine::Console::LogError(std::format("Assimp Error: {}", importer.GetErrorString()));
-        return {};
+        return nullptr;
     }
 
-    // 1. モデル全体のユニークなボーンセットを構築 (グローバルボーンパレット)
+    auto model = std::make_shared<Model>();
+
+    // 1. ノード階層の解析とボーンの対応付け
     std::vector<Mesh::Bone> globalBones;
     std::unordered_map<std::string, uint32_t> boneNameToIndex;
+    std::unordered_map<std::string, aiBone*> boneInfoMap;
 
+    // まず全メッシュからボーン名とオフセット行列を収集
     for (unsigned int i = 0; i < scene->mNumMeshes; ++i) {
         aiMesh* aiMeshPtr = scene->mMeshes[i];
         for (unsigned int b = 0; b < aiMeshPtr->mNumBones; ++b) {
-            std::string name = aiMeshPtr->mBones[b]->mName.C_Str();
-            if (boneNameToIndex.find(name) == boneNameToIndex.end()) {
-                uint32_t newIdx = static_cast<uint32_t>(globalBones.size());
-                boneNameToIndex[name] = newIdx;
-                
-                Mesh::Bone bone;
-                bone.name = name;
-                bone.offsetMatrix = aiMatrixToEngine(aiMeshPtr->mBones[b]->mOffsetMatrix);
-                globalBones.push_back(bone);
-            }
+            boneInfoMap[aiMeshPtr->mBones[b]->mName.C_Str()] = aiMeshPtr->mBones[b];
         }
+    }
+
+    // 再帰的にノードを走査して階層構造を構築
+    std::function<void(aiNode*, int32_t)> processNode = [&](aiNode* node, int32_t parentIdx) {
+        uint32_t currentIdx = static_cast<uint32_t>(globalBones.size());
+        std::string name = node->mName.C_Str();
+        boneNameToIndex[name] = currentIdx;
+
+        Mesh::Bone bone;
+        bone.name = name;
+        bone.parentIndex = parentIdx;
+        bone.localMatrix = aiMatrixToEngine(node->mTransformation);
+        
+        // ボーン情報（オフセット行列）があれば取得
+        if (boneInfoMap.count(name)) {
+            // offsetMatrix も aiMatrixToEngine で座標変換して取得
+            bone.offsetMatrix = aiMatrixToEngine(boneInfoMap[name]->mOffsetMatrix);
+        } else {
+            bone.offsetMatrix = Engine::Math::Matrix4x4::kIdentity;
+        }
+
+        globalBones.push_back(bone);
+
+        for (unsigned int i = 0; i < node->mNumChildren; ++i) {
+            processNode(node->mChildren[i], (int32_t)currentIdx);
+        }
+    };
+
+    processNode(scene->mRootNode, -1);
+
+    // 2. アニメーションのロード
+    for (unsigned int i = 0; i < scene->mNumAnimations; ++i) {
+        aiAnimation* aiAnim = scene->mAnimations[i];
+        Animation anim;
+        anim.name = aiAnim->mName.C_Str();
+        anim.duration = static_cast<float>(aiAnim->mDuration / (aiAnim->mTicksPerSecond != 0 ? aiAnim->mTicksPerSecond : 25.0));
+
+        for (unsigned int c = 0; c < aiAnim->mNumChannels; ++c) {
+            aiNodeAnim* aiChannel = aiAnim->mChannels[c];
+            NodeAnimation nodeAnim;
+
+            for (unsigned int k = 0; k < aiChannel->mNumPositionKeys; ++k) {
+                aiVectorKey& key = aiChannel->mPositionKeys[k];
+                nodeAnim.translate.push_back({
+                    static_cast<float>(key.mTime / (aiAnim->mTicksPerSecond != 0 ? aiAnim->mTicksPerSecond : 25.0)),
+                    { -key.mValue.x, key.mValue.y, key.mValue.z } // X反転
+                });
+            }
+
+            for (unsigned int k = 0; k < aiChannel->mNumRotationKeys; ++k) {
+                aiQuatKey& key = aiChannel->mRotationKeys[k];
+                nodeAnim.rotate.push_back({
+                    static_cast<float>(key.mTime / (aiAnim->mTicksPerSecond != 0 ? aiAnim->mTicksPerSecond : 25.0)),
+                    { key.mValue.x, -key.mValue.y, -key.mValue.z, key.mValue.w } // X反転相当 (Y,Z反転)
+                });
+            }
+
+            for (unsigned int k = 0; k < aiChannel->mNumScalingKeys; ++k) {
+                aiVectorKey& key = aiChannel->mScalingKeys[k];
+                nodeAnim.scale.push_back({
+                    static_cast<float>(key.mTime / (aiAnim->mTicksPerSecond != 0 ? aiAnim->mTicksPerSecond : 25.0)),
+                    { key.mValue.x, key.mValue.y, key.mValue.z }
+                });
+            }
+
+            anim.nodeAnimations[aiChannel->mNodeName.C_Str()] = std::move(nodeAnim);
+        }
+        model->AddAnimation(std::move(anim));
     }
 
     std::vector<std::unique_ptr<Mesh>> resultMeshes;
 
-    // 2. 各サブメッシュの処理
+    // 3. 各サブメッシュの処理
     for (unsigned int i = 0; i < scene->mNumMeshes; ++i) {
         aiMesh* aiMeshPtr = scene->mMeshes[i];
         
@@ -81,7 +151,8 @@ std::vector<std::unique_ptr<Mesh>> ModelLoader::LoadModel(Graphics::RenderDevice
 
         for (unsigned int v = 0; v < aiMeshPtr->mNumVertices; ++v) {
             Vertex vertex;
-            vertex.position = { aiMeshPtr->mVertices[v].x, aiMeshPtr->mVertices[v].y, aiMeshPtr->mVertices[v].z, 1.0f };
+            // X座標と法線のX成分を反転 (OldEngine 方式)
+            vertex.position = { -aiMeshPtr->mVertices[v].x, aiMeshPtr->mVertices[v].y, aiMeshPtr->mVertices[v].z, 1.0f };
             minP.x = std::min(minP.x, vertex.position.x);
             minP.y = std::min(minP.y, vertex.position.y);
             minP.z = std::min(minP.z, vertex.position.z);
@@ -90,7 +161,7 @@ std::vector<std::unique_ptr<Mesh>> ModelLoader::LoadModel(Graphics::RenderDevice
             maxP.z = std::max(maxP.z, vertex.position.z);
 
             if (aiMeshPtr->HasNormals()) {
-                vertex.normal = { aiMeshPtr->mNormals[v].x, aiMeshPtr->mNormals[v].y, aiMeshPtr->mNormals[v].z, 0.0f };
+                vertex.normal = { -aiMeshPtr->mNormals[v].x, aiMeshPtr->mNormals[v].y, aiMeshPtr->mNormals[v].z, 0.0f };
             } else {
                 vertex.normal = { 0, 1, 0, 0 };
             }
@@ -104,7 +175,6 @@ std::vector<std::unique_ptr<Mesh>> ModelLoader::LoadModel(Graphics::RenderDevice
             vertices.push_back(vertex);
         }
 
-        // ウェイト情報をグローバルインデックスにリマップして抽出
         std::vector<GeneratedSchema::BoneWeightData> boneWeights;
         if (aiMeshPtr->HasBones()) {
             boneWeights.resize(aiMeshPtr->mNumVertices);
@@ -145,15 +215,15 @@ std::vector<std::unique_ptr<Mesh>> ModelLoader::LoadModel(Graphics::RenderDevice
         auto mesh = std::make_unique<Mesh>();
         mesh->SetAABB(minP, maxP);
         if (!boneWeights.empty()) {
-            // Createの前にウェイトをセット！
             mesh->SetSkeleton(globalBones, std::move(boneWeights));
         }
         mesh->Create(device, vertices, indices);
         resultMeshes.push_back(std::move(mesh));
     }
 
-    Engine::Console::Log(std::format("Loaded Model: {} (Meshes: {}, Unified Bones: {})", filePath, resultMeshes.size(), globalBones.size()));
-    return resultMeshes;
+    model->SetMeshes(std::move(resultMeshes));
+    Engine::Console::Log(std::format("Loaded Model: {} (Meshes: {}, Unified Bones: {}, Animations: {})", filePath, model->GetMeshes().size(), globalBones.size(), model->GetAnimations().size()));
+    return model;
 }
 
 } // namespace Engine::Asset

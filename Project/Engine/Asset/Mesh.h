@@ -46,7 +46,9 @@ public:
     // スキニング用データ (Additive)
     struct Bone {
         std::string name;
-        Engine::Math::Matrix4x4 offsetMatrix;
+        int32_t parentIndex = -1;             // 親ボーンのインデックス
+        Engine::Math::Matrix4x4 offsetMatrix; // Inverse Bind Matrix (Model -> Bone)
+        Engine::Math::Matrix4x4 localMatrix;  // Local Transform (Parent -> Bone)
     };
     void SetSkeleton(std::vector<Bone> bones, std::vector<Engine::GeneratedSchema::BoneWeightData> weights) {
         bones_ = std::move(bones);

@@ -3,11 +3,33 @@
 #include "Engine/Graphics/Shader/ShaderManager.h"
 #include "Engine/Asset/AssetManager.h"
 #include "Engine/Asset/Mesh.h"
+#include "Engine/Asset/Model.h"
 #include "Engine/Graphics/Resource/GeometryPool.h"
 #include "Engine/Common/Console.h"
 #include <d3dx12.h>
 
 namespace Engine::ECS {
+
+namespace {
+    template<typename T>
+    T Interpolate(const std::vector<Asset::KeyFrame<T>>& keys, float time) {
+        if (keys.empty()) return {};
+        if (keys.size() == 1 || time <= keys[0].time) return keys[0].value;
+        if (time >= keys.back().time) return keys.back().value;
+
+        for (size_t i = 0; i < keys.size() - 1; ++i) {
+            if (time < keys[i + 1].time) {
+                float t = (time - keys[i].time) / (keys[i + 1].time - keys[i].time);
+                if constexpr (std::is_same_v<T, Math::Quaternion>) {
+                    return Math::Quaternion::Slerp(keys[i].value, keys[i + 1].value, t);
+                } else {
+                    return Math::Vector3::Lerp(keys[i].value, keys[i + 1].value, t);
+                }
+            }
+        }
+        return keys.back().value;
+    }
+}
 
 void AnimationSystem::Initialize(Graphics::RenderDevice* device) {
     device_ = device;
@@ -44,22 +66,25 @@ void AnimationSystem::Update(Registry& registry, ID3D12GraphicsCommandList* comm
 
     if (!pso || !rootSig) return;
 
-    // エンジン全体のフレームインデックスに同期
     auto& currentBoneSB = boneMatrixSBs_[frameIndex];
 
     // 1. ボーンデータの集計
     static std::vector<GeneratedSchema::BoneData> boneData(kMaxBones);
     accumulatedTime_ += dt;
 
-    // boneData を単位行列で初期化
+    // 単位行列で初期化
     for (auto& bd : boneData) {
         bd.transform = Math::Matrix4x4::kIdentity;
     }
 
     uint32_t updatedEntities = 0;
     uint32_t updatedBones = 0;
-    view.Each([&](Entity entity, Transform& transform, SkinnedMeshRenderer& smr) {
-        const auto& meshes = am.GetMeshesByIndex(smr.modelIndex);
+
+    view.Each([&](Entity entity, Transform& /*unused*/, SkinnedMeshRenderer& smr) {
+        auto model = am.GetModelByIndex(smr.modelIndex);
+        if (!model) return;
+
+        const auto& meshes = model->GetMeshes();
         if (meshes.empty()) return;
 
         const std::vector<Asset::Mesh::Bone>* pMeshBones = nullptr;
@@ -73,16 +98,49 @@ void AnimationSystem::Update(Registry& registry, ID3D12GraphicsCommandList* comm
         if (!pMeshBones) return;
 
         updatedEntities++;
+
+        // アニメーションデータの取得
+        const Asset::Animation* pAnim = nullptr;
+        if (!model->GetAnimations().empty()) {
+            pAnim = &model->GetAnimations()[0]; // とりあえず最初のものを再生
+        }
+
+        // 階層構造に従ってグローバル行列を計算
+        std::vector<Math::Matrix4x4> modelSpaceTransforms(pMeshBones->size());
+
         for (uint32_t i = 0; i < (uint32_t)pMeshBones->size(); ++i) {
-            // アニメーション行列 (Y軸回転)
-            float freq = 1.0f + (i % 5) * 0.2f;
-            float angle = std::sin(accumulatedTime_ * freq) * 0.5f;
-            Math::Matrix4x4 anim = Math::Matrix4x4::MakeRotateY(angle);
+            const auto& bone = (*pMeshBones)[i];
             
-            // v_final = v_local * InverseBind * Animation * Bind
-            Math::Matrix4x4 invBind = (*pMeshBones)[i].offsetMatrix;
-            Math::Matrix4x4 bind = Math::Matrix4x4::MakeInverse(invBind);
-            Math::Matrix4x4 finalMatrix = invBind * anim * bind;
+            Math::Matrix4x4 localAnimated;
+            if (pAnim && pAnim->nodeAnimations.count(bone.name)) {
+                const auto& nodeAnim = pAnim->nodeAnimations.at(bone.name);
+                float animTime = std::fmod(accumulatedTime_, pAnim->duration);
+
+                // 初期値として T-pose の成分を使用する
+                Math::Vector3 pos = bone.localMatrix.ExtractTranslation();
+                Math::Quaternion rot = bone.localMatrix.ExtractRotation();
+                Math::Vector3 scale = bone.localMatrix.ExtractScale();
+
+                if (!nodeAnim.translate.empty()) pos = Interpolate(nodeAnim.translate, animTime);
+                if (!nodeAnim.rotate.empty()) rot = Interpolate(nodeAnim.rotate, animTime);
+                if (!nodeAnim.scale.empty()) scale = Interpolate(nodeAnim.scale, animTime);
+
+                // ローカル行列の構築
+                localAnimated = Math::Matrix4x4::MakeAffine(scale, rot, pos);
+            } else {
+                // アニメーションがない場合は T-pose のローカル行列を使用
+                localAnimated = bone.localMatrix;
+            }
+
+            // 親の行列と結合してモデル空間の行列を求める
+            if (bone.parentIndex == -1) {
+                modelSpaceTransforms[i] = localAnimated;
+            } else {
+                modelSpaceTransforms[i] = localAnimated * modelSpaceTransforms[bone.parentIndex];
+            }
+            
+            // 最終的なスキニング行列 = InverseBindPose * AnimatedModelSpaceTransform
+            Math::Matrix4x4 finalMatrix = bone.offsetMatrix * modelSpaceTransforms[i];
 
             if (smr.skeletonIndex + i < kMaxBones) {
                 boneData[smr.skeletonIndex + i].transform = finalMatrix;
@@ -91,13 +149,12 @@ void AnimationSystem::Update(Registry& registry, ID3D12GraphicsCommandList* comm
         }
     });
     
-    // 診断ログ
+    // 定期的なログ
     static int logCounter = 0;
     if (logCounter++ % 60 == 0 && updatedBones > 0) {
-        Engine::Console::Log(std::format("Anim Update: Time={:.2f}, Frame={}, Entities={}, Bones={}", accumulatedTime_, frameIndex, updatedEntities, updatedBones));
+        Engine::Console::Log(std::format("Anim System: Time={:.2f}, Frame={}, Entities={}, Bones={}", accumulatedTime_, frameIndex, updatedEntities, updatedBones));
     }
 
-    // GPUへアップロード
     currentBoneSB->Update(boneData.data(), (uint32_t)(boneData.size() * sizeof(GeneratedSchema::BoneData)));
 
     // 2. スキニングの実行
@@ -112,7 +169,7 @@ void AnimationSystem::Update(Registry& registry, ID3D12GraphicsCommandList* comm
     uint32_t cbIndex = 0;
     uint32_t vertexStackPtr = 0;
 
-    view.Each([&](Entity entity, Transform& transform, SkinnedMeshRenderer& smr) {
+    view.Each([&](Entity entity, Transform& /*unused*/, SkinnedMeshRenderer& smr) {
         const auto& meshes = am.GetMeshesByIndex(smr.modelIndex);
         if (meshes.empty()) return;
 

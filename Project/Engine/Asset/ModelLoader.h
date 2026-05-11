@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 #include <memory>
-#include "Mesh.h"
+#include "Model.h"
 
 namespace Engine::Asset {
 
@@ -12,11 +12,11 @@ namespace Engine::Asset {
 ///
 class ModelLoader {
 public:
-    /// @brief ファイルからメッシュをロードする
+    /// @brief ファイルからモデルをロードする
     /// @param device デバイス
     /// @param filePath モデルファイルのパス
-    /// @return ロードされたメッシュのリスト（サブメッシュ対応のため vector）
-    static std::vector<std::unique_ptr<Mesh>> LoadModel(Graphics::RenderDevice* device, const std::string& filePath);
+    /// @return ロードされたモデルのポインタ
+    static std::shared_ptr<Model> LoadModel(Graphics::RenderDevice* device, const std::string& filePath);
 };
 
 } // namespace Engine::Asset

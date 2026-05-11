@@ -26,24 +26,29 @@ void main(uint3 DTid : SV_DispatchThreadID) {
     if (gParams.skinningEnabled != 0) {
         BoneWeightData w = gBoneWeights[inIdx];
         
-        float4 skinnedPos = 0;
-        float4 skinnedNormal = 0;
+        float3 skinnedPos = 0;
+        float3 skinnedNormal = 0;
         float totalWeight = 0;
 
         [unroll]
         for (int i = 0; i < 4; ++i) {
             if (w.boneWeights[i] > 0.0001f) {
                 float4x4 m = gBones[gParams.boneOffset + w.boneIndices[i]].transform;
-                skinnedPos += mul(float4(v.position.xyz, 1.0f), m) * w.boneWeights[i];
-                skinnedNormal += mul(float4(v.normal.xyz, 0.0f), m) * w.boneWeights[i];
+                
+                // 位置の計算: mul(vector, matrix)
+                skinnedPos += mul(float4(v.position.xyz, 1.0f), m).xyz * w.boneWeights[i];
+                
+                // 法線の計算: 回転成分 (float3x3) のみを使用
+                skinnedNormal += mul(v.normal.xyz, (float3x3)m) * w.boneWeights[i];
+                
                 totalWeight += w.boneWeights[i];
             }
         }
 
         if (totalWeight > 0.0001f) {
             // W 成分を強制固定して破綻を防ぐ
-            v.position = float4(skinnedPos.xyz / totalWeight, 1.0f);
-            v.normal = float4(normalize(skinnedNormal.xyz), 0.0f);
+            v.position = float4(skinnedPos / totalWeight, 1.0f);
+            v.normal = float4(normalize(skinnedNormal), 0.0f);
         }
     }
 

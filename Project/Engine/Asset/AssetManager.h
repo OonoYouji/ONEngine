@@ -36,6 +36,9 @@ public:
     /// @brief AssetRegistry経由でのロード
     std::shared_ptr<Model> LoadModelAsAsset(const std::string& pathOrGuid);
     
+    /// @brief インデックスからモデルを取得
+    std::shared_ptr<Model> GetModelByIndex(uint32_t index);
+
     /// @brief ロード済みメッシュリストを取得
     const std::vector<std::unique_ptr<Mesh>>& GetMeshes(const std::string& pathOrGuid);
     const std::vector<std::unique_ptr<Mesh>>& GetMeshesByIndex(uint32_t index);

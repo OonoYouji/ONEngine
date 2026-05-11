@@ -4,6 +4,7 @@
 #include <memory>
 #include "IAsset.h"
 #include "Mesh.h"
+#include "Animation.h"
 
 namespace Engine::Asset {
 
@@ -27,8 +28,17 @@ public:
     /// @brief メッシュリストを取得
     const std::vector<std::unique_ptr<Mesh>>& GetMeshes() const { return meshes_; }
 
+    /// @brief アニメーションを追加
+    void AddAnimation(Animation anim) {
+        animations_.push_back(std::move(anim));
+    }
+
+    /// @brief アニメーションリストを取得
+    const std::vector<Animation>& GetAnimations() const { return animations_; }
+
 private:
     std::vector<std::unique_ptr<Mesh>> meshes_;
+    std::vector<Animation> animations_;
 };
 
 } // namespace Engine::Asset
