@@ -49,10 +49,18 @@
 - [x] **GPU パーティクルシステム (2026/05/06)**: ECS 連携、Mesh Shader 描画、寿命アニメーション対応。
 
 ### フェーズ 4: 大量オブジェクトとアニメーション
-- [ ] **GPU Animation (Skinning)**: Compute Shader によるボーン変形、Geometry Pool 連携。
+- [x] **GPU Animation (Skinning)** (2026/05/11): Compute Shader によるボーン変形、Geometry Pool 連携。
 
 ### フェーズ 5: ビジュアル品質の向上と最適化
 - [ ] **影の高度化 (CSM)**: カスケードシャドウマップの実装。
 - [ ] **RenderGraph 基盤の導入**: 自動バリア管理とメモリ再利用、パス実行の最適化。
 - [ ] **GPU Profiler**: 各パスの負荷計測。
 - [ ] **マルチビュー対応**: ゲーム画面とデバッグ画面の完全分離。
+
+### フェーズ 6: エディターの実装 (Editor Implementation)
+- [ ] **Editor Core & ImGui 統合**: Dear ImGui (Docking) の導入とマルチウィンドウ基盤の構築。
+- [ ] **Scene View & マウスピッキング**: RT2 (EntityID) を用いた非同期 Readback によるオブジェクト選択。
+- [ ] **Hierarchy & Inspector**: 階層構造の可視化と、C# リフレクション連携による動的なパラメータ編集 UI。
+- [ ] **Undo/Redo システム**: コマンドパターンと Value Snapshot によるメモリ安全な編集履歴管理。
+- [ ] **Project Browser & アセット管理**: ファイルシステムと連携したドラッグ＆ドロップによるアセット割り当て。
+- [ ] **Gizmo 操作 (ImGuizmo)**: シーンビュー上での直感的な Transform 編集。
