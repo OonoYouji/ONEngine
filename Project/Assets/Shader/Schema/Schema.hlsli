@@ -150,6 +150,10 @@ struct BoneData {
     row_major float4x4 transform;
 };
 
+struct Tag {
+    uint name[64];
+};
+
 struct ScriptComponent {
     uint2 gcHandle;
     uint typeId;

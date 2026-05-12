@@ -5,6 +5,12 @@
 #include "imgui_impl_win32.h"
 #include "imgui_impl_dx12.h"
 
+// Editor Views
+#include "HierarchyView.h"
+#include "InspectorView.h"
+#include "SceneView.h"
+#include "ProjectView.h"
+
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
 	Engine::Core::Application::CreateInstance();
 	auto& app = Engine::Core::Application::GetInstance();
@@ -19,14 +25,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
 	auto* device = graphics.GetRenderDevice();
 	auto* srvHeap = graphics.GetSRVHeap();
 
-	// ImGui 用の Descriptor を 1 つ確保
-	UINT handleIndex = 0; // 本来はマネージャー経由で取得すべきだが、初期化時なので 0 を使用 (仮)
-
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO();
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-	// Viewports は PIX キャプチャとヒープ管理の障害になるため、開発中は無効化
 	io.ConfigFlags &= ~ImGuiConfigFlags_ViewportsEnable;
 
 	ImGui::StyleColorsDark();
@@ -35,54 +37,66 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
 	ImGui_ImplDX12_Init(
 		device->GetDevice(),
 		3, // Triple Buffering
-		DXGI_FORMAT_R8G8B8A8_UNORM, // SwapChain format (Standard)
+		DXGI_FORMAT_R8G8B8A8_UNORM,
 		srvHeap->GetHeap(),
 		graphics.GetImGuiCPUHandle(),
 		graphics.GetImGuiGPUHandle()
 	);
 
-	// テスト用の UI 登録
-	app.RegisterUICallback([]() {
-		ImGui::Begin("Hierarchy");
-		ImGui::Text("Entity List");
-		ImGui::End();
+	// View のインスタンス化
+	static Engine::Editor::HierarchyView hierarchyView;
+	static Engine::Editor::InspectorView inspectorView;
+	static Engine::Editor::SceneView sceneView;
+	static Engine::Editor::ProjectView projectView;
 
-		ImGui::Begin("Inspector");
-		ImGui::Text("Properties");
-		ImGui::End();
+	// UI 登録
+	app.RegisterUICallback([&]() {
+		// DockSpace の設定
+		ImGuiViewport* viewport = ImGui::GetMainViewport();
+		ImGui::SetNextWindowPos(viewport->WorkPos);
+		ImGui::SetNextWindowSize(viewport->WorkSize);
+		ImGui::SetNextWindowViewport(viewport->ID);
+		
+		ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
+		window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+		window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
 
-		// Scene View の実装
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-		ImGui::Begin("Scene View");
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+		
+		ImGui::Begin("Editor DockSpace", nullptr, window_flags);
+		ImGui::PopStyleVar(3);
 
-		auto& graphics = Engine::Graphics::GraphicsEngine::GetInstance();
-		auto* finalBuffer = graphics.GetFinalColorBuffer();
-		if(finalBuffer) {
-			// エンジンのメイン SRV ヒープに存在するテクスチャの GPU ハンドルを渡す
-			// ImGui_ImplDX12 は、バックエンドに渡したヒープ内のハンドルであれば Image として表示可能
-			D3D12_GPU_DESCRIPTOR_HANDLE srvHandle = finalBuffer->GetSRVHandle();
-			ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
+		ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
+		ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_None);
 
-			if(viewportPanelSize.x > 0 && viewportPanelSize.y > 0) {
-				ImGui::Image((ImTextureID)srvHandle.ptr, viewportPanelSize);
+		if (ImGui::BeginMenuBar()) {
+			if (ImGui::BeginMenu("File")) {
+				if (ImGui::MenuItem("Exit")) { /* TODO */ }
+				ImGui::EndMenu();
 			}
+			ImGui::EndMenuBar();
 		}
 
+		// 各 View のレンダリング
+		auto& registry = Engine::Core::Application::GetInstance().GetRegistry();
+		hierarchyView.Render(registry);
+		inspectorView.Render(registry);
+		sceneView.Render();
+		projectView.Render();
+
 		ImGui::End();
-		ImGui::PopStyleVar();
 	});
 
 	app.Run();
 
-	// 1. GPU の完了を待機
 	app.WaitForGPU();
 
-	// 2. 安全になった状態で ImGui の終了処理
 	ImGui_ImplDX12_Shutdown();
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();
 
-	// 3. エンジンリソースの破棄
 	app.Shutdown();
 	Engine::Core::Application::DestroyInstance();
 

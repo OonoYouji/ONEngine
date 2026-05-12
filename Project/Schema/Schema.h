@@ -186,6 +186,10 @@ struct SpriteRenderer {
     uint8_t _final_pad1[4];
 };
 
+struct Tag {
+    char name[256];
+};
+
 struct ScriptComponent {
     uint64_t gcHandle;
     uint32_t typeId;

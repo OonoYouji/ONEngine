@@ -160,7 +160,18 @@ copy "$(ProjectDir)Externals\DotNetHost\nethost.dll" "$(TargetDir)nethost.dll"</
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Editor\EditorContext.h" />
+    <ClInclude Include="Editor\HierarchyView.h" />
+    <ClInclude Include="Editor\InspectorView.h" />
+    <ClInclude Include="Editor\ProjectView.h" />
+    <ClInclude Include="Editor\SceneView.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Editor\HierarchyView.cpp" />
+    <ClCompile Include="Editor\InspectorView.cpp" />
     <ClCompile Include="Editor\Main.cpp" />
+    <ClCompile Include="Editor\ProjectView.cpp" />
+    <ClCompile Include="Editor\SceneView.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Engine.vcxproj">

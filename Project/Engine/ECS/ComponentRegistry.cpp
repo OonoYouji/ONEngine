@@ -4,6 +4,7 @@
 #include "Engine/Asset/TextureManager.h"
 #include "Engine/Asset/FontManager.h"
 #include "Schema/Schema.h"
+#include <cstring>
 
 namespace Engine::ECS {
 
@@ -110,6 +111,13 @@ void InitializeComponentRegistry() {
     reg.Register<Skybox>(8, "Skybox", [](const json& j, Skybox& s) {
         if (j.contains("texturePath")) s.textureIndex = Asset::TextureManager::GetInstance().LoadTexture(j["texturePath"]);
         else s.textureIndex = j.value("textureIndex", 0);
+    });
+
+    // Tag
+    reg.Register<Tag>(100, "Tag", [](const json& j, Tag& t) {
+        std::string name = j.value("name", "New Entity");
+        memset(t.name, 0, sizeof(t.name));
+        strncpy_s(t.name, name.c_str(), _TRUNCATE);
     });
 
     // TextRenderer

@@ -211,6 +211,12 @@ types:
       - name: textureIndex
         type: uint32
 
+  Tag:
+    type: Component
+    fields:
+      - name: name
+        type: string
+
   TextRenderer:
     type: Component
     fields:

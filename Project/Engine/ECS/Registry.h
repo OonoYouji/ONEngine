@@ -6,6 +6,7 @@
 #include <typeindex>
 #include <algorithm>
 #include <cassert>
+#include <limits>
 #include "Entity.h"
 
 namespace Engine::ECS {
