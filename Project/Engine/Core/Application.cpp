@@ -109,8 +109,8 @@ bool Application::Initialize(HINSTANCE hInstance, int nCmdShow) {
     textSB_ = std::make_unique<Graphics::StructuredBuffer>();
     textSB_->Create(graphics.GetRenderDevice(), sizeof(GeneratedSchema::TextData), 4096);
 
-    // 診断のため、シーンロードはまだ停止
-     //Scene::SceneLoader::LoadScene("Assets/Scene/Main.scene", registry_);
+    // シーンロードの実行
+    Scene::SceneLoader::LoadScene("Assets/Scene/Main.scene", registry_);
 
     timer_.Reset();
     return true;
@@ -174,6 +174,13 @@ void Application::Update(float dt) {
 }
 
 void Application::Render() {
+    static uint32_t renderFrameCount = 0;
+    renderFrameCount++;
+
+    if (renderFrameCount % 100 == 0) {
+        Engine::Console::Log(std::format("Application: Registry Max Entity ID is {}.", registry_.GetMaxEntityId()));
+    }
+
     auto& graphics = Graphics::GraphicsEngine::GetInstance();
     auto* currentFrameRes = graphics.GetCurrentFrameResource();
     auto& renderer = Graphics::Renderer::GetInstance();
@@ -204,21 +211,44 @@ void Application::Render() {
 
     GeneratedSchema::SceneData sceneData{};
     float aspect = (float)graphics.GetWindowSize().x / (float)graphics.GetWindowSize().y;
-    float fov = 0.45f;
-    float nearZ = 0.1f;
-    float farZ = 1000.0f;
-    sceneData.view = Math::Matrix4x4::MakeLookAtLH({ 0, 50, -150 }, { 0, 0, 0 }, { 0, 1, 0 });
-    sceneData.viewProj = sceneData.view * Math::Matrix4x4::MakePerspectiveFovLH(fov, aspect, nearZ, farZ);
-    sceneData.cameraPos = { 0, 50, -150 };
+    
+    if (cameraSystem_ && cameraSystem_->HasCamera()) {
+        const auto& cam = cameraSystem_->GetResult();
+        sceneData.view = cam.view;
+        sceneData.viewProj = cam.viewProj;
+        sceneData.cameraPos = cam.position;
+        sceneData.nearZ = cam.nearZ;
+        sceneData.farZ = cam.farZ;
+    } else {
+        float fov = 0.45f;
+        float nearZ = 0.1f;
+        float farZ = 1000.0f;
+        sceneData.view = Math::Matrix4x4::MakeLookAtLH({ 0, 50, -150 }, { 0, 0, 0 }, { 0, 1, 0 });
+        sceneData.viewProj = sceneData.view * Math::Matrix4x4::MakePerspectiveFovLH(fov, aspect, nearZ, farZ);
+        sceneData.cameraPos = { 0, 50, -150 };
+        sceneData.nearZ = nearZ;
+        sceneData.farZ = farZ;
+    }
+
     sceneData.screenWidth = (float)graphics.GetWindowSize().x;
     sceneData.screenHeight = (float)graphics.GetWindowSize().y;
-    sceneData.nearZ = nearZ;
-    sceneData.farZ = farZ;
 
-    // 方向性ライトの反映 (LightSystemがあれば)
-    sceneData.dirLightColor = { 1, 1, 1 };
-    sceneData.dirLightIntensity = 1.0f;
-    sceneData.dirLightDirection = { 0.5f, -1.0f, 0.5f };
+    // ライトの反映 (LightSystemがあれば)
+    if (lightSystem_) {
+        const auto& light = lightSystem_->GetResult();
+        sceneData.dirLightColor = light.dirLightColor;
+        sceneData.dirLightIntensity = light.dirLightIntensity;
+        sceneData.dirLightDirection = light.dirLightDirection;
+        
+        // 点光源を StructuredBuffer に転送
+        if (!light.pointLights.empty()) {
+            pointLightSB_->Update(light.pointLights.data(), static_cast<uint32_t>(light.pointLights.size() * sizeof(GeneratedSchema::PointLightData)));
+        }
+    } else {
+        sceneData.dirLightColor = { 1, 1, 1 };
+        sceneData.dirLightIntensity = 1.0f;
+        sceneData.dirLightDirection = { 0.5f, -1.0f, 0.5f };
+    }
 
     currentFrameRes->GetSceneCB()->Update(&sceneData, sizeof(sceneData));
 
@@ -230,12 +260,15 @@ void Application::Render() {
         // 初回のみクラスタ構築
         static bool clustersBuilt = false;
         if (!clustersBuilt) {
+            float fov = (cameraSystem_ && cameraSystem_->HasCamera()) ? cameraSystem_->GetResult().proj.m[1][1] : 0.45f; // もしくは適切な FOV 取得
+            if (fov > 10.0f) fov = 2.0f * atanf(1.0f / fov); // Cotangent から Radian へ
+
             clusteredLightManager_->BuildClusters(
                 static_cast<ID3D12GraphicsCommandList*>(commandList),
-                Math::Matrix4x4::MakePerspectiveFovLH(fov, aspect, nearZ, farZ).Inverse(),
+                Math::Matrix4x4::MakePerspectiveFovLH(fov, aspect, sceneData.nearZ, sceneData.farZ).Inverse(),
                 graphics.GetWindowSize(),
-                nearZ,
-                farZ
+                sceneData.nearZ,
+                sceneData.farZ
             );
             clustersBuilt = true;
         }
@@ -244,7 +277,7 @@ void Application::Render() {
             static_cast<ID3D12GraphicsCommandList*>(commandList),
             currentFrameRes->GetSceneCB()->GetGPUVirtualAddress(),
             pointLightSB_->GetResource()->GetGPUVirtualAddress(),
-            0 // TODO: registry からライト数を取得
+            lightSystem_ ? static_cast<uint32_t>(lightSystem_->GetResult().pointLights.size()) : 0
         );
     }
 

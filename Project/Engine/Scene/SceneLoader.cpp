@@ -71,7 +71,10 @@ bool SceneLoader::LoadScene(const std::string& path, Engine::ECS::Registry& regi
     Engine::Console::Log(std::format("SceneLoader: Loading scene from {}", path));
     
     std::ifstream file(path, std::ios::binary);
-    if (!file.is_open()) return false;
+    if (!file.is_open()) {
+        Engine::Console::LogError(std::format("SceneLoader: Failed to open file: {}. Current path: {}", path, std::filesystem::current_path().string()));
+        return false;
+    }
     std::string content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
     if (content.size() >= 3 && (unsigned char)content[0] == 0xEF && (unsigned char)content[1] == 0xBB && (unsigned char)content[2] == 0xBF) content.erase(0, 3);
 
@@ -81,13 +84,14 @@ bool SceneLoader::LoadScene(const std::string& path, Engine::ECS::Registry& regi
         std::vector<std::pair<Engine::ECS::Entity, int>> parentTasks;
 
         if (data.contains("entities") && data["entities"].is_array()) {
+            size_t entityCount = data["entities"].size();
+            Engine::Console::Log(std::format("SceneLoader: Found {} entities in JSON.", entityCount));
+
             for (const auto& jEntity : data["entities"]) {
-                // DeserializeEntity 内で entity を作成
                 auto entity = registry.CreateEntity();
                 int sceneId = jEntity.value("id", -1);
                 if (sceneId != -1) idMap[sceneId] = entity;
 
-                // 親IDを記録 (後で解決)
                 if (jEntity.contains("parent") && !jEntity["parent"].is_null()) {
                     parentTasks.push_back({entity, jEntity["parent"]});
                 }
@@ -97,13 +101,16 @@ bool SceneLoader::LoadScene(const std::string& path, Engine::ECS::Registry& regi
                     for (const auto& jComp : jEntity["components"]) {
                         std::string type = jComp.value("type", "");
                         const auto* info = componentRegistry.GetInfo(type);
-                        if (info) info->deserializeFunc(jComp, entity, registry);
-                        else if (type == "Script") {
+                        if (info) {
+                            info->deserializeFunc(jComp, entity, registry);
+                        } else if (type == "Script") {
                             EnsureScriptDelegate();
-                            for (const auto& jScript : jComp["scripts"]) {
-                                std::string scriptName = jScript["name"];
-                                std::string varsJson = jScript.contains("variables") ? jScript["variables"].dump() : "{}";
-                                gAddScriptDelegate(entity, scriptName.c_str(), varsJson.c_str());
+                            if (gAddScriptDelegate && jComp.contains("scripts") && jComp["scripts"].is_array()) {
+                                for (const auto& jScript : jComp["scripts"]) {
+                                    std::string scriptName = jScript.value("name", "");
+                                    std::string varsJson = jScript.contains("variables") ? jScript["variables"].dump() : "{}";
+                                    gAddScriptDelegate(entity, scriptName.c_str(), varsJson.c_str());
+                                }
                             }
                         }
                     }
@@ -111,15 +118,7 @@ bool SceneLoader::LoadScene(const std::string& path, Engine::ECS::Registry& regi
             }
         }
 
-        // 親子関係の解決
-        for (auto& task : parentTasks) {
-            auto entity = task.first;
-            int parentSceneId = task.second;
-            if (idMap.count(parentSceneId) && registry.HasComponent<Engine::ECS::Transform>(entity)) {
-                registry.GetComponent<Engine::ECS::Transform>(entity).parent = idMap[parentSceneId];
-            }
-        }
-
+        Engine::Console::Log(std::format("SceneLoader: Successfully loaded scene with {} entities.", idMap.size()));
         return true;
     } catch (const std::exception& e) {
         Engine::Console::LogError(std::format("SceneLoader Error: {}", e.what()));

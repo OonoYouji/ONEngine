@@ -1,7 +1,8 @@
-#include "DebugRenderer.h"
+﻿#include "DebugRenderer.h"
 #include "Engine/Graphics/Core/RenderDevice.h"
 #include "Engine/Graphics/Resource/GpuBuffer.h"
 #include "Engine/Graphics/Shader/ShaderManager.h"
+#include "Engine/Common/Console.h"
 #include <d3dx12.h>
 
 namespace Engine::Graphics {
@@ -48,18 +49,44 @@ void DebugRenderer::DrawSphere(const Engine::Math::Vector3& center, float radius
 }
 
 void DebugRenderer::Render(const RenderContext& context) {
-    if (vertices_.empty()) return;
+    static uint32_t debugFrameCount = 0;
+    debugFrameCount++;
+
+    if (vertices_.empty()) {
+        if (debugFrameCount % 100 == 0) {
+            Engine::Console::Log("DebugRenderer: No vertices to render.");
+        }
+        return;
+    }
+
+    if (debugFrameCount % 100 == 0) {
+        Engine::Console::Log(std::format("DebugRenderer: Rendering {} vertices.", vertices_.size()));
+    }
 
     vertexBuffer_->Update(vertices_.data(), (uint32_t)(vertices_.size() * sizeof(Vertex)));
 
     auto& sm = ShaderManager::GetInstance();
-    auto* pso = sm.GetComputePSO("DebugLine"); // 実際には Graphics PSO だが互換性のために一旦
+    
+    PipelineStateDesc desc;
+    desc.numRenderTargets = context.numRenderTargets;
+    for (uint32_t i = 0; i < context.numRenderTargets; ++i) {
+        desc.rtvFormats[i] = context.rtvFormats[i];
+    }
+    desc.primitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE;
+    desc.depthWriteEnable = false;
+
+    auto* pso = sm.GetOrCreatePSO("DebugLine", desc);
     auto* rootSig = sm.GetRootSignature("DebugLine");
 
-    if (!pso || !rootSig) return;
+    if (!pso || !rootSig) {
+        if (debugFrameCount % 100 == 0) {
+            Engine::Console::LogError("DebugRenderer: Failed to get PSO or RootSignature for DebugLine.");
+        }
+        return;
+    }
 
     context.commandList->SetGraphicsRootSignature(rootSig->Get());
-    context.commandList->SetPipelineState(pso);
+    context.commandList->SetPipelineState(pso->Get());
     context.commandList->SetGraphicsRootConstantBufferView(rootSig->GetParameterIndex("gSceneData"), context.sceneCBAddress);
     context.commandList->SetGraphicsRootShaderResourceView(rootSig->GetParameterIndex("gVertices"), vertexBuffer_->GetResource()->GetGPUVirtualAddress());
 

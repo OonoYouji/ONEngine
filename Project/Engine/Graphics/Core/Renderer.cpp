@@ -88,12 +88,20 @@ void Renderer::RenderZPrepass(const RenderContext& context) {
 }
 
 void Renderer::Render(const RenderContext& context) {
+    static uint32_t frameCount = 0;
+    frameCount++;
+
     if (queue_.empty()) {
-        Engine::Console::Log("Renderer: Render called with empty queue.");
+        if (frameCount % 100 == 0) {
+            Engine::Console::Log("Renderer: Render called with empty queue.");
+        }
         return;
     }
 
     uint32_t totalInstances = static_cast<uint32_t>(queue_.size());
+    if (frameCount % 100 == 0) {
+        Engine::Console::Log(std::format("Renderer: Rendering {} instances.", totalInstances));
+    }
     
     auto& materialManager = Asset::MaterialManager::GetInstance();
     auto& assetManager = Asset::AssetManager::GetInstance();
@@ -135,6 +143,10 @@ void Renderer::Render(const RenderContext& context) {
             } else {
                 break;
             }
+        }
+
+        if (frameCount % 100 == 0) {
+             Engine::Console::Log(std::format("Renderer: Batch {}: ModelIdx={}, MatIdx={}, Size={}", batchIndex, batchStartReq.modelIndex, batchStartReq.materialIndex, batchSize));
         }
 
         auto* mat = materialManager.GetMaterialByIndex(batchStartReq.materialIndex);
