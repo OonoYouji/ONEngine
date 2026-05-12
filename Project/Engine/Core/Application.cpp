@@ -16,6 +16,7 @@
 #include "Engine/Script/ScriptHost.h"
 #include "Engine/ECS/ComponentRegistry.h"
 #include "Engine/ECS/Systems/SpriteSystem.h"
+#include "Editor/EditorContext.h"
 #include "imgui.h"
 #include "imgui_impl_win32.h"
 #include "imgui_impl_dx12.h"
@@ -122,6 +123,9 @@ void Application::Run() {
         if (window_.GetIsProcessEnd()) break;
         timer_.Tick();
 
+        rawInputService_.Update(window_.GetHWND());
+        inputMapper_.Update(rawInputService_, gameBindingTable_, gameActionMap_);
+
         if (isEditorMode_) {
 #ifndef NDEBUG
             ImGui_ImplDX12_NewFrame();
@@ -222,7 +226,15 @@ void Application::Render() {
     GeneratedSchema::SceneData sceneData{};
     float aspect = (float)graphics.GetWindowSize().x / (float)graphics.GetWindowSize().y;
     
-    if (cameraSystem_ && cameraSystem_->HasCamera()) {
+    if (isEditorMode_) {
+        auto& editorCam = Editor::EditorContext::GetInstance().GetCamera();
+        sceneData.view = editorCam.GetViewMatrix();
+        sceneData.viewProj = editorCam.GetViewProjMatrix();
+        sceneData.cameraPos = editorCam.GetPosition();
+        sceneData.nearZ = editorCam.GetNearZ();
+        sceneData.farZ = editorCam.GetFarZ();
+    }
+    else if (cameraSystem_ && cameraSystem_->HasCamera()) {
         const auto& cam = cameraSystem_->GetResult();
         sceneData.view = cam.view;
         sceneData.viewProj = cam.viewProj;

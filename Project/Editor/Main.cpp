@@ -10,6 +10,7 @@
 #include "InspectorView.h"
 #include "SceneView.h"
 #include "ProjectView.h"
+#include "EditorContext.h"
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
 	Engine::Core::Application::CreateInstance();
@@ -81,6 +82,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
 
 		// 各 View のレンダリング
 		auto& registry = Engine::Core::Application::GetInstance().GetRegistry();
+		
+		// エディターカメラの更新
+		auto& context = Engine::Editor::EditorContext::GetInstance();
+		auto& rawInput = app.GetRawInputService();
+		// エディタ操作は ImGui キャプチャを無視して入力を取る (ignoreCapture = true)
+		context.GetInputMapper().Update(rawInput, context.GetBindingTable(), context.GetActionMap(), true);
+		
+		context.GetCamera().Update(ImGui::GetIO().DeltaTime);
+
 		hierarchyView.Render(registry);
 		inspectorView.Render(registry);
 		sceneView.Render();

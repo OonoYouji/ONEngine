@@ -173,6 +173,9 @@
     <ClInclude Include="Engine\Common\Assert.h" />
     <ClInclude Include="Engine\Common\Console.h" />
     <ClInclude Include="Engine\Core\Application.h" />
+    <ClInclude Include="Engine\Core\InputActions.h" />
+    <ClInclude Include="Engine\Core\InputBinding.h" />
+    <ClInclude Include="Engine\Core\InputMapper.h" />
     <ClInclude Include="Engine\Core\Math\Math.h" />
     <ClInclude Include="Engine\Core\Math\Matrix4x4.h" />
     <ClInclude Include="Engine\Core\Math\Quaternion.h" />
@@ -182,6 +185,7 @@
     <ClInclude Include="Engine\Core\Math\Vector3T.h" />
     <ClInclude Include="Engine\Core\Math\Vector4.h" />
     <ClInclude Include="Engine\Core\Math\Vector4T.h" />
+    <ClInclude Include="Engine\Core\RawInputService.h" />
     <ClInclude Include="Engine\Core\Timer.h" />
     <ClInclude Include="Engine\Core\Window.h" />
     <ClInclude Include="Engine\ECS\ComponentRegistry.h" />
@@ -239,6 +243,7 @@
     <ClCompile Include="Engine\Core\Application.cpp" />
     <ClCompile Include="Engine\Core\Math\Matrix4x4.cpp" />
     <ClCompile Include="Engine\Core\Math\Quaternion.cpp" />
+    <ClCompile Include="Engine\Core\RawInputService.cpp" />
     <ClCompile Include="Engine\Core\Timer.cpp" />
     <ClCompile Include="Engine\Core\Window.cpp" />
     <ClCompile Include="Engine\ECS\ComponentRegistry.cpp" />

@@ -1,4 +1,5 @@
 ﻿#include "Window.h"
+#include "Application.h"
 
 #pragma comment(lib, "winmm.lib")
 
@@ -17,6 +18,11 @@ static LRESULT MainWindowProc(HWND _hwnd, UINT _msg, WPARAM _wparam, LPARAM _lpa
 		PostQuitMessage(0);
 		return 0;
 	case WM_DESTROY: /// window破棄
+		return 0;
+	case WM_MOUSEWHEEL:
+		Engine::Core::Application::GetInstance().GetRawInputService().SetMouseWheel(
+			static_cast<float>(GET_WHEEL_DELTA_WPARAM(_wparam)) / static_cast<float>(WHEEL_DELTA)
+		);
 		return 0;
 	}
 

@@ -18,6 +18,10 @@
 #include "Engine/ECS/Systems/ParticleSystem.h"
 #include "Engine/ECS/Systems/AnimationSystem.h"
 #include "Engine/Graphics/Resource/GpuBuffer.h"
+#include "Engine/Core/RawInputService.h"
+#include "Engine/Core/InputActions.h"
+#include "Engine/Core/InputBinding.h"
+#include "Engine/Core/InputMapper.h"
 
 namespace Engine::Core {
 
@@ -50,6 +54,9 @@ public:
     HWND GetHWND() const { return window_.GetHWND(); }
 
     ECS::Registry& GetRegistry() { return registry_; }
+
+    RawInputService& GetRawInputService() { return rawInputService_; }
+    ActionMap& GetGameActionMap() { return gameActionMap_; }
 
     void RegisterUICallback(const std::function<void()>& callback) { uiCallbacks_.push_back(callback); }
 
@@ -91,6 +98,11 @@ private:
     void(*shutdownDelegate_)() = nullptr;
 
     bool isEditorMode_ = false;
+
+    RawInputService rawInputService_;
+    ActionMap gameActionMap_;
+    BindingTable gameBindingTable_;
+    InputMapper inputMapper_;
 };
 
 } // namespace Engine::Core

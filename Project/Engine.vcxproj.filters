@@ -102,6 +102,15 @@
     <ClInclude Include="Engine\Core\Application.h">
       <Filter>Core</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\Core\InputActions.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Core\InputBinding.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Core\InputMapper.h">
+      <Filter>Core</Filter>
+    </ClInclude>
     <ClInclude Include="Engine\Core\Math\Math.h">
       <Filter>Core\Math</Filter>
     </ClInclude>
@@ -128,6 +137,9 @@
     </ClInclude>
     <ClInclude Include="Engine\Core\Math\Vector4T.h">
       <Filter>Core\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Core\RawInputService.h">
+      <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Core\Timer.h">
       <Filter>Core</Filter>
@@ -295,6 +307,9 @@
     </ClCompile>
     <ClCompile Include="Engine\Core\Math\Quaternion.cpp">
       <Filter>Core\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\RawInputService.cpp">
+      <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Core\Timer.cpp">
       <Filter>Core</Filter>
