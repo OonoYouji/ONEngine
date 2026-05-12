@@ -6,6 +6,7 @@
 #include "Engine/Graphics/Resource/DepthBuffer.h"
 #include "Engine/Graphics/Shader/ShaderManager.h"
 #include "Engine/Graphics/PostProcess/PostProcessSystem.h"
+#include "Engine/Common/Console.h"
 
 namespace Engine::Graphics {
 
@@ -20,10 +21,6 @@ void GraphicsEngine::Initialize(HWND hwnd, const Engine::Math::Vector2Int& windo
 	windowSize_ = windowSize;
     hwnd_ = hwnd;
 
-	///
-	/// 基盤レイヤーの初期化
-	///
-
 	SetDebugLayer();
 
 	renderDevice_ = std::make_unique<RenderDevice>();
@@ -35,18 +32,18 @@ void GraphicsEngine::Initialize(HWND hwnd, const Engine::Math::Vector2Int& windo
 	commandQueue_->Initialize(renderDevice_.get());
 
 	rtvHeap_ = std::make_unique<DescriptorHeap>();
-	rtvHeap_->Initialize(renderDevice_.get(), D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 32, false);
+	rtvHeap_->Initialize(renderDevice_.get(), D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 64, false);
 
 	srvHeap_ = std::make_unique<DescriptorHeap>();
-	srvHeap_->Initialize(renderDevice_.get(), D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 2048, true); // ヒープを拡張
+	srvHeap_->Initialize(renderDevice_.get(), D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 2048, true);
+	
+    // 0番を ImGui 用に予約 (ここが重要)
+	uint32_t imguiIndex = srvHeap_->AllocateIndex();
+    Engine::Console::Log(std::format("GraphicsEngine: ImGui Descriptor Reserved at Index {}", imguiIndex));
 
 	dsvHeap_ = std::make_unique<DescriptorHeap>();
 	dsvHeap_->Initialize(renderDevice_.get(), D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 1, false);
 
-
-	///
-	/// 実行・同期レイヤーの初期化
-	///
 
 	for (uint32_t i = 0; i < kFrameCount; ++i) {
 		frameResources_[i] = std::make_unique<FrameResource>();
@@ -59,17 +56,18 @@ void GraphicsEngine::Initialize(HWND hwnd, const Engine::Math::Vector2Int& windo
 	depthBuffer_ = std::make_unique<DepthBuffer>();
 	depthBuffer_->Create(renderDevice_.get(), dsvHeap_.get(), windowSize.x, windowSize.y);
 
-    // HDR用中間バッファの作成
+    // mainColorBuffer を 1番に作成
     mainColorBuffer_ = std::make_unique<RenderTexture>();
     mainColorBuffer_->Create(renderDevice_.get(), rtvHeap_.get(), srvHeap_.get(), windowSize, DXGI_FORMAT_R16G16B16A16_FLOAT, {0.1f, 0.1f, 0.1f, 1.0f});
+    mainColorBuffer_->SetDebugName("MainColorBuffer");
 
-    // 法線バッファの作成
     normalBuffer_ = std::make_unique<RenderTexture>();
     normalBuffer_->Create(renderDevice_.get(), rtvHeap_.get(), srvHeap_.get(), windowSize, DXGI_FORMAT_R16G16B16A16_FLOAT, {0.0f, 0.0f, 0.0f, 0.0f});
+    normalBuffer_->SetDebugName("NormalBuffer");
 
-    // ID/Flagsバッファの作成 (R32G32_UINT: EntityID, PostProcessFlags)
     idBuffer_ = std::make_unique<RenderTexture>();
     idBuffer_->Create(renderDevice_.get(), rtvHeap_.get(), srvHeap_.get(), windowSize, DXGI_FORMAT_R32G32_UINT, {0.0f, 0.0f, 0.0f, 0.0f});
+    idBuffer_->SetDebugName("IDBuffer");
 }
 
 void GraphicsEngine::Shutdown() {
@@ -85,14 +83,11 @@ void GraphicsEngine::BeginFrame() {
 
     auto* commandList = commandQueue_->GetCommandList();
     
-    // 全員で共有するグローバル SRV ヒープをバインド
     ID3D12DescriptorHeap* heaps[] = { srvHeap_->GetHeap() };
     commandList->SetDescriptorHeaps(_countof(heaps), heaps);
 
-    // バックバッファの遷移 (PRESENT -> RENDER_TARGET)
     swapChain_->BeginFrame(commandList);
 
-    // MRTs の遷移 (COMMON/SRV -> RENDER_TARGET)
     mainColorBuffer_->Transition(commandList, D3D12_RESOURCE_STATE_RENDER_TARGET);
     normalBuffer_->Transition(commandList, D3D12_RESOURCE_STATE_RENDER_TARGET);
     idBuffer_->Transition(commandList, D3D12_RESOURCE_STATE_RENDER_TARGET);
@@ -104,33 +99,27 @@ void GraphicsEngine::BeginFrame() {
     };
     D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = depthBuffer_->GetDSVHandle();
     commandList->OMSetRenderTargets(3, rtvHandles, FALSE, &dsvHandle);
+
+    D3D12_VIEWPORT viewport = { 0.0f, 0.0f, (float)windowSize_.x, (float)windowSize_.y, 0.0f, 1.0f };
+    D3D12_RECT scissor = { 0, 0, windowSize_.x, windowSize_.y };
+    commandList->RSSetViewports(1, &viewport);
+    commandList->RSSetScissorRects(1, &scissor);
 }
 
 void GraphicsEngine::EndFrame() {
     auto* commandList = commandQueue_->GetCommandList();
     
-    // MRTs を SHADER_RESOURCE に遷移 (ImGui で参照するため)
     mainColorBuffer_->Transition(commandList, D3D12_RESOURCE_STATE_ALL_SHADER_RESOURCE);
     normalBuffer_->Transition(commandList, D3D12_RESOURCE_STATE_ALL_SHADER_RESOURCE);
     idBuffer_->Transition(commandList, D3D12_RESOURCE_STATE_ALL_SHADER_RESOURCE);
 
-    // ImGui の描画前にバックバッファをターゲットに設定
     D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = swapChain_->GetRTVHandle();
     commandList->OMSetRenderTargets(1, &rtvHandle, FALSE, nullptr);
-
-    // ※ ImGui_ImplDX12_RenderDrawData はこの後に Application::Run 側で呼ばれる
-
-    // バックバッファを PRESENT に戻すのは、ImGui 描画後に行う必要がある
-    // 現状は EndFrame の役割を分割するか、Application::Run 側で最終遷移を行う
 }
 
-// 最終的な書き出しと提示
 void GraphicsEngine::Present() {
     auto* commandList = commandQueue_->GetCommandList();
-    
-    // バックバッファの最終遷移 (RENDER_TARGET -> PRESENT)
     swapChain_->EndFrame(commandList);
-
     commandQueue_->Execute();
     swapChain_->Present();
     frameResources_[currentFrameIndex_]->SetFenceValue(commandQueue_->Signal());
@@ -138,14 +127,11 @@ void GraphicsEngine::Present() {
 
 void GraphicsEngine::Clear(const Engine::Math::Vector4& color) {
     auto* commandList = commandQueue_->GetCommandList();
-    float mainClearColor[] = { 0.1f, 0.1f, 0.1f, 1.0f };
-    commandList->ClearRenderTargetView(mainColorBuffer_->GetRTVHandle(), mainClearColor, 0, nullptr);
-    float zero[] = { 0.0f, 0.0f, 0.0f, 0.0f };
-    commandList->ClearRenderTargetView(normalBuffer_->GetRTVHandle(), zero, 0, nullptr);
-    commandList->ClearRenderTargetView(idBuffer_->GetRTVHandle(), zero, 0, nullptr);
+    mainColorBuffer_->Clear(commandList);
+    normalBuffer_->Clear(commandList);
+    idBuffer_->Clear(commandList);
     
-    // バックバッファもクリア (ImGui の背景用)
-    float backColor[] = { 0, 0, 0, 1 };
+    float backColor[] = { color.x, color.y, color.z, color.w };
     commandList->ClearRenderTargetView(swapChain_->GetRTVHandle(), backColor, 0, nullptr);
 }
 
@@ -169,7 +155,7 @@ void GraphicsEngine::CreateDebugLayer() {
 	if(SUCCEEDED(renderDevice_->GetDevice()->QueryInterface(IID_PPV_ARGS(&infoQueue)))) {
 		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, true);
 		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, true);
-		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, true);
+		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, false);
 
 		D3D12_MESSAGE_ID denyIds[] = {
 			D3D12_MESSAGE_ID_RESOURCE_BARRIER_MISMATCHING_COMMAND_LIST_TYPE

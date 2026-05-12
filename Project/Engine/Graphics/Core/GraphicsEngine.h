@@ -67,6 +67,7 @@ public:
 	D3D12_GPU_DESCRIPTOR_HANDLE GetImGuiGPUHandle() const;
 
 	HWND GetHWND() const { return hwnd_; }
+	Engine::Math::Vector2Int GetWindowSize() const { return windowSize_; }
 
 private:
 	GraphicsEngine();

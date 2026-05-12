@@ -39,11 +39,8 @@ int32_t FontManager::LoadFont(const std::string& pathOrGuid, float fontSize) {
     auto& graphics = Graphics::GraphicsEngine::GetInstance();
     auto* srvHeap = graphics.GetSRVHeap();
     
-    // TextureManager と被らないようにオフセットを考慮する必要があるが、
-    // 現状は簡易的に、巨大なヒープ(1024)の後半を使用するなどして衝突を避ける
-    // TODO: 正確なデスクリプタ割り当てマネージャの実装
-    static uint32_t fontDescriptorOffset = 512;
-    uint32_t index = fontDescriptorOffset++;
+    // インデックスを動的に割り当て
+    uint32_t index = srvHeap->AllocateIndex();
 
     font->GetAtlasTexture()->CreateResource(device_, srvHeap->GetCPUHandle(index));
     font->GetAtlasTexture()->SetIndex(index);

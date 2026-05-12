@@ -49,8 +49,8 @@ std::shared_ptr<Texture> TextureManager::LoadTextureAsAsset(const std::string& p
     auto* graphics = &Graphics::GraphicsEngine::GetInstance();
     auto* srvHeap = graphics->GetSRVHeap();
     
-    // 0 は ImGui 用、1 以降をテクスチャ用に使用
-    uint32_t index = static_cast<uint32_t>(textureMap_.size()) + 1;
+    // インデックスを動的に割り当て
+    uint32_t index = srvHeap->AllocateIndex();
 
     if (texture->Load(Engine::ConvertString(path))) {
         texture->CreateResource(device_, srvHeap->GetCPUHandle(index));

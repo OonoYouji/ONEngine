@@ -21,7 +21,11 @@ void RenderDevice::Initialize() {
 	/// ---------------------------------------------------
 	/// dxgiFactory
 	/// ---------------------------------------------------
+#ifdef _DEBUG
+	hr = CreateDXGIFactory2(DXGI_CREATE_FACTORY_DEBUG, IID_PPV_ARGS(&dxgiFactory_));
+#else
 	hr = CreateDXGIFactory(IID_PPV_ARGS(&dxgiFactory_));
+#endif
 	Assert(SUCCEEDED(hr), "Factory generation failed.");
 
 

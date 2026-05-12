@@ -1,4 +1,5 @@
 #include "AssetManager.h"
+#include "Engine/Graphics/Resource/GpuBuffer.h"
 #include "AssetDatabase.h"
 #include "ModelLoader.h"
 #include "Mesh.h"
@@ -12,6 +13,10 @@ AssetManager* AssetManager::instance_ = nullptr;
 
 void AssetManager::Initialize(Graphics::RenderDevice* device) {
     device_ = device;
+
+    meshInfoBuffer_ = std::make_unique<Graphics::StructuredBuffer>();
+    meshInfoBuffer_->Create(device, sizeof(GeneratedSchema::MeshInfo), 1024, nullptr, false);
+
     // 起動時にAssetsディレクトリをスキャン
     AssetDatabase::GetInstance().Scan("Project/Assets");
     AssetDatabase::GetInstance().Scan("Project/Packages");
@@ -26,6 +31,36 @@ void AssetManager::Initialize(Graphics::RenderDevice* device) {
 void AssetManager::Shutdown() {
     models_.clear();
     indexedModels_.clear();
+    meshInfoBuffer_.reset();
+}
+
+D3D12_GPU_VIRTUAL_ADDRESS AssetManager::GetMeshInfoBufferAddress() const {
+    return meshInfoBuffer_->GetResource()->GetGPUVirtualAddress();
+}
+
+void AssetManager::UpdateMeshInfoBuffer() {
+    std::vector<GeneratedSchema::MeshInfo> infos(1024);
+    for (uint32_t i = 0; i < (uint32_t)indexedModels_.size() && i < 1024; ++i) {
+        const auto& meshes = indexedModels_[i]->GetMeshes();
+        if (meshes.empty()) continue;
+
+        // モデル全体の代表情報を 0-255 (i) に格納
+        infos[i].vertexCount = 0;
+        infos[i].indexCount = 0;
+        infos[i].meshCount = static_cast<uint32_t>(meshes.size());
+        infos[i].vertexOffset = 256 + i * 16; // サブメッシュ情報へのオフセット (簡易版)
+
+        // 各サブメッシュの情報を 256+ に格納
+        for (uint32_t m = 0; m < (uint32_t)meshes.size() && m < 16; ++m) {
+            uint32_t subIdx = 256 + i * 16 + m;
+            if (subIdx >= 1024) break;
+            infos[subIdx].vertexOffset = meshes[m]->GetVertexOffset();
+            infos[subIdx].indexOffset = meshes[m]->GetIndexOffset();
+            infos[subIdx].vertexCount = meshes[m]->GetVertexCount();
+            infos[subIdx].indexCount = meshes[m]->GetIndexCount();
+        }
+    }
+    meshInfoBuffer_->Update(infos.data(), (uint32_t)(infos.size() * sizeof(GeneratedSchema::MeshInfo)));
 }
 
 std::string AssetManager::ToGuid(const std::string& pathOrGuid) {

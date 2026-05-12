@@ -38,6 +38,9 @@ public:
     /// @brief 状態遷移（描画用 <-> シェーダー参照用）
     void Transition(ID3D12GraphicsCommandList* commandList, D3D12_RESOURCE_STATES stateAfter);
 
+    void SetDebugName(const std::string& name);
+    const std::string& GetDebugName() const { return debugName_; }
+
     ID3D12Resource* GetResource() const { return allocation_->GetResource(); }
     D3D12_CPU_DESCRIPTOR_HANDLE GetRTVHandle() const { return rtvHandle_; }
     D3D12_GPU_DESCRIPTOR_HANDLE GetSRVHandle() const { return srvHandle_; }
@@ -54,6 +57,9 @@ private:
     uint32_t srvIndex_ = 0xFFFFFFFF;
     Math::Vector4 clearColor_;
     D3D12_RESOURCE_STATES currentState_ = D3D12_RESOURCE_STATE_COMMON;
+    std::string debugName_;
+
+    void optimizedClearColor(float* dest, const Math::Vector4& src);
 };
 
 } // namespace Engine::Graphics

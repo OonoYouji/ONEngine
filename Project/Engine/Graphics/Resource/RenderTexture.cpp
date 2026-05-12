@@ -2,6 +2,7 @@
 #include "Engine/Graphics/Core/RenderDevice.h"
 #include "Engine/Graphics/Core/DescriptorHeap.h"
 #include "Engine/Common/Assert.h"
+#include "Engine/Common/Console.h"
 #include <d3dx12.h>
 
 namespace Engine::Graphics {
@@ -28,10 +29,7 @@ void RenderTexture::Create(RenderDevice* device, DescriptorHeap* rtvHeap, Descri
 
     D3D12_CLEAR_VALUE optimizedClearValue = {};
     optimizedClearValue.Format = format;
-    optimizedClearValue.Color[0] = clearColor.x;
-    optimizedClearValue.Color[1] = clearColor.y;
-    optimizedClearValue.Color[2] = clearColor.z;
-    optimizedClearValue.Color[3] = clearColor.w;
+    optimizedClearColor(optimizedClearValue.Color, clearColor);
 
     D3D12MA::ALLOCATION_DESC allocDesc = {};
     allocDesc.HeapType = D3D12_HEAP_TYPE_DEFAULT;
@@ -53,6 +51,9 @@ void RenderTexture::Create(RenderDevice* device, DescriptorHeap* rtvHeap, Descri
     // SRVの作成
     srvIndex_ = srvHeap->AllocateIndex();
     srvHandle_ = srvHeap->GetGPUHandle(srvIndex_);
+    
+    // まだ名前がない場合があるが、作成後にセットされることを想定
+    Engine::Console::Log(std::format("RenderTexture Created: Index={}, GPUHandle=0x{:X}", srvIndex_, srvHandle_.ptr));
     
     D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
     srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
@@ -76,6 +77,21 @@ void RenderTexture::Transition(ID3D12GraphicsCommandList* commandList, D3D12_RES
     auto barrier = CD3DX12_RESOURCE_BARRIER::Transition(allocation_->GetResource(), currentState_, stateAfter);
     commandList->ResourceBarrier(1, &barrier);
     currentState_ = stateAfter;
+}
+
+void RenderTexture::SetDebugName(const std::string& name) {
+    debugName_ = name;
+    if (allocation_) {
+        std::wstring wname(name.begin(), name.end());
+        allocation_->GetResource()->SetName(wname.c_str());
+    }
+}
+
+void RenderTexture::optimizedClearColor(float* dest, const Math::Vector4& src) {
+    dest[0] = src.x;
+    dest[1] = src.y;
+    dest[2] = src.z;
+    dest[3] = src.w;
 }
 
 } // namespace Engine::Graphics

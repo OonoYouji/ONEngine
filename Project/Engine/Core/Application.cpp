@@ -1,4 +1,4 @@
-#include "Application.h"
+﻿#include "Application.h"
 #include "Engine/Common/Console.h"
 #include "Engine/Graphics/Core/GraphicsEngine.h"
 #include "Engine/Graphics/Core/Renderer.h"
@@ -32,7 +32,6 @@ Application::~Application() = default;
 bool Application::Initialize(HINSTANCE hInstance, int nCmdShow) {
     Console::Initialize();
 
-    // シングルトンの生成
     Asset::AssetDatabase::CreateInstance();
     Asset::AssetRegistry::CreateInstance();
     ECS::ComponentRegistry::CreateInstance();
@@ -48,7 +47,6 @@ bool Application::Initialize(HINSTANCE hInstance, int nCmdShow) {
     Graphics::PostProcessSystem::CreateInstance();
     Graphics::Renderer::CreateInstance();
 
-    // 1. 基本システムの初期化
     ECS::InitializeComponentRegistry();
     window_.Initialize(L"ONEngine", Math::Vector2Int::HD);
 
@@ -63,27 +61,7 @@ bool Application::Initialize(HINSTANCE hInstance, int nCmdShow) {
     Graphics::GeometryPool::GetInstance().Initialize(graphics.GetRenderDevice());
     Graphics::DebugRenderer::GetInstance().Initialize(graphics.GetRenderDevice());
 
-    // 2. スクリプトの初期化
-    auto& scriptHost = Script::ScriptHost::GetInstance();
-    if (scriptHost.Initialize()) {
-        auto initDelegate = (void(*)(void*, void*))scriptHost.GetMethodDelegate(
-            L"ONEngine.Scripting.EngineHost", L"Initialize", L"");
-        if (initDelegate) initDelegate((void*)LogFromRuntime, &registry_);
-
-        updateDelegate_ = (void(*)())scriptHost.GetMethodDelegate(
-            L"ONEngine.Scripting.EngineHost", L"Update", L"");
-        shutdownDelegate_ = (void(*)())scriptHost.GetMethodDelegate(
-            L"ONEngine.Scripting.EngineHost", L"Shutdown", L"");
-    }
-
-    // 3. レンダラーとパイプラインの初期化
-    auto& renderer = Graphics::Renderer::GetInstance();
-    renderer.Initialize(graphics.GetRenderDevice());
-
-    auto& sm = Graphics::ShaderManager::GetInstance();
-    sm.LoadPipelineAsset("Assets/Pipelines/DebugLine.json");
-
-    // 4. ECSシステムのインスタンス化
+    // --- システムを先に生成 (安全のため) ---
     transformSystem_ = std::make_unique<ECS::TransformSystem>();
     renderSystem_ = std::make_unique<ECS::RenderSystem>();
     cameraSystem_ = std::make_unique<ECS::CameraSystem>();
@@ -92,14 +70,36 @@ bool Application::Initialize(HINSTANCE hInstance, int nCmdShow) {
     textSystem_ = std::make_unique<ECS::TextSystem>();
     particleSystem_ = std::make_unique<ECS::ParticleSystem>();
     animationSystem_ = std::make_unique<ECS::AnimationSystem>();
+    animationSystem_->Initialize(graphics.GetRenderDevice());
 
-    Graphics::PostProcessSystem::GetInstance().Initialize(
-        graphics.GetRenderDevice(), 
-        graphics.GetRTVHeap(), 
-        graphics.GetSRVHeap(), 
-        Math::Vector2Int::HD);
+    // 2. スクリプトの初期化 (システムの後に実行)
+    auto& scriptHost = Script::ScriptHost::GetInstance();
+    if (scriptHost.Initialize()) {
+        auto initDelegate = (void(*)(void*, void*))scriptHost.GetMethodDelegate(L"ONEngine.Scripting.EngineHost", L"Initialize", L"");
+        if (initDelegate) initDelegate((void*)LogFromRuntime, &registry_);
+        updateDelegate_ = (void(*)())scriptHost.GetMethodDelegate(L"ONEngine.Scripting.EngineHost", L"Update", L"");
+        shutdownDelegate_ = (void(*)())scriptHost.GetMethodDelegate(L"ONEngine.Scripting.EngineHost", L"Shutdown", L"");
+    }
 
-    // 5. バッファの作成
+    auto& renderer = Graphics::Renderer::GetInstance();
+    renderer.Initialize(graphics.GetRenderDevice());
+
+    gpuCullingManager_ = std::make_unique<Graphics::GPUCullingManager>();
+    gpuCullingManager_->Initialize(graphics.GetRenderDevice());
+
+    clusteredLightManager_ = std::make_unique<Graphics::ClusteredLightManager>();
+    clusteredLightManager_->Initialize(graphics.GetRenderDevice());
+
+    auto& sm = Graphics::ShaderManager::GetInstance();
+    sm.LoadPipelineAsset("Assets/Pipelines/DebugLine.json");
+    sm.LoadPipelineAsset("Assets/Pipelines/Skybox.json");
+    sm.LoadPipelineAsset("Assets/Pipelines/CelShader.json");
+    sm.LoadPipelineAsset("Assets/Pipelines/PostProcess.json");
+    sm.LoadPipelineAsset("Assets/Pipelines/BindlessTest.json");
+    sm.LoadPipelineAsset("Assets/Pipelines/Skinning.json");
+
+    Graphics::PostProcessSystem::GetInstance().Initialize(graphics.GetRenderDevice(), graphics.GetRTVHeap(), graphics.GetSRVHeap(), Math::Vector2Int::HD);
+
     pointLightSB_ = std::make_unique<Graphics::StructuredBuffer>();
     pointLightSB_->Create(graphics.GetRenderDevice(), sizeof(GeneratedSchema::PointLightData), 64);
     
@@ -109,6 +109,9 @@ bool Application::Initialize(HINSTANCE hInstance, int nCmdShow) {
     textSB_ = std::make_unique<Graphics::StructuredBuffer>();
     textSB_->Create(graphics.GetRenderDevice(), sizeof(GeneratedSchema::TextData), 4096);
 
+    // 診断のため、シーンロードはまだ停止
+     //Scene::SceneLoader::LoadScene("Assets/Scene/Main.scene", registry_);
+
     timer_.Reset();
     return true;
 }
@@ -117,25 +120,30 @@ void Application::Run() {
     while (true) {
         window_.Update();
         if (window_.GetIsProcessEnd()) break;
-
         timer_.Tick();
 
         if (isEditorMode_) {
+#ifndef NDEBUG
             ImGui_ImplDX12_NewFrame();
             ImGui_ImplWin32_NewFrame();
             ImGui::NewFrame();
             ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport());
             for (auto& callback : uiCallbacks_) callback();
+#endif
         }
 
         Update(timer_.GetDeltaTime());
         Render();
 
         if (isEditorMode_) {
-            Graphics::GraphicsEngine::GetInstance().EndFrame(); // MRT -> SRV
+#ifndef NDEBUG
+            Graphics::GraphicsEngine::GetInstance().EndFrame();
             ImGui::Render();
             auto* commandList = Graphics::GraphicsEngine::GetInstance().GetCommandQueue()->GetCommandList();
             ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), static_cast<ID3D12GraphicsCommandList*>(commandList));
+#endif
+        } else {
+            Graphics::GraphicsEngine::GetInstance().EndFrame();
         }
 
         Graphics::GraphicsEngine::GetInstance().Present();
@@ -144,44 +152,140 @@ void Application::Run() {
 
 void Application::Update(float dt) {
     if (updateDelegate_) updateDelegate_();
-    transformSystem_->Update(registry_);
-    cameraSystem_->Reset();
-    cameraSystem_->Update(registry_);
-    lightSystem_->Reset();
-    lightSystem_->Update(registry_);
+    
+    // 全システムにヌルチェックを適用
+    if (transformSystem_) transformSystem_->Update(registry_);
+    if (cameraSystem_) {
+        cameraSystem_->Reset();
+        cameraSystem_->Update(registry_);
+    }
+    if (lightSystem_) {
+        lightSystem_->Reset();
+        lightSystem_->Update(registry_);
+    }
+    if (skyboxSystem_) {
+        skyboxSystem_->Reset();
+        skyboxSystem_->Update(registry_);
+    }
+    if (textSystem_) {
+        textSystem_->Reset();
+        textSystem_->Update(registry_);
+    }
 }
 
 void Application::Render() {
     auto& graphics = Graphics::GraphicsEngine::GetInstance();
     auto* currentFrameRes = graphics.GetCurrentFrameResource();
+    auto& renderer = Graphics::Renderer::GetInstance();
     auto& debug = Graphics::DebugRenderer::GetInstance();
+    auto& sm = Graphics::ShaderManager::GetInstance();
+    auto& am = Asset::AssetManager::GetInstance();
 
-    debug.Clear();
-
-    // --- 描画前準備フェーズ ---
+    // 1. フレーム開始
     graphics.BeginFrame();
     auto* commandList = graphics.GetCommandQueue()->GetCommandList();
+    uint32_t frameIndex = graphics.GetCurrentFrameIndex();
     
-    graphics.Clear({ 0.1f, 0.15f, 0.3f, 1.0f }); 
+    // カリングカウンタのリセット
+    if (gpuCullingManager_) {
+        gpuCullingManager_->ResetCounters(static_cast<ID3D12GraphicsCommandList*>(commandList));
+    }
+
+    if (animationSystem_) {
+        animationSystem_->Update(registry_, static_cast<ID3D12GraphicsCommandList*>(commandList), timer_.GetDeltaTime(), frameIndex);
+    }
+
+    graphics.Clear({ 0.2f, 0.2f, 0.2f, 1.0f }); 
     graphics.ClearDepth();
 
-    // 診断用コンテキスト
+    // 2. 描画リクエストの収集
+    renderer.ClearQueue();
+    if (renderSystem_) renderSystem_->Update(registry_);
+
+    GeneratedSchema::SceneData sceneData{};
+    float aspect = (float)graphics.GetWindowSize().x / (float)graphics.GetWindowSize().y;
+    float fov = 0.45f;
+    float nearZ = 0.1f;
+    float farZ = 1000.0f;
+    sceneData.view = Math::Matrix4x4::MakeLookAtLH({ 0, 50, -150 }, { 0, 0, 0 }, { 0, 1, 0 });
+    sceneData.viewProj = sceneData.view * Math::Matrix4x4::MakePerspectiveFovLH(fov, aspect, nearZ, farZ);
+    sceneData.cameraPos = { 0, 50, -150 };
+    sceneData.screenWidth = (float)graphics.GetWindowSize().x;
+    sceneData.screenHeight = (float)graphics.GetWindowSize().y;
+    sceneData.nearZ = nearZ;
+    sceneData.farZ = farZ;
+
+    // 方向性ライトの反映 (LightSystemがあれば)
+    sceneData.dirLightColor = { 1, 1, 1 };
+    sceneData.dirLightIntensity = 1.0f;
+    sceneData.dirLightDirection = { 0.5f, -1.0f, 0.5f };
+
+    currentFrameRes->GetSceneCB()->Update(&sceneData, sizeof(sceneData));
+
+    am.UpdateMeshInfoBuffer();
+    renderer.Extract();
+
+    // クラスタライトカリングの更新
+    if (clusteredLightManager_) {
+        // 初回のみクラスタ構築
+        static bool clustersBuilt = false;
+        if (!clustersBuilt) {
+            clusteredLightManager_->BuildClusters(
+                static_cast<ID3D12GraphicsCommandList*>(commandList),
+                Math::Matrix4x4::MakePerspectiveFovLH(fov, aspect, nearZ, farZ).Inverse(),
+                graphics.GetWindowSize(),
+                nearZ,
+                farZ
+            );
+            clustersBuilt = true;
+        }
+
+        clusteredLightManager_->AssignLights(
+            static_cast<ID3D12GraphicsCommandList*>(commandList),
+            currentFrameRes->GetSceneCB()->GetGPUVirtualAddress(),
+            pointLightSB_->GetResource()->GetGPUVirtualAddress(),
+            0 // TODO: registry からライト数を取得
+        );
+    }
+
+    // 3. 描画コンテキスト
     Graphics::RenderContext context;
     context.commandList = static_cast<ID3D12GraphicsCommandList*>(commandList);
     context.sceneCBAddress = currentFrameRes->GetSceneCB()->GetGPUVirtualAddress();
+    context.pointLightBufferAddress = pointLightSB_->GetResource()->GetGPUVirtualAddress();
+    if (clusteredLightManager_) {
+        context.lightGridBufferAddress = clusteredLightManager_->GetLightGridBuffer()->GetResource()->GetGPUVirtualAddress();
+        context.lightIndexListBufferAddress = clusteredLightManager_->GetLightIndexListBuffer()->GetResource()->GetGPUVirtualAddress();
+    }
     context.frameIndex = graphics.GetCurrentFrameIndex();
-    
+    context.numRenderTargets = 3;
+    context.rtvFormats[0] = DXGI_FORMAT_R16G16B16A16_FLOAT;
+    context.rtvFormats[1] = DXGI_FORMAT_R16G16B16A16_FLOAT;
+    context.rtvFormats[2] = DXGI_FORMAT_R32G32_UINT;
+    context.viewProj = sceneData.viewProj;
+    context.animationSystem = animationSystem_.get();
+    context.cullingManager = gpuCullingManager_.get();
+    context.meshInfoBufferAddress = am.GetMeshInfoBufferAddress();
+
+    // 4. シーン描画
+    renderer.Render(context);
+
+    // 5. デバッグ描画
+    debug.Clear();
+    for (int i = -10; i <= 10; ++i) {
+        debug.DrawLine({ (float)i * 5, 0.0f, -50 }, { (float)i * 5, 0.0f, 50 }, { 0.5f, 0.5f, 0.5f, 1.0f });
+        debug.DrawLine({ -50, 0.0f, (float)i * 5 }, { 50, 0.0f, (float)i * 5 }, { 0.5f, 0.5f, 0.5f, 1.0f });
+    }
     debug.Render(context);
+}
+
+void Application::WaitForGPU() {
+    Graphics::GraphicsEngine::GetInstance().Shutdown();
 }
 
 void Application::Shutdown() {
     if (shutdownDelegate_) shutdownDelegate_();
-
-    // 1. GPUの完了を待機
-    auto& graphics = Graphics::GraphicsEngine::GetInstance();
-    graphics.Shutdown();
-
-    // 2. 全ての「リソースを保持する可能性があるもの」を先に破棄する
+    Graphics::GraphicsEngine::GetInstance().Shutdown();
     transformSystem_.reset();
     renderSystem_.reset();
     cameraSystem_.reset();
@@ -190,36 +294,30 @@ void Application::Shutdown() {
     textSystem_.reset();
     particleSystem_.reset();
     animationSystem_.reset();
-
+    if (gpuCullingManager_) gpuCullingManager_->Shutdown();
+    gpuCullingManager_.reset();
+    if (clusteredLightManager_) clusteredLightManager_->Shutdown();
+    clusteredLightManager_.reset();
     pointLightSB_.reset();
     spriteSB_.reset();
     textSB_.reset();
-
     registry_.Clear();
-
-    // 3. アセットマネージャの破棄 (モデルやテクスチャの所有権を解放)
     Asset::AssetManager::DestroyInstance();
     Asset::MaterialManager::DestroyInstance();
     Asset::TextureManager::DestroyInstance();
     Asset::FontManager::DestroyInstance();
-
-    // 4. その他のシングルトンの破棄
     Graphics::Renderer::DestroyInstance();
     Graphics::PostProcessSystem::DestroyInstance();
     Graphics::DebugRenderer::DestroyInstance();
     Graphics::GeometryPool::DestroyInstance();
     Script::ScriptHost::DestroyInstance();
     Graphics::ShaderManager::DestroyInstance();
-
-    // 5. 最後にメモリ管理を行っている GraphicsEngine を破棄
     Graphics::GraphicsEngine::DestroyInstance();
-
-    // 6. システム基盤の破棄
     ECS::ComponentRegistry::DestroyInstance();
     Asset::AssetRegistry::DestroyInstance();
     Asset::AssetDatabase::DestroyInstance();
-
     window_.Shutdown();
+    Application::DestroyInstance();
     Console::Shutdown();
 }
 

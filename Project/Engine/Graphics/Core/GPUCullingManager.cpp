@@ -67,10 +67,7 @@ void GPUCullingManager::ResetCounters(ID3D12GraphicsCommandList* commandList) {
 
     if (!pso || !rootSig) return;
 
-    {
-        D3D12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(drawArgsBuffer_->GetResource(), D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
-        commandList->ResourceBarrier(1, &barrier);
-    }
+    drawArgsBuffer_->Transition(commandList, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
 
     commandList->SetComputeRootSignature(rootSig->Get());
     commandList->SetPipelineState(pso);
@@ -78,11 +75,9 @@ void GPUCullingManager::ResetCounters(ID3D12GraphicsCommandList* commandList) {
 
     commandList->Dispatch(1, 1, 1); 
 
-    {
-        D3D12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(drawArgsBuffer_->GetResource(), D3D12_RESOURCE_STATE_UNORDERED_ACCESS, D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT);
-        commandList->ResourceBarrier(1, &barrier);
-    }
+    drawArgsBuffer_->Transition(commandList, D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT);
 }
+
 
 void GPUCullingManager::Execute(ID3D12GraphicsCommandList* commandList, 
                               D3D12_GPU_VIRTUAL_ADDRESS sceneCBAddress,
@@ -130,13 +125,9 @@ void GPUCullingManager::Execute(ID3D12GraphicsCommandList* commandList,
     buildCB->Update(bParams, sizeof(bParams));
 
     // 3. Culling Pass
-    {
-        D3D12_RESOURCE_BARRIER barriers[3];
-        barriers[0] = CD3DX12_RESOURCE_BARRIER::Transition(outputInstances_->GetResource(), D3D12_RESOURCE_STATE_ALL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
-        barriers[1] = CD3DX12_RESOURCE_BARRIER::Transition(drawArgsBuffer_->GetResource(), D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
-        barriers[2] = CD3DX12_RESOURCE_BARRIER::Transition(indirectCommandBuffer_->GetResource(), D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
-        commandList->ResourceBarrier(3, barriers);
-    }
+    outputInstances_->Transition(commandList, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+    drawArgsBuffer_->Transition(commandList, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+    indirectCommandBuffer_->Transition(commandList, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
 
     commandList->SetComputeRootSignature(cullingRootSig->Get());
     commandList->SetPipelineState(cullingPSO);
@@ -178,13 +169,9 @@ void GPUCullingManager::Execute(ID3D12GraphicsCommandList* commandList,
     commandList->Dispatch(1, 1, 1);
 
     // 5. Post Barriers
-    {
-        D3D12_RESOURCE_BARRIER postBarriers[3];
-        postBarriers[0] = CD3DX12_RESOURCE_BARRIER::Transition(outputInstances_->GetResource(), D3D12_RESOURCE_STATE_UNORDERED_ACCESS, D3D12_RESOURCE_STATE_ALL_SHADER_RESOURCE);
-        postBarriers[1] = CD3DX12_RESOURCE_BARRIER::Transition(drawArgsBuffer_->GetResource(), D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT);
-        postBarriers[2] = CD3DX12_RESOURCE_BARRIER::Transition(indirectCommandBuffer_->GetResource(), D3D12_RESOURCE_STATE_UNORDERED_ACCESS, D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT);
-        commandList->ResourceBarrier(3, postBarriers);
-    }
+    outputInstances_->Transition(commandList, D3D12_RESOURCE_STATE_ALL_SHADER_RESOURCE);
+    drawArgsBuffer_->Transition(commandList, D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT);
+    indirectCommandBuffer_->Transition(commandList, D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT);
 
     currentBatchCBIndex_ = (currentBatchCBIndex_ + 1) % kMaxBatches;
 }

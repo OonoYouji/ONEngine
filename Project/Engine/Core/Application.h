@@ -42,6 +42,7 @@ public:
     bool Initialize(HINSTANCE hInstance, int nCmdShow);
     void Run();
     void Shutdown();
+    void WaitForGPU();
 
     void SetEditorMode(bool enabled) { isEditorMode_ = enabled; }
     bool IsEditorMode() const { return isEditorMode_; }

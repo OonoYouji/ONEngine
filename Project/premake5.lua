@@ -1,6 +1,6 @@
 workspace "ONEngine"
     architecture "x64"
-    startproject "Editor"
+    startproject "Runtime"
     configurations { "Debug", "Release", "Development" }
 
     -- =========================================================
@@ -223,9 +223,7 @@ project "Runtime"
         postbuildcommands {
             "copy \"$(WindowsSdkDir)bin\\$(TargetPlatformVersion)\\x64\\dxcompiler.dll\" \"$(TargetDir)dxcompiler.dll\"",
             "copy \"$(WindowsSdkDir)bin\\$(TargetPlatformVersion)\\x64\\dxil.dll\" \"$(TargetDir)dxil.dll\"",
-            "copy \"$(ProjectDir)Externals\\DotNetHost\\nethost.dll\" \"$(TargetDir)nethost.dll\"",
-            "xcopy /E /Y /I \"$(ProjectDir)Assets\" \"$(TargetDir)Assets\"",
-            "xcopy /E /Y /I \"$(ProjectDir)Packages\" \"$(TargetDir)Packages\""
+            "copy \"$(ProjectDir)Externals\\DotNetHost\\nethost.dll\" \"$(TargetDir)nethost.dll\""
         }
 
     filter "configurations:Release"
@@ -236,9 +234,7 @@ project "Runtime"
         postbuildcommands {
             "copy \"$(WindowsSdkDir)bin\\$(TargetPlatformVersion)\\x64\\dxcompiler.dll\" \"$(TargetDir)dxcompiler.dll\"",
             "copy \"$(WindowsSdkDir)bin\\$(TargetPlatformVersion)\\x64\\dxil.dll\" \"$(TargetDir)dxil.dll\"",
-            "copy \"$(ProjectDir)Externals\\DotNetHost\\nethost.dll\" \"$(TargetDir)nethost.dll\"",
-            "xcopy /E /Y /I \"$(ProjectDir)Assets\" \"$(TargetDir)Assets\"",
-            "xcopy /E /Y /I \"$(ProjectDir)Packages\" \"$(TargetDir)Packages\""
+            "copy \"$(ProjectDir)Externals\\DotNetHost\\nethost.dll\" \"$(TargetDir)nethost.dll\""
         }
 
     filter "configurations:Development"

@@ -241,6 +241,8 @@ public:
 		return View<Components...>(*this);
 	}
 
+	uint32_t GetMaxEntityId() const { return nextEntityId_; }
+
 	void Clear() {
 		storages_.clear();
 		freeEntities_.clear();

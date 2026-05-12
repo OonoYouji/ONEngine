@@ -1,6 +1,7 @@
 #include "Mesh.h"
 #include "Engine/Graphics/Core/RenderDevice.h"
 #include "Engine/Graphics/Resource/GeometryPool.h"
+#include "Engine/Common/Console.h"
 
 namespace Engine::Asset {
 
@@ -38,6 +39,11 @@ void Mesh::Draw(ID3D12GraphicsCommandList* commandList, uint32_t instanceCount) 
         0, // vertexOffset はシェーダー側で解決するようになったため 0 固定
         0
     );
+
+    static int drawCount = 0;
+    if (drawCount++ % 100 == 0) {
+        Engine::Console::Log(std::format("Mesh: Draw Call issued (Indices: {}, Instances: {})", indexCount_, instanceCount));
+    }
 }
 
 } // namespace Engine::Asset

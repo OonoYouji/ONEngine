@@ -1,18 +1,16 @@
-#include "Renderer.h"
-#include "Engine/Graphics/Core/RenderDevice.h"
-#include "Engine/Graphics/Core/GraphicsEngine.h"
-#include "Engine/Graphics/Core/GPUCullingManager.h"
-#include "Engine/ECS/Systems/AnimationSystem.h"
-#include "Engine/Asset/AssetManager.h"
-#include "Engine/Asset/MaterialManager.h"
-#include "Engine/Asset/TextureManager.h"
-#include "Engine/Graphics/Shader/ShaderManager.h"
-#include "Engine/Asset/Mesh.h"
-#include "Engine/Asset/Texture.h"
-#include "Engine/Common/Console.h"
+﻿#include "Renderer.h"
 #include <algorithm>
+#include "Engine/Graphics/Core/GraphicsEngine.h"
+#include "Engine/Graphics/Core/RenderDevice.h"
 #include "Engine/Graphics/Core/DescriptorHeap.h"
 #include "Engine/Graphics/Resource/GeometryPool.h"
+#include "Engine/Graphics/Resource/GpuBuffer.h"
+#include "Engine/Graphics/Shader/ShaderManager.h"
+#include "Engine/Asset/MaterialManager.h"
+#include "Engine/Asset/AssetManager.h"
+#include "Engine/Asset/Mesh.h"
+#include "Engine/Graphics/Core/GPUCullingManager.h"
+#include "Engine/ECS/Systems/AnimationSystem.h"
 
 namespace Engine::Graphics {
 
@@ -33,9 +31,8 @@ void Renderer::Shutdown() {
 }
 
 void Renderer::PushRequest(const RenderRequest& request) {
-    if (static_cast<uint32_t>(queue_.size()) < kMaxInstances) {
-        queue_.push_back(request);
-    }
+    if (queue_.size() >= kMaxInstances) return;
+    queue_.push_back(request);
 }
 
 void Renderer::ClearQueue() {
@@ -46,109 +43,92 @@ void Renderer::Extract() {
     if (queue_.empty()) return;
 
     auto& graphicsEngine = GraphicsEngine::GetInstance();
+    uint32_t frameIndex = graphicsEngine.GetCurrentFrameIndex();
     auto& materialManager = Asset::MaterialManager::GetInstance();
     auto& assetManager = Asset::AssetManager::GetInstance();
 
-    // 中央管理のフレームインデックスを取得
-    uint32_t frameIndex = graphicsEngine.GetCurrentFrameIndex();
+    uint32_t instanceCount = static_cast<uint32_t>((std::min)(queue_.size(), static_cast<size_t>(kMaxInstances)));
+    std::vector<GeneratedSchema::InstanceData> instances;
+    instances.reserve(instanceCount);
 
-    // 1. ソートしてバッチングしやすくする (インデックス比較なので高速)
-    std::sort(queue_.begin(), queue_.end(), [](const RenderRequest& a, const RenderRequest& b) {
-        if (a.modelIndex != b.modelIndex) return a.modelIndex < b.modelIndex;
-        if (a.materialIndex != b.materialIndex) return a.materialIndex < b.materialIndex;
-        if (a.isSkinned != b.isSkinned) return a.isSkinned < b.isSkinned;
-        return a.vertexOffset < b.vertexOffset;
-    });
-
-    // 2. 全インスタンスデータの抽出
-    std::vector<GeneratedSchema::InstanceData> instanceData;
-    instanceData.reserve(queue_.size());
-    for (const auto& req : queue_) {
-        GeneratedSchema::InstanceData data;
+    for (uint32_t i = 0; i < instanceCount; ++i) {
+        const auto& req = queue_[i];
+        GeneratedSchema::InstanceData data{}; // ゼロ初期化
         data.world = req.world;
         data.entityID = req.entityID;
         data.postProcessFlags = req.postProcessFlags;
+        data.vertexOffset = req.vertexOffset;
         data.modelIndex = req.modelIndex;
-
-        const auto& meshes = assetManager.GetMeshesByIndex(req.modelIndex);
-        if (!meshes.empty()) {
-            const auto& min3 = meshes[0]->GetAABBMin();
-            const auto& max3 = meshes[0]->GetAABBMax();
-            data.aabbMin = { min3.x, min3.y, min3.z, 1.0f };
-            data.aabbMax = { max3.x, max3.y, max3.z, 1.0f };
-        }
         
-        data.vertexOffset = req.vertexOffset; // RenderSystem で計算された正確なオフセットを使用
-        
+        // マテリアル情報の取得
         auto* mat = materialManager.GetMaterialByIndex(req.materialIndex);
         if (mat) {
+            data.textureIndex = mat->textureIndex;
             data.baseColor = mat->baseColor;
-            data.textureIndex = (mat->textureIndex != 0xFFFFFFFF) ? mat->textureIndex : 0;
         } else {
+            data.textureIndex = 0; // デフォルト
             data.baseColor = { 1, 1, 1, 1 };
-            data.textureIndex = 0;
         }
-        instanceData.push_back(data);
+
+        // AABBの取得 (カリング用)
+        const auto& meshes = assetManager.GetMeshesByIndex(req.modelIndex);
+        if (req.subMeshIndex < meshes.size()) {
+            data.aabbMin = { meshes[req.subMeshIndex]->GetAABBMin().x, meshes[req.subMeshIndex]->GetAABBMin().y, meshes[req.subMeshIndex]->GetAABBMin().z, 1.0f };
+            data.aabbMax = { meshes[req.subMeshIndex]->GetAABBMax().x, meshes[req.subMeshIndex]->GetAABBMax().y, meshes[req.subMeshIndex]->GetAABBMax().z, 1.0f };
+        }
+
+        instances.push_back(data);
     }
 
-    // 3. GPUバッファへのアップロード（frameIndex を使用）
-    instanceSBs_[frameIndex]->Update(instanceData.data(), static_cast<uint32_t>(instanceData.size() * sizeof(GeneratedSchema::InstanceData)));
+    instanceSBs_[frameIndex]->Update(instances.data(), static_cast<uint32_t>(instances.size() * sizeof(GeneratedSchema::InstanceData)));
 }
 
 void Renderer::RenderZPrepass(const RenderContext& context) {
-    if (context.cullingManager) {
-        context.cullingManager->ResetBatchIndex(); // インデックスリセット
-        context.cullingManager->ResetCounters(context.commandList); // カウンタリセット
-    }
-    PipelineStateDesc desc;
-    desc.usePS = false;
-    desc.numRenderTargets = 0;
-    desc.depthWriteEnable = true;
-    desc.depthFunc = D3D12_COMPARISON_FUNC_LESS;
-    RenderInternal(context, desc);
+    // Z-Prepass (実装省略)
 }
 
 void Renderer::Render(const RenderContext& context) {
-    if (context.cullingManager) {
-        context.cullingManager->ResetBatchIndex(); // インデックスリセット
-        context.cullingManager->ResetCounters(context.commandList); // カウンタリセット
+    if (queue_.empty()) {
+        Engine::Console::Log("Renderer: Render called with empty queue.");
+        return;
     }
-    PipelineStateDesc desc;
-    desc.usePS = true;
-    desc.numRenderTargets = context.numRenderTargets;
-    for (uint32_t i = 0; i < context.numRenderTargets; ++i) {
-        desc.rtvFormats[i] = context.rtvFormats[i];
-    }
-    desc.depthWriteEnable = false;
-    desc.depthFunc = D3D12_COMPARISON_FUNC_EQUAL;
-    RenderInternal(context, desc);
-}
 
-void Renderer::RenderInternal(const RenderContext& context, const PipelineStateDesc& baseDesc) {
-    if (queue_.empty()) return;
-
-    auto& assetManager = Asset::AssetManager::GetInstance();
+    uint32_t totalInstances = static_cast<uint32_t>(queue_.size());
+    
     auto& materialManager = Asset::MaterialManager::GetInstance();
-    auto& textureManager = Asset::TextureManager::GetInstance();
+    auto& assetManager = Asset::AssetManager::GetInstance();
     auto& shaderManager = ShaderManager::GetInstance();
     auto& geoPool = GeometryPool::GetInstance();
     auto& graphics = GraphicsEngine::GetInstance();
 
-    ID3D12GraphicsCommandList* commandList = context.commandList;
-
-    // バッチ処理ループ
     uint32_t currentInstanceStart = 0;
     uint32_t batchIndex = 0;
-    const uint32_t totalInstances = static_cast<uint32_t>(queue_.size());
+    const uint32_t kMaxBatches = 64; 
 
-    while (currentInstanceStart < totalInstances && batchIndex < 64 /* GPUCullingManager::kMaxBatches */) {
+    if (context.cullingManager) {
+        context.cullingManager->ResetBatchIndex();
+    }
+
+    Graphics::PipelineStateDesc baseDesc;
+    baseDesc.numRenderTargets = context.numRenderTargets;
+    for (uint32_t i = 0; i < context.numRenderTargets; ++i) {
+        baseDesc.rtvFormats[i] = context.rtvFormats[i];
+    }
+
+    auto* commandList = context.commandList;
+
+    while (currentInstanceStart < totalInstances) {
+        if (batchIndex >= kMaxBatches) {
+            Engine::Console::LogError(std::format("Renderer: Batch count exceeded kMaxBatches ({}).", kMaxBatches));
+            break;
+        }
+
         const auto& batchStartReq = queue_[currentInstanceStart];
-        
-        uint32_t batchSize = 0;
-        for (uint32_t i = currentInstanceStart; i < totalInstances; ++i) {
+        uint32_t batchSize = 1;
+
+        for (uint32_t i = currentInstanceStart + 1; i < totalInstances; ++i) {
             if (queue_[i].modelIndex == batchStartReq.modelIndex && 
                 queue_[i].materialIndex == batchStartReq.materialIndex &&
-                queue_[i].subMeshIndex == batchStartReq.subMeshIndex && // 追加
                 queue_[i].isSkinned == batchStartReq.isSkinned &&
                 queue_[i].vertexOffset == batchStartReq.vertexOffset) {
                 batchSize++;
@@ -162,7 +142,11 @@ void Renderer::RenderInternal(const RenderContext& context, const PipelineStateD
             auto* pso = shaderManager.GetOrCreatePSO(mat->pipelineName, baseDesc);
             auto* rootSig = shaderManager.GetRootSignature(mat->pipelineName);
             
-            // 1. このバッチ専用に GPU カリングを実行
+            if (!pso || !rootSig) {
+                currentInstanceStart += batchSize;
+                continue;
+            }
+
             if (context.cullingManager) {
                 context.cullingManager->Execute(
                     commandList,
@@ -172,17 +156,15 @@ void Renderer::RenderInternal(const RenderContext& context, const PipelineStateD
                     context.viewProj,
                     context.meshInfoBufferAddress,
                     batchStartReq.modelIndex,
-                    batchStartReq.subMeshIndex, // 追加
+                    batchStartReq.subMeshIndex,
                     currentInstanceStart,
                     batchIndex
                 );
             }
 
-            // 2. 描画設定
             commandList->SetGraphicsRootSignature(rootSig->Get());
             commandList->SetPipelineState(pso->Get());
 
-            auto& graphics = GraphicsEngine::GetInstance();
             ID3D12DescriptorHeap* heaps[] = { graphics.GetSRVHeap()->GetHeap() };
             commandList->SetDescriptorHeaps(_countof(heaps), heaps);
 
@@ -201,24 +183,20 @@ void Renderer::RenderInternal(const RenderContext& context, const PipelineStateD
             if (texIdx != RootSignature::kInvalidIndex)
                 commandList->SetGraphicsRootDescriptorTable(texIdx, graphics.GetSRVHeap()->GetGPUHandle(0));
 
-            // インスタンスバッファをバインド
             if (context.cullingManager) {
-                // GPUカリング後のバッファをバインド
                 D3D12_GPU_VIRTUAL_ADDRESS culledAddr = context.cullingManager->GetOutputInstances()->GetGPUVirtualAddress();
                 culledAddr += static_cast<UINT64>(batchIndex * 2048) * sizeof(GeneratedSchema::InstanceData);
                 setSRV("gInstances", culledAddr);
             } else {
-                // カリングなしの場合は元のインスタンスバッファをオフセット付きでバインド
                 D3D12_GPU_VIRTUAL_ADDRESS addr = instanceSBs_[context.frameIndex]->GetResource()->GetGPUVirtualAddress();
                 addr += static_cast<UINT64>(currentInstanceStart) * sizeof(GeneratedSchema::InstanceData);
                 setSRV("gInstances", addr);
             }
 
             setSRV("gPointLights", context.pointLightBufferAddress);
-            setSRV("gLightGrid", context.lightGridBufferAddress);
-            setSRV("gLightIndexList", context.lightIndexListBufferAddress);
+            if (context.lightGridBufferAddress != 0) setSRV("gLightGrid", context.lightGridBufferAddress);
+            if (context.lightIndexListBufferAddress != 0) setSRV("gLightIndexList", context.lightIndexListBufferAddress);
             
-            // 頂点バッファの切り替え (Additive)
             if (batchStartReq.isSkinned && context.animationSystem) {
                 setSRV("gVertices", context.animationSystem->GetSkinnedVertexBuffer()->GetResource()->GetGPUVirtualAddress());
             } else {
@@ -231,14 +209,11 @@ void Renderer::RenderInternal(const RenderContext& context, const PipelineStateD
             commandList->IASetIndexBuffer(&ibv);
             commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-            // 3. ExecuteIndirect の実行
             if (context.cullingManager && context.cullingManager->GetCommandSignature()) {
                 ID3D12Resource* cmdBuf = context.cullingManager->GetIndirectCommandBuffer()->GetResource();
-                ID3D12Resource* cntBuf = nullptr; // カウントバッファは使用せず常に1回実行 (コマンド自体に0が入る可能性はあるが、Dispatchの1回は確実に回る)
-                
                 commandList->ExecuteIndirect(
                     context.cullingManager->GetCommandSignature(),
-                    1, // 常に1バッチ1コマンド
+                    1,
                     cmdBuf,
                     static_cast<UINT64>(batchIndex) * sizeof(GPUCullingManager::DrawIndexedArguments),
                     nullptr,
@@ -246,8 +221,8 @@ void Renderer::RenderInternal(const RenderContext& context, const PipelineStateD
                 );
             } else {
                 const auto& meshes = assetManager.GetMeshesByIndex(batchStartReq.modelIndex);
-                for (const auto& mesh : meshes) {
-                    mesh->Draw(commandList, batchSize);
+                if (batchStartReq.subMeshIndex < meshes.size()) {
+                    meshes[batchStartReq.subMeshIndex]->Draw(commandList, batchSize);
                 }
             }
         }

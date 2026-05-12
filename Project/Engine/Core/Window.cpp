@@ -2,14 +2,15 @@
 
 #pragma comment(lib, "winmm.lib")
 
+// ImGui Win32 メッセージハンドラの宣言
+extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
 namespace {
 
 static LRESULT MainWindowProc(HWND _hwnd, UINT _msg, WPARAM _wparam, LPARAM _lparam) {
-#ifdef DEBUG_MODE
-	//if(ImGui_ImplWin32_WndProcHandler(_hwnd, _msg, _wparam, _lparam)) {
-	//	return true;
-	//}
-#endif // DEBUG_MODE
+	if(ImGui_ImplWin32_WndProcHandler(_hwnd, _msg, _wparam, _lparam)) {
+		return true;
+	}
 
 	switch(_msg) {
 	case WM_CLOSE:

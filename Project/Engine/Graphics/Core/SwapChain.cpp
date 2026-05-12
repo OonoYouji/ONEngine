@@ -1,6 +1,7 @@
-﻿#include "SwapChain.h"
+#include "SwapChain.h"
 
 #include <comdef.h>
+#include <d3dx12.h>
 
 /// engine
 #include "Engine/Common/Assert.h"
@@ -8,132 +9,90 @@
 
 /// engine::graphics
 #include "Engine/Graphics/Core/GraphicsEngine.h"
-
+#include "Engine/Graphics/Core/RenderDevice.h"
+#include "Engine/Graphics/Core/DescriptorHeap.h"
 
 namespace Engine::Graphics {
 
 SwapChain::SwapChain() = default;
 SwapChain::~SwapChain() = default;
 
-void SwapChain::Initialize(HWND hwnd, const Engine::Math::Vector2Int& size) {
-	GraphicsEngine& graphicsEngine = GraphicsEngine::GetInstance();
-	RenderDevice* renderDevice = graphicsEngine.GetRenderDevice();
-	CommandQueue* commandQueue = graphicsEngine.GetCommandQueue();
+void SwapChain::Initialize(HWND hwnd, const Engine::Math::Vector2Int& windowSize) {
+	HRESULT result = S_FALSE;
 
+	auto* graphics = &GraphicsEngine::GetInstance();
+	auto* device = graphics->GetRenderDevice();
 
-	{
-		/// ---------------------------------------------------
-		/// swap chain の初期化
-		/// ---------------------------------------------------
+	/// スワップチェーンの設定
+	DXGI_SWAP_CHAIN_DESC1 swapChainDesc{};
+	swapChainDesc.Width = windowSize.x;
+	swapChainDesc.Height = windowSize.y;
+	swapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	swapChainDesc.SampleDesc.Count = 1;
+	swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+	swapChainDesc.BufferCount = 3;
+	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+	swapChainDesc.AlphaMode = DXGI_ALPHA_MODE_UNSPECIFIED;
 
-		HRESULT result = S_FALSE;
+	ComPtr<IDXGISwapChain1> swapChain1;
+	result = device->GetDxgiFactory()->CreateSwapChainForHwnd(
+		graphics->GetCommandQueue()->GetCommandQueue(),
+		hwnd,
+		&swapChainDesc,
+		nullptr,
+		nullptr,
+		&swapChain1
+	);
+	Assert(SUCCEEDED(result), "Failed to create swap chain.");
 
-		DXGI_SWAP_CHAIN_DESC1 desc{};
-		desc.Width = static_cast<UINT>(size.x);
-		desc.Height = static_cast<UINT>(size.y);
-		desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-		desc.SampleDesc.Count = 1;
-		desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-		desc.BufferCount = kBufferCount;
-		desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+	result = swapChain1.As(&swapChain_);
+	Assert(SUCCEEDED(result), "Failed to cast swap chain.");
 
-		/// SwapChain1で仮に生成
-		ComPtr<IDXGISwapChain1> swapChain1;
-		result = renderDevice->GetDxgiFactory()->CreateSwapChainForHwnd(
-			commandQueue->GetCommandQueue(), hwnd, &desc, nullptr, nullptr, &swapChain1
-		);
-		if(FAILED(result)) {
-			Assert(false, HrToString(result).c_str());
-		}
+	/// バックバッファの取得
+	buffers_.resize(swapChainDesc.BufferCount);
+	rtvHandles_.resize(swapChainDesc.BufferCount);
 
-		/// SwapChain4に引き渡す
-		result = swapChain1->QueryInterface(IID_PPV_ARGS(&swapChain_));
-		Assert(SUCCEEDED(result), "Failed to pass swap chain4");
+	auto* rtvHeap = graphics->GetRTVHeap();
+
+	for (uint32_t i = 0; i < swapChainDesc.BufferCount; ++i) {
+		result = swapChain_->GetBuffer(i, IID_PPV_ARGS(&buffers_[i]));
+		Assert(SUCCEEDED(result), "Failed to get back buffer.");
+
+		rtvHandles_[i] = rtvHeap->Allocate();
+		device->GetDevice()->CreateRenderTargetView(buffers_[i].Get(), nullptr, rtvHandles_[i]);
+        
+        std::wstring name = L"BackBuffer" + std::to_wstring(i);
+        buffers_[i]->SetName(name.c_str());
 	}
 
+	viewport_ = { 0.0f, 0.0f, (float)windowSize.x, (float)windowSize.y, 0.0f, 1.0f };
+	scissorRect_ = { 0, 0, windowSize.x, windowSize.y };
 
-	{
-		/// ---------------------------------------------------
-		/// buffer の初期化
-		/// ---------------------------------------------------
-
-		buffers_.resize(kBufferCount);
-		rtvHandles_.resize(kBufferCount);
-
-		DescriptorHeap* rtvHeap = graphicsEngine.GetRTVHeap();
-
-		for(uint32_t i = 0u; i < kBufferCount; ++i) {
-			HRESULT hr = swapChain_->GetBuffer(i, IID_PPV_ARGS(&buffers_[i]));
-			Assert(SUCCEEDED(hr), "Failed to create buffer");
-
-			rtvHandles_[i] = rtvHeap->Allocate();
-
-			renderDevice->GetDevice()->CreateRenderTargetView(
-				buffers_[i].Get(), nullptr, rtvHandles_[i]);
-		}
-	}
-
-
-	{
-		/// ---------------------------------------------------
-		/// view port, sicssor rect の初期化
-		/// ---------------------------------------------------
-
-		viewport_.Width = static_cast<float>(size.x);
-		viewport_.Height = static_cast<float>(size.y);
-		viewport_.TopLeftX = 0.0f;
-		viewport_.TopLeftY = 0.0f;
-		viewport_.MinDepth = 0.0f;
-		viewport_.MaxDepth = 1.0f;
-
-		scissorRect_.left = 0;
-		scissorRect_.right = static_cast<LONG>(size.x);
-		scissorRect_.top = 0;
-		scissorRect_.bottom = static_cast<LONG>(size.y);
-	}
-
-	Console::Log("dx swap chain create success!!");
-}
-
-
-void SwapChain::Shutdown() {
-
+	Console::Log("SwapChain: Initialized successfully.");
 }
 
 void SwapChain::BeginFrame(ID3D12GraphicsCommandList* commandList) {
 	uint32_t backBufferIndex = GetCurrentBackBufferIndex();
 
-	D3D12_RESOURCE_BARRIER barrier{};
-	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-	barrier.Transition.pResource = buffers_[backBufferIndex].Get();
-	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
-	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
-	barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+	auto barrier = CD3DX12_RESOURCE_BARRIER::Transition(buffers_[backBufferIndex].Get(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
 	commandList->ResourceBarrier(1, &barrier);
 
 	commandList->RSSetViewports(1, &viewport_);
 	commandList->RSSetScissorRects(1, &scissorRect_);
-
-	//D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = GetRTVHandle();
-	//commandList->OMSetRenderTargets(1, &rtvHandle, FALSE, nullptr);
 }
 
 void SwapChain::EndFrame(ID3D12GraphicsCommandList* commandList) {
 	uint32_t backBufferIndex = GetCurrentBackBufferIndex();
 
-	D3D12_RESOURCE_BARRIER barrier{};
-	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-	barrier.Transition.pResource = buffers_[backBufferIndex].Get();
-	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
-	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
-	barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+	auto barrier = CD3DX12_RESOURCE_BARRIER::Transition(buffers_[backBufferIndex].Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
 	commandList->ResourceBarrier(1, &barrier);
 }
 
 void SwapChain::Present() {
-	swapChain_->Present(1, 0);
+	HRESULT hr = swapChain_->Present(1, 0);
+    if (FAILED(hr)) {
+        Console::LogError("SwapChain: Present Failed!");
+    }
 }
 
 uint32_t SwapChain::GetCurrentBackBufferIndex() const {

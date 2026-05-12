@@ -11,6 +11,7 @@
 
 namespace Engine::Graphics {
     class RenderDevice;
+    class StructuredBuffer;
 }
 
 namespace Engine::Asset {
@@ -49,6 +50,9 @@ public:
     const std::vector<std::unique_ptr<Mesh>>& GetMeshes(const std::string& pathOrGuid);
     const std::vector<std::unique_ptr<Mesh>>& GetMeshesByIndex(uint32_t index);
 
+    D3D12_GPU_VIRTUAL_ADDRESS GetMeshInfoBufferAddress() const;
+    void UpdateMeshInfoBuffer();
+
 private:
     AssetManager() = default;
     ~AssetManager() = default;
@@ -58,6 +62,8 @@ private:
     Graphics::RenderDevice* device_ = nullptr;
     std::unordered_map<std::string, std::shared_ptr<Model>> models_;
     std::vector<std::shared_ptr<Model>> indexedModels_;
+
+    std::unique_ptr<Graphics::StructuredBuffer> meshInfoBuffer_;
 
     std::string ToGuid(const std::string& pathOrGuid);
 };
