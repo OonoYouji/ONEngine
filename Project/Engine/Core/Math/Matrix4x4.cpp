@@ -205,28 +205,17 @@ Matrix4x4 Matrix4x4::MakeInverse(const Matrix4x4& _matrix) {
 }
 
 Matrix4x4 Matrix4x4::MakeLookAtLH(const Vector3& _eye, const Vector3& _target, const Vector3& _up) {
-	/// ----- 左手座標系のビュー行列作成 ----- ///
-
-	Matrix4x4 result{};
-
-	Vector3 zAxis = Vector3::Normalize(_target - _eye);
-	Vector3 xAxis = Vector3::Normalize(Vector3::Cross(_up, zAxis));
-	Vector3 yAxis = Vector3::Cross(zAxis, xAxis);
-	result.m[0][0] = xAxis.x; result.m[1][0] = xAxis.y; result.m[2][0] = xAxis.z;
-	result.m[0][1] = yAxis.x; result.m[1][1] = yAxis.y; result.m[2][1] = yAxis.z;
-	result.m[0][2] = zAxis.x; result.m[1][2] = zAxis.y; result.m[2][2] = zAxis.z;
-
-	result.m[3][0] = -Vector3::Dot(xAxis, _eye);
-	result.m[3][1] = -Vector3::Dot(yAxis, _eye);
-	result.m[3][2] = -Vector3::Dot(zAxis, _eye);
-	result.m[3][3] = 1.0f;
-
-	return result;
+	/// ----- DirectXMathを使ってビュー行列を作成 ----- ///
+	XMMATRIX view = XMMatrixLookAtLH(
+		XMLoadFloat3(reinterpret_cast<const XMFLOAT3*>(&_eye)),
+		XMLoadFloat3(reinterpret_cast<const XMFLOAT3*>(&_target)),
+		XMLoadFloat3(reinterpret_cast<const XMFLOAT3*>(&_up))
+	);
+	return Convert(view);
 }
 
 Matrix4x4 Matrix4x4::MakePerspectiveFovLH(float _fov, float _aspect, float _near, float _far) {
-	/// ----- 左手座標系の透視射影行列作成 ----- ///
-
+	/// ----- DirectXMathを使って透視射影行列作成 ----- ///
 	XMMATRIX projMatrix = XMMatrixPerspectiveFovLH(_fov, _aspect, _near, _far);
 	return Convert(projMatrix);
 }

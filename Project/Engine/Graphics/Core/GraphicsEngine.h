@@ -62,6 +62,7 @@ public:
 	RenderTexture* GetMainColorBuffer() const { return mainColorBuffer_.get(); }
 	RenderTexture* GetNormalBuffer()    const { return normalBuffer_.get(); }
 	RenderTexture* GetIDBuffer()        const { return idBuffer_.get(); }
+	RenderTexture* GetFinalColorBuffer() const { return finalColorBuffer_.get(); }
 
 	D3D12_CPU_DESCRIPTOR_HANDLE GetImGuiCPUHandle() const;
 	D3D12_GPU_DESCRIPTOR_HANDLE GetImGuiGPUHandle() const;
@@ -93,6 +94,7 @@ private:
 	std::unique_ptr<RenderTexture> mainColorBuffer_ = nullptr;
 	std::unique_ptr<RenderTexture> normalBuffer_ = nullptr;
 	std::unique_ptr<RenderTexture> idBuffer_ = nullptr;
+	std::unique_ptr<RenderTexture> finalColorBuffer_ = nullptr;
 
 	Engine::Math::Vector2Int windowSize_;
 

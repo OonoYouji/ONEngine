@@ -36,13 +36,13 @@ void Mesh::Draw(ID3D12GraphicsCommandList* commandList, uint32_t instanceCount) 
         indexCount_, 
         instanceCount, 
         indexOffset_, 
-        0, // vertexOffset はシェーダー側で解決するようになったため 0 固定
+        0, 
         0
     );
 
     static int drawCount = 0;
-    if (drawCount++ % 100 == 0) {
-        Engine::Console::Log(std::format("Mesh: Draw Call issued (Indices: {}, Instances: {})", indexCount_, instanceCount));
+    if (drawCount++ % 10 == 0) {
+        Engine::Console::Log(std::format("!!! Mesh: Draw Call issued (Indices: {}, Instances: {}) !!!", indexCount_, instanceCount));
     }
 }
 

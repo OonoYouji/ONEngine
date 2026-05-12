@@ -18,7 +18,7 @@ TYPE_MAP_CPP = {
 }
 
 TYPE_MAP_HLSL = {
-    "float4x4": "float4x4",
+    "float4x4": "row_major float4x4",
     "float4": "float4",
     "float3": "float3",
     "float2": "float2",

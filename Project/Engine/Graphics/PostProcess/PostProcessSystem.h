@@ -34,7 +34,12 @@ public:
     void Initialize(RenderDevice* device, DescriptorHeap* rtvHeap, DescriptorHeap* srvHeap, const Engine::Math::Vector2Int& size);
     void Shutdown();
 
-    void Render(ID3D12GraphicsCommandList* commandList, RenderTexture* inputSource, D3D12_CPU_DESCRIPTOR_HANDLE outputDestination);
+    void Render(ID3D12GraphicsCommandList* commandList, 
+                RenderTexture* mainTexture, 
+                RenderTexture* bloomTexture,
+                RenderTexture* normalTexture,
+                RenderTexture* idTexture,
+                D3D12_CPU_DESCRIPTOR_HANDLE outputDestination);
 
 private:
     PostProcessSystem() = default;

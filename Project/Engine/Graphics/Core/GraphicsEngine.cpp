@@ -68,6 +68,10 @@ void GraphicsEngine::Initialize(HWND hwnd, const Engine::Math::Vector2Int& windo
     idBuffer_ = std::make_unique<RenderTexture>();
     idBuffer_->Create(renderDevice_.get(), rtvHeap_.get(), srvHeap_.get(), windowSize, DXGI_FORMAT_R32G32_UINT, {0.0f, 0.0f, 0.0f, 0.0f});
     idBuffer_->SetDebugName("IDBuffer");
+
+    finalColorBuffer_ = std::make_unique<RenderTexture>();
+    finalColorBuffer_->Create(renderDevice_.get(), rtvHeap_.get(), srvHeap_.get(), windowSize, DXGI_FORMAT_R8G8B8A8_UNORM, { 0.5f, 0.7f, 0.9f, 1.0f });
+    finalColorBuffer_->SetDebugName("FinalColorBuffer");
 }
 
 void GraphicsEngine::Shutdown() {
@@ -91,6 +95,7 @@ void GraphicsEngine::BeginFrame() {
     mainColorBuffer_->Transition(commandList, D3D12_RESOURCE_STATE_RENDER_TARGET);
     normalBuffer_->Transition(commandList, D3D12_RESOURCE_STATE_RENDER_TARGET);
     idBuffer_->Transition(commandList, D3D12_RESOURCE_STATE_RENDER_TARGET);
+    finalColorBuffer_->Transition(commandList, D3D12_RESOURCE_STATE_RENDER_TARGET);
     
     D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles[] = {
         mainColorBuffer_->GetRTVHandle(),
@@ -109,9 +114,7 @@ void GraphicsEngine::BeginFrame() {
 void GraphicsEngine::EndFrame() {
     auto* commandList = commandQueue_->GetCommandList();
     
-    mainColorBuffer_->Transition(commandList, D3D12_RESOURCE_STATE_ALL_SHADER_RESOURCE);
-    normalBuffer_->Transition(commandList, D3D12_RESOURCE_STATE_ALL_SHADER_RESOURCE);
-    idBuffer_->Transition(commandList, D3D12_RESOURCE_STATE_ALL_SHADER_RESOURCE);
+    // (Transition は Application::Render 側のポストプロセス前後で行うように変更)
 
     D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = swapChain_->GetRTVHandle();
     commandList->OMSetRenderTargets(1, &rtvHandle, FALSE, nullptr);
@@ -130,6 +133,7 @@ void GraphicsEngine::Clear(const Engine::Math::Vector4& color) {
     mainColorBuffer_->Clear(commandList);
     normalBuffer_->Clear(commandList);
     idBuffer_->Clear(commandList);
+    finalColorBuffer_->Clear(commandList);
     
     float backColor[] = { color.x, color.y, color.z, color.w };
     commandList->ClearRenderTargetView(swapChain_->GetRTVHandle(), backColor, 0, nullptr);

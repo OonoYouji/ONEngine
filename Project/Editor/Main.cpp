@@ -56,11 +56,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
 		ImGui::Begin("Scene View");
 
 		auto& graphics = Engine::Graphics::GraphicsEngine::GetInstance();
-		auto* colorBuffer = graphics.GetMainColorBuffer();
-		if(colorBuffer) {
+		auto* finalBuffer = graphics.GetFinalColorBuffer();
+		if(finalBuffer) {
 			// エンジンのメイン SRV ヒープに存在するテクスチャの GPU ハンドルを渡す
 			// ImGui_ImplDX12 は、バックエンドに渡したヒープ内のハンドルであれば Image として表示可能
-			D3D12_GPU_DESCRIPTOR_HANDLE srvHandle = colorBuffer->GetSRVHandle();
+			D3D12_GPU_DESCRIPTOR_HANDLE srvHandle = finalBuffer->GetSRVHandle();
 			ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 
 			if(viewportPanelSize.x > 0 && viewportPanelSize.y > 0) {

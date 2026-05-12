@@ -92,11 +92,13 @@ std::shared_ptr<Model> AssetManager::LoadModelAsAsset(const std::string& pathOrG
 
     auto model = ModelLoader::LoadModel(device_, path);
     if (model) {
+        Engine::Console::Log(std::format("AssetManager: Loaded model {} with {} meshes.", path, model->GetMeshes().size()));
         model->SetGuid(guid);
         model->SetPath(path);
         models_[guid] = model;
         return model;
     }
+    Engine::Console::LogError(std::format("AssetManager: Failed to load model {}.", path));
     return nullptr;
 }
 

@@ -65,66 +65,19 @@ float SmoothStepThreshold(float v, float threshold, float smoothness) {
 // --- Pixel Shader ---
 PSOutput ps_main(VSOutput input) {
     InstanceData inst = gInstances[input.instanceID];
-    float4 texColor = gTextures[NonUniformResourceIndex(inst.textureIndex)].Sample(gSampler, input.uv);
-
-    float3 normal = normalize(input.normal);
-    float3 viewDir = normalize(gSceneData.cameraPos - input.worldPos);
     
-    float3 diffuseTotal = 0.0f;
-    float3 specularTotal = 0.0f;
-    
-    // アニメ調パラメータ
-    float shadowThreshold = 0.4f;
-    float shadowSmoothness = 0.02f;
-    float3 shadowColorMul = float3(0.6f, 0.6f, 0.8f);
+    // ベースカラーを初期値にする
+    float4 finalColor = inst.baseColor;
 
-    // Directional Light
-    {
-        float3 lightDir = normalize(-gSceneData.dirLightDirection);
-        float3 lightColor = gSceneData.dirLightColor * gSceneData.dirLightIntensity;
-        float halfLambert = dot(normal, lightDir) * 0.5f + 0.5f;
-        float lightIntensity = SmoothStepThreshold(halfLambert, shadowThreshold, shadowSmoothness);
-        diffuseTotal += lerp(lightColor * shadowColorMul, lightColor, lightIntensity);
-
-        float3 halfDir = normalize(lightDir + viewDir);
-        specularTotal += lightColor * step(0.5f, pow(max(dot(normal, halfDir), 0.0f), 64.0f));
+    // テクスチャがあれば乗算する (テクスチャが真っ黒な場合に備え、一旦 0.5 を加算してデバッグ表示)
+    if (inst.textureIndex != 0xFFFFFFFF) {
+        float4 texColor = gTextures[NonUniformResourceIndex(inst.textureIndex)].Sample(gSampler, input.uv);
+        finalColor.rgb *= (texColor.rgb + 0.1f); // テクスチャが黒くても微かに見えるように
     }
-    
-    // Clustered Point Lights
-    uint clusterX = (uint)(input.position.x / (gSceneData.screenWidth / CLUSTER_GRID_X));
-    uint clusterY = (uint)(input.position.y / (gSceneData.screenHeight / CLUSTER_GRID_Y));
-    
-    float viewZ = mul(float4(input.worldPos, 1.0f), gSceneData.view).z;
-    uint clusterZ = (uint)(max(0.0f, log(viewZ / gSceneData.nearZ) / log(gSceneData.farZ / gSceneData.nearZ)) * CLUSTER_GRID_Z);
-    
-    clusterX = min(clusterX, CLUSTER_GRID_X - 1);
-    clusterY = min(clusterY, CLUSTER_GRID_Y - 1);
-    clusterZ = min(clusterZ, CLUSTER_GRID_Z - 1);
-    
-    uint clusterIdx = clusterX + clusterY * CLUSTER_GRID_X + clusterZ * CLUSTER_GRID_X * CLUSTER_GRID_Y;
-    LightGrid grid = gLightGrid[clusterIdx];
 
-    for (uint i = 0; i < grid.count; ++i) {
-        uint lightIdx = gLightIndexList[grid.offset + i];
-        PointLightData light = gPointLights[lightIdx];
-        
-        float3 lightVec = light.position - input.worldPos;
-        float dist = length(lightVec);
-        float3 lightDir = normalize(lightVec);
-        float attenuation = saturate(1.0f - (dist / light.radius));
-        attenuation *= attenuation;
-        
-        float halfLambert = dot(normal, lightDir) * 0.5f + 0.5f;
-        float lightIntensity = SmoothStepThreshold(halfLambert, shadowThreshold, shadowSmoothness);
-        diffuseTotal += lerp(light.color * light.intensity * shadowColorMul, light.color * light.intensity, lightIntensity) * attenuation;
-    }
-    
-    float3 ambient = 0.2f * inst.baseColor.rgb;
-    float3 finalRGB = texColor.rgb * inst.baseColor.rgb * (diffuseTotal + ambient) + specularTotal;
-    
     PSOutput output;
-    output.color = float4(finalRGB, texColor.a * inst.baseColor.a);
-    output.normal = float4(normal * 0.5f + 0.5f, 1.0f);
+    output.color = float4(finalColor.rgb, 1.0f);
+    output.normal = float4(input.normal * 0.5f + 0.5f, 1.0f);
     output.idFlags = uint2(inst.entityID, inst.postProcessFlags);
     
     return output;

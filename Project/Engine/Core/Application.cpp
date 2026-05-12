@@ -138,8 +138,18 @@ void Application::Run() {
         if (isEditorMode_) {
 #ifndef NDEBUG
             Graphics::GraphicsEngine::GetInstance().EndFrame();
+            
+            // SwapChain に対して ImGui を描画するために RTV をセットしクリアする
+            auto& graphics = Graphics::GraphicsEngine::GetInstance();
+            auto* commandList = graphics.GetCommandQueue()->GetCommandList();
+            D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = graphics.GetSwapChain()->GetRTVHandle();
+            commandList->OMSetRenderTargets(1, &rtvHandle, FALSE, nullptr);
+            
+            // 背景色でクリア (ImGui の外側用)
+            float clearColor[] = { 0.1f, 0.15f, 0.2f, 1.0f };
+            commandList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
+
             ImGui::Render();
-            auto* commandList = Graphics::GraphicsEngine::GetInstance().GetCommandQueue()->GetCommandList();
             ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), static_cast<ID3D12GraphicsCommandList*>(commandList));
 #endif
         } else {
@@ -202,7 +212,7 @@ void Application::Render() {
         animationSystem_->Update(registry_, static_cast<ID3D12GraphicsCommandList*>(commandList), timer_.GetDeltaTime(), frameIndex);
     }
 
-    graphics.Clear({ 0.2f, 0.2f, 0.2f, 1.0f }); 
+    graphics.Clear({ 0.5f, 0.7f, 0.9f, 1.0f }); 
     graphics.ClearDepth();
 
     // 2. 描画リクエストの収集
@@ -219,6 +229,12 @@ void Application::Render() {
         sceneData.cameraPos = cam.position;
         sceneData.nearZ = cam.nearZ;
         sceneData.farZ = cam.farZ;
+
+        if (renderFrameCount % 100 == 0) {
+            Engine::Console::Log(std::format("Application: Camera Pos=({:.2f}, {:.2f}, {:.2f})", cam.position.x, cam.position.y, cam.position.z));
+            // 行列の一部を出力して正規性を確認
+            Engine::Console::Log(std::format("Application: Camera ViewProj[0][0]={:.2f}, [3][3]={:.2f}", cam.viewProj.m[0][0], cam.viewProj.m[3][3]));
+        }
     } else {
         float fov = 0.45f;
         float nearZ = 0.1f;
@@ -297,19 +313,49 @@ void Application::Render() {
     context.rtvFormats[2] = DXGI_FORMAT_R32G32_UINT;
     context.viewProj = sceneData.viewProj;
     context.animationSystem = animationSystem_.get();
-    context.cullingManager = gpuCullingManager_.get();
+    context.cullingManager = nullptr; // 一時的にカリングを完全に無効化
     context.meshInfoBufferAddress = am.GetMeshInfoBufferAddress();
 
     // 4. シーン描画
     renderer.Render(context);
 
-    // 5. デバッグ描画
+    // 5. ポストプロセスへの遷移 (RenderTarget -> ShaderResource)
+    graphics.GetMainColorBuffer()->Transition(static_cast<ID3D12GraphicsCommandList*>(commandList), D3D12_RESOURCE_STATE_ALL_SHADER_RESOURCE);
+    graphics.GetNormalBuffer()->Transition(static_cast<ID3D12GraphicsCommandList*>(commandList), D3D12_RESOURCE_STATE_ALL_SHADER_RESOURCE);
+    graphics.GetIDBuffer()->Transition(static_cast<ID3D12GraphicsCommandList*>(commandList), D3D12_RESOURCE_STATE_ALL_SHADER_RESOURCE);
+    graphics.GetFinalColorBuffer()->Transition(static_cast<ID3D12GraphicsCommandList*>(commandList), D3D12_RESOURCE_STATE_RENDER_TARGET);
+
+    // ポストプロセス実行
+    Graphics::PostProcessSystem::GetInstance().Render(
+        static_cast<ID3D12GraphicsCommandList*>(commandList),
+        graphics.GetMainColorBuffer(),
+        nullptr, // Bloom (実装省略)
+        graphics.GetNormalBuffer(),
+        graphics.GetIDBuffer(),
+        graphics.GetFinalColorBuffer()->GetRTVHandle()
+    );
+
+    // 6. デバッグ描画
+    // デバッグ描画を最終バッファに行うため、コンテキストのフォーマットを更新
+    context.numRenderTargets = 1;
+    context.rtvFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+
+    // 最終バッファと深度バッファをセットしてデバッグ描画
+    {
+        D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = graphics.GetFinalColorBuffer()->GetRTVHandle();
+        D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = graphics.GetDSVHeap()->GetCPUHandle(0); // depthBuffer_ の DSV
+        static_cast<ID3D12GraphicsCommandList*>(commandList)->OMSetRenderTargets(1, &rtvHandle, FALSE, &dsvHandle);
+    }
+
     debug.Clear();
     for (int i = -10; i <= 10; ++i) {
         debug.DrawLine({ (float)i * 5, 0.0f, -50 }, { (float)i * 5, 0.0f, 50 }, { 0.5f, 0.5f, 0.5f, 1.0f });
         debug.DrawLine({ -50, 0.0f, (float)i * 5 }, { 50, 0.0f, (float)i * 5 }, { 0.5f, 0.5f, 0.5f, 1.0f });
     }
     debug.Render(context);
+
+    // 表示用に遷移 (RenderTarget -> ShaderResource)
+    graphics.GetFinalColorBuffer()->Transition(static_cast<ID3D12GraphicsCommandList*>(commandList), D3D12_RESOURCE_STATE_ALL_SHADER_RESOURCE);
 }
 
 void Application::WaitForGPU() {

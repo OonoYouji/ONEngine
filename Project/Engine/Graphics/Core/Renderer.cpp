@@ -146,17 +146,32 @@ void Renderer::Render(const RenderContext& context) {
         }
 
         if (frameCount % 100 == 0) {
-             Engine::Console::Log(std::format("Renderer: Batch {}: ModelIdx={}, MatIdx={}, Size={}", batchIndex, batchStartReq.modelIndex, batchStartReq.materialIndex, batchSize));
+             Engine::Console::Log(std::format("Renderer: Batch {}: ModelIdx={}, MatIdx={}, Size={}, Skinned={}, SubIdx={}", 
+                batchIndex, batchStartReq.modelIndex, batchStartReq.materialIndex, batchSize, batchStartReq.isSkinned, batchStartReq.subMeshIndex));
         }
 
         auto* mat = materialManager.GetMaterialByIndex(batchStartReq.materialIndex);
         if (mat) {
-            auto* pso = shaderManager.GetOrCreatePSO(mat->pipelineName, baseDesc);
+            auto currentDesc = baseDesc;
+            currentDesc.cullMode = D3D12_CULL_MODE_NONE; // 強制的にカリング無効
+            
+            auto* pso = shaderManager.GetOrCreatePSO(mat->pipelineName, currentDesc);
             auto* rootSig = shaderManager.GetRootSignature(mat->pipelineName);
             
             if (!pso || !rootSig) {
+                if (frameCount % 60 == 0) {
+                    Engine::Console::LogError(std::format("Renderer: PSO or RootSig not found for pipeline {}", mat->pipelineName));
+                }
                 currentInstanceStart += batchSize;
                 continue;
+            }
+
+            if (frameCount % 60 == 0) {
+                auto gVerticesIdx = rootSig->GetParameterIndex("gVertices");
+                auto gInstancesIdx = rootSig->GetParameterIndex("gInstances");
+                auto gTexturesIdx = rootSig->GetParameterIndex("gTextures");
+                Engine::Console::Log(std::format("Renderer: Batch {}: Material={}, Pipeline={}, RootIdx[V={}, I={}, T={}]", 
+                    batchIndex, mat->name, mat->pipelineName, gVerticesIdx, gInstancesIdx, gTexturesIdx));
             }
 
             if (context.cullingManager) {

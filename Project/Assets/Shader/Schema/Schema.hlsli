@@ -20,8 +20,8 @@ struct SkinnedMeshRenderer {
 };
 
 struct SceneData {
-    float4x4 view;
-    float4x4 viewProj;
+    row_major float4x4 view;
+    row_major float4x4 viewProj;
     float3 cameraPos;
     uint numPointLights;
     float dirLightIntensity;
@@ -41,11 +41,11 @@ struct Transform {
     uint _pad0[1];
     float3 scale;
     uint _pad1[1];
-    float4x4 world;
+    row_major float4x4 world;
 };
 
 struct TextData {
-    float4x4 world;
+    row_major float4x4 world;
     float4 color;
     float2 uvMin;
     float2 uvMax;
@@ -95,7 +95,7 @@ struct DirectionalLight {
 };
 
 struct InstanceData {
-    float4x4 world;
+    row_major float4x4 world;
     float4 aabbMin;
     float4 aabbMax;
     float4 baseColor;
@@ -147,7 +147,7 @@ struct SpriteRenderer {
 };
 
 struct BoneData {
-    float4x4 transform;
+    row_major float4x4 transform;
 };
 
 struct ScriptComponent {
@@ -169,7 +169,7 @@ struct Skybox {
 };
 
 struct SpriteData {
-    float4x4 world;
+    row_major float4x4 world;
     float4 color;
     uint textureIndex;
     uint isBillboard;

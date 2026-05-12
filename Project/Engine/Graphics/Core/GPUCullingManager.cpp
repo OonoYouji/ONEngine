@@ -97,26 +97,61 @@ void GPUCullingManager::Execute(ID3D12GraphicsCommandList* commandList,
 
     if (!cullingPSO || !cullingRootSig || !buildPSO || !buildRootSig) return;
 
-    // 1. Frustum Planes
+    // 1. Frustum Planes (Extracting from Row-Major Projection Matrix)
     FrustumPlanes frustum;
-    frustum.planes[0] = { vp.m[0][3] + vp.m[0][0], vp.m[1][3] + vp.m[1][0], vp.m[2][3] + vp.m[2][0], vp.m[3][3] + vp.m[3][0] };
-    frustum.planes[1] = { vp.m[0][3] - vp.m[0][0], vp.m[1][3] - vp.m[1][0], vp.m[2][3] - vp.m[2][0], vp.m[3][3] - vp.m[3][0] };
-    frustum.planes[2] = { vp.m[0][3] + vp.m[0][1], vp.m[1][3] + vp.m[1][1], vp.m[2][3] + vp.m[2][1], vp.m[3][3] + vp.m[3][1] };
-    frustum.planes[3] = { vp.m[0][3] - vp.m[0][1], vp.m[1][3] - vp.m[1][1], vp.m[2][3] - vp.m[2][1], vp.m[3][3] - vp.m[3][1] };
-    frustum.planes[4] = { vp.m[0][2], vp.m[1][2], vp.m[2][2], vp.m[3][2] };
-    frustum.planes[5] = { vp.m[0][3] - vp.m[0][2], vp.m[1][3] - vp.m[1][2], vp.m[2][3] - vp.m[2][2], vp.m[3][3] - vp.m[3][2] };
+    // DirectX style: planes are stored as (a, b, c, d) where ax + by + cz + d = 0
+    // vp is M = View * Projection
+    
+    // Left
+    frustum.planes[0].x = vp.m[0][3] + vp.m[0][0];
+    frustum.planes[0].y = vp.m[1][3] + vp.m[1][0];
+    frustum.planes[0].z = vp.m[2][3] + vp.m[2][0];
+    frustum.planes[0].w = vp.m[3][3] + vp.m[3][0];
+    
+    // Right
+    frustum.planes[1].x = vp.m[0][3] - vp.m[0][0];
+    frustum.planes[1].y = vp.m[1][3] - vp.m[1][0];
+    frustum.planes[1].z = vp.m[2][3] - vp.m[2][0];
+    frustum.planes[1].w = vp.m[3][3] - vp.m[3][0];
+    
+    // Bottom
+    frustum.planes[2].x = vp.m[0][3] + vp.m[0][1];
+    frustum.planes[2].y = vp.m[1][3] + vp.m[1][1];
+    frustum.planes[2].z = vp.m[2][3] + vp.m[2][1];
+    frustum.planes[2].w = vp.m[3][3] + vp.m[3][1];
+    
+    // Top
+    frustum.planes[3].x = vp.m[0][3] - vp.m[0][1];
+    frustum.planes[3].y = vp.m[1][3] - vp.m[1][1];
+    frustum.planes[3].z = vp.m[2][3] - vp.m[2][1];
+    frustum.planes[3].w = vp.m[3][3] - vp.m[3][1];
+    
+    // Near
+    frustum.planes[4].x = vp.m[0][2];
+    frustum.planes[4].y = vp.m[1][2];
+    frustum.planes[4].z = vp.m[2][2];
+    frustum.planes[4].w = vp.m[3][2];
+    
+    // Far
+    frustum.planes[5].x = vp.m[0][3] - vp.m[0][2];
+    frustum.planes[5].y = vp.m[1][3] - vp.m[1][2];
+    frustum.planes[5].z = vp.m[2][3] - vp.m[2][2];
+    frustum.planes[5].w = vp.m[3][3] - vp.m[3][2];
 
     for (int i = 0; i < 6; ++i) {
         float len = sqrtf(frustum.planes[i].x * frustum.planes[i].x + frustum.planes[i].y * frustum.planes[i].y + frustum.planes[i].z * frustum.planes[i].z);
-        frustum.planes[i].x /= len;
-        frustum.planes[i].y /= len;
-        frustum.planes[i].z /= len;
-        frustum.planes[i].w /= len;
+        if (len > 1e-6f) {
+            frustum.planes[i].x /= len;
+            frustum.planes[i].y /= len;
+            frustum.planes[i].z /= len;
+            frustum.planes[i].w /= len;
+        }
     }
     frustumCB_->Update(&frustum, sizeof(frustum));
 
     // 2. Parameters
     auto& cullingCB = cullingParamsCBs_[currentBatchCBIndex_];
+    // forceVisible = 1 (Debug)
     uint32_t cParams[6] = { targetModelIndex, maxInstances, instanceOffset, batchIndex, 1, subMeshIndex }; 
     cullingCB->Update(cParams, sizeof(cParams));
 
