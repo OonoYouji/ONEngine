@@ -64,6 +64,9 @@ public:
 	RenderTexture* GetIDBuffer()        const { return idBuffer_.get(); }
 	RenderTexture* GetFinalColorBuffer() const { return finalColorBuffer_.get(); }
 
+    /// @brief 特定の座標のピクセル値を読み取る (32bit)
+    uint32_t ReadbackPixel(RenderTexture* texture, const Engine::Math::Vector2Int& coord);
+
 	D3D12_CPU_DESCRIPTOR_HANDLE GetImGuiCPUHandle() const;
 	D3D12_GPU_DESCRIPTOR_HANDLE GetImGuiGPUHandle() const;
 

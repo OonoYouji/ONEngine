@@ -183,4 +183,79 @@ D3D12_GPU_DESCRIPTOR_HANDLE GraphicsEngine::GetImGuiGPUHandle() const {
     return srvHeap_->GetGPUHandle(0);
 }
 
+uint32_t GraphicsEngine::ReadbackPixel(RenderTexture* texture, const Engine::Math::Vector2Int& coord) {
+    if (!texture) return 0;
+    auto* device = renderDevice_->GetDevice();
+    auto* commandQueue = commandQueue_->GetCommandQueue();
+
+    // 1. 専用のアロケータとコマンドリストを作成 (メインのコマンドリストを汚さないため)
+    ComPtr<ID3D12CommandAllocator> tempAllocator;
+    device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&tempAllocator));
+    
+    ComPtr<ID3D12GraphicsCommandList> tempCommandList;
+    device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, tempAllocator.Get(), nullptr, IID_PPV_ARGS(&tempCommandList));
+
+    // 2. Staging Buffer の作成 (RowPitch アライメントのため 256 バイト確保)
+    D3D12_HEAP_PROPERTIES heapProps = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_READBACK);
+    D3D12_RESOURCE_DESC resDesc = CD3DX12_RESOURCE_DESC::Buffer(256);
+
+    ComPtr<ID3D12Resource> stagingBuffer;
+    device->CreateCommittedResource(&heapProps, D3D12_HEAP_FLAG_NONE, &resDesc, D3D12_RESOURCE_STATE_COPY_DEST, nullptr, IID_PPV_ARGS(&stagingBuffer));
+
+    // 3. コピーの実行
+    // 元の状態から COPY_SOURCE へ遷移
+    texture->Transition(tempCommandList.Get(), D3D12_RESOURCE_STATE_COPY_SOURCE);
+    
+    D3D12_TEXTURE_COPY_LOCATION src = {};
+    src.pResource = texture->GetResource();
+    src.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
+    src.SubresourceIndex = 0;
+
+    D3D12_TEXTURE_COPY_LOCATION dst = {};
+    dst.pResource = stagingBuffer.Get();
+    dst.Type = D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT;
+    
+    // 1x1 ピクセル用のフットプリントを自前で定義
+    // RowPitch は 256 バイトアライメントが必須
+    dst.PlacedFootprint.Offset = 0;
+    dst.PlacedFootprint.Footprint.Format = texture->GetFormat();
+    dst.PlacedFootprint.Footprint.Width = 1;
+    dst.PlacedFootprint.Footprint.Height = 1;
+    dst.PlacedFootprint.Footprint.Depth = 1;
+    dst.PlacedFootprint.Footprint.RowPitch = D3D12_TEXTURE_DATA_PITCH_ALIGNMENT; 
+    
+    D3D12_BOX box = { (UINT)coord.x, (UINT)coord.y, 0, (UINT)coord.x + 1, (UINT)coord.y + 1, 1 };
+    tempCommandList->CopyTextureRegion(&dst, 0, 0, 0, &src, &box);
+
+    // 元の状態 (通常は SHADER_RESOURCE か RENDER_TARGET) に戻す
+    // ※ ここではひとまず汎用的な ALL_SHADER_RESOURCE に戻す
+    texture->Transition(tempCommandList.Get(), D3D12_RESOURCE_STATE_ALL_SHADER_RESOURCE);
+
+    // 4. 実行と完了待機
+    tempCommandList->Close();
+    ID3D12CommandList* lists[] = { tempCommandList.Get() };
+    commandQueue->ExecuteCommandLists(1, lists);
+    
+    ComPtr<ID3D12Fence> tempFence;
+    device->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&tempFence));
+    commandQueue->Signal(tempFence.Get(), 1);
+    
+    HANDLE event = CreateEvent(nullptr, FALSE, FALSE, nullptr);
+    tempFence->SetEventOnCompletion(1, event);
+    WaitForSingleObject(event, INFINITE);
+    CloseHandle(event);
+
+    // 5. マップして読み取り
+    void* mappedData = nullptr;
+    D3D12_RANGE readRange = { 0, 8 }; // R32G32_UINT なら 8バイト
+    stagingBuffer->Map(0, &readRange, &mappedData);
+    uint32_t result = 0;
+    if (mappedData) {
+        result = *static_cast<uint32_t*>(mappedData);
+    }
+    stagingBuffer->Unmap(0, nullptr);
+
+    return result;
+}
+
 } /// namespace Engine::Graphics
