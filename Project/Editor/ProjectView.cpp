@@ -27,7 +27,14 @@ void ProjectView::Render() {
                 currentPath_ /= path.filename();
             }
         } else {
-            ImGui::Text("[File] %s", fileName.c_str());
+            ImGui::Selectable(("[File] " + fileName).c_str());
+            if (ImGui::BeginDragDropSource()) {
+                std::string fullPath = path.string();
+                // "DND_ASSET_PATH" という名前でパスをペイロードとして渡す
+                ImGui::SetDragDropPayload("DND_ASSET_PATH", fullPath.c_str(), fullPath.length() + 1);
+                ImGui::Text("Dragging %s", fileName.c_str());
+                ImGui::EndDragDropSource();
+            }
         }
     }
 

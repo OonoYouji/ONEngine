@@ -295,6 +295,7 @@ inline void from_json(const nlohmann::json& j, Engine::ECS::Skybox& v) {
 
 #ifdef ENGINE_EDITOR
 #include "imgui.h"
+#include "Editor/EditorUI.h"
 namespace Engine::ECS {
 template<typename TProp>
 inline void DrawUI_Camera(Engine::ECS::Camera& v, TProp Prop) {
@@ -306,7 +307,7 @@ inline void DrawUI_Camera(Engine::ECS::Camera& v, TProp Prop) {
 template<typename TProp>
 inline void DrawUI_TextRenderer(Engine::ECS::TextRenderer& v, TProp Prop) {
     Prop("Text", [&]() { return ImGui::InputText("Text", v.text, sizeof(v.text)); });
-    Prop("FontIndex", [&]() { return ImGui::InputScalar("FontIndex", ImGuiDataType_U32, &v.fontIndex); });
+    Prop("FontIndex", [&]() { return Editor::EditorUI::AssetPicker("FontIndex", "Font", &v.fontIndex); });
     Prop("Color", [&]() { return ImGui::ColorEdit4("Color", &v.color.x); });
     Prop("Size", [&]() { return ImGui::DragFloat("Size", &v.size, 0.1f); });
     Prop("IsScreenSpace", [&]() { return ImGui::Checkbox("IsScreenSpace", (bool*)&v.isScreenSpace); });
@@ -314,8 +315,8 @@ inline void DrawUI_TextRenderer(Engine::ECS::TextRenderer& v, TProp Prop) {
 
 template<typename TProp>
 inline void DrawUI_SkinnedMeshRenderer(Engine::ECS::SkinnedMeshRenderer& v, TProp Prop) {
-    Prop("ModelIndex", [&]() { return ImGui::InputScalar("ModelIndex", ImGuiDataType_U32, &v.modelIndex); });
-    Prop("MaterialIndex", [&]() { return ImGui::InputScalar("MaterialIndex", ImGuiDataType_U32, &v.materialIndex); });
+    Prop("ModelIndex", [&]() { return Editor::EditorUI::AssetPicker("ModelIndex", "Model", &v.modelIndex); });
+    Prop("MaterialIndex", [&]() { return Editor::EditorUI::AssetPicker("MaterialIndex", "Material", &v.materialIndex); });
     Prop("SkeletonIndex", [&]() { return ImGui::InputScalar("SkeletonIndex", ImGuiDataType_U32, &v.skeletonIndex); });
     Prop("PostProcessFlags", [&]() { return ImGui::Checkbox("PostProcessFlags", (bool*)&v.postProcessFlags); });
     Prop("InternalVertexOffset", [&]() { return ImGui::InputScalar("InternalVertexOffset", ImGuiDataType_U32, &v.internalVertexOffset); });
@@ -332,7 +333,7 @@ inline void DrawUI_Transform(Engine::ECS::Transform& v, TProp Prop) {
 
 template<typename TProp>
 inline void DrawUI_SpriteRenderer(Engine::ECS::SpriteRenderer& v, TProp Prop) {
-    Prop("TextureIndex", [&]() { return ImGui::InputScalar("TextureIndex", ImGuiDataType_U32, &v.textureIndex); });
+    Prop("TextureIndex", [&]() { return Editor::EditorUI::AssetPicker("TextureIndex", "Texture", &v.textureIndex); });
     Prop("Color", [&]() { return ImGui::ColorEdit4("Color", &v.color.x); });
     Prop("Size", [&]() { return ImGui::DragFloat2("Size", &v.size.x, 0.1f); });
     Prop("IsBillboard", [&]() { return ImGui::Checkbox("IsBillboard", (bool*)&v.isBillboard); });
@@ -365,8 +366,8 @@ inline void DrawUI_ScriptComponent(Engine::ECS::ScriptComponent& v, TProp Prop) 
 
 template<typename TProp>
 inline void DrawUI_MeshRenderer(Engine::ECS::MeshRenderer& v, TProp Prop) {
-    Prop("ModelIndex", [&]() { return ImGui::InputScalar("ModelIndex", ImGuiDataType_U32, &v.modelIndex); });
-    Prop("MaterialIndex", [&]() { return ImGui::InputScalar("MaterialIndex", ImGuiDataType_U32, &v.materialIndex); });
+    Prop("ModelIndex", [&]() { return Editor::EditorUI::AssetPicker("ModelIndex", "Model", &v.modelIndex); });
+    Prop("MaterialIndex", [&]() { return Editor::EditorUI::AssetPicker("MaterialIndex", "Material", &v.materialIndex); });
     Prop("PostProcessFlags", [&]() { return ImGui::Checkbox("PostProcessFlags", (bool*)&v.postProcessFlags); });
 }
 
@@ -383,14 +384,14 @@ inline void DrawUI_ParticleEmitter(Engine::ECS::ParticleEmitter& v, TProp Prop) 
     Prop("EndColor", [&]() { return ImGui::ColorEdit4("EndColor", &v.endColor.x); });
     Prop("StartScale", [&]() { return ImGui::DragFloat("StartScale", &v.startScale, 0.1f); });
     Prop("EndScale", [&]() { return ImGui::DragFloat("EndScale", &v.endScale, 0.1f); });
-    Prop("ModelIndex", [&]() { return ImGui::InputScalar("ModelIndex", ImGuiDataType_U32, &v.modelIndex); });
-    Prop("TextureIndex", [&]() { return ImGui::InputScalar("TextureIndex", ImGuiDataType_U32, &v.textureIndex); });
+    Prop("ModelIndex", [&]() { return Editor::EditorUI::AssetPicker("ModelIndex", "Model", &v.modelIndex); });
+    Prop("TextureIndex", [&]() { return Editor::EditorUI::AssetPicker("TextureIndex", "Texture", &v.textureIndex); });
     Prop("BufferIndex", [&]() { return ImGui::InputScalar("BufferIndex", ImGuiDataType_U32, &v.bufferIndex); });
 }
 
 template<typename TProp>
 inline void DrawUI_Skybox(Engine::ECS::Skybox& v, TProp Prop) {
-    Prop("TextureIndex", [&]() { return ImGui::InputScalar("TextureIndex", ImGuiDataType_U32, &v.textureIndex); });
+    Prop("TextureIndex", [&]() { return Editor::EditorUI::AssetPicker("TextureIndex", "Texture", &v.textureIndex); });
 }
 
 } // namespace Engine::ECS

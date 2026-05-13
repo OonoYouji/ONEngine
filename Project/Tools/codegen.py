@@ -99,11 +99,14 @@ def generate_editor_ui(type_name, fields, namespace):
     for field in fields:
         f_name = field["name"]
         f_type = field["type"]
+        asset_type = field.get("asset_type")
         
         is_color = "color" in f_name.lower()
         label = f_name[0].upper() + f_name[1:]
         
-        if f_type == "float":
+        if asset_type:
+            ui_code += "    Prop(\"{}\", [&]() {{ return Editor::EditorUI::AssetPicker(\"{}\", \"{}\", &v.{}); }});\n".format(label, label, asset_type, f_name)
+        elif f_type == "float":
             ui_code += "    Prop(\"{}\", [&]() {{ return ImGui::DragFloat(\"{}\", &v.{}, 0.1f); }});\n".format(label, label, f_name)
         elif f_type == "float2":
             ui_code += "    Prop(\"{}\", [&]() {{ return ImGui::DragFloat2(\"{}\", &v.{}.x, 0.1f); }});\n".format(label, label, f_name)
@@ -234,7 +237,7 @@ def process_file(yaml_path):
     cpp_content += serialization_content
     
     if is_component_file:
-        cpp_content += "\n#ifdef ENGINE_EDITOR\n#include \"imgui.h\"\n"
+        cpp_content += "\n#ifdef ENGINE_EDITOR\n#include \"imgui.h\"\n#include \"Editor/EditorUI.h\"\n"
         cpp_content += "namespace {} {{\n".format(namespace)
         cpp_content += ui_content
         cpp_content += "}} // namespace {}\n".format(namespace)
