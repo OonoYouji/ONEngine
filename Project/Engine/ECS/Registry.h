@@ -26,6 +26,9 @@ public:
 	// 汎用データアクセスのための仮想関数
 	virtual void** GetSparsePagesPtr(uint32_t* outPageCount) = 0;
 	virtual void* GetChunkPtr(size_t chunkIndex) = 0;
+
+    virtual uint32_t GetTypeId() const = 0;
+    virtual void* GetRaw(Entity entity) = 0;
 };
 
 ///
@@ -34,9 +37,21 @@ public:
 template <typename T>
 class ComponentStorage final : public IComponentStorage {
 public:
+    ComponentStorage() {
+        typeId_ = (uint32_t)typeid(T).hash_code();
+    }
 	static constexpr size_t kChunkSize = 1024;
 	static constexpr uint32_t kInvalidIndex = 0xFFFFFFFF;
 	static constexpr size_t kPageSize = 4096;
+
+    void SetTypeId(uint32_t typeId) { typeId_ = typeId; }
+    uint32_t GetTypeId() const override { return typeId_; }
+
+    void* GetRaw(Entity entity) override {
+        uint32_t index = GetIndex(entity);
+        if (index == kInvalidIndex) return nullptr;
+        return GetPtr(index);
+    }
 
 	T& Add(Entity entity, T&& component) {
 		uint32_t index = GetIndex(entity);
@@ -147,6 +162,7 @@ private:
 	size_t count_ = 0;
 	std::vector<Entity> indexToEntity_;
 	std::vector<uint32_t*> sparsePages_; // Paged sparse array
+    uint32_t typeId_;
 };
 
 ///
@@ -189,6 +205,26 @@ public:
 	bool HasComponent(Entity entity) {
 		return GetStorage<T>().Has(entity);
 	}
+
+    /// @brief TypeID指定でコンポーネントを取得 (Editor用)
+    void* GetComponent(Entity entity, uint32_t typeId) {
+        for (auto& [typeIndex, storage] : storages_) {
+            if (storage->GetTypeId() == typeId) {
+                return storage->GetRaw(entity);
+            }
+        }
+        return nullptr;
+    }
+
+    /// @brief TypeID指定でコンポーネントの有無を確認 (Editor用)
+    bool HasComponent(Entity entity, uint32_t typeId) {
+        for (auto& [typeIndex, storage] : storages_) {
+            if (storage->GetTypeId() == typeId) {
+                return storage->Has(entity);
+            }
+        }
+        return false;
+    }
 
 	template <typename T>
 	ComponentStorage<T>& GetStorage() {

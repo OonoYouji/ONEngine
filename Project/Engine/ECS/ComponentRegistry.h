@@ -16,6 +16,7 @@ using json = nlohmann::json;
 struct ComponentTypeInfo {
     uint32_t typeId;
     std::string name;
+    std::function<json(Entity, Registry&)> serializeFunc;
     std::function<void(const json&, Entity, Registry&)> deserializeFunc;
     std::function<IComponentStorage&(Registry&)> getStorageFunc;
     std::function<void(Registry&, Entity)> addFunc;
@@ -41,26 +42,52 @@ public:
 
     /// @brief 新しいコンポーネントを登録
     template <typename T>
-    void Register(uint32_t typeId, const std::string& name, std::function<void(const json&, T&)> deserialize) {
+    void Register(uint32_t typeId, const std::string& name, 
+                  std::function<void(const json&, T&)> deserialize,
+                  std::function<json(const T&)> serialize) {
         ComponentTypeInfo info;
         info.typeId = typeId;
         info.name = name;
         
+        info.serializeFunc = [serialize](Entity e, Registry& r) -> json {
+            if (!r.HasComponent<T>(e)) return json{};
+            return serialize(r.GetComponent<T>(e));
+        };
+
         info.deserializeFunc = [deserialize](const json& j, Entity e, Registry& r) {
-            auto& comp = r.AddComponent<T>(e);
+            auto& comp = r.HasComponent<T>(e) ? r.GetComponent<T>(e) : r.AddComponent<T>(e);
             deserialize(j, comp);
         };
         
-        info.getStorageFunc = [](Registry& r) -> IComponentStorage& {
-            return r.GetStorage<T>();
+        info.getStorageFunc = [typeId](Registry& r) -> IComponentStorage& {
+            auto& storage = r.GetStorage<T>();
+            storage.SetTypeId(typeId); // Storage 側にも ID を伝播
+            return storage;
         };
 
-        info.addFunc = [](Registry& r, Entity e) {
+        info.addFunc = [typeId](Registry& r, Entity e) {
+            auto& storage = r.GetStorage<T>();
+            storage.SetTypeId(typeId);
             r.AddComponent<T>(e);
         };
 
         idToInfo_[typeId] = info;
         nameToInfo_[name] = info;
+    }
+
+    /// @brief コンポーネントを JSON にシリアライズ
+    json SerializeComponent(Registry& reg, Entity entity, uint32_t typeId) {
+        auto it = idToInfo_.find(typeId);
+        if (it == idToInfo_.end()) return json{};
+        return it->second.serializeFunc(entity, reg);
+    }
+
+    /// @brief JSON からコンポーネントをデシリアライズ
+    void DeserializeComponent(Registry& reg, Entity entity, uint32_t typeId, const json& data) {
+        auto it = idToInfo_.find(typeId);
+        if (it != idToInfo_.end()) {
+            it->second.deserializeFunc(data, entity, reg);
+        }
     }
 
     const ComponentTypeInfo* GetInfo(uint32_t typeId) const {

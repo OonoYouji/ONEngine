@@ -90,6 +90,8 @@ bool SceneLoader::LoadScene(const std::string& path, Engine::ECS::Registry& regi
             for (const auto& jEntity : data["entities"]) {
                 auto entity = registry.CreateEntity();
                 int sceneId = jEntity.value("id", -1);
+                std::string entityLogName = std::format("Entity(ID:{})", sceneId);
+
                 if (sceneId != -1) idMap[sceneId] = entity;
 
                 if (jEntity.contains("parent") && !jEntity["parent"].is_null()) {
@@ -102,16 +104,21 @@ bool SceneLoader::LoadScene(const std::string& path, Engine::ECS::Registry& regi
                         std::string type = jComp.value("type", "");
                         const auto* info = componentRegistry.GetInfo(type);
                         if (info) {
+                            Engine::Console::Log(std::format("  {}: Loading component '{}'", entityLogName, type));
                             info->deserializeFunc(jComp, entity, registry);
                         } else if (type == "Script") {
+                            Engine::Console::Log(std::format("  {}: Loading Scripts", entityLogName));
                             EnsureScriptDelegate();
                             if (gAddScriptDelegate && jComp.contains("scripts") && jComp["scripts"].is_array()) {
                                 for (const auto& jScript : jComp["scripts"]) {
                                     std::string scriptName = jScript.value("name", "");
                                     std::string varsJson = jScript.contains("variables") ? jScript["variables"].dump() : "{}";
+                                    Engine::Console::Log(std::format("    - Script: {}", scriptName));
                                     gAddScriptDelegate(entity, scriptName.c_str(), varsJson.c_str());
                                 }
                             }
+                        } else {
+                            Engine::Console::LogWarning(std::format("  {}: Unknown component type '{}'", entityLogName, type));
                         }
                     }
                 }
