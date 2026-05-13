@@ -63,7 +63,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
 		ImGui::SetNextWindowSize(viewport->WorkSize);
 		ImGui::SetNextWindowViewport(viewport->ID);
 		
-		ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
+		ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDocking;
 		window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
 		window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
 
@@ -77,12 +77,25 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
 		ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
 		ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_None);
 
-		if (ImGui::BeginMenuBar()) {
+		if (ImGui::BeginMainMenuBar()) {
 			if (ImGui::BeginMenu("File")) {
 				if (ImGui::MenuItem("Exit")) { /* TODO */ }
 				ImGui::EndMenu();
 			}
-			ImGui::EndMenuBar();
+
+			auto& context = Engine::Editor::EditorContext::GetInstance();
+			if (ImGui::BeginMenu("Edit")) {
+				ImGui::Checkbox("Gizmo Snap", &context.GetSnapEnabled());
+				ImGui::Separator();
+				ImGui::SetNextItemWidth(80.0f);
+				ImGui::InputFloat("Snap Move", &context.GetSnapTranslation());
+				ImGui::SetNextItemWidth(80.0f);
+				ImGui::InputFloat("Snap Rotate", &context.GetSnapRotation());
+				ImGui::SetNextItemWidth(80.0f);
+				ImGui::InputFloat("Snap Scale", &context.GetSnapScale());
+				ImGui::EndMenu();
+			}
+			ImGui::EndMainMenuBar();
 		}
 
 		// 各 View のレンダリング

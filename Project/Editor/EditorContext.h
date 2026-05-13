@@ -26,8 +26,14 @@ public:
     Core::BindingTable& GetBindingTable() { return bindingTable_; }
     Core::InputMapper& GetInputMapper() { return inputMapper_; }
 
+    // Gizmo スナップ設定
+    bool& GetSnapEnabled() { return snapEnabled_; }
+    float& GetSnapTranslation() { return snapTranslation_; }
+    float& GetSnapRotation() { return snapRotation_; }
+    float& GetSnapScale() { return snapScale_; }
+
 private:
-    EditorContext() : selectedEntity_(0) {
+    EditorContext() : selectedEntity_(0), snapEnabled_(false), snapTranslation_(1.0f), snapRotation_(45.0f), snapScale_(0.5f) {
         camera_ = std::make_unique<EditorCamera>();
         
         // エディター用のデフォルトバインド
@@ -47,6 +53,11 @@ private:
     Core::ActionMap actionMap_;
     Core::BindingTable bindingTable_;
     Core::InputMapper inputMapper_;
+
+    bool snapEnabled_;
+    float snapTranslation_;
+    float snapRotation_;
+    float snapScale_;
 };
 
 } // namespace Engine::Editor

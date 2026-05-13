@@ -34,9 +34,6 @@ void SceneView::Render() {
     if (finalBuffer) {
         D3D12_GPU_DESCRIPTOR_HANDLE srvHandle = finalBuffer->GetSRVHandle();
         ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
-        ImVec2 windowPos = ImGui::GetWindowPos();
-        ImVec2 contentMax = ImGui::GetWindowContentRegionMax();
-        ImVec2 contentMin = ImGui::GetWindowContentRegionMin();
 
         if (viewportPanelSize.x > 0 && viewportPanelSize.y > 0) {
             ImGui::Image((ImTextureID)srvHandle.ptr, viewportPanelSize);
@@ -71,7 +68,16 @@ void SceneView::Render() {
             }
 
             // Gizmoの描画と更新
-            if (ImGuizmo::Manipulate(&view.m[0][0], &proj.m[0][0], s_gizmoOperation, s_gizmoMode, &matrix.m[0][0])) {
+            float snapValues[3];
+            if (s_gizmoOperation == ImGuizmo::TRANSLATE) {
+                snapValues[0] = snapValues[1] = snapValues[2] = context.GetSnapTranslation();
+            } else if (s_gizmoOperation == ImGuizmo::ROTATE) {
+                snapValues[0] = snapValues[1] = snapValues[2] = context.GetSnapRotation();
+            } else if (s_gizmoOperation == ImGuizmo::SCALE) {
+                snapValues[0] = snapValues[1] = snapValues[2] = context.GetSnapScale();
+            }
+
+            if (ImGuizmo::Manipulate(&view.m[0][0], &proj.m[0][0], s_gizmoOperation, s_gizmoMode, &matrix.m[0][0], NULL, context.GetSnapEnabled() ? snapValues : NULL)) {
                 // 操作中のリアルタイム更新
                 Math::Vector3 pos, rot, sca;
                 ImGuizmo::DecomposeMatrixToComponents(&matrix.m[0][0], &pos.x, &rot.x, &sca.x);
