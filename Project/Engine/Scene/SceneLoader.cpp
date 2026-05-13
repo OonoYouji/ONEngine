@@ -3,7 +3,8 @@
 #include "Engine/Common/Console.h"
 #include "Engine/ECS/ComponentRegistry.h"
 #include "Engine/Script/ScriptHost.h"
-#include "Schema/Schema.h"
+#include "Schema/Buffers.h"
+#include "Schema/Components.h"
 #include <fstream>
 #include <filesystem>
 #include <map>

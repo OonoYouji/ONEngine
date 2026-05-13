@@ -3,7 +3,7 @@ struct VSOutput {
     float3 viewDir : TEXCOORD;
 };
 
-#include "../Schema/Schema.hlsli"
+#include "../Schema/Buffers.hlsli"
 
 ConstantBuffer<SceneData> gSceneData : register(b0);
 

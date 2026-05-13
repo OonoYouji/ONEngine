@@ -19,7 +19,7 @@ SamplerState gSampler : register(s0);
 
 // --- Proper Mesh Resources ---
 StructuredBuffer<Vertex> gVertices : register(t0, space0); 
-#include "../Schema/Schema.hlsli"
+#include "../Schema/Buffers.hlsli"
 StructuredBuffer<MeshInfo> gMeshInfos : register(t5);
 
 ConstantBuffer<SceneData> gSceneData : register(b0);

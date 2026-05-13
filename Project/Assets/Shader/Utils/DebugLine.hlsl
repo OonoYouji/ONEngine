@@ -8,7 +8,7 @@ struct VSOutput {
     float4 color : COLOR;
 };
 
-#include "../Schema/Schema.hlsli"
+#include "../Schema/Buffers.hlsli"
 
 ConstantBuffer<SceneData> gSceneData : register(b0);
 StructuredBuffer<Vertex> gVertices : register(t0);

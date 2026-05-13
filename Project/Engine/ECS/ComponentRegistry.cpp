@@ -3,7 +3,8 @@
 #include "Engine/Asset/MaterialManager.h"
 #include "Engine/Asset/TextureManager.h"
 #include "Engine/Asset/FontManager.h"
-#include "Schema/Schema.h"
+#include "Schema/Buffers.h"
+#include "Schema/Components.h"
 #include <cstring>
 
 namespace Engine::ECS {

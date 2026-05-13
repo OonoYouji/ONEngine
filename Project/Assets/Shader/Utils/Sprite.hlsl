@@ -4,7 +4,7 @@ struct VSOutput {
     nointerpolation uint instanceID : SV_InstanceID;
 };
 
-#include "../Schema/Schema.hlsli"
+#include "../Schema/Buffers.hlsli"
 
 ConstantBuffer<SceneData> gSceneData : register(b0);
 StructuredBuffer<SpriteData> gSprites : register(t0);

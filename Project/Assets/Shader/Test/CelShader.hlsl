@@ -1,4 +1,4 @@
-#include "../Schema/Schema.hlsli"
+#include "../Schema/Buffers.hlsli"
 #include "../Utils/Clustered/ClusteredLight.hlsli"
 
 // --- Resource Declarations ---

@@ -4,7 +4,8 @@
 #include <vector>
 #include <memory>
 #include "Engine/Graphics/Utils/ComPtr.h"
-#include "Schema/Schema.h"
+#include "Schema/Buffers.h"
+#include "Schema/Components.h"
 
 namespace Engine::Asset { struct Vertex; }
 

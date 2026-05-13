@@ -45,9 +45,9 @@
 ### 4.1. Codegen パイプライン (`codegen.py`)
 - **SSOT (schema.yaml):** レンダリング、物理、ECS 全体のデータ構造を定義。
 - **自動生成対象:**
-    - C++ 構造体ヘッダー (`Schema.h`)
+    - C++ 構造体ヘッダー (`Schema/Buffers.h`, `Schema/Components.h`)
     - C# 構造体、型 ID マップ
-    - HLSL 構造体 (`Schema.hlsli`)
+    - HLSL 構造体 (`Schema/Buffers.hlsli`)
 
 ### 4.2. シーン・プリファブシステム
 - **JSON シリアライズ:** 階層化された JSON によるエンティティ定義。

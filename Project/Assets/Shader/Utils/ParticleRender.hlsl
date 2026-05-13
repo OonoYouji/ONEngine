@@ -1,4 +1,4 @@
-#include "../Schema/Schema.hlsli"
+#include "../Schema/Buffers.hlsli"
 
 struct VSOutput {
     float4 position : SV_POSITION;

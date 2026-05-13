@@ -1,4 +1,4 @@
-#include "../Schema/Schema.hlsli"
+#include "../Schema/Buffers.hlsli"
 
 struct FrustumPlanes {
     float4 planes[6];

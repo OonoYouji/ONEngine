@@ -1,7 +1,8 @@
 #include "InspectorView.h"
 #include "imgui.h"
 #include "EditorContext.h"
-#include "Schema/Schema.h"
+#include "Schema/Buffers.h"
+#include "Schema/Components.h"
 #include "ChangeComponentCommand.h"
 #include "Engine/Core/Application.h"
 

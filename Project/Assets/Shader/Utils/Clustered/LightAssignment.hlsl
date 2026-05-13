@@ -1,5 +1,5 @@
 #include "ClusteredLight.hlsli"
-#include "../../Schema/Schema.hlsli"
+#include "../../Schema/Buffers.hlsli"
 
 ConstantBuffer<ClusterParams> gParams : register(b0);
 ConstantBuffer<SceneData> gSceneData : register(b1); // ビュー行列が必要

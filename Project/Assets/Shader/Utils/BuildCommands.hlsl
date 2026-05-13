@@ -1,4 +1,4 @@
-#include "../Schema/Schema.hlsli"
+#include "../Schema/Buffers.hlsli"
 
 struct DrawIndexedArguments {
     uint indexCountPerInstance;

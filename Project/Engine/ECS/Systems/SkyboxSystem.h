@@ -2,7 +2,8 @@
 
 #include "Engine/ECS/System.h"
 #include "Engine/ECS/Registry.h"
-#include "Schema/Schema.h"
+#include "Schema/Buffers.h"
+#include "Schema/Components.h"
 #include <cstdint>
 
 namespace Engine::ECS {

@@ -1,7 +1,8 @@
 #include "HierarchyView.h"
 #include "imgui.h"
 #include "EditorContext.h"
-#include "Schema/Schema.h"
+#include "Schema/Buffers.h"
+#include "Schema/Components.h"
 #include <string>
 
 namespace Engine::Editor {

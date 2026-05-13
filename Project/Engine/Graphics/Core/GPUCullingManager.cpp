@@ -2,7 +2,8 @@
 #include "Engine/Graphics/Core/RenderDevice.h"
 #include "Engine/Graphics/Shader/ShaderManager.h"
 #include <d3dx12.h>
-#include "Schema/Schema.h"
+#include "Schema/Buffers.h"
+#include "Schema/Components.h"
 
 namespace Engine::Graphics {
 
