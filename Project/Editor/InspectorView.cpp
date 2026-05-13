@@ -8,6 +8,7 @@
 
 namespace Engine::Editor {
 
+using json = nlohmann::json;
 static json s_oldState;
 
 void InspectorView::Render(ECS::Registry& registry) {
@@ -48,9 +49,7 @@ void InspectorView::Render(ECS::Registry& registry) {
             ImGui::PushID(typeId);
             void* comp = storage.GetRaw(entity);
             
-            // 各ウィジェットをラップして Activation を監視するヘルパー
             auto Property = [&](const char* label, auto widgetFunc) {
-                // 変更前の状態をあらかじめシリアライズしておく（Activated の瞬間に使うため）
                 json potentialOldState = compReg.SerializeComponent(registry, entity, typeId);
                 
                 ImGui::PushID(label);
@@ -74,52 +73,45 @@ void InspectorView::Render(ECS::Registry& registry) {
         }
     };
 
-    // Tag
-    DrawComponent(100, "Tag", [&](void* data, auto Prop) {
-        auto& tag = *static_cast<ECS::Tag*>(data);
-        Prop("Name", [&]() { return ImGui::InputText("Name", tag.name, sizeof(tag.name)); });
+    // 自動生成された UI 関数を使用して描画
+    DrawComponent(100, "Tag", [](void* data, auto Prop) {
+        ECS::DrawUI_Tag(*static_cast<ECS::Tag*>(data), Prop);
     });
 
-    // Transform
-    DrawComponent(1, "Transform", [&](void* data, auto Prop) {
-        auto& t = *static_cast<ECS::Transform*>(data);
-        Prop("Position", [&]() { return ImGui::DragFloat3("Position", &t.position.x, 0.1f); });
-        Prop("Rotation", [&]() { return ImGui::DragFloat3("Rotation", &t.rotation.x, 0.1f); });
-        Prop("Scale",    [&]() { return ImGui::DragFloat3("Scale", &t.scale.x, 0.1f); });
-        ImGui::Text("Parent: %u", t.parent);
+    DrawComponent(1, "Transform", [](void* data, auto Prop) {
+        ECS::DrawUI_Transform(*static_cast<ECS::Transform*>(data), Prop);
     });
 
-    // MeshRenderer
-    DrawComponent(2, "MeshRenderer", [&](void* data, auto Prop) {
-        auto& m = *static_cast<ECS::MeshRenderer*>(data);
-        Prop("Model", [&]() { return ImGui::InputScalar("Model Index", ImGuiDataType_U32, &m.modelIndex); });
-        Prop("Material", [&]() { return ImGui::InputScalar("Material Index", ImGuiDataType_U32, &m.materialIndex); });
-        Prop("PostProcess", [&]() { return ImGui::InputScalar("PostProcess Flags", ImGuiDataType_U32, &m.postProcessFlags); });
+    DrawComponent(2, "MeshRenderer", [](void* data, auto Prop) {
+        ECS::DrawUI_MeshRenderer(*static_cast<ECS::MeshRenderer*>(data), Prop);
     });
 
-    // Camera
-    DrawComponent(3, "Camera", [&](void* data, auto Prop) {
-        auto& c = *static_cast<ECS::Camera*>(data);
-        Prop("FOV", [&]() { return ImGui::DragFloat("FOV", &c.fov, 1.0f, 1.0f, 179.0f); });
-        Prop("Near", [&]() { return ImGui::DragFloat("Near Z", &c.nearZ, 0.1f, 0.01f, 10.0f); });
-        Prop("Far", [&]() { return ImGui::DragFloat("Far Z", &c.farZ, 10.0f, 10.0f, 10000.0f); });
+    DrawComponent(3, "Camera", [](void* data, auto Prop) {
+        ECS::DrawUI_Camera(*static_cast<ECS::Camera*>(data), Prop);
     });
 
-    // DirectionalLight
-    DrawComponent(4, "DirectionalLight", [&](void* data, auto Prop) {
-        auto& l = *static_cast<ECS::DirectionalLight*>(data);
-        Prop("Color", [&]() { return ImGui::ColorEdit3("Color", &l.color.x); });
-        Prop("Intensity", [&]() { return ImGui::DragFloat("Intensity", &l.intensity, 0.1f, 0.0f, 100.0f); });
-        Prop("Direction", [&]() { return ImGui::DragFloat3("Direction", &l.direction.x, 0.01f); });
+    DrawComponent(4, "DirectionalLight", [](void* data, auto Prop) {
+        ECS::DrawUI_DirectionalLight(*static_cast<ECS::DirectionalLight*>(data), Prop);
     });
 
-    // SpriteRenderer
-    DrawComponent(6, "SpriteRenderer", [&](void* data, auto Prop) {
-        auto& s = *static_cast<ECS::SpriteRenderer*>(data);
-        Prop("Texture", [&]() { return ImGui::InputScalar("Texture Index", ImGuiDataType_U32, &s.textureIndex); });
-        Prop("Color", [&]() { return ImGui::ColorEdit4("Color", &s.color.x); });
-        Prop("Size", [&]() { return ImGui::DragFloat2("Size", &s.size.x, 0.1f); });
-        Prop("Billboard", [&]() { return ImGui::Checkbox("Billboard", (bool*)&s.isBillboard); });
+    DrawComponent(5, "PointLight", [](void* data, auto Prop) {
+        ECS::DrawUI_PointLight(*static_cast<ECS::PointLight*>(data), Prop);
+    });
+
+    DrawComponent(6, "SpriteRenderer", [](void* data, auto Prop) {
+        ECS::DrawUI_SpriteRenderer(*static_cast<ECS::SpriteRenderer*>(data), Prop);
+    });
+
+    DrawComponent(7, "ParticleEmitter", [](void* data, auto Prop) {
+        ECS::DrawUI_ParticleEmitter(*static_cast<ECS::ParticleEmitter*>(data), Prop);
+    });
+
+    DrawComponent(8, "Skybox", [](void* data, auto Prop) {
+        ECS::DrawUI_Skybox(*static_cast<ECS::Skybox*>(data), Prop);
+    });
+
+    DrawComponent(9, "TextRenderer", [](void* data, auto Prop) {
+        ECS::DrawUI_TextRenderer(*static_cast<ECS::TextRenderer*>(data), Prop);
     });
 
     ImGui::End();

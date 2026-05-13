@@ -2,11 +2,16 @@ import yaml
 import os
 import glob
 
-# Configuration
-INPUT_DIR = "Project/Tools/Schema"
-CPP_OUTPUT_DIR = "Project/Schema"
-HLSL_OUTPUT_DIR = "Project/Assets/Shader/Schema"
-CS_OUTPUT_DIR = "SubProjects/ONEngine.Scripting/Generated"
+# Get the directory where the script is located (Project/Tools)
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+# Repository root is two levels up
+REPO_ROOT = os.path.dirname(os.path.dirname(SCRIPT_DIR))
+
+# Configuration (Relative to REPO_ROOT)
+INPUT_DIR = os.path.join(REPO_ROOT, "Project/Tools/Schema")
+CPP_OUTPUT_DIR = os.path.join(REPO_ROOT, "Project/Schema")
+HLSL_OUTPUT_DIR = os.path.join(REPO_ROOT, "Project/Assets/Shader/Schema")
+CS_OUTPUT_DIR = os.path.join(REPO_ROOT, "SubProjects/ONEngine.Scripting/Generated")
 
 TYPE_MAP_CPP = {
     "float4x4": "Engine::Math::Matrix4x4",
@@ -50,11 +55,12 @@ TYPE_SIZES = {
     "string": 256,
 }
 
-def generate_serialization(type_name, fields):
-    to_json = "inline void to_json(nlohmann::json& j, const {}& v) {{\n".format(type_name)
+def generate_serialization(type_name, fields, namespace):
+    full_name = "{}::{}".format(namespace, type_name)
+    to_json = "inline void to_json(nlohmann::json& j, const {}& v) {{\n".format(full_name)
     to_json += "    j = nlohmann::json{\n"
     
-    from_json = "inline void from_json(const nlohmann::json& j, {}& v) {{\n".format(type_name)
+    from_json = "inline void from_json(const nlohmann::json& j, {}& v) {{\n".format(full_name)
     
     for field in fields:
         f_name = field["name"]
@@ -63,7 +69,7 @@ def generate_serialization(type_name, fields):
         
         if f_type == "string":
             to_json += "        {{\"{}\", std::string(v.{})}},\n".format(f_name, f_name)
-            from_json += "    if (j.contains(\"{}\")) {{ std::string s = j.at(\"{}\").get<std::string>(); strncpy(v.{}, s.c_str(), sizeof(v.{}) - 1); v.{}[sizeof(v.{}) - 1] = '\\0'; }}\n".format(f_name, f_name, f_name, f_name, f_name, f_name)
+            from_json += "    if (j.contains(\"{}\")) {{ std::string s = j.at(\"{}\").get<std::string>(); size_t len = (std::min)(s.length(), sizeof(v.{}) - 1); std::memcpy(v.{}, s.c_str(), len); v.{}[len] = '\\0'; }}\n".format(f_name, f_name, f_name, f_name, f_name)
         elif f_count > 1:
             to_json += "        {{\"{}\", v.{}}},\n".format(f_name, f_name)
             from_json += "    if (j.contains(\"{}\")) {{ auto& arr = j.at(\"{}\"); for(int i=0; i<{}; ++i) v.{}[i] = arr.at(i).get<{}>(); }}\n".format(f_name, f_name, f_count, f_name, TYPE_MAP_CPP[f_type])
@@ -75,23 +81,69 @@ def generate_serialization(type_name, fields):
     from_json += "}\n"
     return to_json + "\n" + from_json
 
+def generate_editor_ui(type_name, fields, namespace):
+    full_name = "{}::{}".format(namespace, type_name)
+    ui_code = "template<typename TProp>\n"
+    ui_code += "inline void DrawUI_{}({}& v, TProp Prop) {{\n".format(type_name, full_name)
+    
+    for field in fields:
+        f_name = field["name"]
+        f_type = field["type"]
+        
+        # Simple heuristic for UI hints
+        is_color = "color" in f_name.lower()
+        is_rotation = "rotation" in f_name.lower()
+        
+        label = f_name[0].upper() + f_name[1:]
+        
+        if f_type == "float":
+            ui_code += "    Prop(\"{}\", [&]() {{ return ImGui::DragFloat(\"{}\", &v.{}, 0.1f); }});\n".format(label, label, f_name)
+        elif f_type == "float2":
+            ui_code += "    Prop(\"{}\", [&]() {{ return ImGui::DragFloat2(\"{}\", &v.{}.x, 0.1f); }});\n".format(label, label, f_name)
+        elif f_type == "float3":
+            if is_color:
+                ui_code += "    Prop(\"{}\", [&]() {{ return ImGui::ColorEdit3(\"{}\", &v.{}.x); }});\n".format(label, label, f_name)
+            else:
+                ui_code += "    Prop(\"{}\", [&]() {{ return ImGui::DragFloat3(\"{}\", &v.{}.x, 0.1f); }});\n".format(label, label, f_name)
+        elif f_type == "float4":
+            if is_color:
+                ui_code += "    Prop(\"{}\", [&]() {{ return ImGui::ColorEdit4(\"{}\", &v.{}.x); }});\n".format(label, label, f_name)
+            else:
+                ui_code += "    Prop(\"{}\", [&]() {{ return ImGui::DragFloat4(\"{}\", &v.{}.x, 0.1f); }});\n".format(label, label, f_name)
+        elif f_type == "uint32":
+            if "index" in f_name.lower() or "id" in f_name.lower() or "count" in f_name.lower():
+                ui_code += "    Prop(\"{}\", [&]() {{ return ImGui::InputScalar(\"{}\", ImGuiDataType_U32, &v.{}); }});\n".format(label, label, f_name)
+            elif "is" in f_name.lower() or "enabled" in f_name.lower() or "flag" in f_name.lower():
+                ui_code += "    Prop(\"{}\", [&]() {{ return ImGui::Checkbox(\"{}\", (bool*)&v.{}); }});\n".format(label, label, f_name)
+            else:
+                ui_code += "    Prop(\"{}\", [&]() {{ return ImGui::InputScalar(\"{}\", ImGuiDataType_U32, &v.{}); }});\n".format(label, label, f_name)
+        elif f_type == "uint64":
+            ui_code += "    Prop(\"{}\", [&]() {{ return ImGui::InputScalar(\"{}\", ImGuiDataType_U64, &v.{}); }});\n".format(label, label, f_name)
+        elif f_type == "string":
+            ui_code += "    Prop(\"{}\", [&]() {{ return ImGui::InputText(\"{}\", v.{}, sizeof(v.{})); }});\n".format(label, label, f_name, f_name)
+        elif f_type == "float4x4":
+            ui_code += "    ImGui::Text(\"{}: Matrix4x4\", \"Matrix\");\n".format(label)
+
+    ui_code += "}\n\n"
+    return ui_code
+
 def process_file(yaml_path):
     base_name = os.path.splitext(os.path.basename(yaml_path))[0]
     
     with open(yaml_path, "r") as f:
         schema = yaml.safe_load(f)
 
-    cpp_content = "#pragma once\n#include \"Engine/Core/Math/Math.h\"\n#include <cstdint>\n#include <nlohmann/json.hpp>\n#include <cstring>\n#include <string>\n\n"
+    cpp_content = "#pragma once\n#include \"Engine/Core/Math/Math.h\"\n#include <cstdint>\n#include <nlohmann/json.hpp>\n#include <cstring>\n#include <string>\n#include <algorithm>\n\n"
     hlsl_content = "// Generated by codegen.py\n\n"
     cs_content = "using System.Runtime.InteropServices;\nusing ONEngine.Scripting.Math;\n\nnamespace ONEngine.Scripting.Generated\n{\n"
 
-    # Separate logic for Components (they usually go into Engine::ECS)
     is_component_file = base_name.lower() == "components"
     namespace = "Engine::ECS" if is_component_file else "Engine::GeneratedSchema"
     
     cpp_content += "namespace {} {{\n\n".format(namespace)
     
     serialization_content = ""
+    ui_content = ""
     has_hlsl_data = False
 
     for type_name, info in schema.get("types", {}).items():
@@ -147,27 +199,33 @@ def process_file(yaml_path):
         cpp_content += "struct {} {{\n{}}};\n\n".format(type_name, cpp_struct_body)
         cs_content += "    [StructLayout(LayoutKind.Sequential)]\n    public struct {}\n    {{\n{}{}    }}\n\n".format(type_name, "", cs_struct_body)
         
-        # Only Buffers tend to need HLSL
         if type_category in ["ConstantBuffer", "StructuredBuffer"]:
             hlsl_content += "struct {} {{\n{}}};\n\n".format(type_name, hlsl_struct_body)
             has_hlsl_data = True
             
-        serialization_content += generate_serialization(type_name, fields)
+        serialization_content += generate_serialization(type_name, fields, namespace)
+        if is_comp:
+            ui_content += generate_editor_ui(type_name, fields, namespace)
 
+    cpp_content += "}} // namespace {}\n\n".format(namespace)
     cpp_content += serialization_content
-    cpp_content += "}} // namespace {}\n".format(namespace)
+    
+    if is_component_file:
+        cpp_content += "\n#ifdef ENGINE_EDITOR\n#include \"imgui.h\"\n"
+        cpp_content += "namespace {} {{\n".format(namespace)
+        cpp_content += ui_content
+        cpp_content += "}} // namespace {}\n".format(namespace)
+        cpp_content += "#endif // ENGINE_EDITOR\n"
+
     cs_content += "}\n"
 
-    # Write C++
     cpp_path = os.path.join(CPP_OUTPUT_DIR, base_name + ".h")
     with open(cpp_path, "w") as f: f.write(cpp_content)
     
-    # Write HLSL (if has buffer data)
     if has_hlsl_data:
         hlsl_path = os.path.join(HLSL_OUTPUT_DIR, base_name + ".hlsli")
         with open(hlsl_path, "w") as f: f.write(hlsl_content)
 
-    # Write C#
     cs_path = os.path.join(CS_OUTPUT_DIR, base_name + ".cs")
     with open(cs_path, "w") as f: f.write(cs_content)
     
@@ -175,7 +233,7 @@ def process_file(yaml_path):
 
 def generate():
     if not os.path.exists(INPUT_DIR):
-        print("Error: {} not found.".format(INPUT_DIR))
+        print("Error: {} not found (calculated as {}).".format(INPUT_DIR, os.path.abspath(INPUT_DIR)))
         return
 
     yaml_files = glob.glob(os.path.join(INPUT_DIR, "*.yaml"))

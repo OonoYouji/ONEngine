@@ -4,6 +4,7 @@
 #include <nlohmann/json.hpp>
 #include <cstring>
 #include <string>
+#include <algorithm>
 
 namespace Engine::GeneratedSchema {
 
@@ -106,7 +107,9 @@ struct MaterialData {
     Engine::Math::Vector4 baseColor;
 };
 
-inline void to_json(nlohmann::json& j, const PointLightData& v) {
+} // namespace Engine::GeneratedSchema
+
+inline void to_json(nlohmann::json& j, const Engine::GeneratedSchema::PointLightData& v) {
     j = nlohmann::json{
         {"position", v.position},
         {"intensity", v.intensity},
@@ -115,13 +118,13 @@ inline void to_json(nlohmann::json& j, const PointLightData& v) {
     };
 }
 
-inline void from_json(const nlohmann::json& j, PointLightData& v) {
+inline void from_json(const nlohmann::json& j, Engine::GeneratedSchema::PointLightData& v) {
     if (j.contains("position")) v.position = j.at("position").get<Engine::Math::Vector3>();
     if (j.contains("intensity")) v.intensity = j.at("intensity").get<float>();
     if (j.contains("color")) v.color = j.at("color").get<Engine::Math::Vector3>();
     if (j.contains("radius")) v.radius = j.at("radius").get<float>();
 }
-inline void to_json(nlohmann::json& j, const ParticleGPUData& v) {
+inline void to_json(nlohmann::json& j, const Engine::GeneratedSchema::ParticleGPUData& v) {
     j = nlohmann::json{
         {"position", v.position},
         {"age", v.age},
@@ -137,7 +140,7 @@ inline void to_json(nlohmann::json& j, const ParticleGPUData& v) {
     };
 }
 
-inline void from_json(const nlohmann::json& j, ParticleGPUData& v) {
+inline void from_json(const nlohmann::json& j, Engine::GeneratedSchema::ParticleGPUData& v) {
     if (j.contains("position")) v.position = j.at("position").get<Engine::Math::Vector3>();
     if (j.contains("age")) v.age = j.at("age").get<float>();
     if (j.contains("velocity")) v.velocity = j.at("velocity").get<Engine::Math::Vector3>();
@@ -150,7 +153,7 @@ inline void from_json(const nlohmann::json& j, ParticleGPUData& v) {
     if (j.contains("entityID")) v.entityID = j.at("entityID").get<uint32_t>();
     if (j.contains("postProcessFlags")) v.postProcessFlags = j.at("postProcessFlags").get<uint32_t>();
 }
-inline void to_json(nlohmann::json& j, const SceneData& v) {
+inline void to_json(nlohmann::json& j, const Engine::GeneratedSchema::SceneData& v) {
     j = nlohmann::json{
         {"view", v.view},
         {"viewProj", v.viewProj},
@@ -166,7 +169,7 @@ inline void to_json(nlohmann::json& j, const SceneData& v) {
     };
 }
 
-inline void from_json(const nlohmann::json& j, SceneData& v) {
+inline void from_json(const nlohmann::json& j, Engine::GeneratedSchema::SceneData& v) {
     if (j.contains("view")) v.view = j.at("view").get<Engine::Math::Matrix4x4>();
     if (j.contains("viewProj")) v.viewProj = j.at("viewProj").get<Engine::Math::Matrix4x4>();
     if (j.contains("cameraPos")) v.cameraPos = j.at("cameraPos").get<Engine::Math::Vector3>();
@@ -179,7 +182,7 @@ inline void from_json(const nlohmann::json& j, SceneData& v) {
     if (j.contains("nearZ")) v.nearZ = j.at("nearZ").get<float>();
     if (j.contains("farZ")) v.farZ = j.at("farZ").get<float>();
 }
-inline void to_json(nlohmann::json& j, const TextData& v) {
+inline void to_json(nlohmann::json& j, const Engine::GeneratedSchema::TextData& v) {
     j = nlohmann::json{
         {"world", v.world},
         {"color", v.color},
@@ -190,7 +193,7 @@ inline void to_json(nlohmann::json& j, const TextData& v) {
     };
 }
 
-inline void from_json(const nlohmann::json& j, TextData& v) {
+inline void from_json(const nlohmann::json& j, Engine::GeneratedSchema::TextData& v) {
     if (j.contains("world")) v.world = j.at("world").get<Engine::Math::Matrix4x4>();
     if (j.contains("color")) v.color = j.at("color").get<Engine::Math::Vector4>();
     if (j.contains("uvMin")) v.uvMin = j.at("uvMin").get<Engine::Math::Vector2>();
@@ -198,7 +201,7 @@ inline void from_json(const nlohmann::json& j, TextData& v) {
     if (j.contains("textureIndex")) v.textureIndex = j.at("textureIndex").get<uint32_t>();
     if (j.contains("padding")) v.padding = j.at("padding").get<uint32_t>();
 }
-inline void to_json(nlohmann::json& j, const MeshInfo& v) {
+inline void to_json(nlohmann::json& j, const Engine::GeneratedSchema::MeshInfo& v) {
     j = nlohmann::json{
         {"vertexOffset", v.vertexOffset},
         {"indexOffset", v.indexOffset},
@@ -208,23 +211,23 @@ inline void to_json(nlohmann::json& j, const MeshInfo& v) {
     };
 }
 
-inline void from_json(const nlohmann::json& j, MeshInfo& v) {
+inline void from_json(const nlohmann::json& j, Engine::GeneratedSchema::MeshInfo& v) {
     if (j.contains("vertexOffset")) v.vertexOffset = j.at("vertexOffset").get<uint32_t>();
     if (j.contains("indexOffset")) v.indexOffset = j.at("indexOffset").get<uint32_t>();
     if (j.contains("vertexCount")) v.vertexCount = j.at("vertexCount").get<uint32_t>();
     if (j.contains("indexCount")) v.indexCount = j.at("indexCount").get<uint32_t>();
     if (j.contains("meshCount")) v.meshCount = j.at("meshCount").get<uint32_t>();
 }
-inline void to_json(nlohmann::json& j, const BoneData& v) {
+inline void to_json(nlohmann::json& j, const Engine::GeneratedSchema::BoneData& v) {
     j = nlohmann::json{
         {"transform", v.transform},
     };
 }
 
-inline void from_json(const nlohmann::json& j, BoneData& v) {
+inline void from_json(const nlohmann::json& j, Engine::GeneratedSchema::BoneData& v) {
     if (j.contains("transform")) v.transform = j.at("transform").get<Engine::Math::Matrix4x4>();
 }
-inline void to_json(nlohmann::json& j, const SkinningParams& v) {
+inline void to_json(nlohmann::json& j, const Engine::GeneratedSchema::SkinningParams& v) {
     j = nlohmann::json{
         {"vertexCount", v.vertexCount},
         {"inputVertexOffset", v.inputVertexOffset},
@@ -234,14 +237,14 @@ inline void to_json(nlohmann::json& j, const SkinningParams& v) {
     };
 }
 
-inline void from_json(const nlohmann::json& j, SkinningParams& v) {
+inline void from_json(const nlohmann::json& j, Engine::GeneratedSchema::SkinningParams& v) {
     if (j.contains("vertexCount")) v.vertexCount = j.at("vertexCount").get<uint32_t>();
     if (j.contains("inputVertexOffset")) v.inputVertexOffset = j.at("inputVertexOffset").get<uint32_t>();
     if (j.contains("outputVertexOffset")) v.outputVertexOffset = j.at("outputVertexOffset").get<uint32_t>();
     if (j.contains("boneOffset")) v.boneOffset = j.at("boneOffset").get<uint32_t>();
     if (j.contains("skinningEnabled")) v.skinningEnabled = j.at("skinningEnabled").get<uint32_t>();
 }
-inline void to_json(nlohmann::json& j, const SpriteData& v) {
+inline void to_json(nlohmann::json& j, const Engine::GeneratedSchema::SpriteData& v) {
     j = nlohmann::json{
         {"world", v.world},
         {"color", v.color},
@@ -252,7 +255,7 @@ inline void to_json(nlohmann::json& j, const SpriteData& v) {
     };
 }
 
-inline void from_json(const nlohmann::json& j, SpriteData& v) {
+inline void from_json(const nlohmann::json& j, Engine::GeneratedSchema::SpriteData& v) {
     if (j.contains("world")) v.world = j.at("world").get<Engine::Math::Matrix4x4>();
     if (j.contains("color")) v.color = j.at("color").get<Engine::Math::Vector4>();
     if (j.contains("textureIndex")) v.textureIndex = j.at("textureIndex").get<uint32_t>();
@@ -260,18 +263,18 @@ inline void from_json(const nlohmann::json& j, SpriteData& v) {
     if (j.contains("entityID")) v.entityID = j.at("entityID").get<uint32_t>();
     if (j.contains("postProcessFlags")) v.postProcessFlags = j.at("postProcessFlags").get<uint32_t>();
 }
-inline void to_json(nlohmann::json& j, const BoneWeightData& v) {
+inline void to_json(nlohmann::json& j, const Engine::GeneratedSchema::BoneWeightData& v) {
     j = nlohmann::json{
         {"boneIndices", v.boneIndices},
         {"boneWeights", v.boneWeights},
     };
 }
 
-inline void from_json(const nlohmann::json& j, BoneWeightData& v) {
+inline void from_json(const nlohmann::json& j, Engine::GeneratedSchema::BoneWeightData& v) {
     if (j.contains("boneIndices")) { auto& arr = j.at("boneIndices"); for(int i=0; i<4; ++i) v.boneIndices[i] = arr.at(i).get<uint32_t>(); }
     if (j.contains("boneWeights")) v.boneWeights = j.at("boneWeights").get<Engine::Math::Vector4>();
 }
-inline void to_json(nlohmann::json& j, const InstanceData& v) {
+inline void to_json(nlohmann::json& j, const Engine::GeneratedSchema::InstanceData& v) {
     j = nlohmann::json{
         {"world", v.world},
         {"aabbMin", v.aabbMin},
@@ -286,7 +289,7 @@ inline void to_json(nlohmann::json& j, const InstanceData& v) {
     };
 }
 
-inline void from_json(const nlohmann::json& j, InstanceData& v) {
+inline void from_json(const nlohmann::json& j, Engine::GeneratedSchema::InstanceData& v) {
     if (j.contains("world")) v.world = j.at("world").get<Engine::Math::Matrix4x4>();
     if (j.contains("aabbMin")) v.aabbMin = j.at("aabbMin").get<Engine::Math::Vector4>();
     if (j.contains("aabbMax")) v.aabbMax = j.at("aabbMax").get<Engine::Math::Vector4>();
@@ -298,13 +301,12 @@ inline void from_json(const nlohmann::json& j, InstanceData& v) {
     if (j.contains("postProcessFlags")) v.postProcessFlags = j.at("postProcessFlags").get<uint32_t>();
     if (j.contains("unused_pad")) { auto& arr = j.at("unused_pad"); for(int i=0; i<3; ++i) v.unused_pad[i] = arr.at(i).get<uint32_t>(); }
 }
-inline void to_json(nlohmann::json& j, const MaterialData& v) {
+inline void to_json(nlohmann::json& j, const Engine::GeneratedSchema::MaterialData& v) {
     j = nlohmann::json{
         {"baseColor", v.baseColor},
     };
 }
 
-inline void from_json(const nlohmann::json& j, MaterialData& v) {
+inline void from_json(const nlohmann::json& j, Engine::GeneratedSchema::MaterialData& v) {
     if (j.contains("baseColor")) v.baseColor = j.at("baseColor").get<Engine::Math::Vector4>();
 }
-} // namespace Engine::GeneratedSchema

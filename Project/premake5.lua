@@ -276,6 +276,8 @@ project "Editor"
         "$(ProjectDir)Externals"
     }
 
+    defines { "ENGINE_EDITOR" }
+
     dependson { "Engine" }
     links { "Engine" }
 

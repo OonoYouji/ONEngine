@@ -4,6 +4,7 @@
 #include <nlohmann/json.hpp>
 #include <cstring>
 #include <string>
+#include <algorithm>
 
 namespace Engine::ECS {
 
@@ -107,7 +108,9 @@ struct Skybox {
     uint8_t _final_pad0[12];
 };
 
-inline void to_json(nlohmann::json& j, const Camera& v) {
+} // namespace Engine::ECS
+
+inline void to_json(nlohmann::json& j, const Engine::ECS::Camera& v) {
     j = nlohmann::json{
         {"fov", v.fov},
         {"nearZ", v.nearZ},
@@ -115,12 +118,12 @@ inline void to_json(nlohmann::json& j, const Camera& v) {
     };
 }
 
-inline void from_json(const nlohmann::json& j, Camera& v) {
+inline void from_json(const nlohmann::json& j, Engine::ECS::Camera& v) {
     if (j.contains("fov")) v.fov = j.at("fov").get<float>();
     if (j.contains("nearZ")) v.nearZ = j.at("nearZ").get<float>();
     if (j.contains("farZ")) v.farZ = j.at("farZ").get<float>();
 }
-inline void to_json(nlohmann::json& j, const TextRenderer& v) {
+inline void to_json(nlohmann::json& j, const Engine::ECS::TextRenderer& v) {
     j = nlohmann::json{
         {"text", std::string(v.text)},
         {"fontIndex", v.fontIndex},
@@ -130,14 +133,14 @@ inline void to_json(nlohmann::json& j, const TextRenderer& v) {
     };
 }
 
-inline void from_json(const nlohmann::json& j, TextRenderer& v) {
-    if (j.contains("text")) { std::string s = j.at("text").get<std::string>(); strncpy(v.text, s.c_str(), sizeof(v.text) - 1); v.text[sizeof(v.text) - 1] = '\0'; }
+inline void from_json(const nlohmann::json& j, Engine::ECS::TextRenderer& v) {
+    if (j.contains("text")) { std::string s = j.at("text").get<std::string>(); size_t len = (std::min)(s.length(), sizeof(v.text) - 1); std::memcpy(v.text, s.c_str(), len); v.text[len] = '\0'; }
     if (j.contains("fontIndex")) v.fontIndex = j.at("fontIndex").get<uint32_t>();
     if (j.contains("color")) v.color = j.at("color").get<Engine::Math::Vector4>();
     if (j.contains("size")) v.size = j.at("size").get<float>();
     if (j.contains("isScreenSpace")) v.isScreenSpace = j.at("isScreenSpace").get<uint32_t>();
 }
-inline void to_json(nlohmann::json& j, const SkinnedMeshRenderer& v) {
+inline void to_json(nlohmann::json& j, const Engine::ECS::SkinnedMeshRenderer& v) {
     j = nlohmann::json{
         {"modelIndex", v.modelIndex},
         {"materialIndex", v.materialIndex},
@@ -147,14 +150,14 @@ inline void to_json(nlohmann::json& j, const SkinnedMeshRenderer& v) {
     };
 }
 
-inline void from_json(const nlohmann::json& j, SkinnedMeshRenderer& v) {
+inline void from_json(const nlohmann::json& j, Engine::ECS::SkinnedMeshRenderer& v) {
     if (j.contains("modelIndex")) v.modelIndex = j.at("modelIndex").get<uint32_t>();
     if (j.contains("materialIndex")) v.materialIndex = j.at("materialIndex").get<uint32_t>();
     if (j.contains("skeletonIndex")) v.skeletonIndex = j.at("skeletonIndex").get<uint32_t>();
     if (j.contains("postProcessFlags")) v.postProcessFlags = j.at("postProcessFlags").get<uint32_t>();
     if (j.contains("internalVertexOffset")) v.internalVertexOffset = j.at("internalVertexOffset").get<uint32_t>();
 }
-inline void to_json(nlohmann::json& j, const Transform& v) {
+inline void to_json(nlohmann::json& j, const Engine::ECS::Transform& v) {
     j = nlohmann::json{
         {"parent", v.parent},
         {"position", v.position},
@@ -164,14 +167,14 @@ inline void to_json(nlohmann::json& j, const Transform& v) {
     };
 }
 
-inline void from_json(const nlohmann::json& j, Transform& v) {
+inline void from_json(const nlohmann::json& j, Engine::ECS::Transform& v) {
     if (j.contains("parent")) v.parent = j.at("parent").get<uint32_t>();
     if (j.contains("position")) v.position = j.at("position").get<Engine::Math::Vector3>();
     if (j.contains("rotation")) v.rotation = j.at("rotation").get<Engine::Math::Vector3>();
     if (j.contains("scale")) v.scale = j.at("scale").get<Engine::Math::Vector3>();
     if (j.contains("world")) v.world = j.at("world").get<Engine::Math::Matrix4x4>();
 }
-inline void to_json(nlohmann::json& j, const SpriteRenderer& v) {
+inline void to_json(nlohmann::json& j, const Engine::ECS::SpriteRenderer& v) {
     j = nlohmann::json{
         {"textureIndex", v.textureIndex},
         {"color", v.color},
@@ -180,13 +183,13 @@ inline void to_json(nlohmann::json& j, const SpriteRenderer& v) {
     };
 }
 
-inline void from_json(const nlohmann::json& j, SpriteRenderer& v) {
+inline void from_json(const nlohmann::json& j, Engine::ECS::SpriteRenderer& v) {
     if (j.contains("textureIndex")) v.textureIndex = j.at("textureIndex").get<uint32_t>();
     if (j.contains("color")) v.color = j.at("color").get<Engine::Math::Vector4>();
     if (j.contains("size")) v.size = j.at("size").get<Engine::Math::Vector2>();
     if (j.contains("isBillboard")) v.isBillboard = j.at("isBillboard").get<uint32_t>();
 }
-inline void to_json(nlohmann::json& j, const DirectionalLight& v) {
+inline void to_json(nlohmann::json& j, const Engine::ECS::DirectionalLight& v) {
     j = nlohmann::json{
         {"color", v.color},
         {"intensity", v.intensity},
@@ -194,21 +197,21 @@ inline void to_json(nlohmann::json& j, const DirectionalLight& v) {
     };
 }
 
-inline void from_json(const nlohmann::json& j, DirectionalLight& v) {
+inline void from_json(const nlohmann::json& j, Engine::ECS::DirectionalLight& v) {
     if (j.contains("color")) v.color = j.at("color").get<Engine::Math::Vector3>();
     if (j.contains("intensity")) v.intensity = j.at("intensity").get<float>();
     if (j.contains("direction")) v.direction = j.at("direction").get<Engine::Math::Vector3>();
 }
-inline void to_json(nlohmann::json& j, const Tag& v) {
+inline void to_json(nlohmann::json& j, const Engine::ECS::Tag& v) {
     j = nlohmann::json{
         {"name", std::string(v.name)},
     };
 }
 
-inline void from_json(const nlohmann::json& j, Tag& v) {
-    if (j.contains("name")) { std::string s = j.at("name").get<std::string>(); strncpy(v.name, s.c_str(), sizeof(v.name) - 1); v.name[sizeof(v.name) - 1] = '\0'; }
+inline void from_json(const nlohmann::json& j, Engine::ECS::Tag& v) {
+    if (j.contains("name")) { std::string s = j.at("name").get<std::string>(); size_t len = (std::min)(s.length(), sizeof(v.name) - 1); std::memcpy(v.name, s.c_str(), len); v.name[len] = '\0'; }
 }
-inline void to_json(nlohmann::json& j, const PointLight& v) {
+inline void to_json(nlohmann::json& j, const Engine::ECS::PointLight& v) {
     j = nlohmann::json{
         {"color", v.color},
         {"intensity", v.intensity},
@@ -216,23 +219,23 @@ inline void to_json(nlohmann::json& j, const PointLight& v) {
     };
 }
 
-inline void from_json(const nlohmann::json& j, PointLight& v) {
+inline void from_json(const nlohmann::json& j, Engine::ECS::PointLight& v) {
     if (j.contains("color")) v.color = j.at("color").get<Engine::Math::Vector3>();
     if (j.contains("intensity")) v.intensity = j.at("intensity").get<float>();
     if (j.contains("radius")) v.radius = j.at("radius").get<float>();
 }
-inline void to_json(nlohmann::json& j, const ScriptComponent& v) {
+inline void to_json(nlohmann::json& j, const Engine::ECS::ScriptComponent& v) {
     j = nlohmann::json{
         {"gcHandle", v.gcHandle},
         {"typeId", v.typeId},
     };
 }
 
-inline void from_json(const nlohmann::json& j, ScriptComponent& v) {
+inline void from_json(const nlohmann::json& j, Engine::ECS::ScriptComponent& v) {
     if (j.contains("gcHandle")) v.gcHandle = j.at("gcHandle").get<uint64_t>();
     if (j.contains("typeId")) v.typeId = j.at("typeId").get<uint32_t>();
 }
-inline void to_json(nlohmann::json& j, const MeshRenderer& v) {
+inline void to_json(nlohmann::json& j, const Engine::ECS::MeshRenderer& v) {
     j = nlohmann::json{
         {"modelIndex", v.modelIndex},
         {"materialIndex", v.materialIndex},
@@ -240,12 +243,12 @@ inline void to_json(nlohmann::json& j, const MeshRenderer& v) {
     };
 }
 
-inline void from_json(const nlohmann::json& j, MeshRenderer& v) {
+inline void from_json(const nlohmann::json& j, Engine::ECS::MeshRenderer& v) {
     if (j.contains("modelIndex")) v.modelIndex = j.at("modelIndex").get<uint32_t>();
     if (j.contains("materialIndex")) v.materialIndex = j.at("materialIndex").get<uint32_t>();
     if (j.contains("postProcessFlags")) v.postProcessFlags = j.at("postProcessFlags").get<uint32_t>();
 }
-inline void to_json(nlohmann::json& j, const ParticleEmitter& v) {
+inline void to_json(nlohmann::json& j, const Engine::ECS::ParticleEmitter& v) {
     j = nlohmann::json{
         {"count", v.count},
         {"speed", v.speed},
@@ -264,7 +267,7 @@ inline void to_json(nlohmann::json& j, const ParticleEmitter& v) {
     };
 }
 
-inline void from_json(const nlohmann::json& j, ParticleEmitter& v) {
+inline void from_json(const nlohmann::json& j, Engine::ECS::ParticleEmitter& v) {
     if (j.contains("count")) v.count = j.at("count").get<uint32_t>();
     if (j.contains("speed")) v.speed = j.at("speed").get<float>();
     if (j.contains("speedRandom")) v.speedRandom = j.at("speedRandom").get<float>();
@@ -280,13 +283,115 @@ inline void from_json(const nlohmann::json& j, ParticleEmitter& v) {
     if (j.contains("textureIndex")) v.textureIndex = j.at("textureIndex").get<uint32_t>();
     if (j.contains("bufferIndex")) v.bufferIndex = j.at("bufferIndex").get<uint32_t>();
 }
-inline void to_json(nlohmann::json& j, const Skybox& v) {
+inline void to_json(nlohmann::json& j, const Engine::ECS::Skybox& v) {
     j = nlohmann::json{
         {"textureIndex", v.textureIndex},
     };
 }
 
-inline void from_json(const nlohmann::json& j, Skybox& v) {
+inline void from_json(const nlohmann::json& j, Engine::ECS::Skybox& v) {
     if (j.contains("textureIndex")) v.textureIndex = j.at("textureIndex").get<uint32_t>();
 }
+
+#ifdef ENGINE_EDITOR
+#include "imgui.h"
+namespace Engine::ECS {
+template<typename TProp>
+inline void DrawUI_Camera(Engine::ECS::Camera& v, TProp Prop) {
+    Prop("Fov", [&]() { return ImGui::DragFloat("Fov", &v.fov, 0.1f); });
+    Prop("NearZ", [&]() { return ImGui::DragFloat("NearZ", &v.nearZ, 0.1f); });
+    Prop("FarZ", [&]() { return ImGui::DragFloat("FarZ", &v.farZ, 0.1f); });
+}
+
+template<typename TProp>
+inline void DrawUI_TextRenderer(Engine::ECS::TextRenderer& v, TProp Prop) {
+    Prop("Text", [&]() { return ImGui::InputText("Text", v.text, sizeof(v.text)); });
+    Prop("FontIndex", [&]() { return ImGui::InputScalar("FontIndex", ImGuiDataType_U32, &v.fontIndex); });
+    Prop("Color", [&]() { return ImGui::ColorEdit4("Color", &v.color.x); });
+    Prop("Size", [&]() { return ImGui::DragFloat("Size", &v.size, 0.1f); });
+    Prop("IsScreenSpace", [&]() { return ImGui::Checkbox("IsScreenSpace", (bool*)&v.isScreenSpace); });
+}
+
+template<typename TProp>
+inline void DrawUI_SkinnedMeshRenderer(Engine::ECS::SkinnedMeshRenderer& v, TProp Prop) {
+    Prop("ModelIndex", [&]() { return ImGui::InputScalar("ModelIndex", ImGuiDataType_U32, &v.modelIndex); });
+    Prop("MaterialIndex", [&]() { return ImGui::InputScalar("MaterialIndex", ImGuiDataType_U32, &v.materialIndex); });
+    Prop("SkeletonIndex", [&]() { return ImGui::InputScalar("SkeletonIndex", ImGuiDataType_U32, &v.skeletonIndex); });
+    Prop("PostProcessFlags", [&]() { return ImGui::Checkbox("PostProcessFlags", (bool*)&v.postProcessFlags); });
+    Prop("InternalVertexOffset", [&]() { return ImGui::InputScalar("InternalVertexOffset", ImGuiDataType_U32, &v.internalVertexOffset); });
+}
+
+template<typename TProp>
+inline void DrawUI_Transform(Engine::ECS::Transform& v, TProp Prop) {
+    Prop("Parent", [&]() { return ImGui::InputScalar("Parent", ImGuiDataType_U32, &v.parent); });
+    Prop("Position", [&]() { return ImGui::DragFloat3("Position", &v.position.x, 0.1f); });
+    Prop("Rotation", [&]() { return ImGui::DragFloat3("Rotation", &v.rotation.x, 0.1f); });
+    Prop("Scale", [&]() { return ImGui::DragFloat3("Scale", &v.scale.x, 0.1f); });
+    ImGui::Text("World: Matrix4x4", "Matrix");
+}
+
+template<typename TProp>
+inline void DrawUI_SpriteRenderer(Engine::ECS::SpriteRenderer& v, TProp Prop) {
+    Prop("TextureIndex", [&]() { return ImGui::InputScalar("TextureIndex", ImGuiDataType_U32, &v.textureIndex); });
+    Prop("Color", [&]() { return ImGui::ColorEdit4("Color", &v.color.x); });
+    Prop("Size", [&]() { return ImGui::DragFloat2("Size", &v.size.x, 0.1f); });
+    Prop("IsBillboard", [&]() { return ImGui::Checkbox("IsBillboard", (bool*)&v.isBillboard); });
+}
+
+template<typename TProp>
+inline void DrawUI_DirectionalLight(Engine::ECS::DirectionalLight& v, TProp Prop) {
+    Prop("Color", [&]() { return ImGui::ColorEdit3("Color", &v.color.x); });
+    Prop("Intensity", [&]() { return ImGui::DragFloat("Intensity", &v.intensity, 0.1f); });
+    Prop("Direction", [&]() { return ImGui::DragFloat3("Direction", &v.direction.x, 0.1f); });
+}
+
+template<typename TProp>
+inline void DrawUI_Tag(Engine::ECS::Tag& v, TProp Prop) {
+    Prop("Name", [&]() { return ImGui::InputText("Name", v.name, sizeof(v.name)); });
+}
+
+template<typename TProp>
+inline void DrawUI_PointLight(Engine::ECS::PointLight& v, TProp Prop) {
+    Prop("Color", [&]() { return ImGui::ColorEdit3("Color", &v.color.x); });
+    Prop("Intensity", [&]() { return ImGui::DragFloat("Intensity", &v.intensity, 0.1f); });
+    Prop("Radius", [&]() { return ImGui::DragFloat("Radius", &v.radius, 0.1f); });
+}
+
+template<typename TProp>
+inline void DrawUI_ScriptComponent(Engine::ECS::ScriptComponent& v, TProp Prop) {
+    Prop("GcHandle", [&]() { return ImGui::InputScalar("GcHandle", ImGuiDataType_U64, &v.gcHandle); });
+    Prop("TypeId", [&]() { return ImGui::InputScalar("TypeId", ImGuiDataType_U32, &v.typeId); });
+}
+
+template<typename TProp>
+inline void DrawUI_MeshRenderer(Engine::ECS::MeshRenderer& v, TProp Prop) {
+    Prop("ModelIndex", [&]() { return ImGui::InputScalar("ModelIndex", ImGuiDataType_U32, &v.modelIndex); });
+    Prop("MaterialIndex", [&]() { return ImGui::InputScalar("MaterialIndex", ImGuiDataType_U32, &v.materialIndex); });
+    Prop("PostProcessFlags", [&]() { return ImGui::Checkbox("PostProcessFlags", (bool*)&v.postProcessFlags); });
+}
+
+template<typename TProp>
+inline void DrawUI_ParticleEmitter(Engine::ECS::ParticleEmitter& v, TProp Prop) {
+    Prop("Count", [&]() { return ImGui::InputScalar("Count", ImGuiDataType_U32, &v.count); });
+    Prop("Speed", [&]() { return ImGui::DragFloat("Speed", &v.speed, 0.1f); });
+    Prop("SpeedRandom", [&]() { return ImGui::DragFloat("SpeedRandom", &v.speedRandom, 0.1f); });
+    Prop("Lifetime", [&]() { return ImGui::DragFloat("Lifetime", &v.lifetime, 0.1f); });
+    Prop("LifetimeRandom", [&]() { return ImGui::DragFloat("LifetimeRandom", &v.lifetimeRandom, 0.1f); });
+    Prop("SpreadAngle", [&]() { return ImGui::DragFloat("SpreadAngle", &v.spreadAngle, 0.1f); });
+    Prop("Gravity", [&]() { return ImGui::DragFloat("Gravity", &v.gravity, 0.1f); });
+    Prop("StartColor", [&]() { return ImGui::ColorEdit4("StartColor", &v.startColor.x); });
+    Prop("EndColor", [&]() { return ImGui::ColorEdit4("EndColor", &v.endColor.x); });
+    Prop("StartScale", [&]() { return ImGui::DragFloat("StartScale", &v.startScale, 0.1f); });
+    Prop("EndScale", [&]() { return ImGui::DragFloat("EndScale", &v.endScale, 0.1f); });
+    Prop("ModelIndex", [&]() { return ImGui::InputScalar("ModelIndex", ImGuiDataType_U32, &v.modelIndex); });
+    Prop("TextureIndex", [&]() { return ImGui::InputScalar("TextureIndex", ImGuiDataType_U32, &v.textureIndex); });
+    Prop("BufferIndex", [&]() { return ImGui::InputScalar("BufferIndex", ImGuiDataType_U32, &v.bufferIndex); });
+}
+
+template<typename TProp>
+inline void DrawUI_Skybox(Engine::ECS::Skybox& v, TProp Prop) {
+    Prop("TextureIndex", [&]() { return ImGui::InputScalar("TextureIndex", ImGuiDataType_U32, &v.textureIndex); });
+}
+
 } // namespace Engine::ECS
+#endif // ENGINE_EDITOR
