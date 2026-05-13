@@ -159,6 +159,10 @@ project "Engine"
         "nethost.lib"
     }
 
+    prebuildcommands {
+        "python $(ProjectDir)Tools/codegen.py"
+    }
+
     buildoptions { "/bigobj" } 
 
     filter "configurations:Debug"

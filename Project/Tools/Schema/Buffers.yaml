@@ -1,0 +1,173 @@
+# Buffers.yaml
+# SSOT definition for GPU Buffers (Constant/Structured)
+
+types:
+  SceneData:
+    type: ConstantBuffer
+    fields:
+      - name: view
+        type: float4x4
+      - name: viewProj
+        type: float4x4
+      - name: cameraPos
+        type: float3
+      - name: numPointLights
+        type: uint32
+      - name: dirLightIntensity
+        type: float
+      - name: dirLightColor
+        type: float3
+      - name: dirLightDirection
+        type: float3
+      - name: screenWidth
+        type: float
+      - name: screenHeight
+        type: float
+      - name: nearZ
+        type: float
+      - name: farZ
+        type: float
+  
+  InstanceData:
+    type: StructuredBuffer
+    fields:
+      - name: world
+        type: float4x4
+      - name: aabbMin
+        type: float4
+      - name: aabbMax
+        type: float4
+      - name: baseColor
+        type: float4
+      - name: modelIndex
+        type: uint32
+      - name: textureIndex
+        type: uint32
+      - name: vertexOffset
+        type: uint32
+      - name: entityID
+        type: uint32
+      - name: postProcessFlags
+        type: uint32
+      - name: unused_pad
+        type: uint32
+        count: 3
+
+  MaterialData:
+    type: ConstantBuffer
+    fields:
+      - name: baseColor
+        type: float4
+
+  BoneWeightData:
+    type: StructuredBuffer
+    fields:
+      - name: boneIndices
+        type: uint32
+        count: 4
+      - name: boneWeights
+        type: float4
+
+  BoneData:
+    type: StructuredBuffer
+    fields:
+      - name: transform
+        type: float4x4
+
+  SkinningParams:
+    type: ConstantBuffer
+    fields:
+      - name: vertexCount
+        type: uint32
+      - name: inputVertexOffset
+        type: uint32
+      - name: outputVertexOffset
+        type: uint32
+      - name: boneOffset
+        type: uint32
+      - name: skinningEnabled
+        type: uint32
+
+  PointLightData:
+    type: StructuredBuffer
+    fields:
+      - name: position
+        type: float3
+      - name: intensity
+        type: float
+      - name: color
+        type: float3
+      - name: radius
+        type: float
+
+  SpriteData:
+    type: StructuredBuffer
+    fields:
+      - name: world
+        type: float4x4
+      - name: color
+        type: float4
+      - name: textureIndex
+        type: uint32
+      - name: isBillboard
+        type: uint32
+      - name: entityID
+        type: uint32
+      - name: postProcessFlags
+        type: uint32
+
+  TextData:
+    type: StructuredBuffer
+    fields:
+      - name: world
+        type: float4x4
+      - name: color
+        type: float4
+      - name: uvMin
+        type: float2
+      - name: uvMax
+        type: float2
+      - name: textureIndex
+        type: uint32
+      - name: padding
+        type: uint32
+
+  ParticleGPUData:
+    type: StructuredBuffer
+    fields:
+      - name: position
+        type: float3
+      - name: age
+        type: float
+      - name: velocity
+        type: float3
+      - name: maxLifetime
+        type: float
+      - name: color
+        type: float4
+      - name: rotation
+        type: float3
+      - name: scale
+        type: float
+      - name: modelIndex
+        type: uint32
+      - name: textureIndex
+        type: uint32
+      - name: entityID
+        type: uint32
+      - name: postProcessFlags
+        type: uint32
+
+  MeshInfo:
+    type: StructuredBuffer
+    fields:
+      - name: vertexOffset
+        type: uint32
+      - name: indexOffset
+        type: uint32
+      - name: vertexCount
+        type: uint32
+      - name: indexCount
+        type: uint32
+      - name: meshCount
+        type: uint32

@@ -2,6 +2,7 @@
 
 /// external
 #include <DirectXMath.h>
+#include <nlohmann/json.hpp>
 
 /// math
 #include "Vector3.h"
@@ -164,6 +165,27 @@ struct Matrix4x4 final {
 	/// @return 乗算代入結果
 	inline Matrix4x4& operator*=(const Matrix4x4& _other);
 
+	/// @brief JSONへ変換
+	friend void to_json(nlohmann::json& _j, const Matrix4x4& _m) {
+		_j = nlohmann::json{
+			{ "m", {
+				{ _m.m[0][0], _m.m[0][1], _m.m[0][2], _m.m[0][3] },
+				{ _m.m[1][0], _m.m[1][1], _m.m[1][2], _m.m[1][3] },
+				{ _m.m[2][0], _m.m[2][1], _m.m[2][2], _m.m[2][3] },
+				{ _m.m[3][0], _m.m[3][1], _m.m[3][2], _m.m[3][3] }
+			}}
+		};
+	}
+
+	/// @brief JSONから変換
+	friend void from_json(const nlohmann::json& _j, Matrix4x4& _m) {
+		auto& m = _j.at("m");
+		for (int r = 0; r < 4; ++r) {
+			for (int c = 0; c < 4; ++c) {
+				_m.m[r][c] = m.at(r).at(c).get<float>();
+			}
+		}
+	}
 };
 
 

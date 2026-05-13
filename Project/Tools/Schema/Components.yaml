@@ -1,0 +1,149 @@
+# Components.yaml
+# SSOT definition for ECS Components
+
+types:
+  Transform:
+    type: Component
+    fields:
+      - name: parent
+        type: uint32
+      - name: position
+        type: float3
+      - name: rotation
+        type: float3
+      - name: scale
+        type: float3
+      - name: world
+        type: float4x4
+
+  MeshRenderer:
+    type: Component
+    fields:
+      - name: modelIndex
+        type: uint32
+      - name: materialIndex
+        type: uint32
+      - name: postProcessFlags
+        type: uint32
+
+  SkinnedMeshRenderer:
+    type: Component
+    fields:
+      - name: modelIndex
+        type: uint32
+      - name: materialIndex
+        type: uint32
+      - name: skeletonIndex
+        type: uint32
+      - name: postProcessFlags
+        type: uint32
+      - name: internalVertexOffset
+        type: uint32
+
+  ScriptComponent:
+    type: Component
+    fields:
+      - name: gcHandle
+        type: uint64
+      - name: typeId
+        type: uint32
+
+  Camera:
+    type: Component
+    fields:
+      - name: fov
+        type: float
+      - name: nearZ
+        type: float
+      - name: farZ
+        type: float
+
+  DirectionalLight:
+    type: Component
+    fields:
+      - name: color
+        type: float3
+      - name: intensity
+        type: float
+      - name: direction
+        type: float3
+
+  PointLight:
+    type: Component
+    fields:
+      - name: color
+        type: float3
+      - name: intensity
+        type: float
+      - name: radius
+        type: float
+
+  SpriteRenderer:
+    type: Component
+    fields:
+      - name: textureIndex
+        type: uint32
+      - name: color
+        type: float4
+      - name: size
+        type: float2
+      - name: isBillboard
+        type: uint32
+
+  Skybox:
+    type: Component
+    fields:
+      - name: textureIndex
+        type: uint32
+
+  Tag:
+    type: Component
+    fields:
+      - name: name
+        type: string
+
+  TextRenderer:
+    type: Component
+    fields:
+      - name: text
+        type: string
+      - name: fontIndex
+        type: uint32
+      - name: color
+        type: float4
+      - name: size
+        type: float
+      - name: isScreenSpace
+        type: uint32
+
+  ParticleEmitter:
+    type: Component
+    fields:
+      - name: count
+        type: uint32
+      - name: speed
+        type: float
+      - name: speedRandom
+        type: float
+      - name: lifetime
+        type: float
+      - name: lifetimeRandom
+        type: float
+      - name: spreadAngle
+        type: float
+      - name: gravity
+        type: float
+      - name: startColor
+        type: float4
+      - name: endColor
+        type: float4
+      - name: startScale
+        type: float
+      - name: endScale
+        type: float
+      - name: modelIndex
+        type: uint32
+      - name: textureIndex
+        type: uint32
+      - name: bufferIndex
+        type: uint32

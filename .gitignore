@@ -324,3 +324,8 @@ DirectXGame/imgui.ini
 # DirectXTex Compiled Shaders
 # **/DirectXTex/Shaders/Compiled/
 **/DirectXTex/Bin/
+
+# Generated Schema files
+Project/Schema/*.h
+Project/Assets/Shader/Schema/*.hlsli
+SubProjects/ONEngine.Scripting/Generated/*.cs
