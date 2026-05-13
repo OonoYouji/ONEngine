@@ -77,6 +77,35 @@ void Console::Initialize() {
 
 	/// ログ出力先(日付入り)
 	const std::string logDir = "../Generated/Log/";
+
+    // 最新以外のログファイルを削除
+    try {
+        if (std::filesystem::exists(logDir)) {
+            std::vector<std::filesystem::path> logFiles;
+            for (const auto& entry : std::filesystem::directory_iterator(logDir)) {
+                if (entry.is_regular_file() && entry.path().extension() == ".log") {
+                    logFiles.push_back(entry.path());
+                }
+            }
+
+            if (!logFiles.empty()) {
+                // 更新日時順にソート (新しいものが後ろ)
+                std::sort(logFiles.begin(), logFiles.end(), [](const auto& a, const auto& b) {
+                    return std::filesystem::last_write_time(a) < std::filesystem::last_write_time(b);
+                });
+
+                // 最新の1つを残して削除
+                for (size_t i = 0; i < logFiles.size(); ++i) {
+                    // spdlog が現在使用中のファイルは削除できない可能性があるが、
+                    // Initialize の時点ではまだ新しいファイルは開かれていないはず
+                    std::filesystem::remove(logFiles[i]);
+                }
+            }
+        }
+    } catch (...) {
+        // ログ削除の失敗は致命的ではないので無視
+    }
+
 	const std::string fileName = "engine" + GetCurrentDateTimeString() + ".log";
 	auto sink = std::make_shared<spdlog::sinks::rotating_file_sink_mt>(
 		logDir + fileName, 10 * 1024 * 1024, 3);
