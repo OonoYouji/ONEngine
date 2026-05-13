@@ -58,9 +58,9 @@
 - [ ] **マルチビュー対応**: ゲーム画面とデバッグ画面の完全分離。
 
 ### フェーズ 6: エディターの実装 (Editor Implementation)
-- [ ] **Editor Core & ImGui 統合**: Dear ImGui (Docking) の導入とマルチウィンドウ基盤の構築。
-- [ ] **Scene View & マウスピッキング**: RT2 (EntityID) を用いた非同期 Readback によるオブジェクト選択。
-- [ ] **Hierarchy & Inspector**: 階層構造の可視化と、C# リフレクション連携による動的なパラメータ編集 UI。
-- [ ] **Undo/Redo システム**: コマンドパターンと Value Snapshot によるメモリ安全な編集履歴管理。
+- [x] **Editor Core & ImGui 統合** (2026/05/11): Dear ImGui (Docking) の導入とマルチウィンドウ基盤の構築。
+- [x] **Scene View & マウスピッキング** (2026/05/11): ImGui ウィンドウへの描画対応。 (ピッキングは一部未実装)
+- [x] **Hierarchy & Inspector** (2026/05/13): `schema.yaml` に基づく **UI コードの自動生成** と、コンポーネントパラメータの編集機能。
+- [x] **Undo/Redo システム** (2026/05/12): コマンドパターンと JSON シリアライズによる編集履歴管理の実装。
 - [ ] **Project Browser & アセット管理**: ファイルシステムと連携したドラッグ＆ドロップによるアセット割り当て。
 - [ ] **Gizmo 操作 (ImGuizmo)**: シーンビュー上での直感的な Transform 編集。
