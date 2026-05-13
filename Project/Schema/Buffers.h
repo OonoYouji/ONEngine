@@ -9,102 +9,107 @@
 namespace Engine::GeneratedSchema {
 
 struct PointLightData {
-    Engine::Math::Vector3 position;
-    float intensity;
-    Engine::Math::Vector3 color;
-    float radius;
+    Engine::Math::Vector3 position = { 0, 0, 0 };
+    float intensity = 0.0f;
+    Engine::Math::Vector3 color = { 1.0f, 1.0f, 1.0f };
+    float radius = 0.0f;
 };
 
 struct ParticleGPUData {
-    Engine::Math::Vector3 position;
-    float age;
-    Engine::Math::Vector3 velocity;
-    float maxLifetime;
-    Engine::Math::Vector4 color;
-    Engine::Math::Vector3 rotation;
-    float scale;
-    uint32_t modelIndex;
-    uint32_t textureIndex;
-    uint32_t entityID;
-    uint32_t postProcessFlags;
+    Engine::Math::Vector3 position = { 0, 0, 0 };
+    float age = 0.0f;
+    Engine::Math::Vector3 velocity = { 0, 0, 0 };
+    float maxLifetime = 0.0f;
+    Engine::Math::Vector4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
+    Engine::Math::Vector3 rotation = { 0, 0, 0 };
+    float scale = 0.0f;
+    uint32_t modelIndex = 0;
+    uint32_t textureIndex = 0;
+    uint32_t entityID = 0;
+    uint32_t postProcessFlags = 0;
 };
 
 struct SceneData {
-    Engine::Math::Matrix4x4 view;
-    Engine::Math::Matrix4x4 viewProj;
-    Engine::Math::Vector3 cameraPos;
-    uint32_t numPointLights;
-    float dirLightIntensity;
-    Engine::Math::Vector3 dirLightColor;
-    Engine::Math::Vector3 dirLightDirection;
-    float screenWidth;
-    float screenHeight;
-    float nearZ;
-    float farZ;
-    uint8_t _final_pad0[4];
+    Engine::Math::Matrix4x4 view = Engine::Math::Matrix4x4::kIdentity;
+    Engine::Math::Matrix4x4 viewProj = Engine::Math::Matrix4x4::kIdentity;
+    Engine::Math::Vector3 cameraPos = { 0, 0, 0 };
+    uint32_t numPointLights = 0;
+    float dirLightIntensity = 0.0f;
+    Engine::Math::Vector3 dirLightColor = { 1.0f, 1.0f, 1.0f };
+    Engine::Math::Vector3 dirLightDirection = { 0, 0, 0 };
+    float screenWidth = 0.0f;
+    float screenHeight = 0.0f;
+    float nearZ = 0.0f;
+    float farZ = 0.0f;
+    uint32_t selectedEntityID = 0;
 };
 
 struct TextData {
-    Engine::Math::Matrix4x4 world;
-    Engine::Math::Vector4 color;
-    Engine::Math::Vector2 uvMin;
-    Engine::Math::Vector2 uvMax;
-    uint32_t textureIndex;
-    uint32_t padding;
+    Engine::Math::Matrix4x4 world = Engine::Math::Matrix4x4::kIdentity;
+    Engine::Math::Vector4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
+    Engine::Math::Vector2 uvMin = { 0, 0 };
+    Engine::Math::Vector2 uvMax = { 0, 0 };
+    uint32_t textureIndex = 0;
+    uint32_t padding = 0;
     uint8_t _final_pad0[8];
 };
 
 struct MeshInfo {
-    uint32_t vertexOffset;
-    uint32_t indexOffset;
-    uint32_t vertexCount;
-    uint32_t indexCount;
-    uint32_t meshCount;
+    uint32_t vertexOffset = 0;
+    uint32_t indexOffset = 0;
+    uint32_t vertexCount = 0;
+    uint32_t indexCount = 0;
+    uint32_t meshCount = 0;
     uint8_t _final_pad0[12];
 };
 
 struct BoneData {
-    Engine::Math::Matrix4x4 transform;
+    Engine::Math::Matrix4x4 transform = Engine::Math::Matrix4x4::kIdentity;
 };
 
 struct SkinningParams {
-    uint32_t vertexCount;
-    uint32_t inputVertexOffset;
-    uint32_t outputVertexOffset;
-    uint32_t boneOffset;
-    uint32_t skinningEnabled;
+    uint32_t vertexCount = 0;
+    uint32_t inputVertexOffset = 0;
+    uint32_t outputVertexOffset = 0;
+    uint32_t boneOffset = 0;
+    uint32_t skinningEnabled = 0;
+    uint8_t _final_pad0[12];
+};
+
+struct BatchData {
+    uint32_t instanceOffset = 0;
     uint8_t _final_pad0[12];
 };
 
 struct SpriteData {
-    Engine::Math::Matrix4x4 world;
-    Engine::Math::Vector4 color;
-    uint32_t textureIndex;
-    uint32_t isBillboard;
-    uint32_t entityID;
-    uint32_t postProcessFlags;
+    Engine::Math::Matrix4x4 world = Engine::Math::Matrix4x4::kIdentity;
+    Engine::Math::Vector4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
+    uint32_t textureIndex = 0;
+    uint32_t isBillboard = 0;
+    uint32_t entityID = 0;
+    uint32_t postProcessFlags = 0;
 };
 
 struct BoneWeightData {
     uint32_t boneIndices[4];
-    Engine::Math::Vector4 boneWeights;
+    Engine::Math::Vector4 boneWeights = { 0, 0, 0, 0 };
 };
 
 struct InstanceData {
-    Engine::Math::Matrix4x4 world;
-    Engine::Math::Vector4 aabbMin;
-    Engine::Math::Vector4 aabbMax;
-    Engine::Math::Vector4 baseColor;
-    uint32_t modelIndex;
-    uint32_t textureIndex;
-    uint32_t vertexOffset;
-    uint32_t entityID;
-    uint32_t postProcessFlags;
+    Engine::Math::Matrix4x4 world = Engine::Math::Matrix4x4::kIdentity;
+    Engine::Math::Vector4 aabbMin = { 0, 0, 0, 0 };
+    Engine::Math::Vector4 aabbMax = { 0, 0, 0, 0 };
+    Engine::Math::Vector4 baseColor = { 1.0f, 1.0f, 1.0f, 1.0f };
+    uint32_t modelIndex = 0;
+    uint32_t textureIndex = 0;
+    uint32_t vertexOffset = 0;
+    uint32_t entityID = 0;
+    uint32_t postProcessFlags = 0;
     uint32_t unused_pad[3];
 };
 
 struct MaterialData {
-    Engine::Math::Vector4 baseColor;
+    Engine::Math::Vector4 baseColor = { 1.0f, 1.0f, 1.0f, 1.0f };
 };
 
 } // namespace Engine::GeneratedSchema
@@ -166,6 +171,7 @@ inline void to_json(nlohmann::json& j, const Engine::GeneratedSchema::SceneData&
         {"screenHeight", v.screenHeight},
         {"nearZ", v.nearZ},
         {"farZ", v.farZ},
+        {"selectedEntityID", v.selectedEntityID},
     };
 }
 
@@ -181,6 +187,7 @@ inline void from_json(const nlohmann::json& j, Engine::GeneratedSchema::SceneDat
     if (j.contains("screenHeight")) v.screenHeight = j.at("screenHeight").get<float>();
     if (j.contains("nearZ")) v.nearZ = j.at("nearZ").get<float>();
     if (j.contains("farZ")) v.farZ = j.at("farZ").get<float>();
+    if (j.contains("selectedEntityID")) v.selectedEntityID = j.at("selectedEntityID").get<uint32_t>();
 }
 inline void to_json(nlohmann::json& j, const Engine::GeneratedSchema::TextData& v) {
     j = nlohmann::json{
@@ -243,6 +250,15 @@ inline void from_json(const nlohmann::json& j, Engine::GeneratedSchema::Skinning
     if (j.contains("outputVertexOffset")) v.outputVertexOffset = j.at("outputVertexOffset").get<uint32_t>();
     if (j.contains("boneOffset")) v.boneOffset = j.at("boneOffset").get<uint32_t>();
     if (j.contains("skinningEnabled")) v.skinningEnabled = j.at("skinningEnabled").get<uint32_t>();
+}
+inline void to_json(nlohmann::json& j, const Engine::GeneratedSchema::BatchData& v) {
+    j = nlohmann::json{
+        {"instanceOffset", v.instanceOffset},
+    };
+}
+
+inline void from_json(const nlohmann::json& j, Engine::GeneratedSchema::BatchData& v) {
+    if (j.contains("instanceOffset")) v.instanceOffset = j.at("instanceOffset").get<uint32_t>();
 }
 inline void to_json(nlohmann::json& j, const Engine::GeneratedSchema::SpriteData& v) {
     j = nlohmann::json{

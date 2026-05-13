@@ -42,6 +42,8 @@ GeometryPool::Allocation GeometryPool::Allocate(const std::vector<Asset::Vertex>
     alloc.vertexOffset = currentVertexOffset_;
     alloc.indexOffset = currentIndexOffset_;
 
+    Engine::Console::Log(std::format("GeometryPool: Allocating Mesh - Vertices: {}, Indices: {}, VOffset: {}, IOffset: {}", vCount, iCount, alloc.vertexOffset, alloc.indexOffset));
+
     // GPUバッファへアップロード
     vertexBuffer_->Update(vertices.data(), vCount * sizeof(Asset::Vertex), currentVertexOffset_ * sizeof(Asset::Vertex));
     

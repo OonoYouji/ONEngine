@@ -260,6 +260,7 @@ void Application::Render() {
 
     sceneData.screenWidth = (float)graphics.GetWindowSize().x;
     sceneData.screenHeight = (float)graphics.GetWindowSize().y;
+    sceneData.selectedEntityID = Editor::EditorContext::GetInstance().GetSelectedEntity();
 
     // ライトの反映 (LightSystemがあれば)
     if (lightSystem_) {

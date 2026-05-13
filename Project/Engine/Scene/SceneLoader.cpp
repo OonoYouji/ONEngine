@@ -101,12 +101,20 @@ bool SceneLoader::LoadScene(const std::string& path, Engine::ECS::Registry& regi
 
                 auto& componentRegistry = Engine::ECS::ComponentRegistry::GetInstance();
                 if (jEntity.contains("components") && jEntity["components"].is_array()) {
+                    Engine::Console::Log(std::format("  {}: Processing {} components.", entityLogName, jEntity["components"].size()));
                     for (const auto& jComp : jEntity["components"]) {
                         std::string type = jComp.value("type", "");
                         const auto* info = componentRegistry.GetInfo(type);
                         if (info) {
-                            Engine::Console::Log(std::format("  {}: Loading component '{}'", entityLogName, type));
+                            Engine::Console::Log(std::format("    - Loading component '{}'", type));
                             info->deserializeFunc(jComp, entity, registry);
+                            
+                            // 実際に追加されたか確認
+                            if (registry.HasComponent(entity, info->typeId)) {
+                                Engine::Console::Log(std::format("      [Success] Component '{}' added to Entity.", type));
+                            } else {
+                                Engine::Console::LogError(std::format("      [Failed] Component '{}' not found in registry after deserializeFunc!", type));
+                            }
                         } else if (type == "Script") {
                             Engine::Console::Log(std::format("  {}: Loading Scripts", entityLogName));
                             EnsureScriptDelegate();

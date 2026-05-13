@@ -9,54 +9,54 @@
 namespace Engine::ECS {
 
 struct Camera {
-    float fov;
-    float nearZ;
-    float farZ;
+    float fov = 0.0f;
+    float nearZ = 0.0f;
+    float farZ = 0.0f;
     uint8_t _final_pad0[4];
 };
 
 struct TextRenderer {
     char text[256];
-    uint32_t fontIndex;
+    uint32_t fontIndex = 0;
     uint8_t _pad0[12];
-    Engine::Math::Vector4 color;
-    float size;
-    uint32_t isScreenSpace;
+    Engine::Math::Vector4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
+    float size = 0.0f;
+    uint32_t isScreenSpace = 0;
     uint8_t _final_pad1[8];
 };
 
 struct SkinnedMeshRenderer {
-    uint32_t modelIndex;
-    uint32_t materialIndex;
-    uint32_t skeletonIndex;
-    uint32_t postProcessFlags;
-    uint32_t internalVertexOffset;
+    uint32_t modelIndex = 0;
+    uint32_t materialIndex = 0;
+    uint32_t skeletonIndex = 0;
+    uint32_t postProcessFlags = 0;
+    uint32_t internalVertexOffset = 0;
     uint8_t _final_pad0[12];
 };
 
 struct Transform {
-    uint32_t parent;
-    Engine::Math::Vector3 position;
-    Engine::Math::Vector3 rotation;
+    uint32_t parent = 0;
+    Engine::Math::Vector3 position = { 0, 0, 0 };
+    Engine::Math::Vector3 rotation = { 0, 0, 0 };
     uint8_t _pad0[4];
-    Engine::Math::Vector3 scale;
+    Engine::Math::Vector3 scale = { 1.0f, 1.0f, 1.0f };
     uint8_t _pad1[4];
-    Engine::Math::Matrix4x4 world;
+    Engine::Math::Matrix4x4 world = Engine::Math::Matrix4x4::kIdentity;
 };
 
 struct SpriteRenderer {
-    uint32_t textureIndex;
+    uint32_t textureIndex = 0;
     uint8_t _pad0[12];
-    Engine::Math::Vector4 color;
-    Engine::Math::Vector2 size;
-    uint32_t isBillboard;
+    Engine::Math::Vector4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
+    Engine::Math::Vector2 size = { 0, 0 };
+    uint32_t isBillboard = 0;
     uint8_t _final_pad1[4];
 };
 
 struct DirectionalLight {
-    Engine::Math::Vector3 color;
-    float intensity;
-    Engine::Math::Vector3 direction;
+    Engine::Math::Vector3 color = { 1.0f, 1.0f, 1.0f };
+    float intensity = 0.0f;
+    Engine::Math::Vector3 direction = { 0, 0, 0 };
     uint8_t _final_pad0[4];
 };
 
@@ -65,46 +65,46 @@ struct Tag {
 };
 
 struct PointLight {
-    Engine::Math::Vector3 color;
-    float intensity;
-    float radius;
+    Engine::Math::Vector3 color = { 1.0f, 1.0f, 1.0f };
+    float intensity = 0.0f;
+    float radius = 0.0f;
     uint8_t _final_pad0[12];
 };
 
 struct ScriptComponent {
-    uint64_t gcHandle;
-    uint32_t typeId;
+    uint64_t gcHandle = 0;
+    uint32_t typeId = 0;
     uint8_t _final_pad0[4];
 };
 
 struct MeshRenderer {
-    uint32_t modelIndex;
-    uint32_t materialIndex;
-    uint32_t postProcessFlags;
+    uint32_t modelIndex = 0;
+    uint32_t materialIndex = 0;
+    uint32_t postProcessFlags = 0;
     uint8_t _final_pad0[4];
 };
 
 struct ParticleEmitter {
-    uint32_t count;
-    float speed;
-    float speedRandom;
-    float lifetime;
-    float lifetimeRandom;
-    float spreadAngle;
-    float gravity;
+    uint32_t count = 0;
+    float speed = 0.0f;
+    float speedRandom = 0.0f;
+    float lifetime = 0.0f;
+    float lifetimeRandom = 0.0f;
+    float spreadAngle = 0.0f;
+    float gravity = 0.0f;
     uint8_t _pad0[4];
-    Engine::Math::Vector4 startColor;
-    Engine::Math::Vector4 endColor;
-    float startScale;
-    float endScale;
-    uint32_t modelIndex;
-    uint32_t textureIndex;
-    uint32_t bufferIndex;
+    Engine::Math::Vector4 startColor = { 1.0f, 1.0f, 1.0f, 1.0f };
+    Engine::Math::Vector4 endColor = { 1.0f, 1.0f, 1.0f, 1.0f };
+    float startScale = 0.0f;
+    float endScale = 0.0f;
+    uint32_t modelIndex = 0;
+    uint32_t textureIndex = 0;
+    uint32_t bufferIndex = 0;
     uint8_t _final_pad1[12];
 };
 
 struct Skybox {
-    uint32_t textureIndex;
+    uint32_t textureIndex = 0;
     uint8_t _final_pad0[12];
 };
 

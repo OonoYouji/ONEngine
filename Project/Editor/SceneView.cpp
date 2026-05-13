@@ -39,7 +39,14 @@ void SceneView::Render() {
                 // 範囲外チェック
                 if (px >= 0 && px < idBuffer->GetSize().x && py >= 0 && py < idBuffer->GetSize().y) {
                     uint32_t entityID = graphics.ReadbackPixel(idBuffer, { px, py });
-                    EditorContext::GetInstance().SetSelectedEntity(entityID);
+                    Engine::Console::Log(std::format("Mouse Picking: Pixel({}, {}) -> EntityID={}", px, py, entityID));
+                    
+                    if (entityID != 0xFFFFFFFF) {
+                        EditorContext::GetInstance().SetSelectedEntity(entityID);
+                    } else {
+                        // 背景をクリックした場合は選択解除 (0 は無効なEntityとする)
+                        EditorContext::GetInstance().SetSelectedEntity(0);
+                    }
                 }
             }
         }

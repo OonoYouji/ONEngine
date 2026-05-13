@@ -1,9 +1,24 @@
+#include "../Schema/Buffers.hlsli"
+
+// --- Resource Declarations ---
 struct Vertex {
     float4 position;
     float4 normal;
     float2 uv;
     float2 _pad;
 };
+
+StructuredBuffer<Vertex> gVertices : register(t0, space0); 
+ConstantBuffer<SceneData> gSceneData : register(b0);
+ConstantBuffer<BatchData> gBatchData : register(b1);
+StructuredBuffer<InstanceData> gInstances : register(t1, space0);
+StructuredBuffer<PointLightData> gPointLights : register(t2, space0);
+// Note: BindlessTest doesn't use LightGrid or IndexList yet, but keeping register alignment
+StructuredBuffer<MeshInfo> gMeshInfos : register(t5, space0);
+
+// Bindless Textures (Space 1)
+Texture2D gTextures[] : register(t0, space1); 
+SamplerState gSampler : register(s0);
 
 struct VSOutput {
     float4 position : SV_POSITION;
@@ -13,37 +28,20 @@ struct VSOutput {
     nointerpolation uint instanceID : TEXCOORD10;
 };
 
-// --- Bindless Resources ---
-Texture2D gTextures[] : register(t0, space1); 
-SamplerState gSampler : register(s0);
-
-// --- Proper Mesh Resources ---
-StructuredBuffer<Vertex> gVertices : register(t0, space0); 
-#include "../Schema/Buffers.hlsli"
-StructuredBuffer<MeshInfo> gMeshInfos : register(t5);
-
-ConstantBuffer<SceneData> gSceneData : register(b0);
-StructuredBuffer<InstanceData> gInstances : register(t1, space0);
-StructuredBuffer<PointLightData> gPointLights : register(t2, space0);
-
 VSOutput vs_main(uint vID : SV_VertexID, uint iID : SV_InstanceID) {
     VSOutput output;
     
-    // インスタンスデータを取得 (SV_InstanceID は 0..instanceCount-1)
-    InstanceData inst = gInstances[iID];
+    uint instanceIdx = gBatchData.instanceOffset + iID;
+    InstanceData inst = gInstances[instanceIdx];
     
-    // 頂点取得 (inst.vertexOffset を使用)
     Vertex v = gVertices[inst.vertexOffset + vID];
     
-    // Position
     float4 worldPos = mul(v.position, inst.world);
     output.position = mul(worldPos, gSceneData.viewProj);
     output.worldPos = worldPos.xyz;
     output.uv = v.uv;
-    
-    // Normal
     output.normal = mul(v.normal.xyz, (float3x3)inst.world);
-    output.instanceID = iID;
+    output.instanceID = instanceIdx;
     
     return output;
 }
@@ -56,56 +54,19 @@ struct PSOutput {
 
 PSOutput ps_main(VSOutput input) {
     InstanceData inst = gInstances[input.instanceID];
-    float4 texColor = gTextures[NonUniformResourceIndex(inst.textureIndex)].Sample(gSampler, input.uv);
-
-    float3 normal = normalize(input.normal);
-    float3 viewDir = normalize(gSceneData.cameraPos - input.worldPos);
     
-    float3 diffuseTotal = 0;
-    float3 specularTotal = 0;
+    // --- DEBUG: 一定の色で塗りつぶす (頂点カラー風) ---
+    float3 finalRGB = float3(0.5f, 0.8f, 0.5f); // 識別のため CelShader とは少し違う緑系
+    if (inst.entityID % 2 == 0) finalRGB = float3(0.5f, 0.7f, 0.9f);
     
-    // --- Directional Light ---
-    {
-        float3 lightDir = normalize(-gSceneData.dirLightDirection);
-        float3 lightColor = gSceneData.dirLightColor * gSceneData.dirLightIntensity;
-        
-        // Diffuse (Lambert)
-        diffuseTotal += lightColor * max(dot(normal, lightDir), 0.0f);
-        
-        // Specular (Blinn-Phong)
-        float3 halfDir = normalize(lightDir + viewDir);
-        specularTotal += lightColor * pow(max(dot(normal, halfDir), 0.0f), 32.0f);
+    // 選択ハイライト
+    if (inst.entityID == gSceneData.selectedEntityID) {
+        finalRGB += float3(0.4f, 0.4f, 0.0f);
     }
-    
-    // --- Point Lights ---
-    for (uint i = 0; i < gSceneData.numPointLights; ++i) {
-        PointLightData light = gPointLights[i];
-        float3 lightVec = light.position - input.worldPos;
-        float dist = length(lightVec);
-        float3 lightDir = normalize(lightVec);
-        
-        // 減衰計算
-        float attenuation = saturate(1.0f - (dist / light.radius));
-        attenuation *= attenuation; // 2乗減衰
-        
-        float3 lightIntensity = light.color * light.intensity * attenuation;
-        
-        // Diffuse
-        diffuseTotal += lightIntensity * max(dot(normal, lightDir), 0.0f);
-        
-        // Specular
-        float3 halfDir = normalize(lightDir + viewDir);
-        specularTotal += lightIntensity * pow(max(dot(normal, halfDir), 0.0f), 32.0f);
-    }
-    
-    // 環境光
-    float3 ambient = 0.1f * inst.baseColor.rgb;
 
-    float3 finalRGB = texColor.rgb * inst.baseColor.rgb * (diffuseTotal + ambient) + specularTotal;
-    
     PSOutput output;
-    output.color = float4(finalRGB, texColor.a * inst.baseColor.a);
-    output.normal = float4(normal * 0.5f + 0.5f, 1.0f); // 0.0~1.0 範囲にマッピング
+    output.color = float4(finalRGB, 1.0f);
+    output.normal = float4(input.normal * 0.5f + 0.5f, 1.0f);
     output.idFlags = uint2(inst.entityID, inst.postProcessFlags);
     
 	return output;

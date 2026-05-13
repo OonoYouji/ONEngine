@@ -24,6 +24,16 @@ TYPE_MAP_CPP = {
     "string": "char",
 }
 
+DEFAULT_VALUES_CPP = {
+    "float4x4": "Engine::Math::Matrix4x4::kIdentity",
+    "float4": "{ 0, 0, 0, 0 }",
+    "float3": "{ 0, 0, 0 }",
+    "float2": "{ 0, 0 }",
+    "float": "0.0f",
+    "uint32": "0",
+    "uint64": "0",
+}
+
 TYPE_MAP_HLSL = {
     "float4x4": "row_major float4x4",
     "float4": "float4",
@@ -90,10 +100,7 @@ def generate_editor_ui(type_name, fields, namespace):
         f_name = field["name"]
         f_type = field["type"]
         
-        # Simple heuristic for UI hints
         is_color = "color" in f_name.lower()
-        is_rotation = "rotation" in f_name.lower()
-        
         label = f_name[0].upper() + f_name[1:]
         
         if f_type == "float":
@@ -172,6 +179,14 @@ def process_file(yaml_path):
                     pad_index += 1
                     current_offset += pad_size
 
+            # Special case for Transform scale/rotation/world default values
+            cpp_default = DEFAULT_VALUES_CPP.get(f_type, "")
+            if type_name == "Transform":
+                if f_name == "scale": cpp_default = "{ 1.0f, 1.0f, 1.0f }"
+                elif f_name == "world": cpp_default = "Engine::Math::Matrix4x4::kIdentity"
+            elif "color" in f_name.lower():
+                cpp_default = "{ 1.0f, 1.0f, 1.0f, 1.0f }" if f_type == "float4" else "{ 1.0f, 1.0f, 1.0f }"
+
             if f_type == "string":
                 cpp_struct_body += "    char {}[256];\n".format(f_name)
                 hlsl_struct_body += "    uint {}[64];\n".format(f_name)
@@ -179,12 +194,20 @@ def process_file(yaml_path):
             else:
                 f_count = field.get("count", 1)
                 if f_count > 1:
-                    cpp_struct_body += "    {} {}[{}];\n".format(TYPE_MAP_CPP[f_type], f_name, f_count)
+                    cpp_struct_body += "    {} {}[{}]".format(TYPE_MAP_CPP[f_type], f_name, f_count)
+                    if cpp_default and "{" in cpp_default:
+                        cpp_struct_body += " = " + cpp_default
+                    cpp_struct_body += ";\n"
+
                     hlsl_struct_body += "    {} {}[{}];\n".format(TYPE_MAP_HLSL[f_type], f_name, f_count)
                     cs_struct_body += "        public unsafe fixed {} {}[{}];\n".format(TYPE_MAP_CS[f_type], f_name, f_count)
                     f_size *= f_count
                 else:
-                    cpp_struct_body += "    {} {};\n".format(TYPE_MAP_CPP[f_type], f_name)
+                    cpp_struct_body += "    {} {}".format(TYPE_MAP_CPP[f_type], f_name)
+                    if cpp_default:
+                        cpp_struct_body += " = " + cpp_default
+                    cpp_struct_body += ";\n"
+
                     hlsl_struct_body += "    {} {};\n".format(TYPE_MAP_HLSL[f_type], f_name)
                     cs_struct_body += "        public {} {};\n".format(TYPE_MAP_CS[f_type], f_name)
             current_offset += f_size
@@ -197,8 +220,6 @@ def process_file(yaml_path):
             current_offset += pad_size
 
         cpp_content += "struct {} {{\n{}}};\n\n".format(type_name, cpp_struct_body)
-        
-        # Ensure C# structs are properly marked as unsafe for layout stability
         cs_content += "    [StructLayout(LayoutKind.Sequential)]\n    public unsafe struct {}\n    {{\n{}{}    }}\n\n".format(type_name, "", cs_struct_body)
         
         if type_category in ["ConstantBuffer", "StructuredBuffer"]:

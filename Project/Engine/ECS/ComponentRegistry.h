@@ -54,7 +54,9 @@ public:
             return serialize(r.GetComponent<T>(e));
         };
 
-        info.deserializeFunc = [deserialize](const json& j, Entity e, Registry& r) {
+        info.deserializeFunc = [deserialize, typeId](const json& j, Entity e, Registry& r) {
+            // Storage 側にも ID をセット (Editorでの検索用)
+            r.GetStorage<T>().SetTypeId(typeId);
             auto& comp = r.HasComponent<T>(e) ? r.GetComponent<T>(e) : r.AddComponent<T>(e);
             deserialize(j, comp);
         };

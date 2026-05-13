@@ -75,11 +75,16 @@ uint32_t AssetManager::LoadModel(const std::string& pathOrGuid) {
     
     // インデックス管理
     for (uint32_t i = 0; i < (uint32_t)indexedModels_.size(); ++i) {
-        if (indexedModels_[i] == model) return i;
+        if (indexedModels_[i] == model) {
+            // Engine::Console::Log(std::format("AssetManager: Model {} already at index {}", pathOrGuid, i));
+            return i;
+        }
     }
     
     indexedModels_.push_back(model);
-    return (uint32_t)indexedModels_.size() - 1;
+    uint32_t newIndex = (uint32_t)indexedModels_.size() - 1;
+    Engine::Console::Log(std::format("AssetManager: Assigned index {} to model {}", newIndex, pathOrGuid));
+    return newIndex;
 }
 
 std::shared_ptr<Model> AssetManager::LoadModelAsAsset(const std::string& pathOrGuid) {

@@ -1,10 +1,11 @@
-﻿#include "Renderer.h"
+#include "Renderer.h"
 #include <algorithm>
 #include "Engine/Graphics/Core/GraphicsEngine.h"
 #include "Engine/Graphics/Core/RenderDevice.h"
 #include "Engine/Graphics/Core/DescriptorHeap.h"
 #include "Engine/Graphics/Resource/GeometryPool.h"
 #include "Engine/Graphics/Resource/GpuBuffer.h"
+#include "Engine/Graphics/Resource/ConstantBuffer.h"
 #include "Engine/Graphics/Shader/ShaderManager.h"
 #include "Engine/Asset/MaterialManager.h"
 #include "Engine/Asset/AssetManager.h"
@@ -21,12 +22,16 @@ void Renderer::Initialize(RenderDevice* device) {
     for (uint32_t i = 0; i < kBufferCount; ++i) {
         instanceSBs_[i] = std::make_unique<StructuredBuffer>();
         instanceSBs_[i]->Create(device, sizeof(GeneratedSchema::InstanceData), kMaxInstances);
+
+        batchDataCBs_[i] = std::make_unique<ConstantBuffer>();
+        batchDataCBs_[i]->Create(device, kMaxBatches * 256);
     }
 }
 
 void Renderer::Shutdown() {
     for (uint32_t i = 0; i < kBufferCount; ++i) {
         instanceSBs_[i].reset();
+        batchDataCBs_[i].reset();
     }
 }
 
@@ -53,24 +58,22 @@ void Renderer::Extract() {
 
     for (uint32_t i = 0; i < instanceCount; ++i) {
         const auto& req = queue_[i];
-        GeneratedSchema::InstanceData data{}; // ゼロ初期化
+        GeneratedSchema::InstanceData data{}; 
         data.world = req.world;
         data.entityID = req.entityID;
         data.postProcessFlags = req.postProcessFlags;
         data.vertexOffset = req.vertexOffset;
         data.modelIndex = req.modelIndex;
         
-        // マテリアル情報の取得
         auto* mat = materialManager.GetMaterialByIndex(req.materialIndex);
         if (mat) {
             data.textureIndex = mat->textureIndex;
             data.baseColor = mat->baseColor;
         } else {
-            data.textureIndex = 0; // デフォルト
+            data.textureIndex = 0;
             data.baseColor = { 1, 1, 1, 1 };
         }
 
-        // AABBの取得 (カリング用)
         const auto& meshes = assetManager.GetMeshesByIndex(req.modelIndex);
         if (req.subMeshIndex < meshes.size()) {
             data.aabbMin = { meshes[req.subMeshIndex]->GetAABBMin().x, meshes[req.subMeshIndex]->GetAABBMin().y, meshes[req.subMeshIndex]->GetAABBMin().z, 1.0f };
@@ -84,24 +87,18 @@ void Renderer::Extract() {
 }
 
 void Renderer::RenderZPrepass(const RenderContext& context) {
-    // Z-Prepass (実装省略)
 }
 
 void Renderer::Render(const RenderContext& context) {
-    static uint32_t frameCount = 0;
-    frameCount++;
-
-    if (queue_.empty()) {
-        if (frameCount % 100 == 0) {
-            Engine::Console::Log("Renderer: Render called with empty queue.");
-        }
-        return;
+    static bool loggedVersion = false;
+    if (!loggedVersion) {
+        Engine::Console::Log("Renderer: [CRITICAL FIX] Dynamic offset logic active.");
+        loggedVersion = true;
     }
+
+    if (queue_.empty()) return;
 
     uint32_t totalInstances = static_cast<uint32_t>(queue_.size());
-    if (frameCount % 100 == 0) {
-        Engine::Console::Log(std::format("Renderer: Rendering {} instances.", totalInstances));
-    }
     
     auto& materialManager = Asset::MaterialManager::GetInstance();
     auto& assetManager = Asset::AssetManager::GetInstance();
@@ -111,9 +108,11 @@ void Renderer::Render(const RenderContext& context) {
 
     uint32_t currentInstanceStart = 0;
     uint32_t batchIndex = 0;
-    const uint32_t kMaxBatches = 64; 
 
-    if (context.cullingManager) {
+    // source of truth for culling
+    bool cullingActive = (context.cullingManager != nullptr);
+
+    if (cullingActive) {
         context.cullingManager->ResetBatchIndex();
     }
 
@@ -126,10 +125,7 @@ void Renderer::Render(const RenderContext& context) {
     auto* commandList = context.commandList;
 
     while (currentInstanceStart < totalInstances) {
-        if (batchIndex >= kMaxBatches) {
-            Engine::Console::LogError(std::format("Renderer: Batch count exceeded kMaxBatches ({}).", kMaxBatches));
-            break;
-        }
+        if (batchIndex >= kMaxBatches) break;
 
         const auto& batchStartReq = queue_[currentInstanceStart];
         uint32_t batchSize = 1;
@@ -145,36 +141,20 @@ void Renderer::Render(const RenderContext& context) {
             }
         }
 
-        if (frameCount % 100 == 0) {
-             Engine::Console::Log(std::format("Renderer: Batch {}: ModelIdx={}, MatIdx={}, Size={}, Skinned={}, SubIdx={}", 
-                batchIndex, batchStartReq.modelIndex, batchStartReq.materialIndex, batchSize, batchStartReq.isSkinned, batchStartReq.subMeshIndex));
-        }
-
         auto* mat = materialManager.GetMaterialByIndex(batchStartReq.materialIndex);
         if (mat) {
             auto currentDesc = baseDesc;
-            currentDesc.cullMode = D3D12_CULL_MODE_NONE; // 強制的にカリング無効
+            currentDesc.cullMode = D3D12_CULL_MODE_NONE; // Visibility test: force no culling
             
             auto* pso = shaderManager.GetOrCreatePSO(mat->pipelineName, currentDesc);
             auto* rootSig = shaderManager.GetRootSignature(mat->pipelineName);
             
             if (!pso || !rootSig) {
-                if (frameCount % 60 == 0) {
-                    Engine::Console::LogError(std::format("Renderer: PSO or RootSig not found for pipeline {}", mat->pipelineName));
-                }
                 currentInstanceStart += batchSize;
                 continue;
             }
 
-            if (frameCount % 60 == 0) {
-                auto gVerticesIdx = rootSig->GetParameterIndex("gVertices");
-                auto gInstancesIdx = rootSig->GetParameterIndex("gInstances");
-                auto gTexturesIdx = rootSig->GetParameterIndex("gTextures");
-                Engine::Console::Log(std::format("Renderer: Batch {}: Material={}, Pipeline={}, RootIdx[V={}, I={}, T={}]", 
-                    batchIndex, mat->name, mat->pipelineName, gVerticesIdx, gInstancesIdx, gTexturesIdx));
-            }
-
-            if (context.cullingManager) {
+            if (cullingActive) {
                 context.cullingManager->Execute(
                     commandList,
                     context.sceneCBAddress,
@@ -206,18 +186,26 @@ void Renderer::Render(const RenderContext& context) {
 
             setCBV("gSceneData", context.sceneCBAddress);
             
+            GeneratedSchema::BatchData bData;
+            // FIXED: Use currentInstanceStart when culling is inactive!
+            if (cullingActive) {
+                bData.instanceOffset = batchIndex * 2048;
+            } else {
+                bData.instanceOffset = currentInstanceStart;
+            }
+
+            uint32_t cbOffset = batchIndex * 256;
+            batchDataCBs_[context.frameIndex]->Update(&bData, sizeof(bData), cbOffset);
+            setCBV("gBatchData", batchDataCBs_[context.frameIndex]->GetGPUVirtualAddress() + cbOffset);
+
             auto texIdx = rootSig->GetParameterIndex("gTextures");
             if (texIdx != RootSignature::kInvalidIndex)
                 commandList->SetGraphicsRootDescriptorTable(texIdx, graphics.GetSRVHeap()->GetGPUHandle(0));
 
-            if (context.cullingManager) {
-                D3D12_GPU_VIRTUAL_ADDRESS culledAddr = context.cullingManager->GetOutputInstances()->GetGPUVirtualAddress();
-                culledAddr += static_cast<UINT64>(batchIndex * 2048) * sizeof(GeneratedSchema::InstanceData);
-                setSRV("gInstances", culledAddr);
+            if (cullingActive) {
+                setSRV("gInstances", context.cullingManager->GetOutputInstances()->GetGPUVirtualAddress());
             } else {
-                D3D12_GPU_VIRTUAL_ADDRESS addr = instanceSBs_[context.frameIndex]->GetResource()->GetGPUVirtualAddress();
-                addr += static_cast<UINT64>(currentInstanceStart) * sizeof(GeneratedSchema::InstanceData);
-                setSRV("gInstances", addr);
+                setSRV("gInstances", instanceSBs_[context.frameIndex]->GetResource()->GetGPUVirtualAddress());
             }
 
             setSRV("gPointLights", context.pointLightBufferAddress);
@@ -236,7 +224,7 @@ void Renderer::Render(const RenderContext& context) {
             commandList->IASetIndexBuffer(&ibv);
             commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-            if (context.cullingManager && context.cullingManager->GetCommandSignature()) {
+            if (cullingActive && context.cullingManager->GetCommandSignature()) {
                 ID3D12Resource* cmdBuf = context.cullingManager->GetIndirectCommandBuffer()->GetResource();
                 commandList->ExecuteIndirect(
                     context.cullingManager->GetCommandSignature(),
@@ -249,7 +237,14 @@ void Renderer::Render(const RenderContext& context) {
             } else {
                 const auto& meshes = assetManager.GetMeshesByIndex(batchStartReq.modelIndex);
                 if (batchStartReq.subMeshIndex < meshes.size()) {
-                    meshes[batchStartReq.subMeshIndex]->Draw(commandList, batchSize);
+                    auto& mesh = meshes[batchStartReq.subMeshIndex];
+                    context.commandList->DrawIndexedInstanced(
+                        mesh->GetIndexCount(),
+                        batchSize,
+                        mesh->GetIndexOffset(),
+                        0,
+                        0 
+                    );
                 }
             }
         }

@@ -42,7 +42,7 @@ void Mesh::Draw(ID3D12GraphicsCommandList* commandList, uint32_t instanceCount) 
 
     static int drawCount = 0;
     if (drawCount++ % 10 == 0) {
-        Engine::Console::Log(std::format("!!! Mesh: Draw Call issued (Indices: {}, Instances: {}) !!!", indexCount_, instanceCount));
+        Engine::Console::Log(std::format("!!! Mesh::Draw: Deprecated caller used! (Indices: {}, Instances: {}) !!!", indexCount_, instanceCount));
     }
 }
 

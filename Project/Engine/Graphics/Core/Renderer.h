@@ -68,6 +68,9 @@ private:
     RenderDevice* device_ = nullptr;
     std::vector<RenderRequest> queue_;
     std::unique_ptr<StructuredBuffer> instanceSBs_[kBufferCount];
+
+    static constexpr uint32_t kMaxBatches = 64;
+    std::unique_ptr<class ConstantBuffer> batchDataCBs_[kBufferCount];
 };
 
 } // namespace Engine::Graphics

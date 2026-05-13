@@ -26,7 +26,8 @@ public:
     /// @brief データの更新
     /// @param data データへのポインタ
     /// @param size データサイズ
-    void Update(const void* data, uint32_t size);
+    /// @param offset 書き込みオフセット
+    void Update(const void* data, uint32_t size, uint32_t offset = 0);
 
     ID3D12Resource* GetResource() const { return allocation_->GetResource(); }
     D3D12_GPU_VIRTUAL_ADDRESS GetGPUVirtualAddress() const { return allocation_->GetResource()->GetGPUVirtualAddress(); }

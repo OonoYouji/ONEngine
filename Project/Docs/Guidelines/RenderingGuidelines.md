@@ -41,7 +41,17 @@
 新しいシェーダーを実装した際は、以下の 2 ステップが必要です。
 
 1.  `Assets/Pipelines/*.json` にパイプライン定義（テンプレート名、CS/VS/PS のパス等）を作成する。
-2.  `Application.cpp` の初期化フローで `sm.LoadPipelineAsset("...")` を呼び出し、システムに登録する。
+2.  Application.cpp の初期化フローで `sm.LoadPipelineAsset("...")` を呼び出し、システムに登録する。
+
+## 7. インスタンシングと SV_InstanceID の落とし穴
+`DrawIndexedInstanced` を使用して複数のバッチを描画する際、第5引数の `StartInstanceLocation` はハードウェアや設定によって `SV_InstanceID` に影響を与えない（常に0から始まる）場合があります。
+
+*   **問題:** `gInstances[SV_InstanceID]` のようにアクセスすると、全てのバッチがバッファの先頭データを参照してしまい、表示が重なったり消えたりします。
+*   **解決策:** 
+    *   Root Constants 等を用いて、CPU側からバッチの開始オフセット (`baseInstance`) を渡してください。
+    *   シェーダー内では `gInstances[baseInstance + SV_InstanceID]` のように、オフセットを明示的に加算してインデックスしてください。
+*   **理由:** 描画プロファイルやプラットフォーム間での挙動の差異を吸収し、確実に意図したデータへアクセスするためです。
+
 
 ---
 *Created: 2026/05/08*

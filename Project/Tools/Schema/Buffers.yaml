@@ -27,6 +27,8 @@ types:
         type: float
       - name: farZ
         type: float
+      - name: selectedEntityID
+        type: uint32
   
   InstanceData:
     type: StructuredBuffer
@@ -170,4 +172,10 @@ types:
       - name: indexCount
         type: uint32
       - name: meshCount
+        type: uint32
+
+  BatchData:
+    type: ConstantBuffer
+    fields:
+      - name: instanceOffset
         type: uint32

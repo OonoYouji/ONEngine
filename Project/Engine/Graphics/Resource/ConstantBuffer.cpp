@@ -37,9 +37,9 @@ void ConstantBuffer::Create(RenderDevice* device, uint32_t size) {
     Assert(SUCCEEDED(hr), "Failed to map Constant Buffer.");
 }
 
-void ConstantBuffer::Update(const void* data, uint32_t size) {
-    Assert(size <= bufferSize_, "Data size exceeds buffer size.");
-    memcpy(mappedData_, data, size);
+void ConstantBuffer::Update(const void* data, uint32_t size, uint32_t offset) {
+    Assert(offset + size <= bufferSize_, "Data out of bounds.");
+    memcpy(static_cast<uint8_t*>(mappedData_) + offset, data, size);
 }
 
 } // namespace Engine::Graphics

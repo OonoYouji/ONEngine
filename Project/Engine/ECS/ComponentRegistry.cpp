@@ -13,6 +13,10 @@ ComponentRegistry* ComponentRegistry::instance_ = nullptr;
 
 void InitializeComponentRegistry() {
     auto& reg = ComponentRegistry::GetInstance();
+    auto& am = Asset::AssetManager::GetInstance();
+    auto& mm = Asset::MaterialManager::GetInstance();
+    auto& tm = Asset::TextureManager::GetInstance();
+    auto& fm = Asset::FontManager::GetInstance();
 
     // ID 1: Transform
     reg.Register<Transform>(1, "Transform", 
@@ -22,7 +26,11 @@ void InitializeComponentRegistry() {
 
     // ID 2: MeshRenderer
     reg.Register<MeshRenderer>(2, "MeshRenderer",
-        [](const json& j, MeshRenderer& m) { from_json(j, m); },
+        [](const json& j, MeshRenderer& m) { 
+            from_json(j, m);
+            if (j.contains("meshPath")) m.modelIndex = Asset::AssetManager::GetInstance().LoadModel(j["meshPath"]);
+            if (j.contains("materialPath")) m.materialIndex = Asset::MaterialManager::GetInstance().LoadMaterial(j["materialPath"]);
+        },
         [](const MeshRenderer& m) { json j; to_json(j, m); return j; }
     );
 
@@ -52,25 +60,38 @@ void InitializeComponentRegistry() {
 
     // ID 7: SpriteRenderer
     reg.Register<SpriteRenderer>(7, "SpriteRenderer",
-        [](const json& j, SpriteRenderer& s) { from_json(j, s); },
+        [](const json& j, SpriteRenderer& s) { 
+            from_json(j, s);
+            if (j.contains("texturePath")) s.textureIndex = Asset::TextureManager::GetInstance().LoadTexture(j["texturePath"]);
+        },
         [](const SpriteRenderer& s) { json j; to_json(j, s); return j; }
     );
 
     // ID 8: ParticleEmitter
     reg.Register<ParticleEmitter>(8, "ParticleEmitter",
-        [](const json& j, ParticleEmitter& p) { from_json(j, p); },
+        [](const json& j, ParticleEmitter& p) { 
+            from_json(j, p);
+            if (j.contains("texturePath")) p.textureIndex = Asset::TextureManager::GetInstance().LoadTexture(j["texturePath"]);
+            if (j.contains("modelPath")) p.modelIndex = Asset::AssetManager::GetInstance().LoadModel(j["modelPath"]);
+        },
         [](const ParticleEmitter& p) { json j; to_json(j, p); return j; }
     );
 
     // ID 9: Skybox
     reg.Register<Skybox>(9, "Skybox",
-        [](const json& j, Skybox& s) { from_json(j, s); },
+        [](const json& j, Skybox& s) { 
+            from_json(j, s);
+            if (j.contains("texturePath")) s.textureIndex = Asset::TextureManager::GetInstance().LoadTexture(j["texturePath"]);
+        },
         [](const Skybox& s) { json j; to_json(j, s); return j; }
     );
 
     // ID 10: TextRenderer
     reg.Register<TextRenderer>(10, "TextRenderer",
-        [](const json& j, TextRenderer& tr) { from_json(j, tr); },
+        [](const json& j, TextRenderer& tr) { 
+            from_json(j, tr);
+            if (j.contains("fontPath")) tr.fontIndex = Asset::FontManager::GetInstance().LoadFont(j["fontPath"]);
+        },
         [](const TextRenderer& tr) { json j; to_json(j, tr); return j; }
     );
 

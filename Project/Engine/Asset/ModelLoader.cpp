@@ -218,6 +218,7 @@ std::shared_ptr<Model> ModelLoader::LoadModel(Graphics::RenderDevice* device, co
             mesh->SetSkeleton(globalBones, std::move(boneWeights));
         }
         mesh->Create(device, vertices, indices);
+        Engine::Console::Log(std::format("ModelLoader: Submesh {} loaded. Vertices={}, Indices={}", i, vertices.size(), indices.size()));
         resultMeshes.push_back(std::move(mesh));
     }
 

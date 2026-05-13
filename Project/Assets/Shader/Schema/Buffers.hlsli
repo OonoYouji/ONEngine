@@ -33,7 +33,7 @@ struct SceneData {
     float screenHeight;
     float nearZ;
     float farZ;
-    uint _final_pad0[1];
+    uint selectedEntityID;
 };
 
 struct TextData {
@@ -65,6 +65,11 @@ struct SkinningParams {
     uint outputVertexOffset;
     uint boneOffset;
     uint skinningEnabled;
+    uint _final_pad0[3];
+};
+
+struct BatchData {
+    uint instanceOffset;
     uint _final_pad0[3];
 };
 

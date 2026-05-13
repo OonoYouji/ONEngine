@@ -66,7 +66,7 @@ void GraphicsEngine::Initialize(HWND hwnd, const Engine::Math::Vector2Int& windo
     normalBuffer_->SetDebugName("NormalBuffer");
 
     idBuffer_ = std::make_unique<RenderTexture>();
-    idBuffer_->Create(renderDevice_.get(), rtvHeap_.get(), srvHeap_.get(), windowSize, DXGI_FORMAT_R32G32_UINT, {0.0f, 0.0f, 0.0f, 0.0f});
+    idBuffer_->Create(renderDevice_.get(), rtvHeap_.get(), srvHeap_.get(), windowSize, DXGI_FORMAT_R32G32_UINT, { -1.0f, -1.0f, -1.0f, -1.0f }); // 0xFFFFFFFF
     idBuffer_->SetDebugName("IDBuffer");
 
     finalColorBuffer_ = std::make_unique<RenderTexture>();

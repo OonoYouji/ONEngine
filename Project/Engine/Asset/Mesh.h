@@ -10,14 +10,13 @@
 
 namespace Engine::Asset {
 
-#pragma pack(push, 1)
+// HLSL と完全に一致させるため、明示的なパディングを入れて 48 バイト (16 * 3) に固定
 struct Vertex {
-    Engine::Math::Vector4 position; // 16 bytes
-    Engine::Math::Vector4 normal;   // 16 bytes
-    Engine::Math::Vector2 uv;       // 8 bytes
-    float _pad[2];                  // 8 bytes (Total 48 bytes)
+    Engine::Math::Vector4 position; // offset 0,  16 bytes
+    Engine::Math::Vector4 normal;   // offset 16, 16 bytes
+    Engine::Math::Vector2 uv;       // offset 32, 8 bytes
+    float _pad[2];                  // offset 40, 8 bytes
 };
-#pragma pack(pop)
 
 ///
 /// メッシュクラス
