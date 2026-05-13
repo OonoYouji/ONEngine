@@ -76,10 +76,10 @@ bool Application::Initialize(HINSTANCE hInstance, int nCmdShow) {
     // 2. スクリプトの初期化 (システムの後に実行)
     auto& scriptHost = Script::ScriptHost::GetInstance();
     if (scriptHost.Initialize()) {
-        auto initDelegate = (void(*)(void*, void*))scriptHost.GetMethodDelegate(L"ONEngine.Scripting.EngineHost", L"Initialize", L"");
+        auto initDelegate = (void(*)(void*, void*))scriptHost.GetMethodDelegate(L"ONEngine.Scripting.EngineHost, ONEngine.Scripting", L"Initialize", L"");
         if (initDelegate) initDelegate((void*)LogFromRuntime, &registry_);
-        updateDelegate_ = (void(*)())scriptHost.GetMethodDelegate(L"ONEngine.Scripting.EngineHost", L"Update", L"");
-        shutdownDelegate_ = (void(*)())scriptHost.GetMethodDelegate(L"ONEngine.Scripting.EngineHost", L"Shutdown", L"");
+        updateDelegate_ = (void(*)())scriptHost.GetMethodDelegate(L"ONEngine.Scripting.EngineHost, ONEngine.Scripting", L"Update", L"");
+        shutdownDelegate_ = (void(*)())scriptHost.GetMethodDelegate(L"ONEngine.Scripting.EngineHost, ONEngine.Scripting", L"Shutdown", L"");
     }
 
     auto& renderer = Graphics::Renderer::GetInstance();

@@ -12,7 +12,12 @@
 #include "ProjectView.h"
 #include "EditorContext.h"
 
+extern "C" void EcsInterop_LinkForce();
+
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
+    // リンクを強制して P/Invoke ターゲットをエクスポートテーブルに乗せる
+    EcsInterop_LinkForce();
+
 	Engine::Core::Application::CreateInstance();
 	auto& app = Engine::Core::Application::GetInstance();
 

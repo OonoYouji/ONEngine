@@ -35,9 +35,12 @@ namespace ONEngine.Scripting
     }
 
     public static class ComponentID {
-        [DllImport("ONEngine.exe")] private static extern uint Ecs_GetTypeId_Transform();
-        [DllImport("ONEngine.exe")] private static extern uint Ecs_GetTypeId_MeshRenderer();
-        [DllImport("ONEngine.exe")] private static extern uint Ecs_GetTypeId_ScriptComponent();
+        // FIXED: Use a generic name for the Native library
+        private const string NATIVE_LIB = "ONEngine.Native";
+
+        [DllImport(NATIVE_LIB)] private static extern uint Ecs_GetTypeId_Transform();
+        [DllImport(NATIVE_LIB)] private static extern uint Ecs_GetTypeId_MeshRenderer();
+        [DllImport(NATIVE_LIB)] private static extern uint Ecs_GetTypeId_ScriptComponent();
 
         public static uint Get<T>() => ComponentID<T>.ID;
 
@@ -52,17 +55,17 @@ namespace ONEngine.Scripting
     public unsafe class EcsWorld
     {
         private IntPtr _registry;
+        private const string NATIVE_LIB = "ONEngine.Native";
 
-        [DllImport("ONEngine.exe")] private static extern void* ecs_get_sparse_pages(IntPtr registry, uint typeId, out uint pageCount);
-        [DllImport("ONEngine.exe")] private static extern void* ecs_get_chunk_ptr(IntPtr registry, uint typeId, uint chunkIndex);
-        [DllImport("ONEngine.exe")] private static extern uint ecs_get_chunk_count(IntPtr registry, uint typeId);
-        [DllImport("ONEngine.exe")] private static extern uint ecs_get_storage_size(IntPtr registry, uint typeId);
-        [DllImport("ONEngine.exe")] private static extern uint* ecs_get_entities_ptr(IntPtr registry, uint typeId, out uint count);
-        [DllImport("ONEngine.exe")] private static extern uint CreateEntity(IntPtr registry);
-        [DllImport("ONEngine.exe")] private static extern void DestroyEntity(IntPtr registry, uint entity);
-        [DllImport("ONEngine.exe")] private static extern void AddTransform(IntPtr registry, uint entity);
-        [DllImport("ONEngine.exe")] private static extern void AddMeshRenderer(IntPtr registry, uint entity);
-        [DllImport("ONEngine.exe")] private static extern void AddScriptComponent(IntPtr registry, uint entity, ulong gcHandle, uint typeId);
+        [DllImport(NATIVE_LIB)] private static extern void* ecs_get_sparse_pages(IntPtr registry, uint typeId, out uint pageCount);
+        [DllImport(NATIVE_LIB)] private static extern void* ecs_get_chunk_ptr(IntPtr registry, uint typeId, uint chunkIndex);
+        [DllImport(NATIVE_LIB)] private static extern uint ecs_get_chunk_count(IntPtr registry, uint typeId);
+        [DllImport(NATIVE_LIB)] private static extern uint ecs_get_storage_size(IntPtr registry, uint typeId);
+        [DllImport(NATIVE_LIB)] private static extern uint CreateEntity(IntPtr registry);
+        [DllImport(NATIVE_LIB)] private static extern void DestroyEntity(IntPtr registry, uint entity);
+        [DllImport(NATIVE_LIB)] private static extern void AddTransform(IntPtr registry, uint entity);
+        [DllImport(NATIVE_LIB)] private static extern void AddMeshRenderer(IntPtr registry, uint entity);
+        [DllImport(NATIVE_LIB)] private static extern void AddScriptComponent(IntPtr registry, uint entity, ulong gcHandle, uint typeId);
 
         public EcsWorld(IntPtr registry)
         {

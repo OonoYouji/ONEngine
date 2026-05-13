@@ -12,27 +12,29 @@ namespace ONEngine.Scripting
         private static EcsWorld? _world;
         private static Dictionary<uint, GCHandle> _scriptHandles = new();
 
+        static EngineHost()
+        {
+            // 静的コンストラクタでリゾルバーを登録
+            // ONEngine.Native という抽象名に対し、現在のプロセス（EXE）のハンドルを割り当てる
+            NativeLibrary.SetDllImportResolver(typeof(EngineHost).Assembly, (libraryName, assembly, searchPath) => {
+                if (libraryName == "ONEngine.Native" || libraryName == "ONEngine.exe") {
+                    return NativeLibrary.GetMainProgramHandle();
+                }
+                return IntPtr.Zero;
+            });
+        }
+
         [UnmanagedCallersOnly]
         public static void Initialize(IntPtr logHandler, IntPtr registryPtr)
         {
             try
             {
-                // NativeLibrary のリゾルバーを登録 (ONEngine.exe への参照を現在の EXE に向ける)
-                NativeLibrary.SetDllImportResolver(typeof(EngineHost).Assembly, (libraryName, assembly, searchPath) => {
-                    if (libraryName == "ONEngine.exe") {
-                        // 現在実行中のプロセスのモジュールハンドルを返す
-                        return NativeLibrary.GetMainProgramHandle();
-                    }
-                    return IntPtr.Zero;
-                });
-
                 Debug.SetLogHandler(logHandler);
                 _world = new EcsWorld(registryPtr);
-                Debug.Log("[C#] EngineHost: Initialized (Zero-allocation architecture).");
+                Debug.Log("[C#] EngineHost: Initialized (Dynamic Native Resolver).");
             }
             catch (Exception e)
             {
-                // UnmanagedCallersOnly must catch all exceptions
                 Console.WriteLine($"[C#] FATAL Error in Initialize: {e}");
             }
         }

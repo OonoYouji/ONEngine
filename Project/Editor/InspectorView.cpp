@@ -73,44 +73,58 @@ void InspectorView::Render(ECS::Registry& registry) {
         }
     };
 
-    // 自動生成された UI 関数を使用して描画
+    // ID 100: Tag
     DrawComponent(100, "Tag", [](void* data, auto Prop) {
         ECS::DrawUI_Tag(*static_cast<ECS::Tag*>(data), Prop);
     });
 
+    // ID 1: Transform
     DrawComponent(1, "Transform", [](void* data, auto Prop) {
         ECS::DrawUI_Transform(*static_cast<ECS::Transform*>(data), Prop);
     });
 
+    // ID 2: MeshRenderer
     DrawComponent(2, "MeshRenderer", [](void* data, auto Prop) {
         ECS::DrawUI_MeshRenderer(*static_cast<ECS::MeshRenderer*>(data), Prop);
     });
 
-    DrawComponent(3, "Camera", [](void* data, auto Prop) {
+    // ID 3: ScriptComponent
+    DrawComponent(3, "ScriptComponent", [](void* data, auto Prop) {
+        ECS::DrawUI_ScriptComponent(*static_cast<ECS::ScriptComponent*>(data), Prop);
+    });
+
+    // ID 4: Camera
+    DrawComponent(4, "Camera", [](void* data, auto Prop) {
         ECS::DrawUI_Camera(*static_cast<ECS::Camera*>(data), Prop);
     });
 
-    DrawComponent(4, "DirectionalLight", [](void* data, auto Prop) {
+    // ID 5: DirectionalLight
+    DrawComponent(5, "DirectionalLight", [](void* data, auto Prop) {
         ECS::DrawUI_DirectionalLight(*static_cast<ECS::DirectionalLight*>(data), Prop);
     });
 
-    DrawComponent(5, "PointLight", [](void* data, auto Prop) {
+    // ID 6: PointLight
+    DrawComponent(6, "PointLight", [](void* data, auto Prop) {
         ECS::DrawUI_PointLight(*static_cast<ECS::PointLight*>(data), Prop);
     });
 
-    DrawComponent(6, "SpriteRenderer", [](void* data, auto Prop) {
+    // ID 7: SpriteRenderer
+    DrawComponent(7, "SpriteRenderer", [](void* data, auto Prop) {
         ECS::DrawUI_SpriteRenderer(*static_cast<ECS::SpriteRenderer*>(data), Prop);
     });
 
-    DrawComponent(7, "ParticleEmitter", [](void* data, auto Prop) {
+    // ID 8: ParticleEmitter
+    DrawComponent(8, "ParticleEmitter", [](void* data, auto Prop) {
         ECS::DrawUI_ParticleEmitter(*static_cast<ECS::ParticleEmitter*>(data), Prop);
     });
 
-    DrawComponent(8, "Skybox", [](void* data, auto Prop) {
+    // ID 9: Skybox
+    DrawComponent(9, "Skybox", [](void* data, auto Prop) {
         ECS::DrawUI_Skybox(*static_cast<ECS::Skybox*>(data), Prop);
     });
 
-    DrawComponent(9, "TextRenderer", [](void* data, auto Prop) {
+    // ID 10: TextRenderer
+    DrawComponent(10, "TextRenderer", [](void* data, auto Prop) {
         ECS::DrawUI_TextRenderer(*static_cast<ECS::TextRenderer*>(data), Prop);
     });
 

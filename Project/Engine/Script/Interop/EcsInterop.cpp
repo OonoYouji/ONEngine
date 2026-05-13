@@ -6,7 +6,10 @@
 #include "Schema/Components.h"
 #include <cstdint>
 
+// Linker Force: エクスポートを確実にするための空関数
 extern "C" {
+    __declspec(dllexport) void EcsInterop_LinkForce() {}
+
     __declspec(dllexport) void* ecs_get_sparse_pages(Engine::ECS::Registry* registry, uint32_t typeId, uint32_t* pageCount) {
         auto* info = Engine::ECS::ComponentRegistry::GetInstance().GetInfo(typeId);
         if (!info) return nullptr;

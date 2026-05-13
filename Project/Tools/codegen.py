@@ -197,7 +197,9 @@ def process_file(yaml_path):
             current_offset += pad_size
 
         cpp_content += "struct {} {{\n{}}};\n\n".format(type_name, cpp_struct_body)
-        cs_content += "    [StructLayout(LayoutKind.Sequential)]\n    public struct {}\n    {{\n{}{}    }}\n\n".format(type_name, "", cs_struct_body)
+        
+        # Ensure C# structs are properly marked as unsafe for layout stability
+        cs_content += "    [StructLayout(LayoutKind.Sequential)]\n    public unsafe struct {}\n    {{\n{}{}    }}\n\n".format(type_name, "", cs_struct_body)
         
         if type_category in ["ConstantBuffer", "StructuredBuffer"]:
             hlsl_content += "struct {} {{\n{}}};\n\n".format(type_name, hlsl_struct_body)
