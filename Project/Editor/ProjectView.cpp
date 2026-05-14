@@ -1,6 +1,7 @@
 #include "ProjectView.h"
 #include "imgui.h"
 #include "EditorContext.h"
+#include "EditorUtils.h"
 #include "Engine/Core/Application.h"
 #include "Engine/Asset/TextureManager.h"
 #include "Engine/Graphics/Core/GraphicsEngine.h"
@@ -172,6 +173,7 @@ void ProjectView::Render() {
         ImGui::EndTable();
     }
 
+    EditorUtils::DrawActiveViewOutline();
     ImGui::End();
 }
 

@@ -4,6 +4,7 @@
 #include "Engine/Graphics/Core/GraphicsEngine.h"
 #include "Engine/Graphics/Resource/RenderTexture.h"
 #include "EditorContext.h"
+#include "EditorUtils.h"
 #include "Schema/Components.h"
 #include "Engine/ECS/Registry.h"
 #include "Engine/ECS/ComponentRegistry.h"
@@ -147,6 +148,7 @@ void SceneView::Render() {
         }
     }
 
+    EditorUtils::DrawActiveViewOutline();
     ImGui::End();
     ImGui::PopStyleVar();
 }

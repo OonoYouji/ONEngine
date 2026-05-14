@@ -2,6 +2,7 @@
 #include "imgui.h"
 #include "imgui_internal.h"
 #include "EditorContext.h"
+#include "EditorUtils.h"
 #include "Schema/Buffers.h"
 #include "Schema/Components.h"
 #include "Engine/Scene/HierarchySystem.h"
@@ -99,6 +100,7 @@ void HierarchyView::Render(ECS::Registry& registry) {
         ImGui::EndDragDropTarget();
     }
 
+    EditorUtils::DrawActiveViewOutline();
     ImGui::End();
 }
 

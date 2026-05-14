@@ -1,6 +1,7 @@
 #include "InspectorView.h"
 #include "imgui.h"
 #include "EditorContext.h"
+#include "EditorUtils.h"
 #include "Schema/Buffers.h"
 #include "Schema/Components.h"
 #include "ChangeComponentCommand.h"
@@ -21,6 +22,7 @@ void InspectorView::Render(ECS::Registry& registry) {
     auto entity = EditorContext::GetInstance().GetSelectedEntity();
     if (entity == 0) {
         ImGui::Text("No Entity Selected");
+        EditorUtils::DrawActiveViewOutline();
         ImGui::End();
         return;
     }
@@ -226,6 +228,7 @@ void InspectorView::Render(ECS::Registry& registry) {
         ImGui::EndPopup();
     }
 
+    EditorUtils::DrawActiveViewOutline();
     ImGui::End();
 }
 
