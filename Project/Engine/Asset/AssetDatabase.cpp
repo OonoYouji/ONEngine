@@ -21,22 +21,41 @@ namespace {
 }
 
 void AssetDatabase::Scan(const std::string& directory) {
-	if(!fs::exists(directory)) return;
+    std::string targetDir = directory;
+    
+    // パスの正規化：Project/Assets -> Assets (もしカレントディレクトリが Project/ なら)
+    if (!fs::exists(targetDir)) {
+        if (targetDir.substr(0, 8) == "Project/") {
+            std::string altDir = targetDir.substr(8);
+            if (fs::exists(altDir)) {
+                targetDir = altDir;
+            }
+        }
+    }
 
-	Engine::Console::Log(std::format("Scanning assets in: {}", directory));
+	Engine::Console::Log(std::format("********** AssetDatabase: Scan Started for [{}] **********", targetDir));
+    
+    if(!fs::exists(targetDir)) {
+        Engine::Console::LogError(std::format("AssetDatabase: CRITICAL - Directory NOT FOUND: {}. Current path: {}", targetDir, fs::current_path().string()));
+        return;
+    }
 
 	fs::path projectRoot = fs::current_path();
+    int count = 0;
+    int metaCount = 0;
 
-	for(const auto& entry : fs::recursive_directory_iterator(directory)) {
+	for(const auto& entry : fs::recursive_directory_iterator(targetDir)) {
         if (entry.is_directory()) continue;
         
         fs::path path = entry.path();
         if (path.extension() == ".meta") continue;
         if (!IsAssetFile(path)) continue;
 
+        count++;
         fs::path metaPath = path.string() + ".meta";
         uint64_t guid = 0;
 
+        // .meta の読み込み
         if (fs::exists(metaPath)) {
             std::ifstream file(metaPath);
             if (file.is_open()) {
@@ -44,7 +63,6 @@ void AssetDatabase::Scan(const std::string& directory) {
                     json data = json::parse(file);
                     if (data.contains("guid")) {
                         if (data["guid"].is_string()) {
-                            // 文字列形式の場合（互換性用）
                             guid = std::stoull(data["guid"].get<std::string>());
                         } else {
                             guid = data["guid"].get<uint64_t>();
@@ -54,16 +72,18 @@ void AssetDatabase::Scan(const std::string& directory) {
             }
         }
 
+        // GUIDがなければ生成
         if (guid == 0) {
             guid = GenerateGuid();
             SaveMeta(path, guid);
-            Engine::Console::Log(std::format("AssetDatabase: Generated new meta for {}", path.string()));
+            metaCount++;
+            Engine::Console::Log(std::format("AssetDatabase: [CREATED] new meta for {}", path.string()));
         }
 
+        // マップへの登録パスを正規化 (Assets/... 形式に統一)
         std::string relPath = fs::relative(path, projectRoot).string();
         std::replace(relPath.begin(), relPath.end(), '\\', '/');
 
-        // Project/ を削って統一
         if (relPath.substr(0, 8) == "Project/") {
             relPath = relPath.substr(8);
         }
@@ -72,7 +92,7 @@ void AssetDatabase::Scan(const std::string& directory) {
         guidToPath_[guid] = relPath;
 	}
 
-	Engine::Console::Log(std::format("AssetDatabase: {} assets registered.", pathToGuid_.size()));
+	Engine::Console::Log(std::format("********** AssetDatabase: Scan Complete. {} assets, {} new metas. **********", count, metaCount));
 }
 
 uint64_t AssetDatabase::GetGuidFromPath(const std::string& path) {
