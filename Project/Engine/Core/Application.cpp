@@ -165,6 +165,15 @@ void Application::Run() {
 }
 
 void Application::Update(float dt) {
+    // スクリプトの実行順序を Transform の sortOrder に合わせる
+    if (registry_.HasStorage<ECS::ScriptComponent>()) {
+        registry_.GetStorage<ECS::ScriptComponent>().Sort([&](ECS::Entity a, ECS::Entity b) {
+            float orderA = registry_.HasComponent<ECS::Transform>(a) ? registry_.GetComponent<ECS::Transform>(a).sortOrder : 0.0f;
+            float orderB = registry_.HasComponent<ECS::Transform>(b) ? registry_.GetComponent<ECS::Transform>(b).sortOrder : 0.0f;
+            return orderA < orderB;
+        });
+    }
+
     if (updateDelegate_) updateDelegate_();
     
     // 全システムにヌルチェックを適用

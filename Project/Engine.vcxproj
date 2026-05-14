@@ -234,6 +234,7 @@
     <ClInclude Include="Engine\Graphics\Shader\ShaderManager.h" />
     <ClInclude Include="Engine\Graphics\Shader\ShaderReflectionData.h" />
     <ClInclude Include="Engine\Graphics\Utils\ComPtr.h" />
+    <ClInclude Include="Engine\Scene\HierarchySystem.h" />
     <ClInclude Include="Engine\Scene\SceneLoader.h" />
     <ClInclude Include="Engine\Script\ScriptHost.h" />
   </ItemGroup>

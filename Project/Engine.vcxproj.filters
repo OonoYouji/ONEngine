@@ -258,6 +258,9 @@
     <ClInclude Include="Engine\Graphics\Utils\ComPtr.h">
       <Filter>Graphics\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\Scene\HierarchySystem.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
     <ClInclude Include="Engine\Scene\SceneLoader.h">
       <Filter>Scene</Filter>
     </ClInclude>

@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include <vector>
 #include <unordered_map>
@@ -7,6 +7,8 @@
 #include <algorithm>
 #include <cassert>
 #include <limits>
+#include <functional>
+#include <numeric>
 #include "Entity.h"
 
 namespace Engine::ECS {
@@ -139,6 +141,37 @@ public:
 		return (void**)sparsePages_.data();
 	}
 
+	/// @brief ストレージ内のデータをソートする
+	void Sort(const std::function<bool(Entity, Entity)>& compare) {
+		if (count_ <= 1) return;
+
+		std::vector<uint32_t> permutation(count_);
+		std::iota(permutation.begin(), permutation.end(), 0);
+
+		std::sort(permutation.begin(), permutation.end(), [&](uint32_t i, uint32_t j) {
+			return compare(indexToEntity_[i], indexToEntity_[j]);
+		});
+
+		// データの並べ替え
+		std::vector<T> sortedData;
+		sortedData.reserve(count_);
+		std::vector<Entity> sortedEntities;
+		sortedEntities.reserve(count_);
+
+		for (uint32_t i = 0; i < count_; ++i) {
+			uint32_t oldIndex = permutation[i];
+			sortedEntities.push_back(indexToEntity_[oldIndex]);
+			sortedData.push_back(std::move(*GetPtr(oldIndex)));
+		}
+
+		// ストレージに書き戻し
+		for (uint32_t i = 0; i < count_; ++i) {
+			*GetPtr(i) = std::move(sortedData[i]);
+			indexToEntity_[i] = sortedEntities[i];
+			sparsePages_[indexToEntity_[i] / kPageSize][indexToEntity_[i] % kPageSize] = i;
+		}
+	}
+
 private:
 	void EnsureCapacity(size_t capacity) {
 		size_t neededChunks = (capacity + kChunkSize - 1) / kChunkSize;
@@ -204,6 +237,11 @@ public:
 	template <typename T>
 	bool HasComponent(Entity entity) {
 		return GetStorage<T>().Has(entity);
+	}
+
+	template <typename T>
+	bool HasStorage() {
+		return storages_.find(std::type_index(typeid(T))) != storages_.end();
 	}
 
     /// @brief TypeID指定でコンポーネントを取得 (Editor用)
