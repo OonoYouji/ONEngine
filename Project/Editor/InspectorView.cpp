@@ -38,6 +38,34 @@ void InspectorView::Render(ECS::Registry& registry) {
 
     ImGui::Separator();
 
+    // Entity ID表示と名前編集
+    ImGui::Text("Entity ID: %u", entity);
+    if (registry.HasComponent<ECS::Tag>(entity)) {
+        auto& tag = registry.GetComponent<ECS::Tag>(entity);
+        
+        char buffer[256];
+        strcpy_s(buffer, tag.name);
+        
+        ImGui::PushItemWidth(-1);
+        if (ImGui::InputText("##EntityName", buffer, sizeof(buffer), ImGuiInputTextFlags_AutoSelectAll)) {
+            // 文字列が実際に変わったかチェックしてコンポーネントに反映
+            if (strcmp(buffer, tag.name) != 0) {
+                strcpy_s(tag.name, buffer);
+            }
+        }
+        
+        if (ImGui::IsItemActivated()) {
+            s_oldState = compReg.SerializeComponent(registry, entity, 100);
+        }
+        if (ImGui::IsItemDeactivatedAfterEdit()) {
+            json newState = compReg.SerializeComponent(registry, entity, 100);
+            history.Execute(std::make_shared<ChangeComponentCommand>(entity, 100, s_oldState, newState));
+        }
+        ImGui::PopItemWidth();
+    }
+    
+    ImGui::Separator();
+
     auto DrawComponent = [&](uint32_t typeId, const char* name, auto drawUI) {
         auto* info = compReg.GetInfo(typeId);
         if (!info) return;
@@ -73,10 +101,9 @@ void InspectorView::Render(ECS::Registry& registry) {
         }
     };
 
-    // ID 100: Tag
-    DrawComponent(100, "Tag", [](void* data, auto Prop) {
-        ECS::DrawUI_Tag(*static_cast<ECS::Tag*>(data), Prop);
-    });
+    // ID 100: Tag (Inspector上部の名前編集と重複するため、ここでは非表示にするか、詳細として残す)
+    // 今回は上部に名前入力欄を作ったので、Tagコンポーネントのヘッダー自体は出さないように調整
+    // (Tagコンポーネントに名前以外のフィールドが増えた場合は CollapsingHeader が必要)
 
     // ID 1: Transform
     DrawComponent(1, "Transform", [](void* data, auto Prop) {

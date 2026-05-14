@@ -179,6 +179,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
 				ImGui::InputFloat("スケールスナップ (Snap Scale)", &context.GetSnapScale());
 				ImGui::EndMenu();
 			}
+
+			if (ImGui::BeginMenu("ツール (Tools)")) {
+				if (ImGui::MenuItem("全てのEntityにTagを付与 (Add Tags to All)")) {
+					auto& reg = Engine::Core::Application::GetInstance().GetRegistry();
+					reg.GetView<Engine::ECS::Transform>().Each([&](Engine::ECS::Entity e, auto& t) {
+						if (!reg.HasComponent<Engine::ECS::Tag>(e)) {
+							auto& tag = reg.AddComponent<Engine::ECS::Tag>(e);
+							sprintf_s(tag.name, "Entity %u", e);
+						}
+					});
+				}
+				ImGui::EndMenu();
+			}
 			ImGui::EndMainMenuBar();
 		}
 
