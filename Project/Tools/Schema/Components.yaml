@@ -7,8 +7,10 @@ types:
     fields:
       - name: parent
         type: uint32
+        hide_in_editor: true
       - name: sortOrder
         type: float
+        hide_in_editor: true
       - name: position
         type: float3
       - name: rotation
@@ -17,6 +19,7 @@ types:
         type: float3
       - name: world
         type: float4x4
+        hide_in_editor: true
 
   MeshRenderer:
     type: Component
@@ -51,8 +54,10 @@ types:
     fields:
       - name: gcHandle
         type: uint64
+        hide_in_editor: true
       - name: typeId
         type: uint32
+        hide_in_editor: true
 
   Camera:
     type: Component

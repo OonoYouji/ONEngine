@@ -329,12 +329,9 @@ inline void DrawUI_SkinnedMeshRenderer(Engine::ECS::SkinnedMeshRenderer& v, TPro
 
 template<typename TProp>
 inline void DrawUI_Transform(Engine::ECS::Transform& v, TProp Prop) {
-    Prop("Parent", [&]() { return ImGui::InputScalar("Parent", ImGuiDataType_U32, &v.parent); });
-    Prop("SortOrder", [&]() { return ImGui::DragFloat("SortOrder", &v.sortOrder, 0.1f); });
     Prop("Position", [&]() { return ImGui::DragFloat3("Position", &v.position.x, 0.1f); });
     Prop("Rotation", [&]() { return ImGui::DragFloat3("Rotation", &v.rotation.x, 0.1f); });
     Prop("Scale", [&]() { return ImGui::DragFloat3("Scale", &v.scale.x, 0.1f); });
-    ImGui::Text("World: Matrix4x4", "Matrix");
 }
 
 template<typename TProp>
@@ -366,8 +363,6 @@ inline void DrawUI_PointLight(Engine::ECS::PointLight& v, TProp Prop) {
 
 template<typename TProp>
 inline void DrawUI_ScriptComponent(Engine::ECS::ScriptComponent& v, TProp Prop) {
-    Prop("GcHandle", [&]() { return ImGui::InputScalar("GcHandle", ImGuiDataType_U64, &v.gcHandle); });
-    Prop("TypeId", [&]() { return ImGui::InputScalar("TypeId", ImGuiDataType_U32, &v.typeId); });
 }
 
 template<typename TProp>

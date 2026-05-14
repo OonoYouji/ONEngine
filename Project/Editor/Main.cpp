@@ -1,4 +1,4 @@
-﻿#include "Engine/Core/Application.h"
+#include "Engine/Core/Application.h"
 #include "Engine/Graphics/Core/GraphicsEngine.h"
 #include "Engine/Graphics/Core/RenderDevice.h"
 #include "imgui.h"
@@ -13,6 +13,84 @@
 #include "EditorContext.h"
 
 extern "C" void EcsInterop_LinkForce();
+
+namespace {
+
+void SetupBlenderTheme() {
+    auto& style = ImGui::GetStyle();
+    ImVec4* colors = style.Colors;
+
+    // Blender-like Dark Theme (v3.0+)
+    colors[ImGuiCol_Text]                   = ImVec4(0.95f, 0.95f, 0.95f, 1.00f);
+    colors[ImGuiCol_TextDisabled]             = ImVec4(0.50f, 0.50f, 0.50f, 1.00f);
+    colors[ImGuiCol_WindowBg]               = ImVec4(0.17f, 0.17f, 0.17f, 1.00f);
+    colors[ImGuiCol_ChildBg]                = ImVec4(0.17f, 0.17f, 0.17f, 1.00f);
+    colors[ImGuiCol_PopupBg]                = ImVec4(0.12f, 0.12f, 0.12f, 1.00f);
+    colors[ImGuiCol_Border]                 = ImVec4(0.10f, 0.10f, 0.10f, 0.50f);
+    colors[ImGuiCol_BorderShadow]           = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
+    colors[ImGuiCol_FrameBg]                = ImVec4(0.24f, 0.24f, 0.24f, 1.00f);
+    colors[ImGuiCol_FrameBgHovered]         = ImVec4(0.29f, 0.29f, 0.29f, 1.00f);
+    colors[ImGuiCol_FrameBgActive]          = ImVec4(0.33f, 0.33f, 0.33f, 1.00f);
+    colors[ImGuiCol_TitleBg]                = ImVec4(0.12f, 0.12f, 0.12f, 1.00f);
+    colors[ImGuiCol_TitleBgActive]          = ImVec4(0.12f, 0.12f, 0.12f, 1.00f);
+    colors[ImGuiCol_TitleBgCollapsed]       = ImVec4(0.12f, 0.12f, 0.12f, 1.00f);
+    colors[ImGuiCol_MenuBarBg]              = ImVec4(0.12f, 0.12f, 0.12f, 1.00f);
+    colors[ImGuiCol_ScrollbarBg]            = ImVec4(0.17f, 0.17f, 0.17f, 1.00f);
+    colors[ImGuiCol_ScrollbarGrab]          = ImVec4(0.31f, 0.31f, 0.31f, 1.00f);
+    colors[ImGuiCol_ScrollbarGrabHovered]   = ImVec4(0.41f, 0.41f, 0.41f, 1.00f);
+    colors[ImGuiCol_ScrollbarGrabActive]    = ImVec4(0.51f, 0.51f, 0.51f, 1.00f);
+    colors[ImGuiCol_CheckMark]              = ImVec4(0.14f, 0.44f, 0.70f, 1.00f);
+    colors[ImGuiCol_SliderGrab]             = ImVec4(0.51f, 0.51f, 0.51f, 1.00f);
+    colors[ImGuiCol_SliderGrabActive]       = ImVec4(0.14f, 0.44f, 0.70f, 1.00f);
+    colors[ImGuiCol_Button]                 = ImVec4(0.24f, 0.24f, 0.24f, 1.00f);
+    colors[ImGuiCol_ButtonHovered]          = ImVec4(0.29f, 0.29f, 0.29f, 1.00f);
+    colors[ImGuiCol_ButtonActive]           = ImVec4(0.14f, 0.44f, 0.70f, 1.00f);
+    colors[ImGuiCol_Header]                 = ImVec4(0.14f, 0.44f, 0.70f, 1.00f);
+    colors[ImGuiCol_HeaderHovered]          = ImVec4(0.20f, 0.50f, 0.80f, 1.00f);
+    colors[ImGuiCol_HeaderActive]           = ImVec4(0.14f, 0.44f, 0.70f, 1.00f);
+    colors[ImGuiCol_Separator]              = ImVec4(0.12f, 0.12f, 0.12f, 1.00f);
+    colors[ImGuiCol_SeparatorHovered]       = ImVec4(0.12f, 0.12f, 0.12f, 1.00f);
+    colors[ImGuiCol_SeparatorActive]        = ImVec4(0.12f, 0.12f, 0.12f, 1.00f);
+    colors[ImGuiCol_ResizeGrip]             = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
+    colors[ImGuiCol_ResizeGripHovered]      = ImVec4(0.29f, 0.29f, 0.29f, 1.00f);
+    colors[ImGuiCol_ResizeGripActive]       = ImVec4(0.14f, 0.44f, 0.70f, 1.00f);
+    colors[ImGuiCol_Tab]                    = ImVec4(0.17f, 0.17f, 0.17f, 1.00f);
+    colors[ImGuiCol_TabHovered]             = ImVec4(0.24f, 0.24f, 0.24f, 1.00f);
+    colors[ImGuiCol_TabActive]              = ImVec4(0.24f, 0.24f, 0.24f, 1.00f);
+    colors[ImGuiCol_TabUnfocused]           = ImVec4(0.17f, 0.17f, 0.17f, 1.00f);
+    colors[ImGuiCol_TabUnfocusedActive]    = ImVec4(0.17f, 0.17f, 0.17f, 1.00f);
+    colors[ImGuiCol_DockingPreview]         = ImVec4(0.14f, 0.44f, 0.70f, 0.70f);
+    colors[ImGuiCol_DockingEmptyBg]         = ImVec4(0.12f, 0.12f, 0.12f, 1.00f);
+    colors[ImGuiCol_PlotLines]              = ImVec4(0.61f, 0.61f, 0.61f, 1.00f);
+    colors[ImGuiCol_PlotLinesHovered]       = ImVec4(1.00f, 0.43f, 0.35f, 1.00f);
+    colors[ImGuiCol_PlotHistogram]          = ImVec4(0.90f, 0.70f, 0.00f, 1.00f);
+    colors[ImGuiCol_PlotHistogramHovered]   = ImVec4(1.00f, 0.60f, 0.00f, 1.00f);
+    colors[ImGuiCol_TableHeaderBg]          = ImVec4(0.20f, 0.20f, 0.20f, 1.00f);
+    colors[ImGuiCol_TableBorderStrong]      = ImVec4(0.10f, 0.10f, 0.10f, 1.00f);
+    colors[ImGuiCol_TableBorderLight]       = ImVec4(0.23f, 0.23f, 0.23f, 1.00f);
+    colors[ImGuiCol_TableRowBg]             = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
+    colors[ImGuiCol_TableRowBgAlt]          = ImVec4(1.00f, 1.00f, 1.00f, 0.06f);
+    colors[ImGuiCol_TextSelectedBg]         = ImVec4(0.14f, 0.44f, 0.70f, 1.00f);
+    colors[ImGuiCol_DragDropTarget]         = ImVec4(1.00f, 1.00f, 0.00f, 0.90f);
+    colors[ImGuiCol_NavHighlight]           = ImVec4(0.14f, 0.44f, 0.70f, 1.00f);
+    colors[ImGuiCol_NavWindowingHighlight]  = ImVec4(1.00f, 1.00f, 1.00f, 0.70f);
+    colors[ImGuiCol_NavWindowingDimBg]      = ImVec4(0.80f, 0.80f, 0.80f, 0.20f);
+    colors[ImGuiCol_ModalWindowDimBg]       = ImVec4(0.80f, 0.80f, 0.80f, 0.35f);
+
+    style.WindowRounding    = 4.0f;
+    style.ChildRounding     = 4.0f;
+    style.FrameRounding     = 4.0f;
+    style.PopupRounding     = 4.0f;
+    style.ScrollbarRounding = 12.0f;
+    style.GrabRounding      = 4.0f;
+    style.TabRounding       = 4.0f;
+    style.WindowTitleAlign  = ImVec2(0.5f, 0.5f);
+    style.WindowPadding     = ImVec2(8.0f, 8.0f);
+    style.FramePadding      = ImVec2(4.0f, 4.0f);
+    style.ItemSpacing       = ImVec2(8.0f, 4.0f);
+}
+
+}
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
     // リンクを強制して P/Invoke ターゲットをエクスポートテーブルに乗せる
@@ -37,7 +115,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 	io.ConfigFlags &= ~ImGuiConfigFlags_ViewportsEnable;
 
-	ImGui::StyleColorsDark();
+    // フォント設定 (MPLUSフォント + 日本語対応)
+    const char* fontPath = "Assets/Fonts/MPLUSRounded1c-Black.ttf";
+    if (io.Fonts->AddFontFromFileTTF(fontPath, 18.0f, nullptr, io.Fonts->GetGlyphRangesJapanese())) {
+        // フォント読み込み成功
+    }
+
+	SetupBlenderTheme();
 
 	ImGui_ImplWin32_Init(app.GetHWND());
 	ImGui_ImplDX12_Init(
@@ -78,21 +162,21 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
 		ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_None);
 
 		if (ImGui::BeginMainMenuBar()) {
-			if (ImGui::BeginMenu("File")) {
-				if (ImGui::MenuItem("Exit")) { /* TODO */ }
+			if (ImGui::BeginMenu("ファイル (File)")) {
+				if (ImGui::MenuItem("終了 (Exit)")) { /* TODO */ }
 				ImGui::EndMenu();
 			}
 
 			auto& context = Engine::Editor::EditorContext::GetInstance();
-			if (ImGui::BeginMenu("Edit")) {
-				ImGui::Checkbox("Gizmo Snap", &context.GetSnapEnabled());
+			if (ImGui::BeginMenu("編集 (Edit)")) {
+				ImGui::Checkbox("ギズモ スナップ (Gizmo Snap)", &context.GetSnapEnabled());
 				ImGui::Separator();
 				ImGui::SetNextItemWidth(80.0f);
-				ImGui::InputFloat("Snap Move", &context.GetSnapTranslation());
+				ImGui::InputFloat("移動スナップ (Snap Move)", &context.GetSnapTranslation());
 				ImGui::SetNextItemWidth(80.0f);
-				ImGui::InputFloat("Snap Rotate", &context.GetSnapRotation());
+				ImGui::InputFloat("回転スナップ (Snap Rotate)", &context.GetSnapRotation());
 				ImGui::SetNextItemWidth(80.0f);
-				ImGui::InputFloat("Snap Scale", &context.GetSnapScale());
+				ImGui::InputFloat("スケールスナップ (Snap Scale)", &context.GetSnapScale());
 				ImGui::EndMenu();
 			}
 			ImGui::EndMainMenuBar();
@@ -130,4 +214,3 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
 
 	return 0;
 }
-//}

@@ -97,6 +97,9 @@ def generate_editor_ui(type_name, fields, namespace):
     ui_code += "inline void DrawUI_{}({}& v, TProp Prop) {{\n".format(type_name, full_name)
     
     for field in fields:
+        if field.get("hide_in_editor", False):
+            continue
+
         f_name = field["name"]
         f_type = field["type"]
         asset_type = field.get("asset_type")
