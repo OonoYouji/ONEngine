@@ -3,6 +3,9 @@
 #include <vector>
 #include <string>
 #include <unordered_map>
+#include <fstream>
+#include <Windows.h>
+#include <shellapi.h>
 
 namespace Engine::Editor {
 
@@ -65,6 +68,7 @@ private:
     void RenderContextMenu();
     
     void CreateNewFolder(const std::filesystem::path& parentPath);
+    void CreateNewMaterial(const std::filesystem::path& parentPath);
     void DeletePath(const std::filesystem::path& path);
     void RenamePath(const std::filesystem::path& oldPath, const std::string& newName);
     void PasteClipboard(const std::filesystem::path& destinationFolder);

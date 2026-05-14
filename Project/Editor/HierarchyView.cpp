@@ -17,6 +17,21 @@ namespace Engine::Editor {
 void HierarchyView::Render(ECS::Registry& registry) {
     ImGui::Begin("Hierarchy");
 
+    // --- シーン名の表示 ---
+    auto& context = EditorContext::GetInstance();
+    std::string scenePath = context.GetCurrentScenePath();
+    std::string sceneName = "Untitled Scene";
+    if (!scenePath.empty()) {
+        std::filesystem::path p(scenePath);
+        sceneName = p.stem().string();
+    }
+
+    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.4f, 0.8f, 1.0f, 1.0f)); // 水色
+    ImGui::TextDisabled("Scene:"); ImGui::SameLine();
+    ImGui::Text("%s", sceneName.c_str());
+    ImGui::PopStyleColor();
+    ImGui::Separator();
+
     auto& transformStorage = registry.GetStorage<ECS::Transform>();
     const auto& entities = transformStorage.GetEntities();
 

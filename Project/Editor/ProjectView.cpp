@@ -402,12 +402,21 @@ void ProjectView::RenderContextMenu() {
     }
 
     if (ImGui::BeginPopup("FolderContextMenu")) {
-        if (ImGui::MenuItem("New Folder")) {
-            CreateNewFolder(tabs_[activeTabIndex_].currentPath);
+        if (ImGui::BeginMenu("Create")) {
+            if (ImGui::MenuItem("Folder")) {
+                CreateNewFolder(tabs_[activeTabIndex_].currentPath);
+            }
+            if (ImGui::MenuItem("Material")) {
+                CreateNewMaterial(tabs_[activeTabIndex_].currentPath);
+            }
+            ImGui::EndMenu();
         }
         ImGui::Separator();
         if (ImGui::MenuItem("Paste", nullptr, false, !clipboardPath_.empty())) {
             PasteClipboard(tabs_[activeTabIndex_].currentPath);
+        }
+        if (ImGui::MenuItem("Show in Explorer")) {
+            ShellExecuteA(NULL, "open", tabs_[activeTabIndex_].currentPath.string().c_str(), NULL, NULL, SW_SHOW);
         }
         ImGui::EndPopup();
     }
@@ -420,6 +429,27 @@ void ProjectView::CreateNewFolder(const std::filesystem::path& parentPath) {
         newPath = parentPath / ("New Folder (" + std::to_string(i++) + ")");
     }
     std::filesystem::create_directory(newPath);
+    needsRefresh_ = true;
+}
+
+void ProjectView::CreateNewMaterial(const std::filesystem::path& parentPath) {
+    std::filesystem::path newPath = parentPath / "New Material.mat";
+    int i = 1;
+    while (std::filesystem::exists(newPath)) {
+        newPath = parentPath / ("New Material (" + std::to_string(i++) + ").mat");
+    }
+
+    nlohmann::json data;
+    data["name"] = newPath.stem().string();
+    data["pipeline"] = "Assets/Pipelines/CelShader.json";
+    data["texture"] = "";
+    data["parameters"]["baseColor"] = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+    std::ofstream file(newPath);
+    if (file.is_open()) {
+        file << data.dump(4);
+    }
+    
     needsRefresh_ = true;
 }
 

@@ -183,14 +183,10 @@ bool SceneLoader::SaveScene(const std::string& path, Engine::ECS::Registry& regi
     json jEntities = json::array();
 
     auto& compReg = Engine::ECS::ComponentRegistry::GetInstance();
-    uint32_t maxId = registry.GetMaxEntityId();
-
-    for (uint32_t i = 1; i <= maxId; ++i) {
-        Engine::ECS::Entity entity = i;
-        
-        // Tagを持っていない = 無効なEntityとして扱う
-        if (!registry.HasComponent<Engine::ECS::Tag>(entity)) continue;
-
+    
+    // 全ての有効なエンティティ（Tagを持っているもの）を走査
+    auto& tagStorage = registry.GetStorage<Engine::ECS::Tag>();
+    for (auto entity : tagStorage.GetEntities()) {
         json jEntity;
         jEntity["id"] = (int)entity;
         
@@ -201,7 +197,7 @@ bool SceneLoader::SaveScene(const std::string& path, Engine::ECS::Registry& regi
         // 親子関係の取得 (Transformがあれば)
         if (registry.HasComponent<Engine::ECS::Transform>(entity)) {
             auto& trans = registry.GetComponent<Engine::ECS::Transform>(entity);
-            if (trans.parent != 0) {
+            if (trans.parent != Engine::ECS::kNullEntity) {
                 jEntity["parent"] = (int)trans.parent;
             } else {
                 jEntity["parent"] = nullptr;
@@ -212,7 +208,7 @@ bool SceneLoader::SaveScene(const std::string& path, Engine::ECS::Registry& regi
 
         json jComponents = json::array();
         for (auto& [typeId, info] : compReg.GetAll()) {
-            // Tagは既に直下にシリアライズ済みなのでスキップ
+            // Tagは既に直下にシリアライズ済みなのでコンポーネントリストからは除外
             if (typeId == 100) continue;
 
             if (registry.HasComponent(entity, typeId)) {
@@ -234,7 +230,7 @@ bool SceneLoader::SaveScene(const std::string& path, Engine::ECS::Registry& regi
     }
 
     file << data.dump(4);
-    Engine::Console::Log(std::format("SceneLoader: Successfully saved {} entities.", jEntities.size()));
+    Engine::Console::Log(std::format("SceneLoader: Successfully saved {} entities to {}.", jEntities.size(), path));
     return true;
 }
 

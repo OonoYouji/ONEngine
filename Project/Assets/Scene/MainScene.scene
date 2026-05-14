@@ -255,10 +255,11 @@
                 },
                 {
                     "isEnabled": 0,
-                    "materialGuid": 0,
-                    "materialIndex": 4294967295,
-                    "modelGuid": 0,
-                    "modelIndex": 4294967295,
+                    "materialGuid": 16880705708999399230,
+                    "materialIndex": 0,
+                    "meshGuid": 529005190976689955,
+                    "modelGuid": 529005190976689955,
+                    "modelIndex": 0,
                     "postProcessFlags": 1,
                     "type": "MeshRenderer"
                 },
@@ -471,8 +472,8 @@
                 },
                 {
                     "isEnabled": 0,
-                    "materialGuid": 16880705708999399230,
-                    "materialIndex": 0,
+                    "materialGuid": 0,
+                    "materialIndex": 4294967295,
                     "modelGuid": 0,
                     "modelIndex": 4294967295,
                     "postProcessFlags": 1,

@@ -70,9 +70,12 @@ void Texture::CreateResource(Graphics::RenderDevice* device, D3D12_CPU_DESCRIPTO
         // --- データ転送 (Upload) ---
         auto& graphicsEngine = Graphics::GraphicsEngine::GetInstance();
         auto* queue = graphicsEngine.GetCommandQueue();
-        auto* currentFrameRes = graphicsEngine.GetCurrentFrameResource();
         
-        queue->Reset(currentFrameRes->GetAllocator());
+        // 専用のアロケータを一時的に作成して使用（フレーム用アロケータをリセットしないため）
+        ComPtr<ID3D12CommandAllocator> tempAllocator;
+        device->GetDevice()->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&tempAllocator));
+
+        queue->Reset(tempAllocator.Get());
         auto* commandList = queue->GetCommandList();
 
         // 全サブリソース（MipMap含む）のデータを準備
@@ -164,8 +167,12 @@ bool Texture::CreateFromPixels(Graphics::RenderDevice* device, const uint8_t* pi
 
     auto& graphicsEngine = Graphics::GraphicsEngine::GetInstance();
     auto* queue = graphicsEngine.GetCommandQueue();
-    auto* currentFrameRes = graphicsEngine.GetCurrentFrameResource();
-    queue->Reset(currentFrameRes->GetAllocator());
+
+    // 専用のアロケータを一時的に作成して使用
+    ComPtr<ID3D12CommandAllocator> tempAllocator;
+    device->GetDevice()->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&tempAllocator));
+
+    queue->Reset(tempAllocator.Get());
     auto* commandList = queue->GetCommandList();
 
     auto barrier = CD3DX12_RESOURCE_BARRIER::Transition(allocation_->GetResource(), D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_COPY_DEST);
