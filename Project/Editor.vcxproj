@@ -163,6 +163,7 @@ copy "$(ProjectDir)Externals\DotNetHost\nethost.dll" "$(TargetDir)nethost.dll"</
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Editor\AddComponentCommand.h" />
     <ClInclude Include="Editor\ChangeComponentCommand.h" />
     <ClInclude Include="Editor\CommandHistory.h" />
     <ClInclude Include="Editor\EditorCamera.h" />

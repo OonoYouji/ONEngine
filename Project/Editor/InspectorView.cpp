@@ -4,7 +4,11 @@
 #include "Schema/Buffers.h"
 #include "Schema/Components.h"
 #include "ChangeComponentCommand.h"
+#include "AddComponentCommand.h"
+#include "RemoveComponentCommand.h"
 #include "Engine/Core/Application.h"
+#include <vector>
+#include <string>
 
 namespace Engine::Editor {
 
@@ -91,7 +95,8 @@ void InspectorView::Render(ECS::Registry& registry) {
         auto& storage = info->getStorageFunc(registry);
         if (!storage.Has(entity)) return;
 
-        if (ImGui::CollapsingHeader(name, ImGuiTreeNodeFlags_DefaultOpen)) {
+        bool open = true;
+        if (ImGui::CollapsingHeader(name, &open, ImGuiTreeNodeFlags_DefaultOpen)) {
             ImGui::PushID(typeId);
             void* comp = storage.GetRaw(entity);
             
@@ -117,12 +122,16 @@ void InspectorView::Render(ECS::Registry& registry) {
 
             ImGui::PopID();
         }
+
+        if (!open) {
+            // Tag(100) と Transform(1) は基本削除不可にする
+            if (typeId != 100 && typeId != 1) {
+                history.Execute(std::make_shared<RemoveComponentCommand>(entity, typeId));
+            }
+        }
     };
 
     // ID 100: Tag (Inspector上部の名前編集と重複するため、ここでは非表示にするか、詳細として残す)
-    // 今回は上部に名前入力欄を作ったので、Tagコンポーネントのヘッダー自体は出さないように調整
-    // (Tagコンポーネントに名前以外のフィールドが増えた場合は CollapsingHeader が必要)
-
     // ID 1: Transform
     DrawComponent(1, "Transform", [](void* data, auto Prop) {
         ECS::DrawUI_Transform(*static_cast<ECS::Transform*>(data), Prop);
@@ -177,6 +186,45 @@ void InspectorView::Render(ECS::Registry& registry) {
     DrawComponent(11, "SkinnedMeshRenderer", [](void* data, auto Prop) {
         ECS::DrawUI_SkinnedMeshRenderer(*static_cast<ECS::SkinnedMeshRenderer*>(data), Prop);
     });
+
+    ImGui::Spacing();
+    ImGui::Separator();
+    ImGui::Spacing();
+
+    // --- Add Component Button ---
+    float width = ImGui::GetContentRegionAvail().x;
+    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (width - 150.f) * 0.5f);
+    if (ImGui::Button("Add Component", ImVec2(150, 30))) {
+        ImGui::OpenPopup("AddComponentPopup");
+    }
+
+    if (ImGui::BeginPopup("AddComponentPopup")) {
+        static char searchFilter[128] = "";
+        ImGui::InputTextWithHint("##filter", "Search...", searchFilter, sizeof(searchFilter));
+        ImGui::Separator();
+
+        for (auto& [typeId, info] : compReg.GetAll()) {
+            // Tag(100) は基本必須なので追加リストからは除外
+            if (typeId == 100) continue;
+
+            // 既に持っているコンポーネントは表示しない
+            if (registry.HasComponent(entity, typeId)) continue;
+
+            // フィルター
+            std::string nameLower = info.name;
+            std::transform(nameLower.begin(), nameLower.end(), nameLower.begin(), ::tolower);
+            std::string filterLower = searchFilter;
+            std::transform(filterLower.begin(), filterLower.end(), filterLower.begin(), ::tolower);
+
+            if (filterLower.empty() || nameLower.find(filterLower) != std::string::npos) {
+                if (ImGui::MenuItem(info.name.c_str())) {
+                    history.Execute(std::make_shared<AddComponentCommand>(entity, typeId));
+                    searchFilter[0] = '\0';
+                }
+            }
+        }
+        ImGui::EndPopup();
+    }
 
     ImGui::End();
 }
