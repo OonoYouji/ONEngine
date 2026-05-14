@@ -5,6 +5,8 @@ types:
   Transform:
     type: Component
     fields:
+      - name: isEnabled
+        type: uint32
       - name: parent
         type: uint32
         hide_in_editor: true
@@ -24,6 +26,8 @@ types:
   MeshRenderer:
     type: Component
     fields:
+      - name: isEnabled
+        type: uint32
       - name: modelIndex
         type: uint32
         asset_type: Model
@@ -36,6 +40,8 @@ types:
   SkinnedMeshRenderer:
     type: Component
     fields:
+      - name: isEnabled
+        type: uint32
       - name: modelIndex
         type: uint32
         asset_type: Model
@@ -52,6 +58,8 @@ types:
   ScriptComponent:
     type: Component
     fields:
+      - name: isEnabled
+        type: uint32
       - name: gcHandle
         type: uint64
         hide_in_editor: true
@@ -62,6 +70,8 @@ types:
   Camera:
     type: Component
     fields:
+      - name: isEnabled
+        type: uint32
       - name: fov
         type: float
       - name: nearZ
@@ -72,6 +82,8 @@ types:
   DirectionalLight:
     type: Component
     fields:
+      - name: isEnabled
+        type: uint32
       - name: color
         type: float3
       - name: intensity
@@ -82,6 +94,8 @@ types:
   PointLight:
     type: Component
     fields:
+      - name: isEnabled
+        type: uint32
       - name: color
         type: float3
       - name: intensity
@@ -92,6 +106,8 @@ types:
   SpriteRenderer:
     type: Component
     fields:
+      - name: isEnabled
+        type: uint32
       - name: textureIndex
         type: uint32
         asset_type: Texture
@@ -105,6 +121,8 @@ types:
   Skybox:
     type: Component
     fields:
+      - name: isEnabled
+        type: uint32
       - name: textureIndex
         type: uint32
         asset_type: Texture
@@ -112,12 +130,16 @@ types:
   Tag:
     type: Component
     fields:
+      - name: isActive
+        type: uint32
       - name: name
         type: string
 
   TextRenderer:
     type: Component
     fields:
+      - name: isEnabled
+        type: uint32
       - name: text
         type: string
       - name: fontIndex
@@ -133,6 +155,8 @@ types:
   ParticleEmitter:
     type: Component
     fields:
+      - name: isEnabled
+        type: uint32
       - name: count
         type: uint32
       - name: speed

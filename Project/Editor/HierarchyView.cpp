@@ -125,8 +125,33 @@ void HierarchyView::DrawEntityNode(ECS::Registry& registry, ECS::Entity entity) 
         flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
     }
 
+    // --- Entity Active Checkbox ---
+    // Tagコンポーネントがない場合は取得時に作成（isActive管理のため）
+    if (!registry.HasComponent<ECS::Tag>(entity)) {
+        auto& tag = registry.AddComponent<ECS::Tag>(entity);
+        tag.isActive = 1;
+        sprintf_s(tag.name, "Entity %u", entity);
+    }
+
+    auto& tag = registry.GetComponent<ECS::Tag>(entity);
+    bool isActive = tag.isActive != 0;
+
+    ImGui::PushID((int)entity);
+    bool check = isActive;
+    if (ImGui::Checkbox("##active", &check)) {
+        auto oldState = ECS::ComponentRegistry::GetInstance().SerializeComponent(registry, entity, 100);
+        tag.isActive = check ? 1 : 0;
+        auto newState = ECS::ComponentRegistry::GetInstance().SerializeComponent(registry, entity, 100);
+        CommandHistory::GetInstance().Execute(std::make_shared<ChangeComponentCommand>(entity, 100, oldState, newState));
+    }
+    ImGui::PopID();
+    
+    ImGui::SameLine();
+
     // ノードの描画
+    if (!isActive) ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.5f, 0.5f, 0.5f, 1.0f));
     bool opened = ImGui::TreeNodeEx((void*)(intptr_t)entity, flags, name.c_str());
+    if (!isActive) ImGui::PopStyleColor();
 
     // 選択
     if (ImGui::IsItemClicked()) {

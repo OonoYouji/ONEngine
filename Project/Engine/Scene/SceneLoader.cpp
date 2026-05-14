@@ -95,6 +95,24 @@ bool SceneLoader::LoadScene(const std::string& path, Engine::ECS::Registry& regi
 
                 if (sceneId != -1) idMap[sceneId] = entity;
 
+                // Tagコンポーネントの自動付与（名前とActive状態の同期）
+                {
+                    auto& tag = registry.AddComponent<Engine::ECS::Tag>(entity);
+                    tag.isActive = 1; // デフォルトは有効
+                    if (jEntity.contains("name") && jEntity["name"].is_string()) {
+                        std::string name = jEntity["name"];
+                        size_t len = (std::min)(name.length(), sizeof(tag.name) - 1);
+                        std::memcpy(tag.name, name.c_str(), len);
+                        tag.name[len] = '\0';
+                    } else {
+                        sprintf_s(tag.name, "Entity %u", entity);
+                    }
+
+                    if (jEntity.contains("isActive")) {
+                        tag.isActive = jEntity["isActive"].get<bool>() ? 1 : 0;
+                    }
+                }
+
                 if (jEntity.contains("parent") && !jEntity["parent"].is_null()) {
                     parentTasks.push_back({entity, jEntity["parent"]});
                 }

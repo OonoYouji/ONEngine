@@ -87,7 +87,7 @@ void InitializeComponentRegistry() {
     );
 
     // ID 10: TextRenderer
-    reg.Register<TextRenderer>(10, "TextRenderer",
+    reg.Register<TextRenderer>(10, "TextRenderer", 
         [](const json& j, TextRenderer& tr) { 
             from_json(j, tr);
             if (j.contains("fontPath")) tr.fontIndex = Asset::FontManager::GetInstance().LoadFont(j["fontPath"]);
@@ -95,8 +95,19 @@ void InitializeComponentRegistry() {
         [](const TextRenderer& tr) { json j; to_json(j, tr); return j; }
     );
 
+    // ID 11: SkinnedMeshRenderer
+    reg.Register<SkinnedMeshRenderer>(11, "SkinnedMeshRenderer",
+        [](const json& j, SkinnedMeshRenderer& smr) {
+            from_json(j, smr);
+            if (j.contains("meshPath")) smr.modelIndex = Asset::AssetManager::GetInstance().LoadModel(j["meshPath"]);
+            if (j.contains("materialPath")) smr.materialIndex = Asset::MaterialManager::GetInstance().LoadMaterial(j["materialPath"]);
+        },
+        [](const SkinnedMeshRenderer& smr) { json j; to_json(j, smr); return j; }
+    );
+
     // ID 100: Tag
     reg.Register<Tag>(100, "Tag",
+
         [](const json& j, Tag& t) { from_json(j, t); },
         [](const Tag& t) { json j; to_json(j, t); return j; }
     );

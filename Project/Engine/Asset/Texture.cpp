@@ -66,6 +66,41 @@ void Texture::CreateResource(Graphics::RenderDevice* device, D3D12_CPU_DESCRIPTO
             IID_NULL, nullptr
         );
         Assert(SUCCEEDED(hr), "Failed to create Texture resource.");
+
+        // --- データ転送 (Upload) ---
+        auto& graphicsEngine = Graphics::GraphicsEngine::GetInstance();
+        auto* queue = graphicsEngine.GetCommandQueue();
+        auto* currentFrameRes = graphicsEngine.GetCurrentFrameResource();
+        
+        queue->Reset(currentFrameRes->GetAllocator());
+        auto* commandList = queue->GetCommandList();
+
+        // 全サブリソース（MipMap含む）のデータを準備
+        std::vector<D3D12_SUBRESOURCE_DATA> subresources(metadata.mipLevels * metadata.arraySize);
+        for (size_t i = 0; i < subresources.size(); ++i) {
+            const DirectX::Image* img = image_->GetImages() + i;
+            subresources[i].pData = img->pixels;
+            subresources[i].RowPitch = img->rowPitch;
+            subresources[i].SlicePitch = img->slicePitch;
+        }
+
+        UINT64 uploadBufferSize = GetRequiredIntermediateSize(allocation_->GetResource(), 0, (UINT)subresources.size());
+        ComPtr<D3D12MA::Allocation> uploadAllocation;
+        D3D12MA::ALLOCATION_DESC uploadAllocDesc = {};
+        uploadAllocDesc.HeapType = D3D12_HEAP_TYPE_UPLOAD;
+        auto uploadBufferDesc = CD3DX12_RESOURCE_DESC::Buffer(uploadBufferSize);
+        device->GetAllocator()->CreateResource(&uploadAllocDesc, &uploadBufferDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, &uploadAllocation, IID_NULL, nullptr);
+
+        auto barrier = CD3DX12_RESOURCE_BARRIER::Transition(allocation_->GetResource(), D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_COPY_DEST);
+        commandList->ResourceBarrier(1, &barrier);
+        
+        UpdateSubresources(commandList, allocation_->GetResource(), uploadAllocation->GetResource(), 0, 0, (UINT)subresources.size(), subresources.data());
+        
+        barrier = CD3DX12_RESOURCE_BARRIER::Transition(allocation_->GetResource(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_ALL_SHADER_RESOURCE);
+        commandList->ResourceBarrier(1, &barrier);
+        
+        queue->Execute();
+        queue->Wait(queue->Signal());
     }
 
     auto res = allocation_->GetResource();

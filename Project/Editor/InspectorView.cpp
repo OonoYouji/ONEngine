@@ -40,29 +40,47 @@ void InspectorView::Render(ECS::Registry& registry) {
 
     // Entity ID表示と名前編集
     ImGui::Text("Entity ID: %u", entity);
-    if (registry.HasComponent<ECS::Tag>(entity)) {
-        auto& tag = registry.GetComponent<ECS::Tag>(entity);
-        
-        char buffer[256];
-        strcpy_s(buffer, tag.name);
-        
-        ImGui::PushItemWidth(-1);
-        if (ImGui::InputText("##EntityName", buffer, sizeof(buffer), ImGuiInputTextFlags_AutoSelectAll)) {
-            // 文字列が実際に変わったかチェックしてコンポーネントに反映
-            if (strcmp(buffer, tag.name) != 0) {
-                strcpy_s(tag.name, buffer);
-            }
-        }
-        
-        if (ImGui::IsItemActivated()) {
-            s_oldState = compReg.SerializeComponent(registry, entity, 100);
-        }
-        if (ImGui::IsItemDeactivatedAfterEdit()) {
-            json newState = compReg.SerializeComponent(registry, entity, 100);
-            history.Execute(std::make_shared<ChangeComponentCommand>(entity, 100, s_oldState, newState));
-        }
-        ImGui::PopItemWidth();
+    
+    // Tagコンポーネントがない場合は強制的に追加（isActive/Name管理のため）
+    if (!registry.HasComponent<ECS::Tag>(entity)) {
+        auto& tag = registry.AddComponent<ECS::Tag>(entity);
+        tag.isActive = 1;
+        sprintf_s(tag.name, "Entity %u", entity);
     }
+
+    auto& tag = registry.GetComponent<ECS::Tag>(entity);
+
+    // --- Entity Active Toggle ---
+    bool active = tag.isActive != 0;
+    if (ImGui::Checkbox("##EntityActive", &active)) {
+        s_oldState = compReg.SerializeComponent(registry, entity, 100);
+        tag.isActive = active ? 1 : 0;
+        json newState = compReg.SerializeComponent(registry, entity, 100);
+        history.Execute(std::make_shared<ChangeComponentCommand>(entity, 100, s_oldState, newState));
+    }
+    if (ImGui::IsItemHovered()) ImGui::SetTooltip("Entity Active/Inactive");
+
+    ImGui::SameLine();
+    
+    // --- Entity Name ---
+    char buffer[256];
+    strcpy_s(buffer, tag.name);
+    
+    ImGui::PushItemWidth(-1);
+    if (ImGui::InputText("##EntityName", buffer, sizeof(buffer), ImGuiInputTextFlags_AutoSelectAll)) {
+        if (strcmp(buffer, tag.name) != 0) {
+            tag.name[0] = '\0'; // Trigger change for undo if we were to use snapshots, but here we use DeactivatedAfterEdit
+            strcpy_s(tag.name, buffer);
+        }
+    }
+    if (ImGui::IsItemActivated()) {
+        s_oldState = compReg.SerializeComponent(registry, entity, 100);
+    }
+    if (ImGui::IsItemDeactivatedAfterEdit()) {
+        json newState = compReg.SerializeComponent(registry, entity, 100);
+        history.Execute(std::make_shared<ChangeComponentCommand>(entity, 100, s_oldState, newState));
+    }
+    ImGui::PopItemWidth();
     
     ImGui::Separator();
 
@@ -153,6 +171,11 @@ void InspectorView::Render(ECS::Registry& registry) {
     // ID 10: TextRenderer
     DrawComponent(10, "TextRenderer", [](void* data, auto Prop) {
         ECS::DrawUI_TextRenderer(*static_cast<ECS::TextRenderer*>(data), Prop);
+    });
+
+    // ID 11: SkinnedMeshRenderer
+    DrawComponent(11, "SkinnedMeshRenderer", [](void* data, auto Prop) {
+        ECS::DrawUI_SkinnedMeshRenderer(*static_cast<ECS::SkinnedMeshRenderer*>(data), Prop);
     });
 
     ImGui::End();
