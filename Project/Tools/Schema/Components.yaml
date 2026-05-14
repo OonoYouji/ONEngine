@@ -28,12 +28,18 @@ types:
     fields:
       - name: isEnabled
         type: uint32
+      - name: modelGuid
+        type: uint64
+        asset_type: Model
+      - name: materialGuid
+        type: uint64
+        asset_type: Material
       - name: modelIndex
         type: uint32
-        asset_type: Model
+        hide_in_editor: true
       - name: materialIndex
         type: uint32
-        asset_type: Material
+        hide_in_editor: true
       - name: postProcessFlags
         type: uint32
 
@@ -42,18 +48,25 @@ types:
     fields:
       - name: isEnabled
         type: uint32
+      - name: modelGuid
+        type: uint64
+        asset_type: Model
+      - name: materialGuid
+        type: uint64
+        asset_type: Material
       - name: modelIndex
         type: uint32
-        asset_type: Model
+        hide_in_editor: true
       - name: materialIndex
         type: uint32
-        asset_type: Material
+        hide_in_editor: true
       - name: skeletonIndex
         type: uint32
       - name: postProcessFlags
         type: uint32
       - name: internalVertexOffset
         type: uint32
+
 
   ScriptComponent:
     type: Component
@@ -108,9 +121,12 @@ types:
     fields:
       - name: isEnabled
         type: uint32
+      - name: textureGuid
+        type: uint64
+        asset_type: Texture
       - name: textureIndex
         type: uint32
-        asset_type: Texture
+        hide_in_editor: true
       - name: color
         type: float4
       - name: size
@@ -123,9 +139,12 @@ types:
     fields:
       - name: isEnabled
         type: uint32
+      - name: textureGuid
+        type: uint64
+        asset_type: Texture
       - name: textureIndex
         type: uint32
-        asset_type: Texture
+        hide_in_editor: true
 
   Tag:
     type: Component
@@ -142,9 +161,12 @@ types:
         type: uint32
       - name: text
         type: string
+      - name: fontGuid
+        type: uint64
+        asset_type: Font
       - name: fontIndex
         type: uint32
-        asset_type: Font
+        hide_in_editor: true
       - name: color
         type: float4
       - name: size
@@ -179,11 +201,17 @@ types:
         type: float
       - name: endScale
         type: float
+      - name: modelGuid
+        type: uint64
+        asset_type: Model
+      - name: textureGuid
+        type: uint64
+        asset_type: Texture
       - name: modelIndex
         type: uint32
-        asset_type: Model
+        hide_in_editor: true
       - name: textureIndex
         type: uint32
-        asset_type: Texture
+        hide_in_editor: true
       - name: bufferIndex
         type: uint32

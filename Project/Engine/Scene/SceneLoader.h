@@ -17,6 +17,12 @@ public:
     /// @return 成功したらtrue
     static bool LoadScene(const std::string& path, Engine::ECS::Registry& registry);
 
+    /// @brief シーンファイルを保存
+    /// @param path ファイルパス
+    /// @param registry 保存元のレジストリ
+    /// @return 成功したらtrue
+    static bool SaveScene(const std::string& path, Engine::ECS::Registry& registry);
+
     /// @brief プリファブをロードしてエンティティを作成
     /// @param path ファイルパス
     /// @param registry ロード先のレジストリ

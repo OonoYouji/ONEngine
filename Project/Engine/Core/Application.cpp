@@ -16,7 +16,6 @@
 #include "Engine/Script/ScriptHost.h"
 #include "Engine/ECS/ComponentRegistry.h"
 #include "Engine/ECS/Systems/SpriteSystem.h"
-#include "Editor/EditorContext.h"
 #include "imgui.h"
 #include "imgui_impl_win32.h"
 #include "imgui_impl_dx12.h"
@@ -236,12 +235,11 @@ void Application::Render() {
     float aspect = (float)graphics.GetWindowSize().x / (float)graphics.GetWindowSize().y;
     
     if (isEditorMode_) {
-        auto& editorCam = Editor::EditorContext::GetInstance().GetCamera();
-        sceneData.view = editorCam.GetViewMatrix();
-        sceneData.viewProj = editorCam.GetViewProjMatrix();
-        sceneData.cameraPos = editorCam.GetPosition();
-        sceneData.nearZ = editorCam.GetNearZ();
-        sceneData.farZ = editorCam.GetFarZ();
+        sceneData.view = editorView_;
+        sceneData.viewProj = editorViewProj_;
+        sceneData.cameraPos = editorCameraPos_;
+        sceneData.nearZ = editorNearZ_;
+        sceneData.farZ = editorFarZ_;
     }
     else if (cameraSystem_ && cameraSystem_->HasCamera()) {
         const auto& cam = cameraSystem_->GetResult();
@@ -269,7 +267,7 @@ void Application::Render() {
 
     sceneData.screenWidth = (float)graphics.GetWindowSize().x;
     sceneData.screenHeight = (float)graphics.GetWindowSize().y;
-    sceneData.selectedEntityID = Editor::EditorContext::GetInstance().GetSelectedEntity();
+    sceneData.selectedEntityID = editorSelectedEntityID_;
 
     // ライトの反映 (LightSystemがあれば)
     if (lightSystem_) {

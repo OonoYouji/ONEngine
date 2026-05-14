@@ -18,22 +18,25 @@ struct Camera {
 struct TextRenderer {
     uint32_t isEnabled = 0;
     char text[256];
+    uint64_t fontGuid = 0;
     uint32_t fontIndex = 0;
-    uint8_t _pad0[8];
     Engine::Math::Vector4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
     float size = 0.0f;
     uint32_t isScreenSpace = 0;
-    uint8_t _final_pad1[8];
+    uint8_t _final_pad0[8];
 };
 
 struct SkinnedMeshRenderer {
     uint32_t isEnabled = 0;
+    uint64_t modelGuid = 0;
+    uint8_t _pad0[4];
+    uint64_t materialGuid = 0;
     uint32_t modelIndex = 0;
     uint32_t materialIndex = 0;
     uint32_t skeletonIndex = 0;
     uint32_t postProcessFlags = 0;
     uint32_t internalVertexOffset = 0;
-    uint8_t _final_pad0[8];
+    uint8_t _final_pad1[4];
 };
 
 struct Transform {
@@ -52,12 +55,12 @@ struct Transform {
 
 struct SpriteRenderer {
     uint32_t isEnabled = 0;
+    uint64_t textureGuid = 0;
     uint32_t textureIndex = 0;
-    uint8_t _pad0[8];
     Engine::Math::Vector4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
     Engine::Math::Vector2 size = { 0, 0 };
     uint32_t isBillboard = 0;
-    uint8_t _final_pad1[4];
+    uint8_t _final_pad0[4];
 };
 
 struct DirectionalLight {
@@ -89,9 +92,13 @@ struct ScriptComponent {
 
 struct MeshRenderer {
     uint32_t isEnabled = 0;
+    uint64_t modelGuid = 0;
+    uint8_t _pad0[4];
+    uint64_t materialGuid = 0;
     uint32_t modelIndex = 0;
     uint32_t materialIndex = 0;
     uint32_t postProcessFlags = 0;
+    uint8_t _final_pad1[12];
 };
 
 struct ParticleEmitter {
@@ -107,6 +114,8 @@ struct ParticleEmitter {
     Engine::Math::Vector4 endColor = { 1.0f, 1.0f, 1.0f, 1.0f };
     float startScale = 0.0f;
     float endScale = 0.0f;
+    uint64_t modelGuid = 0;
+    uint64_t textureGuid = 0;
     uint32_t modelIndex = 0;
     uint32_t textureIndex = 0;
     uint32_t bufferIndex = 0;
@@ -115,8 +124,8 @@ struct ParticleEmitter {
 
 struct Skybox {
     uint32_t isEnabled = 0;
+    uint64_t textureGuid = 0;
     uint32_t textureIndex = 0;
-    uint8_t _final_pad0[8];
 };
 
 } // namespace Engine::ECS
@@ -140,6 +149,7 @@ inline void to_json(nlohmann::json& j, const Engine::ECS::TextRenderer& v) {
     j = nlohmann::json{
         {"isEnabled", v.isEnabled},
         {"text", std::string(v.text)},
+        {"fontGuid", v.fontGuid},
         {"fontIndex", v.fontIndex},
         {"color", v.color},
         {"size", v.size},
@@ -150,6 +160,7 @@ inline void to_json(nlohmann::json& j, const Engine::ECS::TextRenderer& v) {
 inline void from_json(const nlohmann::json& j, Engine::ECS::TextRenderer& v) {
     if (j.contains("isEnabled")) v.isEnabled = j.at("isEnabled").get<uint32_t>();
     if (j.contains("text")) { std::string s = j.at("text").get<std::string>(); size_t len = (std::min)(s.length(), sizeof(v.text) - 1); std::memcpy(v.text, s.c_str(), len); v.text[len] = '\0'; }
+    if (j.contains("fontGuid")) v.fontGuid = j.at("fontGuid").get<uint64_t>();
     if (j.contains("fontIndex")) v.fontIndex = j.at("fontIndex").get<uint32_t>();
     if (j.contains("color")) v.color = j.at("color").get<Engine::Math::Vector4>();
     if (j.contains("size")) v.size = j.at("size").get<float>();
@@ -158,6 +169,8 @@ inline void from_json(const nlohmann::json& j, Engine::ECS::TextRenderer& v) {
 inline void to_json(nlohmann::json& j, const Engine::ECS::SkinnedMeshRenderer& v) {
     j = nlohmann::json{
         {"isEnabled", v.isEnabled},
+        {"modelGuid", v.modelGuid},
+        {"materialGuid", v.materialGuid},
         {"modelIndex", v.modelIndex},
         {"materialIndex", v.materialIndex},
         {"skeletonIndex", v.skeletonIndex},
@@ -168,6 +181,8 @@ inline void to_json(nlohmann::json& j, const Engine::ECS::SkinnedMeshRenderer& v
 
 inline void from_json(const nlohmann::json& j, Engine::ECS::SkinnedMeshRenderer& v) {
     if (j.contains("isEnabled")) v.isEnabled = j.at("isEnabled").get<uint32_t>();
+    if (j.contains("modelGuid")) v.modelGuid = j.at("modelGuid").get<uint64_t>();
+    if (j.contains("materialGuid")) v.materialGuid = j.at("materialGuid").get<uint64_t>();
     if (j.contains("modelIndex")) v.modelIndex = j.at("modelIndex").get<uint32_t>();
     if (j.contains("materialIndex")) v.materialIndex = j.at("materialIndex").get<uint32_t>();
     if (j.contains("skeletonIndex")) v.skeletonIndex = j.at("skeletonIndex").get<uint32_t>();
@@ -198,6 +213,7 @@ inline void from_json(const nlohmann::json& j, Engine::ECS::Transform& v) {
 inline void to_json(nlohmann::json& j, const Engine::ECS::SpriteRenderer& v) {
     j = nlohmann::json{
         {"isEnabled", v.isEnabled},
+        {"textureGuid", v.textureGuid},
         {"textureIndex", v.textureIndex},
         {"color", v.color},
         {"size", v.size},
@@ -207,6 +223,7 @@ inline void to_json(nlohmann::json& j, const Engine::ECS::SpriteRenderer& v) {
 
 inline void from_json(const nlohmann::json& j, Engine::ECS::SpriteRenderer& v) {
     if (j.contains("isEnabled")) v.isEnabled = j.at("isEnabled").get<uint32_t>();
+    if (j.contains("textureGuid")) v.textureGuid = j.at("textureGuid").get<uint64_t>();
     if (j.contains("textureIndex")) v.textureIndex = j.at("textureIndex").get<uint32_t>();
     if (j.contains("color")) v.color = j.at("color").get<Engine::Math::Vector4>();
     if (j.contains("size")) v.size = j.at("size").get<Engine::Math::Vector2>();
@@ -269,6 +286,8 @@ inline void from_json(const nlohmann::json& j, Engine::ECS::ScriptComponent& v) 
 inline void to_json(nlohmann::json& j, const Engine::ECS::MeshRenderer& v) {
     j = nlohmann::json{
         {"isEnabled", v.isEnabled},
+        {"modelGuid", v.modelGuid},
+        {"materialGuid", v.materialGuid},
         {"modelIndex", v.modelIndex},
         {"materialIndex", v.materialIndex},
         {"postProcessFlags", v.postProcessFlags},
@@ -277,6 +296,8 @@ inline void to_json(nlohmann::json& j, const Engine::ECS::MeshRenderer& v) {
 
 inline void from_json(const nlohmann::json& j, Engine::ECS::MeshRenderer& v) {
     if (j.contains("isEnabled")) v.isEnabled = j.at("isEnabled").get<uint32_t>();
+    if (j.contains("modelGuid")) v.modelGuid = j.at("modelGuid").get<uint64_t>();
+    if (j.contains("materialGuid")) v.materialGuid = j.at("materialGuid").get<uint64_t>();
     if (j.contains("modelIndex")) v.modelIndex = j.at("modelIndex").get<uint32_t>();
     if (j.contains("materialIndex")) v.materialIndex = j.at("materialIndex").get<uint32_t>();
     if (j.contains("postProcessFlags")) v.postProcessFlags = j.at("postProcessFlags").get<uint32_t>();
@@ -295,6 +316,8 @@ inline void to_json(nlohmann::json& j, const Engine::ECS::ParticleEmitter& v) {
         {"endColor", v.endColor},
         {"startScale", v.startScale},
         {"endScale", v.endScale},
+        {"modelGuid", v.modelGuid},
+        {"textureGuid", v.textureGuid},
         {"modelIndex", v.modelIndex},
         {"textureIndex", v.textureIndex},
         {"bufferIndex", v.bufferIndex},
@@ -314,6 +337,8 @@ inline void from_json(const nlohmann::json& j, Engine::ECS::ParticleEmitter& v) 
     if (j.contains("endColor")) v.endColor = j.at("endColor").get<Engine::Math::Vector4>();
     if (j.contains("startScale")) v.startScale = j.at("startScale").get<float>();
     if (j.contains("endScale")) v.endScale = j.at("endScale").get<float>();
+    if (j.contains("modelGuid")) v.modelGuid = j.at("modelGuid").get<uint64_t>();
+    if (j.contains("textureGuid")) v.textureGuid = j.at("textureGuid").get<uint64_t>();
     if (j.contains("modelIndex")) v.modelIndex = j.at("modelIndex").get<uint32_t>();
     if (j.contains("textureIndex")) v.textureIndex = j.at("textureIndex").get<uint32_t>();
     if (j.contains("bufferIndex")) v.bufferIndex = j.at("bufferIndex").get<uint32_t>();
@@ -321,18 +346,24 @@ inline void from_json(const nlohmann::json& j, Engine::ECS::ParticleEmitter& v) 
 inline void to_json(nlohmann::json& j, const Engine::ECS::Skybox& v) {
     j = nlohmann::json{
         {"isEnabled", v.isEnabled},
+        {"textureGuid", v.textureGuid},
         {"textureIndex", v.textureIndex},
     };
 }
 
 inline void from_json(const nlohmann::json& j, Engine::ECS::Skybox& v) {
     if (j.contains("isEnabled")) v.isEnabled = j.at("isEnabled").get<uint32_t>();
+    if (j.contains("textureGuid")) v.textureGuid = j.at("textureGuid").get<uint64_t>();
     if (j.contains("textureIndex")) v.textureIndex = j.at("textureIndex").get<uint32_t>();
 }
 
 #ifdef ENGINE_EDITOR
 #include "imgui.h"
 #include "Editor/EditorUI.h"
+#include "Engine/Asset/AssetManager.h"
+#include "Engine/Asset/MaterialManager.h"
+#include "Engine/Asset/TextureManager.h"
+#include "Engine/Asset/FontManager.h"
 namespace Engine::ECS {
 template<typename TProp>
 inline void DrawUI_Camera(Engine::ECS::Camera& v, TProp Prop) {
@@ -346,7 +377,7 @@ template<typename TProp>
 inline void DrawUI_TextRenderer(Engine::ECS::TextRenderer& v, TProp Prop) {
     Prop("IsEnabled", [&]() { return ImGui::Checkbox("IsEnabled", (bool*)&v.isEnabled); });
     Prop("Text", [&]() { return ImGui::InputText("Text", v.text, sizeof(v.text)); });
-    Prop("FontIndex", [&]() { return Editor::EditorUI::AssetPicker("FontIndex", "Font", &v.fontIndex); });
+    Prop("fontGuid", [&]() { bool changed = ::Engine::Editor::EditorUI::AssetPicker("FontGuid", "Font", &v.fontGuid); if (changed) { v.fontIndex = (uint32_t)::Engine::Asset::FontManager::GetInstance().LoadFont(v.fontGuid); } return changed; });
     Prop("Color", [&]() { return ImGui::ColorEdit4("Color", &v.color.x); });
     Prop("Size", [&]() { return ImGui::DragFloat("Size", &v.size, 0.1f); });
     Prop("IsScreenSpace", [&]() { return ImGui::Checkbox("IsScreenSpace", (bool*)&v.isScreenSpace); });
@@ -355,8 +386,8 @@ inline void DrawUI_TextRenderer(Engine::ECS::TextRenderer& v, TProp Prop) {
 template<typename TProp>
 inline void DrawUI_SkinnedMeshRenderer(Engine::ECS::SkinnedMeshRenderer& v, TProp Prop) {
     Prop("IsEnabled", [&]() { return ImGui::Checkbox("IsEnabled", (bool*)&v.isEnabled); });
-    Prop("ModelIndex", [&]() { return Editor::EditorUI::AssetPicker("ModelIndex", "Model", &v.modelIndex); });
-    Prop("MaterialIndex", [&]() { return Editor::EditorUI::AssetPicker("MaterialIndex", "Material", &v.materialIndex); });
+    Prop("modelGuid", [&]() { bool changed = ::Engine::Editor::EditorUI::AssetPicker("ModelGuid", "Model", &v.modelGuid); if (changed) { v.modelIndex = ::Engine::Asset::AssetManager::GetInstance().LoadModel(std::to_string(v.modelGuid)); } return changed; });
+    Prop("materialGuid", [&]() { bool changed = ::Engine::Editor::EditorUI::AssetPicker("MaterialGuid", "Material", &v.materialGuid); if (changed) { v.materialIndex = (uint32_t)::Engine::Asset::MaterialManager::GetInstance().LoadMaterial(v.materialGuid); } return changed; });
     Prop("SkeletonIndex", [&]() { return ImGui::InputScalar("SkeletonIndex", ImGuiDataType_U32, &v.skeletonIndex); });
     Prop("PostProcessFlags", [&]() { return ImGui::Checkbox("PostProcessFlags", (bool*)&v.postProcessFlags); });
     Prop("InternalVertexOffset", [&]() { return ImGui::InputScalar("InternalVertexOffset", ImGuiDataType_U32, &v.internalVertexOffset); });
@@ -373,7 +404,7 @@ inline void DrawUI_Transform(Engine::ECS::Transform& v, TProp Prop) {
 template<typename TProp>
 inline void DrawUI_SpriteRenderer(Engine::ECS::SpriteRenderer& v, TProp Prop) {
     Prop("IsEnabled", [&]() { return ImGui::Checkbox("IsEnabled", (bool*)&v.isEnabled); });
-    Prop("TextureIndex", [&]() { return Editor::EditorUI::AssetPicker("TextureIndex", "Texture", &v.textureIndex); });
+    Prop("textureGuid", [&]() { bool changed = ::Engine::Editor::EditorUI::AssetPicker("TextureGuid", "Texture", &v.textureGuid); if (changed) { v.textureIndex = (uint32_t)::Engine::Asset::TextureManager::GetInstance().LoadTexture(v.textureGuid); } return changed; });
     Prop("Color", [&]() { return ImGui::ColorEdit4("Color", &v.color.x); });
     Prop("Size", [&]() { return ImGui::DragFloat2("Size", &v.size.x, 0.1f); });
     Prop("IsBillboard", [&]() { return ImGui::Checkbox("IsBillboard", (bool*)&v.isBillboard); });
@@ -409,8 +440,8 @@ inline void DrawUI_ScriptComponent(Engine::ECS::ScriptComponent& v, TProp Prop) 
 template<typename TProp>
 inline void DrawUI_MeshRenderer(Engine::ECS::MeshRenderer& v, TProp Prop) {
     Prop("IsEnabled", [&]() { return ImGui::Checkbox("IsEnabled", (bool*)&v.isEnabled); });
-    Prop("ModelIndex", [&]() { return Editor::EditorUI::AssetPicker("ModelIndex", "Model", &v.modelIndex); });
-    Prop("MaterialIndex", [&]() { return Editor::EditorUI::AssetPicker("MaterialIndex", "Material", &v.materialIndex); });
+    Prop("modelGuid", [&]() { bool changed = ::Engine::Editor::EditorUI::AssetPicker("ModelGuid", "Model", &v.modelGuid); if (changed) { v.modelIndex = ::Engine::Asset::AssetManager::GetInstance().LoadModel(std::to_string(v.modelGuid)); } return changed; });
+    Prop("materialGuid", [&]() { bool changed = ::Engine::Editor::EditorUI::AssetPicker("MaterialGuid", "Material", &v.materialGuid); if (changed) { v.materialIndex = (uint32_t)::Engine::Asset::MaterialManager::GetInstance().LoadMaterial(v.materialGuid); } return changed; });
     Prop("PostProcessFlags", [&]() { return ImGui::Checkbox("PostProcessFlags", (bool*)&v.postProcessFlags); });
 }
 
@@ -428,15 +459,15 @@ inline void DrawUI_ParticleEmitter(Engine::ECS::ParticleEmitter& v, TProp Prop) 
     Prop("EndColor", [&]() { return ImGui::ColorEdit4("EndColor", &v.endColor.x); });
     Prop("StartScale", [&]() { return ImGui::DragFloat("StartScale", &v.startScale, 0.1f); });
     Prop("EndScale", [&]() { return ImGui::DragFloat("EndScale", &v.endScale, 0.1f); });
-    Prop("ModelIndex", [&]() { return Editor::EditorUI::AssetPicker("ModelIndex", "Model", &v.modelIndex); });
-    Prop("TextureIndex", [&]() { return Editor::EditorUI::AssetPicker("TextureIndex", "Texture", &v.textureIndex); });
+    Prop("modelGuid", [&]() { bool changed = ::Engine::Editor::EditorUI::AssetPicker("ModelGuid", "Model", &v.modelGuid); if (changed) { v.modelIndex = ::Engine::Asset::AssetManager::GetInstance().LoadModel(std::to_string(v.modelGuid)); } return changed; });
+    Prop("textureGuid", [&]() { bool changed = ::Engine::Editor::EditorUI::AssetPicker("TextureGuid", "Texture", &v.textureGuid); if (changed) { v.textureIndex = (uint32_t)::Engine::Asset::TextureManager::GetInstance().LoadTexture(v.textureGuid); } return changed; });
     Prop("BufferIndex", [&]() { return ImGui::InputScalar("BufferIndex", ImGuiDataType_U32, &v.bufferIndex); });
 }
 
 template<typename TProp>
 inline void DrawUI_Skybox(Engine::ECS::Skybox& v, TProp Prop) {
     Prop("IsEnabled", [&]() { return ImGui::Checkbox("IsEnabled", (bool*)&v.isEnabled); });
-    Prop("TextureIndex", [&]() { return Editor::EditorUI::AssetPicker("TextureIndex", "Texture", &v.textureIndex); });
+    Prop("textureGuid", [&]() { bool changed = ::Engine::Editor::EditorUI::AssetPicker("TextureGuid", "Texture", &v.textureGuid); if (changed) { v.textureIndex = (uint32_t)::Engine::Asset::TextureManager::GetInstance().LoadTexture(v.textureGuid); } return changed; });
 }
 
 } // namespace Engine::ECS

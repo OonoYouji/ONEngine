@@ -5,6 +5,7 @@
 #include "Engine/Core/InputBinding.h"
 #include "Engine/Core/InputMapper.h"
 #include <memory>
+#include <string>
 
 namespace Engine::Editor {
 
@@ -32,8 +33,11 @@ public:
     float& GetSnapRotation() { return snapRotation_; }
     float& GetSnapScale() { return snapScale_; }
 
+    void SetCurrentScenePath(const std::string& path) { currentScenePath_ = path; }
+    const std::string& GetCurrentScenePath() const { return currentScenePath_; }
+
 private:
-    EditorContext() : selectedEntity_(0), snapEnabled_(false), snapTranslation_(1.0f), snapRotation_(45.0f), snapScale_(0.5f) {
+    EditorContext() : selectedEntity_(0), snapEnabled_(false), snapTranslation_(1.0f), snapRotation_(45.0f), snapScale_(0.5f), currentScenePath_("Assets/Scene/MainScene.scene") {
         camera_ = std::make_unique<EditorCamera>();
         
         // エディター用のデフォルトバインド
@@ -58,6 +62,8 @@ private:
     float snapTranslation_;
     float snapRotation_;
     float snapScale_;
+
+    std::string currentScenePath_;
 };
 
 } // namespace Engine::Editor

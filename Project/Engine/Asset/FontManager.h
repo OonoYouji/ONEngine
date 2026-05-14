@@ -35,9 +35,11 @@ public:
 
     /// @brief フォントをロードし、インデックスを返す
     int32_t LoadFont(const std::string& pathOrGuid, float fontSize = 32.0f);
+    int32_t LoadFont(uint64_t guid, float fontSize = 32.0f);
 
     /// @brief インデックスからフォントを取得
     Font* GetFontByIndex(uint32_t index);
+    Font* GetFontByGuid(uint64_t guid);
 
 private:
     FontManager() = default;
@@ -46,7 +48,7 @@ private:
     static FontManager* instance_;
 
     Graphics::RenderDevice* device_ = nullptr;
-    std::unordered_map<std::string, std::shared_ptr<Font>> fontMap_;
+    std::unordered_map<uint64_t, std::shared_ptr<Font>> fontMap_;
     std::vector<std::shared_ptr<Font>> indexedFonts_;
 };
 

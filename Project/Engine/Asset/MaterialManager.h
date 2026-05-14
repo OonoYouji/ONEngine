@@ -34,13 +34,15 @@ public:
     void Shutdown();
 
     /// @brief マテリアルをロードし、インデックスを返す
-    int32_t LoadMaterial(const std::string& pathOrGuid);
+    int32_t LoadMaterial(const std::string& filePath);
+    int32_t LoadMaterial(uint64_t guid);
 
     /// @brief インデックスからマテリアルを取得
-    Material* GetMaterial(const std::string& pathOrGuid);
+    Material* GetMaterial(uint64_t guid);
     Material* GetMaterialByIndex(uint32_t index);
 
-    std::shared_ptr<Material> LoadMaterialAsAsset(const std::string& pathOrGuid);
+    std::shared_ptr<Material> LoadMaterialAsAsset(uint64_t guid);
+    std::shared_ptr<Material> LoadMaterialAsAsset(const std::string& path);
 
 private:
     MaterialManager();
@@ -49,7 +51,7 @@ private:
     static MaterialManager* instance_;
 
     Graphics::RenderDevice* device_ = nullptr;
-    std::unordered_map<std::string, std::shared_ptr<Material>> materials_;
+    std::unordered_map<uint64_t, std::shared_ptr<Material>> materials_;
     std::vector<std::shared_ptr<Material>> indexedMaterials_;
 };
 

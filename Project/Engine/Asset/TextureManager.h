@@ -36,11 +36,14 @@ public:
 
     /// @brief テクスチャをロードし、インデックスを返す
     int32_t LoadTexture(const std::string& filePath);
+    int32_t LoadTexture(uint64_t guid);
 
     /// @brief インデックスからテクスチャを取得
-    Texture* GetTexture(const std::string& pathOrGuid);
+    Texture* GetTexture(uint64_t guid);
+    Texture* GetTextureByIndex(uint32_t index);
 
-    std::shared_ptr<Texture> LoadTextureAsAsset(const std::string& pathOrGuid);
+    std::shared_ptr<Texture> LoadTextureAsAsset(uint64_t guid);
+    std::shared_ptr<Texture> LoadTextureAsAsset(const std::string& path);
 
 private:
     TextureManager() = default;
@@ -49,9 +52,8 @@ private:
     static TextureManager* instance_;
 
     Graphics::RenderDevice* device_ = nullptr;
-    std::unordered_map<std::string, std::shared_ptr<Texture>> textureMap_;
-
-    std::string ToGuid(const std::string& pathOrGuid);
+    std::unordered_map<uint64_t, std::shared_ptr<Texture>> textureMap_;
+    std::vector<std::shared_ptr<Texture>> indexedTextures_;
 };
 
 } // namespace Engine::Asset

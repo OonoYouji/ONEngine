@@ -41,8 +41,8 @@ public:
     virtual AssetType GetType() const = 0;
 
     /// @brief GUIDを取得
-    const std::string& GetGuid() const { return guid_; }
-    void SetGuid(const std::string& guid) { guid_ = guid; }
+    uint64_t GetGuid() const { return guid_; }
+    void SetGuid(uint64_t guid) { guid_ = guid; }
 
     /// @brief ファイルパスを取得
     const std::string& GetPath() const { return path_; }
@@ -52,7 +52,7 @@ public:
     AssetLoadState GetLoadState() const { return state_; }
 
 protected:
-    std::string guid_;
+    uint64_t guid_ = 0;
     std::string path_;
     AssetLoadState state_ = AssetLoadState::Unloaded;
 };

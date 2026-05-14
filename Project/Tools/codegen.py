@@ -108,7 +108,24 @@ def generate_editor_ui(type_name, fields, namespace):
         label = f_name[0].upper() + f_name[1:]
         
         if asset_type:
-            ui_code += "    Prop(\"{}\", [&]() {{ return Editor::EditorUI::AssetPicker(\"{}\", \"{}\", &v.{}); }});\n".format(label, label, asset_type, f_name)
+            index_field_name = f_name.replace("Guid", "Index")
+            has_index_field = any(f["name"] == index_field_name for f in fields)
+            
+            if has_index_field:
+                if asset_type == "Model":
+                    update_logic = "v.{} = ::Engine::Asset::AssetManager::GetInstance().LoadModel(std::to_string(v.{}));".format(index_field_name, f_name)
+                elif asset_type == "Material":
+                    update_logic = "v.{} = (uint32_t)::Engine::Asset::MaterialManager::GetInstance().LoadMaterial(v.{});".format(index_field_name, f_name)
+                elif asset_type == "Texture":
+                    update_logic = "v.{} = (uint32_t)::Engine::Asset::TextureManager::GetInstance().LoadTexture(v.{});".format(index_field_name, f_name)
+                elif asset_type == "Font":
+                    update_logic = "v.{} = (uint32_t)::Engine::Asset::FontManager::GetInstance().LoadFont(v.{});".format(index_field_name, f_name)
+                else:
+                    update_logic = ""
+
+                ui_code += "    Prop(\"{}\", [&]() {{ bool changed = ::Engine::Editor::EditorUI::AssetPicker(\"{}\", \"{}\", &v.{}); if (changed) {{ {} }} return changed; }});\n".format(f_name, label, asset_type, f_name, update_logic)
+            else:
+                ui_code += "    Prop(\"{}\", [&]() {{ return ::Engine::Editor::EditorUI::AssetPicker(\"{}\", \"{}\", &v.{}); }});\n".format(f_name, label, asset_type, f_name)
         elif f_type == "float":
             ui_code += "    Prop(\"{}\", [&]() {{ return ImGui::DragFloat(\"{}\", &v.{}, 0.1f); }});\n".format(label, label, f_name)
         elif f_type == "float2":
@@ -241,6 +258,10 @@ def process_file(yaml_path):
     
     if is_component_file:
         cpp_content += "\n#ifdef ENGINE_EDITOR\n#include \"imgui.h\"\n#include \"Editor/EditorUI.h\"\n"
+        cpp_content += "#include \"Engine/Asset/AssetManager.h\"\n"
+        cpp_content += "#include \"Engine/Asset/MaterialManager.h\"\n"
+        cpp_content += "#include \"Engine/Asset/TextureManager.h\"\n"
+        cpp_content += "#include \"Engine/Asset/FontManager.h\"\n"
         cpp_content += "namespace {} {{\n".format(namespace)
         cpp_content += ui_content
         cpp_content += "}} // namespace {}\n".format(namespace)

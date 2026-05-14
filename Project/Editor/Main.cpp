@@ -11,6 +11,8 @@
 #include "SceneView.h"
 #include "ProjectView.h"
 #include "EditorContext.h"
+#include "EditorUtils.h"
+#include "Engine/Scene/SceneLoader.h"
 
 extern "C" void EcsInterop_LinkForce();
 
@@ -163,7 +165,40 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
 
 		if (ImGui::BeginMainMenuBar()) {
 			if (ImGui::BeginMenu("ファイル (File)")) {
-				if (ImGui::MenuItem("終了 (Exit)")) { /* TODO */ }
+                auto& context = Engine::Editor::EditorContext::GetInstance();
+                if (ImGui::MenuItem("シーン保存 (Save Scene)")) {
+                    auto& reg = Engine::Core::Application::GetInstance().GetRegistry();
+                    std::string path = context.GetCurrentScenePath();
+                    if (path.empty()) {
+                        auto selected = Engine::Editor::EditorUtils::SaveFileDialog("Scene Files (*.scene)\0*.scene\0");
+                        if (selected) {
+                            path = *selected;
+                            context.SetCurrentScenePath(path);
+                        }
+                    }
+                    if (!path.empty()) {
+                        Engine::Scene::SceneLoader::SaveScene(path, reg);
+                    }
+                }
+                if (ImGui::MenuItem("名前を付けて保存 (Save Scene As)")) {
+                    auto& reg = Engine::Core::Application::GetInstance().GetRegistry();
+                    auto selected = Engine::Editor::EditorUtils::SaveFileDialog("Scene Files (*.scene)\0*.scene\0");
+                    if (selected) {
+                        context.SetCurrentScenePath(*selected);
+                        Engine::Scene::SceneLoader::SaveScene(*selected, reg);
+                    }
+                }
+                if (ImGui::MenuItem("シーン読込 (Load Scene)")) {
+                    auto selected = Engine::Editor::EditorUtils::OpenFileDialog("Scene Files (*.scene)\0*.scene\0");
+                    if (selected) {
+                        auto& reg = Engine::Core::Application::GetInstance().GetRegistry();
+                        reg.Clear();
+                        context.SetCurrentScenePath(*selected);
+                        Engine::Scene::SceneLoader::LoadScene(*selected, reg);
+                    }
+                }
+                ImGui::Separator();
+				if (ImGui::MenuItem("終了 (Exit)")) { PostQuitMessage(0); }
 				ImGui::EndMenu();
 			}
 
@@ -204,7 +239,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
 		// エディタ操作は ImGui キャプチャを無視して入力を取る (ignoreCapture = true)
 		context.GetInputMapper().Update(rawInput, context.GetBindingTable(), context.GetActionMap(), true);
 		
-		context.GetCamera().Update(ImGui::GetIO().DeltaTime);
+		auto& editorCam = context.GetCamera();
+		editorCam.Update(ImGui::GetIO().DeltaTime);
+
+		// Engine 側にエディタの状態を通知
+		app.SetEditorCameraData(
+			editorCam.GetViewMatrix(),
+			editorCam.GetViewProjMatrix(),
+			editorCam.GetPosition(),
+			editorCam.GetNearZ(),
+			editorCam.GetFarZ()
+		);
+		app.SetEditorSelectedEntity(context.GetSelectedEntity());
 
 		hierarchyView.Render(registry);
 		inspectorView.Render(registry);

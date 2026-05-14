@@ -6,6 +6,7 @@
 #include "Schema/Buffers.h"
 #include "Schema/Components.h"
 #include <cstring>
+#include <algorithm>
 
 namespace Engine::ECS {
 
@@ -13,10 +14,6 @@ ComponentRegistry* ComponentRegistry::instance_ = nullptr;
 
 void InitializeComponentRegistry() {
     auto& reg = ComponentRegistry::GetInstance();
-    auto& am = Asset::AssetManager::GetInstance();
-    auto& mm = Asset::MaterialManager::GetInstance();
-    auto& tm = Asset::TextureManager::GetInstance();
-    auto& fm = Asset::FontManager::GetInstance();
 
     // ID 1: Transform
     reg.Register<Transform>(1, "Transform", 
@@ -28,10 +25,15 @@ void InitializeComponentRegistry() {
     reg.Register<MeshRenderer>(2, "MeshRenderer",
         [](const json& j, MeshRenderer& m) { 
             from_json(j, m);
-            if (j.contains("meshPath")) m.modelIndex = Asset::AssetManager::GetInstance().LoadModel(j["meshPath"]);
-            if (j.contains("materialPath")) m.materialIndex = Asset::MaterialManager::GetInstance().LoadMaterial(j["materialPath"]);
+            if (j.contains("meshGuid")) m.modelIndex = Asset::AssetManager::GetInstance().LoadModel(std::to_string(j["meshGuid"].get<uint64_t>()));
+            if (j.contains("materialGuid")) m.materialIndex = Asset::MaterialManager::GetInstance().LoadMaterial(std::to_string(j["materialGuid"].get<uint64_t>()));
         },
-        [](const MeshRenderer& m) { json j; to_json(j, m); return j; }
+        [](const MeshRenderer& m) { 
+            json j; to_json(j, m);
+            if (auto asset = Asset::AssetManager::GetInstance().GetModelByIndex(m.modelIndex)) j["meshGuid"] = asset->GetGuid();
+            if (auto asset = Asset::MaterialManager::GetInstance().GetMaterialByIndex(m.materialIndex)) j["materialGuid"] = asset->GetGuid();
+            return j; 
+        }
     );
 
     // ID 3: ScriptComponent
@@ -62,52 +64,73 @@ void InitializeComponentRegistry() {
     reg.Register<SpriteRenderer>(7, "SpriteRenderer",
         [](const json& j, SpriteRenderer& s) { 
             from_json(j, s);
-            if (j.contains("texturePath")) s.textureIndex = Asset::TextureManager::GetInstance().LoadTexture(j["texturePath"]);
+            if (j.contains("textureGuid")) s.textureIndex = Asset::TextureManager::GetInstance().LoadTexture(j["textureGuid"].get<uint64_t>());
         },
-        [](const SpriteRenderer& s) { json j; to_json(j, s); return j; }
+        [](const SpriteRenderer& s) { 
+            json j; to_json(j, s); 
+            if (auto asset = Asset::TextureManager::GetInstance().GetTextureByIndex(s.textureIndex)) j["textureGuid"] = asset->GetGuid();
+            return j; 
+        }
     );
 
     // ID 8: ParticleEmitter
     reg.Register<ParticleEmitter>(8, "ParticleEmitter",
         [](const json& j, ParticleEmitter& p) { 
             from_json(j, p);
-            if (j.contains("texturePath")) p.textureIndex = Asset::TextureManager::GetInstance().LoadTexture(j["texturePath"]);
-            if (j.contains("modelPath")) p.modelIndex = Asset::AssetManager::GetInstance().LoadModel(j["modelPath"]);
+            if (j.contains("textureGuid")) p.textureIndex = Asset::TextureManager::GetInstance().LoadTexture(j["textureGuid"].get<uint64_t>());
+            if (j.contains("modelGuid")) p.modelIndex = Asset::AssetManager::GetInstance().LoadModel(std::to_string(j["modelGuid"].get<uint64_t>()));
         },
-        [](const ParticleEmitter& p) { json j; to_json(j, p); return j; }
+        [](const ParticleEmitter& p) { 
+            json j; to_json(j, p); 
+            if (auto asset = Asset::TextureManager::GetInstance().GetTextureByIndex(p.textureIndex)) j["textureGuid"] = asset->GetGuid();
+            if (auto asset = Asset::AssetManager::GetInstance().GetModelByIndex(p.modelIndex)) j["modelGuid"] = asset->GetGuid();
+            return j; 
+        }
     );
 
     // ID 9: Skybox
     reg.Register<Skybox>(9, "Skybox",
         [](const json& j, Skybox& s) { 
             from_json(j, s);
-            if (j.contains("texturePath")) s.textureIndex = Asset::TextureManager::GetInstance().LoadTexture(j["texturePath"]);
+            if (j.contains("textureGuid")) s.textureIndex = Asset::TextureManager::GetInstance().LoadTexture(j["textureGuid"].get<uint64_t>());
         },
-        [](const Skybox& s) { json j; to_json(j, s); return j; }
+        [](const Skybox& s) { 
+            json j; to_json(j, s); 
+            if (auto asset = Asset::TextureManager::GetInstance().GetTextureByIndex(s.textureIndex)) j["textureGuid"] = asset->GetGuid();
+            return j; 
+        }
     );
 
     // ID 10: TextRenderer
     reg.Register<TextRenderer>(10, "TextRenderer", 
         [](const json& j, TextRenderer& tr) { 
             from_json(j, tr);
-            if (j.contains("fontPath")) tr.fontIndex = Asset::FontManager::GetInstance().LoadFont(j["fontPath"]);
+            if (j.contains("fontGuid")) tr.fontIndex = Asset::FontManager::GetInstance().LoadFont(j["fontGuid"].get<uint64_t>());
         },
-        [](const TextRenderer& tr) { json j; to_json(j, tr); return j; }
+        [](const TextRenderer& tr) { 
+            json j; to_json(j, tr); 
+            if (auto asset = Asset::FontManager::GetInstance().GetFontByIndex(tr.fontIndex)) j["fontGuid"] = asset->GetGuid();
+            return j; 
+        }
     );
 
     // ID 11: SkinnedMeshRenderer
     reg.Register<SkinnedMeshRenderer>(11, "SkinnedMeshRenderer",
         [](const json& j, SkinnedMeshRenderer& smr) {
             from_json(j, smr);
-            if (j.contains("meshPath")) smr.modelIndex = Asset::AssetManager::GetInstance().LoadModel(j["meshPath"]);
-            if (j.contains("materialPath")) smr.materialIndex = Asset::MaterialManager::GetInstance().LoadMaterial(j["materialPath"]);
+            if (j.contains("meshGuid")) smr.modelIndex = Asset::AssetManager::GetInstance().LoadModel(std::to_string(j["meshGuid"].get<uint64_t>()));
+            if (j.contains("materialGuid")) smr.materialIndex = Asset::MaterialManager::GetInstance().LoadMaterial(std::to_string(j["materialGuid"].get<uint64_t>()));
         },
-        [](const SkinnedMeshRenderer& smr) { json j; to_json(j, smr); return j; }
+        [](const SkinnedMeshRenderer& smr) { 
+            json j; to_json(j, smr); 
+            if (auto asset = Asset::AssetManager::GetInstance().GetModelByIndex(smr.modelIndex)) j["meshGuid"] = asset->GetGuid();
+            if (auto asset = Asset::MaterialManager::GetInstance().GetMaterialByIndex(smr.materialIndex)) j["materialGuid"] = asset->GetGuid();
+            return j; 
+        }
     );
 
     // ID 100: Tag
     reg.Register<Tag>(100, "Tag",
-
         [](const json& j, Tag& t) { from_json(j, t); },
         [](const Tag& t) { json j; to_json(j, t); return j; }
     );

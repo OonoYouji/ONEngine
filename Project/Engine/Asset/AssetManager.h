@@ -38,7 +38,8 @@ public:
     void Shutdown();
 
     /// @brief ファイルパスまたはGUIDからモデルをアセットとしてロード
-    std::shared_ptr<Model> LoadModelAsAsset(const std::string& pathOrGuid);
+    std::shared_ptr<Model> LoadModelAsAsset(uint64_t guid);
+    std::shared_ptr<Model> LoadModelAsAsset(const std::string& path);
 
     /// @brief 旧方式の互換性用
     uint32_t LoadModel(const std::string& pathOrGuid);
@@ -47,7 +48,7 @@ public:
     std::shared_ptr<Model> GetModelByIndex(uint32_t index);
 
     /// @brief ロード済みメッシュリストを取得
-    const std::vector<std::unique_ptr<Mesh>>& GetMeshes(const std::string& pathOrGuid);
+    const std::vector<std::unique_ptr<Mesh>>& GetMeshes(uint64_t guid);
     const std::vector<std::unique_ptr<Mesh>>& GetMeshesByIndex(uint32_t index);
 
     D3D12_GPU_VIRTUAL_ADDRESS GetMeshInfoBufferAddress() const;
@@ -60,12 +61,10 @@ private:
     static AssetManager* instance_;
 
     Graphics::RenderDevice* device_ = nullptr;
-    std::unordered_map<std::string, std::shared_ptr<Model>> models_;
+    std::unordered_map<uint64_t, std::shared_ptr<Model>> models_;
     std::vector<std::shared_ptr<Model>> indexedModels_;
 
     std::unique_ptr<Graphics::StructuredBuffer> meshInfoBuffer_;
-
-    std::string ToGuid(const std::string& pathOrGuid);
 };
 
 } // namespace Engine::Asset

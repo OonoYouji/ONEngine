@@ -25,6 +25,9 @@ void MaterialManager::Initialize(Graphics::RenderDevice* device) {
     // AssetRegistryへの登録
     AssetRegistry::GetInstance().RegisterType<Material>(AssetType::Material);
     AssetRegistry::GetInstance().RegisterLoader(AssetType::Material, [this](const std::string& pathOrGuid) {
+        if (!pathOrGuid.empty() && std::all_of(pathOrGuid.begin(), pathOrGuid.end(), ::isdigit)) {
+            return this->LoadMaterialAsAsset(std::stoull(pathOrGuid));
+        }
         return this->LoadMaterialAsAsset(pathOrGuid);
     });
 }
@@ -35,7 +38,13 @@ void MaterialManager::Shutdown() {
 }
 
 int32_t MaterialManager::LoadMaterial(const std::string& pathOrGuid) {
-    auto mat = LoadMaterialAsAsset(pathOrGuid);
+    std::shared_ptr<Material> mat;
+    if (!pathOrGuid.empty() && std::all_of(pathOrGuid.begin(), pathOrGuid.end(), ::isdigit)) {
+        mat = LoadMaterialAsAsset(std::stoull(pathOrGuid));
+    } else {
+        mat = LoadMaterialAsAsset(pathOrGuid);
+    }
+
     if (!mat) return -1;
 
     // 既に登録済みかチェック
@@ -47,25 +56,27 @@ int32_t MaterialManager::LoadMaterial(const std::string& pathOrGuid) {
     return static_cast<int32_t>(indexedMaterials_.size() - 1);
 }
 
-std::shared_ptr<Material> MaterialManager::LoadMaterialAsAsset(const std::string& pathOrGuid) {
-    // GUID変換
-    std::string guid = pathOrGuid;
-    if (AssetDatabase::GetInstance().GetPathFromGuid(pathOrGuid) == "") {
-        std::string found = AssetDatabase::GetInstance().GetGuidFromPath(pathOrGuid);
-        if (found != "") guid = found;
+int32_t MaterialManager::LoadMaterial(uint64_t guid) {
+    auto mat = LoadMaterialAsAsset(guid);
+    if (!mat) return -1;
+
+    for (size_t i = 0; i < indexedMaterials_.size(); ++i) {
+        if (indexedMaterials_[i]->GetGuid() == mat->GetGuid()) return static_cast<int32_t>(i);
     }
 
+    indexedMaterials_.push_back(mat);
+    return static_cast<int32_t>(indexedMaterials_.size() - 1);
+}
+
+std::shared_ptr<Material> MaterialManager::LoadMaterialAsAsset(uint64_t guid) {
+    if (guid == 0) return nullptr;
     if (materials_.count(guid)) return materials_[guid];
 
-    // 実際のパス取得
     std::string path = AssetDatabase::GetInstance().GetPathFromGuid(guid);
-    if (path == "") path = pathOrGuid;
+    if (path == "") return nullptr;
 
     std::ifstream file(path);
-    if (!file.is_open()) {
-        Engine::Console::LogError(std::format("Failed to open material: {}", path));
-        return nullptr;
-    }
+    if (!file.is_open()) return nullptr;
 
     try {
         json data = json::parse(file);
@@ -76,7 +87,6 @@ std::shared_ptr<Material> MaterialManager::LoadMaterialAsAsset(const std::string
         material->name = data.value("name", "");
         material->pipelineName = data.value("pipeline", "");
         
-        // テクスチャの依存解決 (インデックス化)
         std::string textureName = data.value("texture", "");
         if (!textureName.empty()) {
             material->textureIndex = TextureManager::GetInstance().LoadTexture(textureName);
@@ -84,10 +94,8 @@ std::shared_ptr<Material> MaterialManager::LoadMaterialAsAsset(const std::string
             material->textureIndex = 0xFFFFFFFF;
         }
 
-        // パラメータの読み込み
         if (data.contains("parameters")) {
             auto& params = data["parameters"];
-            Engine::Console::Log(std::format("Material [{}]: 'parameters' found.", material->name));
             if (params.contains("baseColor")) {
                 auto& c = params["baseColor"];
                 if (c.is_array() && c.size() >= 3) {
@@ -95,32 +103,28 @@ std::shared_ptr<Material> MaterialManager::LoadMaterialAsAsset(const std::string
                     material->baseColor.y = c[1].get<float>();
                     material->baseColor.z = c[2].get<float>();
                     material->baseColor.w = (c.size() > 3) ? c[3].get<float>() : 1.0f;
-                    Engine::Console::Log(std::format("  baseColor loaded: ({}, {}, {}, {})", 
-                        material->baseColor.x, material->baseColor.y, material->baseColor.z, material->baseColor.w));
                 }
             }
-        } else {
-            Engine::Console::LogWarning(std::format("Material [{}]: 'parameters' NOT found. Using defaults.", material->name));
         }
 
-        material->OnLoaded(); // state_ = Ready
+        material->OnLoaded();
         materials_[guid] = material;
-        Engine::Console::Log(std::format("MaterialManager: Loaded [{}]", path));
         return material;
     }
-    catch (const std::exception& e) {
-        Engine::Console::LogError(std::format("Failed to parse material: {}\n{}", path, e.what()));
+    catch (...) {
         return nullptr;
     }
 }
 
-Material* MaterialManager::GetMaterial(const std::string& pathOrGuid) {
-    std::string guid = pathOrGuid;
-    if (AssetDatabase::GetInstance().GetPathFromGuid(pathOrGuid) == "") {
-        std::string found = AssetDatabase::GetInstance().GetGuidFromPath(pathOrGuid);
-        if (found != "") guid = found;
-    }
+std::shared_ptr<Material> MaterialManager::LoadMaterialAsAsset(const std::string& path) {
+    uint64_t guid = AssetDatabase::GetInstance().GetGuidFromPath(path);
+    if (guid != 0) return LoadMaterialAsAsset(guid);
 
+    // GUIDがない場合（未登録アセット、またはメモリ内のみ）
+    return nullptr;
+}
+
+Material* MaterialManager::GetMaterial(uint64_t guid) {
     auto it = materials_.find(guid);
     return (it != materials_.end()) ? it->second.get() : nullptr;
 }

@@ -3,6 +3,7 @@
 #include <string>
 #include <unordered_map>
 #include <filesystem>
+#include <cstdint>
 
 namespace Engine::Asset {
 
@@ -24,14 +25,17 @@ public:
         instance_ = nullptr;
     }
 
-    /// @brief 指定ディレクトリをスキャンしてアセット情報を収集
+    /// @brief 指定ディレクトリをスキャンしてアセット情報を収集。必要なら.metaを生成。
     void Scan(const std::string& directory);
 
     /// @brief GUIDからファイルパスを取得
-    std::string GetPathFromGuid(const std::string& guid);
+    std::string GetPathFromGuid(uint64_t guid);
 
     /// @brief ファイルパスからGUIDを取得
-    std::string GetGuidFromPath(const std::string& path);
+    uint64_t GetGuidFromPath(const std::string& path);
+
+    /// @brief 新しいGUIDを生成
+    uint64_t GenerateGuid();
 
 private:
     AssetDatabase() = default;
@@ -39,8 +43,11 @@ private:
 
     static AssetDatabase* instance_;
 
-    std::unordered_map<std::string, std::string> guidToPath_;
-    std::unordered_map<std::string, std::string> pathToGuid_;
+    std::unordered_map<uint64_t, std::string> guidToPath_;
+    std::unordered_map<std::string, uint64_t> pathToGuid_;
+
+    /// @brief .metaファイルを保存
+    void SaveMeta(const std::filesystem::path& assetPath, uint64_t guid);
 };
 
 } // namespace Engine::Asset

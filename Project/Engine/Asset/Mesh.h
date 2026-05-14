@@ -6,7 +6,6 @@
 #include <string>
 #include "Engine/Core/Math/Math.h"
 #include "Schema/Buffers.h"
-#include "Schema/Components.h"
 
 namespace Engine::Asset {
 

@@ -51,6 +51,16 @@ public:
     void SetEditorMode(bool enabled) { isEditorMode_ = enabled; }
     bool IsEditorMode() const { return isEditorMode_; }
 
+    void SetEditorCameraData(const Math::Matrix4x4& view, const Math::Matrix4x4& viewProj, const Math::Vector3& pos, float nearZ, float farZ) {
+        editorView_ = view;
+        editorViewProj_ = viewProj;
+        editorCameraPos_ = pos;
+        editorNearZ_ = nearZ;
+        editorFarZ_ = farZ;
+    }
+
+    void SetEditorSelectedEntity(uint32_t entityID) { editorSelectedEntityID_ = entityID; }
+
     HWND GetHWND() const { return window_.GetHWND(); }
 
     ECS::Registry& GetRegistry() { return registry_; }
@@ -98,6 +108,14 @@ private:
     void(*shutdownDelegate_)() = nullptr;
 
     bool isEditorMode_ = false;
+
+    // Editor rendering data
+    Math::Matrix4x4 editorView_ = Math::Matrix4x4::kIdentity;
+    Math::Matrix4x4 editorViewProj_ = Math::Matrix4x4::kIdentity;
+    Math::Vector3 editorCameraPos_ = { 0, 0, 0 };
+    float editorNearZ_ = 0.1f;
+    float editorFarZ_ = 1000.0f;
+    uint32_t editorSelectedEntityID_ = 0xFFFFFFFF;
 
     RawInputService rawInputService_;
     ActionMap gameActionMap_;

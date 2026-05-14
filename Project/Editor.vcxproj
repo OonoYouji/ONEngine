@@ -169,9 +169,11 @@ copy "$(ProjectDir)Externals\DotNetHost\nethost.dll" "$(TargetDir)nethost.dll"</
     <ClInclude Include="Editor\EditorCamera.h" />
     <ClInclude Include="Editor\EditorContext.h" />
     <ClInclude Include="Editor\EditorUI.h" />
+    <ClInclude Include="Editor\EditorUtils.h" />
     <ClInclude Include="Editor\HierarchyView.h" />
     <ClInclude Include="Editor\InspectorView.h" />
     <ClInclude Include="Editor\ProjectView.h" />
+    <ClInclude Include="Editor\RemoveComponentCommand.h" />
     <ClInclude Include="Editor\SceneView.h" />
   </ItemGroup>
   <ItemGroup>

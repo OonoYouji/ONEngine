@@ -17,13 +17,17 @@ void AssetManager::Initialize(Graphics::RenderDevice* device) {
     meshInfoBuffer_ = std::make_unique<Graphics::StructuredBuffer>();
     meshInfoBuffer_->Create(device, sizeof(GeneratedSchema::MeshInfo), 1024, nullptr, false);
 
-    // 起動時にAssetsディレクトリをスキャン
+    // 起動時にAssetsディレクトリをスキャンして .meta を生成/同期
     AssetDatabase::GetInstance().Scan("Project/Assets");
     AssetDatabase::GetInstance().Scan("Project/Packages");
 
     // AssetRegistryへの登録
     AssetRegistry::GetInstance().RegisterType<Model>(AssetType::Model);
     AssetRegistry::GetInstance().RegisterLoader(AssetType::Model, [this](const std::string& pathOrGuid) {
+        // 数字のみなら GUID として扱う
+        if (!pathOrGuid.empty() && std::all_of(pathOrGuid.begin(), pathOrGuid.end(), ::isdigit)) {
+            return this->LoadModelAsAsset(std::stoull(pathOrGuid));
+        }
         return this->LoadModelAsAsset(pathOrGuid);
     });
 }
@@ -63,20 +67,19 @@ void AssetManager::UpdateMeshInfoBuffer() {
     meshInfoBuffer_->Update(infos.data(), (uint32_t)(infos.size() * sizeof(GeneratedSchema::MeshInfo)));
 }
 
-std::string AssetManager::ToGuid(const std::string& pathOrGuid) {
-    if (AssetDatabase::GetInstance().GetPathFromGuid(pathOrGuid) != "") return pathOrGuid;
-    std::string guid = AssetDatabase::GetInstance().GetGuidFromPath(pathOrGuid);
-    return (guid != "") ? guid : pathOrGuid;
-}
-
 uint32_t AssetManager::LoadModel(const std::string& pathOrGuid) {
-    auto model = LoadModelAsAsset(pathOrGuid);
+    std::shared_ptr<Model> model;
+    if (!pathOrGuid.empty() && std::all_of(pathOrGuid.begin(), pathOrGuid.end(), ::isdigit)) {
+        model = LoadModelAsAsset(std::stoull(pathOrGuid));
+    } else {
+        model = LoadModelAsAsset(pathOrGuid);
+    }
+
     if (!model) return 0xFFFFFFFF;
     
     // インデックス管理
     for (uint32_t i = 0; i < (uint32_t)indexedModels_.size(); ++i) {
         if (indexedModels_[i] == model) {
-            // Engine::Console::Log(std::format("AssetManager: Model {} already at index {}", pathOrGuid, i));
             return i;
         }
     }
@@ -87,13 +90,15 @@ uint32_t AssetManager::LoadModel(const std::string& pathOrGuid) {
     return newIndex;
 }
 
-std::shared_ptr<Model> AssetManager::LoadModelAsAsset(const std::string& pathOrGuid) {
-    std::string guid = ToGuid(pathOrGuid);
+std::shared_ptr<Model> AssetManager::LoadModelAsAsset(uint64_t guid) {
+    if (guid == 0) return nullptr;
     if (models_.count(guid)) return models_[guid];
     
-    // ロードには実際のパスが必要
     std::string path = AssetDatabase::GetInstance().GetPathFromGuid(guid);
-    if (path == "") path = pathOrGuid; // GUIDで見つからなければパスとして扱う
+    if (path == "") {
+        Engine::Console::LogError(std::format("AssetManager: Could not find path for GUID {}", guid));
+        return nullptr;
+    }
 
     auto model = ModelLoader::LoadModel(device_, path);
     if (model) {
@@ -103,7 +108,20 @@ std::shared_ptr<Model> AssetManager::LoadModelAsAsset(const std::string& pathOrG
         models_[guid] = model;
         return model;
     }
-    Engine::Console::LogError(std::format("AssetManager: Failed to load model {}.", path));
+    return nullptr;
+}
+
+std::shared_ptr<Model> AssetManager::LoadModelAsAsset(const std::string& path) {
+    uint64_t guid = AssetDatabase::GetInstance().GetGuidFromPath(path);
+    if (guid != 0) return LoadModelAsAsset(guid);
+
+    // GUIDがない場合（未登録アセット）
+    auto model = ModelLoader::LoadModel(device_, path);
+    if (model) {
+        model->SetPath(path);
+        // メモリ内のみのモデルとして扱う（保存時は不都合があるが）
+        return model;
+    }
     return nullptr;
 }
 
@@ -112,9 +130,8 @@ std::shared_ptr<Model> AssetManager::GetModelByIndex(uint32_t index) {
     return indexedModels_[index];
 }
 
-const std::vector<std::unique_ptr<Mesh>>& AssetManager::GetMeshes(const std::string& pathOrGuid) {
+const std::vector<std::unique_ptr<Mesh>>& AssetManager::GetMeshes(uint64_t guid) {
     static std::vector<std::unique_ptr<Mesh>> empty;
-    std::string guid = ToGuid(pathOrGuid);
     auto it = models_.find(guid);
     return (it != models_.end()) ? it->second->GetMeshes() : empty;
 }

@@ -427,6 +427,13 @@ void ProjectView::DeletePath(const std::filesystem::path& path) {
     try {
         if (std::filesystem::exists(path)) {
             std::filesystem::remove_all(path);
+            
+            // .meta も削除
+            std::filesystem::path metaPath = path.string() + ".meta";
+            if (std::filesystem::exists(metaPath)) {
+                std::filesystem::remove_all(metaPath);
+            }
+
             needsRefresh_ = true;
         }
     } catch (...) {}
@@ -437,6 +444,14 @@ void ProjectView::RenamePath(const std::filesystem::path& oldPath, const std::st
         std::filesystem::path newPath = oldPath.parent_path() / newName;
         if (!std::filesystem::exists(newPath)) {
             std::filesystem::rename(oldPath, newPath);
+
+            // .meta もリネーム
+            std::filesystem::path oldMetaPath = oldPath.string() + ".meta";
+            std::filesystem::path newMetaPath = newPath.string() + ".meta";
+            if (std::filesystem::exists(oldMetaPath)) {
+                std::filesystem::rename(oldMetaPath, newMetaPath);
+            }
+
             needsRefresh_ = true;
         }
     } catch (...) {}
@@ -447,14 +462,20 @@ void ProjectView::PasteClipboard(const std::filesystem::path& destinationFolder)
 
     try {
         std::filesystem::path dest = destinationFolder / clipboardPath_.filename();
+        std::filesystem::path oldMeta = clipboardPath_.string() + ".meta";
+        std::filesystem::path newMeta = dest.string() + ".meta";
+
         if (isCutOperation_) {
             std::filesystem::rename(clipboardPath_, dest);
+            if (std::filesystem::exists(oldMeta)) std::filesystem::rename(oldMeta, newMeta);
             clipboardPath_ = "";
         } else {
             if (std::filesystem::is_directory(clipboardPath_)) {
                 std::filesystem::copy(clipboardPath_, dest, std::filesystem::copy_options::recursive);
+                // ディレクトリコピーの場合は中身の .meta もコピーされるはず（再帰的なので）
             } else {
                 std::filesystem::copy(clipboardPath_, dest);
+                if (std::filesystem::exists(oldMeta)) std::filesystem::copy(oldMeta, newMeta);
             }
         }
         needsRefresh_ = true;

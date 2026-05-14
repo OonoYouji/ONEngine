@@ -153,6 +153,18 @@ bool SceneLoader::LoadScene(const std::string& path, Engine::ECS::Registry& regi
         }
 
         Engine::Console::Log(std::format("SceneLoader: Successfully loaded scene with {} entities.", idMap.size()));
+
+        // 親子関係の解決
+        for (const auto& task : parentTasks) {
+            Engine::ECS::Entity entity = task.first;
+            int parentId = task.second;
+            if (idMap.count(parentId)) {
+                if (registry.HasComponent<Engine::ECS::Transform>(entity)) {
+                    registry.GetComponent<Engine::ECS::Transform>(entity).parent = idMap[parentId];
+                }
+            }
+        }
+
         return true;
     } catch (const std::exception& e) {
         Engine::Console::LogError(std::format("SceneLoader Error: {}", e.what()));
@@ -162,6 +174,68 @@ bool SceneLoader::LoadScene(const std::string& path, Engine::ECS::Registry& regi
 
 Engine::ECS::Entity SceneLoader::InstantiatePrefab(const std::string& path, Engine::ECS::Registry& registry) {
     return Engine::ECS::kNullEntity; // TODO
+}
+
+bool SceneLoader::SaveScene(const std::string& path, Engine::ECS::Registry& registry) {
+    Engine::Console::Log(std::format("SceneLoader: Saving scene to {}", path));
+
+    json data;
+    json jEntities = json::array();
+
+    auto& compReg = Engine::ECS::ComponentRegistry::GetInstance();
+    uint32_t maxId = registry.GetMaxEntityId();
+
+    for (uint32_t i = 1; i <= maxId; ++i) {
+        Engine::ECS::Entity entity = i;
+        
+        // Tagを持っていない = 無効なEntityとして扱う
+        if (!registry.HasComponent<Engine::ECS::Tag>(entity)) continue;
+
+        json jEntity;
+        jEntity["id"] = (int)entity;
+        
+        auto& tag = registry.GetComponent<Engine::ECS::Tag>(entity);
+        jEntity["name"] = std::string(tag.name);
+        jEntity["isActive"] = (tag.isActive != 0);
+
+        // 親子関係の取得 (Transformがあれば)
+        if (registry.HasComponent<Engine::ECS::Transform>(entity)) {
+            auto& trans = registry.GetComponent<Engine::ECS::Transform>(entity);
+            if (trans.parent != 0) {
+                jEntity["parent"] = (int)trans.parent;
+            } else {
+                jEntity["parent"] = nullptr;
+            }
+        } else {
+            jEntity["parent"] = nullptr;
+        }
+
+        json jComponents = json::array();
+        for (auto& [typeId, info] : compReg.GetAll()) {
+            // Tagは既に直下にシリアライズ済みなのでスキップ
+            if (typeId == 100) continue;
+
+            if (registry.HasComponent(entity, typeId)) {
+                json jComp = compReg.SerializeComponent(registry, entity, typeId);
+                jComp["type"] = info.name;
+                jComponents.push_back(jComp);
+            }
+        }
+        jEntity["components"] = jComponents;
+        jEntities.push_back(jEntity);
+    }
+
+    data["entities"] = jEntities;
+
+    std::ofstream file(path);
+    if (!file.is_open()) {
+        Engine::Console::LogError(std::format("SceneLoader: Failed to open file for saving: {}", path));
+        return false;
+    }
+
+    file << data.dump(4);
+    Engine::Console::Log(std::format("SceneLoader: Successfully saved {} entities.", jEntities.size()));
+    return true;
 }
 
 } // namespace Engine::Scene
