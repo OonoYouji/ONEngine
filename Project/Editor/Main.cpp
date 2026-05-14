@@ -106,6 +106,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
 		return -1;
 	}
 
+    // 最後に開いていたシーンを読み込む
+    {
+        auto& context = Engine::Editor::EditorContext::GetInstance();
+        auto& reg = app.GetRegistry();
+        std::string scenePath = context.GetCurrentScenePath();
+        if (!scenePath.empty() && std::filesystem::exists(scenePath)) {
+            Engine::Scene::SceneLoader::LoadScene(scenePath, reg);
+        }
+    }
+
 	// ImGui の初期化
 	auto& graphics = Engine::Graphics::GraphicsEngine::GetInstance();
 	auto* device = graphics.GetRenderDevice();
@@ -204,14 +214,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
 
 			auto& context = Engine::Editor::EditorContext::GetInstance();
 			if (ImGui::BeginMenu("編集 (Edit)")) {
-				ImGui::Checkbox("ギズモ スナップ (Gizmo Snap)", &context.GetSnapEnabled());
+				if (ImGui::Checkbox("ギズモ スナップ (Gizmo Snap)", &context.GetSnapEnabled())) { context.SaveSettings(); }
 				ImGui::Separator();
 				ImGui::SetNextItemWidth(80.0f);
-				ImGui::InputFloat("移動スナップ (Snap Move)", &context.GetSnapTranslation());
+				if (ImGui::InputFloat("移動スナップ (Snap Move)", &context.GetSnapTranslation())) { context.SaveSettings(); }
 				ImGui::SetNextItemWidth(80.0f);
-				ImGui::InputFloat("回転スナップ (Snap Rotate)", &context.GetSnapRotation());
+				if (ImGui::InputFloat("回転スナップ (Snap Rotate)", &context.GetSnapRotation())) { context.SaveSettings(); }
 				ImGui::SetNextItemWidth(80.0f);
-				ImGui::InputFloat("スケールスナップ (Snap Scale)", &context.GetSnapScale());
+				if (ImGui::InputFloat("スケールスナップ (Snap Scale)", &context.GetSnapScale())) { context.SaveSettings(); }
 				ImGui::EndMenu();
 			}
 
@@ -263,6 +273,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
 	app.Run();
 
 	app.WaitForGPU();
+
+    Engine::Editor::EditorContext::GetInstance().SaveSettings();
 
 	ImGui_ImplDX12_Shutdown();
 	ImGui_ImplWin32_Shutdown();

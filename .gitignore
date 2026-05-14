@@ -329,3 +329,6 @@ DirectXGame/imgui.ini
 Project/Schema/*.h
 Project/Assets/Shader/Schema/*.hlsli
 SubProjects/ONEngine.Scripting/Generated/*.cs
+
+# Editor settings
+EditorSettings.json

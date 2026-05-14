@@ -3,9 +3,11 @@
 #include <vector>
 #include <string>
 #include <unordered_map>
+#include <set>
 #include <fstream>
 #include <Windows.h>
 #include <shellapi.h>
+#include "imgui.h"
 
 namespace Engine::Editor {
 
@@ -19,6 +21,7 @@ struct ProjectEntry {
 struct ProjectTab {
     std::filesystem::path currentPath;
     std::string name;
+    uint32_t id;
 };
 
 class ProjectView {
@@ -31,6 +34,7 @@ private:
     
     // Multi-tab support
     std::vector<ProjectTab> tabs_;
+    uint32_t nextTabId_ = 0;
     int activeTabIndex_ = 0;
     int tabToSelect_ = -1;
     
@@ -46,7 +50,7 @@ private:
     std::unordered_map<std::string, int32_t> iconMap_;
     
     // Clipboard for file operations
-    std::filesystem::path clipboardPath_;
+    std::vector<std::filesystem::path> clipboardPaths_;
     bool isCutOperation_ = false;
     
     // Rename state
@@ -54,8 +58,13 @@ private:
     char renameBuffer_[256];
     bool isRenaming_ = false;
 
-    // Selection
-    std::filesystem::path selectedPath_;
+    // Multi-Selection
+    std::set<std::filesystem::path> selectedPaths_;
+    std::filesystem::path lastSelectedPath_;
+    
+    // Box Selection
+    bool isBoxSelecting_ = false;
+    ImVec2 boxStartPos_;
     
     void LoadIcons();
     void RefreshCache();
@@ -69,7 +78,8 @@ private:
     
     void CreateNewFolder(const std::filesystem::path& parentPath);
     void CreateNewMaterial(const std::filesystem::path& parentPath);
-    void DeletePath(const std::filesystem::path& path);
+    void DeletePaths(const std::set<std::filesystem::path>& paths);
+    void DuplicatePaths(const std::set<std::filesystem::path>& paths);
     void RenamePath(const std::filesystem::path& oldPath, const std::string& newName);
     void PasteClipboard(const std::filesystem::path& destinationFolder);
     void AddTab(const std::filesystem::path& path);

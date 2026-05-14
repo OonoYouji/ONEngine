@@ -1,8 +1,12 @@
 #include "ProjectView.h"
 #include "imgui.h"
+#include "EditorContext.h"
+#include "Engine/Core/Application.h"
 #include "Engine/Asset/TextureManager.h"
 #include "Engine/Graphics/Core/GraphicsEngine.h"
+#include "Engine/Scene/SceneLoader.h"
 #include "Engine/Common/Console.h"
+#include "Externals/nlohmann/json.hpp"
 #include <algorithm>
 #include <cstring>
 
@@ -18,6 +22,7 @@ ProjectView::ProjectView() {
     ProjectTab initialTab;
     initialTab.currentPath = assetsRoot_;
     initialTab.name = "Assets";
+    initialTab.id = nextTabId_++;
     tabs_.push_back(initialTab);
     activeTabIndex_ = 0;
 
@@ -214,12 +219,15 @@ void ProjectView::RenderTree(const std::filesystem::path& path) {
 
 void ProjectView::RenderTabs() {
     if (ImGui::BeginTabBar("ProjectTabs", ImGuiTabBarFlags_AutoSelectNewTabs | ImGuiTabBarFlags_Reorderable)) {
+        int tabToDelete = -1;
         for (int i = 0; i < (int)tabs_.size(); i++) {
             bool open = true;
+            bool* p_open = (tabs_.size() > 1) ? &open : nullptr;
             ImGuiTabItemFlags flags = (i == tabToSelect_) ? ImGuiTabItemFlags_SetSelected : 0;
             
-            bool visible = ImGui::BeginTabItem(tabs_[i].name.c_str(), &open, flags);
-            if (i == tabToSelect_) tabToSelect_ = -1;
+            // タブ名にIDを隠しIDとして付与して一意にする
+            std::string label = tabs_[i].name + "###tab_" + std::to_string(tabs_[i].id);
+            bool visible = ImGui::BeginTabItem(label.c_str(), p_open, flags);
 
             if (visible) {
                 if (activeTabIndex_ != i) {
@@ -230,15 +238,20 @@ void ProjectView::RenderTabs() {
             }
 
             if (!open) {
-                tabs_.erase(tabs_.begin() + i);
-                if (activeTabIndex_ >= (int)tabs_.size()) activeTabIndex_ = (int)tabs_.size() - 1;
-                if (activeTabIndex_ < 0) {
-                    AddTab(assetsRoot_);
-                }
-                i--;
-                needsRefresh_ = true;
+                tabToDelete = i;
             }
         }
+
+        if (tabToDelete != -1) {
+            tabs_.erase(tabs_.begin() + tabToDelete);
+            if (activeTabIndex_ >= (int)tabs_.size()) activeTabIndex_ = (int)tabs_.size() - 1;
+            if (activeTabIndex_ < 0) {
+                AddTab(assetsRoot_);
+            }
+            needsRefresh_ = true;
+        }
+
+        tabToSelect_ = -1;
 
         if (ImGui::TabItemButton("+", ImGuiTabItemFlags_Trailing | ImGuiTabItemFlags_NoReorder)) {
             AddTab(assetsRoot_);
@@ -246,11 +259,10 @@ void ProjectView::RenderTabs() {
         ImGui::EndTabBar();
     }
 }
-// ... (RenderBreadcrumbs remains mostly same, just ensuring it uses pendingPath_ correctly)
+
 void ProjectView::RenderBreadcrumbs() {
     if (activeTabIndex_ < 0 || activeTabIndex_ >= (int)tabs_.size()) return;
     const auto& currentPath = tabs_[activeTabIndex_].currentPath;
-// ... (omitted lines for brevity in instruction, but I'll provide full replacement block below)
 
     std::filesystem::path rel = std::filesystem::relative(currentPath, assetsRoot_.parent_path());
     
@@ -287,6 +299,18 @@ void ProjectView::RenderContent() {
     std::filesystem::path nextPath = "";
 
     float x_start = ImGui::GetCursorPosX();
+    bool openItemMenu = false;
+    
+    ImVec2 contentRegionStart = ImGui::GetCursorScreenPos();
+    ImGuiIO& io = ImGui::GetIO();
+
+    // アイテムごとの矩形情報を保持する一時構造体
+    struct ItemRect {
+        std::filesystem::path path;
+        ImVec2 min;
+        ImVec2 max;
+    };
+    std::vector<ItemRect> itemRects;
 
     for (size_t i = 0; i < cachedEntries_.size(); ++i) {
         const auto& entry = cachedEntries_[i];
@@ -294,11 +318,14 @@ void ProjectView::RenderContent() {
 
         ImVec2 itemSize(thumbnailSize_, thumbnailSize_ + ImGui::GetTextLineHeightWithSpacing() * 2.5f);
         ImVec2 startCursorPos = ImGui::GetCursorPos();
+        ImVec2 screenPos = ImGui::GetCursorScreenPos();
+
+        itemRects.push_back({ entry.path, screenPos, ImVec2(screenPos.x + itemSize.x, screenPos.y + itemSize.y) });
 
         // 1. コンテンツの描画
         ImGui::BeginGroup();
         
-        bool selected = (selectedPath_ == entry.path);
+        bool selected = (selectedPaths_.count(entry.path) > 0);
         if (selected) {
             ImVec2 p = ImGui::GetCursorScreenPos();
             ImGui::GetWindowDrawList()->AddRectFilled(p, ImVec2(p.x + thumbnailSize_, p.y + itemSize.y), ImGui::GetColorU32(ImGuiCol_HeaderActive), 4.0f);
@@ -331,18 +358,45 @@ void ProjectView::RenderContent() {
         ImGui::SetCursorPos(startCursorPos);
         ImGui::InvisibleButton("##hitarea", itemSize);
 
-        if (ImGui::IsItemClicked(0)) {
-            selectedPath_ = entry.path;
+        if (ImGui::IsItemClicked(0) || ImGui::IsItemClicked(1)) {
+            bool ctrl = io.KeyCtrl;
+            bool shift = io.KeyShift;
+
+            if (shift && !lastSelectedPath_.empty()) {
+                // Range selection
+                bool selecting = false;
+                for (const auto& e : cachedEntries_) {
+                    if (e.path == entry.path || e.path == lastSelectedPath_) {
+                        selectedPaths_.insert(e.path);
+                        if (entry.path == lastSelectedPath_) {
+                            // If start and end are the same, just select it
+                        } else {
+                             if (selecting) { selecting = false; }
+                             else { selecting = true; }
+                        }
+                    } else if (selecting) {
+                        selectedPaths_.insert(e.path);
+                    }
+                }
+            } else if (ctrl) {
+                if (selectedPaths_.count(entry.path)) selectedPaths_.erase(entry.path);
+                else selectedPaths_.insert(entry.path);
+            } else {
+                if (!selectedPaths_.count(entry.path)) {
+                    selectedPaths_.clear();
+                    selectedPaths_.insert(entry.path);
+                }
+            }
+            lastSelectedPath_ = entry.path;
         }
         
         if (ImGui::IsItemClicked(1)) {
-            selectedPath_ = entry.path;
-            ImGui::OpenPopup("ItemContextMenu");
+            openItemMenu = true;
         }
 
         if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0)) {
             if (entry.isDirectory) {
-                if (ImGui::GetIO().KeyCtrl) {
+                if (io.KeyCtrl) {
                     AddTab(entry.path);
                 } else {
                     nextPath = entry.path;
@@ -351,10 +405,15 @@ void ProjectView::RenderContent() {
         }
 
         if (!entry.isDirectory && ImGui::BeginDragDropSource(0)) {
-            std::string rel = std::filesystem::relative(entry.path, std::filesystem::current_path()).string();
-            std::replace(rel.begin(), rel.end(), '\\', '/');
-            ImGui::SetDragDropPayload("DND_ASSET_PATH", rel.c_str(), rel.length() + 1);
-            ImGui::Text("%s", entry.name.c_str());
+            // 複数選択している場合は、選択中の全パスを送る（簡易的にリスト化）
+            std::string payload = "";
+            for (const auto& p : selectedPaths_) {
+                std::string rel = std::filesystem::relative(p, std::filesystem::current_path()).string();
+                std::replace(rel.begin(), rel.end(), '\\', '/');
+                payload += rel + "|";
+            }
+            ImGui::SetDragDropPayload("DND_ASSET_PATHS", payload.c_str(), payload.length() + 1);
+            ImGui::Text("%zu items", selectedPaths_.size());
             ImGui::EndDragDropSource();
         }
 
@@ -367,12 +426,52 @@ void ProjectView::RenderContent() {
         ImGui::PopID();
     }
 
+    // --- Box Selection Logic ---
+    if (ImGui::IsWindowHovered(ImGuiHoveredFlags_ChildWindows)) {
+        if (ImGui::IsMouseClicked(0) && !ImGui::IsAnyItemHovered()) {
+            isBoxSelecting_ = true;
+            boxStartPos_ = io.MousePos;
+            if (!io.KeyCtrl) selectedPaths_.clear();
+        }
+    }
+
+    if (isBoxSelecting_) {
+        if (ImGui::IsMouseReleased(0)) {
+            isBoxSelecting_ = false;
+        } else {
+            ImVec2 mousePos = io.MousePos;
+            ImVec2 boxMin = ImVec2((std::min)(boxStartPos_.x, mousePos.x), (std::min)(boxStartPos_.y, mousePos.y));
+            ImVec2 boxMax = ImVec2((std::max)(boxStartPos_.x, mousePos.x), (std::max)(boxStartPos_.y, mousePos.y));
+
+            // Draw selection box
+            ImGui::GetForegroundDrawList()->AddRect(boxMin, boxMax, IM_COL32(100, 150, 255, 255));
+            ImGui::GetForegroundDrawList()->AddRectFilled(boxMin, boxMax, IM_COL32(100, 150, 255, 50));
+
+            // Select items inside box
+            if (!io.KeyCtrl) selectedPaths_.clear();
+            for (const auto& rect : itemRects) {
+                // Check intersection
+                if (rect.max.x < boxMin.x || rect.min.x > boxMax.x ||
+                    rect.max.y < boxMin.y || rect.min.y > boxMax.y) {
+                    continue;
+                }
+                selectedPaths_.insert(rect.path);
+            }
+        }
+    }
+
+    if (openItemMenu) {
+        ImGui::OpenPopup("ItemContextMenu");
+    }
+
     if (!nextPath.empty()) {
         pendingPath_ = nextPath;
+        selectedPaths_.clear();
     }
 
     // 背景右クリックでのコンテキストメニュー
     if (ImGui::IsWindowHovered(ImGuiHoveredFlags_ChildWindows) && ImGui::IsMouseClicked(1) && !ImGui::IsAnyItemHovered()) {
+        selectedPaths_.clear();
         ImGui::OpenPopup("FolderContextMenu");
     }
 
@@ -381,23 +480,73 @@ void ProjectView::RenderContent() {
 
 void ProjectView::RenderContextMenu() {
     if (ImGui::BeginPopup("ItemContextMenu")) {
-        if (ImGui::MenuItem("Rename")) {
+        bool singleSelection = (selectedPaths_.size() == 1);
+        std::filesystem::path firstPath = singleSelection ? *selectedPaths_.begin() : "";
+
+        if (singleSelection) {
+            bool isDirectory = std::filesystem::is_directory(firstPath);
+            if (ImGui::MenuItem("Open")) {
+                if (isDirectory) {
+                    pendingPath_ = firstPath;
+                } else if (firstPath.extension() == ".scene") {
+                    auto& reg = Engine::Core::Application::GetInstance().GetRegistry();
+                    reg.Clear();
+                    Engine::Editor::EditorContext::GetInstance().SetCurrentScenePath(firstPath.string());
+                    Engine::Scene::SceneLoader::LoadScene(firstPath.string(), reg);
+                }
+            }
+            ImGui::Separator();
+        }
+
+        if (singleSelection && ImGui::MenuItem("Rename")) {
             isRenaming_ = true;
-            renameTargetPath_ = selectedPath_;
-            strncpy(renameBuffer_, selectedPath_.filename().string().c_str(), sizeof(renameBuffer_));
+            renameTargetPath_ = firstPath;
+            strncpy(renameBuffer_, firstPath.filename().string().c_str(), sizeof(renameBuffer_));
         }
+
+        if (ImGui::MenuItem("Duplicate")) {
+            DuplicatePaths(selectedPaths_);
+        }
+
         if (ImGui::MenuItem("Delete")) {
-            DeletePath(selectedPath_);
+            DeletePaths(selectedPaths_);
         }
+
         ImGui::Separator();
+
         if (ImGui::MenuItem("Cut")) {
-            clipboardPath_ = selectedPath_;
+            clipboardPaths_.clear();
+            for (const auto& p : selectedPaths_) clipboardPaths_.push_back(p);
             isCutOperation_ = true;
         }
         if (ImGui::MenuItem("Copy")) {
-            clipboardPath_ = selectedPath_;
+            clipboardPaths_.clear();
+            for (const auto& p : selectedPaths_) clipboardPaths_.push_back(p);
             isCutOperation_ = false;
         }
+
+        ImGui::Separator();
+
+        if (singleSelection && std::filesystem::is_directory(firstPath)) {
+            if (ImGui::BeginMenu("Create")) {
+                if (ImGui::MenuItem("Folder")) {
+                    CreateNewFolder(firstPath);
+                }
+                if (ImGui::MenuItem("Material")) {
+                    CreateNewMaterial(firstPath);
+                }
+                ImGui::EndMenu();
+            }
+            ImGui::Separator();
+        }
+
+        if (ImGui::MenuItem("Show in Explorer")) {
+            for (const auto& p : selectedPaths_) {
+                ShellExecuteA(NULL, "explore", std::filesystem::is_directory(p) ? p.string().c_str() : p.parent_path().string().c_str(), NULL, NULL, SW_SHOW);
+                if (!ImGui::GetIO().KeyShift) break; // Shift押してなければ最初の一つだけ
+            }
+        }
+
         ImGui::EndPopup();
     }
 
@@ -412,7 +561,7 @@ void ProjectView::RenderContextMenu() {
             ImGui::EndMenu();
         }
         ImGui::Separator();
-        if (ImGui::MenuItem("Paste", nullptr, false, !clipboardPath_.empty())) {
+        if (ImGui::MenuItem("Paste", nullptr, false, !clipboardPaths_.empty())) {
             PasteClipboard(tabs_[activeTabIndex_].currentPath);
         }
         if (ImGui::MenuItem("Show in Explorer")) {
@@ -453,20 +602,52 @@ void ProjectView::CreateNewMaterial(const std::filesystem::path& parentPath) {
     needsRefresh_ = true;
 }
 
-void ProjectView::DeletePath(const std::filesystem::path& path) {
-    try {
-        if (std::filesystem::exists(path)) {
-            std::filesystem::remove_all(path);
+void ProjectView::DeletePaths(const std::set<std::filesystem::path>& paths) {
+    for (const auto& path : paths) {
+        try {
+            if (std::filesystem::exists(path)) {
+                std::filesystem::remove_all(path);
+                
+                // .meta も削除
+                std::filesystem::path metaPath = path.string() + ".meta";
+                if (std::filesystem::exists(metaPath)) {
+                    std::filesystem::remove_all(metaPath);
+                }
+            }
+        } catch (...) {}
+    }
+    selectedPaths_.clear();
+    needsRefresh_ = true;
+}
+
+void ProjectView::DuplicatePaths(const std::set<std::filesystem::path>& paths) {
+    for (const auto& path : paths) {
+        try {
+            std::filesystem::path parent = path.parent_path();
+            std::string stem = path.stem().string();
+            std::string ext = path.extension().string();
             
-            // .meta も削除
-            std::filesystem::path metaPath = path.string() + ".meta";
-            if (std::filesystem::exists(metaPath)) {
-                std::filesystem::remove_all(metaPath);
+            std::filesystem::path newPath = parent / (stem + " - Copy" + ext);
+            int i = 1;
+            while (std::filesystem::exists(newPath)) {
+                newPath = parent / (stem + " - Copy (" + std::to_string(i++) + ")" + ext);
             }
 
-            needsRefresh_ = true;
-        }
-    } catch (...) {}
+            if (std::filesystem::is_directory(path)) {
+                std::filesystem::copy(path, newPath, std::filesystem::copy_options::recursive);
+            } else {
+                std::filesystem::copy(path, newPath);
+            }
+            
+            // .meta もコピー
+            std::filesystem::path oldMeta = path.string() + ".meta";
+            std::filesystem::path newMeta = newPath.string() + ".meta";
+            if (std::filesystem::exists(oldMeta)) {
+                std::filesystem::copy(oldMeta, newMeta);
+            }
+        } catch (...) {}
+    }
+    needsRefresh_ = true;
 }
 
 void ProjectView::RenamePath(const std::filesystem::path& oldPath, const std::string& newName) {
@@ -488,28 +669,29 @@ void ProjectView::RenamePath(const std::filesystem::path& oldPath, const std::st
 }
 
 void ProjectView::PasteClipboard(const std::filesystem::path& destinationFolder) {
-    if (clipboardPath_.empty()) return;
+    if (clipboardPaths_.empty()) return;
 
-    try {
-        std::filesystem::path dest = destinationFolder / clipboardPath_.filename();
-        std::filesystem::path oldMeta = clipboardPath_.string() + ".meta";
-        std::filesystem::path newMeta = dest.string() + ".meta";
+    for (const auto& src : clipboardPaths_) {
+        try {
+            std::filesystem::path dest = destinationFolder / src.filename();
+            std::filesystem::path oldMeta = src.string() + ".meta";
+            std::filesystem::path newMeta = dest.string() + ".meta";
 
-        if (isCutOperation_) {
-            std::filesystem::rename(clipboardPath_, dest);
-            if (std::filesystem::exists(oldMeta)) std::filesystem::rename(oldMeta, newMeta);
-            clipboardPath_ = "";
-        } else {
-            if (std::filesystem::is_directory(clipboardPath_)) {
-                std::filesystem::copy(clipboardPath_, dest, std::filesystem::copy_options::recursive);
-                // ディレクトリコピーの場合は中身の .meta もコピーされるはず（再帰的なので）
+            if (isCutOperation_) {
+                std::filesystem::rename(src, dest);
+                if (std::filesystem::exists(oldMeta)) std::filesystem::rename(oldMeta, newMeta);
             } else {
-                std::filesystem::copy(clipboardPath_, dest);
-                if (std::filesystem::exists(oldMeta)) std::filesystem::copy(oldMeta, newMeta);
+                if (std::filesystem::is_directory(src)) {
+                    std::filesystem::copy(src, dest, std::filesystem::copy_options::recursive);
+                } else {
+                    std::filesystem::copy(src, dest);
+                    if (std::filesystem::exists(oldMeta)) std::filesystem::copy(oldMeta, newMeta);
+                }
             }
-        }
-        needsRefresh_ = true;
-    } catch (...) {}
+        } catch (...) {}
+    }
+    if (isCutOperation_) clipboardPaths_.clear();
+    needsRefresh_ = true;
 }
 
 void ProjectView::AddTab(const std::filesystem::path& path) {
@@ -517,6 +699,7 @@ void ProjectView::AddTab(const std::filesystem::path& path) {
     newTab.currentPath = path;
     newTab.name = path.filename().string();
     if (newTab.name.empty()) newTab.name = "Assets";
+    newTab.id = nextTabId_++;
     tabs_.push_back(newTab);
     tabToSelect_ = (int)tabs_.size() - 1;
     needsRefresh_ = true;
