@@ -10,6 +10,7 @@
 #include "InspectorView.h"
 #include "SceneView.h"
 #include "ProjectView.h"
+#include "ConsoleView.h"
 #include "EditorContext.h"
 #include "EditorUtils.h"
 #include "Engine/Scene/SceneLoader.h"
@@ -112,6 +113,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
         auto& reg = app.GetRegistry();
         std::string scenePath = context.GetCurrentScenePath();
         if (!scenePath.empty() && std::filesystem::exists(scenePath)) {
+            reg.Clear(); // 起動時のクリーンアップ
             Engine::Scene::SceneLoader::LoadScene(scenePath, reg);
         }
     }
@@ -150,6 +152,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
 	static Engine::Editor::InspectorView inspectorView;
 	static Engine::Editor::SceneView sceneView;
 	static Engine::Editor::ProjectView projectView;
+	static Engine::Editor::ConsoleView consoleView;
 
 	// UI 登録
 	app.RegisterUICallback([&]() {
@@ -266,6 +269,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
 		inspectorView.Render(registry);
 		sceneView.Render();
 		projectView.Render();
+		consoleView.Render();
 
 		ImGui::End();
 	});

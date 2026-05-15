@@ -112,9 +112,20 @@ void InspectorView::Render(ECS::Registry& registry) {
                     s_oldState = potentialOldState;
                 }
 
-                if (ImGui::IsItemDeactivatedAfterEdit()) {
+                // Edit終了時、またはドラッグ＆ドロップなどの即時変更時にコマンドを発行
+                if (ImGui::IsItemDeactivatedAfterEdit() || (changed && !ImGui::IsItemActive())) {
+                    // ドラッグ＆ドロップ等の単発変更の場合、s_oldStateが以前の別の操作のままになっている可能性があるため、
+                    // potentialOldState（変更直前の状態）を優先して使用する。
+                    json oldState = s_oldState;
+                    if (changed && !ImGui::IsItemActive()) {
+                        oldState = potentialOldState;
+                    }
+
                     json newState = compReg.SerializeComponent(registry, entity, typeId);
-                    history.Execute(std::make_shared<ChangeComponentCommand>(entity, typeId, s_oldState, newState));
+                    history.Execute(std::make_shared<ChangeComponentCommand>(entity, typeId, oldState, newState));
+                    
+                    // 次の操作のためにリセット（任意だが安全のため）
+                    s_oldState = newState;
                 }
                 ImGui::PopID();
                 return changed;

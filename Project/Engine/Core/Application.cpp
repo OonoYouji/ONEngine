@@ -109,8 +109,10 @@ bool Application::Initialize(HINSTANCE hInstance, int nCmdShow) {
     textSB_ = std::make_unique<Graphics::StructuredBuffer>();
     textSB_->Create(graphics.GetRenderDevice(), sizeof(GeneratedSchema::TextData), 4096);
 
-    // シーンロードの実行
-    Scene::SceneLoader::LoadScene("Assets/Scene/Main.scene", registry_);
+    // 実行時のみデフォルトシーンをロード (エディタの場合は後で個別にロードする)
+    if (!isEditorMode_) {
+        Scene::SceneLoader::LoadScene("Assets/Scene/Main.scene", registry_);
+    }
 
     timer_.Reset();
     return true;

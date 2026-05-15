@@ -190,8 +190,8 @@
                 {
                     "isEnabled": 0,
                     "materialGuid": 0,
-                    "materialIndex": 0,
-                    "meshGuid": 0,
+                    "materialIndex": 4294967295,
+                    "modelGuid": 5723163844602756127,
                     "modelIndex": 0,
                     "postProcessFlags": 0,
                     "type": "MeshRenderer"
@@ -255,9 +255,9 @@
                 },
                 {
                     "isEnabled": 0,
-                    "materialGuid": 0,
+                    "materialGuid": 16880705708999399230,
                     "materialIndex": 0,
-                    "meshGuid": 0,
+                    "modelGuid": 5723163844602756127,
                     "modelIndex": 0,
                     "postProcessFlags": 1,
                     "type": "MeshRenderer"
@@ -328,8 +328,8 @@
                 {
                     "isEnabled": 0,
                     "materialGuid": 0,
-                    "materialIndex": 0,
-                    "meshGuid": 0,
+                    "materialIndex": 4294967295,
+                    "modelGuid": 5723163844602756127,
                     "modelIndex": 0,
                     "postProcessFlags": 1,
                     "type": "MeshRenderer"
@@ -400,8 +400,8 @@
                 {
                     "isEnabled": 0,
                     "materialGuid": 0,
-                    "materialIndex": 0,
-                    "meshGuid": 0,
+                    "materialIndex": 4294967295,
+                    "modelGuid": 5723163844602756127,
                     "modelIndex": 0,
                     "postProcessFlags": 1,
                     "type": "MeshRenderer"
@@ -472,8 +472,8 @@
                 {
                     "isEnabled": 0,
                     "materialGuid": 0,
-                    "materialIndex": 0,
-                    "meshGuid": 0,
+                    "materialIndex": 4294967295,
+                    "modelGuid": 5723163844602756127,
                     "modelIndex": 0,
                     "postProcessFlags": 1,
                     "type": "MeshRenderer"
@@ -544,8 +544,8 @@
                 {
                     "isEnabled": 0,
                     "materialGuid": 0,
-                    "materialIndex": 0,
-                    "meshGuid": 0,
+                    "materialIndex": 4294967295,
+                    "modelGuid": 5723163844602756127,
                     "modelIndex": 0,
                     "postProcessFlags": 1,
                     "type": "MeshRenderer"
@@ -616,8 +616,8 @@
                 {
                     "isEnabled": 0,
                     "materialGuid": 0,
-                    "materialIndex": 0,
-                    "meshGuid": 0,
+                    "materialIndex": 4294967295,
+                    "modelGuid": 5723163844602756127,
                     "modelIndex": 0,
                     "postProcessFlags": 1,
                     "type": "MeshRenderer"
@@ -688,8 +688,8 @@
                 {
                     "isEnabled": 0,
                     "materialGuid": 0,
-                    "materialIndex": 0,
-                    "meshGuid": 0,
+                    "materialIndex": 4294967295,
+                    "modelGuid": 5723163844602756127,
                     "modelIndex": 0,
                     "postProcessFlags": 1,
                     "type": "MeshRenderer"
@@ -760,8 +760,8 @@
                 {
                     "isEnabled": 0,
                     "materialGuid": 0,
-                    "materialIndex": 0,
-                    "meshGuid": 0,
+                    "materialIndex": 4294967295,
+                    "modelGuid": 5723163844602756127,
                     "modelIndex": 0,
                     "postProcessFlags": 1,
                     "type": "MeshRenderer"
@@ -832,8 +832,8 @@
                 {
                     "isEnabled": 0,
                     "materialGuid": 0,
-                    "materialIndex": 0,
-                    "meshGuid": 0,
+                    "materialIndex": 4294967295,
+                    "modelGuid": 5723163844602756127,
                     "modelIndex": 0,
                     "postProcessFlags": 1,
                     "type": "MeshRenderer"
@@ -904,8 +904,8 @@
                 {
                     "isEnabled": 0,
                     "materialGuid": 0,
-                    "materialIndex": 0,
-                    "meshGuid": 0,
+                    "materialIndex": 4294967295,
+                    "modelGuid": 5723163844602756127,
                     "modelIndex": 0,
                     "postProcessFlags": 1,
                     "type": "MeshRenderer"
@@ -976,8 +976,8 @@
                 {
                     "isEnabled": 0,
                     "materialGuid": 0,
-                    "materialIndex": 0,
-                    "meshGuid": 0,
+                    "materialIndex": 4294967295,
+                    "modelGuid": 5723163844602756127,
                     "modelIndex": 0,
                     "postProcessFlags": 1,
                     "type": "MeshRenderer"
@@ -1048,8 +1048,8 @@
                 {
                     "isEnabled": 0,
                     "materialGuid": 0,
-                    "materialIndex": 0,
-                    "meshGuid": 0,
+                    "materialIndex": 4294967295,
+                    "modelGuid": 5723163844602756127,
                     "modelIndex": 0,
                     "postProcessFlags": 1,
                     "type": "MeshRenderer"
@@ -1120,8 +1120,8 @@
                 {
                     "isEnabled": 0,
                     "materialGuid": 0,
-                    "materialIndex": 0,
-                    "meshGuid": 0,
+                    "materialIndex": 4294967295,
+                    "modelGuid": 5723163844602756127,
                     "modelIndex": 0,
                     "postProcessFlags": 1,
                     "type": "MeshRenderer"
@@ -1192,8 +1192,8 @@
                 {
                     "isEnabled": 0,
                     "materialGuid": 0,
-                    "materialIndex": 0,
-                    "meshGuid": 0,
+                    "materialIndex": 4294967295,
+                    "modelGuid": 5723163844602756127,
                     "modelIndex": 0,
                     "postProcessFlags": 1,
                     "type": "MeshRenderer"
@@ -1264,8 +1264,8 @@
                 {
                     "isEnabled": 0,
                     "materialGuid": 0,
-                    "materialIndex": 0,
-                    "meshGuid": 0,
+                    "materialIndex": 4294967295,
+                    "modelGuid": 5723163844602756127,
                     "modelIndex": 0,
                     "postProcessFlags": 1,
                     "type": "MeshRenderer"
@@ -1336,8 +1336,8 @@
                 {
                     "isEnabled": 0,
                     "materialGuid": 0,
-                    "materialIndex": 0,
-                    "meshGuid": 0,
+                    "materialIndex": 4294967295,
+                    "modelGuid": 5723163844602756127,
                     "modelIndex": 0,
                     "postProcessFlags": 1,
                     "type": "MeshRenderer"
@@ -1408,8 +1408,8 @@
                 {
                     "isEnabled": 0,
                     "materialGuid": 0,
-                    "materialIndex": 0,
-                    "meshGuid": 0,
+                    "materialIndex": 4294967295,
+                    "modelGuid": 5723163844602756127,
                     "modelIndex": 0,
                     "postProcessFlags": 1,
                     "type": "MeshRenderer"
@@ -1480,8 +1480,8 @@
                 {
                     "isEnabled": 0,
                     "materialGuid": 0,
-                    "materialIndex": 0,
-                    "meshGuid": 0,
+                    "materialIndex": 4294967295,
+                    "modelGuid": 5723163844602756127,
                     "modelIndex": 0,
                     "postProcessFlags": 1,
                     "type": "MeshRenderer"
@@ -1552,8 +1552,8 @@
                 {
                     "isEnabled": 0,
                     "materialGuid": 0,
-                    "materialIndex": 0,
-                    "meshGuid": 0,
+                    "materialIndex": 4294967295,
+                    "modelGuid": 5723163844602756127,
                     "modelIndex": 0,
                     "postProcessFlags": 1,
                     "type": "MeshRenderer"
@@ -1624,8 +1624,8 @@
                 {
                     "isEnabled": 0,
                     "materialGuid": 0,
-                    "materialIndex": 0,
-                    "meshGuid": 0,
+                    "materialIndex": 4294967295,
+                    "modelGuid": 5723163844602756127,
                     "modelIndex": 0,
                     "postProcessFlags": 1,
                     "type": "MeshRenderer"
@@ -1697,8 +1697,8 @@
                     "internalVertexOffset": 0,
                     "isEnabled": 0,
                     "materialGuid": 0,
-                    "materialIndex": 0,
-                    "meshGuid": 0,
+                    "materialIndex": 4294967295,
+                    "modelGuid": 5723163844602756127,
                     "modelIndex": 0,
                     "postProcessFlags": 1,
                     "skeletonIndex": 0,
@@ -1708,6 +1708,13 @@
             "id": 24,
             "isActive": true,
             "name": "SkinnedCharacter",
+            "parent": null
+        },
+        {
+            "components": [],
+            "id": 25,
+            "isActive": true,
+            "name": "Entity 25",
             "parent": null
         }
     ]

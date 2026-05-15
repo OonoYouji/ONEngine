@@ -228,6 +228,13 @@ void HierarchyView::DrawDropSeparator(ECS::Registry& registry, uint32_t id, ECS:
     ImGui::InvisibleButton("##sep", ImVec2(-1, height));
 
     if (ImGui::BeginDragDropTarget()) {
+        // ドラッグ中のホバー時に黄色い線を描画して挿入位置を明示する
+        ImRect rect(ImGui::GetItemRectMin(), ImGui::GetItemRectMax());
+        ImGui::GetWindowDrawList()->AddLine(
+            ImVec2(rect.Min.x, (rect.Min.y + rect.Max.y) * 0.5f),
+            ImVec2(rect.Max.x, (rect.Min.y + rect.Max.y) * 0.5f),
+            IM_COL32(255, 255, 0, 255), 2.0f);
+
         if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_ID")) {
             ECS::Entity draggedEntity = *(const ECS::Entity*)payload->Data;
             

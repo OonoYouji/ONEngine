@@ -11,11 +11,23 @@ namespace Engine::Editor {
 class EditorUtils {
 public:
     static void DrawActiveViewOutline() {
+        ImU32 color = IM_COL32(50, 50, 50, 255); // 通常時の境界線
+        float thickness = 1.0f;
+
         if (ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows)) {
-            ImVec2 min = ImGui::GetWindowPos();
-            ImVec2 max = ImVec2(min.x + ImGui::GetWindowSize().x, min.y + ImGui::GetWindowSize().y);
-            ImGui::GetForegroundDrawList()->AddRect(min, max, IM_COL32(255, 140, 0, 255), 0.0f, 0, 2.0f);
+            color = IM_COL32(255, 140, 0, 255); // フォーカス時はオレンジ
+            thickness = 2.0f;
         }
+        else if (ImGui::IsWindowHovered(ImGuiHoveredFlags_ChildWindows) && ImGui::GetDragDropPayload()) {
+            color = IM_COL32(255, 255, 0, 255); // ドラッグ中のホバーターゲットは黄色
+            thickness = 2.0f;
+        }
+
+        ImVec2 min = ImGui::GetWindowPos();
+        ImVec2 max = ImVec2(min.x + ImGui::GetWindowSize().x, min.y + ImGui::GetWindowSize().y);
+        
+        // ウィンドウ全体の枠線を描画（ForegroundDrawListを使用することで、常に最前面に表示）
+        ImGui::GetForegroundDrawList()->AddRect(min, max, color, 0.0f, 0, thickness);
     }
 
     /// @brief ファイルを開くダイアログを表示

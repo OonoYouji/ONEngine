@@ -407,7 +407,12 @@ void ProjectView::RenderContent() {
         }
 
         if (!entry.isDirectory && ImGui::BeginDragDropSource(0)) {
-            // 複数選択している場合は、選択中の全パスを送る（簡易的にリスト化）
+            // 複数選択している場合でも、現在ドラッグ開始したアイテムを単体パスとして優先的に設定する
+            std::string entryRel = std::filesystem::relative(entry.path, std::filesystem::current_path()).string();
+            std::replace(entryRel.begin(), entryRel.end(), '\\', '/');
+            ImGui::SetDragDropPayload("DND_ASSET_PATH", entryRel.c_str(), entryRel.length() + 1);
+
+            // 複数選択している場合は、選択中の全パスを送る（一括処理用）
             std::string payload = "";
             for (const auto& p : selectedPaths_) {
                 std::string rel = std::filesystem::relative(p, std::filesystem::current_path()).string();
@@ -415,6 +420,7 @@ void ProjectView::RenderContent() {
                 payload += rel + "|";
             }
             ImGui::SetDragDropPayload("DND_ASSET_PATHS", payload.c_str(), payload.length() + 1);
+            
             ImGui::Text("%zu items", selectedPaths_.size());
             ImGui::EndDragDropSource();
         }

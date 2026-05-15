@@ -25,12 +25,12 @@ void InitializeComponentRegistry() {
     reg.Register<MeshRenderer>(2, "MeshRenderer",
         [](const json& j, MeshRenderer& m) { 
             from_json(j, m);
-            if (j.contains("meshGuid")) m.modelIndex = Asset::AssetManager::GetInstance().LoadModel(std::to_string(j["meshGuid"].get<uint64_t>()));
-            if (j.contains("materialGuid")) m.materialIndex = Asset::MaterialManager::GetInstance().LoadMaterial(std::to_string(j["materialGuid"].get<uint64_t>()));
+            if (j.contains("modelGuid")) m.modelIndex = Asset::AssetManager::GetInstance().LoadModel(std::to_string(j["modelGuid"].get<uint64_t>()));
+            if (j.contains("materialGuid")) m.materialIndex = Asset::MaterialManager::GetInstance().LoadMaterial(j["materialGuid"].get<uint64_t>());
         },
         [](const MeshRenderer& m) { 
             json j; to_json(j, m);
-            if (auto asset = Asset::AssetManager::GetInstance().GetModelByIndex(m.modelIndex)) j["meshGuid"] = asset->GetGuid();
+            if (auto asset = Asset::AssetManager::GetInstance().GetModelByIndex(m.modelIndex)) j["modelGuid"] = asset->GetGuid();
             if (auto asset = Asset::MaterialManager::GetInstance().GetMaterialByIndex(m.materialIndex)) j["materialGuid"] = asset->GetGuid();
             return j; 
         }
@@ -118,12 +118,12 @@ void InitializeComponentRegistry() {
     reg.Register<SkinnedMeshRenderer>(11, "SkinnedMeshRenderer",
         [](const json& j, SkinnedMeshRenderer& smr) {
             from_json(j, smr);
-            if (j.contains("meshGuid")) smr.modelIndex = Asset::AssetManager::GetInstance().LoadModel(std::to_string(j["meshGuid"].get<uint64_t>()));
-            if (j.contains("materialGuid")) smr.materialIndex = Asset::MaterialManager::GetInstance().LoadMaterial(std::to_string(j["materialGuid"].get<uint64_t>()));
+            if (j.contains("modelGuid")) smr.modelIndex = Asset::AssetManager::GetInstance().LoadModel(std::to_string(j["modelGuid"].get<uint64_t>()));
+            if (j.contains("materialGuid")) smr.materialIndex = Asset::MaterialManager::GetInstance().LoadMaterial(j["materialGuid"].get<uint64_t>());
         },
         [](const SkinnedMeshRenderer& smr) { 
             json j; to_json(j, smr); 
-            if (auto asset = Asset::AssetManager::GetInstance().GetModelByIndex(smr.modelIndex)) j["meshGuid"] = asset->GetGuid();
+            if (auto asset = Asset::AssetManager::GetInstance().GetModelByIndex(smr.modelIndex)) j["modelGuid"] = asset->GetGuid();
             if (auto asset = Asset::MaterialManager::GetInstance().GetMaterialByIndex(smr.materialIndex)) j["materialGuid"] = asset->GetGuid();
             return j; 
         }

@@ -99,9 +99,12 @@ uint64_t AssetDatabase::GetGuidFromPath(const std::string& path) {
 	std::string normalizedPath = path;
 	std::replace(normalizedPath.begin(), normalizedPath.end(), '\\', '/');
 
-    // 先頭の ./ を削除
-    if (normalizedPath.substr(0, 2) == "./") {
+    // 先頭の "./" や "/" を削除
+    while (normalizedPath.length() >= 2 && normalizedPath.substr(0, 2) == "./") {
         normalizedPath = normalizedPath.substr(2);
+    }
+    if (!normalizedPath.empty() && normalizedPath[0] == '/') {
+        normalizedPath = normalizedPath.substr(1);
     }
 
 	if(normalizedPath.substr(0, 8) == "Project/") {
@@ -109,11 +112,19 @@ uint64_t AssetDatabase::GetGuidFromPath(const std::string& path) {
 	}
 
 	auto it = pathToGuid_.find(normalizedPath);
-    if (it == pathToGuid_.end()) {
-        Engine::Console::LogWarning(std::format("AssetDatabase: GUID not found for path: {}", normalizedPath));
-        return 0;
+    if (it != pathToGuid_.end()) {
+        return it->second;
     }
-	return it->second;
+
+    // fallback: Assets/ が抜けている可能性を考慮
+    if (normalizedPath.find("Assets/") != 0) {
+        std::string altPath = "Assets/" + normalizedPath;
+        it = pathToGuid_.find(altPath);
+        if (it != pathToGuid_.end()) return it->second;
+    }
+
+    Engine::Console::LogWarning(std::format("AssetDatabase: GUID not found for path: {}", normalizedPath));
+	return 0;
 }
 
 std::string AssetDatabase::GetPathFromGuid(uint64_t guid) {

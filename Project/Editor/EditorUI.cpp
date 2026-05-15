@@ -1,4 +1,4 @@
-#include "EditorUI.h"
+﻿#include "EditorUI.h"
 #include "Engine/Asset/AssetManager.h"
 #include "Engine/Asset/TextureManager.h"
 #include "Engine/Asset/MaterialManager.h"
@@ -7,9 +7,14 @@
 #include <cstdio>
 #include <string>
 
+#include "Engine/Common/Console.h"
+#include <format>
+
 namespace Engine::Editor {
 
 bool EditorUI::AssetPicker(const char* label, const char* assetType, uint32_t* index) {
+    bool changed = false;
+    ImGui::BeginGroup();
     ImGui::PushID(label);
     
     std::string assetName = "None";
@@ -24,6 +29,9 @@ bool EditorUI::AssetPicker(const char* label, const char* assetType, uint32_t* i
         } else if (typeStr == "Texture") {
             auto tex = Asset::TextureManager::GetInstance().GetTextureByIndex(*index);
             if (tex) assetName = tex->GetPath();
+        } else if (typeStr == "Font") {
+            auto font = Asset::FontManager::GetInstance().GetFontByIndex(*index);
+            if (font) assetName = font->GetPath();
         }
     }
 
@@ -35,37 +43,50 @@ bool EditorUI::AssetPicker(const char* label, const char* assetType, uint32_t* i
     char buf[256];
     std::snprintf(buf, sizeof(buf), "%s: %s", assetType, assetName.c_str());
     
-    bool changed = false;
     ImGui::Text("%s", label);
     ImGui::SameLine();
     
     ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, ImVec2(0.0f, 0.5f));
-    if (ImGui::Button(buf, ImVec2(ImGui::GetContentRegionAvail().x, 0))) {
-    }
+    ImGui::Button(buf, ImVec2(ImGui::GetContentRegionAvail().x, 0));
     ImGui::PopStyleVar();
 
     if (ImGui::BeginDragDropTarget()) {
-        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_ASSET_PATH")) {
-            const char* path = (const char*)payload->Data;
+        // ドラッグ中のターゲットを強調表示
+        ImGui::GetWindowDrawList()->AddRect(ImGui::GetItemRectMin(), ImGui::GetItemRectMax(), IM_COL32(255, 255, 0, 255), 0.0f, 0, 2.0f);
+
+        const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_ASSET_PATH");
+        if (!payload) payload = ImGui::AcceptDragDropPayload("DND_ASSET_PATHS");
+
+        if (payload) {
+            std::string path = (const char*)payload->Data;
+            // DND_ASSET_PATHS の場合は最初のパスのみを抽出
+            size_t pipePos = path.find('|');
+            if (pipePos != std::string::npos) path = path.substr(0, pipePos);
+
+            ::Engine::Console::Log(std::format("AssetPicker [{}]: Dropped path: {}", label, path));
+
             std::string typeStr(assetType);
-            
             if (typeStr == "Model") {
                 *index = Asset::AssetManager::GetInstance().LoadModel(path);
             } else if (typeStr == "Material") {
                 *index = (uint32_t)Asset::MaterialManager::GetInstance().LoadMaterial(path);
             } else if (typeStr == "Texture") {
                 *index = (uint32_t)Asset::TextureManager::GetInstance().LoadTexture(path);
+            } else if (typeStr == "Font") {
+                *index = (uint32_t)Asset::FontManager::GetInstance().LoadFont(path);
             }
             changed = true;
         }
         ImGui::EndDragDropTarget();
     }
-
     ImGui::PopID();
+    ImGui::EndGroup();
     return changed;
 }
 
 bool EditorUI::AssetPicker(const char* label, const char* assetType, uint64_t* guid) {
+    bool changed = false;
+    ImGui::BeginGroup();
     ImGui::PushID(label);
     
     std::string assetPath = Asset::AssetDatabase::GetInstance().GetPathFromGuid(*guid);
@@ -79,18 +100,28 @@ bool EditorUI::AssetPicker(const char* label, const char* assetType, uint64_t* g
     char buf[256];
     std::snprintf(buf, sizeof(buf), "%s: %s", assetType, assetName.c_str());
     
-    bool changed = false;
     ImGui::Text("%s", label);
     ImGui::SameLine();
     
     ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, ImVec2(0.0f, 0.5f));
-    if (ImGui::Button(buf, ImVec2(ImGui::GetContentRegionAvail().x, 0))) {
-    }
+    ImGui::Button(buf, ImVec2(ImGui::GetContentRegionAvail().x, 0));
     ImGui::PopStyleVar();
 
     if (ImGui::BeginDragDropTarget()) {
-        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_ASSET_PATH")) {
-            const char* path = (const char*)payload->Data;
+        // ドラッグ中のターゲットを強調表示
+        ImGui::GetWindowDrawList()->AddRect(ImGui::GetItemRectMin(), ImGui::GetItemRectMax(), IM_COL32(255, 255, 0, 255), 0.0f, 0, 2.0f);
+
+        const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_ASSET_PATH");
+        if (!payload) payload = ImGui::AcceptDragDropPayload("DND_ASSET_PATHS");
+
+        if (payload) {
+            std::string path = (const char*)payload->Data;
+            // DND_ASSET_PATHS の場合は最初のパスのみを抽出
+            size_t pipePos = path.find('|');
+            if (pipePos != std::string::npos) path = path.substr(0, pipePos);
+
+            ::Engine::Console::Log(std::format("AssetPicker [{}]: Dropped path: {}", label, path));
+
             *guid = Asset::AssetDatabase::GetInstance().GetGuidFromPath(path);
             changed = true;
         }
@@ -98,6 +129,7 @@ bool EditorUI::AssetPicker(const char* label, const char* assetType, uint64_t* g
     }
 
     ImGui::PopID();
+    ImGui::EndGroup();
     return changed;
 }
 
