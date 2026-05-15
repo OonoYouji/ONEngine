@@ -22,6 +22,10 @@ struct ProjectTab {
     std::filesystem::path currentPath;
     std::string name;
     uint32_t id;
+    
+    // Navigation history
+    std::vector<std::filesystem::path> backStack;
+    std::vector<std::filesystem::path> forwardStack;
 };
 
 class ProjectView {
@@ -30,6 +34,9 @@ public:
     void Render(bool* p_open = nullptr);
 
 private:
+    void GoBack();
+    void GoForward();
+    void RecordHistory(const std::filesystem::path& newPath);
     std::filesystem::path assetsRoot_;
     
     // Multi-tab support

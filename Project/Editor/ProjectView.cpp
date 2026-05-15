@@ -116,12 +116,12 @@ int32_t ProjectView::GetIconForPath(const std::filesystem::path& path) {
 
 void ProjectView::Render(bool* p_open) {
     if (p_open && !*p_open) return;
+    
+    auto& context = EditorContext::GetInstance();
+    ImGuiIO& io = ImGui::GetIO();
+
     if (!pendingPath_.empty()) {
-        if (activeTabIndex_ >= 0 && activeTabIndex_ < (int)tabs_.size()) {
-            tabs_[activeTabIndex_].currentPath = pendingPath_;
-            tabs_[activeTabIndex_].name = pendingPath_.filename().string();
-            if (tabs_[activeTabIndex_].name.empty()) tabs_[activeTabIndex_].name = "Assets";
-        }
+        RecordHistory(pendingPath_);
         pendingPath_ = "";
         needsRefresh_ = true;
     }
@@ -142,8 +142,14 @@ void ProjectView::Render(bool* p_open) {
 
     ImGui::Begin("Project");
 
-    if (ImGui::IsWindowHovered() && ImGui::GetIO().KeyCtrl) {
-        float wheel = ImGui::GetIO().MouseWheel;
+    // マウスサイドボタンによるナビゲーション (3=Back, 4=Forward)
+    if (ImGui::IsWindowHovered(ImGuiHoveredFlags_ChildWindows)) {
+        if (ImGui::IsMouseClicked(3)) GoBack();
+        if (ImGui::IsMouseClicked(4)) GoForward();
+    }
+
+    if (ImGui::IsWindowHovered() && io.KeyCtrl) {
+        float wheel = io.MouseWheel;
         if (wheel != 0) {
             thumbnailSize_ += wheel * 10.0f;
             thumbnailSize_ = (std::max)(32.0f, (std::min)(thumbnailSize_, 256.0f));
@@ -166,7 +172,24 @@ void ProjectView::Render(bool* p_open) {
 
         ImGui::TableSetColumnIndex(1);
         if (ImGui::BeginChild("ContentPane")) {
+            // ナビゲーションボタン
+            ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(2, 0));
+            bool canGoBack = activeTabIndex_ >= 0 && !tabs_[activeTabIndex_].backStack.empty();
+            bool canGoForward = activeTabIndex_ >= 0 && !tabs_[activeTabIndex_].forwardStack.empty();
+
+            if (!canGoBack) ImGui::BeginDisabled();
+            if (ImGui::ArrowButton("##back", ImGuiDir_Left)) GoBack();
+            if (!canGoBack) ImGui::EndDisabled();
+
+            ImGui::SameLine();
+            if (!canGoForward) ImGui::BeginDisabled();
+            if (ImGui::ArrowButton("##forward", ImGuiDir_Right)) GoForward();
+            if (!canGoForward) ImGui::EndDisabled();
+            
+            ImGui::SameLine(0, 10);
             RenderBreadcrumbs();
+            ImGui::PopStyleVar();
+
             ImGui::Separator();
             RenderContent();
         }
@@ -177,6 +200,48 @@ void ProjectView::Render(bool* p_open) {
 
     EditorUtils::DrawActiveViewOutline();
     ImGui::End();
+}
+
+void ProjectView::GoBack() {
+    if (activeTabIndex_ < 0 || activeTabIndex_ >= (int)tabs_.size()) return;
+    auto& tab = tabs_[activeTabIndex_];
+    if (tab.backStack.empty()) return;
+
+    tab.forwardStack.push_back(tab.currentPath);
+    tab.currentPath = tab.backStack.back();
+    tab.backStack.pop_back();
+    
+    tab.name = tab.currentPath.filename().string();
+    if (tab.name.empty()) tab.name = "Assets";
+    needsRefresh_ = true;
+}
+
+void ProjectView::GoForward() {
+    if (activeTabIndex_ < 0 || activeTabIndex_ >= (int)tabs_.size()) return;
+    auto& tab = tabs_[activeTabIndex_];
+    if (tab.forwardStack.empty()) return;
+
+    tab.backStack.push_back(tab.currentPath);
+    tab.currentPath = tab.forwardStack.back();
+    tab.forwardStack.pop_back();
+
+    tab.name = tab.currentPath.filename().string();
+    if (tab.name.empty()) tab.name = "Assets";
+    needsRefresh_ = true;
+}
+
+void ProjectView::RecordHistory(const std::filesystem::path& newPath) {
+    if (activeTabIndex_ < 0 || activeTabIndex_ >= (int)tabs_.size()) return;
+    auto& tab = tabs_[activeTabIndex_];
+    
+    if (tab.currentPath == newPath) return;
+
+    tab.backStack.push_back(tab.currentPath);
+    tab.forwardStack.clear(); // 新しいパスに移動したら進む履歴は消去
+
+    tab.currentPath = newPath;
+    tab.name = newPath.filename().string();
+    if (tab.name.empty()) tab.name = "Assets";
 }
 
 void ProjectView::RenderTree(const std::filesystem::path& path) {
