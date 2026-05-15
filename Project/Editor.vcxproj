@@ -180,6 +180,7 @@ copy "$(ProjectDir)Externals\DotNetHost\nethost.dll" "$(TargetDir)nethost.dll"</
   <ItemGroup>
     <ClCompile Include="Editor\ConsoleView.cpp" />
     <ClCompile Include="Editor\EditorCamera.cpp" />
+    <ClCompile Include="Editor\EditorContext.cpp" />
     <ClCompile Include="Editor\EditorUI.cpp" />
     <ClCompile Include="Editor\HierarchyView.cpp" />
     <ClCompile Include="Editor\InspectorView.cpp" />

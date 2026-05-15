@@ -16,6 +16,7 @@
 #include "Engine/Script/ScriptHost.h"
 #include "Engine/ECS/ComponentRegistry.h"
 #include "Engine/ECS/Systems/SpriteSystem.h"
+#include "Editor/EditorContext.h"
 #include "imgui.h"
 #include "imgui_impl_win32.h"
 #include "imgui_impl_dx12.h"
@@ -75,8 +76,8 @@ bool Application::Initialize(HINSTANCE hInstance, int nCmdShow) {
     // 2. スクリプトの初期化 (システムの後に実行)
     auto& scriptHost = Script::ScriptHost::GetInstance();
     if (scriptHost.Initialize()) {
-        auto initDelegate = (void(*)(void*, void*))scriptHost.GetMethodDelegate(L"ONEngine.Scripting.EngineHost, ONEngine.Scripting", L"Initialize", L"");
-        if (initDelegate) initDelegate((void*)LogFromRuntime, &registry_);
+        initDelegate_ = (void(*)(void*, void*))scriptHost.GetMethodDelegate(L"ONEngine.Scripting.EngineHost, ONEngine.Scripting", L"Initialize", L"");
+        if (initDelegate_) initDelegate_((void*)LogFromRuntime, &registry_);
         updateDelegate_ = (void(*)())scriptHost.GetMethodDelegate(L"ONEngine.Scripting.EngineHost, ONEngine.Scripting", L"Update", L"");
         shutdownDelegate_ = (void(*)())scriptHost.GetMethodDelegate(L"ONEngine.Scripting.EngineHost, ONEngine.Scripting", L"Shutdown", L"");
     }
@@ -175,7 +176,10 @@ void Application::Update(float dt) {
         });
     }
 
-    if (updateDelegate_) updateDelegate_();
+    // 再生中のみスクリプトを更新
+    if (isPlaying_ && !isPaused_) {
+        if (updateDelegate_) updateDelegate_();
+    }
     
     // 全システムにヌルチェックを適用
     if (transformSystem_) transformSystem_->Update(registry_);
@@ -382,6 +386,30 @@ void Application::Render() {
 
 void Application::WaitForGPU() {
     Graphics::GraphicsEngine::GetInstance().Shutdown();
+}
+
+void Application::Play() {
+    if (isPlaying_) return;
+    isPlaying_ = true;
+    isPaused_ = false;
+}
+
+void Application::Stop() {
+    if (!isPlaying_) return;
+    isPlaying_ = false;
+    isPaused_ = false;
+
+    // C# 側の状態をクリア
+    if (shutdownDelegate_) shutdownDelegate_();
+
+    // レジストリをクリアしてシーンをリロード
+    registry_.Clear();
+    auto& context = Editor::EditorContext::GetInstance();
+    if (!context.GetCurrentScenePath().empty()) {
+        // 再ロード前に C# 側を再初期化
+        if (initDelegate_) initDelegate_((void*)LogFromRuntime, &registry_);
+        Scene::SceneLoader::LoadScene(context.GetCurrentScenePath(), registry_);
+    }
 }
 
 void Application::Shutdown() {

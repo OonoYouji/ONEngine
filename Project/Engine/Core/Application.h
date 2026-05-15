@@ -70,6 +70,12 @@ public:
 
     void RegisterUICallback(const std::function<void()>& callback) { uiCallbacks_.push_back(callback); }
 
+    bool IsPlaying() const { return isPlaying_; }
+    bool IsPaused() const { return isPaused_; }
+    void Play();
+    void Stop();
+    void SetPaused(bool paused) { isPaused_ = paused; }
+
 private:
     Application();
     ~Application();
@@ -104,10 +110,13 @@ private:
     std::unique_ptr<Graphics::GPUCullingManager> gpuCullingManager_;
 
     // Scripting
+    void(*initDelegate_)(void*, void*) = nullptr;
     void(*updateDelegate_)() = nullptr;
     void(*shutdownDelegate_)() = nullptr;
 
     bool isEditorMode_ = false;
+    bool isPlaying_ = false;
+    bool isPaused_ = false;
 
     // Editor rendering data
     Math::Matrix4x4 editorView_ = Math::Matrix4x4::kIdentity;

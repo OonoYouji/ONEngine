@@ -25,6 +25,34 @@ void SceneView::Render(bool* p_open) {
     ImGui::Begin("Scene View", p_open);
 
     auto& context = EditorContext::GetInstance();
+
+    // --- Toolbar ---
+    {
+        float windowWidth = ImGui::GetWindowWidth();
+        float buttonSize = 25.0f;
+        float totalWidth = buttonSize * 2 + ImGui::GetStyle().ItemSpacing.x;
+        ImGui::SetCursorPosX((windowWidth - totalWidth) * 0.5f);
+
+        if (context.IsPlaying()) {
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.2f, 0.7f, 0.2f, 1.0f));
+            if (ImGui::Button("||", ImVec2(buttonSize, buttonSize))) {
+                context.SetPaused(!context.IsPaused());
+            }
+            ImGui::PopStyleColor();
+        } else {
+            if (ImGui::Button(">", ImVec2(buttonSize, buttonSize))) {
+                context.Play();
+            }
+        }
+
+        ImGui::SameLine();
+
+        if (ImGui::Button("X", ImVec2(buttonSize, buttonSize))) {
+            context.Stop();
+        }
+        ImGui::Separator();
+    }
+
     auto& graphics = Engine::Graphics::GraphicsEngine::GetInstance();
     auto* finalBuffer = graphics.GetFinalColorBuffer();
     

@@ -118,6 +118,13 @@ public:
     bool& GetShowProject() { return showProject_; }
     bool& GetShowConsole() { return showConsole_; }
 
+    // 再生・停止制御
+    bool IsPlaying() const;
+    void Play();
+    void Stop();
+    bool IsPaused() const;
+    void SetPaused(bool paused);
+
 private:
     EditorContext() : 
         snapEnabled_(false), snapTranslation_(1.0f), snapRotation_(45.0f), snapScale_(0.5f), 
