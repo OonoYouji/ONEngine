@@ -85,7 +85,9 @@ def generate_serialization(type_name, fields, namespace):
             from_json += "    if (j.contains(\"{}\")) {{ auto& arr = j.at(\"{}\"); for(int i=0; i<{}; ++i) v.{}[i] = arr.at(i).get<{}>(); }}\n".format(f_name, f_name, f_count, f_name, TYPE_MAP_CPP[f_type])
         else:
             to_json += "        {{\"{}\", v.{}}},\n".format(f_name, f_name)
-            from_json += "    if (j.contains(\"{}\")) v.{} = j.at(\"{}\").get<{}>();\n".format(f_name, f_name, f_name, TYPE_MAP_CPP[f_type])
+            # Matrix4x4 (float4x4) is computed by systems, don't restore it from JSON as it might be stale
+            if f_type != "float4x4":
+                from_json += "    if (j.contains(\"{}\")) v.{} = j.at(\"{}\").get<{}>();\n".format(f_name, f_name, f_name, TYPE_MAP_CPP[f_type])
             
     to_json += "    };\n}\n"
     from_json += "}\n"

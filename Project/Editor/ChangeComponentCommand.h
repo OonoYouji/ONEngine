@@ -4,9 +4,11 @@
 #include "Engine/ECS/ComponentRegistry.h"
 #include "Engine/Core/Application.h"
 #include <nlohmann/json.hpp>
+#include <vector>
 
 namespace Engine::Editor {
 
+namespace ECS = Engine::ECS;
 using json = nlohmann::json;
 
 ///
@@ -15,32 +17,46 @@ using json = nlohmann::json;
 ///
 class ChangeComponentCommand : public ICommand {
 public:
+    struct EntityState {
+        ECS::Entity entity;
+        json oldState;
+        json newState;
+    };
+
     ChangeComponentCommand(ECS::Entity entity, uint32_t componentId, const json& oldState, const json& newState)
-        : entity_(entity), componentId_(componentId), oldState_(oldState), newState_(newState) {}
+        : componentId_(componentId) 
+    {
+        states_.push_back({ entity, oldState, newState });
+    }
+
+    ChangeComponentCommand(uint32_t componentId, const std::vector<EntityState>& states)
+        : componentId_(componentId), states_(states)
+    {}
 
     void Execute() override {
-        ApplyState(newState_);
+        Apply(true);
     }
 
     void Undo() override {
-        ApplyState(oldState_);
+        Apply(false);
     }
 
-    std::string GetName() const override { return "Change Component Value"; }
+    std::string GetName() const override { return "Change Component Value (Batch)"; }
 
 private:
-    void ApplyState(const json& state) {
+    void Apply(bool isForward) {
         auto& compReg = ECS::ComponentRegistry::GetInstance();
         auto& registry = Engine::Core::Application::GetInstance().GetRegistry();
         
-        // Registry に直接適用
-        compReg.DeserializeComponent(registry, entity_, componentId_, state);
+        for (auto& s : states_) {
+            const json& state = isForward ? s.newState : s.oldState;
+            Engine::Console::Log(std::format("[Command] Entity {}: Applying State: {}", s.entity, state.dump()));
+            compReg.DeserializeComponent(registry, s.entity, componentId_, state);
+        }
     }
 
-    ECS::Entity entity_;
     uint32_t componentId_;
-    json oldState_;
-    json newState_;
+    std::vector<EntityState> states_;
 };
 
 } // namespace Engine::Editor

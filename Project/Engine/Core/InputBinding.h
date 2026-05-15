@@ -22,6 +22,9 @@ struct InputBinding {
     InputSourceType sourceType;
     uint32_t rawCode; // VK_コード、マウスボタン、軸インデックス等
     float multiplier = 1.0f;
+    bool ctrl = false;
+    bool shift = false;
+    bool alt = false;
 };
 
 ///

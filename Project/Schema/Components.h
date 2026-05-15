@@ -208,7 +208,6 @@ inline void from_json(const nlohmann::json& j, Engine::ECS::Transform& v) {
     if (j.contains("position")) v.position = j.at("position").get<Engine::Math::Vector3>();
     if (j.contains("rotation")) v.rotation = j.at("rotation").get<Engine::Math::Vector3>();
     if (j.contains("scale")) v.scale = j.at("scale").get<Engine::Math::Vector3>();
-    if (j.contains("world")) v.world = j.at("world").get<Engine::Math::Matrix4x4>();
 }
 inline void to_json(nlohmann::json& j, const Engine::ECS::SpriteRenderer& v) {
     j = nlohmann::json{

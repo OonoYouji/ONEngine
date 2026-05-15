@@ -10,6 +10,9 @@ namespace Engine::ECS {
 
 using json = nlohmann::json;
 
+using PropertyFunc = std::function<bool(const char*, std::function<bool()>)>;
+using ComponentUIFunc = std::function<void(void*, PropertyFunc)>;
+
 ///
 /// コンポーネントの種類ごとの情報を保持する
 ///
@@ -20,6 +23,7 @@ struct ComponentTypeInfo {
     std::function<void(const json&, Entity, Registry&)> deserializeFunc;
     std::function<IComponentStorage&(Registry&)> getStorageFunc;
     std::function<void(Registry&, Entity)> addFunc;
+    ComponentUIFunc uiFunc;
 };
 
 ///
@@ -44,10 +48,12 @@ public:
     template <typename T>
     void Register(uint32_t typeId, const std::string& name, 
                   std::function<void(const json&, T&)> deserialize,
-                  std::function<json(const T&)> serialize) {
+                  std::function<json(const T&)> serialize,
+                  ComponentUIFunc uiFunc = nullptr) {
         ComponentTypeInfo info;
         info.typeId = typeId;
         info.name = name;
+        info.uiFunc = uiFunc;
         
         info.serializeFunc = [serialize](Entity e, Registry& r) -> json {
             if (!r.HasComponent<T>(e)) return json{};

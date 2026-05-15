@@ -15,11 +15,16 @@
 
 namespace Engine::Editor {
 
+// 描画された各エンティティの表示領域を保持する（ボックス選択用）
+static std::vector<std::pair<ECS::Entity, ImRect>> g_VisibleItemRects;
+
 void HierarchyView::Render(ECS::Registry& registry) {
     ImGui::Begin("Hierarchy");
 
-    // --- シーン名の表示 ---
+    auto& io = ImGui::GetIO();
     auto& context = EditorContext::GetInstance();
+    
+    // --- シーン名の表示 ---
     std::string scenePath = context.GetCurrentScenePath();
     std::string sceneName = "Untitled Scene";
     if (!scenePath.empty()) {
@@ -38,26 +43,54 @@ void HierarchyView::Render(ECS::Registry& registry) {
 
     // 背景クリックで選択解除
     if (ImGui::IsWindowHovered() && ImGui::IsMouseClicked(0) && !ImGui::IsAnyItemHovered()) {
-        EditorContext::GetInstance().SetSelectedEntity(ECS::kNullEntity);
+        EditorContext::GetInstance().ClearSelection();
     }
+
+    // 前フレームのRect情報を元にボックス選択を処理（描画前に行う必要があるため）
+    static bool isBoxSelecting = false;
+    static ImVec2 boxStartPos;
+
+    if (ImGui::IsWindowHovered(ImGuiHoveredFlags_ChildWindows)) {
+        if (ImGui::IsMouseClicked(0) && !ImGui::IsAnyItemHovered()) {
+            isBoxSelecting = true;
+            boxStartPos = io.MousePos;
+            if (!io.KeyCtrl) context.ClearSelection();
+        }
+    }
+
+    if (isBoxSelecting) {
+        if (ImGui::IsMouseReleased(0)) {
+            isBoxSelecting = false;
+        } else {
+            ImVec2 mousePos = io.MousePos;
+            ImVec2 boxMin = ImVec2((std::min)(boxStartPos.x, mousePos.x), (std::min)(boxStartPos.y, mousePos.y));
+            ImVec2 boxMax = ImVec2((std::max)(boxStartPos.x, mousePos.x), (std::max)(boxStartPos.y, mousePos.y));
+
+            ImGui::GetForegroundDrawList()->AddRect(boxMin, boxMax, IM_COL32(100, 150, 255, 255));
+            ImGui::GetForegroundDrawList()->AddRectFilled(boxMin, boxMax, IM_COL32(100, 150, 255, 50));
+
+            if (!io.KeyCtrl) context.ClearSelection();
+            for (const auto& item : g_VisibleItemRects) {
+                if (item.second.Max.x < boxMin.x || item.second.Min.x > boxMax.x ||
+                    item.second.Max.y < boxMin.y || item.second.Min.y > boxMax.y) {
+                    continue;
+                }
+                context.AddToSelection(item.first);
+            }
+        }
+    }
+
+    // 今フレームの描画順Rect収集を開始
+    g_VisibleItemRects.clear();
 
     // ルートエンティティの収集
     std::vector<ECS::Entity> rootEntities;
-    bool anyNonZero = false;
     for (auto entity : entities) {
         if (registry.HasComponent<ECS::Transform>(entity)) {
             auto& transform = registry.GetComponent<ECS::Transform>(entity);
             if (transform.parent == ECS::kNullEntity) {
                 rootEntities.push_back(entity);
-                if (transform.sortOrder != 0.0f) anyNonZero = true;
             }
-        }
-    }
-
-    // すべて 0 の場合は初期化（インデックス順にする）
-    if (!anyNonZero && !rootEntities.empty()) {
-        for (size_t i = 0; i < rootEntities.size(); ++i) {
-            registry.GetComponent<ECS::Transform>(rootEntities[i]).sortOrder = (float)i;
         }
     }
 
@@ -65,7 +98,7 @@ void HierarchyView::Render(ECS::Registry& registry) {
         float orderA = registry.GetComponent<ECS::Transform>(a).sortOrder;
         float orderB = registry.GetComponent<ECS::Transform>(b).sortOrder;
         if (orderA != orderB) return orderA < orderB;
-        return a < b; // IDで安定させる
+        return a < b;
     });
 
     // --- ルート階層の描画 ---
@@ -82,8 +115,6 @@ void HierarchyView::Render(ECS::Registry& registry) {
             : currentOrder + 1.0f;
         
         float midOrder = (currentOrder + nextOrder) * 0.5f;
-        
-        // 前後の境界と同じにならないよう微調整（精度対策）
         if (midOrder == currentOrder) midOrder += 0.0001f;
 
         ECS::Entity nextEnt = (i + 1 < rootEntities.size()) ? rootEntities[i+1] : ECS::kNullEntity;
@@ -112,22 +143,14 @@ void HierarchyView::DrawEntityNode(ECS::Registry& registry, ECS::Entity entity) 
         name = registry.GetComponent<ECS::Tag>(entity).name;
     }
 
-    ImGuiTreeNodeFlags flags = ((context.GetSelectedEntity() == entity) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
+    ImGuiTreeNodeFlags flags = (context.IsSelected(entity) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
     
     // 子の収集
     std::vector<ECS::Entity> children;
-    bool anyNonZero = false;
     auto& transformStorage = registry.GetStorage<ECS::Transform>();
     for (auto e : transformStorage.GetEntities()) {
         if (registry.HasComponent<ECS::Transform>(e) && registry.GetComponent<ECS::Transform>(e).parent == entity) {
             children.push_back(e);
-            if (registry.GetComponent<ECS::Transform>(e).sortOrder != 0.0f) anyNonZero = true;
-        }
-    }
-
-    if (!anyNonZero && !children.empty()) {
-        for (size_t i = 0; i < children.size(); ++i) {
-            registry.GetComponent<ECS::Transform>(children[i]).sortOrder = (float)i;
         }
     }
 
@@ -140,14 +163,6 @@ void HierarchyView::DrawEntityNode(ECS::Registry& registry, ECS::Entity entity) 
 
     if (children.empty()) {
         flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
-    }
-
-    // --- Entity Active Checkbox ---
-    // Tagコンポーネントがない場合は取得時に作成（isActive管理のため）
-    if (!registry.HasComponent<ECS::Tag>(entity)) {
-        auto& tag = registry.AddComponent<ECS::Tag>(entity);
-        tag.isActive = 1;
-        sprintf_s(tag.name, "Entity %u", entity);
     }
 
     auto& tag = registry.GetComponent<ECS::Tag>(entity);
@@ -170,9 +185,21 @@ void HierarchyView::DrawEntityNode(ECS::Registry& registry, ECS::Entity entity) 
     bool opened = ImGui::TreeNodeEx((void*)(intptr_t)entity, flags, name.c_str());
     if (!isActive) ImGui::PopStyleColor();
 
+    // 描画された領域を記録（ボックス選択用）
+    g_VisibleItemRects.push_back({ entity, ImRect(ImGui::GetItemRectMin(), ImGui::GetItemRectMax()) });
+
+    static ECS::Entity lastSelectedEntity = ECS::kNullEntity;
+    auto& io = ImGui::GetIO();
+
     // 選択
     if (ImGui::IsItemClicked()) {
-        context.SetSelectedEntity(entity);
+        if (io.KeyCtrl) {
+            if (context.IsSelected(entity)) context.RemoveFromSelection(entity);
+            else context.AddToSelection(entity);
+        } else {
+            context.SetSelectedEntity(entity);
+        }
+        lastSelectedEntity = entity;
     }
 
     // ドラッグソース
@@ -217,18 +244,14 @@ void HierarchyView::DrawEntityNode(ECS::Registry& registry, ECS::Entity entity) 
 }
 
 void HierarchyView::DrawDropSeparator(ECS::Registry& registry, uint32_t id, ECS::Entity parent, float newOrder, ECS::Entity blockedA, ECS::Entity blockedB) {
-    // 隙間の設定
-    // 見た目の隙間を最小化するため、カーソル位置を少し戻してから描画する
     float height = 6.0f;
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(8.0f, 0.0f));
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() - (height * 0.5f));
     
     ImGui::PushID(id);
-    // InvisibleButton は Rect フィードバックを生成する
     ImGui::InvisibleButton("##sep", ImVec2(-1, height));
 
     if (ImGui::BeginDragDropTarget()) {
-        // ドラッグ中のホバー時に黄色い線を描画して挿入位置を明示する
         ImRect rect(ImGui::GetItemRectMin(), ImGui::GetItemRectMax());
         ImGui::GetWindowDrawList()->AddLine(
             ImVec2(rect.Min.x, (rect.Min.y + rect.Max.y) * 0.5f),
@@ -237,8 +260,6 @@ void HierarchyView::DrawDropSeparator(ECS::Registry& registry, uint32_t id, ECS:
 
         if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_ID")) {
             ECS::Entity draggedEntity = *(const ECS::Entity*)payload->Data;
-            
-            // 自分の現在の位置の前後は無視
             if (draggedEntity != blockedA && draggedEntity != blockedB && draggedEntity != parent) {
                 if (!Scene::HierarchySystem::IsDescendantOf(registry, parent, draggedEntity)) {
                     UpdateEntityOrder(registry, draggedEntity, parent, newOrder);
@@ -255,7 +276,6 @@ void HierarchyView::DrawDropSeparator(ECS::Registry& registry, uint32_t id, ECS:
 
 void HierarchyView::UpdateEntityOrder(ECS::Registry& registry, ECS::Entity entity, ECS::Entity newParent, float newOrder) {
     auto& transform = registry.GetComponent<ECS::Transform>(entity);
-    
     json oldState;
     to_json(oldState, transform);
     
@@ -263,24 +283,17 @@ void HierarchyView::UpdateEntityOrder(ECS::Registry& registry, ECS::Entity entit
     newState["parent"] = newParent;
     newState["sortOrder"] = newOrder;
 
+    Engine::Console::Log(std::format("[Hierarchy] Changing Entity {} Parent: {} -> {}, Order: {} -> {}", 
+        entity, (uint32_t)transform.parent, (uint32_t)newParent, transform.sortOrder, newOrder));
+
     auto* info = ECS::ComponentRegistry::GetInstance().GetInfo("Transform");
     if (info) {
-        auto command = std::make_shared<ChangeComponentCommand>(
-            entity, 
-            info->typeId, 
-            oldState, 
-            newState
-        );
-        CommandHistory::GetInstance().Execute(command);
+        CommandHistory::GetInstance().Execute(std::make_shared<ChangeComponentCommand>(entity, info->typeId, oldState, newState));
     }
 }
 
 void HierarchyView::ReparentEntity(ECS::Registry& registry, ECS::Entity entity, ECS::Entity newParent) {
     if (entity == newParent) return;
-
-    auto& transform = registry.GetComponent<ECS::Transform>(entity);
-    
-    // 末尾に追加するためのsortOrderを決定
     float maxOrder = -1.0f;
     auto& transformStorage = registry.GetStorage<ECS::Transform>();
     for (auto e : transformStorage.GetEntities()) {
@@ -288,7 +301,6 @@ void HierarchyView::ReparentEntity(ECS::Registry& registry, ECS::Entity entity, 
             maxOrder = (std::max)(maxOrder, registry.GetComponent<ECS::Transform>(e).sortOrder);
         }
     }
-
     UpdateEntityOrder(registry, entity, newParent, maxOrder + 1.0f);
 }
 

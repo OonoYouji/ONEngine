@@ -176,8 +176,6 @@ inline void to_json(nlohmann::json& j, const Engine::GeneratedSchema::SceneData&
 }
 
 inline void from_json(const nlohmann::json& j, Engine::GeneratedSchema::SceneData& v) {
-    if (j.contains("view")) v.view = j.at("view").get<Engine::Math::Matrix4x4>();
-    if (j.contains("viewProj")) v.viewProj = j.at("viewProj").get<Engine::Math::Matrix4x4>();
     if (j.contains("cameraPos")) v.cameraPos = j.at("cameraPos").get<Engine::Math::Vector3>();
     if (j.contains("numPointLights")) v.numPointLights = j.at("numPointLights").get<uint32_t>();
     if (j.contains("dirLightIntensity")) v.dirLightIntensity = j.at("dirLightIntensity").get<float>();
@@ -201,7 +199,6 @@ inline void to_json(nlohmann::json& j, const Engine::GeneratedSchema::TextData& 
 }
 
 inline void from_json(const nlohmann::json& j, Engine::GeneratedSchema::TextData& v) {
-    if (j.contains("world")) v.world = j.at("world").get<Engine::Math::Matrix4x4>();
     if (j.contains("color")) v.color = j.at("color").get<Engine::Math::Vector4>();
     if (j.contains("uvMin")) v.uvMin = j.at("uvMin").get<Engine::Math::Vector2>();
     if (j.contains("uvMax")) v.uvMax = j.at("uvMax").get<Engine::Math::Vector2>();
@@ -232,7 +229,6 @@ inline void to_json(nlohmann::json& j, const Engine::GeneratedSchema::BoneData& 
 }
 
 inline void from_json(const nlohmann::json& j, Engine::GeneratedSchema::BoneData& v) {
-    if (j.contains("transform")) v.transform = j.at("transform").get<Engine::Math::Matrix4x4>();
 }
 inline void to_json(nlohmann::json& j, const Engine::GeneratedSchema::SkinningParams& v) {
     j = nlohmann::json{
@@ -272,7 +268,6 @@ inline void to_json(nlohmann::json& j, const Engine::GeneratedSchema::SpriteData
 }
 
 inline void from_json(const nlohmann::json& j, Engine::GeneratedSchema::SpriteData& v) {
-    if (j.contains("world")) v.world = j.at("world").get<Engine::Math::Matrix4x4>();
     if (j.contains("color")) v.color = j.at("color").get<Engine::Math::Vector4>();
     if (j.contains("textureIndex")) v.textureIndex = j.at("textureIndex").get<uint32_t>();
     if (j.contains("isBillboard")) v.isBillboard = j.at("isBillboard").get<uint32_t>();
@@ -306,7 +301,6 @@ inline void to_json(nlohmann::json& j, const Engine::GeneratedSchema::InstanceDa
 }
 
 inline void from_json(const nlohmann::json& j, Engine::GeneratedSchema::InstanceData& v) {
-    if (j.contains("world")) v.world = j.at("world").get<Engine::Math::Matrix4x4>();
     if (j.contains("aabbMin")) v.aabbMin = j.at("aabbMin").get<Engine::Math::Vector4>();
     if (j.contains("aabbMax")) v.aabbMax = j.at("aabbMax").get<Engine::Math::Vector4>();
     if (j.contains("baseColor")) v.baseColor = j.at("baseColor").get<Engine::Math::Vector4>();
