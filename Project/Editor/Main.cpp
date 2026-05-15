@@ -238,16 +238,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
 				ImGui::EndMenu();
 			}
 
-			if (ImGui::BeginMenu("ツール (Tools)")) {
-				if (ImGui::MenuItem("全てのEntityにTagを付与 (Add Tags to All)")) {
-					auto& reg = Engine::Core::Application::GetInstance().GetRegistry();
-					reg.GetView<Engine::ECS::Transform>().Each([&](Engine::ECS::Entity e, auto& t) {
-						if (!reg.HasComponent<Engine::ECS::Tag>(e)) {
-							auto& tag = reg.AddComponent<Engine::ECS::Tag>(e);
-							sprintf_s(tag.name, "Entity %u", e);
-						}
-					});
-				}
+			if (ImGui::BeginMenu("表示 (Window)")) {
+				if (ImGui::MenuItem("Hierarchy", nullptr, context.GetShowHierarchy())) { context.GetShowHierarchy() = !context.GetShowHierarchy(); context.SaveSettings(); }
+				if (ImGui::MenuItem("Inspector", nullptr, context.GetShowInspector())) { context.GetShowInspector() = !context.GetShowInspector(); context.SaveSettings(); }
+				if (ImGui::MenuItem("Scene View", nullptr, context.GetShowSceneView())) { context.GetShowSceneView() = !context.GetShowSceneView(); context.SaveSettings(); }
+				if (ImGui::MenuItem("Project", nullptr, context.GetShowProject())) { context.GetShowProject() = !context.GetShowProject(); context.SaveSettings(); }
+				if (ImGui::MenuItem("Console", nullptr, context.GetShowConsole())) { context.GetShowConsole() = !context.GetShowConsole(); context.SaveSettings(); }
 				ImGui::EndMenu();
 			}
 			ImGui::EndMainMenuBar();
@@ -275,11 +271,24 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
 		);
 		app.SetEditorSelectedEntity(context.GetSelectedEntity());
 
-        hierarchyView.Render(registry);
-		inspectorView.Render(registry);
-		sceneView.Render();
-		projectView.Render();
-		consoleView.Render();
+        // 各ビューの表示フラグの状態を保持して、変更があったら保存する
+        bool prevHierarchy = context.GetShowHierarchy();
+        bool prevInspector = context.GetShowInspector();
+        bool prevSceneView = context.GetShowSceneView();
+        bool prevProject = context.GetShowProject();
+        bool prevConsole = context.GetShowConsole();
+
+        hierarchyView.Render(registry, &context.GetShowHierarchy());
+		inspectorView.Render(registry, &context.GetShowInspector());
+		sceneView.Render(&context.GetShowSceneView());
+		projectView.Render(&context.GetShowProject());
+		consoleView.Render(&context.GetShowConsole());
+
+        if (prevHierarchy != context.GetShowHierarchy() || prevInspector != context.GetShowInspector() ||
+            prevSceneView != context.GetShowSceneView() || prevProject != context.GetShowProject() ||
+            prevConsole != context.GetShowConsole()) {
+            context.SaveSettings();
+        }
 
         // エンジンの InputMapper を使用したショートカット処理
         if (!ImGui::GetIO().WantCaptureKeyboard || !ImGui::IsAnyItemActive()) {

@@ -8,7 +8,7 @@ namespace ECS = Engine::ECS;
 
 class HierarchyView {
 public:
-    void Render(ECS::Registry& registry);
+    void Render(ECS::Registry& registry, bool* p_open = nullptr);
 
 private:
     void DrawEntityNode(ECS::Registry& registry, ECS::Entity entity);

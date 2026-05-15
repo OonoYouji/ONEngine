@@ -16,9 +16,13 @@ namespace Engine::Editor {
 static ImGuizmo::OPERATION s_gizmoOperation = ImGuizmo::TRANSLATE;
 static ImGuizmo::MODE s_gizmoMode = ImGuizmo::LOCAL;
 
-void SceneView::Render() {
+void SceneView::Render(bool* p_open) {
+    if (p_open && !*p_open) {
+        EditorContext::GetInstance().SetSceneFocused(false);
+        return;
+    }
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-    ImGui::Begin("Scene View");
+    ImGui::Begin("Scene View", p_open);
 
     auto& context = EditorContext::GetInstance();
     auto& graphics = Engine::Graphics::GraphicsEngine::GetInstance();

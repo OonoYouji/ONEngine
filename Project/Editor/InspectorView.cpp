@@ -18,8 +18,9 @@ namespace Engine::Editor {
 using json = nlohmann::json;
 static json s_oldState;
 
-void InspectorView::Render(ECS::Registry& registry) {
-    ImGui::Begin("Inspector");
+void InspectorView::Render(ECS::Registry& registry, bool* p_open) {
+    if (p_open && !*p_open) return;
+    ImGui::Begin("Inspector", p_open);
 
     auto& context = EditorContext::GetInstance();
     const auto& selection = context.GetSelection();

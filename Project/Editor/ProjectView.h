@@ -27,7 +27,7 @@ struct ProjectTab {
 class ProjectView {
 public:
     ProjectView();
-    void Render();
+    void Render(bool* p_open = nullptr);
 
 private:
     std::filesystem::path assetsRoot_;

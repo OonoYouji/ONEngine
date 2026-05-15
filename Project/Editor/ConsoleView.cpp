@@ -5,8 +5,9 @@
 
 namespace Engine::Editor {
 
-void ConsoleView::Render() {
-    ImGui::Begin("Console");
+void ConsoleView::Render(bool* p_open) {
+    if (p_open && !*p_open) return;
+    ImGui::Begin("Console", p_open);
 
     // ツールバー
     if (ImGui::Button("Clear")) {

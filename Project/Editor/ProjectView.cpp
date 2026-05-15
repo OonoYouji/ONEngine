@@ -113,7 +113,8 @@ int32_t ProjectView::GetIconForPath(const std::filesystem::path& path) {
     return -1;
 }
 
-void ProjectView::Render() {
+void ProjectView::Render(bool* p_open) {
+    if (p_open && !*p_open) return;
     if (!pendingPath_.empty()) {
         if (activeTabIndex_ >= 0 && activeTabIndex_ < (int)tabs_.size()) {
             tabs_[activeTabIndex_].currentPath = pendingPath_;

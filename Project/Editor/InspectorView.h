@@ -7,7 +7,7 @@ namespace ECS = Engine::ECS;
 
 class InspectorView {
 public:
-    void Render(ECS::Registry& registry);
+    void Render(ECS::Registry& registry, bool* p_open = nullptr);
 };
 
 } // namespace Engine::Editor

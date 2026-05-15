@@ -7,7 +7,7 @@ namespace Engine::Editor {
 
 class ConsoleView {
 public:
-    void Render();
+    void Render(bool* p_open = nullptr);
 
 private:
     bool autoScroll_ = true;

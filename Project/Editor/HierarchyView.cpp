@@ -18,8 +18,9 @@ namespace Engine::Editor {
 // 描画された各エンティティの表示領域を保持する（ボックス選択用）
 static std::vector<std::pair<ECS::Entity, ImRect>> g_VisibleItemRects;
 
-void HierarchyView::Render(ECS::Registry& registry) {
-    ImGui::Begin("Hierarchy");
+void HierarchyView::Render(ECS::Registry& registry, bool* p_open) {
+    if (p_open && !*p_open) return;
+    ImGui::Begin("Hierarchy", p_open);
 
     auto& io = ImGui::GetIO();
     auto& context = EditorContext::GetInstance();

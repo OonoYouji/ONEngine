@@ -63,6 +63,11 @@ public:
         j["SnapTranslation"] = snapTranslation_;
         j["SnapRotation"] = snapRotation_;
         j["SnapScale"] = snapScale_;
+        j["ShowHierarchy"] = showHierarchy_;
+        j["ShowInspector"] = showInspector_;
+        j["ShowSceneView"] = showSceneView_;
+        j["ShowProject"] = showProject_;
+        j["ShowConsole"] = showConsole_;
 
         std::ofstream os("EditorSettings.json");
         if (os.is_open()) {
@@ -85,14 +90,29 @@ public:
             if (j.contains("SnapTranslation")) snapTranslation_ = j["SnapTranslation"];
             if (j.contains("SnapRotation")) snapRotation_ = j["SnapRotation"];
             if (j.contains("SnapScale")) snapScale_ = j["SnapScale"];
+            if (j.contains("ShowHierarchy")) showHierarchy_ = j["ShowHierarchy"];
+            if (j.contains("ShowInspector")) showInspector_ = j["ShowInspector"];
+            if (j.contains("ShowSceneView")) showSceneView_ = j["ShowSceneView"];
+            if (j.contains("ShowProject")) showProject_ = j["ShowProject"];
+            if (j.contains("ShowConsole")) showConsole_ = j["ShowConsole"];
         }
     }
 
     void SetSceneFocused(bool focused) { isSceneFocused_ = focused; }
     bool IsSceneFocused() const { return isSceneFocused_; }
 
+    bool& GetShowHierarchy() { return showHierarchy_; }
+    bool& GetShowInspector() { return showInspector_; }
+    bool& GetShowSceneView() { return showSceneView_; }
+    bool& GetShowProject() { return showProject_; }
+    bool& GetShowConsole() { return showConsole_; }
+
 private:
-    EditorContext() : snapEnabled_(false), snapTranslation_(1.0f), snapRotation_(45.0f), snapScale_(0.5f), currentScenePath_("Assets/Scene/MainScene.scene"), isSceneFocused_(false) {
+    EditorContext() : 
+        snapEnabled_(false), snapTranslation_(1.0f), snapRotation_(45.0f), snapScale_(0.5f), 
+        currentScenePath_("Assets/Scene/MainScene.scene"), isSceneFocused_(false),
+        showHierarchy_(true), showInspector_(true), showSceneView_(true), showProject_(true), showConsole_(true) 
+    {
         camera_ = std::make_unique<EditorCamera>();
         selection_.clear();
         // エディター用のデフォルトバインド
@@ -124,6 +144,12 @@ private:
     bool isSceneFocused_;
 
     std::string currentScenePath_;
+
+    bool showHierarchy_;
+    bool showInspector_;
+    bool showSceneView_;
+    bool showProject_;
+    bool showConsole_;
 };
 
 } // namespace Engine::Editor
