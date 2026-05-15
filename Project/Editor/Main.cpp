@@ -2,6 +2,7 @@
 #include "Engine/Graphics/Core/GraphicsEngine.h"
 #include "Engine/Graphics/Core/RenderDevice.h"
 #include "imgui.h"
+#include "imgui_internal.h"
 #include "imgui_impl_win32.h"
 #include "imgui_impl_dx12.h"
 
@@ -258,10 +259,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
 		// エディターカメラの更新
 		auto& context = Engine::Editor::EditorContext::GetInstance();
 		auto& rawInput = app.GetRawInputService();
+        auto& editorCam = context.GetCamera();
+
 		// エディタ操作は ImGui キャプチャを無視して入力を取る (ignoreCapture = true)
 		context.GetInputMapper().Update(rawInput, context.GetBindingTable(), context.GetActionMap(), true);
-		
-		auto& editorCam = context.GetCamera();
 		editorCam.Update(ImGui::GetIO().DeltaTime);
 
 		// Engine 側にエディタの状態を通知

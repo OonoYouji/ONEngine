@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "Engine/ECS/Entity.h"
 #include "Editor/EditorCamera.h"
 #include "Engine/Core/InputActions.h"
@@ -88,8 +88,11 @@ public:
         }
     }
 
+    void SetSceneFocused(bool focused) { isSceneFocused_ = focused; }
+    bool IsSceneFocused() const { return isSceneFocused_; }
+
 private:
-    EditorContext() : snapEnabled_(false), snapTranslation_(1.0f), snapRotation_(45.0f), snapScale_(0.5f), currentScenePath_("Assets/Scene/MainScene.scene") {
+    EditorContext() : snapEnabled_(false), snapTranslation_(1.0f), snapRotation_(45.0f), snapScale_(0.5f), currentScenePath_("Assets/Scene/MainScene.scene"), isSceneFocused_(false) {
         camera_ = std::make_unique<EditorCamera>();
         selection_.clear();
         // エディター用のデフォルトバインド
@@ -118,6 +121,7 @@ private:
     float snapTranslation_;
     float snapRotation_;
     float snapScale_;
+    bool isSceneFocused_;
 
     std::string currentScenePath_;
 };

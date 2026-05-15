@@ -24,6 +24,10 @@ void SceneView::Render() {
     auto& graphics = Engine::Graphics::GraphicsEngine::GetInstance();
     auto* finalBuffer = graphics.GetFinalColorBuffer();
     
+    // フォーカス状態を保存 (次フレームのカメラ操作用)
+    bool isFocused = ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows) && !ImGui::IsAnyItemActive();
+    context.SetSceneFocused(isFocused);
+
     // Gizmo 操作の切り替え
     if (!ImGui::IsAnyItemActive()) {
         if (ImGui::IsKeyPressed(ImGuiKey_W)) s_gizmoOperation = ImGuizmo::TRANSLATE;
