@@ -1,0 +1,13 @@
+{
+  "name": "TestTemplate",
+  "vs": {
+    "path": "Assets/Shader/Test/Test.hlsl",
+    "entry": "vs_main",
+    "profile": "vs_6_0"
+  },
+  "ps": {
+    "path": "Assets/Shader/Test/Test.hlsl",
+    "entry": "ps_main",
+    "profile": "ps_6_0"
+  }
+}

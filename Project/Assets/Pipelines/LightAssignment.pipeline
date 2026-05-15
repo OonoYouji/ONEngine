@@ -1,0 +1,8 @@
+{
+  "name": "LightAssignment",
+  "cs": {
+    "path": "Assets/Shader/Utils/Clustered/LightAssignment.hlsl",
+    "entry": "main",
+    "profile": "cs_6_0"
+  }
+}

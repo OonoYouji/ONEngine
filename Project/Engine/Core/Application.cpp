@@ -91,12 +91,12 @@ bool Application::Initialize(HINSTANCE hInstance, int nCmdShow) {
     clusteredLightManager_->Initialize(graphics.GetRenderDevice());
 
     auto& sm = Graphics::ShaderManager::GetInstance();
-    sm.LoadPipelineAsset("Assets/Pipelines/DebugLine.json");
-    sm.LoadPipelineAsset("Assets/Pipelines/Skybox.json");
-    sm.LoadPipelineAsset("Assets/Pipelines/CelShader.json");
-    sm.LoadPipelineAsset("Assets/Pipelines/PostProcess.json");
-    sm.LoadPipelineAsset("Assets/Pipelines/BindlessTest.json");
-    sm.LoadPipelineAsset("Assets/Pipelines/Skinning.json");
+    sm.LoadPipelineAsset("Assets/Pipelines/DebugLine.pipeline");
+    sm.LoadPipelineAsset("Assets/Pipelines/Skybox.pipeline");
+    sm.LoadPipelineAsset("Assets/Pipelines/CelShader.pipeline");
+    sm.LoadPipelineAsset("Assets/Pipelines/PostProcess.pipeline");
+    sm.LoadPipelineAsset("Assets/Pipelines/BindlessTest.pipeline");
+    sm.LoadPipelineAsset("Assets/Pipelines/Skinning.pipeline");
 
     Graphics::PostProcessSystem::GetInstance().Initialize(graphics.GetRenderDevice(), graphics.GetRTVHeap(), graphics.GetSRVHeap(), Math::Vector2Int::HD);
 

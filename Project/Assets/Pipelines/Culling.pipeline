@@ -1,0 +1,8 @@
+{
+  "name": "Culling",
+  "cs": {
+    "path": "Assets/Shader/Utils/Culling.hlsl",
+    "entry": "main",
+    "profile": "cs_6_0"
+  }
+}

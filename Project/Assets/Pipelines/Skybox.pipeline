@@ -1,0 +1,21 @@
+{
+  "name": "Skybox",
+  "vs": {
+    "path": "Assets/Shader/Utils/Skybox.hlsl",
+    "entry": "vs_cube",
+    "profile": "vs_6_0"
+  },
+  "ps": {
+    "path": "Assets/Shader/Utils/Skybox.hlsl",
+    "entry": "ps_main",
+    "profile": "ps_6_0"
+  },
+  "rasterizer": {
+    "cull": "NONE"
+  },
+  "depth": {
+    "enable": true,
+    "write": false,
+    "func": "LESS_EQUAL"
+  }
+}

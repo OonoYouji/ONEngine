@@ -1,0 +1,8 @@
+{
+  "name": "ClusterBuilding",
+  "cs": {
+    "path": "Assets/Shader/Utils/Clustered/ClusterBuilding.hlsl",
+    "entry": "main",
+    "profile": "cs_6_0"
+  }
+}

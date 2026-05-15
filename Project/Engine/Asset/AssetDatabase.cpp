@@ -16,7 +16,7 @@ namespace {
     bool IsAssetFile(const fs::path& path) {
         std::string ext = path.extension().string();
         std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
-        return ext == ".png" || ext == ".jpg" || ext == ".obj" || ext == ".fbx" || ext == ".mat" || ext == ".scene" || ext == ".ttf";
+        return ext == ".png" || ext == ".jpg" || ext == ".obj" || ext == ".fbx" || ext == ".mat" || ext == ".scene" || ext == ".ttf" || ext == ".pipeline";
     }
 }
 

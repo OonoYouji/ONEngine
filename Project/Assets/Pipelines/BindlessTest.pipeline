@@ -1,0 +1,13 @@
+{
+  "name": "BindlessTest",
+  "vs": {
+    "path": "Assets/Shader/Test/BindlessTest.hlsl",
+    "entry": "vs_main",
+    "profile": "vs_6_0"
+  },
+  "ps": {
+    "path": "Assets/Shader/Test/BindlessTest.hlsl",
+    "entry": "ps_main",
+    "profile": "ps_6_0"
+  }
+}

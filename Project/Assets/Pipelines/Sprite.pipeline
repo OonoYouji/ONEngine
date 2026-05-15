@@ -1,0 +1,24 @@
+{
+  "name": "Sprite",
+  "vs": {
+    "path": "Assets/Shader/Utils/Sprite.hlsl",
+    "entry": "vs_main",
+    "profile": "vs_6_0"
+  },
+  "ps": {
+    "path": "Assets/Shader/Utils/Sprite.hlsl",
+    "entry": "ps_main",
+    "profile": "ps_6_0"
+  },
+  "rasterizer": {
+    "cull": "NONE"
+  },
+  "blend": {
+    "enable": true
+  },
+  "depth": {
+    "enable": true,
+    "write": false,
+    "func": "LESS_EQUAL"
+  }
+}

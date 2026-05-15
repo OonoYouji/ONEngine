@@ -1,0 +1,8 @@
+{
+  "name": "CullingReset",
+  "cs": {
+    "path": "Assets/Shader/Utils/CullingReset.hlsl",
+    "entry": "main",
+    "profile": "cs_6_0"
+  }
+}

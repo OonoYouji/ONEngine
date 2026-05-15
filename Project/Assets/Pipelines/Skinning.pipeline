@@ -1,0 +1,8 @@
+{
+  "name": "Skinning",
+  "cs": {
+    "path": "Assets/Shader/Utils/Skinning.hlsl",
+    "entry": "main",
+    "profile": "cs_6_0"
+  }
+}

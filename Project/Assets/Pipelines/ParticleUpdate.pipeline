@@ -1,0 +1,8 @@
+{
+  "name": "ParticleUpdate",
+  "cs": {
+    "path": "Assets/Shader/Utils/ParticleUpdate.hlsl",
+    "entry": "main",
+    "profile": "cs_6_0"
+  }
+}

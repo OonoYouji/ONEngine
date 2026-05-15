@@ -17,7 +17,8 @@ enum class AssetType {
     Audio,
     Font,
     Scene,
-    Prefab
+    Prefab,
+    Pipeline
 };
 
 ///

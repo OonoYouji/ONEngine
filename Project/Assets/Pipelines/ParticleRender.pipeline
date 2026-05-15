@@ -1,0 +1,23 @@
+{
+  "name": "ParticleRender",
+  "ms": {
+    "path": "Assets/Shader/Utils/ParticleRender.hlsl",
+    "entry": "ms_main",
+    "profile": "ms_6_5"
+  },
+  "ps": {
+    "path": "Assets/Shader/Utils/ParticleRender.hlsl",
+    "entry": "ps_main",
+    "profile": "ps_6_5"
+  },
+  "rasterizer": {
+    "cull": "NONE"
+  },
+  "blend": {
+    "enable": true
+  },
+  "depth": {
+    "enable": true,
+    "write": false
+  }
+}

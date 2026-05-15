@@ -60,6 +60,7 @@ void ProjectView::LoadIcons() {
     LoadSafe("folder", "folder.png");
     LoadSafe(".cs", "csharp.png");
     LoadSafe(".mat", "material.png");
+    LoadSafe(".pipeline", "material.png");
     LoadSafe(".prefab", "prefab.png");
     LoadSafe(".ttf", "font.png");
 }
@@ -599,7 +600,7 @@ void ProjectView::CreateNewMaterial(const std::filesystem::path& parentPath) {
 
     nlohmann::json data;
     data["name"] = newPath.stem().string();
-    data["pipeline"] = "Assets/Pipelines/CelShader.json";
+    data["pipeline"] = "Assets/Pipelines/CelShader.pipeline";
     data["texture"] = "";
     data["parameters"]["baseColor"] = { 1.0f, 1.0f, 1.0f, 1.0f };
 

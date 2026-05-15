@@ -1,0 +1,20 @@
+{
+  "name": "PostProcess",
+  "vs": {
+    "path": "Assets/Shader/Utils/PostProcess.hlsl",
+    "entry": "vs_main",
+    "profile": "vs_6_0"
+  },
+  "ps": {
+    "path": "Assets/Shader/Utils/PostProcess.hlsl",
+    "entry": "ps_main",
+    "profile": "ps_6_0"
+  },
+  "blend": {
+    "enable": false
+  },
+  "depth": {
+    "enable": false,
+    "write": false
+  }
+}
