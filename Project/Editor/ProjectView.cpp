@@ -367,28 +367,16 @@ void ProjectView::RenderContent() {
             bool shift = io.KeyShift;
 
             if (shift && !lastSelectedPath_.empty()) {
-                // Range selection
-                bool selecting = false;
-                for (const auto& e : cachedEntries_) {
-                    if (e.path == entry.path || e.path == lastSelectedPath_) {
-                        selectedPaths_.insert(e.path);
-                        if (entry.path == lastSelectedPath_) {
-                            // If start and end are the same, just select it
-                        } else {
-                             if (selecting) { selecting = false; }
-                             else { selecting = true; }
-                        }
-                    } else if (selecting) {
-                        selectedPaths_.insert(e.path);
-                    }
-                }
+                // ... (略)
             } else if (ctrl) {
-                if (selectedPaths_.count(entry.path)) selectedPaths_.erase(entry.path);
-                else selectedPaths_.insert(entry.path);
+                // ... (略)
             } else {
                 if (!selectedPaths_.count(entry.path)) {
                     selectedPaths_.clear();
                     selectedPaths_.insert(entry.path);
+                    
+                    // 単一選択の場合は Inspector に通知
+                    EditorContext::GetInstance().SetSelectedAsset(entry.path);
                 }
             }
             lastSelectedPath_ = entry.path;

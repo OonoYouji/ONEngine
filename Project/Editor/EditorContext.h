@@ -27,11 +27,22 @@ public:
 
     void SetSelectedEntity(ECS::Entity entity) { 
         selection_.clear(); 
-        if (entity != 0) selection_.insert(entity); 
+        if (entity != 0) {
+            selection_.insert(entity); 
+            selectedAssetPath_ = "";
+        }
     }
     ECS::Entity GetSelectedEntity() const { 
         return selection_.empty() ? 0 : *selection_.begin(); 
     }
+
+    void SetSelectedAsset(const std::filesystem::path& path) {
+        selectedAssetPath_ = path;
+        if (!selectedAssetPath_.empty()) {
+            selection_.clear();
+        }
+    }
+    const std::filesystem::path& GetSelectedAsset() const { return selectedAssetPath_; }
 
     const std::set<ECS::Entity>& GetSelection() const { return selection_; }
     void AddToSelection(ECS::Entity entity) { if (entity != 0) selection_.insert(entity); }
@@ -144,6 +155,7 @@ private:
     bool isSceneFocused_;
 
     std::string currentScenePath_;
+    std::filesystem::path selectedAssetPath_;
 
     bool showHierarchy_;
     bool showInspector_;

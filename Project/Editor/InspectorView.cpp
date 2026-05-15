@@ -8,10 +8,15 @@
 #include "AddComponentCommand.h"
 #include "RemoveComponentCommand.h"
 #include "Engine/Core/Application.h"
+#include "Engine/Graphics/Core/GraphicsEngine.h"
+#include "Engine/Asset/TextureManager.h"
 #include <vector>
 #include <string>
 #include <algorithm>
 #include <iterator>
+#include <fstream>
+#include <filesystem>
+#include "Externals/nlohmann/json.hpp"
 
 namespace Engine::Editor {
 
@@ -23,6 +28,91 @@ void InspectorView::Render(ECS::Registry& registry, bool* p_open) {
     ImGui::Begin("Inspector", p_open);
 
     auto& context = EditorContext::GetInstance();
+    auto selectedAsset = context.GetSelectedAsset();
+
+    if (!selectedAsset.empty()) {
+        std::string ext = selectedAsset.extension().string();
+        std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+        ImGui::TextDisabled("Asset Inspector");
+        ImGui::Text("%s", selectedAsset.filename().string().c_str());
+        ImGui::Separator();
+
+        if (ext == ".pipeline") {
+            if (ImGui::CollapsingHeader("Pipeline Settings", ImGuiTreeNodeFlags_DefaultOpen)) {
+                std::ifstream file(selectedAsset);
+                if (file.is_open()) {
+                    try {
+                        auto data = nlohmann::json::parse(file);
+                        ImGui::Text("Name: %s", data.value("name", "Unnamed").c_str());
+
+                        auto showShader = [](const char* label, const nlohmann::json& j) {
+                            if (j.is_object()) {
+                                ImGui::BulletText("%s:", label);
+                                ImGui::Indent();
+                                ImGui::Text("Path: %s", j.value("path", "").c_str());
+                                ImGui::Text("Entry: %s", j.value("entry", "").c_str());
+                                ImGui::Unindent();
+                            }
+                        };
+                        showShader("VS", data["vs"]);
+                        showShader("PS", data["ps"]);
+                        showShader("CS", data["cs"]);
+                    } catch (...) {
+                        ImGui::TextColored(ImVec4(1, 0, 0, 1), "Error parsing pipeline file.");
+                    }
+                }
+            }
+        } else if (ext == ".mat") {
+            if (ImGui::CollapsingHeader("Material Settings", ImGuiTreeNodeFlags_DefaultOpen)) {
+                std::ifstream file(selectedAsset);
+                if (file.is_open()) {
+                    try {
+                        auto data = nlohmann::json::parse(file);
+                        ImGui::Text("Pipeline: %s", data.value("pipeline", "").c_str());
+                        ImGui::Text("Texture: %s", data.value("texture", "").c_str());
+
+                        if (data.contains("parameters")) {
+                            auto& params = data["parameters"];
+                            for (auto it = params.begin(); it != params.end(); ++it) {
+                                if (it.value().is_array() && it.value().size() == 4) {
+                                    float col[4] = { it.value()[0], it.value()[1], it.value()[2], it.value()[3] };
+                                    if (ImGui::ColorEdit4(it.key().c_str(), col)) {
+                                        // TODO: 変更の保存
+                                    }
+                                }
+                            }
+                        }
+                    } catch (...) {
+                        ImGui::TextColored(ImVec4(1, 0, 0, 1), "Error parsing material file.");
+                    }
+                }
+            }
+        } else if (ext == ".png" || ext == ".jpg" || ext == ".dds") {
+            if (ImGui::CollapsingHeader("Texture Preview", ImGuiTreeNodeFlags_DefaultOpen)) {
+                std::string relPath = std::filesystem::relative(selectedAsset, std::filesystem::current_path()).string();
+                std::replace(relPath.begin(), relPath.end(), '\\', '/');
+                int32_t texIdx = Asset::TextureManager::GetInstance().LoadTexture(relPath);
+                if (texIdx >= 0) {
+                    auto* srvHeap = Graphics::GraphicsEngine::GetInstance().GetSRVHeap();
+                    ImGui::Image((ImTextureID)srvHeap->GetGPUHandle(texIdx).ptr, ImVec2(200, 200), ImVec2(0, 0), ImVec2(1, 1), ImVec4(1, 1, 1, 1), ImVec4(1, 1, 1, 0.5f));
+
+                    Asset::Texture* tex = Asset::TextureManager::GetInstance().GetTexture(texIdx);
+                    if (tex) {
+                        ImGui::Text("Size: %u x %u", tex->GetWidth(), tex->GetHeight());
+                    }
+                }
+            }
+        } else {
+            ImGui::Text("No specific inspector for this asset type.");
+        }
+
+        EditorUtils::DrawActiveViewOutline();
+        ImGui::End();
+        return;
+    }
+
+    ECS::Entity selected = context.GetSelectedEntity();
     const auto& selection = context.GetSelection();
 
     if (selection.empty()) {

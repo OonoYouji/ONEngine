@@ -15,19 +15,32 @@ public:
         float thickness = 1.0f;
 
         if (ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows)) {
-            color = IM_COL32(71, 114, 179, 255); // フォーカス時は Blender Blue
+            color = IM_COL32(255, 255, 0, 255); // フォーカス時は黄色
             thickness = 2.0f;
         }
         else if (ImGui::IsWindowHovered(ImGuiHoveredFlags_ChildWindows) && ImGui::GetDragDropPayload()) {
-            color = IM_COL32(230, 133, 93, 255); // ドラッグ中のホバーターゲットは Blender Orange
+            color = IM_COL32(230, 133, 93, 255); // ドラッグ中
             thickness = 2.0f;
         }
 
-        ImVec2 min = ImGui::GetWindowPos();
-        ImVec2 max = ImVec2(min.x + ImGui::GetWindowSize().x, min.y + ImGui::GetWindowSize().y);
+        ImVec2 windowPos = ImGui::GetWindowPos();
+        ImVec2 windowSize = ImGui::GetWindowSize();
+        ImVec2 min = windowPos;
+        ImVec2 max = ImVec2(windowPos.x + windowSize.x, windowPos.y + windowSize.y);
         
-        // ウィンドウ全体の枠線を描画（ForegroundDrawListを使用することで、常に最前面に表示）
-        ImGui::GetForegroundDrawList()->AddRect(min, max, color, 0.0f, 0, thickness);
+        // 線の太さの半分だけ内側に寄せる（ウィンドウの外側に食み出さないようにする）
+        float halfThickness = thickness * 0.5f;
+        min.x += halfThickness; min.y += halfThickness;
+        max.x -= halfThickness; max.y -= halfThickness;
+
+        // WindowDrawList を使用（他のウィンドウやポップアップより背面に描画される）
+        ImDrawList* drawList = ImGui::GetWindowDrawList();
+        
+        // スクロールバーなどはウィンドウの End() 時に描画されることが多いため、
+        // コンテンツ領域のクリッピングを一時的に無効化（ウィンドウ全体を許容）して描画する
+        drawList->PushClipRect(windowPos, ImVec2(windowPos.x + windowSize.x, windowPos.y + windowSize.y), false);
+        drawList->AddRect(min, max, color, 0.0f, 0, thickness);
+        drawList->PopClipRect();
     }
 
     /// @brief ファイルを開くダイアログを表示

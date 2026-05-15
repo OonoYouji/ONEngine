@@ -43,6 +43,9 @@ public:
     uint32_t GetIndex() const { return index_; }
     void SetIndex(uint32_t index) { index_ = index; }
 
+    uint32_t GetWidth() const { return (uint32_t)GetResource()->GetDesc().Width; }
+    uint32_t GetHeight() const { return (uint32_t)GetResource()->GetDesc().Height; }
+
 private:
     std::unique_ptr<DirectX::ScratchImage> image_;
     ComPtr<D3D12MA::Allocation> allocation_;
