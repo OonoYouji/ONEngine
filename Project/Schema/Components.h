@@ -41,15 +41,14 @@ struct SkinnedMeshRenderer {
 
 struct Transform {
     uint32_t isEnabled = 0;
+    uint32_t isManipulating = 0;
     uint32_t parent = 0;
     float sortOrder = 0.0f;
-    uint8_t _pad0[4];
     Engine::Math::Vector3 position = { 0, 0, 0 };
-    uint8_t _pad1[4];
-    Engine::Math::Vector3 rotation = { 0, 0, 0 };
-    uint8_t _pad2[4];
+    uint8_t _pad0[4];
+    Engine::Math::Quaternion rotation = Engine::Math::Quaternion::kIdentity;
     Engine::Math::Vector3 scale = { 1.0f, 1.0f, 1.0f };
-    uint8_t _pad3[4];
+    uint8_t _pad1[4];
     Engine::Math::Matrix4x4 world = Engine::Math::Matrix4x4::kIdentity;
 };
 
@@ -192,6 +191,7 @@ inline void from_json(const nlohmann::json& j, Engine::ECS::SkinnedMeshRenderer&
 inline void to_json(nlohmann::json& j, const Engine::ECS::Transform& v) {
     j = nlohmann::json{
         {"isEnabled", v.isEnabled},
+        {"isManipulating", v.isManipulating},
         {"parent", v.parent},
         {"sortOrder", v.sortOrder},
         {"position", v.position},
@@ -203,10 +203,11 @@ inline void to_json(nlohmann::json& j, const Engine::ECS::Transform& v) {
 
 inline void from_json(const nlohmann::json& j, Engine::ECS::Transform& v) {
     if (j.contains("isEnabled")) v.isEnabled = j.at("isEnabled").get<uint32_t>();
+    if (j.contains("isManipulating")) v.isManipulating = j.at("isManipulating").get<uint32_t>();
     if (j.contains("parent")) v.parent = j.at("parent").get<uint32_t>();
     if (j.contains("sortOrder")) v.sortOrder = j.at("sortOrder").get<float>();
     if (j.contains("position")) v.position = j.at("position").get<Engine::Math::Vector3>();
-    if (j.contains("rotation")) v.rotation = j.at("rotation").get<Engine::Math::Vector3>();
+    if (j.contains("rotation")) v.rotation = j.at("rotation").get<Engine::Math::Quaternion>();
     if (j.contains("scale")) v.scale = j.at("scale").get<Engine::Math::Vector3>();
 }
 inline void to_json(nlohmann::json& j, const Engine::ECS::SpriteRenderer& v) {
@@ -396,7 +397,7 @@ template<typename TProp>
 inline void DrawUI_Transform(Engine::ECS::Transform& v, TProp Prop) {
     Prop("IsEnabled", [&]() { return ImGui::Checkbox("IsEnabled", (bool*)&v.isEnabled); });
     Prop("Position", [&]() { return ImGui::DragFloat3("Position", &v.position.x, 0.1f); });
-    Prop("Rotation", [&]() { return ImGui::DragFloat3("Rotation", &v.rotation.x, 0.1f); });
+    Prop("Rotation", [&]() { return ImGui::DragFloat4("Rotation", &v.rotation.x, 0.1f); });
     Prop("Scale", [&]() { return ImGui::DragFloat3("Scale", &v.scale.x, 0.1f); });
 }
 

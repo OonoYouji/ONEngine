@@ -207,46 +207,56 @@ Quaternion Quaternion::Slerp(const Quaternion& _start, const Quaternion& _end, f
 }
 
 Quaternion Quaternion::FromEuler(const Vector3& _euler) {
-	float pitch = _euler.x * 0.5f; // X回転
-	float yaw = _euler.y * 0.5f; // Y回転
-	float roll = _euler.z * 0.5f; // Z回転
+	float x = _euler.x * 0.5f;
+	float y = _euler.y * 0.5f;
+	float z = _euler.z * 0.5f;
 
-	float sinPitch = std::sin(pitch);
-	float cosPitch = std::cos(pitch);
-	float sinYaw = std::sin(yaw);
-	float cosYaw = std::cos(yaw);
-	float sinRoll = std::sin(roll);
-	float cosRoll = std::cos(roll);
+	float sx = std::sin(x);
+	float cx = std::cos(x);
+	float sy = std::sin(y);
+	float cy = std::cos(y);
+	float sz = std::sin(z);
+	float cz = std::cos(z);
 
 	Quaternion q;
-	q.x = cosYaw * sinPitch * cosRoll + sinYaw * cosPitch * sinRoll;
-	q.y = sinYaw * cosPitch * cosRoll - cosYaw * sinPitch * sinRoll;
-	q.z = cosYaw * cosPitch * sinRoll - sinYaw * sinPitch * cosRoll;
-	q.w = cosYaw * cosPitch * cosRoll + sinYaw * sinPitch * sinRoll;
+	// XYZ order in Matrix corresponds to Q = Qz * Qy * Qx
+	q.w = cx * cy * cz + sx * sy * sz;
+	q.x = sx * cy * cz - cx * sy * sz;
+	q.y = cx * sy * cz + sx * cy * sz;
+	q.z = cx * cy * sz - sx * sy * cz;
 
-	return q;
+	return Normalize(q);
 }
 
 Vector3 Quaternion::ToEuler(const Quaternion& _q) {
+	// Matrix-based extraction for XYZ order
+	Matrix4x4 m = Matrix4x4::MakeRotate(_q);
 	Vector3 euler;
 
-	// Pitch (X軸)
-	float sinp = 2.0f * (_q.w * _q.x + _q.y * _q.z);
-	float cosp = 1.0f - 2.0f * (_q.x * _q.x + _q.y * _q.y);
-	euler.x = std::atan2(sinp, cosp);
-
-	// Yaw (Y軸)
-	float siny = 2.0f * (_q.w * _q.y - _q.z * _q.x);
-	if(std::abs(siny) >= 1.0f) {
-		euler.y = std::copysign(std::numbers::pi_v<float> / 2.0f, siny); // クランプ
+	// y = asin(-m02)
+	float siny = -m.m[0][2];
+	
+	// Clamp siny to [-1, 1] to prevent NaN
+	if (siny < -1.0f) siny = -1.0f;
+	if (siny > 1.0f) siny = 1.0f;
+	
+	if (siny >= 0.9999f) {
+		// Gimbal Lock: Y = 90 degrees
+		euler.y = std::numbers::pi_v<float> / 2.0f;
+		euler.x = std::atan2(m.m[1][0], m.m[1][1]);
+		euler.z = 0.0f;
+	} else if (siny <= -0.9999f) {
+		// Gimbal Lock: Y = -90 degrees
+		euler.y = -std::numbers::pi_v<float> / 2.0f;
+		euler.x = std::atan2(-m.m[1][0], m.m[1][1]);
+		euler.z = 0.0f;
 	} else {
 		euler.y = std::asin(siny);
+		// x = atan2(m12, m22)
+		euler.x = std::atan2(m.m[1][2], m.m[2][2]);
+		// z = atan2(m01, m00)
+		euler.z = std::atan2(m.m[0][1], m.m[0][0]);
 	}
-
-	// Roll (Z軸)
-	float sinr = 2.0f * (_q.w * _q.z + _q.x * _q.y);
-	float cosr = 1.0f - 2.0f * (_q.y * _q.y + _q.z * _q.z);
-	euler.z = std::atan2(sinr, cosr);
 
 	return euler;
 }
@@ -258,25 +268,25 @@ Quaternion Quaternion::FromRotationMatrix(const Matrix4x4& _m) {
 	if(trace > 0.0f) {
 		float s = std::sqrt(trace + 1.0f) * 2.0f; // S=4*qw
 		q.w = 0.25f * s;
-		q.x = (_m.m[2][1] - _m.m[1][2]) / s;
-		q.y = (_m.m[0][2] - _m.m[2][0]) / s;
-		q.z = (_m.m[1][0] - _m.m[0][1]) / s;
+		q.x = (_m.m[1][2] - _m.m[2][1]) / s;
+		q.y = (_m.m[2][0] - _m.m[0][2]) / s;
+		q.z = (_m.m[0][1] - _m.m[1][0]) / s;
 	} else {
 		if(_m.m[0][0] > _m.m[1][1] && _m.m[0][0] > _m.m[2][2]) {
 			float s = std::sqrt(1.0f + _m.m[0][0] - _m.m[1][1] - _m.m[2][2]) * 2.0f; // S=4*qx
-			q.w = (_m.m[2][1] - _m.m[1][2]) / s;
+			q.w = (_m.m[1][2] - _m.m[2][1]) / s;
 			q.x = 0.25f * s;
 			q.y = (_m.m[0][1] + _m.m[1][0]) / s;
 			q.z = (_m.m[0][2] + _m.m[2][0]) / s;
 		} else if(_m.m[1][1] > _m.m[2][2]) {
 			float s = std::sqrt(1.0f + _m.m[1][1] - _m.m[0][0] - _m.m[2][2]) * 2.0f; // S=4*qy
-			q.w = (_m.m[0][2] - _m.m[2][0]) / s;
+			q.w = (_m.m[2][0] - _m.m[0][2]) / s;
 			q.x = (_m.m[0][1] + _m.m[1][0]) / s;
 			q.y = 0.25f * s;
 			q.z = (_m.m[1][2] + _m.m[2][1]) / s;
 		} else {
 			float s = std::sqrt(1.0f + _m.m[2][2] - _m.m[0][0] - _m.m[1][1]) * 2.0f; // S=4*qz
-			q.w = (_m.m[1][0] - _m.m[0][1]) / s;
+			q.w = (_m.m[0][1] - _m.m[1][0]) / s;
 			q.x = (_m.m[0][2] + _m.m[2][0]) / s;
 			q.y = (_m.m[1][2] + _m.m[2][1]) / s;
 			q.z = 0.25f * s;

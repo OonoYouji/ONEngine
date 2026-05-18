@@ -7,6 +7,9 @@ types:
     fields:
       - name: isEnabled
         type: uint32
+      - name: isManipulating
+        type: uint32
+        hide_in_editor: true
       - name: parent
         type: uint32
         hide_in_editor: true
@@ -16,7 +19,7 @@ types:
       - name: position
         type: float3
       - name: rotation
-        type: float3
+        type: float4
       - name: scale
         type: float3
       - name: world

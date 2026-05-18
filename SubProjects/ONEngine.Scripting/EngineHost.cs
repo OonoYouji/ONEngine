@@ -353,10 +353,19 @@ namespace ONEngine.Scripting
         internal class InternalCubeRotator : GameScript
         {
             public float Speed = 2.0f;
+            private float _angle = 0.0f;
             public override void Update(float deltaTime)
             {
+                _angle += Speed * deltaTime;
                 ref var t = ref transformRef;
-                t.rotation.y += Speed * deltaTime;
+                // Simple Y-axis rotation to Quaternion
+                float s = (float)System.Math.Sin(_angle * 0.5f);
+                float c = (float)System.Math.Cos(_angle * 0.5f);
+                t.rotation.x = 0;
+                t.rotation.y = s;
+                t.rotation.z = 0;
+                t.rotation.w = c;
+                t.rotation = Math.Quaternion.Normalize(t.rotation);
             }
         }
 
@@ -379,7 +388,7 @@ namespace ONEngine.Scripting
 
                     ref var t = ref World.GetComponent<Transform>(e);
                     t.position = new Math.Vector3(0, 10, 0);
-                    t.rotation = new Math.Vector3(0, 0, 0);
+                    t.rotation = Math.Quaternion.Identity;
                     t.scale = new Math.Vector3(1, 1, 1);
                     _spawned.Add(e);
                     _timer = 0.0f;

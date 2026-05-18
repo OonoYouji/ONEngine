@@ -6,6 +6,7 @@
 /// engine
 #include "Vector3.h"
 #include "Matrix4x4.h"
+#include <nlohmann/json.hpp>
 
 /// //////////////////////////////////////////////////
 /// 三次元での回転を表すクラス
@@ -135,6 +136,21 @@ struct Quaternion final {
 	/// ===================================================
 
 	inline Quaternion& operator*= (const Quaternion& _other);
+
+	/// @brief JSONへ変換
+	friend void to_json(nlohmann::json& _j, const Quaternion& _q) {
+		_j = nlohmann::json{
+			{ "x", _q.x }, { "y", _q.y }, { "z", _q.z }, { "w", _q.w }
+		};
+	}
+
+	/// @brief JSONから変換
+	friend void from_json(const nlohmann::json& _j, Quaternion& _q) {
+		if (_j.contains("x")) _q.x = _j.at("x").get<float>();
+		if (_j.contains("y")) _q.y = _j.at("y").get<float>();
+		if (_j.contains("z")) _q.z = _j.at("z").get<float>();
+		if (_j.contains("w")) _q.w = _j.at("w").get<float>();
+	}
 };
 
 

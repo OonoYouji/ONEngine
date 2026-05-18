@@ -261,7 +261,38 @@ void InspectorView::Render(ECS::Registry& registry, bool* p_open) {
         if (typeId == 100) continue;
 
         DrawComponent(typeId, info->name.c_str(), [&](void* data, auto Prop) {
-            if (typeId == 3) { // ScriptComponent
+            if (typeId == 1) { // Transform
+                auto& t = *static_cast<ECS::Transform*>(data);
+                Prop("IsEnabled", [&]() { return ImGui::Checkbox("IsEnabled", (bool*)&t.isEnabled); });
+                Prop("Position", [&]() { return ImGui::DragFloat3("Position", &t.position.x, 0.1f); });
+                
+                Prop("Rotation", [&]() {
+                    static std::map<ECS::Entity, Math::Vector3> s_eulerCache;
+                    auto entity = *selection.begin();
+                    auto& euler = s_eulerCache[entity];
+
+                    // If not currently dragging the slider, sync the cache from the actual quaternion
+                    if (!ImGui::IsItemActive()) {
+                        Math::Vector3 currentEuler = Math::Quaternion::ToEuler(t.rotation);
+                        euler.x = Engine::Math::ToDegrees(currentEuler.x);
+                        euler.y = Engine::Math::ToDegrees(currentEuler.y);
+                        euler.z = Engine::Math::ToDegrees(currentEuler.z);
+                    }
+
+                    if (ImGui::DragFloat3("Rotation", &euler.x, 0.1f)) {
+                        Math::Vector3 radians;
+                        radians.x = Engine::Math::ToRadians(euler.x);
+                        radians.y = Engine::Math::ToRadians(euler.y);
+                        radians.z = Engine::Math::ToRadians(euler.z);
+                        t.rotation = Math::Quaternion::FromEuler(radians);
+                        return true;
+                    }
+                    return false;
+                });
+                
+                Prop("Scale", [&]() { return ImGui::DragFloat3("Scale", &t.scale.x, 0.1f); });
+            }
+            else if (typeId == 3) { // ScriptComponent
                 auto& s = *static_cast<ECS::ScriptComponent*>(data);
                 Prop("IsEnabled", [&]() { return ImGui::Checkbox("IsEnabled", (bool*)&s.isEnabled); });
                 Prop("Script", [&]() { 

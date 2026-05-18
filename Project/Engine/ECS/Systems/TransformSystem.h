@@ -34,7 +34,15 @@ private:
     Engine::Math::Matrix4x4 UpdateRecursive(Registry& registry, Entity entity, Transform& t) {
         if (entity >= processed_.size()) return t.world; // 安全ガード
         if (processed_[entity]) return t.world;
+        
+        // Gizmo操作中は TransformSystem の更新をスキップ
+        if (t.isManipulating) {
+            processed_[entity] = true;
+            return t.world;
+        }
 
+        // 正規化を追加してスケールが乗らないようにする
+        t.rotation = Engine::Math::Quaternion::Normalize(t.rotation);
         auto local = Engine::Math::Matrix4x4::MakeAffine(t.scale, t.rotation, t.position);
 
         if (t.parent != kNullEntity && registry.HasComponent<Transform>(t.parent)) {

@@ -10,11 +10,12 @@
 #include "Engine/ECS/ComponentRegistry.h"
 #include "ChangeComponentCommand.h"
 #include "CommandHistory.h"
+#include <map>
 
 namespace Engine::Editor {
 
 static ImGuizmo::OPERATION s_gizmoOperation = ImGuizmo::TRANSLATE;
-static ImGuizmo::MODE s_gizmoMode = ImGuizmo::LOCAL;
+static ImGuizmo::MODE s_gizmoMode = ImGuizmo::WORLD;
 
 void SceneView::Render(bool* p_open) {
     if (p_open && !*p_open) {
@@ -30,43 +31,37 @@ void SceneView::Render(bool* p_open) {
     {
         float windowWidth = ImGui::GetWindowWidth();
         float buttonSize = 25.0f;
-        float totalWidth = buttonSize * 2 + ImGui::GetStyle().ItemSpacing.x;
+        // Adjust total width for new buttons
+        float totalWidth = buttonSize * 5 + ImGui::GetStyle().ItemSpacing.x * 4;
         ImGui::SetCursorPosX((windowWidth - totalWidth) * 0.5f);
 
         if (context.IsPlaying()) {
-            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.2f, 0.7f, 0.2f, 1.0f));
-            if (ImGui::Button("||", ImVec2(buttonSize, buttonSize))) {
-                context.SetPaused(!context.IsPaused());
-            }
-            ImGui::PopStyleColor();
+            if (ImGui::Button("||", ImVec2(buttonSize, buttonSize))) { context.SetPaused(!context.IsPaused()); }
         } else {
-            if (ImGui::Button(">", ImVec2(buttonSize, buttonSize))) {
-                context.Play();
-            }
+            if (ImGui::Button(">", ImVec2(buttonSize, buttonSize))) { context.Play(); }
         }
-
         ImGui::SameLine();
+        if (ImGui::Button("X", ImVec2(buttonSize, buttonSize))) { context.Stop(); }
 
-        if (ImGui::Button("X", ImVec2(buttonSize, buttonSize))) {
-            context.Stop();
+        ImGui::SameLine(0, 20);
+
+        if (ImGui::Button("W", ImVec2(buttonSize, buttonSize))) s_gizmoOperation = ImGuizmo::TRANSLATE;
+        ImGui::SameLine();
+        if (ImGui::Button("E", ImVec2(buttonSize, buttonSize))) s_gizmoOperation = ImGuizmo::ROTATE;
+        ImGui::SameLine();
+        if (ImGui::Button("R", ImVec2(buttonSize, buttonSize))) s_gizmoOperation = ImGuizmo::SCALE;
+        ImGui::SameLine();
+        if (ImGui::Button((s_gizmoMode == ImGuizmo::LOCAL) ? "Local" : "World", ImVec2(50, buttonSize))) {
+            s_gizmoMode = (s_gizmoMode == ImGuizmo::LOCAL) ? ImGuizmo::WORLD : ImGuizmo::LOCAL;
         }
         ImGui::Separator();
     }
-
+    
     auto& graphics = Engine::Graphics::GraphicsEngine::GetInstance();
     auto* finalBuffer = graphics.GetFinalColorBuffer();
     
-    // フォーカス状態を保存 (次フレームのカメラ操作用)
     bool isFocused = ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows) && !ImGui::IsAnyItemActive();
     context.SetSceneFocused(isFocused);
-
-    // Gizmo 操作の切り替え
-    if (!ImGui::IsAnyItemActive()) {
-        if (ImGui::IsKeyPressed(ImGuiKey_W)) s_gizmoOperation = ImGuizmo::TRANSLATE;
-        if (ImGui::IsKeyPressed(ImGuiKey_E)) s_gizmoOperation = ImGuizmo::ROTATE;
-        if (ImGui::IsKeyPressed(ImGuiKey_R)) s_gizmoOperation = ImGuizmo::SCALE;
-        if (ImGui::IsKeyPressed(ImGuiKey_Q)) s_gizmoMode = (s_gizmoMode == ImGuizmo::LOCAL) ? ImGuizmo::WORLD : ImGuizmo::LOCAL;
-    }
 
     if (finalBuffer) {
         D3D12_GPU_DESCRIPTOR_HANDLE srvHandle = finalBuffer->GetSRVHandle();
@@ -76,10 +71,11 @@ void SceneView::Render(bool* p_open) {
             ImGui::Image((ImTextureID)srvHandle.ptr, viewportPanelSize);
         }
 
-        // Gizmo
-        auto selectedEntity = context.GetSelectedEntity();
+        const auto& selection = context.GetSelection();
+        auto primaryEntity = context.GetSelectedEntity();
         auto& registry = Engine::Core::Application::GetInstance().GetRegistry();
-        if (selectedEntity != 0 && registry.HasComponent<ECS::Transform>(selectedEntity)) {
+        
+        if (primaryEntity != 0 && registry.HasComponent<ECS::Transform>(primaryEntity)) {
             ImGuizmo::SetOrthographic(false);
             ImGuizmo::SetDrawlist();
             ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, ImGui::GetWindowWidth(), ImGui::GetWindowHeight());
@@ -87,88 +83,111 @@ void SceneView::Render(bool* p_open) {
             auto& camera = context.GetCamera();
             const auto& view = camera.GetViewMatrix();
             const auto& proj = camera.GetProjMatrix();
-            auto& transform = registry.GetComponent<ECS::Transform>(selectedEntity);
-
-            // ワールド行列を操作
-            Math::Matrix4x4 matrix = transform.world;
             
-            // Undo/Redo 用の状態管理
             static bool s_isDragging = false;
-            static nlohmann::json s_oldState;
-            static ECS::Entity s_draggedEntity = 0;
+            static std::vector<ChangeComponentCommand::EntityState> s_oldStates;
+            static std::map<ECS::Entity, Math::Matrix4x4> s_startMatrices;
+            
+            Math::Matrix4x4 primaryMatrix = registry.GetComponent<ECS::Transform>(primaryEntity).world;
 
             if (ImGuizmo::IsUsing() && !s_isDragging) {
-                // ドラッグ開始: スナップショット作成 (Transform の ID は 1)
                 s_isDragging = true;
-                s_draggedEntity = selectedEntity;
-                s_oldState = ECS::ComponentRegistry::GetInstance().SerializeComponent(registry, selectedEntity, 1);
-            }
-
-            // Gizmoの描画と更新
-            float snapValues[3];
-            if (s_gizmoOperation == ImGuizmo::TRANSLATE) {
-                snapValues[0] = snapValues[1] = snapValues[2] = context.GetSnapTranslation();
-            } else if (s_gizmoOperation == ImGuizmo::ROTATE) {
-                snapValues[0] = snapValues[1] = snapValues[2] = context.GetSnapRotation();
-            } else if (s_gizmoOperation == ImGuizmo::SCALE) {
-                snapValues[0] = snapValues[1] = snapValues[2] = context.GetSnapScale();
-            }
-
-            if (ImGuizmo::Manipulate(&view.m[0][0], &proj.m[0][0], s_gizmoOperation, s_gizmoMode, &matrix.m[0][0], NULL, context.GetSnapEnabled() ? snapValues : NULL)) {
-                // 操作中のリアルタイム更新
-                Math::Vector3 pos, rot, sca;
-                ImGuizmo::DecomposeMatrixToComponents(&matrix.m[0][0], &pos.x, &rot.x, &sca.x);
-
-                if (transform.parent == 0) {
-                    transform.position = pos;
-                    transform.rotation = rot;
-                    transform.scale = sca;
-                } else {
-                    // 親がいる場合の逆行列計算が必要
-                    if (registry.HasComponent<ECS::Transform>(transform.parent)) {
-                        auto& parentTransform = registry.GetComponent<ECS::Transform>(transform.parent);
-                        Math::Matrix4x4 invParent = parentTransform.world.Inverse();
-                        Math::Matrix4x4 localMatrix = matrix * invParent;
-                        
-                        Math::Vector3 lPos, lRot, lSca;
-                        ImGuizmo::DecomposeMatrixToComponents(&localMatrix.m[0][0], &lPos.x, &lRot.x, &lSca.x);
-                        transform.position = lPos;
-                        transform.rotation = lRot;
-                        transform.scale = lSca;
+                s_oldStates.clear();
+                s_startMatrices.clear();
+                for (auto e : selection) {
+                    if (registry.HasComponent<ECS::Transform>(e)) {
+                        s_oldStates.push_back({ e, ECS::ComponentRegistry::GetInstance().SerializeComponent(registry, e, 1), {} });
+                        s_startMatrices[e] = registry.GetComponent<ECS::Transform>(e).world;
+                        registry.GetComponent<ECS::Transform>(e).isManipulating = 1;
                     }
                 }
             }
 
-            if (!ImGuizmo::IsUsing() && s_isDragging) {
-                // ドラッグ終了 -> コマンド発行
-                s_isDragging = false;
-                auto newState = ECS::ComponentRegistry::GetInstance().SerializeComponent(registry, s_draggedEntity, 1);
+            float snapValues[3] = {0,0,0};
+            bool useSnap = context.GetSnapEnabled();
+            if (s_gizmoOperation == ImGuizmo::TRANSLATE) { snapValues[0] = snapValues[1] = snapValues[2] = context.GetSnapTranslation(); }
+            else if (s_gizmoOperation == ImGuizmo::ROTATE) { snapValues[0] = snapValues[1] = snapValues[2] = context.GetSnapRotation(); }
+            else if (s_gizmoOperation == ImGuizmo::SCALE) { snapValues[0] = snapValues[1] = snapValues[2] = context.GetSnapScale(); }
+
+            if (ImGuizmo::Manipulate(&view.m[0][0], &proj.m[0][0], s_gizmoOperation, s_gizmoMode, &primaryMatrix.m[0][0], NULL, useSnap ? snapValues : NULL))
+            {
+                const Math::Matrix4x4& primaryStartMatrix = s_startMatrices[primaryEntity];
                 
-                // 値が変わっている場合のみ履歴に追加
-                if (s_oldState != newState) {
-                    auto command = std::make_shared<ChangeComponentCommand>(s_draggedEntity, 1, s_oldState, newState);
-                    CommandHistory::GetInstance().Execute(command);
+                // 1st Pass: Update all world matrices based on the delta of the primary entity
+                for (auto e : selection) {
+                    if (!registry.HasComponent<ECS::Transform>(e)) continue;
+
+                    Math::Matrix4x4 newWorldMatrix;
+                    if (s_gizmoMode == ImGuizmo::LOCAL) {
+                        // Local Delta: Applied on the left in row-major (v * Delta * World)
+                        Math::Matrix4x4 deltaMatrix = primaryMatrix * primaryStartMatrix.Inverse();
+                        newWorldMatrix = deltaMatrix * s_startMatrices[e];
+                    } else {
+                        // World Delta: Applied on the right in row-major (v * World * Delta)
+                        Math::Matrix4x4 deltaMatrix = primaryStartMatrix.Inverse() * primaryMatrix;
+                        newWorldMatrix = s_startMatrices[e] * deltaMatrix;
+                    }
+
+                    auto& targetTransform = registry.GetComponent<ECS::Transform>(e);
+                    targetTransform.world = newWorldMatrix;
+                }
+
+                // 2nd Pass: Back-calculate local properties from the updated world matrices
+                for (auto e : selection) {
+                    if (!registry.HasComponent<ECS::Transform>(e)) continue;
+
+                    auto& targetTransform = registry.GetComponent<ECS::Transform>(e);
+                    Math::Matrix4x4 newWorldMatrix = targetTransform.world;
+
+                    if (targetTransform.parent != 0 && registry.HasComponent<ECS::Transform>(targetTransform.parent)) {
+                         auto& parentTransform = registry.GetComponent<ECS::Transform>(targetTransform.parent);
+                         // Local = World * ParentWorld^-1
+                         Math::Matrix4x4 localMatrix = newWorldMatrix * parentTransform.world.Inverse();
+                         targetTransform.position = localMatrix.ExtractTranslation();
+                         targetTransform.rotation = Math::Quaternion::Normalize(localMatrix.ExtractRotation());
+                         targetTransform.scale = localMatrix.ExtractScale();
+                    } else {
+                        targetTransform.position = newWorldMatrix.ExtractTranslation();
+                        targetTransform.rotation = Math::Quaternion::Normalize(newWorldMatrix.ExtractRotation());
+                        targetTransform.scale = newWorldMatrix.ExtractScale();
+                    }
+                }
+            }
+            
+            if (!ImGuizmo::IsUsing() && s_isDragging) {
+                s_isDragging = false;
+                
+                std::vector<ChangeComponentCommand::EntityState> finalStates;
+                bool changed = false;
+                for (const auto& os : s_oldStates) {
+                    auto& transform = registry.GetComponent<ECS::Transform>(os.entity);
+                    transform.isManipulating = 0;
+                    
+                    json currentJson = ECS::ComponentRegistry::GetInstance().SerializeComponent(registry, os.entity, 1);
+                    if (os.oldState.dump() != currentJson.dump()) {
+                        changed = true;
+                    }
+                    finalStates.push_back({ os.entity, os.oldState, currentJson });
+                }
+                if (changed) {
+                    CommandHistory::GetInstance().Execute(std::make_shared<ChangeComponentCommand>(1, finalStates));
                 }
             }
         }
 
-        // マウスピッキング
         if (ImGui::IsWindowHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left) && !ImGuizmo::IsOver()) {
             ImVec2 mousePos = ImGui::GetMousePos();
             ImVec2 imagePos = ImGui::GetItemRectMin();
             ImVec2 imageSize = ImGui::GetItemRectSize();
 
-            // ウィンドウ内の相対座標 (0.0 ~ 1.0)
             float relX = (mousePos.x - imagePos.x) / imageSize.x;
             float relY = (mousePos.y - imagePos.y) / imageSize.y;
 
-            // テクスチャ座標に変換
             auto* idBuffer = graphics.GetIDBuffer();
             if (idBuffer) {
                 int px = static_cast<int>(relX * idBuffer->GetSize().x);
                 int py = static_cast<int>(relY * idBuffer->GetSize().y);
 
-                // 範囲外チェック
                 if (px >= 0 && px < idBuffer->GetSize().x && py >= 0 && py < idBuffer->GetSize().y) {
                     uint32_t entityID = graphics.ReadbackPixel(idBuffer, { px, py });
                     Engine::Console::Log(std::format("Mouse Picking: Pixel({}, {}) -> EntityID={}", px, py, entityID));
@@ -176,7 +195,6 @@ void SceneView::Render(bool* p_open) {
                     if (entityID != 0xFFFFFFFF) {
                         EditorContext::GetInstance().SetSelectedEntity(entityID);
                     } else {
-                        // 背景をクリックした場合は選択解除 (0 は無効なEntityとする)
                         EditorContext::GetInstance().SetSelectedEntity(0);
                     }
                 }

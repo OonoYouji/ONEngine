@@ -52,6 +52,7 @@ TYPE_MAP_CS = {
     "float": "float",
     "uint32": "uint",
     "uint64": "ulong",
+    "string": "string",
 }
 
 TYPE_SIZES = {
@@ -87,8 +88,10 @@ def generate_serialization(type_name, fields, namespace):
             to_json += "        {{\"{}\", v.{}}},\n".format(f_name, f_name)
             # Matrix4x4 (float4x4) is computed by systems, don't restore it from JSON as it might be stale
             if f_type != "float4x4":
-                from_json += "    if (j.contains(\"{}\")) v.{} = j.at(\"{}\").get<{}>();\n".format(f_name, f_name, f_name, TYPE_MAP_CPP[f_type])
-            
+                cpp_type = TYPE_MAP_CPP[f_type]
+                if f_name == "rotation" and f_type == "float4":
+                    cpp_type = "Engine::Math::Quaternion"
+                from_json += "    if (j.contains(\"{}\")) v.{} = j.at(\"{}\").get<{}>();\n".format(f_name, f_name, f_name, cpp_type)
     to_json += "    };\n}\n"
     from_json += "}\n"
     return to_json + "\n" + from_json
@@ -205,8 +208,15 @@ def process_file(yaml_path):
                     current_offset += pad_size
 
             # Special case for Transform scale/rotation/world default values
+            cpp_type = TYPE_MAP_CPP[f_type]
+            cs_type = TYPE_MAP_CS[f_type]
             cpp_default = DEFAULT_VALUES_CPP.get(f_type, "")
-            if type_name == "Transform":
+
+            if f_name == "rotation" and f_type == "float4":
+                cpp_type = "Engine::Math::Quaternion"
+                cs_type = "Quaternion"
+                cpp_default = "Engine::Math::Quaternion::kIdentity"
+            elif type_name == "Transform":
                 if f_name == "scale": cpp_default = "{ 1.0f, 1.0f, 1.0f }"
                 elif f_name == "world": cpp_default = "Engine::Math::Matrix4x4::kIdentity"
             elif "color" in f_name.lower():
@@ -219,22 +229,23 @@ def process_file(yaml_path):
             else:
                 f_count = field.get("count", 1)
                 if f_count > 1:
-                    cpp_struct_body += "    {} {}[{}]".format(TYPE_MAP_CPP[f_type], f_name, f_count)
+                    cpp_struct_body += "    {} {}[{}]".format(cpp_type, f_name, f_count)
                     if cpp_default and "{" in cpp_default:
                         cpp_struct_body += " = " + cpp_default
                     cpp_struct_body += ";\n"
 
-                    hlsl_struct_body += "    {} {}[{}];\n".format(TYPE_MAP_HLSL[f_type], f_name, f_count)
-                    cs_struct_body += "        public unsafe fixed {} {}[{}];\n".format(TYPE_MAP_CS[f_type], f_name, f_count)
+                    hlsl_struct_body += "    {} {}[{}];\n".format(TYPE_MAP_HLSL[f_type], f_name, f_count)       
+                    cs_struct_body += "        public unsafe fixed {} {}[{}];\n".format(cs_type, f_name, f_count)
                     f_size *= f_count
                 else:
-                    cpp_struct_body += "    {} {}".format(TYPE_MAP_CPP[f_type], f_name)
+                    cpp_struct_body += "    {} {}".format(cpp_type, f_name)
                     if cpp_default:
                         cpp_struct_body += " = " + cpp_default
                     cpp_struct_body += ";\n"
 
                     hlsl_struct_body += "    {} {};\n".format(TYPE_MAP_HLSL[f_type], f_name)
-                    cs_struct_body += "        public {} {};\n".format(TYPE_MAP_CS[f_type], f_name)
+                    cs_struct_body += "        public {} {};\n".format(cs_type, f_name)
+
             current_offset += f_size
 
         if current_offset % 16 != 0:
