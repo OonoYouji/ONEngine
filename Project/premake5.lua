@@ -290,7 +290,7 @@ project "Editor"
             "copy \"$(WindowsSdkDir)bin\\$(TargetPlatformVersion)\\x64\\dxcompiler.dll\" \"$(TargetDir)dxcompiler.dll\"",
             "copy \"$(WindowsSdkDir)bin\\$(TargetPlatformVersion)\\x64\\dxil.dll\" \"$(TargetDir)dxil.dll\"",
             "copy \"$(ProjectDir)Externals\\DotNetHost\\nethost.dll\" \"$(TargetDir)nethost.dll\"",
-            "xcopy /E /Y /I \"$(ProjectDir)Assets\" \"$(TargetDir)Assets\"",
+            "xcopy /E /Y /I /EXCLUDE:$(ProjectDir)ExcludeScripts.txt \"$(ProjectDir)Assets\" \"$(TargetDir)Assets\"",
             "xcopy /E /Y /I \"$(ProjectDir)Packages\" \"$(TargetDir)Packages\""
         }
 
@@ -303,7 +303,7 @@ project "Editor"
             "copy \"$(WindowsSdkDir)bin\\$(TargetPlatformVersion)\\x64\\dxcompiler.dll\" \"$(TargetDir)dxcompiler.dll\"",
             "copy \"$(WindowsSdkDir)bin\\$(TargetPlatformVersion)\\x64\\dxil.dll\" \"$(TargetDir)dxil.dll\"",
             "copy \"$(ProjectDir)Externals\\DotNetHost\\nethost.dll\" \"$(TargetDir)nethost.dll\"",
-            "xcopy /E /Y /I \"$(ProjectDir)Assets\" \"$(TargetDir)Assets\"",
+            "xcopy /E /Y /I /EXCLUDE:$(ProjectDir)ExcludeScripts.txt \"$(ProjectDir)Assets\" \"$(TargetDir)Assets\"",
             "xcopy /E /Y /I \"$(ProjectDir)Packages\" \"$(TargetDir)Packages\""
         }
 

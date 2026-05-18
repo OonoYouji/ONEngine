@@ -4,11 +4,16 @@
 #include "Engine/Asset/MaterialManager.h"
 #include "Engine/Asset/FontManager.h"
 #include "Engine/Asset/AssetDatabase.h"
+#include "Engine/Script/ScriptHost.h"
 #include <cstdio>
 #include <string>
+#include <filesystem>
 
 #include "Engine/Common/Console.h"
 #include <format>
+
+#include "EditorContext.h"
+#include <set>
 
 namespace Engine::Editor {
 
@@ -124,6 +129,85 @@ bool EditorUI::AssetPicker(const char* label, const char* assetType, uint64_t* g
 
             *guid = Asset::AssetDatabase::GetInstance().GetGuidFromPath(path);
             changed = true;
+        }
+        ImGui::EndDragDropTarget();
+    }
+
+    ImGui::PopID();
+    ImGui::EndGroup();
+    return changed;
+}
+
+bool EditorUI::ScriptPicker(const char* label, uint32_t entityId) {
+    bool changed = false;
+    ImGui::BeginGroup();
+    ImGui::PushID(label);
+
+    std::string scriptName = "None";
+    
+    // 現在アタッチされているスクリプト名の取得を試みる
+    auto& host = Engine::Script::ScriptHost::GetInstance();
+    auto getScriptNameFunc = (void(*)(uint32_t, char*, uint32_t))host.GetMethodDelegate(
+        L"ONEngine.Scripting.EngineHost, ONEngine.Scripting",
+        L"GetScriptNameByEntity",
+        L"");
+
+    if (getScriptNameFunc) {
+        char buffer[256] = { 0 };
+        getScriptNameFunc(entityId, buffer, sizeof(buffer));
+        if (buffer[0] != '\0') scriptName = buffer;
+    }
+
+    ImGui::Text("%s", label);
+    ImGui::SameLine();
+
+    ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, ImVec2(0.0f, 0.5f));
+    std::string btnText = scriptName == "None" ? "Drop .cs Script Here" : scriptName;
+    ImGui::Button(btnText.c_str(), ImVec2(ImGui::GetContentRegionAvail().x, 0));
+    ImGui::PopStyleVar();
+
+    if (ImGui::BeginDragDropTarget()) {
+        ImGui::GetWindowDrawList()->AddRect(ImGui::GetItemRectMin(), ImGui::GetItemRectMax(), IM_COL32(255, 255, 0, 255), 0.0f, 0, 2.0f);
+
+        const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_ASSET_PATH");
+        if (!payload) payload = ImGui::AcceptDragDropPayload("DND_ASSET_PATHS");
+
+        if (payload) {
+            std::string pathStr = (const char*)payload->Data;
+            size_t pipePos = pathStr.find('|');
+            if (pipePos != std::string::npos) pathStr = pathStr.substr(0, pipePos);
+
+            std::filesystem::path path(pathStr);
+            if (path.extension() == ".cs") {
+                std::string scriptName = path.stem().string();
+                ::Engine::Console::Log(std::format("ScriptPicker: Detected .cs file drop. ScriptName: {}", scriptName));
+                
+                auto& host = Engine::Script::ScriptHost::GetInstance();
+                auto addScriptFunc = (void(*)(uint32_t, const char*, const char*))host.GetMethodDelegate(
+                    L"ONEngine.Scripting.EngineHost, ONEngine.Scripting",
+                    L"AddScriptByName",
+                    L"");
+
+                if (addScriptFunc) {
+                    ::Engine::Console::Log("ScriptPicker: Successfully retrieved AddScriptByName delegate.");
+                    auto& selection = EditorContext::GetInstance().GetSelection();
+                    if (selection.empty()) {
+                        ::Engine::Console::Log(std::format("ScriptPicker: No selection, attaching to entityId {}", entityId));
+                        addScriptFunc(entityId, scriptName.c_str(), "{}");
+                    } else {
+                        ::Engine::Console::Log(std::format("ScriptPicker: Attaching to {} selected entities.", selection.size()));
+                        for (auto e : selection) {
+                            addScriptFunc((uint32_t)e, scriptName.c_str(), "{}");
+                        }
+                    }
+                    ::Engine::Console::Log(std::format("ScriptPicker: Finished calling C# AddScriptByName for '{}'.", scriptName));
+                    changed = true;
+                } else {
+                    ::Engine::Console::LogError("ScriptPicker: FAILED to retrieve AddScriptByName delegate from C#.");
+                }
+            } else {
+                ::Engine::Console::LogWarning(std::format("ScriptPicker: Dropped file is not a .cs script: {}", path.string()));
+            }
         }
         ImGui::EndDragDropTarget();
     }

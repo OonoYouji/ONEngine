@@ -105,34 +105,66 @@ namespace ONEngine.Scripting
         }
 
         [UnmanagedCallersOnly]
+        public static void GetScriptNameByEntity(uint entityId, IntPtr buffer, uint bufferSize)
+        {
+            if (_scriptHandles.TryGetValue(entityId, out var handle))
+            {
+                if (handle.IsAllocated && handle.Target != null)
+                {
+                    string name = handle.Target.GetType().Name;
+                    byte[] bytes = System.Text.Encoding.UTF8.GetBytes(name + "\0");
+                    int length = System.Math.Min((int)bufferSize, bytes.Length);
+                    Marshal.Copy(bytes, 0, buffer, length);
+                    return;
+                }
+            }
+            Marshal.WriteByte(buffer, 0);
+        }
+
+        [UnmanagedCallersOnly]
         public static void AddScriptByName(uint entityId, IntPtr namePtr, IntPtr varsJsonPtr)
         {
-            if (_world == null) return;
+            if (_world == null) {
+                Debug.Log("[C#] AddScriptByName: FAILED. World is null.");
+                return;
+            }
 
             try
             {
                 string name = Marshal.PtrToStringAnsi(namePtr) ?? "";
                 string varsJson = Marshal.PtrToStringAnsi(varsJsonPtr) ?? "{}";
+                Debug.Log($"[C#] AddScriptByName called for Entity:{entityId}, Script:{name}");
 
                 GameScript? script = null;
-                if (name == "InternalCubeRotator") script = new InternalCubeRotator();
+                if (name == "InternalCubeRotator" || name == "RotatingCube") script = new InternalCubeRotator();
                 else if (name == "InternalSpawner") script = new InternalSpawner();
                 
                 if (script != null)
                 {
+                    Debug.Log($"[C#] Created instance of {name}.");
                     script.EntityId = entityId;
                     script.World = _world;
                     ApplyVariables(script, varsJson);
                     
+                    if (_scriptHandles.TryGetValue(entityId, out var oldHandle))
+                    {
+                        Debug.Log($"[C#] Freeing old handle for Entity:{entityId}.");
+                        if (oldHandle.IsAllocated) oldHandle.Free();
+                    }
+
                     var handle = GCHandle.Alloc(script);
                     _scriptHandles[entityId] = handle;
                     
-                    _world.AddScriptComponent(entityId, (ulong)GCHandle.ToIntPtr(handle), 0);
+                    ulong gcHandlePtr = (ulong)GCHandle.ToIntPtr(handle);
+                    Debug.Log($"[C#] Allocated new handle: {gcHandlePtr}. Adding ScriptComponent to ECS.");
+                    _world.AddScriptComponent(entityId, gcHandlePtr, 0);
+                    
                     script.Start();
+                    Debug.Log($"[C#] Script {name} attached and Start() called.");
                 }
                 else
                 {
-                    Debug.Log($"[C#] Script type '{name}' not found.");
+                    Debug.Log($"[C#] Script type '{name}' not found in registry.");
                 }
             }
             catch (Exception e)

@@ -15,6 +15,9 @@ public:
 
     /// @brief GUID用アセットピッカー
     static bool AssetPicker(const char* label, const char* assetType, uint64_t* guid);
+
+    /// @brief スクリプト用ピッカー
+    static bool ScriptPicker(const char* label, uint32_t entityId);
 };
 
 } // namespace Engine::Editor

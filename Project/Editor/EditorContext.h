@@ -45,6 +45,7 @@ public:
     const std::filesystem::path& GetSelectedAsset() const { return selectedAssetPath_; }
 
     const std::set<ECS::Entity>& GetSelection() const { return selection_; }
+    std::set<ECS::Entity>& GetSelection() { return selection_; }
     void AddToSelection(ECS::Entity entity) { if (entity != 0) selection_.insert(entity); }
     void RemoveFromSelection(ECS::Entity entity) { selection_.erase(entity); }
     void ClearSelection() { selection_.clear(); }

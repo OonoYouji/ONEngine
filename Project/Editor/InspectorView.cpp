@@ -8,8 +8,10 @@
 #include "AddComponentCommand.h"
 #include "RemoveComponentCommand.h"
 #include "Engine/Core/Application.h"
+#include "EditorUI.h"
 #include "Engine/Graphics/Core/GraphicsEngine.h"
 #include "Engine/Asset/TextureManager.h"
+#include "Engine/Script/ScriptHost.h"
 #include <vector>
 #include <string>
 #include <algorithm>
@@ -31,6 +33,7 @@ void InspectorView::Render(ECS::Registry& registry, bool* p_open) {
     auto selectedAsset = context.GetSelectedAsset();
 
     if (!selectedAsset.empty()) {
+        // ... (rest of asset inspector)
         std::string ext = selectedAsset.extension().string();
         std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
 
@@ -258,10 +261,18 @@ void InspectorView::Render(ECS::Registry& registry, bool* p_open) {
         if (typeId == 100) continue;
 
         DrawComponent(typeId, info->name.c_str(), [&](void* data, auto Prop) {
-            ECS::PropertyFunc wrapper = [&](const char* label, std::function<bool()> widget) {
-                return Prop(label, widget);
-            };
-            info->uiFunc(data, wrapper);
+            if (typeId == 3) { // ScriptComponent
+                auto& s = *static_cast<ECS::ScriptComponent*>(data);
+                Prop("IsEnabled", [&]() { return ImGui::Checkbox("IsEnabled", (bool*)&s.isEnabled); });
+                Prop("Script", [&]() { 
+                    return EditorUI::ScriptPicker("Script", context.GetSelectedEntity()); 
+                });
+            } else {
+                ECS::PropertyFunc wrapper = [&](const char* label, std::function<bool()> widget) {
+                    return Prop(label, widget);
+                };
+                info->uiFunc(data, wrapper);
+            }
         });
     }
 
