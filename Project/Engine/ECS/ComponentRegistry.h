@@ -50,14 +50,25 @@ public:
                   std::function<void(const json&, T&)> deserialize,
                   std::function<json(const T&)> serialize,
                   ComponentUIFunc uiFunc = nullptr) {
+        Register<T>(typeId, name, deserialize, 
+            [serialize](const T& data, Entity, Registry&) { return serialize(data); }, 
+            uiFunc);
+    }
+
+    /// @brief 新しいコンポーネントを登録 (Entity/Registry 参照可能版)
+    template <typename T>
+    void Register(uint32_t typeId, const std::string& name,
+        std::function<void(const json&, T&)> deserialize,
+        std::function<json(const T&, Entity, Registry&)> serialize,
+        ComponentUIFunc uiFunc = nullptr) {
         ComponentTypeInfo info;
         info.typeId = typeId;
         info.name = name;
         info.uiFunc = uiFunc;
-        
+
         info.serializeFunc = [serialize](Entity e, Registry& r) -> json {
             if (!r.HasComponent<T>(e)) return json{};
-            return serialize(r.GetComponent<T>(e));
+            return serialize(r.GetComponent<T>(e), e, r);
         };
 
         info.deserializeFunc = [deserialize, typeId](const json& j, Entity e, Registry& r) {

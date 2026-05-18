@@ -1,4 +1,4 @@
-#include "ScriptHost.h"
+﻿#include "ScriptHost.h"
 #include <Windows.h>
 #include <iostream>
 #include "Engine/Common/Assert.h"
@@ -41,6 +41,7 @@ void ScriptHost::Shutdown() {
         close_fptr(context);
         context = nullptr;
     }
+    delegateCache_.clear();
     initialized_ = false;
 }
 
@@ -81,6 +82,9 @@ load_assembly_and_get_function_pointer_fn ScriptHost::GetNet8LoadAssembly(const 
 }
 
 void* ScriptHost::GetMethodDelegate(const std::wstring& typeName, const std::wstring& methodName, const std::wstring& delegateTypeName) {
+    DelegateKey key{ typeName, methodName };
+    if (delegateCache_.count(key)) return delegateCache_[key];
+
     if (!load_assembly_and_get_function_pointer) {
         Console::LogError("GetMethodDelegate failed: load_assembly_and_get_function_pointer is null.");
         return nullptr;
@@ -104,12 +108,13 @@ void* ScriptHost::GetMethodDelegate(const std::wstring& typeName, const std::wst
         &delegate_ptr);
 
     if (rc != 0 || delegate_ptr == nullptr) {
-        Console::LogError("Failed to get method delegate.");
+        Console::LogError(ConvertString(std::format(L"Failed to get method delegate: {} . {}", typeName, methodName)));
         return nullptr;
     }
 
-    Console::Log("Successfully retrieved delegate.");
+    Console::Log(std::format(L"Successfully retrieved delegate: {} . {}", typeName, methodName));
 
+    delegateCache_[key] = delegate_ptr;
     return delegate_ptr;
 }
 

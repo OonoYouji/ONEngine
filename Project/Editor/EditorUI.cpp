@@ -212,6 +212,83 @@ bool EditorUI::ScriptPicker(const char* label, uint32_t entityId) {
         ImGui::EndDragDropTarget();
     }
 
+    // [SerializeField] フィールドの表示
+    if (scriptName != "None") {
+        auto getFieldsFunc = (void(*)(uint32_t, char*, uint32_t))host.GetMethodDelegate(
+            L"ONEngine.Scripting.EngineHost, ONEngine.Scripting",
+            L"GetScriptFields",
+            L"");
+
+        if (getFieldsFunc) {
+            char jsonBuffer[4096] = { 0 };
+            getFieldsFunc(entityId, jsonBuffer, sizeof(jsonBuffer));
+
+            if (jsonBuffer[0] != '\0') {
+                try {
+                    auto fields = nlohmann::json::parse(jsonBuffer);
+                    if (fields.is_array()) {
+                        ImGui::Indent();
+                        for (auto& f : fields) {
+                            std::string f_name = f["name"];
+                            std::string f_type = f["type"];
+                            auto f_value = f["value"];
+
+                            bool fieldChanged = false;
+                            std::string valueJson;
+
+                            if (f_type == "Single") {
+                                float val = f_value.get<float>();
+                                if (ImGui::DragFloat(f_name.c_str(), &val, 0.1f)) {
+                                    fieldChanged = true;
+                                    valueJson = std::to_string(val);
+                                }
+                            } else if (f_type == "Int32") {
+                                int val = f_value.get<int>();
+                                if (ImGui::InputInt(f_name.c_str(), &val)) {
+                                    fieldChanged = true;
+                                    valueJson = std::to_string(val);
+                                }
+                            } else if (f_type == "Boolean") {
+                                bool val = f_value.get<bool>();
+                                if (ImGui::Checkbox(f_name.c_str(), &val)) {
+                                    fieldChanged = true;
+                                    valueJson = val ? "true" : "false";
+                                }
+                            } else if (f_type == "String") {
+                                std::string val = f_value.get<std::string>();
+                                char buf[256];
+                                strcpy_s(buf, val.c_str());
+                                if (ImGui::InputText(f_name.c_str(), buf, sizeof(buf))) {
+                                    fieldChanged = true;
+                                    valueJson = "\"" + std::string(buf) + "\"";
+                                }
+                            }
+
+                            if (fieldChanged) {
+                                auto setFieldFunc = (void(*)(uint32_t, const char*, const char*))host.GetMethodDelegate(
+                                    L"ONEngine.Scripting.EngineHost, ONEngine.Scripting",
+                                    L"SetScriptField",
+                                    L"");
+                                if (setFieldFunc) {
+                                    auto& selection = EditorContext::GetInstance().GetSelection();
+                                    if (selection.empty()) {
+                                        setFieldFunc(entityId, f_name.c_str(), valueJson.c_str());
+                                    } else {
+                                        for (auto e : selection) {
+                                            setFieldFunc((uint32_t)e, f_name.c_str(), valueJson.c_str());
+                                        }
+                                    }
+                                    changed = true;
+                                }
+                            }
+                        }
+                        ImGui::Unindent();
+                    }
+                } catch (...) {}
+            }
+        }
+    }
+
     ImGui::PopID();
     ImGui::EndGroup();
     return changed;

@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <filesystem>
+#include <map>
 
 // .NET Hosting
 #include "DotNetHost/nethost.h"
@@ -55,6 +56,16 @@ private:
 
     void* hostfxr_lib = nullptr;
     hostfxr_handle context = nullptr;
+
+    struct DelegateKey {
+        std::wstring typeName;
+        std::wstring methodName;
+        bool operator<(const DelegateKey& other) const {
+            if (typeName != other.typeName) return typeName < other.typeName;
+            return methodName < other.methodName;
+        }
+    };
+    std::map<DelegateKey, void*> delegateCache_;
 
     bool initialized_ = false;
 };

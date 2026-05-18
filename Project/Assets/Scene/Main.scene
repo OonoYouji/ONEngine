@@ -263,9 +263,18 @@
                     "type": "MeshRenderer"
                 },
                 {
-                    "gcHandle": 0,
-                    "isEnabled": 0,
-                    "type": "ScriptComponent",
+                    "gcHandle": 2086836441960,
+                    "isEnabled": 1,
+                    "scripts": [
+                        {
+                            "name": "RotatingCube",
+                            "variables": {
+                                "Speed": 2,
+                                "TestCount": 10
+                            }
+                        }
+                    ],
+                    "type": "Script",
                     "typeId": 0
                 }
             ],
@@ -335,9 +344,18 @@
                     "type": "MeshRenderer"
                 },
                 {
-                    "gcHandle": 0,
-                    "isEnabled": 0,
-                    "type": "ScriptComponent",
+                    "gcHandle": 2086836441960,
+                    "isEnabled": 1,
+                    "scripts": [
+                        {
+                            "name": "RotatingCube",
+                            "variables": {
+                                "Speed": 2,
+                                "TestCount": 10
+                            }
+                        }
+                    ],
+                    "type": "Script",
                     "typeId": 0
                 }
             ],
@@ -407,9 +425,18 @@
                     "type": "MeshRenderer"
                 },
                 {
-                    "gcHandle": 0,
-                    "isEnabled": 0,
-                    "type": "ScriptComponent",
+                    "gcHandle": 2086836441960,
+                    "isEnabled": 1,
+                    "scripts": [
+                        {
+                            "name": "RotatingCube",
+                            "variables": {
+                                "Speed": 2,
+                                "TestCount": 10
+                            }
+                        }
+                    ],
+                    "type": "Script",
                     "typeId": 0
                 }
             ],
@@ -479,9 +506,18 @@
                     "type": "MeshRenderer"
                 },
                 {
-                    "gcHandle": 0,
-                    "isEnabled": 0,
-                    "type": "ScriptComponent",
+                    "gcHandle": 2086836441960,
+                    "isEnabled": 1,
+                    "scripts": [
+                        {
+                            "name": "RotatingCube",
+                            "variables": {
+                                "Speed": 2,
+                                "TestCount": 10
+                            }
+                        }
+                    ],
+                    "type": "Script",
                     "typeId": 0
                 }
             ],
@@ -551,9 +587,18 @@
                     "type": "MeshRenderer"
                 },
                 {
-                    "gcHandle": 0,
-                    "isEnabled": 0,
-                    "type": "ScriptComponent",
+                    "gcHandle": 2086836441960,
+                    "isEnabled": 1,
+                    "scripts": [
+                        {
+                            "name": "RotatingCube",
+                            "variables": {
+                                "Speed": 2,
+                                "TestCount": 10
+                            }
+                        }
+                    ],
+                    "type": "Script",
                     "typeId": 0
                 }
             ],
@@ -623,9 +668,18 @@
                     "type": "MeshRenderer"
                 },
                 {
-                    "gcHandle": 0,
-                    "isEnabled": 0,
-                    "type": "ScriptComponent",
+                    "gcHandle": 2086836441960,
+                    "isEnabled": 1,
+                    "scripts": [
+                        {
+                            "name": "RotatingCube",
+                            "variables": {
+                                "Speed": 2,
+                                "TestCount": 10
+                            }
+                        }
+                    ],
+                    "type": "Script",
                     "typeId": 0
                 }
             ],
@@ -695,9 +749,18 @@
                     "type": "MeshRenderer"
                 },
                 {
-                    "gcHandle": 0,
-                    "isEnabled": 0,
-                    "type": "ScriptComponent",
+                    "gcHandle": 2086836441960,
+                    "isEnabled": 1,
+                    "scripts": [
+                        {
+                            "name": "RotatingCube",
+                            "variables": {
+                                "Speed": 2,
+                                "TestCount": 10
+                            }
+                        }
+                    ],
+                    "type": "Script",
                     "typeId": 0
                 }
             ],
@@ -767,7 +830,7 @@
                     "type": "MeshRenderer"
                 },
                 {
-                    "gcHandle": 0,
+                    "gcHandle": 2215960580968,
                     "isEnabled": 0,
                     "type": "ScriptComponent",
                     "typeId": 0
@@ -839,7 +902,7 @@
                     "type": "MeshRenderer"
                 },
                 {
-                    "gcHandle": 0,
+                    "gcHandle": 2215960580968,
                     "isEnabled": 0,
                     "type": "ScriptComponent",
                     "typeId": 0
@@ -911,7 +974,7 @@
                     "type": "MeshRenderer"
                 },
                 {
-                    "gcHandle": 0,
+                    "gcHandle": 2215960580968,
                     "isEnabled": 0,
                     "type": "ScriptComponent",
                     "typeId": 0
@@ -983,7 +1046,7 @@
                     "type": "MeshRenderer"
                 },
                 {
-                    "gcHandle": 0,
+                    "gcHandle": 2215960580968,
                     "isEnabled": 0,
                     "type": "ScriptComponent",
                     "typeId": 0
@@ -1055,7 +1118,7 @@
                     "type": "MeshRenderer"
                 },
                 {
-                    "gcHandle": 0,
+                    "gcHandle": 2215960580968,
                     "isEnabled": 0,
                     "type": "ScriptComponent",
                     "typeId": 0
@@ -1127,7 +1190,7 @@
                     "type": "MeshRenderer"
                 },
                 {
-                    "gcHandle": 0,
+                    "gcHandle": 2215960580968,
                     "isEnabled": 0,
                     "type": "ScriptComponent",
                     "typeId": 0

@@ -213,7 +213,17 @@ bool SceneLoader::SaveScene(const std::string& path, Engine::ECS::Registry& regi
 
             if (registry.HasComponent(entity, typeId)) {
                 json jComp = compReg.SerializeComponent(registry, entity, typeId);
-                jComp["type"] = info.name;
+                
+                // ScriptComponent の場合は特別な構造にする
+                if (typeId == 3 && jComp.contains("scriptData")) {
+                    jComp["type"] = "Script"; // 下位互換性/ロードロジックのため
+                    jComp["scripts"] = json::array();
+                    jComp["scripts"].push_back(jComp["scriptData"]);
+                    jComp.erase("scriptData");
+                } else {
+                    jComp["type"] = info.name;
+                }
+                
                 jComponents.push_back(jComp);
             }
         }

@@ -39,42 +39,49 @@ namespace ONEngine.Scripting
             }
         }
 
+        private static uint _frameCount = 0;
+
         [UnmanagedCallersOnly]
         public static void Update()
         {
             float deltaTime = 1.0f / 60.0f; // Temporary fixed DT for debugging
             if (_world == null) return;
 
+            _frameCount++;
+            if (_frameCount % 60 == 0)
+            {
+                Debug.Log($"[C#] EngineHost.Update: Ticking {_scriptHandles.Count} scripts.");
+            }
+
             try
             {
-                // スクリプトの実行
-                uint chunkCount = _world.GetChunkCount<ScriptComponent>();
-                for (uint i = 0; i < chunkCount; i++)
+                // スクリプトの実行: dictionary を回す方が安全 (gcHandle の整合性が保証される)
+                // 実行中に _scriptHandles が変更される可能性に備え、一旦リスト化する
+                var activeEntities = new List<uint>(_scriptHandles.Keys);
+                
+                foreach (var entityId in activeEntities)
                 {
-                    try
+                    if (_scriptHandles.TryGetValue(entityId, out var handle))
                     {
-                        var chunk = _world.GetChunkSpan<ScriptComponent>(i);
-                        foreach (var comp in chunk)
+                        try
                         {
-                            if (comp.gcHandle == 0) continue;
-                            
-                            try
+                            if (handle.IsAllocated && handle.Target is GameScript script)
                             {
-                                var handle = GCHandle.FromIntPtr((IntPtr)comp.gcHandle);
-                                if (handle.IsAllocated && handle.Target is GameScript script)
+                                // コンポーネントが有効な場合のみ実行
+                                if (_world.HasComponent<ScriptComponent>(entityId))
                                 {
-                                    script.Update(deltaTime);
+                                    ref var comp = ref _world.GetComponent<ScriptComponent>(entityId);
+                                    if (comp.isEnabled != 0)
+                                    {
+                                        script.Update(deltaTime);
+                                    }
                                 }
                             }
-                            catch (Exception e)
-                            {
-                                Debug.Log($"[C#] Error in Script Instance Update: {e.Message}");
-                            }
                         }
-                    }
-                    catch (Exception e)
-                    {
-                        Debug.Log($"[C#] Error in Script Chunk Update: {e.Message}");
+                        catch (Exception e)
+                        {
+                            Debug.Log($"[C#] Error in Script Instance Update (Entity:{entityId}): {e.Message}");
+                        }
                     }
                 }
 
@@ -82,7 +89,7 @@ namespace ONEngine.Scripting
             }
             catch (Exception e)
             {
-                // FATAL errors must not propagate to Native
+                // UnmanagedCallersOnly メソッドから例外を漏らしてはならない
                 Console.WriteLine($"[C#] FATAL Error in EngineHost.Update: {e}");
             }
         }
@@ -122,6 +129,106 @@ namespace ONEngine.Scripting
         }
 
         [UnmanagedCallersOnly]
+        public static void GetScriptFields(uint entityId, IntPtr buffer, uint bufferSize)
+        {
+            try
+            {
+                if (!_scriptHandles.TryGetValue(entityId, out var handle) || !handle.IsAllocated || handle.Target == null)
+                {
+                    Marshal.WriteByte(buffer, 0);
+                    return;
+                }
+
+                var script = handle.Target;
+                var type = script.GetType();
+                var fields = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+                
+                var resultList = new List<Dictionary<string, object>>();
+                foreach (var f in fields)
+                {
+                    if (!f.IsPublic && f.GetCustomAttribute<SerializeField>() == null) continue;
+
+                    var fieldInfo = new Dictionary<string, object>
+                    {
+                        ["name"] = f.Name,
+                        ["type"] = f.FieldType.Name,
+                        ["value"] = f.GetValue(script) ?? "null"
+                    };
+                    resultList.Add(fieldInfo);
+                }
+
+                string json = JsonSerializer.Serialize(resultList);
+                byte[] bytes = System.Text.Encoding.UTF8.GetBytes(json + "\0");
+                int writeLength = System.Math.Min((int)bufferSize, bytes.Length);
+                Marshal.Copy(bytes, 0, buffer, writeLength);
+            }
+            catch (Exception e)
+            {
+                Debug.Log($"[C#] Error in GetScriptFields: {e}");
+                Marshal.WriteByte(buffer, 0);
+            }
+        }
+
+        public static string SerializeScript(uint entityId)
+        {
+            if (!_scriptHandles.TryGetValue(entityId, out var handle) || !handle.IsAllocated || handle.Target == null) return "{}";
+
+            var script = handle.Target;
+            var type = script.GetType();
+            var fields = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            
+            var fieldData = new Dictionary<string, object>();
+            foreach (var f in fields)
+            {
+                if (!f.IsPublic && f.GetCustomAttribute<SerializeField>() == null) continue;
+                fieldData[f.Name] = f.GetValue(script) ?? "null";
+            }
+
+            var result = new Dictionary<string, object>
+            {
+                ["name"] = type.Name,
+                ["variables"] = fieldData
+            };
+
+            return JsonSerializer.Serialize(result);
+        }
+
+        [UnmanagedCallersOnly]
+        public static IntPtr SerializeScriptToNative(uint entityId)
+        {
+            string json = SerializeScript(entityId);
+            if (string.IsNullOrEmpty(json) || json == "{}") return IntPtr.Zero;
+            
+            byte[] bytes = System.Text.Encoding.UTF8.GetBytes(json + "\0");
+            IntPtr ptr = Marshal.AllocHGlobal(bytes.Length);
+            Marshal.Copy(bytes, 0, ptr, bytes.Length);
+            return ptr;
+        }
+
+        [UnmanagedCallersOnly]
+        public static void SetScriptField(uint entityId, IntPtr namePtr, IntPtr valueJsonPtr)
+        {
+            if (!_scriptHandles.TryGetValue(entityId, out var handle) || !handle.IsAllocated || handle.Target == null) return;
+
+            string fieldName = Marshal.PtrToStringAnsi(namePtr) ?? "";
+            string valueJson = Marshal.PtrToStringAnsi(valueJsonPtr) ?? "";
+            
+            var script = handle.Target;
+            var type = script.GetType();
+            var field = type.GetField(fieldName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            
+            if (field != null)
+            {
+                try {
+                    object? val = JsonSerializer.Deserialize(valueJson, field.FieldType);
+                    field.SetValue(script, val);
+                } catch (Exception e) {
+                    Debug.Log($"[C#] Error setting field {fieldName}: {e.Message}");
+                }
+            }
+        }
+
+        [UnmanagedCallersOnly]
         public static void AddScriptByName(uint entityId, IntPtr namePtr, IntPtr varsJsonPtr)
         {
             if (_world == null) {
@@ -136,12 +243,27 @@ namespace ONEngine.Scripting
                 Debug.Log($"[C#] AddScriptByName called for Entity:{entityId}, Script:{name}");
 
                 GameScript? script = null;
-                if (name == "InternalCubeRotator" || name == "RotatingCube") script = new InternalCubeRotator();
-                else if (name == "InternalSpawner") script = new InternalSpawner();
+                
+                var assembly = typeof(EngineHost).Assembly;
+                foreach (var t in assembly.GetTypes())
+                {
+                    if (t.IsSubclassOf(typeof(GameScript)) && t.Name == name)
+                    {
+                        script = (GameScript?)Activator.CreateInstance(t);
+                        break;
+                    }
+                }
+
+                if (script == null)
+                {
+                    // Fallback to internal test scripts if not found dynamically
+                    if (name == "InternalCubeRotator") script = new InternalCubeRotator();
+                    else if (name == "InternalSpawner") script = new InternalSpawner();
+                }
                 
                 if (script != null)
                 {
-                    Debug.Log($"[C#] Created instance of {name}.");
+                    Debug.Log($"[C#] Created instance of {script.GetType().FullName}.");
                     script.EntityId = entityId;
                     script.World = _world;
                     ApplyVariables(script, varsJson);

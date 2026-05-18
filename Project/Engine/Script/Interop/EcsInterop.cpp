@@ -52,6 +52,7 @@ extern "C" {
 
     __declspec(dllexport) void AddScriptComponent(Engine::ECS::Registry* registry, uint32_t entity, uint64_t gcHandle, uint32_t typeId) {
         Engine::ECS::ScriptComponent sc;
+        sc.isEnabled = 1;
         sc.gcHandle = gcHandle;
         sc.typeId = typeId;
         registry->AddComponent<Engine::ECS::ScriptComponent>(entity, std::move(sc));

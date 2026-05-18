@@ -3,6 +3,7 @@
 #include "Engine/Asset/MaterialManager.h"
 #include "Engine/Asset/TextureManager.h"
 #include "Engine/Asset/FontManager.h"
+#include "Engine/Script/ScriptHost.h"
 #include "Schema/Buffers.h"
 #include "Schema/Components.h"
 #include <cstring>
@@ -16,7 +17,7 @@ void InitializeComponentRegistry() {
     auto& reg = ComponentRegistry::GetInstance();
 
     // ID 1: Transform
-    reg.Register<Transform>(1, "Transform", 
+    reg.Register<Transform>(1, "Transform",
         [](const json& j, Transform& t) { from_json(j, t); },
         [](const Transform& t) { json j; to_json(j, t); return j; },
         [](void* data, PropertyFunc Prop) { DrawUI_Transform(*static_cast<Transform*>(data), Prop); }
@@ -24,16 +25,16 @@ void InitializeComponentRegistry() {
 
     // ID 2: MeshRenderer
     reg.Register<MeshRenderer>(2, "MeshRenderer",
-        [](const json& j, MeshRenderer& m) { 
+        [](const json& j, MeshRenderer& m) {
             from_json(j, m);
             if (j.contains("modelGuid")) m.modelIndex = Asset::AssetManager::GetInstance().LoadModel(std::to_string(j["modelGuid"].get<uint64_t>()));
             if (j.contains("materialGuid")) m.materialIndex = Asset::MaterialManager::GetInstance().LoadMaterial(j["materialGuid"].get<uint64_t>());
         },
-        [](const MeshRenderer& m) { 
+        [](const MeshRenderer& m) {
             json j; to_json(j, m);
             if (auto asset = Asset::AssetManager::GetInstance().GetModelByIndex(m.modelIndex)) j["modelGuid"] = asset->GetGuid();
             if (auto asset = Asset::MaterialManager::GetInstance().GetMaterialByIndex(m.materialIndex)) j["materialGuid"] = asset->GetGuid();
-            return j; 
+            return j;
         },
         [](void* data, PropertyFunc Prop) { DrawUI_MeshRenderer(*static_cast<MeshRenderer*>(data), Prop); }
     );
@@ -41,10 +42,25 @@ void InitializeComponentRegistry() {
     // ID 3: ScriptComponent
     reg.Register<ScriptComponent>(3, "ScriptComponent",
         [](const json& j, ScriptComponent& s) { from_json(j, s); },
-        [](const ScriptComponent& s) { json j; to_json(j, s); return j; },
+        [](const ScriptComponent& s, Entity entity, Registry& r) { 
+            json j; to_json(j, s);
+            auto& host = Engine::Script::ScriptHost::GetInstance();
+            auto serializeFunc = (char*(*)(uint32_t))host.GetMethodDelegate(
+                L"ONEngine.Scripting.EngineHost, ONEngine.Scripting",
+                L"SerializeScriptToNative",
+                L"");
+            if (serializeFunc) {
+                char* scriptJson = serializeFunc((uint32_t)entity);
+                if (scriptJson) {
+                    try {
+                        j["scriptData"] = json::parse(scriptJson);
+                    } catch (...) {}
+                }
+            }
+            return j;
+        },
         [](void* data, PropertyFunc Prop) { DrawUI_ScriptComponent(*static_cast<ScriptComponent*>(data), Prop); }
     );
-
     // ID 4: Camera
     reg.Register<Camera>(4, "Camera",
         [](const json& j, Camera& c) { from_json(j, c); },
