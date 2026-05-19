@@ -37,7 +37,7 @@ void VoxelTerrainVertexCreatePipeline::Initialize(ShaderCompiler* _shaderCompile
 		computePipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // SRV_CHUNKS
 		computePipeline_->AddDescriptorRange(1, 1, D3D12_DESCRIPTOR_RANGE_TYPE_UAV); // APPEND_OUT_VERTICES
 		computePipeline_->AddDescriptorRange(2, 1, D3D12_DESCRIPTOR_RANGE_TYPE_UAV); // UAV_VERTEX_COUNTER
-		computePipeline_->AddDescriptorRange(3, MAX_TEXTURE_COUNT, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // SRV_VOXEL_TEXTURES
+		computePipeline_->AddDescriptorRange(3, Asset::MAX_TEXTURE_COUNT, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // SRV_VOXEL_TEXTURES
 
 		computePipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 0); // SRV_CHUNKS
 		computePipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 1); // APPEND_OUT_VERTICES

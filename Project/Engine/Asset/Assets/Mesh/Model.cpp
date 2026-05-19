@@ -1,6 +1,7 @@
 ﻿#include "Model.h"
 
-using namespace ONEngine;
+
+namespace ONEngine::Asset {
 
 Model::Model() = default;
 Model::~Model() = default;
@@ -73,3 +74,5 @@ std::unordered_map<std::string, NodeAnimation>& Model::GetNodeAnimationMap() {
 float Model::GetAnimationDuration() const {
 	return duration_;
 }
+
+} // namespace ONEngine::Asset

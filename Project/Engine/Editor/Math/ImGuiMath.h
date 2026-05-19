@@ -11,7 +11,7 @@
 #include "Engine/Core/Utility/Math/Vector4.h"
 #include "Engine/Graphics/Buffer/Data/GPUMaterial.h"
 
-namespace ONEngine {
+namespace ONEngine::Asset {
 class AssetCollection;
 }
 
@@ -40,7 +40,7 @@ bool ColorEdit(const char* _label, ONEngine::Vector4* _color, ImGuiColorEditFlag
 bool InputText(const char* _label, std::string* _text, ImGuiInputTextFlags _flags = 0);
 
 /// マテリアルの編集
-bool MaterialEdit(const char* _label, ONEngine::GPUMaterial* _material, ONEngine::AssetCollection* _assetCollection);
+bool MaterialEdit(const char* _label, ONEngine::GPUMaterial* _material, ONEngine::Asset::AssetCollection* _assetCollection);
 
 /// UV変形の編集
 bool UVTransformEdit(const char* _label, ONEngine::UVTransform* _uvTransform);

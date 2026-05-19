@@ -9,16 +9,16 @@
 
 using namespace Editor;
 
-void Editor::DragDrop::SetDragDropPayload(const std::string& _filepath, const ONEngine::Guid& _guid, ONEngine::AssetCollection* _ac) {
+void Editor::DragDrop::SetDragDropPayload(const std::string& _filepath, const ONEngine::Guid& _guid, ONEngine::Asset::AssetCollection* _ac) {
 	if(ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
 		static AssetPayload payload;
 		payload.filePath = _filepath;
 		payload.guid = _ac->GetAssetGuidFromPath(payload.filePath);
 
 		/// 持っているアセットのタイプに応じてプレビューを表示
-		ONEngine::AssetType type = _ac->GetAssetTypeFromGuid(payload.guid);
-		if(type == ONEngine::AssetType::Texture) {
-			ONEngine::Texture* tex = _ac->GetTexture(payload.filePath);
+		ONEngine::Asset::AssetType type = _ac->GetAssetTypeFromGuid(payload.guid);
+		if(type == ONEngine::Asset::AssetType::Texture) {
+			ONEngine::Asset::Texture* tex = _ac->GetTexture(payload.filePath);
 			if(tex) {
 				const float previewSize = 64.0f;
 

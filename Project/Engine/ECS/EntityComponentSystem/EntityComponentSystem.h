@@ -19,8 +19,17 @@
 #include <Engine/ECS/Component/Array/ComponentArray.h>
 
 namespace ONEngine {
-
+class DxManager;
+class DxDevice;
 class CameraComponent;
+}
+
+namespace ONEngine::Asset {
+class AssetCollection;
+}
+
+
+namespace ONEngine {
 
 void SetEntityComponentSystemPtr(ECSGroup* _gameGroup, ECSGroup* _debugGroup);
 ECSGroup* GetEntityComponentSystemPtr();
@@ -34,10 +43,10 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	EntityComponentSystem(class DxManager* _pDxManager);
+	EntityComponentSystem(DxManager* _pDxManager);
 	~EntityComponentSystem();
 
-	void Initialize(class AssetCollection* _assetCollection);
+	void Initialize(Asset::AssetCollection* _assetCollection);
 	void Update();
 	void OutsideOfUpdate();
 
@@ -72,9 +81,9 @@ private:
 	/// ===================================================
 
 	/// ----- other objects ----- ///
-	class AssetCollection* pAssetCollection_;
-	class DxManager* pDxManager_;
-	class DxDevice* pDxDevice_;
+	Asset::AssetCollection* pAssetCollection_;
+	DxManager* pDxManager_;
+	DxDevice* pDxDevice_;
 
 	/// ----- groups ----- ///
 	std::unordered_map<std::string, std::unique_ptr<ECSGroup>> ecsGroups_;
@@ -110,100 +119,100 @@ bool CheckComponentArrayEnable(IComponentArray* _componentArray);
 
 namespace MonoInternalMethods {
 
-	/// エンティティのidからEntityを取得
-	GameEntity* GetEntityById(int32_t _entityId, const std::string& _groupName);
+/// エンティティのidからEntityを取得
+GameEntity* GetEntityById(int32_t _entityId, const std::string& _groupName);
 
-	/// @brief Componentの追加
-	/// @param _entityId 対象エンティティ
-	/// @param _monoTypeName Componentの型名
-	/// @param _groupName ECSGroupの名前
-	/// @return 追加したComponentのポインタの整数
-	uint64_t InternalAddComponent(int32_t _entityId, MonoString* _monoTypeName, MonoString* _groupName, uint32_t* _compId);
+/// @brief Componentの追加
+/// @param _entityId 対象エンティティ
+/// @param _monoTypeName Componentの型名
+/// @param _groupName ECSGroupの名前
+/// @return 追加したComponentのポインタの整数
+uint64_t InternalAddComponent(int32_t _entityId, MonoString* _monoTypeName, MonoString* _groupName, uint32_t* _compId);
 
-	/// @brief Componentの取得
-	/// @param _entityId 対象のエンティティID
-	/// @param _monoTypeName Componentの型名
-	/// @param _groupName ECSGroupの名前
-	/// @return ゲットしたComponentのポインタの整数
-	uint64_t InternalGetComponent(int32_t _entityId, MonoString* _monoTypeName, MonoString* _groupName, uint32_t* _compId);
+/// @brief Componentの取得
+/// @param _entityId 対象のエンティティID
+/// @param _monoTypeName Componentの型名
+/// @param _groupName ECSGroupの名前
+/// @return ゲットしたComponentのポインタの整数
+uint64_t InternalGetComponent(int32_t _entityId, MonoString* _monoTypeName, MonoString* _groupName, uint32_t* _compId);
 
-	/// @brief エンティティの名前の取得
-	/// @param _entityId 対象のエンティティID
-	/// @param _groupName ECSGroupの名前
-	/// @return 取得した名前の文字列ポインタ
-	const char* InternalGetName(int32_t _entityId, MonoString* _groupName);
+/// @brief エンティティの名前の取得
+/// @param _entityId 対象のエンティティID
+/// @param _groupName ECSGroupの名前
+/// @return 取得した名前の文字列ポインタ
+const char* InternalGetName(int32_t _entityId, MonoString* _groupName);
 
-	/// @brief エンティティの命名
-	/// @param _entityId 対象のエンティティID
-	/// @param _name 新規の名前
-	/// @param _groupName ECSGroupの名前
-	void InternalSetName(int32_t _entityId, MonoString* _name, MonoString* _groupName);
+/// @brief エンティティの命名
+/// @param _entityId 対象のエンティティID
+/// @param _name 新規の名前
+/// @param _groupName ECSGroupの名前
+void InternalSetName(int32_t _entityId, MonoString* _name, MonoString* _groupName);
 
-	/// @brief エンティティの子のIDを取得
-	/// @param _entityId 対象のエンティティID
-	/// @param _childIndex 子のインデックス
-	/// @param _groupName ECSGroupの名前
-	/// @return 見つかった子エンティティのID
-	int32_t InternalGetChildId(int32_t _entityId, uint32_t _childIndex, MonoString* _groupName);
+/// @brief エンティティの子のIDを取得
+/// @param _entityId 対象のエンティティID
+/// @param _childIndex 子のインデックス
+/// @param _groupName ECSGroupの名前
+/// @return 見つかった子エンティティのID
+int32_t InternalGetChildId(int32_t _entityId, uint32_t _childIndex, MonoString* _groupName);
 
-	/// @brief 子エンティティの数を取得する
-	/// @param _entityId 親エンティティID
-	/// @param _groupName ECSGroupの名前
-	/// @return 見つかった子エンティティの数
-	int32_t InternalGetChildrenCount(int32_t _entityId, MonoString* _groupName);
+/// @brief 子エンティティの数を取得する
+/// @param _entityId 親エンティティID
+/// @param _groupName ECSGroupの名前
+/// @return 見つかった子エンティティの数
+int32_t InternalGetChildrenCount(int32_t _entityId, MonoString* _groupName);
 
-	/// @brief エンティティの親のIDを取得
-	/// @param _entityId 対象のエンティティID
-	/// @param _groupName ECSGroupの名前
-	/// @return 見つかった親エンティティのID
-	int32_t InternalGetParentId(int32_t _entityId, MonoString* _groupName);
+/// @brief エンティティの親のIDを取得
+/// @param _entityId 対象のエンティティID
+/// @param _groupName ECSGroupの名前
+/// @return 見つかった親エンティティのID
+int32_t InternalGetParentId(int32_t _entityId, MonoString* _groupName);
 
-	/// @brief エンティティの親の設定
-	/// @param _entityId エンティティID
-	/// @param _parentId 親エンティティID
-	/// @param _groupName ECSGroupの名前
-	void InternalSetParent(int32_t _entityId, int32_t _parentId, MonoString* _groupName);
+/// @brief エンティティの親の設定
+/// @param _entityId エンティティID
+/// @param _parentId 親エンティティID
+/// @param _groupName ECSGroupの名前
+void InternalSetParent(int32_t _entityId, int32_t _parentId, MonoString* _groupName);
 
-	/// @brief C#スクリプトの追加
-	/// @param _entityId 対象のエンティティID
-	/// @param _scriptName 追加するスクリプト名
-	/// @param _groupName ECSGroupの名前
-	void InternalAddScript(int32_t _entityId, MonoString* _scriptName, MonoString* _groupName);
+/// @brief C#スクリプトの追加
+/// @param _entityId 対象のエンティティID
+/// @param _scriptName 追加するスクリプト名
+/// @param _groupName ECSGroupの名前
+void InternalAddScript(int32_t _entityId, MonoString* _scriptName, MonoString* _groupName);
 
-	/// @brief C#スクリプトの取得
-	/// @param _entityId 対象のエンティティID
-	/// @param _scriptName ゲットするスクリプト名
-	/// @param _groupName ECSGroupの名前
-	/// @return 見つかったかどうか
-	bool InternalGetScript(int32_t _entityId, MonoString* _scriptName, MonoString* _groupName);
+/// @brief C#スクリプトの取得
+/// @param _entityId 対象のエンティティID
+/// @param _scriptName ゲットするスクリプト名
+/// @param _groupName ECSGroupの名前
+/// @return 見つかったかどうか
+bool InternalGetScript(int32_t _entityId, MonoString* _scriptName, MonoString* _groupName);
 
-	/// @brief エンティティの生成
-	/// @param _entityId 作成されたエンティティIDのポインタ
-	/// @param _prefabName 作成するPrefab名
-	/// @param _groupName ECSGroupの名前
-	void InternalCreateEntity(int32_t* _entityId, MonoString* _prefabName, MonoString* _groupName);
+/// @brief エンティティの生成
+/// @param _entityId 作成されたエンティティIDのポインタ
+/// @param _prefabName 作成するPrefab名
+/// @param _groupName ECSGroupの名前
+void InternalCreateEntity(int32_t* _entityId, MonoString* _prefabName, MonoString* _groupName);
 
-	/// @brief エンティティの削除
-	/// @param _ecsGroupName ECSGroupの名前
-	/// @param _entityId 対象のエンティティID
-	void InternalDestroyEntity(MonoString* _ecsGroupName, int32_t _entityId);
-
-
-	/// @brief エンティティの有効/無効の取得
-	/// @param _entityId 対象のエンティティ
-	/// @param _ecsGroupName ECSGroupの名前
-	/// @return true: 有効, false: 無効
-	bool InternalGetEnable(int32_t _entityId, MonoString* _ecsGroupName);
-
-	/// @brief エンティティの有効/無効の設定
-	/// @param _entityId 対象のエンティティID
-	/// @param _enable 設定する値
-	/// @param _ecsGroupName ECSGroupの名前
-	void InternalSetEnable(int32_t _entityId, bool _enable, MonoString* _ecsGroupName);
+/// @brief エンティティの削除
+/// @param _ecsGroupName ECSGroupの名前
+/// @param _entityId 対象のエンティティID
+void InternalDestroyEntity(MonoString* _ecsGroupName, int32_t _entityId);
 
 
-	void InternalSetBatch(MonoReflectionType* _typeReflection, MonoArray* _batchArray, int _count, MonoString* _ecsGroupName);
-	void InternalGetBatch(MonoReflectionType* _typeReflection, MonoArray* _batchArray, int _count, MonoString* _ecsGroupName);
+/// @brief エンティティの有効/無効の取得
+/// @param _entityId 対象のエンティティ
+/// @param _ecsGroupName ECSGroupの名前
+/// @return true: 有効, false: 無効
+bool InternalGetEnable(int32_t _entityId, MonoString* _ecsGroupName);
+
+/// @brief エンティティの有効/無効の設定
+/// @param _entityId 対象のエンティティID
+/// @param _enable 設定する値
+/// @param _ecsGroupName ECSGroupの名前
+void InternalSetEnable(int32_t _entityId, bool _enable, MonoString* _ecsGroupName);
+
+
+void InternalSetBatch(MonoReflectionType* _typeReflection, MonoArray* _batchArray, int _count, MonoString* _ecsGroupName);
+void InternalGetBatch(MonoReflectionType* _typeReflection, MonoArray* _batchArray, int _count, MonoString* _ecsGroupName);
 
 
 } // namespace MonoInternalMethods

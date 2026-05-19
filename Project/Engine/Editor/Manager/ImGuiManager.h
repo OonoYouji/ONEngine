@@ -17,14 +17,17 @@
 #include "Engine/Editor/Math/ImGuiSceneImageInfo.h"
 
 namespace ONEngine {
-/// 前方宣言
-class AssetCollection;
 class DxManager;
 class WindowManager;
 class Window;
 class EntityComponentSystem;
 class SceneManager;
-} /// ONEngine
+}
+
+namespace ONEngine::Asset {
+class AssetCollection;
+}
+
 
 
 /// ///////////////////////////////////////////////////
@@ -45,7 +48,7 @@ public:
 
 	/// @brief 初期化
 	/// @param _assetCollection AssetCollection 
-	void Initialize(ONEngine::AssetCollection* _assetCollection);
+	void Initialize(ONEngine::Asset::AssetCollection* _assetCollection);
 
 	/// @brief 終了処理
 	void Finalize();
@@ -84,7 +87,7 @@ private:
 	/// ----- other class ----- ///
 	ONEngine::DxManager* pDxManager_;
 	ONEngine::WindowManager* pWindowManager_;
-	ONEngine::AssetCollection* pAssetCollection_;
+	ONEngine::Asset::AssetCollection* pAssetCollection_;
 	ONEngine::EntityComponentSystem* pEntityComponentSystem_;
 	EditorManager* pEditorManager_;
 	ONEngine::SceneManager* pSceneManager_;

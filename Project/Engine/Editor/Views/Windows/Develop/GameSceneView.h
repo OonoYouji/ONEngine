@@ -3,7 +3,7 @@
 /// engine
 #include "../../EditorViewCollection.h"
 
-namespace ONEngine {
+namespace ONEngine::Asset {
 class AssetCollection;
 }
 
@@ -17,7 +17,7 @@ public:
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
-	GameSceneView(ONEngine::AssetCollection* _ac, const std::string& _windowName)
+	GameSceneView(ONEngine::Asset::AssetCollection* _ac, const std::string& _windowName)
 		: pAssetCollection_(_ac), windowName_(_windowName) {
 	}
 	~GameSceneView() {}
@@ -30,7 +30,7 @@ private:
 	/// private : methods
 	/// ===================================================
 
-	ONEngine::AssetCollection* pAssetCollection_ = nullptr;
+	ONEngine::Asset::AssetCollection* pAssetCollection_ = nullptr;
 	const std::string windowName_ = "GameView";
 
 };

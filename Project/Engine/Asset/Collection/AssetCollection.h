@@ -15,15 +15,16 @@
 #include "Engine/Asset/Assets/Mesh/ModelLoader.h"
 #include "Engine/Asset/Assets/Texture/TextureLoader.h"
 #include "Engine/Asset/Assets/AudioClip/AudioClipLoader.h"
-#include "Engine/Asset/Assets/Mateiral/MaterialLoader.h"
+#include "Engine/Asset/Assets/Material/MaterialLoader.h"
+#include "Engine/Asset/Assets/Shader/ShaderLoader.h"
 #include "Engine/Asset/Guid/Guid.h"
 
-/// @brief TがIAssetを継承しているかのコンセプト
 namespace ONEngine {
-
-/// ----- 前方宣言 ----- ///
 class DxManager;
+}
 
+
+namespace ONEngine::Asset{
 
 static const uint32_t MAX_TEXTURE_COUNT   = 2048; ///< 最大テクスチャ数
 static const uint32_t MAX_MODEL_COUNT     = 128;  ///< 最大モデル数
@@ -212,4 +213,4 @@ inline const std::string& AssetCollection::GetAssetPath(const Guid& _guid) const
 }
 
 
-} /// ONEngine
+} /// namespace ONEngine::Asset

@@ -12,7 +12,7 @@ using namespace ONEngine;
 #include "Engine/Asset/Collection/AssetCollection.h"
 
 
-GrassRenderingPipeline::GrassRenderingPipeline(AssetCollection* _assetCollection) : pAssetCollection_(_assetCollection) {};
+GrassRenderingPipeline::GrassRenderingPipeline(Asset::AssetCollection* _assetCollection) : pAssetCollection_(_assetCollection) {};
 GrassRenderingPipeline::~GrassRenderingPipeline() = default;
 
 void GrassRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {
@@ -38,7 +38,7 @@ void GrassRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManag
 		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // t0: BladeInstance
 		pipeline_->AddDescriptorRange(1, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // t1: StartIndex
 		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_UAV); // u0: Time
-		pipeline_->AddDescriptorRange(2, MAX_TEXTURE_COUNT, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // t0: Texture
+		pipeline_->AddDescriptorRange(2, Asset::MAX_TEXTURE_COUNT, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // t0: Texture
 
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 0); // ROOT_PARAM_BLADES
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 1); // SRV_START_INDEX

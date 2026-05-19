@@ -10,7 +10,7 @@ using namespace ONEngine;
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Terrain.h"
 
 
-TerrainRenderingPipeline::TerrainRenderingPipeline(AssetCollection* _assetCollection)
+TerrainRenderingPipeline::TerrainRenderingPipeline(Asset::AssetCollection* _assetCollection)
 	: pAssetCollection_(_assetCollection) {
 }
 TerrainRenderingPipeline::~TerrainRenderingPipeline() {}

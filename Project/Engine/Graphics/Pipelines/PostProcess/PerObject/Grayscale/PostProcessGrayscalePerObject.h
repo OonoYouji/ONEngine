@@ -17,13 +17,13 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxm) override;
+	void Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) override;
 
 	void Execute(
 		const std::string& _textureName,
-		class DxCommand* _dxCommand,
-		class AssetCollection* _assetCollection,
-		class EntityComponentSystem* _entityComponentSystem
+		DxCommand* _dxCommand,
+		Asset::AssetCollection* _assetCollection,
+		EntityComponentSystem* _entityComponentSystem
 	) override;
 
 private:

@@ -10,13 +10,20 @@
 #include "Mesh.h"
 #include "Skinning.h"
 
-namespace ONEngine {
+namespace ONEngine::Asset {
+
 
 /// ///////////////////////////////////////////////////
 /// Meshの集合体、モデルデータ (アニメーションがある場合も含む)
 /// ///////////////////////////////////////////////////
 class Model final : public IAsset {
 public:
+
+	/// @brief Model用のメタデータ
+	struct MetaData {
+		float scale;
+	};
+
 
 	struct Vertex {
 		Vector4 position;
@@ -94,4 +101,4 @@ public:
 
 };
 
-} /// ONEngine
+} /// ONEngine::Asset

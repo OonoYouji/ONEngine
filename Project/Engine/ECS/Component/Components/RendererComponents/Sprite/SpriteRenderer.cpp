@@ -19,7 +19,7 @@ using namespace ONEngine;
 /// デバッグ用のSpriteRenderer
 /// /////////////////////////////////////////////////////////////
 
-void ComponentDebug::SpriteDebug(SpriteRenderer* _sr, AssetCollection* _assetCollection) {
+void ComponentDebug::SpriteDebug(SpriteRenderer* _sr, Asset::AssetCollection* _assetCollection) {
 	if (!_sr) {
 		return;
 	}
@@ -43,7 +43,7 @@ void ONEngine::to_json(nlohmann::json& _j, const SpriteRenderer& _sr) {
 
 void ONEngine::from_json(const nlohmann::json& _j, SpriteRenderer& _sr) {
 	_sr.enable = _j.value("enable", static_cast<int>(true));
-	_sr.material_ = _j.value("material", Material{});
+	_sr.material_ = _j.value("material", Asset::Material{});
 }
 
 
@@ -63,7 +63,7 @@ SpriteRenderer::SpriteRenderer() {
 }
 SpriteRenderer::~SpriteRenderer() {}
 
-void SpriteRenderer::RenderingSetup(AssetCollection* _assetCollection) {
+void SpriteRenderer::RenderingSetup(Asset::AssetCollection* _assetCollection) {
 
 	gpuMaterial_.baseColor = material_.baseColor;
 	gpuMaterial_.postEffectFlags = material_.postEffectFlags;

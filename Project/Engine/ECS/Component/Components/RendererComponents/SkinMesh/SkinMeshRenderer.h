@@ -16,6 +16,10 @@
 /// /////////////////////////////////////////////
 /// スキニングアニメーションのRender Component
 /// /////////////////////////////////////////////
+namespace ONEngine::Asset {
+class AssetCollection;
+}
+
 namespace ONEngine {
 
 class SkinMeshRenderer : public IRenderComponent {
@@ -80,7 +84,7 @@ public:
 
 
 namespace ComponentDebug {
-	void SkinMeshRendererDebug(SkinMeshRenderer* _smr);
+	void SkinMeshRendererDebug(SkinMeshRenderer* _smr, Asset::AssetCollection* _assetCollection);
 }
 
 

@@ -1,0 +1,8 @@
+{
+    "version": 1,
+    "guid": "180ad8e09852633ed711349cab18f2bc",
+    "type": "Shader",
+    "profile": "vs_6_0",
+    "shaderStage": "Vertex",
+    "entryPoint": "main"
+}

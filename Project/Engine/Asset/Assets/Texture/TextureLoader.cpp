@@ -1,8 +1,11 @@
 ﻿#include "TextureLoader.h"
 
+/// std
+#include <fstream>
+#include <mutex>
+
 /// externals
 #include <magic_enum/magic_enum.hpp>
-#include <mutex>
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
@@ -13,36 +16,89 @@
 namespace {
 /// SRVの割り当てとログ出力が競合しないようにするためだけのミューテックス
 std::mutex s_textureGpuMutex;
+
+/// @brief DXGI_FORMATの文字列から列挙型を取得する
+DXGI_FORMAT GetDxgiFormatFromString(const std::string& _formatStr) {
+	if(_formatStr == "R8G8B8A8_UNORM") return DXGI_FORMAT_R8G8B8A8_UNORM;
+	if(_formatStr == "R8G8B8A8_UNORM_SRGB") return DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+	if(_formatStr == "BC7_UNORM") return DXGI_FORMAT_BC7_UNORM;
+	if(_formatStr == "BC7_UNORM_SRGB") return DXGI_FORMAT_BC7_UNORM_SRGB;
+	if(_formatStr == "R32G32B32A32_FLOAT") return DXGI_FORMAT_R32G32B32A32_FLOAT;
+	return DXGI_FORMAT_UNKNOWN;
 }
 
-namespace ONEngine {
+}
+
+namespace ONEngine::Asset {
 
 AssetLoader<Texture>::AssetLoader(DxManager* _dxm, AssetCollection* _ac)
-	: pDxManager_(_dxm), pAssetCollection_(_ac) {
-}
+	: pDxManager_(_dxm), pAssetCollection_(_ac) {}
 
-std::optional<Texture> AssetLoader<Texture>::Load(const std::string& _filepath) {
+std::optional<Texture> AssetLoader<Texture>::Load(const std::string& _filepath, Meta<Texture::MetaData> meta) {
+	std::optional<Texture> res{};
+
 	const std::string extension = FileSystem::FileExtension(_filepath);
 	if(extension == ".dds") {
 		DirectX::ScratchImage scratch = LoadScratchImage3D(_filepath);
-		const auto& meta = scratch.GetMetadata();
-		if(meta.dimension == DirectX::TEX_DIMENSION_TEXTURE3D) {
-			return Load3DTexture(_filepath);
+		const auto& texMeta = scratch.GetMetadata();
+		if(texMeta.dimension == DirectX::TEX_DIMENSION_TEXTURE3D) {
+			res = Load3DTexture(_filepath);
+			if(res.has_value()) {
+				res->guid = meta.base.guid;
+				return res;
+			}
 		}
 	}
-	return Load2DTexture(_filepath);
+
+	res = Load2DTexture(_filepath);
+	if(res.has_value()) {
+		res->guid = meta.base.guid;
+	}
+	return res;
 }
 
-std::optional<Texture> AssetLoader<Texture>::Reload(const std::string& _filepath, Texture* _src) {
+std::optional<Texture> AssetLoader<Texture>::Reload(const std::string& _filepath, Texture* _src, Meta<Texture::MetaData> meta) {
+	std::optional<Texture> res{};
+
 	const std::string extension = FileSystem::FileExtension(_filepath);
 	if(extension == ".dds") {
 		DirectX::ScratchImage scratch = LoadScratchImage3D(_filepath);
-		const auto& meta = scratch.GetMetadata();
-		if(meta.dimension == DirectX::TEX_DIMENSION_TEXTURE3D) {
-			return Reload3DTexture(_filepath, _src);
+		const auto& texMeta = scratch.GetMetadata();
+		if(texMeta.dimension == DirectX::TEX_DIMENSION_TEXTURE3D) {
+			res = Reload3DTexture(_filepath, _src);
+			if(res.has_value()) {
+				res->guid = meta.base.guid;
+				return res;
+			}
 		}
 	}
-	return Reload2DTexture(_filepath, _src);
+
+	res = Reload2DTexture(_filepath, _src);
+	if(res.has_value()) {
+		res->guid = meta.base.guid;
+	}
+	return res;
+}
+
+Meta<Texture::MetaData> AssetLoader<Texture>::GetMetaData(const std::string& _filepath) {
+	Meta<Texture::MetaData> res{};
+
+	res.base = LoadMetaBaseFromFile(_filepath);
+
+	nlohmann::json j;
+	std::ifstream ifs(_filepath);
+	if(!ifs.is_open()) {
+		return {};
+	}
+
+	ifs >> j;
+	Texture::MetaData data;
+	data.format = j.value("format", TextureFormat::RGBA16_FLOAT);
+	data.colorSpace = j.value("colorSpace", ColorSpace::Linear);
+
+	res.data = data;
+
+	return res;
 }
 
 
@@ -377,10 +433,10 @@ DirectX::ScratchImage AssetLoader<Texture>::LoadScratchImage3D(const std::string
 	}
 
 	DirectX::ScratchImage mipImages;
-	if(DirectX::IsCompressed(meta.format)) {
+	if(DirectX::IsCompressed(image.GetMetadata().format)) {
 		mipImages = std::move(image);
 	} else {
-		hr = DirectX::GenerateMipMaps(image.GetImages(), image.GetImageCount(), meta, DirectX::TEX_FILTER_DEFAULT, 0, mipImages);
+		hr = DirectX::GenerateMipMaps(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::TEX_FILTER_DEFAULT, 0, mipImages);
 		if(FAILED(hr)) {
 			std::lock_guard<std::mutex> lock(s_textureGpuMutex);
 			Console::LogWarning("[GenerateMipMaps Failed] Using original image: \"" + _filepath + "\"");

@@ -32,7 +32,7 @@ void PostProcessGrayscalePerObject::Initialize(ShaderCompiler* _shaderCompiler, 
 
 }
 
-void PostProcessGrayscalePerObject::Execute(const std::string& _textureName, DxCommand* _dxCommand, AssetCollection* _assetCollection, [[maybe_unused]] EntityComponentSystem* _entityComponentSystem) {
+void PostProcessGrayscalePerObject::Execute(const std::string& _textureName, DxCommand* _dxCommand, Asset::AssetCollection* _assetCollection, [[maybe_unused]] EntityComponentSystem* _entityComponentSystem) {
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 
 	auto command = _dxCommand->GetCommandList();

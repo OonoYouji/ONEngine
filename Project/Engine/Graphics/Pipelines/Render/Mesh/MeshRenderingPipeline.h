@@ -17,6 +17,19 @@
 #include "Engine/Core/Utility/Math/Vector4.h"
 
 
+namespace ONEngine {
+class ShaderCompiler;
+class DxManager;
+class ECSGroup;
+class CameraComponent;
+class MeshRenderer;
+}
+
+namespace ONEngine::Asset {
+class AssetCollection;
+}
+
+
 /// /////////////////////////////////////////////////
 /// mesh描画クラス
 /// /////////////////////////////////////////////////
@@ -31,8 +44,8 @@ public:
 
 	/// @brief 描画に必要なデータ
 	struct RenderingData final {
-		size_t              renderMeshId; /// TODO: stringに変更
-		class MeshRenderer* meshRenderer;
+		size_t renderMeshId; /// TODO: stringに変更
+		MeshRenderer* meshRenderer;
 	};
 
 public:
@@ -41,25 +54,25 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	MeshRenderingPipeline(class AssetCollection* _assetCollection);
+	MeshRenderingPipeline(Asset::AssetCollection* _assetCollection);
 	~MeshRenderingPipeline();
 
 	/// @brief 初期化関数
 	/// @param _shaderCompiler 
 	/// @param _dxDevice 
-	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxm) override;
+	void Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) override;
 
 	/// @brief 描画処理
 	/// @param _dxCommand DxCommandへのポインタ
 	/// @param _entityCollection EntityCollectionへのポインタ
-	void Draw(class ECSGroup* _ecs, class CameraComponent* _camera, DxCommand* _dxCommand) override;
+	void Draw(ECSGroup* _ecs, CameraComponent* _camera, DxCommand* _dxCommand) override;
 
 private:
 	/// ===================================================
 	/// private : methods
 	/// ===================================================
 
-	void RenderingMesh(ID3D12GraphicsCommandList* _cmdList, std::unordered_map<std::string, std::list<class MeshRenderer*>>* _pMeshRendererPerMesh, const std::vector<Texture>& _pTexture);
+	void RenderingMesh(ID3D12GraphicsCommandList* _cmdList, std::unordered_map<std::string, std::list<MeshRenderer*>>* _pMeshRendererPerMesh, const std::vector<Asset::Texture>& _pTexture);
 
 private:
 
@@ -68,8 +81,7 @@ private:
 	/// ===================================================
 
 	/// ----- other class ----- ///
-	class AssetCollection* pAssetCollection_;
-
+	Asset::AssetCollection* pAssetCollection_;
 
 	const size_t kMaxRenderingMeshCount_ = 1024; ///< 最大描画メッシュ数
 

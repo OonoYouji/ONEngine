@@ -1,9 +1,10 @@
-#include "AudioClip.h"
-
-using namespace ONEngine;
+﻿#include "AudioClip.h"
 
 /// engine
 #include "Engine/Core/Utility/Utility.h"
+
+
+namespace ONEngine::Asset {
 
 AudioClip::~AudioClip() {
 	/// 音データの解放
@@ -22,9 +23,10 @@ const AudioStructs::SoundData& AudioClip::GetSoundData() {
 	return soundData_;
 }
 
-void ONEngine::SoundDataUnload(AudioStructs::SoundData* _soundData) {
+void SoundDataUnload(AudioStructs::SoundData* _soundData) {
 	/// 音データの解放をする
 	_soundData->buffer.clear();
 	_soundData->wfex = {};
 }
 
+} /// namespace ONEngine::Asset

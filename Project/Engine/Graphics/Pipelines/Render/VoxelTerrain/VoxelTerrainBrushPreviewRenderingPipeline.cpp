@@ -11,7 +11,7 @@
 
 namespace ONEngine {
 
-VoxelTerrainBrushPreviewRenderingPipeline::VoxelTerrainBrushPreviewRenderingPipeline(AssetCollection* assetCollection)
+VoxelTerrainBrushPreviewRenderingPipeline::VoxelTerrainBrushPreviewRenderingPipeline(Asset::AssetCollection* assetCollection)
 	: pAssetCollection_(assetCollection) {}
 VoxelTerrainBrushPreviewRenderingPipeline::~VoxelTerrainBrushPreviewRenderingPipeline() = default;
 
@@ -40,7 +40,7 @@ void VoxelTerrainBrushPreviewRenderingPipeline::Initialize(ShaderCompiler* _shad
 		/// SRV
 		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
 		pipeline_->AddDescriptorRange(1, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
-		pipeline_->AddDescriptorRange(2, MAX_TEXTURE_COUNT, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
+		pipeline_->AddDescriptorRange(2, Asset::MAX_TEXTURE_COUNT, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
 
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 0);
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 1);
@@ -90,12 +90,12 @@ void VoxelTerrainBrushPreviewRenderingPipeline::Draw(ECSGroup* _ecs, CameraCompo
 	if(vt->GetEditMode() != VoxelTerrain::EditMode::AREA) { return; }
 
 	const Vector2& mousePos = Input::GetImGuiImageMousePosNormalized("Scene");
-	const Vector2& mouseUV  = mousePos / Vector2::HD;
+	const Vector2& mouseUV = mousePos / Vector2::HD;
 	cBufferBrushInfo_.SetMappedData({
 		mouseUV,
 		vt->GetBrushRadius(),
 		vt->GetBrushStrength()
-	});
+									});
 
 	if(mouseUV.x < 0.0f || mouseUV.x > 1.0f || mouseUV.y < 0.0f || mouseUV.y > 1.0f) {
 		return;

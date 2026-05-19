@@ -1,7 +1,8 @@
-﻿#pragma once
+#pragma once
 
 /// std
 #include <memory>
+#include <vector>
 
 /// engine
 #include "../../Interface/IRenderingPipeline.h"
@@ -11,6 +12,20 @@
 #include "Engine/Asset/Assets/Mesh/Skinning.h"
 #include "Engine/Graphics/Buffer/Data/GPUMaterial.h"
 
+
+namespace ONEngine {
+class DxManager;
+class ECSGroup;
+class CameraComponent;
+class DxCommand;
+}
+
+namespace ONEngine::Asset {
+class AssetCollection;
+}
+
+
+
 /// //////////////////////////////////////////////////////
 /// スキンアニメーションの描画パイプライン
 /// //////////////////////////////////////////////////////
@@ -18,13 +33,18 @@ namespace ONEngine {
 
 class SkinMeshRenderingPipeline : public IRenderingPipeline {
 
+	/// @brief インスタンスごとのデータ構造体
+	struct SkinMeshInstanceData {
+		Matrix4x4 matWorld;
+		GPUMaterial material;
+	};
+
 	enum {
-		ViewProjectionCBV = 0, ///< ViewProjectionのCBV
-		TransformCBV,          ///< TransformのCBV
-		MaterialCBV,          ///< MaterialのCBV
-		TextureIdCBV,         ///< TextureIdのCBV
-		WellForGPUSRV,           ///< WellForGPUのSRV
-		TextureSRV,           ///< TextureのSRV
+		ViewProjectionCBV = 0, ///< ViewProjectionのCBV (b0)
+		InstanceIndexCBV,      ///< インスタンスインデックス (b1)
+		InstanceDataSRV,       ///< 全インスタンスデータのSRV (t0)
+		WellForGPUSRV,         ///< モデルごとのボーンパレットのSRV (t1)
+		TextureSRV,            ///< テクスチャ配列のSRV (t2)
 	};
 
 public:
@@ -32,22 +52,24 @@ public:
 	/// public : methods
 	/// ====================================================
 
-	SkinMeshRenderingPipeline(class AssetCollection* _assetCollection);
+	SkinMeshRenderingPipeline(Asset::AssetCollection* _assetCollection);
 	~SkinMeshRenderingPipeline() override = default;
 
-	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxm) override;
-	void Draw(class ECSGroup* _ecs, class CameraComponent* _camera, DxCommand* _dxCommand) override;
+	void Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) override;
+	void Draw(ECSGroup* _ecs, CameraComponent* _camera, DxCommand* _dxCommand) override;
 
 private:
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
 
-	class AssetCollection* pAssetCollection_ = nullptr;
+	Asset::AssetCollection* pAssetCollection_ = nullptr;
 
-	ConstantBuffer<Matrix4x4> transformBuffer_;
-	ConstantBuffer<GPUMaterial> materialBuffer_;
-	ConstantBuffer<uint32_t> textureIdBuffer_;
+	static constexpr size_t kMaxInstances = 1024;
+	
+	/// インスタンスデータを一括管理するバッファ
+	StructuredBuffer<SkinMeshInstanceData> instanceDataBuffer_;
+	std::vector<SkinMeshInstanceData> instanceDataCPU_;
 
 };
 

@@ -8,13 +8,11 @@
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/Core/Threading/ThreadPool.h"
 
-namespace ONEngine {
+namespace ONEngine::Asset {
 
 
 AssetCollection::AssetCollection() = default;
 AssetCollection::~AssetCollection() = default;
-
-
 
 void AssetCollection::Initialize(DxManager* dxm) {
 
@@ -26,6 +24,7 @@ void AssetCollection::Initialize(DxManager* dxm) {
 	assetBundles_[static_cast<size_t>(AssetType::Texture)] = std::make_unique<AssetBundle<Texture>>();
 	assetBundles_[static_cast<size_t>(AssetType::Audio)] = std::make_unique<AssetBundle<AudioClip>>();
 	assetBundles_[static_cast<size_t>(AssetType::Material)] = std::make_unique<AssetBundle<Material>>();
+	assetBundles_[static_cast<size_t>(AssetType::Shader)] = std::make_unique<AssetBundle<Shader>>();
 
 	// ヘルパーを使ってセットアップ（キャスト記述が減りスマートになります）
 	auto* meshBundle = GetBundle<Model>(AssetType::Mesh);
@@ -44,6 +43,10 @@ void AssetCollection::Initialize(DxManager* dxm) {
 	materialBundle->loader = std::make_unique<AssetLoader<Material>>();
 	materialBundle->container = std::make_unique<AssetContainer<Material>>(MAX_MATERIAL_COUNT);
 
+	auto* shaderBundle = GetBundle<Shader>(AssetType::Shader);
+	shaderBundle->loader = std::make_unique<AssetLoader<Shader>>();
+	shaderBundle->container = std::make_unique<AssetContainer<Shader>>(128); // 適当な数
+
 	LoadResourcesAsync(GetResourceFilePaths("./Packages/"));
 	LoadResourcesAsync(GetResourceFilePaths("./Assets/"));
 
@@ -59,11 +62,18 @@ void AssetCollection::LoadResources(const std::vector<std::string>& filePaths) {
 	}
 }
 
-/// [非同期化による追加] スレッドプールを利用した複数ファイルの非同期ロード
+
+///
+/// アセットの非同期読み込み
+///
 void AssetCollection::LoadResourcesAsync(const std::vector<std::string>& filePaths) {
 	for(auto& path : filePaths) {
+
+		/// 有効なアセットタイプかチェック
 		AssetType type = GetAssetTypeFromExtension(FileSystem::FileExtension(path));
-		if(type != AssetType::None) {
+		if(type != AssetType::None && type != AssetType::Count) {
+
+			/// 非同期タスクをスレッドプールに投げる
 			if(auto* bundle = GetBaseBundle(type)) {
 				auto future = ThreadPool::Instance().Enqueue([bundle, path]() {
 					bundle->Load(path);
@@ -72,6 +82,7 @@ void AssetCollection::LoadResourcesAsync(const std::vector<std::string>& filePat
 				pendingTasks_.push_back(std::move(future));
 			}
 		}
+
 	}
 }
 
@@ -178,7 +189,7 @@ std::vector<std::string> AssetCollection::GetResourceFilePaths(const std::string
 	return resourcePaths;
 }
 
-IAssetBundle* ONEngine::AssetCollection::GetBaseBundle(AssetType type) const {
+IAssetBundle* ONEngine::Asset::AssetCollection::GetBaseBundle(Asset::AssetType type) const {
 	if(type == AssetType::None) {
 		return nullptr;
 	}

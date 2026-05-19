@@ -5,9 +5,11 @@
 
 /// engine
 #include "Engine/Core/Utility/Utility.h"
+#include "Engine/Asset/Collection/AssetCollection.h"
 
 /// editor
 #include "Engine/Editor/Math/ImGuiMath.h"
+#include "Engine/Editor/Math/AssetPayload.h"
 
 using namespace ONEngine;
 
@@ -89,7 +91,7 @@ const Vector4& SkinMeshRenderer::GetColor() const {
 
 
 
-void ComponentDebug::SkinMeshRendererDebug(SkinMeshRenderer* _smr) {
+void ComponentDebug::SkinMeshRendererDebug(SkinMeshRenderer* _smr, Asset::AssetCollection* _assetCollection) {
 	if (_smr == nullptr) {
 		return;
 	}
@@ -101,10 +103,16 @@ void ComponentDebug::SkinMeshRendererDebug(SkinMeshRenderer* _smr) {
 	bool isPlaying = _smr->GetIsPlaying();
 	float animationTime = _smr->GetAnimationTime();
 	float duration = _smr->GetDuration();
+	Vector4 color = _smr->GetColor();
 
 
 	if (ImGui::Checkbox("is playing", &isPlaying)) {
 		_smr->SetIsPlaying(isPlaying);
+	}
+
+	/// color edit
+	if (Editor::ImGuiColorEdit("color", &color)) {
+		_smr->SetColor(color);
 	}
 
 	/// edit
@@ -122,22 +130,23 @@ void ComponentDebug::SkinMeshRendererDebug(SkinMeshRenderer* _smr) {
 
 	/// meshの変更
 	ImGui::Text("mesh path");
-	ImGui::InputText("##mesh", meshPath.data(), meshPath.capacity(), ImGuiInputTextFlags_ReadOnly);
+	Editor::ImMathf::InputText("##mesh", &meshPath, ImGuiInputTextFlags_ReadOnly);
 	if (ImGui::BeginDragDropTarget()) {
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("AssetData")) {
 
 			/// ペイロードが存在する場合
 			if (payload->Data) {
-				const char* droppedPath = static_cast<const char*>(payload->Data);
-				std::string path = std::string(droppedPath);
+				Editor::AssetPayload* assetPayload = *static_cast<Editor::AssetPayload**>(payload->Data);
+				const std::string path = assetPayload->filePath;
+				Asset::AssetType type = Asset::GetAssetTypeFromExtension(FileSystem::FileExtension(path));
 
 				/// メッシュのパスが有効な形式か確認
-				if (path.find(".gltf") != std::string::npos) {
+				if (type == Asset::AssetType::Mesh) {
 					_smr->SetMeshPath(path);
 
 					Console::Log(std::format("Mesh path set to: {}", path));
 				} else {
-					Console::Log("Invalid mesh format. Please use .gltf.");
+					Console::LogError("Invalid mesh format. Please use .obj or .gltf.");
 				}
 			}
 		}
@@ -147,24 +156,43 @@ void ComponentDebug::SkinMeshRendererDebug(SkinMeshRenderer* _smr) {
 
 	/// textureの変更
 	ImGui::Text("texture path");
-	ImGui::InputText("##texture", texturePath.data(), texturePath.capacity(), ImGuiInputTextFlags_ReadOnly);
+
+	/// テクスチャのプレビュー表示
+	if (Asset::Texture* tex = _assetCollection->GetTexture(texturePath)) {
+		Vector2 aspectRatio = tex->GetTextureSize();
+		aspectRatio /= (std::max)(aspectRatio.x, aspectRatio.y);
+
+		ImTextureID texId = reinterpret_cast<ImTextureID>(tex->GetSRVGPUHandle().ptr);
+		ImGui::Image(texId, ImVec2(64.0f * aspectRatio.x, 64.0f * aspectRatio.y));
+	} else {
+		/// テクスチャがない場合はドラッグドロップ領域を表示する
+		ImVec2 size = ImVec2(64, 64);
+		ImVec2 pos = ImGui::GetCursorScreenPos();
+		ImDrawList* drawList = ImGui::GetWindowDrawList();
+
+		ImGui::InvisibleButton("DropArea", size);
+
+		ImU32 imColor = IM_COL32(100, 100, 255, 100);
+		drawList->AddRectFilled(pos, ImVec2(pos.x + size.x, pos.y + size.y), imColor, 4.0f);
+		drawList->AddRect(pos, ImVec2(pos.x + size.x, pos.y + size.y), IM_COL32(255, 255, 255, 200), 4.0f, 0, 2.0f);
+	}
+
 	if (ImGui::BeginDragDropTarget()) {
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("AssetData")) {
 
 			/// ペイロードが存在する場合
 			if (payload->Data) {
-				const char* droppedPath = static_cast<const char*>(payload->Data);
-				std::string path = std::string(droppedPath);
+				Editor::AssetPayload* assetPayload = *static_cast<Editor::AssetPayload**>(payload->Data);
+				const std::string path = assetPayload->filePath;
+				Asset::AssetType type = Asset::GetAssetTypeFromExtension(FileSystem::FileExtension(path));
 
 				/// テクスチャのパスが有効な形式か確認
-				if (path.find(".png") != std::string::npos
-					|| path.find(".jpg") != std::string::npos
-					|| path.find(".jpeg") != std::string::npos) {
+				if (type == Asset::AssetType::Texture) {
 					_smr->SetTexturePath(path);
 
 					Console::Log(std::format("Texture path set to: {}", path));
 				} else {
-					Console::Log("Invalid texture format. Please use .png, .jpg, or .jpeg.");
+					Console::LogError("Invalid texture format. Please use .png, .jpg, or .jpeg.");
 				}
 			}
 		}

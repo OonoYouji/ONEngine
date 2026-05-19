@@ -24,7 +24,7 @@ using namespace ONEngine;
 /// 地形のComponentのデバッグ用関数
 /// ///////////////////////////////////////////////////
 
-void ComponentDebug::TerrainDebug(Terrain* _terrain, EntityComponentSystem* _ecs, AssetCollection* _assetCollection) {
+void ComponentDebug::TerrainDebug(Terrain* _terrain, EntityComponentSystem* _ecs, Asset::AssetCollection * _assetCollection) {
 	if (!_terrain) {
 		return;
 	}
@@ -37,7 +37,7 @@ void ComponentDebug::TerrainDebug(Terrain* _terrain, EntityComponentSystem* _ecs
 
 	/// ボタンの数だけテクスチャを用意
 	const size_t kMaxButtonNum = static_cast<size_t>(Terrain::EditMode::Count);
-	std::array<Texture*, kMaxButtonNum> buttonTextures;
+	std::array<Asset::Texture*, kMaxButtonNum> buttonTextures;
 	buttonTextures[static_cast<size_t>(Terrain::EditMode::None)] = _assetCollection->GetTexture("./Packages/Textures/ImGui/TerrainEditTextures/BrushModeIcon.png");
 	buttonTextures[static_cast<size_t>(Terrain::EditMode::Vertex)] = _assetCollection->GetTexture("./Packages/Textures/ImGui/TerrainEditTextures/BrushModeIcon.png");
 	buttonTextures[static_cast<size_t>(Terrain::EditMode::Texture)] = _assetCollection->GetTexture("./Packages/Textures/ImGui/TerrainEditTextures/BrushModeIcon.png");
@@ -151,7 +151,7 @@ void ComponentDebug::TerrainDebug(Terrain* _terrain, EntityComponentSystem* _ecs
 	_terrain->river_.Edit(_ecs);
 }
 
-bool ComponentDebug::TerrainTextureEditModeDebug(std::array<std::string, 4>* _texturePaths, int32_t* _usedTextureIndex, AssetCollection* _assetCollection) {
+bool ComponentDebug::TerrainTextureEditModeDebug(std::array<std::string, 4>* _texturePaths, int32_t* _usedTextureIndex, Asset::AssetCollection* _assetCollection) {
 	/// ----- テクスチャのパスを変更する処理 ----- ///
 
 	const std::vector<std::string> shortcutKeys = {
@@ -166,7 +166,7 @@ bool ComponentDebug::TerrainTextureEditModeDebug(std::array<std::string, 4>* _te
 		ImGui::PushID(static_cast<int>(i));
 
 
-		Texture* texture = _assetCollection->GetTexture(text);
+		Asset::Texture* texture = _assetCollection->GetTexture(text);
 		if (texture) {
 
 			/// このテクスチャを使用しているのかどうか
@@ -190,7 +190,7 @@ bool ComponentDebug::TerrainTextureEditModeDebug(std::array<std::string, 4>* _te
 
 						/// パスの拡張子をチェック
 						const std::string extension = FileSystem::FileExtension(path);
-						if (CheckAssetType(extension, AssetType::Texture)) {
+						if (CheckAssetType(extension, Asset::AssetType::Texture)) {
 
 							text = path;
 						} else {
@@ -246,7 +246,7 @@ void ONEngine::from_json(const nlohmann::json& _j, Terrain& _t) {
 	_t.splattingTexPaths_[1] = _j.value("splattingTexPath1", std::string("./Packages/Textures/uvChecker.png"));
 	_t.splattingTexPaths_[2] = _j.value("splattingTexPath2", std::string("./Packages/Textures/uvChecker.png"));
 	_t.splattingTexPaths_[3] = _j.value("splattingTexPath3", std::string("./Packages/Textures/uvChecker.png"));
-	_t.material_ = _j.value("material", Material());
+	_t.material_ = _j.value("material", Asset::Material());
 	_t.material_.uvTransform.scale = Vector2(100, 100);
 	_t.material_.postEffectFlags = PostEffectFlags_Lighting | PostEffectFlags_Shadow;
 }

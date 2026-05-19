@@ -8,7 +8,7 @@
 
 using namespace ONEngine;
 
-VoxelTerrainVertexShaderRenderingPipeline::VoxelTerrainVertexShaderRenderingPipeline(AssetCollection* _ac)
+VoxelTerrainVertexShaderRenderingPipeline::VoxelTerrainVertexShaderRenderingPipeline(Asset::AssetCollection* _ac)
 	: pAssetCollection_(_ac) {
 }
 

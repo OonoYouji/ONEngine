@@ -120,11 +120,22 @@ void SkinMeshSkeletonRenderingPipeline::Draw(class ECSGroup* _ecs, CameraCompone
 			vertices_.push_back(v0);
 			vertices_.push_back(v1);
 
+			if(vertices_.size() >= maxVertexNum_) {
+				break;
+			}
+
+		}
+
+
+		if(vertices_.size() >= maxVertexNum_) {
+			break;
 		}
 
 	}
 
-
+	if(vertices_.size() > maxVertexNum_) {
+		vertices_.resize(maxVertexNum_);
+	}
 
 	std::memcpy(mappingData_, vertices_.data(), sizeof(VertexData) * vertices_.size());
 

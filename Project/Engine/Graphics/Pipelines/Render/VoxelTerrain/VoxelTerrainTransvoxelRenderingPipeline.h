@@ -5,9 +5,18 @@
 
 
 namespace ONEngine {
-
-class AssetCollection;
 class DxManager;
+class ECSGroup;
+class CameraComponent;
+}
+
+
+namespace ONEngine::Asset {
+class AssetCollection;
+}
+
+
+namespace ONEngine {
 
 /// ///////////////////////////////////////////////////
 /// 地形のチャンク間を滑らかに接続するためのレンダリングパイプライン
@@ -29,18 +38,18 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	VoxelTerrainTransvoxelRenderingPipeline(AssetCollection* _ac);
+	VoxelTerrainTransvoxelRenderingPipeline(Asset::AssetCollection* _ac);
 	~VoxelTerrainTransvoxelRenderingPipeline() override;
 
-	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxm) override;
-	void Draw(class ECSGroup* _ecs, class CameraComponent* _camera, DxCommand* _dxCommand) override;
+	void Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) override;
+	void Draw(ECSGroup* _ecs, CameraComponent* _camera, DxCommand* _dxCommand) override;
 
 private:
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
 
-	AssetCollection* pAssetCollection_;
+	Asset::AssetCollection* pAssetCollection_;
 	DxManager* pDxManager_;
 
 	std::unique_ptr<GraphicsPipeline> debugPipeline_;

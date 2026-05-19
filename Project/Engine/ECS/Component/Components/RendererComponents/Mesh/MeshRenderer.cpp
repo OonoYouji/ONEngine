@@ -24,7 +24,7 @@ MeshRenderer::MeshRenderer() {
 
 MeshRenderer::~MeshRenderer() = default;
 
-void MeshRenderer::SetupRenderData(AssetCollection* _assetCollection) {
+void MeshRenderer::SetupRenderData(Asset::AssetCollection* _assetCollection) {
 	gpuMaterial_.postEffectFlags = material_.postEffectFlags;
 	gpuMaterial_.baseColor = material_.baseColor;
 	gpuMaterial_.entityId = GetOwner() ? GetOwner()->GetId() : 0;
@@ -138,7 +138,7 @@ void ONEngine::InternalSetPostEffectFlags(uint64_t _nativeHandle, uint32_t _flag
 	}
 }
 
-void ComponentDebug::MeshRendererDebug(MeshRenderer* _mr, AssetCollection* _assetCollection) {
+void ComponentDebug::MeshRendererDebug(MeshRenderer* _mr, Asset::AssetCollection* _assetCollection) {
 	if (!_mr) {
 		return;
 	}
@@ -164,10 +164,10 @@ void ComponentDebug::MeshRendererDebug(MeshRenderer* _mr, AssetCollection* _asse
 			if (payload->Data) {
 				Editor::AssetPayload* assetPayload = *static_cast<Editor::AssetPayload**>(payload->Data);
 				std::string path = assetPayload->filePath;
-				AssetType type = GetAssetTypeFromExtension(FileSystem::FileExtension(path));
+				Asset::AssetType type = Asset::GetAssetTypeFromExtension(FileSystem::FileExtension(path));
 
 				/// メッシュのパスが有効な形式か確認
-				if (type == AssetType::Mesh) {
+				if (type == Asset::AssetType::Mesh) {
 					_mr->SetMeshPath(path);
 
 					Console::Log(std::format("Mesh path set to: {}", path));
@@ -189,7 +189,7 @@ void ComponentDebug::MeshRendererDebug(MeshRenderer* _mr, AssetCollection* _asse
 
 	bool hasTextureGuid = _mr->material_.HasBaseTexture();
 	if (hasTextureGuid) {
-		if (Texture* tex = _assetCollection->GetTexture(_assetCollection->GetTexturePath(_mr->material_.GetBaseTextureGuid()))) {
+		if (Asset::Texture* tex = _assetCollection->GetTexture(_assetCollection->GetTexturePath(_mr->material_.GetBaseTextureGuid()))) {
 			Vector2 aspectRatio = tex->GetTextureSize();
 			aspectRatio /= (std::max)(aspectRatio.x, aspectRatio.y);
 
@@ -226,8 +226,8 @@ void ComponentDebug::MeshRendererDebug(MeshRenderer* _mr, AssetCollection* _asse
 				const std::string path = assetPayload->filePath;
 
 				/// テクスチャのパスが有効な形式か確認
-				const AssetType type = GetAssetTypeFromExtension(FileSystem::FileExtension(path));
-				if (type == AssetType::Texture) {
+				const Asset::AssetType type = Asset::GetAssetTypeFromExtension(FileSystem::FileExtension(path));
+				if (type == Asset::AssetType::Texture) {
 					_mr->material_.SetBaseTextureGuid(assetPayload->guid);
 
 					Console::Log(std::format("Texture path set to: {}", path));
@@ -259,7 +259,7 @@ void ONEngine::from_json(const nlohmann::json& _j, MeshRenderer& _m) {
 
 	/// デバッグのためにvalueではなくcontainsでチェック
 	if (_j.contains("material")) {
-		_m.material_ = _j.at("material").get<Material>();
+		_m.material_ = _j.at("material").get<Asset::Material>();
 	}
 
 }

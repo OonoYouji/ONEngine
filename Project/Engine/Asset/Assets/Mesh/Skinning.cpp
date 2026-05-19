@@ -57,23 +57,28 @@ Quaternion ANIME_MATH::CalculateValue(const std::vector<KeyFrameQuaternion>& _ke
 int32_t ANIME_MATH::CreateJoint(const Node& _node, const std::optional<int32_t>& _parent, std::vector<Joint>& _joints) {
 	/// ----- ノードからジョイントを作成 ----- ///
 
-	Joint joint;
+	/// 自身のインデックスを決定し、追加する
+	int32_t selfIndex = static_cast<int32_t>(_joints.size());
+	_joints.emplace_back();
 
+	/// 参照を取得 (再確保に注意)
+	Joint& joint = _joints[selfIndex];
 	joint.name = _node.name;
 	joint.transform.matWorld = _node.transform.matWorld;
+
 	joint.matSkeletonSpace = Matrix4x4::kIdentity;
-	joint.index = static_cast<int32_t>(_joints.size());
+	joint.index = selfIndex;
 	joint.parent = _parent;
 
 	/// 子ノードのジョイントを再帰的に作成
 	for (const Node& child : _node.children) {
-		int32_t childIndex = CreateJoint(child, joint.index, _joints);
-		joint.children.push_back(childIndex);
+		int32_t childIndex = CreateJoint(child, selfIndex, _joints);
+
+		/// 再確保されている可能性があるため、再度インデックスでアクセスして子を追加
+		_joints[selfIndex].children.push_back(childIndex);
 	}
 
-	_joints.push_back(joint);
-
-	return joint.index;
+	return selfIndex;
 }
 
 Skeleton ANIME_MATH::CreateSkeleton(const Node& _rootNode) {
@@ -89,7 +94,7 @@ Skeleton ANIME_MATH::CreateSkeleton(const Node& _rootNode) {
 	return result;
 }
 
-SkinCluster ANIME_MATH::CreateSkinCluster(const Skeleton& _skeleton, Model* _model, DxManager* _dxm) {
+SkinCluster ANIME_MATH::CreateSkinCluster(const Skeleton& _skeleton, Asset::Model* _model, DxManager* _dxm) {
 	/// ----- スキンクラスターを作成 ----- ///
 
 	SkinCluster result{};
@@ -122,7 +127,7 @@ SkinCluster ANIME_MATH::CreateSkinCluster(const Skeleton& _skeleton, Model* _mod
 
 
 	/// resource create
-	Model::ModelMesh* frontMesh = _model->GetMeshes().front().get();
+	Asset::Model::ModelMesh* frontMesh = _model->GetMeshes().front().get();
 	result.influenceResource.CreateResource(dxDevice, sizeof(VertexInfluence) * frontMesh->GetVertices().size());
 
 	/// mapping

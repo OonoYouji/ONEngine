@@ -1,5 +1,8 @@
 ﻿#include "ModelLoader.h"
 
+/// std
+#include <fstream>
+
 /// externals
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
@@ -8,36 +11,44 @@
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Core/Utility/Utility.h"
+#include "Engine/Asset/Meta/MetaFile.h"
 
-using namespace ONEngine;
 
+namespace ONEngine::Asset {
 
 AssetLoader<Model>::AssetLoader(DxManager* _dxm)
 	: pDxManager_(_dxm) {
 	assimpLoadFlags_ = aiProcess_FlipWindingOrder | aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices;
 }
 
-std::optional<Model> AssetLoader<Model>::Load(const std::string& _filepath) {
+std::optional<Model> AssetLoader<Model>::Load(const std::string& _filepath, Meta<Model::MetaData> meta) {
 	/// ----- モデルの読み込み ----- ///
+
+	//MetaFile meta;
+	//if(!meta.LoadFromFile(_filepath + ".meta")) {
+	//	meta = GenerateMetaFile(_filepath);
+	//}
+
 	/// ファイルの拡張子を取得
 	const std::string fileExtension = FileSystem::FileExtension(_filepath);
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(_filepath, assimpLoadFlags_);
 
 	/// 読み込めるモデルであるのかチェックする
-	if (!ValidateModel(scene)) {
+	if(!ValidateModel(scene)) {
 		return std::nullopt;
 	}
 
-	if (!scene) {
+	if(!scene) {
 		return std::nullopt;
 	}
 
 	Model model;
+	model.guid = meta.base.guid;
 	model.SetPath(_filepath);
 
 	/// mesh 解析
-	for (uint32_t meshIndex = 0u; meshIndex < scene->mNumMeshes; ++meshIndex) {
+	for(uint32_t meshIndex = 0u; meshIndex < scene->mNumMeshes; ++meshIndex) {
 		aiMesh* mesh = scene->mMeshes[meshIndex];
 
 		/// sceneのデータを使ってMeshを作成する
@@ -48,7 +59,7 @@ std::optional<Model> AssetLoader<Model>::Load(const std::string& _filepath) {
 		indices.reserve(mesh->mNumFaces * 3);
 
 		/// vertex 解析
-		for (uint32_t i = 0; i < mesh->mNumVertices; ++i) {
+		for(uint32_t i = 0; i < mesh->mNumVertices; ++i) {
 			Model::Vertex&& vertex = {
 				Vector4(-mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z, 1.0f),
 				Vector2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y),
@@ -60,16 +71,16 @@ std::optional<Model> AssetLoader<Model>::Load(const std::string& _filepath) {
 
 
 		/// index 解析
-		for (uint32_t i = 0; i < mesh->mNumFaces; ++i) {
+		for(uint32_t i = 0; i < mesh->mNumFaces; ++i) {
 			aiFace face = mesh->mFaces[i];
-			for (uint32_t j = 0; j < face.mNumIndices; ++j) {
+			for(uint32_t j = 0; j < face.mNumIndices; ++j) {
 				indices.push_back(face.mIndices[j]);
 			}
 		}
 
 
 		/// joint 解析
-		for (uint32_t boneIndex = 0; boneIndex < mesh->mNumBones; ++boneIndex) {
+		for(uint32_t boneIndex = 0; boneIndex < mesh->mNumBones; ++boneIndex) {
 
 			/// 格納領域の作成
 			aiBone* bone = mesh->mBones[boneIndex];
@@ -92,7 +103,7 @@ std::optional<Model> AssetLoader<Model>::Load(const std::string& _filepath) {
 
 
 			/// weight情報を取り出す
-			for (uint32_t weightIndex = 0; weightIndex < bone->mNumWeights; ++weightIndex) {
+			for(uint32_t weightIndex = 0; weightIndex < bone->mNumWeights; ++weightIndex) {
 				jointWeightData.vertexWeights.push_back(
 					{ bone->mWeights[weightIndex].mWeight, bone->mWeights[weightIndex].mVertexId }
 				);
@@ -100,7 +111,7 @@ std::optional<Model> AssetLoader<Model>::Load(const std::string& _filepath) {
 
 		}
 
-		if (fileExtension == ".gltf") {
+		if(fileExtension == ".gltf") {
 			/// nodeの解析
 			model.SetRootNode(ReadNode(scene->mRootNode));
 			LoadAnimation(&model, _filepath);
@@ -122,11 +133,32 @@ std::optional<Model> AssetLoader<Model>::Load(const std::string& _filepath) {
 	return model;
 }
 
-std::optional<Model> AssetLoader<Model>::Reload(const std::string& _filepath, Model* /*_src*/) {
-
+std::optional<Model> AssetLoader<Model>::Reload(const std::string& _filepath, Model* /*_src*/, Meta<Model::MetaData> meta) {
 	/// モデルの再読み込みは特殊な操作をする必要がないのでもう一度読み込んだ内容を渡す
-	return Load(_filepath);
+	return Load(_filepath, meta);
 }
+
+
+Meta<Model::MetaData> AssetLoader<Model>::GetMetaData(const std::string& _filepath) {
+	Meta<Model::MetaData> res{};
+
+	res.base = LoadMetaBaseFromFile(_filepath);
+
+	nlohmann::json j;
+	std::ifstream ifs(_filepath);
+	if(!ifs.is_open()) {
+		return {};
+	}
+
+	ifs >> j;
+	Model::MetaData data;
+	data.scale = j.value("scale", 1.0f);
+
+	res.data = data;
+
+	return res;
+}
+
 
 
 Node AssetLoader<Model>::ReadNode(aiNode* _node) {
@@ -150,7 +182,7 @@ Node AssetLoader<Model>::ReadNode(aiNode* _node) {
 	result.children.resize(_node->mNumChildren);
 
 	/// childrenの解析
-	for (size_t childIndex = 0; childIndex < _node->mNumChildren; ++childIndex) {
+	for(size_t childIndex = 0; childIndex < _node->mNumChildren; ++childIndex) {
 		result.children[childIndex] = ReadNode(_node->mChildren[childIndex]);
 	}
 
@@ -164,7 +196,7 @@ void AssetLoader<Model>::LoadAnimation(Model* _model, const std::string& _filepa
 	const aiScene* scene = importer.ReadFile(_filepath.c_str(), 0);
 
 	///!< アニメーションが存在しない場合は何もしない
-	if (scene->mAnimations == 0) {
+	if(scene->mAnimations == 0) {
 		Console::Log("[warning] type:Animation, path:\"" + _filepath + "\"");
 		return; ///< アニメーションが存在しない場合は何もしない
 	}
@@ -179,7 +211,7 @@ void AssetLoader<Model>::LoadAnimation(Model* _model, const std::string& _filepa
 	_model->SetAnimationDuration(duration);
 
 	/// node animationの読み込み
-	for (uint32_t channelIndex = 0u; channelIndex < animationAssimp->mNumChannels; ++channelIndex) {
+	for(uint32_t channelIndex = 0u; channelIndex < animationAssimp->mNumChannels; ++channelIndex) {
 
 		/// node animationの解析用データを
 		aiNodeAnim* nodeAnimationAssimp = animationAssimp->mChannels[channelIndex];
@@ -188,7 +220,7 @@ void AssetLoader<Model>::LoadAnimation(Model* _model, const std::string& _filepa
 		/// ---------------------------------------------------
 		/// translateの解析
 		/// ---------------------------------------------------
-		for (uint32_t keyIndex = 0u; keyIndex < nodeAnimationAssimp->mNumPositionKeys; ++keyIndex) {
+		for(uint32_t keyIndex = 0u; keyIndex < nodeAnimationAssimp->mNumPositionKeys; ++keyIndex) {
 
 			/// keyの値を得る
 			aiVectorKey& keyAssimp = nodeAnimationAssimp->mPositionKeys[keyIndex];
@@ -204,7 +236,7 @@ void AssetLoader<Model>::LoadAnimation(Model* _model, const std::string& _filepa
 		/// ---------------------------------------------------
 		/// rotateの解析
 		/// ---------------------------------------------------
-		for (uint32_t keyIndex = 0u; keyIndex < nodeAnimationAssimp->mNumRotationKeys; ++keyIndex) {
+		for(uint32_t keyIndex = 0u; keyIndex < nodeAnimationAssimp->mNumRotationKeys; ++keyIndex) {
 
 			/// keyの値を得る
 			aiQuatKey& keyAssimp = nodeAnimationAssimp->mRotationKeys[keyIndex];
@@ -220,7 +252,7 @@ void AssetLoader<Model>::LoadAnimation(Model* _model, const std::string& _filepa
 		/// ---------------------------------------------------
 		/// scaleの解析
 		/// ---------------------------------------------------
-		for (uint32_t keyIndex = 0u; keyIndex < nodeAnimationAssimp->mNumScalingKeys; ++keyIndex) {
+		for(uint32_t keyIndex = 0u; keyIndex < nodeAnimationAssimp->mNumScalingKeys; ++keyIndex) {
 
 			/// keyの値を得る
 			aiVectorKey& keyAssimp = nodeAnimationAssimp->mScalingKeys[keyIndex];
@@ -236,13 +268,13 @@ void AssetLoader<Model>::LoadAnimation(Model* _model, const std::string& _filepa
 }
 
 bool AssetLoader<Model>::ValidateModel(const aiScene* _aiScene) {
-	if (!_aiScene || !_aiScene->mNumMeshes) {
+	if(!_aiScene || !_aiScene->mNumMeshes) {
 		return false;
 	}
 
-	for (unsigned int i = 0; i < _aiScene->mNumMeshes; i++) {
+	for(unsigned int i = 0; i < _aiScene->mNumMeshes; i++) {
 		const aiMesh* mesh = _aiScene->mMeshes[i];
-		if (!mesh) {
+		if(!mesh) {
 			return false;
 		}
 
@@ -254,19 +286,22 @@ bool AssetLoader<Model>::ValidateModel(const aiScene* _aiScene) {
 
 		/// 三角形チェック
 		bool isTriangulated = true;
-		for (unsigned int f = 0; f < mesh->mNumFaces; f++) {
+		for(unsigned int f = 0; f < mesh->mNumFaces; f++) {
 			constexpr uint32_t triangleIndices = 3;
-			if (mesh->mFaces[f].mNumIndices != triangleIndices) {
+			if(mesh->mFaces[f].mNumIndices != triangleIndices) {
 				isTriangulated = false;
 				break;
 			}
 		}
 
 		/// 1つでも条件を満たさないメッシュがあれば対象外 
-		if (!hasUV || !hasNormals || !isTriangulated) {
+		if(!hasUV || !hasNormals || !isTriangulated) {
 			return false;
 		}
 	}
 
 	return true;
 }
+
+
+} /// namespace ONEngine::Asset

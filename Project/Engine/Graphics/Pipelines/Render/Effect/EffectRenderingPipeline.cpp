@@ -1,4 +1,4 @@
-#include "EffectRenderingPipeline.h"
+﻿#include "EffectRenderingPipeline.h"
 
 using namespace ONEngine;
 
@@ -13,7 +13,7 @@ using namespace ONEngine;
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 
 
-EffectRenderingPipeline::EffectRenderingPipeline(AssetCollection* _assetCollection)
+EffectRenderingPipeline::EffectRenderingPipeline(Asset::AssetCollection* _assetCollection)
 	: pAssetCollection_(_assetCollection) {
 }
 EffectRenderingPipeline::~EffectRenderingPipeline() {}
@@ -56,7 +56,7 @@ void EffectRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 
 			pipeline->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);  ///< material
 			pipeline->AddDescriptorRange(1, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);  ///< textureId
-			pipeline->AddDescriptorRange(2, MAX_TEXTURE_COUNT, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); ///< texture
+			pipeline->AddDescriptorRange(2, Asset::MAX_TEXTURE_COUNT, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); ///< texture
 			pipeline->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);  ///< transform
 			pipeline->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 0);       ///< material  : 1
 			pipeline->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 1);       ///< textureId : 2
@@ -87,7 +87,7 @@ void EffectRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 }
 
 
-void EffectRenderingPipeline::Draw(class ECSGroup* _ecs, CameraComponent* _camera, DxCommand* _dxCommand) {
+void EffectRenderingPipeline::Draw(ECSGroup* _ecs, CameraComponent* _camera, DxCommand* _dxCommand) {
 
 	ComponentArray<Effect>* effectArray = _ecs->GetComponentArray<Effect>();
 	if (!effectArray || effectArray->GetUsedComponents().empty()) {
@@ -133,7 +133,7 @@ void EffectRenderingPipeline::Draw(class ECSGroup* _ecs, CameraComponent* _camer
 		for (auto& [meshPath, effects] : meshPerComp) {
 
 			/// modelの取得、なければ次へ
-			const Model*&& model = pAssetCollection_->GetModel(meshPath);
+			const Asset::Model*&& model = pAssetCollection_->GetModel(meshPath);
 			if (!model) {
 				continue;
 			}

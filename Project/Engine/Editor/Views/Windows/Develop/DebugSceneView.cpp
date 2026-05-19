@@ -39,7 +39,7 @@ std::string Format(const char* fmt, Args... args) {
 
 namespace Editor {
 
-DebugSceneView::DebugSceneView(ONEngine::EntityComponentSystem* _ecs, ONEngine::AssetCollection* _assetCollection, ONEngine::SceneManager* _sceneManager, InspectorWindow* _inspector)
+DebugSceneView::DebugSceneView(ONEngine::EntityComponentSystem* _ecs, ONEngine::Asset::AssetCollection* _assetCollection, ONEngine::SceneManager* _sceneManager, InspectorWindow* _inspector)
 	: pEcs_(_ecs), pAssetCollection_(_assetCollection), pSceneManager_(_sceneManager), pInspector_(_inspector) {
 
 	manipulateOperation_ = ImGuizmo::OPERATION::TRANSLATE; // 初期操作モードは移動
@@ -233,7 +233,7 @@ void DebugSceneView::HandleCameraFocus() {
 /// ツールバーの表示(再生ボタン、設定チェックボックスなど)
 ///
 void DebugSceneView::DrawToolbar() {
-	std::array<const ONEngine::Texture*, 2> buttons = {
+	std::array<const ONEngine::Asset::Texture*, 2> buttons = {
 		pAssetCollection_->GetTexture("./Packages/Textures/ImGui/play.png"),
 		pAssetCollection_->GetTexture("./Packages/Textures/ImGui/pause.png")
 	};
@@ -299,7 +299,7 @@ void DebugSceneView::DrawToolbar() {
 ///
 void DebugSceneView::DrawSceneTexture(ImVec2& outImagePos, ImVec2& outImageSize) {
 	const auto& textures = pAssetCollection_->GetTextures();
-	const ONEngine::Texture* texture = &textures[pAssetCollection_->GetTextureIndex("./Assets/Scene/RenderTexture/debugScene")];
+	const ONEngine::Asset::Texture* texture = &textures[pAssetCollection_->GetTextureIndex("./Assets/Scene/RenderTexture/debugScene")];
 
 	ImVec2 availRegion = ImGui::GetContentRegionAvail();
 	float aspectRatio = 16.0f / 9.0f;

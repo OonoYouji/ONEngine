@@ -51,7 +51,7 @@ void TerrainVertexCreator::Initialize(ONEngine::ShaderCompiler* _shaderCompiler,
 
 }
 
-void TerrainVertexCreator::Execute(ONEngine::EntityComponentSystem* _ecs, ONEngine::DxCommand* _dxCommand, ONEngine::AssetCollection* _assetCollection) {
+void TerrainVertexCreator::Execute(ONEngine::EntityComponentSystem* _ecs, ONEngine::DxCommand* _dxCommand, ONEngine::Asset::AssetCollection* _assetCollection) {
 	ONEngine::ComponentArray<ONEngine::Terrain>* terrainArray = _ecs->GetCurrentGroup()->GetComponentArray<ONEngine::Terrain>();
 	if (!terrainArray) {
 		ONEngine::Console::LogError("TerrainVertexEditorCompute::Execute: Terrain component array is null");
@@ -96,10 +96,10 @@ void TerrainVertexCreator::Execute(ONEngine::EntityComponentSystem* _ecs, ONEngi
 		pTerrain->GetRwVertices().UAVBindForComputeCommandList(cmdList, UAV_VERTICES);
 		pTerrain->GetRwIndices().UAVBindForComputeCommandList(cmdList, UAV_INDICES);
 
-		const ONEngine::Texture* vertexTexture = _assetCollection->GetTexture("./Packages/Textures/Terrain/TerrainVertex.png");
+		const ONEngine::Asset::Texture* vertexTexture = _assetCollection->GetTexture("./Packages/Textures/Terrain/TerrainVertex.png");
 		if(!vertexTexture) vertexTexture = _assetCollection->GetTexture("./Packages/Textures/Terrain/TerrainVertex.dds");
 
-		const ONEngine::Texture* blendTexture = _assetCollection->GetTexture("./Packages/Textures/Terrain/TerrainSplatBlend.png");
+		const ONEngine::Asset::Texture* blendTexture = _assetCollection->GetTexture("./Packages/Textures/Terrain/TerrainSplatBlend.png");
 		if(!blendTexture) blendTexture = _assetCollection->GetTexture("./Packages/Textures/Terrain/TerrainSplatBlend.dds");
 
 		if (vertexTexture) { cmdList->SetComputeRootDescriptorTable(SRV_VERTEX_TEXTURE, vertexTexture->GetSRVGPUHandle()); }

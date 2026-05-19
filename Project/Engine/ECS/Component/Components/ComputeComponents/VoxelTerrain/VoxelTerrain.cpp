@@ -19,9 +19,9 @@
 /// editor
 #include "Engine/Editor/EditorUtils.h"
 
-using namespace ONEngine;
+namespace ONEngine {
 
-void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* vt, DxManager* _dxm, AssetCollection* _ac) {
+void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* vt, DxManager* _dxm, Asset::AssetCollection* _ac) {
 	if(!vt) {
 		Console::LogError("VoxelTerrainDebug: _voxelTerrain is nullptr");
 		return;
@@ -150,7 +150,7 @@ void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* vt, DxManager* _dxm, AssetC
 					if(payload->Data) {
 						Editor::AssetPayload* assetPayload = *static_cast<Editor::AssetPayload**>(payload->Data);
 						const std::string path = assetPayload->filePath;
-						if(ONEngine::CheckAssetType(ONEngine::FileSystem::FileExtension(path), ONEngine::AssetType::Texture)) {
+						if(ONEngine::Asset::CheckAssetType(ONEngine::FileSystem::FileExtension(path), ONEngine::Asset::AssetType::Texture)) {
 							const ONEngine::Guid& dropGuid = assetPayload->guid;
 							guid = dropGuid;
 						}
@@ -316,7 +316,7 @@ void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* vt, DxManager* _dxm, AssetC
 	if(ImGui::Button("地形を初期状態に戻す")) {
 		for(size_t i = 0; i < vt->maxChunkCount_; i++) {
 			const std::wstring filename = L"./Packages/Textures/Terrain/Chunk/" + std::to_wstring(i) + L".dds";
-			SaveTextureToDDS(
+			Asset::SaveTextureToDDS(
 				filename,
 				vt->textureSize_.x,
 				vt->textureSize_.y,
@@ -385,8 +385,8 @@ void ONEngine::from_json(const nlohmann::json& _j, VoxelTerrain& vt) {
 	vt.textureSize_ = _j.value("textureSize", Vector3Int{ 32, 32, 32 });
 	vt.isoLevel_ = _j.value("isoLevel", 0.5f);
 
-	vt.material_ = _j.value("material", Material{});
-	vt.cliffMaterial_ = _j.value("cliffMaterial", Material{});
+	vt.material_ = _j.value("material", Asset::Material{});
+	vt.cliffMaterial_ = _j.value("cliffMaterial", Asset::Material{});
 	vt.chunks_ = _j.value("chunks", std::vector<Chunk>{});
 
 	//vt.usedTextureIds_.usedBit = _j.value("usedTextureIds.usedBit", 0);
@@ -472,7 +472,7 @@ VoxelTerrain::~VoxelTerrain() {
 	}
 }
 
-void VoxelTerrain::SettingChunksGuid(AssetCollection* _assetCollection) {
+void VoxelTerrain::SettingChunksGuid(Asset::AssetCollection* _assetCollection) {
 	maxChunkCount_ = static_cast<size_t>(chunkCountXZ_.x * chunkCountXZ_.y);
 	if(maxChunkCount_ > chunks_.size()) {
 		chunks_.resize(maxChunkCount_);
@@ -486,7 +486,7 @@ void VoxelTerrain::SettingChunksGuid(AssetCollection* _assetCollection) {
 		const Guid& texture3DGuid = _assetCollection->GetAssetGuidFromPath(filepath);
 		chunks_[i].texture3DId = texture3DGuid;
 
-		Texture* texture = _assetCollection->GetTextureFromGuid(texture3DGuid);
+		Asset::Texture* texture = _assetCollection->GetTextureFromGuid(texture3DGuid);
 		chunks_[i].pTexture = texture;
 	}
 }
@@ -501,7 +501,7 @@ bool VoxelTerrain::CheckCreatedBuffers() const {
 	return isCreated;
 }
 
-void VoxelTerrain::CreateBuffers(DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap, AssetCollection* _assetCollection) {
+void VoxelTerrain::CreateBuffers(DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap, Asset::AssetCollection* _assetCollection) {
 	UINT chunkCount = static_cast<UINT>(32 * 32);
 
 	cBufferTerrainInfo_.Create(_dxDevice);
@@ -514,17 +514,17 @@ void VoxelTerrain::CreateBuffers(DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap, Ass
 
 	/// ChunkArrayの設定
 	for(size_t i = 0; i < maxChunkCount_; i++) {
-		const Texture* texture = _assetCollection->GetTextureFromGuid(chunks_[i].texture3DId);
+		const Asset::Texture* texture = _assetCollection->GetTextureFromGuid(chunks_[i].texture3DId);
 		if(texture) {
 			sBufferChunks_.SetMappedData(i, GPUData::Chunk{ static_cast<uint32_t>(texture->GetSRVDescriptorIndex()) });
 		} else {
-			const Texture* frontTex = _assetCollection->GetTextureFromGuid(chunks_[0].texture3DId);
+			const Asset::Texture* frontTex = _assetCollection->GetTextureFromGuid(chunks_[0].texture3DId);
 			sBufferChunks_.SetMappedData(i, GPUData::Chunk{ static_cast<uint32_t>(frontTex->GetSRVDescriptorIndex()) });
 		}
 	}
 }
 
-void VoxelTerrain::SetupGraphicBuffers(ID3D12GraphicsCommandList* _cmdList, const std::array<UINT, 6> _rootParamIndices, AssetCollection* _assetCollection) {
+void VoxelTerrain::SetupGraphicBuffers(ID3D12GraphicsCommandList* _cmdList, const std::array<UINT, 6> _rootParamIndices, Asset::AssetCollection* _assetCollection) {
 	maxChunkCount_ = static_cast<UINT>(chunkCountXZ_.x * chunkCountXZ_.y);
 
 	/// VoxelTerrainInfoの設定
@@ -547,11 +547,11 @@ void VoxelTerrain::SetupGraphicBuffers(ID3D12GraphicsCommandList* _cmdList, cons
 
 	/// ChunkArrayの設定
 	for(size_t i = 0; i < maxChunkCount_; i++) {
-		const Texture* texture = _assetCollection->GetTextureFromGuid(chunks_[i].texture3DId);
+		const Asset::Texture* texture = _assetCollection->GetTextureFromGuid(chunks_[i].texture3DId);
 		if(texture) {
 			sBufferChunks_.SetMappedData(i, GPUData::Chunk{ static_cast<uint32_t>(texture->GetSRVDescriptorIndex()) });
 		} else {
-			const Texture* frontTex = _assetCollection->GetTextureFromGuid(chunks_[0].texture3DId);
+			const Asset::Texture* frontTex = _assetCollection->GetTextureFromGuid(chunks_[0].texture3DId);
 			sBufferChunks_.SetMappedData(i, GPUData::Chunk{ static_cast<uint32_t>(frontTex->GetSRVDescriptorIndex()) });
 		}
 	}
@@ -559,7 +559,7 @@ void VoxelTerrain::SetupGraphicBuffers(ID3D12GraphicsCommandList* _cmdList, cons
 	sBufferChunks_.SRVBindForGraphicsCommandList(_cmdList, _rootParamIndices[2]);
 }
 
-void VoxelTerrain::TransitionTextureStates(DxCommand* _dxCommand, AssetCollection* _assetCollection, D3D12_RESOURCE_STATES _afterState) {
+void VoxelTerrain::TransitionTextureStates(DxCommand* _dxCommand, Asset::AssetCollection* _assetCollection, D3D12_RESOURCE_STATES _afterState) {
 	/// チャンク用テクスチャの状態遷移
 	std::vector<DxResource*> resources;
 	resources.reserve(maxChunkCount_);
@@ -586,7 +586,7 @@ const Vector3Int& VoxelTerrain::GetChunkSize() const {
 	return chunkSize_;
 }
 
-void VoxelTerrain::SettingMaterial(AssetCollection* assetCollection) {
+void VoxelTerrain::SettingMaterial(Asset::AssetCollection* assetCollection) {
 	{	/// DefaultMaterialの設定
 		int32_t baseTextureId = 0;
 		if(material_.HasBaseTexture()) {
@@ -834,4 +834,7 @@ float ONEngine::VoxelTerrain::GetBrushStrength() const {
 		return 0.0f;
 	}
 	return cBufferEditInfo_.GetMappingData().strength;
+}
+
+
 }

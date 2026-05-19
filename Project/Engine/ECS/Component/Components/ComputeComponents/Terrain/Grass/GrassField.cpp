@@ -35,7 +35,7 @@ void ONEngine::from_json(const nlohmann::json& _j, GrassField& _p) {
 	_p.maxGrassCount_ = _j.value("maxGrassCount", 128);
 	_p.distributionTexturePath_ = _j.value("distributionTexturePath", "");
 
-	_p.material_ = _j.value("material", Material{});
+	_p.material_ = _j.value("material", Asset::Material{});
 }
 
 
@@ -43,7 +43,7 @@ void ONEngine::from_json(const nlohmann::json& _j, GrassField& _p) {
 /// ImGuiデバッグ関数
 /// ////////////////////////////////////////////////////////
 
-void ComponentDebug::GrassFieldDebug(GrassField* _grassField, AssetCollection* _assetCollection) {
+void ComponentDebug::GrassFieldDebug(GrassField* _grassField, Asset::AssetCollection* _assetCollection) {
 
 	/// 草の最大本数
 	ImGui::Text("Max Blade Count : %d", _grassField->GetMaxGrassCount());
@@ -106,7 +106,7 @@ void GrassField::Initialize(uint32_t _maxBladeCount, DxDevice* _dxDevice, DxComm
 	materialBuffer_.Create(_dxDevice);
 }
 
-void GrassField::SetupRenderingData(AssetCollection* _assetCollection) {
+void GrassField::SetupRenderingData(Asset::AssetCollection* _assetCollection) {
 
 	GPUMaterial gpuMaterial{};
 

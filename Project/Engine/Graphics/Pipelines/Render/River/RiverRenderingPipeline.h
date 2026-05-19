@@ -3,6 +3,10 @@
 /// engine
 #include "../../Interface/IRenderingPipeline.h"
 
+namespace ONEngine::Asset {
+class AssetCollection;
+}
+
 /// /////////////////////////////////////////////////
 /// 川の描画pipeline
 /// /////////////////////////////////////////////////
@@ -21,7 +25,7 @@ public:
 	/// public : methods
 	/// =================================================
 
-	RiverRenderingPipeline(class AssetCollection* _assetCollection);
+	RiverRenderingPipeline(Asset::AssetCollection* _assetCollection);
 	~RiverRenderingPipeline() override;
 
 	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxm) override;
@@ -32,7 +36,7 @@ private:
 	/// private : objects
 	/// =================================================
 
-	AssetCollection* pAssetCollection_ = nullptr;
+	Asset::AssetCollection* pAssetCollection_ = nullptr;
 };
 
 } /// ONEngine

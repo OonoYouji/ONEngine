@@ -7,9 +7,13 @@ namespace ONEngine {
 /// 前方宣言
 class DxManager;
 class EntityComponentSystem;
-class AssetCollection;
 class SceneManager;
 } // namespace ONEngine
+
+namespace ONEngine::Asset {
+class AssetCollection;
+}
+
 
 namespace Editor {
 
@@ -27,7 +31,7 @@ public:
 
 	DevelopTab(ONEngine::DxManager* _dxm,
 		ONEngine::EntityComponentSystem* _ecs,
-		ONEngine::AssetCollection* _assetCollection,
+		ONEngine::Asset::AssetCollection* _assetCollection,
 		EditorManager* _editorManager,
 		ONEngine::SceneManager* _sceneManager);
 	~DevelopTab() {}
