@@ -282,6 +282,13 @@ def process_file(yaml_path):
 
     cs_content += "}\n"
 
+    if not os.path.exists(CPP_OUTPUT_DIR):
+        os.makedirs(CPP_OUTPUT_DIR)
+    if not os.path.exists(HLSL_OUTPUT_DIR):
+        os.makedirs(HLSL_OUTPUT_DIR)
+    if not os.path.exists(CS_OUTPUT_DIR):
+        os.makedirs(CS_OUTPUT_DIR)
+
     cpp_path = os.path.join(CPP_OUTPUT_DIR, base_name + ".h")
     with open(cpp_path, "w") as f: f.write(cpp_content)
     

@@ -16,7 +16,9 @@
 #include "Engine/Script/ScriptHost.h"
 #include "Engine/ECS/ComponentRegistry.h"
 #include "Engine/ECS/Systems/SpriteSystem.h"
+#ifdef ENGINE_EDITOR
 #include "Editor/EditorContext.h"
+#endif
 #include "imgui.h"
 #include "imgui_impl_win32.h"
 #include "imgui_impl_dx12.h"
@@ -404,12 +406,14 @@ void Application::Stop() {
 
     // レジストリをクリアしてシーンをリロード
     registry_.Clear();
+#ifdef ENGINE_EDITOR
     auto& context = Editor::EditorContext::GetInstance();
     if (!context.GetCurrentScenePath().empty()) {
         // 再ロード前に C# 側を再初期化
         if (initDelegate_) initDelegate_((void*)LogFromRuntime, &registry_);
         Scene::SceneLoader::LoadScene(context.GetCurrentScenePath(), registry_);
     }
+#endif
 }
 
 void Application::Shutdown() {

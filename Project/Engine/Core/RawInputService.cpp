@@ -4,9 +4,11 @@
 namespace Engine::Core {
 
 void RawInputService::Update(HWND hwnd) {
+#ifdef ENGINE_EDITOR
     ImGuiIO& io = ImGui::GetIO();
     wantCaptureKeyboard_ = io.WantCaptureKeyboard;
     wantCaptureMouse_ = io.WantCaptureMouse;
+#endif
 
     // キーボード (Raw)
     for (uint32_t i = 0; i < 256; ++i) {

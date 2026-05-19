@@ -164,7 +164,6 @@ project "Engine"
     }
 
     buildoptions { "/bigobj" } 
-    defines { "ENGINE_EDITOR" }
 
     filter "configurations:Debug"
         runtime "Debug"

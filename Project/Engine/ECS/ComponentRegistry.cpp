@@ -4,10 +4,7 @@
 #include "Engine/Asset/TextureManager.h"
 #include "Engine/Asset/FontManager.h"
 #include "Engine/Script/ScriptHost.h"
-#include "Schema/Buffers.h"
 #include "Schema/Components.h"
-#include <cstring>
-#include <algorithm>
 
 namespace Engine::ECS {
 
@@ -19,8 +16,10 @@ void InitializeComponentRegistry() {
     // ID 1: Transform
     reg.Register<Transform>(1, "Transform",
         [](const json& j, Transform& t) { from_json(j, t); },
-        [](const Transform& t) { json j; to_json(j, t); return j; },
-        [](void* data, PropertyFunc Prop) { DrawUI_Transform(*static_cast<Transform*>(data), Prop); }
+        [](const Transform& t) { json j; to_json(j, t); return j; }
+#ifdef ENGINE_EDITOR
+        ,[](void* data, PropertyFunc Prop) { DrawUI_Transform(*static_cast<Transform*>(data), Prop); }
+#endif
     );
 
     // ID 2: MeshRenderer
@@ -35,8 +34,10 @@ void InitializeComponentRegistry() {
             if (auto asset = Asset::AssetManager::GetInstance().GetModelByIndex(m.modelIndex)) j["modelGuid"] = asset->GetGuid();
             if (auto asset = Asset::MaterialManager::GetInstance().GetMaterialByIndex(m.materialIndex)) j["materialGuid"] = asset->GetGuid();
             return j;
-        },
-        [](void* data, PropertyFunc Prop) { DrawUI_MeshRenderer(*static_cast<MeshRenderer*>(data), Prop); }
+        }
+#ifdef ENGINE_EDITOR
+        ,[](void* data, PropertyFunc Prop) { DrawUI_MeshRenderer(*static_cast<MeshRenderer*>(data), Prop); }
+#endif
     );
 
     // ID 3: ScriptComponent
@@ -58,28 +59,36 @@ void InitializeComponentRegistry() {
                 }
             }
             return j;
-        },
-        [](void* data, PropertyFunc Prop) { DrawUI_ScriptComponent(*static_cast<ScriptComponent*>(data), Prop); }
+        }
+#ifdef ENGINE_EDITOR
+        ,[](void* data, PropertyFunc Prop) { DrawUI_ScriptComponent(*static_cast<ScriptComponent*>(data), Prop); }
+#endif
     );
     // ID 4: Camera
     reg.Register<Camera>(4, "Camera",
         [](const json& j, Camera& c) { from_json(j, c); },
-        [](const Camera& c) { json j; to_json(j, c); return j; },
-        [](void* data, PropertyFunc Prop) { DrawUI_Camera(*static_cast<Camera*>(data), Prop); }
+        [](const Camera& c) { json j; to_json(j, c); return j; }
+#ifdef ENGINE_EDITOR
+        ,[](void* data, PropertyFunc Prop) { DrawUI_Camera(*static_cast<Camera*>(data), Prop); }
+#endif
     );
 
     // ID 5: DirectionalLight
     reg.Register<DirectionalLight>(5, "DirectionalLight",
         [](const json& j, DirectionalLight& l) { from_json(j, l); },
-        [](const DirectionalLight& l) { json j; to_json(j, l); return j; },
-        [](void* data, PropertyFunc Prop) { DrawUI_DirectionalLight(*static_cast<DirectionalLight*>(data), Prop); }
+        [](const DirectionalLight& l) { json j; to_json(j, l); return j; }
+#ifdef ENGINE_EDITOR
+        ,[](void* data, PropertyFunc Prop) { DrawUI_DirectionalLight(*static_cast<DirectionalLight*>(data), Prop); }
+#endif
     );
 
     // ID 6: PointLight
     reg.Register<PointLight>(6, "PointLight",
         [](const json& j, PointLight& l) { from_json(j, l); },
-        [](const PointLight& l) { json j; to_json(j, l); return j; },
-        [](void* data, PropertyFunc Prop) { DrawUI_PointLight(*static_cast<PointLight*>(data), Prop); }
+        [](const PointLight& l) { json j; to_json(j, l); return j; }
+#ifdef ENGINE_EDITOR
+        ,[](void* data, PropertyFunc Prop) { DrawUI_PointLight(*static_cast<PointLight*>(data), Prop); }
+#endif
     );
 
     // ID 7: SpriteRenderer
@@ -92,8 +101,10 @@ void InitializeComponentRegistry() {
             json j; to_json(j, s); 
             if (auto asset = Asset::TextureManager::GetInstance().GetTextureByIndex(s.textureIndex)) j["textureGuid"] = asset->GetGuid();
             return j; 
-        },
-        [](void* data, PropertyFunc Prop) { DrawUI_SpriteRenderer(*static_cast<SpriteRenderer*>(data), Prop); }
+        }
+#ifdef ENGINE_EDITOR
+        ,[](void* data, PropertyFunc Prop) { DrawUI_SpriteRenderer(*static_cast<SpriteRenderer*>(data), Prop); }
+#endif
     );
 
     // ID 8: ParticleEmitter
@@ -108,8 +119,10 @@ void InitializeComponentRegistry() {
             if (auto asset = Asset::TextureManager::GetInstance().GetTextureByIndex(p.textureIndex)) j["textureGuid"] = asset->GetGuid();
             if (auto asset = Asset::AssetManager::GetInstance().GetModelByIndex(p.modelIndex)) j["modelGuid"] = asset->GetGuid();
             return j; 
-        },
-        [](void* data, PropertyFunc Prop) { DrawUI_ParticleEmitter(*static_cast<ParticleEmitter*>(data), Prop); }
+        }
+#ifdef ENGINE_EDITOR
+        ,[](void* data, PropertyFunc Prop) { DrawUI_ParticleEmitter(*static_cast<ParticleEmitter*>(data), Prop); }
+#endif
     );
 
     // ID 9: Skybox
@@ -122,8 +135,10 @@ void InitializeComponentRegistry() {
             json j; to_json(j, s); 
             if (auto asset = Asset::TextureManager::GetInstance().GetTextureByIndex(s.textureIndex)) j["textureGuid"] = asset->GetGuid();
             return j; 
-        },
-        [](void* data, PropertyFunc Prop) { DrawUI_Skybox(*static_cast<Skybox*>(data), Prop); }
+        }
+#ifdef ENGINE_EDITOR
+        ,[](void* data, PropertyFunc Prop) { DrawUI_Skybox(*static_cast<Skybox*>(data), Prop); }
+#endif
     );
 
     // ID 10: TextRenderer
@@ -136,8 +151,10 @@ void InitializeComponentRegistry() {
             json j; to_json(j, tr); 
             if (auto asset = Asset::FontManager::GetInstance().GetFontByIndex(tr.fontIndex)) j["fontGuid"] = asset->GetGuid();
             return j; 
-        },
-        [](void* data, PropertyFunc Prop) { DrawUI_TextRenderer(*static_cast<TextRenderer*>(data), Prop); }
+        }
+#ifdef ENGINE_EDITOR
+        ,[](void* data, PropertyFunc Prop) { DrawUI_TextRenderer(*static_cast<TextRenderer*>(data), Prop); }
+#endif
     );
 
     // ID 11: SkinnedMeshRenderer
@@ -152,15 +169,20 @@ void InitializeComponentRegistry() {
             if (auto asset = Asset::AssetManager::GetInstance().GetModelByIndex(smr.modelIndex)) j["modelGuid"] = asset->GetGuid();
             if (auto asset = Asset::MaterialManager::GetInstance().GetMaterialByIndex(smr.materialIndex)) j["materialGuid"] = asset->GetGuid();
             return j; 
-        },
-        [](void* data, PropertyFunc Prop) { DrawUI_SkinnedMeshRenderer(*static_cast<SkinnedMeshRenderer*>(data), Prop); }
+        }
+#ifdef ENGINE_EDITOR
+        ,[](void* data, PropertyFunc Prop) { DrawUI_SkinnedMeshRenderer(*static_cast<SkinnedMeshRenderer*>(data), Prop); }
+#endif
     );
 
     // ID 100: Tag
     reg.Register<Tag>(100, "Tag",
         [](const json& j, Tag& t) { from_json(j, t); },
-        [](const Tag& t) { json j; to_json(j, t); return j; },
-        [](void* data, PropertyFunc Prop) { DrawUI_Tag(*static_cast<Tag*>(data), Prop); }
-    );}
+        [](const Tag& t) { json j; to_json(j, t); return j; }
+#ifdef ENGINE_EDITOR
+        ,[](void* data, PropertyFunc Prop) { DrawUI_Tag(*static_cast<Tag*>(data), Prop); }
+#endif
+    );
+}
 
 } // namespace Engine::ECS
