@@ -173,7 +173,96 @@ bool SceneLoader::LoadScene(const std::string& path, Engine::ECS::Registry& regi
 }
 
 Engine::ECS::Entity SceneLoader::InstantiatePrefab(const std::string& path, Engine::ECS::Registry& registry) {
-    return Engine::ECS::kNullEntity; // TODO
+    std::ifstream file(path);
+    if (!file.is_open()) {
+        Engine::Console::LogError(std::format("SceneLoader: Failed to open prefab: {}", path));
+        return Engine::ECS::kNullEntity;
+    }
+
+    try {
+        json jPrefab = json::parse(file);
+        auto entity = registry.CreateEntity();
+
+        // Tag
+        auto& tag = registry.AddComponent<Engine::ECS::Tag>(entity);
+        std::string name = jPrefab.value("name", "Prefab Instance");
+        strcpy_s(tag.name, sizeof(tag.name), name.c_str());
+        tag.isActive = 1;
+
+        auto& compReg = Engine::ECS::ComponentRegistry::GetInstance();
+        if (jPrefab.contains("components") && jPrefab["components"].is_array()) {
+            for (const auto& jComp : jPrefab["components"]) {
+                if (!jComp.is_object()) continue;
+                std::string type = jComp.value("type", "");
+                const auto* info = compReg.GetInfo(type);
+                if (info) {
+                    info->deserializeFunc(jComp, entity, registry);
+                } else if (type == "Script") {
+                    EnsureScriptDelegate();
+                    if (gAddScriptDelegate && jComp.contains("scripts") && jComp["scripts"].is_array()) {
+                        for (const auto& jScript : jComp["scripts"]) {
+                            if (!jScript.is_object()) continue;
+                            std::string scriptName = jScript.value("name", "");
+                            std::string varsJson = jScript.contains("variables") ? jScript["variables"].dump() : "{}";
+                            gAddScriptDelegate(entity, scriptName.c_str(), varsJson.c_str());
+                        }
+                    }
+                }
+            }
+        }
+
+        Engine::Console::Log(std::format("SceneLoader: Instantiated prefab from {}", path));
+        return entity;
+    } catch (const std::exception& e) {
+        Engine::Console::LogError(std::format("SceneLoader: Error instantiating prefab {}: {}", path, e.what()));
+        return Engine::ECS::kNullEntity;
+    }
+}
+
+bool SceneLoader::SavePrefab(const std::string& path, Engine::ECS::Entity entity, Engine::ECS::Registry& registry) {
+    if (entity == Engine::ECS::kNullEntity) return false;
+
+    try {
+        json jPrefab;
+        auto& compReg = Engine::ECS::ComponentRegistry::GetInstance();
+
+        if (registry.HasComponent<Engine::ECS::Tag>(entity)) {
+            jPrefab["name"] = std::string(registry.GetComponent<Engine::ECS::Tag>(entity).name);
+        } else {
+            jPrefab["name"] = "Prefab";
+        }
+
+        json jComponents = json::array();
+        for (auto& [typeId, info] : compReg.GetAll()) {
+            if (typeId == 100) continue; // Tag
+
+            if (registry.HasComponent(entity, typeId)) {
+                json jComp = compReg.SerializeComponent(registry, entity, typeId);
+                
+                if (typeId == 3 && jComp.contains("scriptData")) {
+                    jComp["type"] = "Script";
+                    jComp["scripts"] = json::array();
+                    jComp["scripts"].push_back(jComp["scriptData"]);
+                    jComp.erase("scriptData");
+                } else {
+                    jComp["type"] = info.name;
+                }
+                
+                jComponents.push_back(jComp);
+            }
+        }
+        jPrefab["components"] = jComponents;
+
+        std::ofstream file(path);
+        if (!file.is_open()) return false;
+        file << jPrefab.dump(4);
+        
+        Engine::Console::Log(std::format("SceneLoader: Successfully saved prefab to {}", path));
+        return true;
+    } catch (const std::exception& e) {
+        Engine::Console::LogError(std::format("SceneLoader: Error saving prefab {}: {}", path, e.what()));
+        return false;
+    }
 }
 
 bool SceneLoader::SaveScene(const std::string& path, Engine::ECS::Registry& registry) {

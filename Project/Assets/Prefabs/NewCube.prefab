@@ -1,0 +1,18 @@
+{
+    "name": "New Cube Prefab",
+    "components": [
+        {
+            "type": "Transform",
+            "position": [0.0, 0.0, 0.0],
+            "rotation": [0.0, 0.0, 0.0, 1.0],
+            "scale": [1.0, 1.0, 1.0],
+            "isEnabled": 1
+        },
+        {
+            "type": "MeshRenderer",
+            "modelGuid": 0,
+            "materialGuid": 0,
+            "isEnabled": 1
+        }
+    ]
+}

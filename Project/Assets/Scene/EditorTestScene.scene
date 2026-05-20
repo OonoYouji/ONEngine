@@ -1,0 +1,72 @@
+{
+    "entities": [
+        {
+            "components": [
+                {
+                    "isEnabled": 1,
+                    "isManipulating": 0,
+                    "parent": 0,
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "rotation": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    },
+                    "sortOrder": 0.0,
+                    "type": "Transform",
+                    "world": {
+                        "m": [
+                            [
+                                1.0,
+                                0.0,
+                                0.0,
+                                0.0
+                            ],
+                            [
+                                0.0,
+                                1.0,
+                                0.0,
+                                0.0
+                            ],
+                            [
+                                0.0,
+                                0.0,
+                                1.0,
+                                0.0
+                            ],
+                            [
+                                0.0,
+                                0.0,
+                                0.0,
+                                1.0
+                            ]
+                        ]
+                    }
+                },
+                {
+                    "isEnabled": 0,
+                    "materialGuid": 16880705708999399230,
+                    "materialIndex": 0,
+                    "modelGuid": 5723163844602756127,
+                    "modelIndex": 0,
+                    "postProcessFlags": 0,
+                    "type": "MeshRenderer"
+                }
+            ],
+            "id": 1,
+            "isActive": true,
+            "name": "New Entity",
+            "parent": null
+        }
+    ]
+}

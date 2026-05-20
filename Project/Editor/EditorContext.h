@@ -126,15 +126,48 @@ public:
     bool IsPaused() const;
     void SetPaused(bool paused);
 
+    // Prefab Mode (Legacy/Internal)
+    bool IsPrefabMode() const;
+    const std::string& GetEditingPrefabPath() const;
+    
+    void EnterPrefabMode(const std::string& prefabPath);
+    void ExitPrefabMode();
+    void SaveEditingPrefab();
+
+    // Workspace Tabs
+    enum class TabType {
+        Scene,
+        Prefab,
+        Material
+    };
+
+    struct EditorTab {
+        TabType type;
+        std::string name;
+        std::string path;
+        std::set<ECS::Entity> selection;
+        nlohmann::json registrySnapshot; // 切り替え時に状態を保存
+        bool isDirty = false;
+    };
+
+    const std::vector<EditorTab>& GetTabs() const { return tabs_; }
+    int GetActiveTabIndex() const { return activeTabIndex_; }
+    void SetActiveTab(int index);
+    void CloseTab(int index);
+    void OpenPrefabTab(const std::string& path);
+    void OpenMaterialTab(const std::string& path);
+    void SaveActiveTab();
+
 private:
     EditorContext() : 
         snapEnabled_(false), snapTranslation_(1.0f), snapRotation_(45.0f), snapScale_(0.5f), 
         currentScenePath_("Assets/Scene/MainScene.scene"), isSceneFocused_(false),
-        showHierarchy_(true), showInspector_(true), showSceneView_(true), showProject_(true), showConsole_(true) 
+        showHierarchy_(true), showInspector_(true), showSceneView_(true), showProject_(true), showConsole_(true),
+        activeTabIndex_(0) 
     {
         camera_ = std::make_unique<EditorCamera>();
         selection_.clear();
-        // エディター用のデフォルトバインド
+        // ... (Binding code remains in constructor)
         bindingTable_.AddBinding({ "MoveForward",  Core::InputSourceType::Keyboard, 'W', 1.0f, false, false, false });
         bindingTable_.AddBinding({ "MoveBackward", Core::InputSourceType::Keyboard, 'S', 1.0f, false, false, false });
         bindingTable_.AddBinding({ "MoveLeft",     Core::InputSourceType::Keyboard, 'A', 1.0f, false, false, false });
@@ -148,7 +181,14 @@ private:
         bindingTable_.AddBinding({ "Redo",         Core::InputSourceType::Keyboard, 'Y', 1.0f, true,  false, false }); // Ctrl+Y
 
         LoadSettings();
+
+        // デフォルトのシーンタブを追加
+        tabs_.push_back({ TabType::Scene, "Main Scene", currentScenePath_ });
     }
+
+    void SaveTabState(int index);
+    void LoadTabState(int index);
+
     std::set<ECS::Entity> selection_;
     std::unique_ptr<EditorCamera> camera_;
     
@@ -170,6 +210,10 @@ private:
     bool showSceneView_;
     bool showProject_;
     bool showConsole_;
+
+    // Tab management
+    std::vector<EditorTab> tabs_;
+    int activeTabIndex_;
 };
 
 } // namespace Engine::Editor
