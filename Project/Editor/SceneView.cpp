@@ -10,20 +10,24 @@
 #include "Engine/ECS/ComponentRegistry.h"
 #include "ChangeComponentCommand.h"
 #include "CommandHistory.h"
+#include "Engine/Scene/SceneLoader.h"
+#include "Engine/Asset/AssetDatabase.h"
 #include <map>
+#include <filesystem>
+#include <algorithm>
 
 namespace Engine::Editor {
 
 static ImGuizmo::OPERATION s_gizmoOperation = ImGuizmo::TRANSLATE;
 static ImGuizmo::MODE s_gizmoMode = ImGuizmo::WORLD;
 
-void SceneView::Render(bool* p_open) {
+void SceneView::Render(const char* title, bool* p_open) {
     if (p_open && !*p_open) {
         EditorContext::GetInstance().SetSceneFocused(false);
         return;
     }
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-    ImGui::Begin("Scene View", p_open);
+    ImGui::Begin(title, p_open);
 
     auto& context = EditorContext::GetInstance();
 
@@ -69,6 +73,56 @@ void SceneView::Render(bool* p_open) {
 
         if (viewportPanelSize.x > 0 && viewportPanelSize.y > 0) {
             ImGui::Image((ImTextureID)srvHandle.ptr, viewportPanelSize);
+
+            if (ImGui::BeginDragDropTarget()) {
+                const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_ASSET_PATH");
+                if (!payload) payload = ImGui::AcceptDragDropPayload("DND_ASSET_PATHS");
+
+                if (payload) {
+                    std::string pathStr = (const char*)payload->Data;
+                    // DND_ASSET_PATHS の場合は最初のパスのみを抽出 (| で区切られている想定)
+                    if (std::string(payload->DataType) == "DND_ASSET_PATHS") {
+                        size_t firstSep = pathStr.find('|');
+                        if (firstSep != std::string::npos) {
+                            pathStr = pathStr.substr(0, firstSep);
+                        }
+                    }
+
+                    std::filesystem::path path(pathStr);
+                    std::string ext = path.extension().string();
+                    std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+                    Engine::Console::Log(std::format("SceneView: Dropped asset: {} (ext: {})", pathStr, ext));
+
+                    auto& registry = Engine::Core::Application::GetInstance().GetRegistry();
+                    ECS::Entity newEntity = ECS::kNullEntity;
+
+                    if (ext == ".prefab") {
+                        newEntity = Engine::Scene::SceneLoader::InstantiatePrefab(pathStr, registry);
+                    } else if (ext == ".obj" || ext == ".fbx") {
+                        newEntity = registry.CreateEntity();
+                        
+                        auto& tag = registry.AddComponent<Engine::ECS::Tag>(newEntity);
+                        strcpy_s(tag.name, sizeof(tag.name), path.stem().string().c_str());
+                        tag.isActive = 1;
+
+                        auto& transform = registry.AddComponent<Engine::ECS::Transform>(newEntity);
+                        transform.isEnabled = 1;
+                        
+                        auto& mesh = registry.AddComponent<Engine::ECS::MeshRenderer>(newEntity);
+                        mesh.isEnabled = 1;
+                        mesh.modelGuid = Engine::Asset::AssetDatabase::GetInstance().GetGuidFromPath(pathStr);
+                    }
+
+                    if (newEntity != ECS::kNullEntity) {
+                        context.SetSelectedEntity(newEntity);
+                        Engine::Console::Log(std::format("SceneView: Successfully created entity {} from {}", (uint32_t)newEntity, pathStr));
+                    } else {
+                        Engine::Console::LogError(std::format("SceneView: Failed to create entity from {}", pathStr));
+                    }
+                }
+                ImGui::EndDragDropTarget();
+            }
         }
 
         const auto& selection = context.GetSelection();

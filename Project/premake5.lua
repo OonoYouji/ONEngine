@@ -145,6 +145,8 @@ project "Engine"
         "$(ProjectDir)Externals"
     }
 
+    defines { "ENGINE_EDITOR" }
+
     libdirs {
         "Externals/assimp/lib",
         "Externals/DotNetHost"

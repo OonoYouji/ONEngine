@@ -1,9 +1,13 @@
 {
-  "name": "WhiteMat",
-  "pipeline": "BindlessTest",
-  "texture": "Packages/Textures/white.png",
-  "parameters": {
-    "baseColor": [1.0, 0.2, 0.2, 1.0]
-  }
+    "name": "WhiteMat",
+    "parameters": {
+        "baseColor": [
+            0.0,
+            1.0,
+            0.4555983543395996,
+            1.0
+        ]
+    },
+    "pipeline": "BindlessTest",
+    "texture": "Packages/Textures/white.png"
 }
-

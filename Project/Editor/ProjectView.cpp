@@ -140,7 +140,7 @@ void ProjectView::Render(bool* p_open) {
         }
     }
 
-    ImGui::Begin("Project");
+    ImGui::Begin("Asset Browser");
 
     // マウスサイドボタンによるナビゲーション (3=Back, 4=Forward)
     if (ImGui::IsWindowHovered(ImGuiHoveredFlags_ChildWindows)) {
@@ -427,6 +427,37 @@ void ProjectView::RenderContent() {
         ImGui::SetCursorPos(startCursorPos);
         ImGui::InvisibleButton("##hitarea", itemSize);
 
+        if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0)) {
+            Engine::Console::Log(std::format("ProjectView: Double-clicked on {}", entry.path.string()));
+            if (entry.isDirectory) {
+                if (io.KeyCtrl) {
+                    AddTab(entry.path);
+                } else {
+                    nextPath = entry.path;
+                }
+            } else {
+                std::string ext = entry.path.extension().string();
+                std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+                std::string relPath = std::filesystem::relative(entry.path, std::filesystem::current_path()).string();
+                std::replace(relPath.begin(), relPath.end(), '\\', '/');
+
+                if (ext == ".prefab") {
+                    Engine::Console::Log(std::format("ProjectView: Triggering Prefab Mode for {}", relPath));
+                    EditorContext::GetInstance().EnterPrefabMode(relPath);
+                } else if (ext == ".mat") {
+                    Engine::Console::Log(std::format("ProjectView: Triggering Material Mode for {}", relPath));
+                    EditorContext::GetInstance().OpenMaterialTab(relPath);
+                } else if (ext == ".scene") {
+                    Engine::Console::Log(std::format("ProjectView: Loading Scene {}", relPath));
+                    auto& reg = Engine::Core::Application::GetInstance().GetRegistry();
+                    reg.Clear();
+                    EditorContext::GetInstance().SetCurrentScenePath(relPath);
+                    Engine::Scene::SceneLoader::LoadScene(relPath, reg);
+                }
+            }
+        }
+
         if (ImGui::IsItemClicked(0) || ImGui::IsItemClicked(1)) {
             bool ctrl = io.KeyCtrl;
             bool shift = io.KeyShift;
@@ -449,16 +480,6 @@ void ProjectView::RenderContent() {
         
         if (ImGui::IsItemClicked(1)) {
             openItemMenu = true;
-        }
-
-        if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0)) {
-            if (entry.isDirectory) {
-                if (io.KeyCtrl) {
-                    AddTab(entry.path);
-                } else {
-                    nextPath = entry.path;
-                }
-            }
         }
 
         if (!entry.isDirectory && ImGui::BeginDragDropSource(0)) {

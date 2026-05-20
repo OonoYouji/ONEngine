@@ -1,0 +1,8 @@
+{
+    "name": "EditorTestMaterial",
+    "pipeline": "Assets/Pipelines/CelShader.pipeline",
+    "texture": "Assets/Textures/white.png",
+    "parameters": {
+        "baseColor": [1.0, 0.0, 0.0, 1.0]
+    }
+}

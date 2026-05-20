@@ -27,7 +27,7 @@ static json s_oldState;
 
 void InspectorView::Render(ECS::Registry& registry, bool* p_open) {
     if (p_open && !*p_open) return;
-    ImGui::Begin("Inspector", p_open);
+    ImGui::Begin("Properties", p_open);
 
     auto& context = EditorContext::GetInstance();
     auto selectedAsset = context.GetSelectedAsset();
@@ -75,15 +75,24 @@ void InspectorView::Render(ECS::Registry& registry, bool* p_open) {
                         ImGui::Text("Pipeline: %s", data.value("pipeline", "").c_str());
                         ImGui::Text("Texture: %s", data.value("texture", "").c_str());
 
+                        bool changed = false;
                         if (data.contains("parameters")) {
                             auto& params = data["parameters"];
                             for (auto it = params.begin(); it != params.end(); ++it) {
                                 if (it.value().is_array() && it.value().size() == 4) {
                                     float col[4] = { it.value()[0], it.value()[1], it.value()[2], it.value()[3] };
                                     if (ImGui::ColorEdit4(it.key().c_str(), col)) {
-                                        // TODO: 変更の保存
+                                        it.value() = { col[0], col[1], col[2], col[3] };
+                                        changed = true;
                                     }
                                 }
+                            }
+                        }
+
+                        if (changed) {
+                            std::ofstream outFile(selectedAsset);
+                            if (outFile.is_open()) {
+                                outFile << data.dump(4);
                             }
                         }
                     } catch (...) {
@@ -134,7 +143,7 @@ void InspectorView::Render(ECS::Registry& registry, bool* p_open) {
     for (auto entity : selection) {
         std::vector<uint32_t> currentEntityComponents;
         for (auto& [typeId, info] : compReg.GetAll()) {
-            if (registry.HasComponent(entity, typeId)) {
+            if (info.getStorageFunc(registry).Has(entity)) {
                 currentEntityComponents.push_back(typeId);
             }
         }
@@ -329,7 +338,7 @@ void InspectorView::Render(ECS::Registry& registry, bool* p_open) {
             if (typeId == 100) continue;
 
             // 既に持っているコンポーネントは表示しない
-            if (registry.HasComponent(primaryEntity, typeId)) continue;
+            if (info.getStorageFunc(registry).Has(primaryEntity)) continue;
 
             // フィルター
             std::string nameLower = info.name;

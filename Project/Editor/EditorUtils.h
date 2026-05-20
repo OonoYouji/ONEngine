@@ -45,8 +45,9 @@ public:
 
     /// @brief ファイルを開くダイアログを表示
     /// @param filter フィルタ (例: "Scene Files (*.scene)\0*.scene\0All Files (*.*)\0*.*\0")
+    /// @param initialDir 初期ディレクトリ (絶対パス推奨)
     /// @return 選択されたパス。キャンセル時はstd::nullopt
-    static std::optional<std::string> OpenFileDialog(const char* filter) {
+    static std::optional<std::string> OpenFileDialog(const char* filter, const char* initialDir = nullptr) {
         OPENFILENAMEA ofn;
         char szFile[260] = { 0 };
         ZeroMemory(&ofn, sizeof(ofn));
@@ -55,6 +56,7 @@ public:
         ofn.lpstrFile = szFile;
         ofn.nMaxFile = sizeof(szFile);
         ofn.lpstrFilter = filter;
+        ofn.lpstrInitialDir = initialDir;
         ofn.nFilterIndex = 1;
         ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
 
@@ -66,8 +68,9 @@ public:
 
     /// @brief ファイルを保存するダイアログを表示
     /// @param filter フィルタ
+    /// @param initialDir 初期ディレクトリ (絶対パス推奨)
     /// @return 選択されたパス。キャンセル時はstd::nullopt
-    static std::optional<std::string> SaveFileDialog(const char* filter) {
+    static std::optional<std::string> SaveFileDialog(const char* filter, const char* initialDir = nullptr) {
         OPENFILENAMEA ofn;
         char szFile[260] = { 0 };
         ZeroMemory(&ofn, sizeof(ofn));
@@ -76,6 +79,7 @@ public:
         ofn.lpstrFile = szFile;
         ofn.nMaxFile = sizeof(szFile);
         ofn.lpstrFilter = filter;
+        ofn.lpstrInitialDir = initialDir;
         ofn.nFilterIndex = 1;
         ofn.Flags = OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT | OFN_NOCHANGEDIR;
 

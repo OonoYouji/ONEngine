@@ -20,7 +20,7 @@ static std::vector<std::pair<ECS::Entity, ImRect>> g_VisibleItemRects;
 
 void HierarchyView::Render(ECS::Registry& registry, bool* p_open) {
     if (p_open && !*p_open) return;
-    ImGui::Begin("Hierarchy", p_open);
+    ImGui::Begin("Outliner", p_open);
 
     auto& io = ImGui::GetIO();
     auto& context = EditorContext::GetInstance();
@@ -130,6 +130,20 @@ void HierarchyView::Render(ECS::Registry& registry, bool* p_open) {
             ReparentEntity(registry, draggedEntity, ECS::kNullEntity);
         }
         ImGui::EndDragDropTarget();
+    }
+
+    // コンテキストメニュー（背景右クリック）
+    if (ImGui::BeginPopupContextWindow("HierarchyContextMenu", ImGuiPopupFlags_MouseButtonRight | ImGuiPopupFlags_NoOpenOverItems)) {
+        if (ImGui::MenuItem("Create Empty Entity")) {
+            ECS::Entity entity = registry.CreateEntity();
+            auto& tag = registry.AddComponent<ECS::Tag>(entity);
+            strcpy_s(tag.name, "New Entity");
+            tag.isActive = 1;
+            auto& transform = registry.AddComponent<ECS::Transform>(entity);
+            transform.isEnabled = 1;
+            context.SetSelectedEntity(entity);
+        }
+        ImGui::EndPopup();
     }
 
     EditorUtils::DrawActiveViewOutline();
