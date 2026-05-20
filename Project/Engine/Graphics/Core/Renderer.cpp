@@ -90,15 +90,14 @@ void Renderer::RenderZPrepass(const RenderContext& context) {
 }
 
 void Renderer::Render(const RenderContext& context) {
-    static bool loggedVersion = false;
-    if (!loggedVersion) {
-        Engine::Console::Log("Renderer: [CRITICAL FIX] Dynamic offset logic active.");
-        loggedVersion = true;
+    if (queue_.empty()) {
+        static uint32_t emptyQueueCount = 0;
+        if (emptyQueueCount++ % 100 == 0) Engine::Console::Log("[RenderLog] Renderer queue is empty.");
+        return;
     }
 
-    if (queue_.empty()) return;
-
     uint32_t totalInstances = static_cast<uint32_t>(queue_.size());
+    Engine::Console::Log(std::format("[RenderLog] Renderer processing {} instances.", totalInstances));
     
     auto& materialManager = Asset::MaterialManager::GetInstance();
     auto& assetManager = Asset::AssetManager::GetInstance();

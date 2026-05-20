@@ -131,7 +131,7 @@ types:
         type: float2
       - name: textureIndex
         type: uint32
-      - name: padding
+      - name: entityID
         type: uint32
 
   ParticleGPUData:

@@ -1,0 +1,137 @@
+{
+    "entities": [
+        {
+            "id": 1,
+            "name": "MainCamera",
+            "isActive": true,
+            "components": [
+                {
+                    "type": "Transform",
+                    "position": { "x": 0, "y": 5, "z": -15 },
+                    "rotation": { "x": 0.15, "y": 0, "z": 0, "w": 0.98 },
+                    "scale": { "x": 1, "y": 1, "z": 1 }
+                },
+                {
+                    "type": "Camera",
+                    "isEnabled": 1,
+                    "fov": 45.0,
+                    "nearZ": 0.1,
+                    "farZ": 1000.0
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "name": "DirectionalLight",
+            "isActive": true,
+            "components": [
+                {
+                    "type": "Transform",
+                    "position": { "x": 0, "y": 10, "z": 0 },
+                    "rotation": { "x": 0.5, "y": 0.5, "z": 0, "w": 0.7 }
+                },
+                {
+                    "type": "DirectionalLight",
+                    "isEnabled": 1,
+                    "color": { "x": 1, "y": 1, "z": 1 },
+                    "intensity": 1.0,
+                    "direction": { "x": 0.5, "y": -1.0, "z": 0.5 }
+                }
+            ]
+        },
+        {
+            "id": 3,
+            "name": "TestCube",
+            "isActive": true,
+            "components": [
+                {
+                    "type": "Transform",
+                    "position": { "x": -2, "y": 0, "z": 0 }
+                },
+                {
+                    "type": "MeshRenderer",
+                    "isEnabled": 1,
+                    "modelGuid": 5723163844602756127,
+                    "materialGuid": 0
+                }
+            ]
+        },
+        {
+            "id": 4,
+            "name": "TestSprite",
+            "isActive": true,
+            "components": [
+                {
+                    "type": "Transform",
+                    "position": { "x": 2, "y": 0, "z": 0 }
+                },
+                {
+                    "type": "SpriteRenderer",
+                    "isEnabled": 1,
+                    "textureGuid": 11576843087564010077,
+                    "color": { "x": 1, "y": 1, "z": 1, "w": 1 },
+                    "size": { "x": 2, "y": 2 },
+                    "isBillboard": 1
+                }
+            ]
+        },
+        {
+            "id": 5,
+            "name": "TestText",
+            "isActive": true,
+            "components": [
+                {
+                    "type": "Transform",
+                    "position": { "x": 0, "y": 3, "z": 0 }
+                },
+                {
+                    "type": "TextRenderer",
+                    "isEnabled": 1,
+                    "text": "Rendering Test\nAll Systems Active",
+                    "fontGuid": 8300225585679593063,
+                    "color": { "x": 1, "y": 1, "z": 0, "w": 1 },
+                    "size": 32.0
+                }
+            ]
+        },
+        {
+            "id": 6,
+            "name": "TestParticle",
+            "isActive": true,
+            "components": [
+                {
+                    "type": "Transform",
+                    "position": { "x": 0, "y": 0, "z": 5 }
+                },
+                {
+                    "type": "ParticleEmitter",
+                    "isEnabled": 1,
+                    "count": 100,
+                    "speed": 5.0,
+                    "speedRandom": 2.0,
+                    "lifetime": 2.0,
+                    "lifetimeRandom": 1.0,
+                    "spreadAngle": 0.5,
+                    "gravity": -9.8,
+                    "startColor": { "x": 1, "y": 0.5, "z": 0, "w": 1 },
+                    "endColor": { "x": 1, "y": 0, "z": 0, "w": 0 },
+                    "startScale": 0.5,
+                    "endScale": 0.1,
+                    "textureGuid": 11576843087564010077
+                }
+            ]
+        },
+        {
+            "id": 7,
+            "name": "Skybox",
+            "isActive": true,
+            "components": [
+                {
+                    "type": "Skybox",
+                    "isEnabled": 1,
+                    "textureGuid": 11576843087564010077
+                }
+            ]
+        }
+    ]
+}

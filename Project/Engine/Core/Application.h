@@ -11,6 +11,7 @@
 #include "Engine/ECS/Registry.h"
 #include "Engine/ECS/Systems/TransformSystem.h"
 #include "Engine/ECS/Systems/RenderSystem.h"
+#include "Engine/ECS/Systems/SpriteSystem.h"
 #include "Engine/ECS/Systems/CameraSystem.h"
 #include "Engine/ECS/Systems/LightSystem.h"
 #include "Engine/ECS/Systems/SkyboxSystem.h"
@@ -95,6 +96,7 @@ private:
     ECS::Registry registry_;
     std::unique_ptr<ECS::TransformSystem> transformSystem_;
     std::unique_ptr<ECS::RenderSystem> renderSystem_;
+    std::unique_ptr<ECS::SpriteSystem> spriteSystem_;
     std::unique_ptr<ECS::CameraSystem> cameraSystem_;
     std::unique_ptr<ECS::LightSystem> lightSystem_;
     std::unique_ptr<ECS::SkyboxSystem> skyboxSystem_;

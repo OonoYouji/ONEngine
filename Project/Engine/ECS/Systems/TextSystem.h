@@ -22,8 +22,10 @@ public:
 
     void Update(Registry& registry) override {
         auto& fontManager = Engine::Asset::FontManager::GetInstance();
+        uint32_t entityCount = 0;
 
         registry.GetView<Transform, TextRenderer>().Each([&](Entity entity, Transform& transform, TextRenderer& renderer) {
+            entityCount++;
             std::string text(renderer.text);
             if (text.empty()) return;
 
@@ -68,6 +70,7 @@ public:
                 data.textureIndex = font->GetAtlasTexture()->GetIndex();
                 data.uvMin = { glyph->uvMinX, glyph->uvMinY };
                 data.uvMax = { glyph->uvMaxX, glyph->uvMaxY };
+                data.entityID = static_cast<uint32_t>(entity);
                 
                 result_.charInstances.push_back(data);
 
@@ -75,6 +78,13 @@ public:
                 xOffset += glyph->xAdvance * (renderer.size / 32.0f);
             }
         });
+
+        if (entityCount > 0) {
+            static uint32_t logCount = 0;
+            if (logCount++ % 100 == 0) {
+                Engine::Console::Log(std::format("[SystemLog] TextSystem found {} entities.", entityCount));
+            }
+        }
     }
 
     const TextResult& GetResult() const { return result_; }

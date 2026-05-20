@@ -42,7 +42,7 @@ struct TextData {
     float2 uvMin;
     float2 uvMax;
     uint textureIndex;
-    uint padding;
+    uint entityID;
     uint _final_pad0[2];
 };
 
