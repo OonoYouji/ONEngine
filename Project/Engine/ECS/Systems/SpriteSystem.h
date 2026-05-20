@@ -19,11 +19,9 @@ public:
     };
 
     void Update(Registry& registry) override {
-        // カメラの行列を取得（ビルボード計算用）
-        // ※ 本来は CameraSystem から取得すべきだが、ここでは簡易的にワールド行列から逆算するか、
-        // あるいは SceneData の cameraPos 等を利用する。
-        
+        uint32_t entityCount = 0;
         registry.GetView<Transform, SpriteRenderer>().Each([&](Entity entity, Transform& transform, SpriteRenderer& renderer) {
+            entityCount++;
             GeneratedSchema::SpriteData data;
             
             // 半径（Sizeの半分）をスケールとして使用することで、JSONのsizeが実サイズになるようにする
@@ -44,6 +42,13 @@ public:
             data.postProcessFlags = 0; // ひとまず0
             result_.sprites.push_back(data);
         });
+
+        if (entityCount > 0) {
+            static uint32_t logCount = 0;
+            if (logCount++ % 100 == 0) {
+                Engine::Console::Log(std::format("[SystemLog] SpriteSystem found {} entities.", entityCount));
+            }
+        }
     }
 
     const SpriteResult& GetResult() const { return result_; }

@@ -50,7 +50,7 @@ struct TextData {
     Engine::Math::Vector2 uvMin = { 0, 0 };
     Engine::Math::Vector2 uvMax = { 0, 0 };
     uint32_t textureIndex = 0;
-    uint32_t padding = 0;
+    uint32_t entityID = 0;
     uint8_t _final_pad0[8];
 };
 
@@ -194,7 +194,7 @@ inline void to_json(nlohmann::json& j, const Engine::GeneratedSchema::TextData& 
         {"uvMin", v.uvMin},
         {"uvMax", v.uvMax},
         {"textureIndex", v.textureIndex},
-        {"padding", v.padding},
+        {"entityID", v.entityID},
     };
 }
 
@@ -203,7 +203,7 @@ inline void from_json(const nlohmann::json& j, Engine::GeneratedSchema::TextData
     if (j.contains("uvMin")) v.uvMin = j.at("uvMin").get<Engine::Math::Vector2>();
     if (j.contains("uvMax")) v.uvMax = j.at("uvMax").get<Engine::Math::Vector2>();
     if (j.contains("textureIndex")) v.textureIndex = j.at("textureIndex").get<uint32_t>();
-    if (j.contains("padding")) v.padding = j.at("padding").get<uint32_t>();
+    if (j.contains("entityID")) v.entityID = j.at("entityID").get<uint32_t>();
 }
 inline void to_json(nlohmann::json& j, const Engine::GeneratedSchema::MeshInfo& v) {
     j = nlohmann::json{

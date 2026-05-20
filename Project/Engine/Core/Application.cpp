@@ -67,11 +67,13 @@ bool Application::Initialize(HINSTANCE hInstance, int nCmdShow) {
     // --- システムを先に生成 (安全のため) ---
     transformSystem_ = std::make_unique<ECS::TransformSystem>();
     renderSystem_ = std::make_unique<ECS::RenderSystem>();
+    spriteSystem_ = std::make_unique<ECS::SpriteSystem>();
     cameraSystem_ = std::make_unique<ECS::CameraSystem>();
     lightSystem_ = std::make_unique<ECS::LightSystem>();
     skyboxSystem_ = std::make_unique<ECS::SkyboxSystem>();
     textSystem_ = std::make_unique<ECS::TextSystem>();
     particleSystem_ = std::make_unique<ECS::ParticleSystem>();
+    particleSystem_->Initialize(graphics.GetRenderDevice());
     animationSystem_ = std::make_unique<ECS::AnimationSystem>();
     animationSystem_->Initialize(graphics.GetRenderDevice());
 
@@ -100,6 +102,10 @@ bool Application::Initialize(HINSTANCE hInstance, int nCmdShow) {
     sm.LoadPipelineAsset("Assets/Pipelines/PostProcess.pipeline");
     sm.LoadPipelineAsset("Assets/Pipelines/BindlessTest.pipeline");
     sm.LoadPipelineAsset("Assets/Pipelines/Skinning.pipeline");
+    sm.LoadPipelineAsset("Assets/Pipelines/Sprite.pipeline");
+    sm.LoadPipelineAsset("Assets/Pipelines/Text.pipeline");
+    sm.LoadPipelineAsset("Assets/Pipelines/ParticleRender.pipeline");
+    sm.LoadPipelineAsset("Assets/Pipelines/ParticleUpdate.pipeline");
 
     Graphics::PostProcessSystem::GetInstance().Initialize(graphics.GetRenderDevice(), graphics.GetRTVHeap(), graphics.GetSRVHeap(), Math::Vector2Int::HD);
 
@@ -112,10 +118,8 @@ bool Application::Initialize(HINSTANCE hInstance, int nCmdShow) {
     textSB_ = std::make_unique<Graphics::StructuredBuffer>();
     textSB_->Create(graphics.GetRenderDevice(), sizeof(GeneratedSchema::TextData), 4096);
 
-    // 実行時のみデフォルトシーンをロード (エディタの場合は後で個別にロードする)
-    if (!isEditorMode_) {
-        Scene::SceneLoader::LoadScene("Assets/Scene/Main.scene", registry_);
-    }
+    // [DEBUG] 検証のために常に RenderingTest.scene をロードする
+    Scene::SceneLoader::LoadScene("Assets/Scene/RenderingTest.scene", registry_);
 
     timer_.Reset();
     return true;
@@ -197,6 +201,10 @@ void Application::Update(float dt) {
         skyboxSystem_->Reset();
         skyboxSystem_->Update(registry_);
     }
+    if (spriteSystem_) {
+        spriteSystem_->Reset();
+        spriteSystem_->Update(registry_);
+    }
     if (textSystem_) {
         textSystem_->Reset();
         textSystem_->Update(registry_);
@@ -230,6 +238,10 @@ void Application::Render() {
 
     if (animationSystem_) {
         animationSystem_->Update(registry_, static_cast<ID3D12GraphicsCommandList*>(commandList), timer_.GetDeltaTime(), frameIndex);
+    }
+
+    if (particleSystem_) {
+        particleSystem_->Update(registry_);
     }
 
     graphics.Clear({ 0.5f, 0.7f, 0.9f, 1.0f }); 
@@ -346,6 +358,116 @@ void Application::Render() {
 
     // 4. シーン描画
     renderer.Render(context);
+
+    // --- Skybox 描画 ---
+    if (skyboxSystem_ && skyboxSystem_->HasSkybox()) {
+        static uint32_t skyboxLogCount = 0;
+        if (skyboxLogCount++ % 100 == 0) Engine::Console::Log(std::format("[RenderLog] Rendering Skybox with texture index {}", skyboxSystem_->GetTextureIndex()));
+        
+        Graphics::PipelineStateDesc skyboxDesc;
+        skyboxDesc.numRenderTargets = context.numRenderTargets;
+        for (uint32_t i = 0; i < context.numRenderTargets; ++i) skyboxDesc.rtvFormats[i] = context.rtvFormats[i];
+        skyboxDesc.depthEnable = true;
+        skyboxDesc.depthWriteEnable = false;
+        skyboxDesc.depthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
+
+        auto* pso = sm.GetOrCreatePSO("Skybox", skyboxDesc);
+        auto* rs = sm.GetRootSignature("Skybox");
+        if (pso && rs) {
+            commandList->SetGraphicsRootSignature(rs->Get());
+            commandList->SetPipelineState(pso->Get());
+            
+            auto sceneIdx = rs->GetParameterIndex("gSceneData");
+            if (sceneIdx != Graphics::RootSignature::kInvalidIndex)
+                commandList->SetGraphicsRootConstantBufferView(sceneIdx, context.sceneCBAddress);
+            
+            auto skyboxIdx = rs->GetParameterIndex("gSkybox");
+            if (skyboxIdx != Graphics::RootSignature::kInvalidIndex)
+                commandList->SetGraphicsRootDescriptorTable(skyboxIdx, graphics.GetSRVHeap()->GetGPUHandle(skyboxSystem_->GetTextureIndex()));
+            
+            commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+            commandList->DrawInstanced(36, 1, 0, 0);
+        }
+    }
+
+    // --- パーティクル描画 ---
+    if (particleSystem_) {
+        particleSystem_->Render(registry_, context);
+    }
+
+    // --- スプライト描画 ---
+    if (spriteSystem_) {
+        const auto& res = spriteSystem_->GetResult();
+        if (!res.sprites.empty()) {
+            static uint32_t spriteLogCount = 0;
+            if (spriteLogCount++ % 100 == 0) Engine::Console::Log(std::format("[RenderLog] Rendering {} sprites.", res.sprites.size()));
+            spriteSB_->Update(res.sprites.data(), static_cast<uint32_t>(res.sprites.size() * sizeof(GeneratedSchema::SpriteData)));
+            
+            Graphics::PipelineStateDesc spriteDesc;
+            spriteDesc.numRenderTargets = context.numRenderTargets;
+            for (uint32_t i = 0; i < context.numRenderTargets; ++i) spriteDesc.rtvFormats[i] = context.rtvFormats[i];
+            spriteDesc.blendEnable = true; // アルファブレンド有効
+            
+            auto* pso = sm.GetOrCreatePSO("Sprite", spriteDesc);
+            auto* rs = sm.GetRootSignature("Sprite");
+            if (pso && rs) {
+                commandList->SetGraphicsRootSignature(rs->Get());
+                commandList->SetPipelineState(pso->Get());
+                
+                auto sceneIdx = rs->GetParameterIndex("gSceneData");
+                if (sceneIdx != Graphics::RootSignature::kInvalidIndex)
+                    commandList->SetGraphicsRootConstantBufferView(sceneIdx, context.sceneCBAddress);
+                
+                auto spriteIdx = rs->GetParameterIndex("gSprites");
+                if (spriteIdx != Graphics::RootSignature::kInvalidIndex)
+                    commandList->SetGraphicsRootShaderResourceView(spriteIdx, spriteSB_->GetResource()->GetGPUVirtualAddress());
+
+                auto texIdx = rs->GetParameterIndex("gTextures");
+                if (texIdx != Graphics::RootSignature::kInvalidIndex)
+                    commandList->SetGraphicsRootDescriptorTable(texIdx, graphics.GetSRVHeap()->GetGPUHandle(0));
+
+                commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+                commandList->DrawInstanced(4, static_cast<uint32_t>(res.sprites.size()), 0, 0);
+            }
+        }
+    }
+
+    // --- テキスト描画 ---
+    if (textSystem_) {
+        const auto& res = textSystem_->GetResult();
+        if (!res.charInstances.empty()) {
+            static uint32_t textLogCount = 0;
+            if (textLogCount++ % 100 == 0) Engine::Console::Log(std::format("[RenderLog] Rendering {} text characters.", res.charInstances.size()));
+            textSB_->Update(res.charInstances.data(), static_cast<uint32_t>(res.charInstances.size() * sizeof(GeneratedSchema::TextData)));
+
+            Graphics::PipelineStateDesc textDesc;
+            textDesc.numRenderTargets = context.numRenderTargets;
+            for (uint32_t i = 0; i < context.numRenderTargets; ++i) textDesc.rtvFormats[i] = context.rtvFormats[i];
+            textDesc.blendEnable = true;
+
+            auto* pso = sm.GetOrCreatePSO("Text", textDesc);
+            auto* rs = sm.GetRootSignature("Text");
+            if (pso && rs) {
+                commandList->SetGraphicsRootSignature(rs->Get());
+                commandList->SetPipelineState(pso->Get());
+
+                auto sceneIdx = rs->GetParameterIndex("gSceneData");
+                if (sceneIdx != Graphics::RootSignature::kInvalidIndex)
+                    commandList->SetGraphicsRootConstantBufferView(sceneIdx, context.sceneCBAddress);
+
+                auto charIdx = rs->GetParameterIndex("gChars");
+                if (charIdx != Graphics::RootSignature::kInvalidIndex)
+                    commandList->SetGraphicsRootShaderResourceView(charIdx, textSB_->GetResource()->GetGPUVirtualAddress());
+
+                auto texIdx = rs->GetParameterIndex("gTextures");
+                if (texIdx != Graphics::RootSignature::kInvalidIndex)
+                    commandList->SetGraphicsRootDescriptorTable(texIdx, graphics.GetSRVHeap()->GetGPUHandle(0));
+
+                commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+                commandList->DrawInstanced(4, static_cast<uint32_t>(res.charInstances.size()), 0, 0);
+            }
+        }
+    }
 
     // 5. ポストプロセスへの遷移 (RenderTarget -> ShaderResource)
     graphics.GetMainColorBuffer()->Transition(static_cast<ID3D12GraphicsCommandList*>(commandList), D3D12_RESOURCE_STATE_ALL_SHADER_RESOURCE);
