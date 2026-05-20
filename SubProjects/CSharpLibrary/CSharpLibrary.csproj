@@ -62,6 +62,7 @@
     <Compile Include="Scripts\Engine\Core\Utility\Math\Ease.cs" />
     <Compile Include="Scripts\Engine\Core\Utility\Math\Flag.cs" />
     <Compile Include="Scripts\Engine\Core\Utility\Math\Mathf.cs" />
+    <Compile Include="Scripts\Engine\Core\Utility\Math\MathUtils.cs" />
     <Compile Include="Scripts\Engine\Core\Utility\Math\Matrix4x4.cs" />
     <Compile Include="Scripts\Engine\Core\Utility\Math\Quaternion.cs" />
     <Compile Include="Scripts\Engine\Core\Utility\Math\Vector2.cs" />
@@ -78,6 +79,9 @@
     <Compile Include="Scripts\Engine\ECS\EntityComponentSystem\ECSGroup.cs" />
     <Compile Include="Scripts\Engine\ECS\EntityComponentSystem\EntityComponentSystem.cs" />
     <Compile Include="Scripts\Engine\ECS\Entity\Entity.cs" />
+    <Compile Include="Scripts\Engine\ECS\Entity\EntityExtensions.cs" />
+    <Compile Include="Scripts\Engine\ECS\Components\Compute\TransformExtensions.cs" />
+    <Compile Include="Scripts\Engine\Core\Utility\Object\ObjectUtils.cs" />
     <Compile Include="Scripts\Engine\Graphics\Material.cs" />
     <Compile Include="Scripts\Engine\Scene\SceneManager.cs" />
     <Compile Include="Scripts\Engine\ECS\Components\Compute\Transform.cs" />
@@ -88,7 +92,9 @@
     <Compile Include="Scripts\Game\Enemy.cs" />
     <Compile Include="Scripts\Engine\MonoScript.cs" />
     <Compile Include="Scripts\Game\GameMath\GameMathf.cs" />
+    <Compile Include="Scripts\Game\FollowPlayer.cs" />
     <Compile Include="Scripts\Game\Player.cs" />
+    <Compile Include="Scripts\Game\Rotator.cs" />
     <Compile Include="Scripts\Engine\Core\Utility\Math\Vector3.cs" />
     <Compile Include="Scripts\Game\PrefabTest.cs" />
     <Compile Include="Scripts\Game\Puzzle\Block.cs" />

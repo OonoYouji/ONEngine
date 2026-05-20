@@ -51,8 +51,15 @@ public class Player : MonoScript {
 		}
 	}
 
+	float logTimer = 0.0f;
+
 	public override void Update() {
 		/// ----- プレイヤーの移動 ----- ///
+		logTimer += Time.deltaTime;
+		if (logTimer >= 1.0f) {
+			Debug.Log("C# Heartbeat: Player update is running. Time: " + Time.time);
+			logTimer = 0.0f;
+		}
 
 		Debug.Log("-----");
 		Debug.Log("----- player update.");
