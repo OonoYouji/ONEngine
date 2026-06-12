@@ -2,6 +2,23 @@
     "active": true,
     "components": [
         {
+            "cameraType": 0,
+            "enable": 1,
+            "farClip": 1000.0,
+            "fogColor": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "fogEnd": 10000.0,
+            "fogStart": 8.407790785948902e-45,
+            "fovY": 0.699999988079071,
+            "isDrawFrustum": false,
+            "isMainCamera": true,
+            "nearClip": 0.10000000149011612,
+            "type": "CameraComponent"
+        },
+        {
             "enable": 1,
             "matrixCalcFlags": 7,
             "position": {
@@ -23,30 +40,11 @@
             "type": "Transform"
         },
         {
-            "BossMovementBlockManager": {
-                "blockConfigs": [
-                    {
-                        "__type": "BossBlockConfig",
-                        "centerCol": 7,
-                        "centerRow": 7
-                    }
-                ]
-            },
             "type": "Variables"
-        },
-        {
-            "enable": 1,
-            "scripts": [
-                {
-                    "enable": true,
-                    "name": "BossMovementBlockManager"
-                }
-            ],
-            "type": "Script"
         }
     ],
-    "guid": "aa11bb22cc33dd44ee55ff66aa11bb22",
-    "name": "BossMovementBlockManager",
+    "guid": "066cf8700e962fdd141e80666ddb8240",
+    "name": "Camera",
     "parentGuid": null,
     "prefabName": ""
 }
