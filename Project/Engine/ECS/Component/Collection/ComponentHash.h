@@ -13,8 +13,15 @@ namespace ONEngine {
 /// @return クラス名
 inline std::string GetComponentTypeName(const IComponent* _component) {
 	std::string name = typeid(*_component).name();
-	if (name.find("class ONEngine::") == 0) {
-		name = name.substr(strlen("class ONEngine::"));
+	size_t pos = name.find_last_of(':');
+	if (pos != std::string::npos) {
+		name = name.substr(pos + 1);
+	} else {
+		// handle space if no colon (e.g. "class MyComp")
+		pos = name.find_last_of(' ');
+		if (pos != std::string::npos) {
+			name = name.substr(pos + 1);
+		}
 	}
 	return name;
 }
@@ -25,8 +32,14 @@ inline std::string GetComponentTypeName(const IComponent* _component) {
 template <IsComponent T>
 inline std::string GetComponentTypeName() {
 	std::string name = typeid(T).name();
-	if (name.find("class ONEngine::") == 0) {
-		name = name.substr(strlen("class ONEngine::"));
+	size_t pos = name.find_last_of(':');
+	if (pos != std::string::npos) {
+		name = name.substr(pos + 1);
+	} else {
+		pos = name.find_last_of(' ');
+		if (pos != std::string::npos) {
+			name = name.substr(pos + 1);
+		}
 	}
 	return name;
 }

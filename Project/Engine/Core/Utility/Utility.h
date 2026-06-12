@@ -20,6 +20,7 @@
 #include "Time/Time.h"
 
 /// tools
+#include "Tools/StringHash.h"
 #include "Tools/Assert.h"
 #include "Tools/Ease.h"
 #include "Tools/Log.h"

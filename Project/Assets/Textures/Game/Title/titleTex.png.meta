@@ -1,4 +1,8 @@
 {
-    "version": 1,
-    "guid": "46081fabb6f90015b24735dfa1f125e3"
+    "colorSpace": "Linear",
+    "format": "RGBA8_UNORM",
+    "guid": "346ae5a53823ceef70358cea46d9a1e3",
+    "name": "titleTex",
+    "type": "Texture",
+    "version": 1
 }

@@ -1,0 +1,9 @@
+{
+    "entryPoint": "main",
+    "guid": "a59f49a71926e015fd66d2f8823b31d7",
+    "name": "Gizmo3D.ps",
+    "profile": "vs_6_0",
+    "shaderStage": "Vertex",
+    "type": "Shader",
+    "version": 1
+}

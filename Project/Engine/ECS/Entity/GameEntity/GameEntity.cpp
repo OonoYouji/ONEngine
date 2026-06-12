@@ -3,9 +3,11 @@
 using namespace ONEngine;
 
 /// engine
+#include <algorithm>
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Collection/ComponentCollection.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Script/Script.h"
+#include "Engine/ECS/Entity/EntityJsonConverter.h"
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentJsonConverter.h"
 
 GameEntity::GameEntity() {
@@ -17,8 +19,6 @@ void GameEntity::Awake() {
 	name_ = typeid(*this).name();
 	name_ = name_.substr(strlen("class ONEngine::"));
 	prefabName_ = "";
-
-	pEcsGroup_->LoadComponent(this);
 
 	transform_ = AddComponent<Transform>();
 	AddComponent<Variables>();
@@ -134,6 +134,13 @@ void GameEntity::SetParent(GameEntity* _parent) {
 		RemoveParent();
 		return;
 	}
+
+	if (parent_ == _parent) {
+		return;
+	}
+
+	RemoveParent();
+
 	_parent->children_.push_back(this);
 	parent_ = _parent;
 }
@@ -147,6 +154,21 @@ void GameEntity::RemoveParent() {
 		);
 		parent_->children_.erase(itr, parent_->children_.end());
 		parent_ = nullptr;
+	}
+}
+
+void GameEntity::MoveChild(GameEntity* _child, size_t _newIndex) {
+	if (!_child || _child->parent_ != this) {
+		return;
+	}
+
+	auto it = std::find(children_.begin(), children_.end(), _child);
+	if (it != children_.end()) {
+		children_.erase(it);
+		if (_newIndex > children_.size()) {
+			_newIndex = children_.size();
+		}
+		children_.insert(children_.begin() + _newIndex, _child);
 	}
 }
 
@@ -279,35 +301,10 @@ ECSGroup* GameEntity::GetECSGroup() const {
 
 
 void ONEngine::to_json(nlohmann::json& _j, const GameEntity& _entity) {
-	/// ----- GameEntityからJsonを生成 ----- ///
-
-	nlohmann::json entityJson = nlohmann::json::object();
-	entityJson["prefabName"] = _entity.GetPrefabName();
-	entityJson["name"] = _entity.GetName();
-	entityJson["id"] = _entity.GetId();
-
-	// コンポーネントの情報を追加
-	auto& components = _entity.GetComponents();
-	for (const auto& component : components) {
-		entityJson["components"].push_back(ComponentJsonConverter::ToJson(component.second));
-	}
-
-	/// 親子関係の情報を追加
-	if (_entity.GetParent()) {
-		entityJson["parent"] = _entity.GetParent()->GetId();
-	} else {
-		entityJson["parent"] = nullptr;
-	}
-
-	_j = nlohmann::json{
-		{ "name", _entity.GetName() },
-		{ "prefabName", _entity.GetPrefabName() },
-		{ "active", _entity.active },
-		{ "components", nlohmann::json::array() }
-	};
+	_j = EntityJsonConverter::ToJson(&_entity);
 }
 
-void ONEngine::from_json(const nlohmann::json& /*_j*/, GameEntity& /*_entity*/) {
-	/// ----- JsonからGameEntityを生成 ----- ///
-
+void ONEngine::from_json(const nlohmann::json& _j, GameEntity& _entity) {
+	// GameEntity should already be instantiated and have its ID/Guid set by the collection
+	EntityJsonConverter::FromJson(_j, &_entity, _entity.GetECSGroup()->GetGroupName());
 }

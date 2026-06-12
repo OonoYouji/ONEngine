@@ -71,6 +71,16 @@ public:
 	/// @brief 最後に開いたシーン名を取得する
 	std::string LastOpenSceneName();
 
+
+	/// @brief シーンが変更されたかどうか
+	void MarkDirty();
+
+	/// @brief シーンが変更されているかどうかを取得
+	bool IsDirty() const;
+
+	/// @brief シーンの変更フラグを設定
+	void SetDirty(bool _isDirty);
+
 private:
 	/// ===================================================
 	/// private : methods
@@ -92,6 +102,8 @@ private:
 
 	std::string currentScene_;
 	std::string nextScene_;
+
+	bool isDirty_ = false;
 
 	std::unique_ptr<SceneIO> sceneIO_;
 

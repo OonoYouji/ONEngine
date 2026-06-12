@@ -53,7 +53,7 @@ void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* vt, DxManager* _dxm, Asset:
 				chunkPosition -= Vector3(0.5f, 0.0f, 0.5f); // 中心を合わせる調整
 
 				// Gizmoで枠線を描画
-				Gizmo::DrawWireCube(chunkPosition, chunkSize, Color::kWhite);
+				Gizmo::DrawWireCube(chunkPosition, chunkSize, Quaternion::kIdentity, Color::kWhite);
 			}
 		}
 	}

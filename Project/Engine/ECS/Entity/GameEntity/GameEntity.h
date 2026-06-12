@@ -167,6 +167,11 @@ public:
 	/// @return 子エンティティのポインタ
 	GameEntity* GetChild(size_t _index);
 
+	/// @brief 子エンティティの順番を入れ替える
+	/// @param _child 入れ替えたい子エンティティ
+	/// @param _newIndex 新しいインデックス
+	void MoveChild(GameEntity* _child, size_t _newIndex);
+
 
 	/// --------------------------------------------------
 	/// other parameters

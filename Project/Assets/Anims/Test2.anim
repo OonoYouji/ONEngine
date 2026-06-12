@@ -1,0 +1,13 @@
+{
+    "endFrame": 60,
+    "loop": true,
+    "name": "Test2",
+    "startFrame": 0,
+    "tracks": [
+        {
+            "component": "Transform",
+            "keyframes": [],
+            "property": "position"
+        }
+    ]
+}

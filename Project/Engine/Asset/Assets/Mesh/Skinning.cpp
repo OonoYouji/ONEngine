@@ -1,9 +1,11 @@
-﻿#include "Skinning.h"
+#include "Skinning.h"
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Core/Utility/Utility.h"
+#include "Engine/Core/Utility/Tools/StringHash.h"
 #include "Model.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Animator/Animator.h"
 
 using namespace ONEngine;
 
@@ -64,6 +66,7 @@ int32_t ANIME_MATH::CreateJoint(const Node& _node, const std::optional<int32_t>&
 	/// 参照を取得 (再確保に注意)
 	Joint& joint = _joints[selfIndex];
 	joint.name = _node.name;
+	joint.nameHash = StringHash::Get(_node.name);
 	joint.transform.matWorld = _node.transform.matWorld;
 
 	joint.matSkeletonSpace = Matrix4x4::kIdentity;
@@ -83,27 +86,34 @@ int32_t ANIME_MATH::CreateJoint(const Node& _node, const std::optional<int32_t>&
 
 Skeleton ANIME_MATH::CreateSkeleton(const Node& _rootNode) {
 	/// ----- ノードからスケルトンを作成 ----- ///
+	Console::LogInfo("ANIME_MATH::CreateSkeleton: Starting skeleton creation.");
 
 	Skeleton result;
 	result.root = CreateJoint(_rootNode, {}, result.joints);
 
 	for (const Joint& joint : result.joints) {
-		result.jointMap.emplace(joint.name, joint.index);
+		result.jointMap.emplace(joint.nameHash, joint.index);
 	}
 
+	Console::LogInfo(std::format("ANIME_MATH::CreateSkeleton: Created {} joints.", result.joints.size()));
 	return result;
 }
 
 SkinCluster ANIME_MATH::CreateSkinCluster(const Skeleton& _skeleton, Asset::Model* _model, DxManager* _dxm) {
 	/// ----- スキンクラスターを作成 ----- ///
+	Console::LogInfo(std::format("ANIME_MATH::CreateSkinCluster: Starting (Joints: {}, Meshes: {})", 
+		_skeleton.joints.size(), _model->GetMeshes().size()));
 
 	SkinCluster result{};
 
 	DxDevice* dxDevice = _dxm->GetDxDevice();
-	/// matrix paletteの作成
+	ID3D12Device* device = dxDevice->GetDevice();
+
+	/// matrix paletteの作成 (ボーンパレットは全メッシュ共通)
 	result.paletteResource.CreateResource(dxDevice, sizeof(WellForGPU) * _skeleton.joints.size());
 	WellForGPU* mappedPalette = nullptr;
 	result.paletteResource.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mappedPalette));
+	std::memset(mappedPalette, 0, sizeof(WellForGPU) * _skeleton.joints.size());
 	result.mappedPalette = { mappedPalette, _skeleton.joints.size() };
 
 	DxSRVHeap* pSRVHeap = _dxm->GetDxSRVHeap();
@@ -122,24 +132,17 @@ SkinCluster ANIME_MATH::CreateSkinCluster(const Skeleton& _skeleton, Asset::Mode
 	paletteSRVDesc.Buffer.NumElements = static_cast<UINT>(_skeleton.joints.size());
 	paletteSRVDesc.Buffer.StructureByteStride = sizeof(WellForGPU);
 
-	ID3D12Device* device = _dxm->GetDxDevice()->GetDevice();
 	device->CreateShaderResourceView(result.paletteResource.Get(), &paletteSRVDesc, result.paletteSRVHandle.first);
 
 
 	/// resource create
-	Asset::Model::ModelMesh* frontMesh = _model->GetMeshes().front().get();
-	result.influenceResource.CreateResource(dxDevice, sizeof(VertexInfluence) * frontMesh->GetVertices().size());
+	if (_model->GetMeshes().empty()) {
+		Console::LogError("ANIME_MATH::CreateSkinCluster: Model has no meshes.");
+		return result;
+	}
 
-	/// mapping
-	VertexInfluence* mappedInfluence = nullptr;
-	result.influenceResource.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mappedInfluence));
-	std::memset(mappedInfluence, 0, sizeof(VertexInfluence) * frontMesh->GetVertices().size()); /// 第二引数の0ですべて初期化する
-	result.mappedInfluence = { mappedInfluence, frontMesh->GetVertices().size() };
-
-	/// vbvの作成
-	result.vbv.BufferLocation = result.influenceResource.Get()->GetGPUVirtualAddress();
-	result.vbv.SizeInBytes = static_cast<UINT>(sizeof(VertexInfluence) * frontMesh->GetVertices().size());
-	result.vbv.StrideInBytes = sizeof(VertexInfluence);
+	size_t meshCount = _model->GetMeshes().size();
+	result.meshClusters.resize(meshCount);
 
 	/// すべて単位行列で初期化
 	result.matBindPoseInverseArray.resize(_skeleton.joints.size());
@@ -148,34 +151,70 @@ SkinCluster ANIME_MATH::CreateSkinCluster(const Skeleton& _skeleton, Asset::Mode
 		[]() {return Matrix4x4::kIdentity; }
 	);
 
+	// 1. 各メッシュのインフルエンスバッファ作成
+	for (size_t meshIndex = 0; meshIndex < meshCount; ++meshIndex) {
+		Asset::Model::ModelMesh* mesh = _model->GetMeshes()[meshIndex].get();
+		size_t vertexCount = mesh->GetVertices().size();
+		auto& meshCluster = result.meshClusters[meshIndex];
 
-	for (const auto& jointWeight : _model->GetJointWeightData()) {
+		meshCluster.influenceResource.CreateResource(dxDevice, sizeof(VertexInfluence) * vertexCount);
 
-		/// jointWeight.firstにあるjoint名からskeletonに対象のjointがあるか探索
-		/// なければ次の処理
-		auto itr = _skeleton.jointMap.find(jointWeight.first);
-		if (itr == _skeleton.jointMap.end()) {
-			continue;
-		}
+		/// mapping
+		VertexInfluence* mappedInfluence = nullptr;
+		meshCluster.influenceResource.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mappedInfluence));
+		std::memset(mappedInfluence, 0, sizeof(VertexInfluence) * vertexCount);
+		meshCluster.mappedInfluence = { mappedInfluence, vertexCount };
 
-		result.matBindPoseInverseArray[(*itr).second] = jointWeight.second.matBindPoseInverse;
-		for (const auto& vertexWeight : jointWeight.second.vertexWeights) {
+		/// vbvの作成
+		meshCluster.vbv.BufferLocation = meshCluster.influenceResource.Get()->GetGPUVirtualAddress();
+		meshCluster.vbv.SizeInBytes = static_cast<UINT>(sizeof(VertexInfluence) * vertexCount);
+		meshCluster.vbv.StrideInBytes = sizeof(VertexInfluence);
 
-			/// influenceの開いている箇所に入れる
-			VertexInfluence& currentInfluence = result.mappedInfluence[vertexWeight.vertexIndex];
-			for (uint32_t index = 0u; index < kMaxInfluenceNumber; ++index) {
+		// 2. そのメッシュのウェイトデータを流し込む
+		const auto& jointWeights = _model->GetMeshJointWeightData()[meshIndex];
 
-				/// 空いている
-				if (currentInfluence.weights[index] == 0.0f) {
-					currentInfluence.weights[index] = vertexWeight.weight;
-					currentInfluence.jointIndices[index] = (*itr).second;
-					break;
+		for (const auto& [jointHash, weightData] : jointWeights) {
+			auto itr = _skeleton.jointMap.find(jointHash);
+			if (itr == _skeleton.jointMap.end()) continue;
+
+			uint32_t skeletonJointIndex = itr->second;
+			result.matBindPoseInverseArray[skeletonJointIndex] = weightData.matBindPoseInverse;
+
+			for (const auto& vertexWeight : weightData.vertexWeights) {
+				if (vertexWeight.vertexIndex >= vertexCount) {
+					// Console::LogWarning(std::format("ANIME_MATH::CreateSkinCluster: Vertex index {} is out of bounds for mesh {} (size: {}).", vertexWeight.vertexIndex, meshIndex, vertexCount));
+					continue;
+				}
+
+				VertexInfluence& influence = meshCluster.mappedInfluence[vertexWeight.vertexIndex];
+				for (uint32_t i = 0u; i < kMaxInfluenceNumber; ++i) {
+					if (influence.weights[i] == 0.0f) {
+						influence.weights[i] = vertexWeight.weight;
+						influence.jointIndices[i] = static_cast<int32_t>(skeletonJointIndex);
+						break;
+					}
 				}
 			}
-
 		}
-
 	}
 
+	Console::LogInfo("ANIME_MATH::CreateSkinCluster: Finished.");
+
 	return result;
+}
+
+void ANIME_MATH::SampleAnimation(const std::unordered_map<uint32_t, AnimationClip>& _clips, const AnimationState& _state, uint32_t _jointNameHash, SampledTransform& _outTransform) {
+    auto itClip = _clips.find(_state.clipId);
+    if (itClip == _clips.end()) return;
+
+    const AnimationClip& clip = itClip->second;
+
+    auto itAnim = clip.nodeAnimationMap.find(_jointNameHash);
+    if (itAnim == clip.nodeAnimationMap.end()) return;
+
+    const NodeAnimation& anim = itAnim->second;
+
+    if (!anim.translate.empty()) _outTransform.translate = CalculateValue(anim.translate, _state.time);
+    if (!anim.rotate.empty()) _outTransform.rotate = CalculateValue(anim.rotate, _state.time);
+    if (!anim.scale.empty()) _outTransform.scale = CalculateValue(anim.scale, _state.time);
 }

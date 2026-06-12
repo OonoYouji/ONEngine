@@ -41,6 +41,12 @@ enum class ColorSpace {
 	sRGB
 };
 
+void from_json(const nlohmann::json& j, TextureFormat& format);
+void to_json(nlohmann::json& j, const TextureFormat& format);
+
+void from_json(const nlohmann::json& j, ColorSpace& colorSpace);
+void to_json(nlohmann::json& j, const ColorSpace& colorSpace);
+
 /// ///////////////////////////////////////////////////
 /// texture
 /// ///////////////////////////////////////////////////
@@ -128,7 +134,9 @@ private:
 	std::optional<Handle> uavHandle_;
 
 	Vector2 textureSize_;
-	UINT depth_; // 3Dテクスチャ用
+	UINT depth_ = 0; // 3Dテクスチャ用
+	UINT arraySize_ = 1; // 配列テクスチャ用
+	bool isCubeMap_ = false;
 
 	/// テクスチャのフォーマット、UAVを作成する際に必要
 	DXGI_FORMAT srvFormat_;
@@ -182,6 +190,8 @@ public:
 
 	const Vector2& GetTextureSize() const;
 	UINT GetTextureDepth() const;
+	bool IsCubeMap() const { return isCubeMap_; }
+	bool IsStandard2D() const { return !isCubeMap_ && depth_ == 0 && arraySize_ == 1; }
 
 };
 

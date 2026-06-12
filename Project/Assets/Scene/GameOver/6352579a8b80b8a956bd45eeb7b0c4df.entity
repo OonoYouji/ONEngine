@@ -1,0 +1,82 @@
+{
+    "active": true,
+    "components": [
+        {
+            "enable": 1,
+            "matrixCalcFlags": 7,
+            "position": {
+                "x": 0.0,
+                "y": 10.0,
+                "z": 0.0
+            },
+            "rotate": {
+                "w": 1.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "scale": {
+                "x": 174.90000915527344,
+                "y": 43.72499084472656,
+                "z": 1.7080073356628418
+            },
+            "type": "Transform"
+        },
+        {
+            "AnimationAutoPlay": {
+                "DELAY": 0.5
+            },
+            "type": "Variables"
+        },
+        {
+            "enable": 1,
+            "material": {
+                "baseColor": {
+                    "w": 1.0,
+                    "x": 1.0,
+                    "y": 0.3400000035762787,
+                    "z": 0.12999999523162842
+                },
+                "baseTextureGuid": "8650d14e09ad23c7e1a03fb91b957a6c",
+                "guid": "00000000000000000000000000000000",
+                "normalTextureGuid": "00000000000000000000000000000000",
+                "postEffectFlags": 0,
+                "uvTransform": {
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotate": 0.0,
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    }
+                }
+            },
+            "type": "SpriteRenderer"
+        },
+        {
+            "autoPlay": false,
+            "clipPath": "./Assets/Anims/GameOverText.anim",
+            "currentTime": 0.0,
+            "isLooping": false,
+            "isPlaying": false,
+            "speed": 1.0,
+            "type": "AnimationPlayer"
+        },
+        {
+            "enable": 1,
+            "scripts": [
+                {
+                    "enable": true,
+                    "name": "AnimationAutoPlay"
+                }
+            ],
+            "type": "Script"
+        }
+    ],
+    "guid": "6352579a8b80b8a956bd45eeb7b0c4df",
+    "name": "GameOverText",
+    "parentGuid": "e059d18c3aa6d0577e148c0870d37d34",
+    "prefabName": ""
+}

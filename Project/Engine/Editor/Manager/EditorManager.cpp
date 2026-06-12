@@ -2,7 +2,10 @@
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
+#include "Engine/Scene/SceneManager.h"
 #include "Engine/Core/Utility/Utility.h"
+#include "Engine/Core/Utility/Input/Input.h"
+#include "Engine/Asset/Collection/AssetCollection.h"
 
 #include "EditCommand.h"
 #include "Engine/Editor/Commands/WorldEditorCommands/WorldEditorCommands.h"
@@ -17,13 +20,17 @@
 #include "Engine/Editor/EditorCompute/VoxelTerrainEditor/VoxelTerrainEditorComputePipeline.h"
 #include "Engine/Editor/EditorCompute/GameEntityPicking/GameEntityPickingPipeline.h"
 
+#include "HotReloadManager.h"
+#include "Engine/Script/MonoScriptEngine.h"
+
 using namespace Editor;
 
 EditorManager::EditorManager(ONEngine::EntityComponentSystem* _ecs) : pEcs_(_ecs) {}
 EditorManager::~EditorManager() = default;
 
-void EditorManager::Initialize(ONEngine::DxManager* dxm, ONEngine::ShaderCompiler* sc) {
+void EditorManager::Initialize(ONEngine::DxManager* dxm, ONEngine::ShaderCompiler* sc, ONEngine::SceneManager* sm) {
 	pDxManager_ = dxm;
+	pSceneManager_ = sm;
 	runningCommand_ = nullptr;
 
 	/// EditCommandへEditorManagerのポインタを渡す
@@ -31,16 +38,35 @@ void EditorManager::Initialize(ONEngine::DxManager* dxm, ONEngine::ShaderCompile
 
 	/// editor compute の登録
 	AddEditorCompute(dxm, sc, std::make_unique<GameEntityPickingPipeline>());
-	AddEditorCompute(dxm, sc, std::make_unique<TerrainDataOutput>());
-	AddEditorCompute(dxm, sc, std::make_unique<TerrainVertexCreator>());
-	AddEditorCompute(dxm, sc, std::make_unique<TerrainVertexEditorCompute>());
-	AddEditorCompute(dxm, sc, std::make_unique<RiverMeshGeneratePipeline>());
-	AddEditorCompute(dxm, sc, std::make_unique<RiverTerrainAdjustPipeline>());
-	AddEditorCompute(dxm, sc, std::make_unique<GrassArrangementPipeline>());
-	AddEditorCompute(dxm, sc, std::make_unique<VoxelTerrainEditorComputePipeline>());
+	//AddEditorCompute(dxm, sc, std::make_unique<TerrainDataOutput>());
+	//AddEditorCompute(dxm, sc, std::make_unique<TerrainVertexCreator>());
+	//AddEditorCompute(dxm, sc, std::make_unique<TerrainVertexEditorCompute>());
+	//AddEditorCompute(dxm, sc, std::make_unique<RiverMeshGeneratePipeline>());
+	//AddEditorCompute(dxm, sc, std::make_unique<RiverTerrainAdjustPipeline>());
+	//AddEditorCompute(dxm, sc, std::make_unique<GrassArrangementPipeline>());
+	//AddEditorCompute(dxm, sc, std::make_unique<VoxelTerrainEditorComputePipeline>());
 }
 
 void EditorManager::Update(ONEngine::Asset::AssetCollection* ac) {
+
+	/// ホットリロードリクエストの処理（フレームの開始時に行うことでD3D12の状態整合性を保つ）
+	auto hrRequests = Editor::HotReloadManager::GetInstance().ConsumeRequests();
+	bool isReloaded = false;
+	for (const auto& path : hrRequests.assetPaths) {
+		ONEngine::Console::Log("[HotReload] Reloading asset: " + path, ONEngine::LogCategory::Engine);
+		ac->ReloadAsset(path);
+		isReloaded = true;
+	}
+	if (hrRequests.scriptHotReload) {
+		ONEngine::Console::Log("[HotReload] Script hot-reload requested.", ONEngine::LogCategory::ScriptEngine);
+		ONEngine::MonoScriptEngine::GetInstance().HotReload();
+		isReloaded = true;
+	}
+
+	/// リロードが行われた場合はコマンドリストがリセットされているため、ヒープを再バインドする
+	if (isReloaded) {
+		pDxManager_->HeapBindToCommandList();
+	}
 
 	/// エディタのコマンドを実行する
 	for (auto& compute : editorComputes_) {
@@ -55,17 +81,26 @@ void EditorManager::Update(ONEngine::Asset::AssetCollection* ac) {
 			ONEngine::Console::Log("editor command is running");
 		}
 
-	} else {
-#ifdef DEBUG_MODE
-		// undo, redo を行う
-		if (ONEngine::Input::PressKey(DIK_LCONTROL) && ONEngine::Input::TriggerKey(DIK_Z)) {
-			Undo();
+	}
+
+	// undo, redo を行う
+	if (ONEngine::Input::PressKey(DIK_LCONTROL)) {
+		if (ONEngine::Input::TriggerKey(DIK_Z)) {
+			if (ONEngine::Input::PressKey(DIK_LSHIFT)) {
+				Redo();
+			} else {
+				Undo();
+			}
 		}
 
-		if (ONEngine::Input::PressKey(DIK_LCONTROL) && ONEngine::Input::TriggerKey(DIK_Y)) {
+		if (ONEngine::Input::TriggerKey(DIK_Y)) {
 			Redo();
 		}
-#endif // DEBUG_MODE
+
+		// Ctrl+S でシーンを保存
+		if (ONEngine::Input::TriggerKey(DIK_S)) {
+			pSceneManager_->SaveCurrentScene();
+		}
 	}
 
 }
@@ -74,27 +109,50 @@ void EditorManager::Update(ONEngine::Asset::AssetCollection* ac) {
 
 void EditorManager::Undo() {
 	if (commandStack_.empty()) {
+		ONEngine::Console::Log("[UndoDebug] Undo requested but command stack is empty.");
 		return;
 	}
+
 	std::unique_ptr<IEditCommand> command = std::move(commandStack_.back());
-	command->Undo();
-	redoStack_.push_back(std::move(command));
 	commandStack_.pop_back();
+	ONEngine::Console::Log(std::format("[UndoDebug] Popped command for Undo. Remaining stack size: {}", commandStack_.size()));
+
+	EDITOR_STATE result = command->Undo();
+	if (result == EDITOR_STATE_FINISH) {
+		ONEngine::Console::Log("[UndoDebug] Undo execution SUCCESS.");
+		redoStack_.push_back(std::move(command));
+		ONEngine::Console::Log(std::format("[UndoDebug] Command pushed to redo stack. Redo stack size: {}", redoStack_.size()));
+		MarkSceneDirty();
+	} else {
+		ONEngine::Console::Log(std::format("[UndoDebug] Undo execution FAILED (state: {}).", (int)result));
+	}
 }
 
 void EditorManager::Redo() {
 	if (redoStack_.empty()) {
+		ONEngine::Console::Log("[UndoDebug] Redo requested but redo stack is empty.");
 		return;
 	}
 
-	/// stackから実行する
 	std::unique_ptr<IEditCommand> command = std::move(redoStack_.back());
-	command->Execute();
 	redoStack_.pop_back();
+	ONEngine::Console::Log(std::format("[UndoDebug] Popped command for Redo. Remaining redo stack size: {}", redoStack_.size()));
 
-	/// command stackに戻す
-	commandStack_.push_back(std::move(command));
+	EDITOR_STATE result = command->Execute();
+	if (result == EDITOR_STATE_FINISH) {
+		ONEngine::Console::Log("[UndoDebug] Redo execution SUCCESS.");
+		commandStack_.push_back(std::move(command));
+		ONEngine::Console::Log(std::format("[UndoDebug] Command pushed back to command stack. Size: {}", commandStack_.size()));
+		MarkSceneDirty();
+	} else {
+		ONEngine::Console::Log(std::format("[UndoDebug] Redo execution FAILED (state: {}).", (int)result));
+	}
+}
 
+void EditorManager::MarkSceneDirty() {
+	if (pSceneManager_) {
+		pSceneManager_->MarkDirty();
+	}
 }
 
 void EditorManager::AddEditorCompute(ONEngine::DxManager* dxm, ONEngine::ShaderCompiler* sc, std::unique_ptr<IEditorCompute> compute) {

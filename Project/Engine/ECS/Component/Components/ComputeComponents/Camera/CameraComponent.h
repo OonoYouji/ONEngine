@@ -27,6 +27,11 @@ namespace ComponentDebug {
 void CameraDebug(CameraComponent* _camera);
 }
 
+namespace ComponentApplyFuncs {
+void ApplyCamera(void* _element, class ECSGroup* _ecsGroup);
+void FetchCamera(void* _element, class ECSGroup* _ecsGroup);
+}
+
 /// Json変換
 void from_json(const nlohmann::json& _j, CameraComponent& _c);
 void to_json(nlohmann::json& _j, const CameraComponent& _c);
@@ -41,8 +46,11 @@ class CameraComponent : public IComponent {
 
 	/// ----- friend function ----- ///
 	friend void ComponentDebug::CameraDebug(CameraComponent* _camera);
+	friend void ComponentApplyFuncs::ApplyCamera(void* _element, class ECSGroup* _ecsGroup);
+	friend void ComponentApplyFuncs::FetchCamera(void* _element, class ECSGroup* _ecsGroup);
 	friend void from_json(const nlohmann::json& _j, CameraComponent& _c);
 	friend void to_json(nlohmann::json& _j, const CameraComponent& _c);
+
 public:
 
 	struct FogParams {

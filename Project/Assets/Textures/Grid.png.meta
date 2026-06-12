@@ -1,4 +1,8 @@
 {
-    "version": 1,
-    "guid": "cbd8e282d323f5807ce967d6a78469b6"
+    "colorSpace": "Linear",
+    "format": "RGBA8_UNORM",
+    "guid": "9d269da7479adf9c30347e494d3cd648",
+    "name": "Grid",
+    "type": "Texture",
+    "version": 1
 }

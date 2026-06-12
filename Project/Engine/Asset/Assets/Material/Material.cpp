@@ -52,6 +52,9 @@ void GenerateMaterialFile(const std::string& _filepath, Material* _material) {
 	ofs << "guid: " << material.guid.ToString() << "\n";
 	ofs << "BaseColor: " << material.baseColor.x << " " << material.baseColor.y << " " << material.baseColor.z << " " << material.baseColor.w << "\n";
 	ofs << "PostEffectFlags: " << material.postEffectFlags << "\n";
+	ofs << "UVTransform_Position: " << material.uvTransform.position.x << " " << material.uvTransform.position.y << "\n";
+	ofs << "UVTransform_Scale: " << material.uvTransform.scale.x << " " << material.uvTransform.scale.y << "\n";
+	ofs << "UVTransform_Rotate: " << material.uvTransform.rotate << "\n";
 
 	ofs.close();
 }
@@ -69,6 +72,8 @@ void from_json(const nlohmann::json& _j, Material& _material) {
 	_material.guid = _j.value("guid", Guid{});
 	_material.baseColor = _j.value("baseColor", Vector4::Red);
 	_material.postEffectFlags = _j.value("postEffectFlags", 1u);
+	_material.uvTransform = _j.value("uvTransform", UVTransform{});
+
 	Guid baseTextureGuid = _j.value("baseTextureGuid", Guid::kInvalid);
 	if(baseTextureGuid.CheckValid()) {
 		_material.baseTextureGuid_ = baseTextureGuid;
@@ -90,6 +95,7 @@ void to_json(nlohmann::json& _j, const Material& _material) {
 		{ "guid", _material.guid },
 		{ "baseColor", _material.baseColor },
 		{ "postEffectFlags", _material.postEffectFlags },
+		{ "uvTransform", _material.uvTransform },
 		{ "baseTextureGuid", _material.baseTextureGuid_.has_value() ? _material.baseTextureGuid_.value() : Guid::kInvalid },
 		{ "normalTextureGuid", _material.normalTextureGuid_.has_value() ? _material.normalTextureGuid_.value() : Guid::kInvalid },
 	};

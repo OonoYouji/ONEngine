@@ -1,4 +1,8 @@
 {
-    "version": 1,
-    "guid": "6d46b53d01009d0166af6d4aee0acb0c"
+    "colorSpace": "Linear",
+    "format": "RGBA8_UNORM",
+    "guid": "ac842be8df6723ae5fa4c2c06a0e1f11",
+    "name": "circle",
+    "type": "Texture",
+    "version": 1
 }

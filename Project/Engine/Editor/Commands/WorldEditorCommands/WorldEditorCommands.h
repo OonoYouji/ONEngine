@@ -41,6 +41,32 @@ private:
 
 
 /// ///////////////////////////////////////////////////
+/// プリミティブなオブジェクトの作成コマンド
+/// ///////////////////////////////////////////////////
+class CreatePrimitiveCommand : public IEditCommand {
+public:
+	enum class Type {
+		Camera,
+		DirectionalLight,
+		Mesh,
+	};
+
+	CreatePrimitiveCommand(ONEngine::ECSGroup* _ecs, Type _type, ONEngine::GameEntity* _parentEntity = nullptr);
+	~CreatePrimitiveCommand() = default;
+
+	EDITOR_STATE Execute() override;
+	EDITOR_STATE Undo() override;
+
+private:
+	ONEngine::ECSGroup* pEcsGroup_ = nullptr;
+	ONEngine::GameEntity* generatedEntity_ = nullptr;
+	ONEngine::Guid generatedGuid_;
+	ONEngine::Guid parentGuid_;
+	Type type_;
+};
+
+
+/// ///////////////////////////////////////////////////
 /// シーンに配置してあるオブジェクトの名前をへんこうする 
 /// ///////////////////////////////////////////////////
 class EntityRenameCommand : public IEditCommand {
@@ -164,6 +190,45 @@ private:
 	ONEngine::GameEntity* pEntity_ = nullptr;
 	ONEngine::GameEntity* pNewParent_ = nullptr;
 	ONEngine::GameEntity* pOldParent_ = nullptr;
+};
+
+/// ///////////////////////////////////////////////////
+/// エンティティの順番を入れ替えるコマンド
+/// ///////////////////////////////////////////////////
+class ReorderEntityCommand : public IEditCommand {
+public:
+	ReorderEntityCommand(ONEngine::ECSGroup* _ecsGroup, ONEngine::GameEntity* _entity, ONEngine::GameEntity* _newParent, uint32_t _newIndex);
+	~ReorderEntityCommand() = default;
+
+	EDITOR_STATE Execute() override;
+	EDITOR_STATE Undo() override;
+
+private:
+	ONEngine::ECSGroup* pEcsGroup_;
+	ONEngine::GameEntity* pEntity_;
+	ONEngine::GameEntity* pNewParent_;
+	ONEngine::GameEntity* pOldParent_;
+	uint32_t newIndex_;
+	uint32_t oldIndex_;
+};
+
+/// ///////////////////////////////////////////////////
+/// プレハブからインスタンスを作成するコマンド
+/// ///////////////////////////////////////////////////
+class InstantiatePrefabCommand : public IEditCommand {
+public:
+	InstantiatePrefabCommand(ONEngine::ECSGroup* _ecs, const std::string& _prefabPath, ONEngine::GameEntity* _parentEntity = nullptr);
+	~InstantiatePrefabCommand() = default;
+
+	EDITOR_STATE Execute() override;
+	EDITOR_STATE Undo() override;
+
+private:
+	ONEngine::ECSGroup* pEcsGroup_ = nullptr;
+	ONEngine::GameEntity* generatedEntity_ = nullptr;
+	ONEngine::Guid generatedGuid_;
+	ONEngine::Guid parentGuid_;
+	const std::string prefabPath_;
 };
 
 } /// Editor

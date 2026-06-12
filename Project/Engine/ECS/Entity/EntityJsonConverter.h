@@ -9,14 +9,14 @@
 namespace ONEngine {
 
 namespace EntityJsonConverter {
-nlohmann::json ToJson(const GameEntity* _entity);
+nlohmann::json ToJson(const GameEntity* _entity, bool _forceFull = false);
 
 
 /// @brief JsonからGameEntityを生成する
 /// @param _json GameEntityのJsonデータ
 /// @param _entity 生成に使用するGameEntityのポインタ
 /// @param _groupName 生成元のECSGroup名
-void FromJson(const nlohmann::json& _json, GameEntity* _entity, const std::string& _groupName);
+void FromJson(const nlohmann::json& _json, GameEntity* _entity, const std::string& _groupName, bool _merge = true);
 
 /// @brief Transform専用のJsonからGameEntityを生成する
 /// @param _json 生成元のJsonデータ

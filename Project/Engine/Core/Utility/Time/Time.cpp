@@ -24,6 +24,9 @@ namespace {
 
 		TimeController() {
 			timeScale_ = 1.0f;
+			time_ = std::chrono::high_resolution_clock::now();
+			deltaTime_ = 0.0f;
+			unscaledDeltaTime_ = 0.0f;
 		}
 		~TimeController() {}
 

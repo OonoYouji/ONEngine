@@ -68,6 +68,7 @@ private:
 	/// ----- other class ----- ///
 
 	Asset::AssetCollection* pAssetCollection_ = nullptr;
+	DxManager* pDxManager_ = nullptr;
 
 
 	const size_t                      kMaxRenderingSpriteCount_ = 1024; ///< 最大描画スプライト数

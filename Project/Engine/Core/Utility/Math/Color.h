@@ -65,25 +65,6 @@ struct Color final {
 
 	inline operator Vector4() const { return { r, g, b, a }; } ///< Vector4に変換
 
-	inline Color& operator=(const Vector4& _color);
-	inline Color& operator=(const Color& _color);
-
 };
-
-inline Color& Color::operator=(const Vector4& _color) {
-	r = _color.x;
-	g = _color.y;
-	b = _color.z;
-	a = _color.w;
-	return *this;
-}
-
-inline Color& Color::operator=(const Color& _color) {
-	r = _color.r;
-	g = _color.g;
-	b = _color.b;
-	a = _color.a;
-	return *this;
-}
 
 } /// ONEngine

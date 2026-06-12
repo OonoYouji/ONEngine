@@ -3,6 +3,7 @@
 /// std
 #include <fstream>
 #include <mutex>
+#include <format>
 
 /// externals
 #include <magic_enum/magic_enum.hpp>
@@ -83,10 +84,11 @@ std::optional<Texture> AssetLoader<Texture>::Reload(const std::string& _filepath
 Meta<Texture::MetaData> AssetLoader<Texture>::GetMetaData(const std::string& _filepath) {
 	Meta<Texture::MetaData> res{};
 
-	res.base = LoadMetaBaseFromFile(_filepath);
+	const std::string metaPath = _filepath + ".meta";
+	res.base = LoadOrGenerateMetaBase(metaPath, _filepath);
 
 	nlohmann::json j;
-	std::ifstream ifs(_filepath);
+	std::ifstream ifs(metaPath);
 	if(!ifs.is_open()) {
 		return {};
 	}
@@ -174,6 +176,8 @@ std::optional<Texture> AssetLoader<Texture>::Load2DTexture(const std::string& _f
 		Vector2 textureSize = { static_cast<float>(metadata.width), static_cast<float>(metadata.height) };
 		texture.textureSize_ = textureSize;
 		texture.srvFormat_ = metadata.format;
+		texture.isCubeMap_ = metadata.IsCubemap();
+		texture.arraySize_ = static_cast<UINT>(metadata.arraySize);
 
 		Console::Log("[Success Texture Info] Path: \"" + _filepath + "\"");
 		Console::Log(" - DescriptorIndex: " + std::to_string(texture.srvHandle_->descriptorIndex));
@@ -314,6 +318,8 @@ std::optional<Texture> AssetLoader<Texture>::Reload2DTexture(const std::string& 
 		Vector2 textureSize = { static_cast<float>(metadata.width), static_cast<float>(metadata.height) };
 		texture.textureSize_ = textureSize;
 		texture.srvFormat_ = metadata.format;
+		texture.isCubeMap_ = metadata.IsCubemap();
+		texture.arraySize_ = static_cast<UINT>(metadata.arraySize);
 
 		Console::Log("[Success Reload Texture Info] Path: \"" + _filepath + "\"");
 	}
@@ -392,10 +398,22 @@ std::optional<Texture> AssetLoader<Texture>::Reload3DTexture(const std::string& 
 DirectX::ScratchImage AssetLoader<Texture>::LoadScratchImage2D(const std::string& _filepath) {
 	DirectX::ScratchImage image{};
 	std::wstring          filePathW = ConvertString(_filepath);
+	HRESULT hr = S_OK;
+
 	if(_filepath.ends_with(".dds")) {
-		DirectX::LoadFromDDSFile(filePathW.c_str(), DirectX::DDS_FLAGS_NONE, nullptr, image);
+		hr = DirectX::LoadFromDDSFile(filePathW.c_str(), DirectX::DDS_FLAGS_NONE, nullptr, image);
 	} else {
-		DirectX::LoadFromWICFile(filePathW.c_str(), DirectX::WIC_FLAGS_FORCE_SRGB, nullptr, image);
+		hr = DirectX::LoadFromWICFile(filePathW.c_str(), DirectX::WIC_FLAGS_FORCE_SRGB, nullptr, image);
+		if (FAILED(hr)) {
+			// sRGB強制で失敗した場合は、フラグなしでリトライ（グレースケールや特殊フォーマット用）
+			hr = DirectX::LoadFromWICFile(filePathW.c_str(), DirectX::WIC_FLAGS_NONE, nullptr, image);
+		}
+	}
+
+	if (FAILED(hr)) {
+		std::lock_guard<std::mutex> lock(s_textureGpuMutex);
+		Console::LogError(std::format("[Load Failed] [Texture WIC/DDS] - HRESULT: 0x{:08X}, Path: \"{}\"", (uint32_t)hr, _filepath));
+		return DirectX::ScratchImage{};
 	}
 
 	DirectX::ScratchImage mipImages{};
@@ -403,7 +421,12 @@ DirectX::ScratchImage AssetLoader<Texture>::LoadScratchImage2D(const std::string
 	if(DirectX::IsCompressed(image.GetMetadata().format)) {
 		mipImages = std::move(image);
 	} else {
-		DirectX::GenerateMipMaps(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::TEX_FILTER_SRGB, 0, mipImages);
+		hr = DirectX::GenerateMipMaps(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::TEX_FILTER_SRGB, 0, mipImages);
+		if (FAILED(hr)) {
+			std::lock_guard<std::mutex> lock(s_textureGpuMutex);
+			Console::LogWarning(std::format("[MipMap Failed] [Texture] - HRESULT: 0x{:08X}, Path: \"{}\"", (uint32_t)hr, _filepath));
+			mipImages = std::move(image);
+		}
 	}
 	return mipImages;
 }

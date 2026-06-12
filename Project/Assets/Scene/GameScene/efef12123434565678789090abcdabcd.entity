@@ -1,0 +1,33 @@
+{
+    "active": true,
+    "components": [
+        {
+            "enable": 1,
+            "matrixCalcFlags": 7,
+            "position": {
+                "x": -119.04468536376953,
+                "y": 1.52587890625e-05,
+                "z": -73.66912841796875
+            },
+            "rotate": {
+                "w": 1.0,
+                "x": 0.0,
+                "y": -0.0,
+                "z": 0.0
+            },
+            "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "type": "Transform"
+        },
+        {
+            "type": "Variables"
+        }
+    ],
+    "guid": "efef12123434565678789090abcdabcd",
+    "name": "Phase0_WP_2",
+    "parentGuid": "b68ad31e79ba3b2d205105be9fefb4cd",
+    "prefabName": ""
+}

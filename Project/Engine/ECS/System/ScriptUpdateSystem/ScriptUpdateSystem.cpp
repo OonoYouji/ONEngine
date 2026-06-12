@@ -51,16 +51,6 @@ void ScriptUpdateSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
 
 void ScriptUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
 #ifdef DEBUG_MODE
-	/// この関数の処理にかかっている時間を計算する
-	auto startTime = std::chrono::high_resolution_clock::now();
-
-	{	/// debug monoのヒープの状態を出力
-		size_t heapSize = mono_gc_get_heap_size();
-		size_t usedSize = mono_gc_get_used_size();
-
-		Console::LogInfo("[mono] GC Heap Size : " + std::to_string(heapSize / 1024) + "KB");
-		Console::LogInfo("[mono] GC Used Size : " + std::to_string(usedSize / 1024) + "KB");
-	}
 	CPUTimeStamp::GetInstance().BeginTimeStamp(CPUTimeStampID::CSharpScriptUpdate);
 #endif // DEBUG_MODE
 
@@ -73,9 +63,6 @@ void ScriptUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
 
 #ifdef DEBUG_MODE
 	CPUTimeStamp::GetInstance().EndTimeStamp(CPUTimeStampID::CSharpScriptUpdate);
-	auto endTime = std::chrono::high_resolution_clock::now();
-	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime).count();
-	Console::LogInfo("[ScriptUpdateSystem] RuntimeUpdate took " + std::to_string(duration) + " microseconds");
 #endif // DEBUG_MODE
 }
 

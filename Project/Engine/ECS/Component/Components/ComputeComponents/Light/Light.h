@@ -11,6 +11,7 @@
 namespace ONEngine {
 
 class DirectionalLight : public IComponent {
+	friend class AnimationPlayer;
 public:
 
 	/// ===================================================
@@ -58,6 +59,12 @@ public:
 	/// @brief 光の色の取得
 	/// @return 光の色
 	const Vector4& GetColor() const { return color_; }
+
+	/// @brief アニメーション制御用強度への参照取得
+	float& GetIntensityForAnimation() { return intensity_; }
+
+	/// @brief アニメーション制御用色への参照取得
+	Vector4& GetColorForAnimation() { return color_; }
 };
 
 

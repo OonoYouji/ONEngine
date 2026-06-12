@@ -6,7 +6,7 @@
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Components/RendererComponents/Mesh/DissolveMeshRenderer.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
-
+#include "Engine/Core/DirectX12/GPUTimeStamp/GPUTimeStamp.h"
 
 
 using namespace ONEngine;
@@ -77,6 +77,8 @@ void DissolveMeshRenderingPipeline::Draw(ECSGroup* _ecsGroup, CameraComponent* _
 		return;
 	}
 
+	GPUTimeStamp::GetInstance().BeginTimeStamp(GPUTimeStampID::DissolveMeshRendering);
+
 	using DMRList = std::list<DissolveMeshRenderer*>;
 	std::unordered_map<Guid, DMRList> meshCompMap;
 	for(auto& dmr : dmrArray->GetUsedComponents()) {
@@ -112,6 +114,8 @@ void DissolveMeshRenderingPipeline::Draw(ECSGroup* _ecsGroup, CameraComponent* _
 			continue;
 		}
 
+		uint32_t batchStartIndex = instanceIndex_;
+
 		for(const auto& dmr : dmrList) {
 
 			const GPUMaterial& gpuMat = dmr->GetGPUMaterial(pAssetCollection_);
@@ -125,11 +129,14 @@ void DissolveMeshRenderingPipeline::Draw(ECSGroup* _ecsGroup, CameraComponent* _
 				GPUDissolveParams{
 					dmr->GetDissolveTextureId(pAssetCollection_),
 					dmr->GetDissolveCompare(),
-					dmr->GetDissolveThreshold()
+					dmr->GetDissolveThreshold(),
+					dmr->GetEdgeWidth(),
+					dmr->GetEdgeColor()
 				}
 			);
 
 			++transformIndex;
+			++instanceIndex_;
 		}
 
 		sbufMaterials_.SRVBindForGraphicsCommandList(cmdList, SRV_MATERIAL);
@@ -137,7 +144,7 @@ void DissolveMeshRenderingPipeline::Draw(ECSGroup* _ecsGroup, CameraComponent* _
 		sbufTransforms_.SRVBindForGraphicsCommandList(cmdList, SRV_TRANSFORM);
 		sbufDissolveParams_.SRVBindForGraphicsCommandList(cmdList, SRV_DISSOLVE_PARAMS);
 
-		cmdList->SetGraphicsRoot32BitConstant(CBV_INSTANCE_OFFSET, instanceIndex_, 0);
+		cmdList->SetGraphicsRoot32BitConstant(CBV_INSTANCE_OFFSET, batchStartIndex, 0);
 
 		for(const auto& mesh : model->GetMeshes()) {
 			cmdList->IASetVertexBuffers(0, 1, &mesh->GetVBV());
@@ -152,4 +159,7 @@ void DissolveMeshRenderingPipeline::Draw(ECSGroup* _ecsGroup, CameraComponent* _
 
 	}
 
+	GPUTimeStamp::GetInstance().EndTimeStamp(GPUTimeStampID::DissolveMeshRendering);
 }
+
+

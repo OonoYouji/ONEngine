@@ -1,0 +1,28 @@
+{
+    "components": [
+        {
+            "FieldFall": {
+                "fallDistance": 10.0,
+                "fallDuration": 0.699999988079071,
+                "returnDuration": 0.699999988079071,
+                "waitDuration": 5.0
+            },
+            "type": "Variables"
+        },
+        {
+            "enable": 1,
+            "scripts": [
+                {
+                    "enable": true,
+                    "name": "FieldFall"
+                }
+            ],
+            "type": "Script"
+        }
+    ],
+    "guid": "954723531e59d2873e81d2d9c6ef1037",
+    "id": 2,
+    "name": "FieldCell",
+    "parent": null,
+    "prefabName": "FieldCell"
+}

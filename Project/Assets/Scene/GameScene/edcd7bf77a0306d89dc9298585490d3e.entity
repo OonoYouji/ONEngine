@@ -1,0 +1,55 @@
+{
+    "active": true,
+    "components": [
+        {
+            "enable": 1,
+            "matrixCalcFlags": 7,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "rotate": {
+                "w": 1.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "type": "Transform"
+        },
+        {
+            "BGMAutoPlay": {
+                "BGM_PATH": "./Assets/Sounds/MainGameSounds/bgm/game.mp3",
+                "DELAY": 1.0,
+                "PHADE_IN_TIME": 0.10000000149011612
+            },
+            "type": "Variables"
+        },
+        {
+            "enable": 1,
+            "path": "./Assets/Sounds/MainGameSounds/bgm/game.mp3",
+            "pitch": 1.0,
+            "type": "AudioSource",
+            "volume": 0.699999988079071
+        },
+        {
+            "enable": 1,
+            "scripts": [
+                {
+                    "enable": true,
+                    "name": "BGMAutoPlay"
+                }
+            ],
+            "type": "Script"
+        }
+    ],
+    "guid": "edcd7bf77a0306d89dc9298585490d3e",
+    "name": "BGM",
+    "parentGuid": "ec4d71c48a3d8fe01a7eb5f4a3ab940f",
+    "prefabName": ""
+}

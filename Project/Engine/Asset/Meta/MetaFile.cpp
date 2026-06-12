@@ -142,12 +142,40 @@ namespace ONEngine::Asset {
 //	return metaFile;
 //}
 
-MetaBase LoadMetaBaseFromFile(const std::string& filepath) {
+MetaBase LoadOrGenerateMetaBase(const std::string& filepath, const std::string& assetPath) {
 
 	nlohmann::json j;
 	std::ifstream ifs(filepath);
 	if(!ifs.is_open()) {
-		return {};
+		/// ファイルが存在しない場合は生成する
+		MetaBase metaBase;
+		metaBase.guid = GenerateGuid();
+		
+		std::filesystem::path p(assetPath);
+		metaBase.type = GetAssetTypeFromExtension(p.extension().string());
+		metaBase.name = p.stem().string();
+
+		nlohmann::json jData;
+		if(metaBase.type == AssetType::Shader) {
+			jData["shaderStage"] = "Vertex";
+			jData["entryPoint"] = "main";
+			jData["profile"] = "vs_6_0";
+		} else if(metaBase.type == AssetType::Texture) {
+			jData["format"] = "RGBA8_UNORM";
+			jData["colorSpace"] = "Linear";
+		} else if(metaBase.type == AssetType::Mesh) {
+			jData["scale"] = 1.0f;
+		} else if(metaBase.type == AssetType::Audio) {
+			jData["duration"] = 0.0f;
+		} else if(metaBase.type == AssetType::Material) {
+			jData["useShader"] = "";
+			jData["albedoColor"] = {1.0f, 1.0f, 1.0f, 1.0f};
+			jData["albedoTextureGuid"] = Guid::kInvalid.ToString();
+			jData["normalTextureGuid"] = Guid::kInvalid.ToString();
+		}
+
+		SaveMetaToFile(filepath, metaBase, jData);
+		return metaBase;
 	}
 
 	ifs >> j;
@@ -158,6 +186,25 @@ MetaBase LoadMetaBaseFromFile(const std::string& filepath) {
 	metaBase.name = j.value("name", std::string{});
 
 	return metaBase;
+}
+
+void SaveMetaToFile(const std::string& filepath, const MetaBase& metaBase, const nlohmann::json& jMetaData) {
+	nlohmann::json j;
+	j["version"] = 1;
+	j["guid"] = metaBase.guid;
+	j["type"] = metaBase.type;
+	j["name"] = metaBase.name;
+
+	// アセット固有のデータをマージ
+	for (auto it = jMetaData.begin(); it != jMetaData.end(); ++it) {
+		j[it.key()] = it.value();
+	}
+
+	std::ofstream ofs(filepath);
+	if (ofs.is_open()) {
+		ofs << j.dump(4);
+		ofs.close();
+	}
 }
 
 } /// namespace ONEngine::Asset

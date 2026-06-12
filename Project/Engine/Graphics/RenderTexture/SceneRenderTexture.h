@@ -49,13 +49,15 @@ public:
 	);
 
 
-	void SetRenderTarget(DxCommand* _dxCommand, DxDSVHeap* _dxDSVHeap);
+	void SetRenderTarget(DxCommand* _dxCommand, DxDSVHeap* _dxDSVHeap, bool _clear = true);
 
 	void CreateBarrierRenderTarget(DxCommand* _dxCommand);
 	void CreateBarrierPixelShaderResource(DxCommand* _dxCommand);
 
 	const std::string& GetName(size_t _index) const;
 	const std::string& GetName() const;
+
+	DxResource& GetDxResource(size_t _index);
 
 private:
 	/// ===================================================

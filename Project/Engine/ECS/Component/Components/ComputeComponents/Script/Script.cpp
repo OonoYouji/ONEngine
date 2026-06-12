@@ -23,7 +23,7 @@ bool Script::ScriptData::GetEnable(GameEntity* _entity) {
 	);
 
 	if(!obj) {
-		return false;
+		return enable;
 	}
 
 	MonoClass* monoBehaviorClass = mono_object_get_class(obj);
@@ -40,6 +40,7 @@ void Script::ScriptData::SetEnable(GameEntity* _entity, bool _enable) {
 	);
 
 	if(!obj) {
+		enable = _enable;
 		return;
 	}
 
@@ -210,9 +211,15 @@ void ComponentDebug::ScriptDebug(Script* _script) {
 			MonoScriptEngine& monoEngine = MonoScriptEngine::GetInstance();
 			MonoObject* safeObj = monoEngine.GetMonoBehaviorFromCS(entity->GetECSGroup()->GetGroupName(), entity->GetId(), script.scriptName);
 
-
+			MonoClass* monoClass = nullptr;
 			if(safeObj) {
-				MonoClass* monoClass = mono_object_get_class(safeObj);
+				monoClass = mono_object_get_class(safeObj);
+			} else if(monoEngine.Image()) {
+				monoClass = mono_class_from_name(monoEngine.Image(), "", script.scriptName.c_str());
+			}
+
+
+			if(monoClass) {
 				MonoClass* serializeFieldClass = mono_class_from_name(mono_class_get_image(monoClass), "", "SerializeField");
 				MonoClassField* field = nullptr;
 				void* iter = nullptr;
@@ -226,8 +233,20 @@ void ComponentDebug::ScriptDebug(Script* _script) {
 						MonoType* fieldType = mono_field_get_type(field);
 						int type = mono_type_get_type(fieldType);
 
-						ShowFiled(type, safeObj, field, fieldName);
+						Console::Log(std::format("[UndoDebug] Found [SerializeField] field: '{}' (type: {}) in script '{}'", fieldName, type, script.scriptName));
+
+						if(safeObj) {
+							ShowField(script.scriptName, type, safeObj, field, fieldName);
+						} else {
+							Variables* var = entity->GetComponent<Variables>();
+							if (!var) {
+								var = entity->AddComponent<Variables>();
+								Console::Log(std::format("ScriptDebug: Added missing Variables component to entity '{}'.", entity->GetName()));
+							}
+							ShowFieldForVariables(var, script.scriptName, type, field, fieldName);
+						}
 					}
+					if(attrs) mono_custom_attrs_free(attrs);
 				}
 			}
 

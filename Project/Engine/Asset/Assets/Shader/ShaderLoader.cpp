@@ -27,13 +27,14 @@ std::optional<Shader> AssetLoader<Shader>::Reload(const std::string& filepath, S
 	return Load(filepath, meta);
 }
 
-Meta<Shader::MetaData> AssetLoader<Shader>::GetMetaData(const std::string& filepath) {
+Meta<Shader::MetaData> AssetLoader<Shader>::GetMetaData(const std::string& _filepath) {
 	Meta<Shader::MetaData> res{};
 
-	res.base = LoadMetaBaseFromFile(filepath);
+	const std::string metaPath = _filepath + ".meta";
+	res.base = LoadOrGenerateMetaBase(metaPath, _filepath);
 
 	nlohmann::json j;
-	std::ifstream ifs(filepath);
+	std::ifstream ifs(metaPath);
 	if(!ifs.is_open()) {
 		return {};
 	}

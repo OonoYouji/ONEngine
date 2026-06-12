@@ -1,7 +1,9 @@
-﻿#pragma once
+#pragma once
 
 /// engine
 #include "Engine/Asset/Guid/Guid.h"
+#include <vector>
+#include <unordered_set>
 
 namespace Editor {
 
@@ -18,19 +20,35 @@ enum class SelectionType {
 /// @brief Gui上で選択しているオブジェクトに関する関数群
 namespace ImGuiSelection {
 
-/// @brief 選択しているオブジェクトのGuidを返す
-/// @return オブジェクトのGuid
-const ONEngine::Guid& GetSelectedObject();
+/// @brief 選択しているオブジェクトのGuidを返す (複数選択対応)
+/// @return オブジェクトのGuidのリスト
+const std::unordered_set<ONEngine::Guid>& GetSelectedObjects();
 
-/// @brief 選択したオブジェクトのGuidを設定する
-/// @param _entityGuid オブジェクトのGuid
-void SetSelectedObject(const ONEngine::Guid& _entityGuid, SelectionType _type);
+/// @brief 最後に選択したオブジェクトのGuidを返す
+const ONEngine::Guid& GetLastSelectedObject();
+
+/// @brief 選択したオブジェクトを単一設定する (既存の選択はクリア)
+/// @param _guid オブジェクトのGuid
+void SetSelectedObject(const ONEngine::Guid& _guid, SelectionType _type);
+
+/// @brief 選択を追加する
+void AddSelectedObject(const ONEngine::Guid& _guid, SelectionType _type);
+
+/// @brief 選択を解除する
+void RemoveSelectedObject(const ONEngine::Guid& _guid);
+
+/// @brief 選択をすべてクリアする
+void ClearSelection();
+
+/// @brief 指定したGuidが選択されているか
+bool IsSelected(const ONEngine::Guid& _guid);
 
 /// @brief 選択しているオブジェクトの種類を返す
 /// @return オブジェクトの種類
 SelectionType GetSelectionType();
 
 };
+
 
 
 /// @brief Guiの情報

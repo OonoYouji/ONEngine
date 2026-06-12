@@ -11,6 +11,7 @@
 /// engine
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
+#include "Engine/ECS/Entity/EntityJsonConverter.h"
 #include "Engine/Scene/SceneManager.h"
 #include "Engine/Script/MonoScriptEngine.h"
 #include "ComponentJsonConverter.h"
@@ -24,25 +25,24 @@ using namespace Editor;
 
 EntityDataOutputCommand::EntityDataOutputCommand(GameEntity* _entity) {
 	pEntity_ = _entity;
-	outputFilePath_ = "Assets/Jsons/" + pEntity_->GetName() + "Components.json";
+	outputFilePath_ = "Assets/Entities/" + pEntity_->GetName() + ".entity";
 }
 
 EDITOR_STATE EntityDataOutputCommand::Execute() {
-	nlohmann::json jsonData;
-	for (auto& component : pEntity_->GetComponents()) {
-		jsonData.push_back(ComponentJsonConverter::ToJson(component.second));
-	}
+	if (!pEntity_) return EDITOR_STATE_FAILED;
+
+	nlohmann::json entityJson = EntityJsonConverter::ToJson(pEntity_);
 
 	std::filesystem::path path(outputFilePath_);
 	std::filesystem::create_directories(path.parent_path());
 
 	std::ofstream ofs(outputFilePath_);
 	if (!ofs) {
-		Console::Log("ファイルを開けませんでした: " + outputFilePath_);
+		Console::LogError("ファイルを開けませんでした: " + outputFilePath_);
 		return EDITOR_STATE::EDITOR_STATE_FAILED;
 	}
 
-	ofs << jsonData.dump(4);
+	ofs << entityJson.dump(4);
 
 	return EDITOR_STATE::EDITOR_STATE_FINISH;
 }
@@ -57,32 +57,26 @@ EDITOR_STATE EntityDataOutputCommand::Undo() {
 /// ///////////////////////////////////////////////
 
 EntityDataInputCommand::EntityDataInputCommand(GameEntity* _entity) : pEntity_(_entity) {
-	inputFilePath_ = "Assets/Jsons/" + pEntity_->GetName() + "Components.json";
+	inputFilePath_ = "Assets/Entities/" + pEntity_->GetName() + ".entity";
 }
 
 EDITOR_STATE EntityDataInputCommand::Execute() {
+	if (!pEntity_) return EDITOR_STATE_FAILED;
+
 	/// fileを開く
 	std::ifstream ifs(inputFilePath_);
 	if (!ifs) {
-		Console::Log("ファイルを開けませんでした: " + inputFilePath_);
+		Console::LogError("ファイルを開けませんでした: " + inputFilePath_);
 		return EDITOR_STATE::EDITOR_STATE_FAILED;
 	}
 
 	/// jsonを読み込む
-	nlohmann::json jsonData;
-	ifs >> jsonData;
+	nlohmann::json entityJson;
+	ifs >> entityJson;
+	ifs.close();
 
-	/// コンポーネントを追加
-	for (const auto& componentJson : jsonData) {
-		const std::string componentType = componentJson.at("type").get<std::string>();
-		IComponent* comp = pEntity_->AddComponent(componentType);
-		if (comp) {
-			ComponentJsonConverter::FromJson(componentJson, comp);
-			comp->SetOwner(pEntity_);
-		} else {
-			Console::Log("コンポーネントの追加に失敗しました: " + componentType);
-		}
-	}
+	/// エンティティの構成を復元
+	EntityJsonConverter::FromJson(entityJson, pEntity_, pEntity_->GetECSGroup()->GetGroupName());
 
 	return EDITOR_STATE::EDITOR_STATE_FINISH;
 }

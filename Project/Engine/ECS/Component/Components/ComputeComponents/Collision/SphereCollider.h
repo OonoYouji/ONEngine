@@ -14,10 +14,6 @@ namespace ComponentDebug {
 void SphereColliderDebug(SphereCollider* _collider);
 }
 
-void from_json(const nlohmann::json& _j, SphereCollider& _c);
-void to_json(nlohmann::json& _j, const SphereCollider& _c);
-
-
 /// //////////////////////////////////////
 /// SphereCollider
 /// //////////////////////////////////////
@@ -49,5 +45,13 @@ public:
 	float GetRadius() const;
 
 };
+
+/// @brief Mono Internal Calls
+float InternalGetRadius(uint64_t _nativeHandle);
+void InternalSetRadius(uint64_t _nativeHandle, float _radius);
+bool InternalIsTriggerSphere(uint64_t _nativeHandle);
+void InternalSetTriggerSphere(uint64_t _nativeHandle, bool _trigger);
+float InternalGetMass(uint64_t _nativeHandle);
+void InternalSetMass(uint64_t _nativeHandle, float _mass);
 
 } /// ONEngine

@@ -17,9 +17,6 @@ void BoxColliderDebug(BoxCollider* _boxCollider);
 
 }	/// namespace ComponentDebug
 
-void from_json(const nlohmann::json& _j, BoxCollider& _b);
-void to_json(nlohmann::json& _j, const BoxCollider& _b);
-
 /// //////////////////////////////////////
 /// BoxCollider
 /// //////////////////////////////////////
@@ -52,5 +49,13 @@ public:
 	const Vector3& GetSize() const;
 
 };
+
+/// @brief Mono Internal Calls
+Vector3 InternalGetSize(uint64_t _nativeHandle);
+void InternalSetSize(uint64_t _nativeHandle, Vector3 _size);
+bool InternalIsTriggerBox(uint64_t _nativeHandle);
+void InternalSetTriggerBox(uint64_t _nativeHandle, bool _trigger);
+float InternalGetMassBox(uint64_t _nativeHandle);
+void InternalSetMassBox(uint64_t _nativeHandle, float _mass);
 
 } /// ONEngine

@@ -1,0 +1,62 @@
+{
+    "active": true,
+    "components": [
+        {
+            "enable": 1,
+            "matrixCalcFlags": 7,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": -40.0
+            },
+            "rotate": {
+                "w": 1.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "scale": {
+                "x": 10.0,
+                "y": 10.0,
+                "z": 10.0
+            },
+            "type": "Transform"
+        },
+        {
+            "type": "Variables"
+        },
+        {
+            "enable": 1,
+            "material": {
+                "baseColor": {
+                    "w": 1.0,
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "baseTextureGuid": "c70f72da38c5615485da4d89af9e0810",
+                "guid": "00000000000000000000000000000000",
+                "normalTextureGuid": "d3f6a8d1e674a57ddf150fffb3c3c873",
+                "postEffectFlags": 9,
+                "uvTransform": {
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotate": 0.0,
+                    "scale": {
+                        "x": 20.0,
+                        "y": 20.0
+                    }
+                }
+            },
+            "meshPath": "./Assets/Models/Outgame/bg/ground.gltf",
+            "renderQueue": 2,
+            "type": "MeshRenderer"
+        }
+    ],
+    "guid": "c8b9cab3c31586385fbf24c9b4d779ae",
+    "name": "Ground",
+    "parentGuid": "0ee3a6629af617b162fb89e780a52a74",
+    "prefabName": ""
+}

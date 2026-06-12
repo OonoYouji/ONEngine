@@ -1,0 +1,100 @@
+{
+    "components": [
+        {
+            "enable": 1,
+            "matrixCalcFlags": 7,
+            "position": { "x": 0.0, "y": 0.0, "z": 0.0 },
+            "rotate": { "w": 1.0, "x": 0.0, "y": 0.0, "z": 0.0 },
+            "scale": { "x": 1.0, "y": 1.0, "z": 1.0 },
+            "type": "Transform"
+        },
+        {
+            "enable": 1,
+            "scripts": [
+                {
+                    "enable": true,
+                    "lifeTime": 2.0,
+                    "name": "TimedDestruction"
+                }
+            ],
+            "type": "Script"
+        },
+        {
+            "type": "Variables",
+            "variables": [
+                {
+                    "name": "lifeTime",
+                    "type": "float",
+                    "value": 2.0
+                }
+            ]
+        },
+        {
+            "type": "ParticleSystem",
+            "enable": 1,
+            "main": {
+                "duration": 1.0,
+                "looping": false,
+                "prewarm": false,
+                "startDelay": { "state": 0, "constant": 0.0, "min": 0.0, "max": 0.0 },
+                "startLifetime": { "state": 0, "constant": 0.5, "min": 0.0, "max": 0.0 },
+                "startSpeed": { "state": 0, "constant": 5.0, "min": 0.0, "max": 0.0 },
+                "startSize": { "state": 0, "constant": 0.3, "min": 0.0, "max": 0.0 },
+                "startRotation": { "state": 0, "constant": 0.0, "min": 0.0, "max": 0.0 },
+                "startColor": {
+                    "state": 0,
+                    "constant": { "r": 1.0, "g": 0.5, "b": 0.0, "a": 1.0 },
+                    "min": { "r": 1.0, "g": 1.0, "b": 1.0, "a": 1.0 },
+                    "max": { "r": 1.0, "g": 1.0, "b": 1.0, "a": 1.0 }
+                },
+                "gravityModifier": 0.0,
+                "maxParticles": 100,
+                "playOnAwake": true
+            },
+            "emission": {
+                "enabled": true,
+                "rateOverTime": 0.0,
+                "rateOverDistance": 0.0,
+                "bursts": [
+                    {
+                        "time": 0.0,
+                        "count": 20,
+                        "cycles": 1,
+                        "interval": 0.01,
+                        "probability": 1.0
+                    }
+                ]
+            },
+            "shape": {
+                "enabled": true,
+                "type": 0,
+                "radius": 1.0,
+                "radiusThickness": 1.0,
+                "arc": 360.0,
+                "angle": 25.0,
+                "boxScale": { "x": 1.0, "y": 1.0, "z": 1.0 }
+            },
+            "colorOverLifetime": {
+                "enabled": true
+            },
+            "sizeOverLifetime": {
+                "enabled": true
+            },
+            "velocityOverLifetime": {
+                "enabled": false,
+                "x": { "state": 0, "constant": 0.0, "min": 0.0, "max": 0.0 },
+                "y": { "state": 0, "constant": 0.0, "min": 0.0, "max": 0.0 },
+                "z": { "state": 0, "constant": 0.0, "min": 0.0, "max": 0.0 },
+                "speedModifier": { "state": 0, "constant": 1.0, "min": 0.0, "max": 0.0 }
+            },
+            "renderer": {
+                "renderMode": 0,
+                "materialGuid": "bf41deabb8d3b499fda8edb63ccb7c7d",
+                "meshGuid": ""
+            }
+        }
+    ],
+    "guid": "dead-effe-dead-effe-dead-effe-dead",
+    "name": "ReinforcementDeathEffect",
+    "prefabName": "ReinforcementDeathEffect"
+}

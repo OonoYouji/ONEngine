@@ -82,10 +82,10 @@ void EffectUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
 
 							effect->CreateElement(
 								effect->GetOwner()->GetPosition() + effect->emitShape_.GetEmitPosition(),
-								Random::Vector3(size.first, size.second),
-								Random::Vector3(rotate.first, rotate.second),
+								Random::Vec3(size.first, size.second),
+								Random::Vec3(rotate.first, rotate.second),
 								effect->emitShape_.GetEmitDirection(emitPos) * Random::Float(speed.first, speed.second),
-								Random::Vector4(color.first, color.second)
+								Random::Vec4(color.first, color.second)
 							);
 
 						}
@@ -117,10 +117,10 @@ void EffectUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
 
 							effect->CreateElement(
 								effect->GetOwner()->GetPosition() + emitPos,
-								Random::Vector3(size.first, size.second),
-								Random::Vector3(rotate.first, rotate.second),
+								Random::Vec3(size.first, size.second),
+								Random::Vec3(rotate.first, rotate.second),
 								effect->emitShape_.GetEmitDirection(emitPos) * Random::Float(speed.first, speed.second),
-								Random::Vector4(color.first, color.second)
+								Random::Vec4(color.first, color.second)
 							);
 
 						}

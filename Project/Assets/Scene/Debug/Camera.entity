@@ -1,0 +1,50 @@
+{
+    "components": [
+        {
+            "cameraType": 0,
+            "enable": 1,
+            "farClip": 1000.0,
+            "fovY": 0.699999988079071,
+            "isMainCamera": true,
+            "nearClip": 0.10000000149011612,
+            "type": "CameraComponent"
+        },
+        {
+            "enable": 1,
+            "position": {
+                "x": 138.83938598632812,
+                "y": 90.19800567626953,
+                "z": 184.6276092529297
+            },
+            "rotate": {
+                "w": 0.12283799797296524,
+                "x": 0.025540577247738838,
+                "y": -0.9713245034217834,
+                "z": 0.2019585818052292
+            },
+            "scale": {
+                "x": 1.0000056028366089,
+                "y": 1.0000057220458984,
+                "z": 1.0000126361846924
+            },
+            "type": "Transform"
+        },
+        {
+            "type": "Variables"
+        },
+        {
+            "enable": 1,
+            "scripts": [
+                {
+                    "enable": true,
+                    "name": "DebugCamera"
+                }
+            ],
+            "type": "Script"
+        }
+    ],
+    "id": 1,
+    "name": "Camera",
+    "parent": null,
+    "prefabName": ""
+}

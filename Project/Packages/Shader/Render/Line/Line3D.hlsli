@@ -15,4 +15,3 @@ struct PSOutput {
 	float4 normal : SV_TARGET2;
 	float4 flags : SV_TARGET3;
 };
-

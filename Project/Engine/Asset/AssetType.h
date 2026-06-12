@@ -19,6 +19,7 @@ enum class AssetType {
 	Audio,
 	Material,
 	Shader,
+	AnimationClip,
 	Count
 };
 

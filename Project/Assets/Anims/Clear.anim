@@ -1,0 +1,35 @@
+{
+    "duration": 1.0,
+    "endFrame": 60,
+    "loop": true,
+    "name": "Clear",
+    "startFrame": 0,
+    "tracks": [
+        {
+            "component": "Transform",
+            "keyframes": [
+                {
+                    "in": "Linear",
+                    "t": 0.0,
+                    "v": 10.0
+                },
+                {
+                    "in": "Linear",
+                    "t": 0.05000000074505806,
+                    "v": 0.0
+                },
+                {
+                    "in": "Linear",
+                    "t": 0.15000000596046448,
+                    "v": 0.0
+                },
+                {
+                    "in": "Linear",
+                    "t": 0.21666666865348816,
+                    "v": 0.0
+                }
+            ],
+            "property": "position"
+        }
+    ]
+}

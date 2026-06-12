@@ -72,7 +72,7 @@ private:
 	/// private : methods
 	/// ===================================================
 
-	void RenderingMesh(ID3D12GraphicsCommandList* _cmdList, std::unordered_map<std::string, std::list<MeshRenderer*>>* _pMeshRendererPerMesh, const std::vector<Asset::Texture>& _pTexture);
+	void Drawing(ID3D12GraphicsCommandList* _cmdList, std::unordered_map<std::string, std::list<MeshRenderer*>>& _pathMeshMap, const std::vector<Asset::Texture>& _textures);
 
 private:
 
@@ -84,6 +84,9 @@ private:
 	Asset::AssetCollection* pAssetCollection_;
 
 	const size_t kMaxRenderingMeshCount_ = 1024; ///< 最大描画メッシュ数
+
+	std::unique_ptr<GraphicsPipeline> pipeline_;
+	std::unique_ptr<GraphicsPipeline> telegraphPipeline_;
 
 	StructuredBuffer<Matrix4x4> transformBuffer_;
 	StructuredBuffer<GPUMaterial> materialBuffer_;

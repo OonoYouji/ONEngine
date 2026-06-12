@@ -43,6 +43,36 @@ void Printf(const char* _fmt, Args... _args) {
 
 namespace ONEngine::Asset {
 
+void from_json(const nlohmann::json& j, TextureFormat& format) {
+	if (j.is_string()) {
+		auto opt = magic_enum::enum_cast<TextureFormat>(j.get<std::string>(), magic_enum::case_insensitive);
+		format = opt.value_or(TextureFormat::RGBA8_UNORM);
+	} else if (j.is_number()) {
+		format = static_cast<TextureFormat>(j.get<int>());
+	} else {
+		format = TextureFormat::RGBA8_UNORM;
+	}
+}
+
+void to_json(nlohmann::json& j, const TextureFormat& format) {
+	j = std::string(magic_enum::enum_name(format));
+}
+
+void from_json(const nlohmann::json& j, ColorSpace& colorSpace) {
+	if (j.is_string()) {
+		auto opt = magic_enum::enum_cast<ColorSpace>(j.get<std::string>(), magic_enum::case_insensitive);
+		colorSpace = opt.value_or(ColorSpace::Linear);
+	} else if (j.is_number()) {
+		colorSpace = static_cast<ColorSpace>(j.get<int>());
+	} else {
+		colorSpace = ColorSpace::Linear;
+	}
+}
+
+void to_json(nlohmann::json& j, const ColorSpace& colorSpace) {
+	j = std::string(magic_enum::enum_name(colorSpace));
+}
+
 Texture::Texture() = default;
 
 Texture::Texture(const Vector2& _textureSize)

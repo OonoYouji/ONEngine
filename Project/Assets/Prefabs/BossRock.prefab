@@ -1,0 +1,45 @@
+{
+    "components": [
+        {
+            "enable": 1,
+            "matrixCalcFlags": 7,
+            "position": { "x": 0.0, "y": 0.0, "z": 0.0 },
+            "rotate": { "w": 1.0, "x": 0.0, "y": 0.0, "z": 0.0 },
+            "scale": { "x": 2.0, "y": 2.0, "z": 2.0 },
+            "type": "Transform"
+        },
+        {
+            "enable": 1,
+            "scripts": [
+                {
+                    "damage": 40,
+                    "enable": true,
+                    "fallSpeed": 35.0,
+                    "impactRadius": 5.0,
+                    "name": "FallingRock",
+                    "stunDuration": 2.5
+                }
+            ],
+            "type": "Script"
+        },
+        {
+            "enable": 1,
+            "material": {
+                "baseColor": { "w": 1.0, "x": 0.4, "y": 0.3, "z": 0.2 },
+                "postEffectFlags": 1
+            },
+            "meshPath": "./Packages/Models/primitive/cube.obj",
+            "type": "MeshRenderer"
+        },
+        {
+            "enable": 1,
+            "isTrigger": true,
+            "size": { "x": 2.0, "y": 2.0, "z": 2.0 },
+            "state": "Dynamic",
+            "type": "BoxCollider"
+        }
+    ],
+    "guid": "70c170c170c170c170c170c170c170c1",
+    "name": "BossRock",
+    "prefabName": "BossRock"
+}

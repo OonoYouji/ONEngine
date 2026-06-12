@@ -1,4 +1,4 @@
-#include "SkinMeshRenderingPipeline.h"
+﻿#include "SkinMeshRenderingPipeline.h"
 
 using namespace ONEngine;
 
@@ -10,6 +10,7 @@ using namespace ONEngine;
 #include "Engine/ECS/Component/Components/RendererComponents/SkinMesh/SkinMeshRenderer.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 #include "Engine/Asset/Collection/AssetCollection.h"
+#include "Engine/Core/DirectX12/GPUTimeStamp/GPUTimeStamp.h"
 
 
 SkinMeshRenderingPipeline::SkinMeshRenderingPipeline(Asset::AssetCollection* _assetCollection)
@@ -93,6 +94,7 @@ void SkinMeshRenderingPipeline::Draw(class ECSGroup* _ecs, CameraComponent* _cam
 		return;
 	}
 
+	GPUTimeStamp::GetInstance().BeginTimeStamp(GPUTimeStampID::SkinMeshRendering);
 
 	ID3D12GraphicsCommandList* cmdList = _dxCommand->GetCommandList();
 	auto& textures = pAssetCollection_->GetTextures();
@@ -154,10 +156,17 @@ void SkinMeshRenderingPipeline::Draw(class ECSGroup* _ecs, CameraComponent* _cam
 
 		/// mesh の描画
 		Asset::Model* model = pAssetCollection_->GetModel(smRenderer->GetMeshPath());
-		for (auto& mesh : model->GetMeshes()) {
+		for (size_t meshIndex = 0; meshIndex < model->GetMeshes().size(); ++meshIndex) {
+			auto& mesh = model->GetMeshes()[meshIndex];
+			
+			// スキンクラスターがメッシュ数分あるかチェック
+			if (meshIndex >= smRenderer->skinCluster_->meshClusters.size()) {
+				continue;
+			}
+
 			/// vbv, ibvのセット
 			D3D12_VERTEX_BUFFER_VIEW vbvs[2] = {
-				mesh->GetVBV(), smRenderer->skinCluster_->vbv
+				mesh->GetVBV(), smRenderer->skinCluster_->meshClusters[meshIndex].vbv
 			};
 			cmdList->IASetVertexBuffers(0, 2, vbvs);
 			cmdList->IASetIndexBuffer(&mesh->GetIBV());
@@ -170,4 +179,5 @@ void SkinMeshRenderingPipeline::Draw(class ECSGroup* _ecs, CameraComponent* _cam
 		}
 	}
 
+	GPUTimeStamp::GetInstance().EndTimeStamp(GPUTimeStampID::SkinMeshRendering);
 }

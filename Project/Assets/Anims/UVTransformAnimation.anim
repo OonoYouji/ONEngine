@@ -1,0 +1,31 @@
+{
+    "duration": 1.0,
+    "endFrame": 60,
+    "loop": true,
+    "name": "UVTransformAnimation",
+    "startFrame": 0,
+    "tracks": [
+        {
+            "component": "MeshRenderer",
+            "keyframes": [
+                {
+                    "in": "Linear",
+                    "t": 0.0,
+                    "v": {
+                        "x": 0.0,
+                        "y": 0.0
+                    }
+                },
+                {
+                    "in": "Linear",
+                    "t": 1.0,
+                    "v": {
+                        "x": 1.0,
+                        "y": 0.0
+                    }
+                }
+            ],
+            "property": "uvOffset"
+        }
+    ]
+}

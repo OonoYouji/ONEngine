@@ -1,4 +1,8 @@
 {
-    "version": 1,
-    "guid": "9806ea011173acf65274f712a093654d"
+    "colorSpace": "Linear",
+    "format": "RGBA8_UNORM",
+    "guid": "ef82942482f6276604a60b37a36239ef",
+    "name": "ring",
+    "type": "Texture",
+    "version": 1
 }

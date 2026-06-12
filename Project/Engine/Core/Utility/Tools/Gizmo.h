@@ -1,7 +1,8 @@
-﻿#pragma once
+#pragma once
 
 #include "Engine/Core/Utility/Math/Vector3.h"
 #include "Engine/Core/Utility/Math/Color.h"
+#include "Engine/Core/Utility/Math/Quaternion.h"
 
 /// ///////////////////////////////////////////////////
 /// gizmoのクラス
@@ -23,15 +24,17 @@ public:
 	};
 
 	struct CubeData {
-		Vector3 position; ///< 箱の位置
-		Vector3 size;     ///< 箱のサイズ
-		Vector4 color;    ///< 箱の色
+		Vector3 position;    ///< 箱の位置
+		Vector3 size;        ///< 箱のサイズ
+		Quaternion rotate;   ///< 箱の回転
+		Vector4 color;       ///< 箱の色
 	};
 
 	struct LineData {
 		Vector3 startPosition; ///< 線の開始地点
 		Vector3 endPosition;   ///< 線の終了地点
 		Vector4 color;         ///< 線の色
+		float thickness;       ///< 線の太さ
 	};
 
 private:
@@ -76,26 +79,30 @@ public:
 	/// @brief 箱の描画
 	/// @param _position ワールド座標
 	/// @param _size 箱のサイズ
+	/// @param _rotate 箱の回転
 	/// @param _color 箱の色
-	static void DrawCube(const Vector3& _position, const Vector3& _size, const Vector4& _color = Color::kWhite);
+	static void DrawCube(const Vector3& _position, const Vector3& _size, const Quaternion& _rotate = Quaternion::kIdentity, const Vector4& _color = Color::kWhite);
 
 	/// @brief ワイヤーフレームの箱を描画
 	/// @param _position ワールド座標
-	/// @param _size 箱のサイズ
+	/// @param _size 箱의サイズ
+	/// @param _rotate 箱の回転
 	/// @param _color 箱の色 
-	static void DrawWireCube(const Vector3& _position, const Vector3& _size, const Vector4& _color = Color::kWhite);
+	static void DrawWireCube(const Vector3& _position, const Vector3& _size, const Quaternion& _rotate = Quaternion::kIdentity, const Vector4& _color = Color::kWhite);
 
 	/// @brief 線の描画
 	/// @param _startPosition 線の始点
 	/// @param _endPosition 線の終点
 	/// @param _color 線の色
-	static void DrawLine(const Vector3& _startPosition, const Vector3& _endPosition, const Vector4& _color = Color::kWhite);
+	/// @param _thickness 線の太さ
+	static void DrawLine(const Vector3& _startPosition, const Vector3& _endPosition, const Vector4& _color = Color::kWhite, float _thickness = 1.0f);
 
 	/// @brief Rayの描画
 	/// @param _position 線の始点 
 	/// @param _direction 線の方向
 	/// @param _color 線の色
-	static void DrawRay(const Vector3& _position, const Vector3& _direction, const Vector4& _color = Color::kWhite);
+	/// @param _thickness 線の太さ
+	static void DrawRay(const Vector3& _position, const Vector3& _direction, const Vector4& _color = Color::kWhite, float _thickness = 1.0f);
 
 };
 

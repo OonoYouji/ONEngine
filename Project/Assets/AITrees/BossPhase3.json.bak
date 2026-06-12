@@ -1,0 +1,408 @@
+{
+    "blackboard": [
+        {
+            "bVal": false,
+            "fVal": 0.0,
+            "iVal": 0,
+            "key": "PatrolIndex",
+            "sVal": "",
+            "type": 0,
+            "vVal": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        }
+    ],
+    "comments": [],
+    "links": [
+        {
+            "endPin": 4,
+            "id": 31,
+            "startPin": 2
+        },
+        {
+            "endPin": 7,
+            "id": 32,
+            "startPin": 5
+        },
+        {
+            "endPin": 9,
+            "id": 33,
+            "startPin": 5
+        },
+        {
+            "endPin": 12,
+            "id": 34,
+            "startPin": 10
+        },
+        {
+            "endPin": 14,
+            "id": 35,
+            "startPin": 10
+        },
+        {
+            "endPin": 20,
+            "id": 37,
+            "startPin": 18
+        },
+        {
+            "endPin": 22,
+            "id": 38,
+            "startPin": 18
+        },
+        {
+            "endPin": 24,
+            "id": 39,
+            "startPin": 18
+        },
+        {
+            "endPin": 26,
+            "id": 40,
+            "startPin": 18
+        },
+        {
+            "endPin": 28,
+            "id": 41,
+            "startPin": 18
+        },
+        {
+            "endPin": 30,
+            "id": 42,
+            "startPin": 18
+        },
+        {
+            "endPin": 17,
+            "id": 43,
+            "startPin": 15
+        }
+    ],
+    "nodes": [
+        {
+            "className": "Entry",
+            "decorators": [],
+            "hasBreakpoint": false,
+            "id": 1,
+            "inputs": [],
+            "isDecorator": false,
+            "name": "Phase 3 Entry",
+            "outputs": [
+                {
+                    "id": 2,
+                    "name": "Out"
+                }
+            ],
+            "pos": [
+                -200.0,
+                0.0
+            ],
+            "properties": {},
+            "services": []
+        },
+        {
+            "className": "Parallel",
+            "decorators": [],
+            "hasBreakpoint": false,
+            "id": 100,
+            "inputs": [
+                {
+                    "id": 4,
+                    "name": "In"
+                }
+            ],
+            "isDecorator": false,
+            "name": "P3: Core Systems",
+            "outputs": [
+                {
+                    "id": 5,
+                    "name": "Out"
+                }
+            ],
+            "pos": [
+                50.0,
+                0.0
+            ],
+            "properties": {
+                "failurePolicy": "0",
+                "successPolicy": "0"
+            },
+            "services": []
+        },
+        {
+            "className": "HPRegenNode",
+            "decorators": [],
+            "hasBreakpoint": false,
+            "id": 101,
+            "inputs": [
+                {
+                    "id": 7,
+                    "name": "In"
+                }
+            ],
+            "isDecorator": false,
+            "name": "P3: HP Regen",
+            "outputs": [],
+            "pos": [
+                300.0,
+                -200.0
+            ],
+            "properties": {
+                "maxHP": "1200",
+                "maxRatio": "0.4",
+                "regenPerSecond": "5"
+            },
+            "services": []
+        },
+        {
+            "className": "Sequence",
+            "decorators": [],
+            "hasBreakpoint": false,
+            "id": 2,
+            "inputs": [
+                {
+                    "id": 9,
+                    "name": "In"
+                }
+            ],
+            "isDecorator": false,
+            "name": "P3: Root Sequence",
+            "outputs": [
+                {
+                    "id": 10,
+                    "name": "Out"
+                }
+            ],
+            "pos": [
+                300.0,
+                50.0
+            ],
+            "properties": {},
+            "services": []
+        },
+        {
+            "className": "PatrolWaypointsNode",
+            "decorators": [],
+            "hasBreakpoint": false,
+            "id": 3,
+            "inputs": [
+                {
+                    "id": 12,
+                    "name": "In"
+                }
+            ],
+            "isDecorator": false,
+            "name": "P3: Go to Center",
+            "outputs": [],
+            "pos": [
+                600.0,
+                -100.0
+            ],
+            "properties": {
+                "currentIdxKey": "PatrolIndex",
+                "endAnim": "movement_end",
+                "loopAnim": "movement",
+                "startAnim": "movement_start",
+                "stopDistance": "1.0",
+                "useClipDuration": "true",
+                "waypointPrefix": "Boss_Center"
+            },
+            "services": []
+        },
+        {
+            "className": "Sequence",
+            "decorators": [],
+            "hasBreakpoint": false,
+            "id": 4,
+            "inputs": [
+                {
+                    "id": 14,
+                    "name": "In"
+                }
+            ],
+            "isDecorator": false,
+            "name": "P3: Attack Sequence",
+            "outputs": [
+                {
+                    "id": 15,
+                    "name": "Out"
+                }
+            ],
+            "pos": [
+                600.0,
+                100.0
+            ],
+            "properties": {},
+            "services": []
+        },
+        {
+            "className": "RandomSelector",
+            "decorators": [],
+            "hasBreakpoint": false,
+            "id": 16,
+            "inputs": [
+                {
+                    "id": 17,
+                    "name": "In"
+                }
+            ],
+            "isDecorator": false,
+            "name": "P3: Random Attack",
+            "outputs": [
+                {
+                    "id": 18,
+                    "name": "Out"
+                }
+            ],
+            "pos": [
+                913.0,
+                100.0
+            ],
+            "properties": {},
+            "services": []
+        },
+        {
+            "className": "RunBehaviorNode",
+            "decorators": [],
+            "hasBreakpoint": false,
+            "id": 200,
+            "inputs": [
+                {
+                    "id": 20,
+                    "name": "In"
+                }
+            ],
+            "isDecorator": false,
+            "name": "Beam",
+            "outputs": [],
+            "pos": [
+                1150.0,
+                -200.0
+            ],
+            "properties": {
+                "treePath": "Assets/AITrees/BossAttacks/Attack_Beam.json"
+            },
+            "services": []
+        },
+        {
+            "className": "RunBehaviorNode",
+            "decorators": [],
+            "hasBreakpoint": false,
+            "id": 210,
+            "inputs": [
+                {
+                    "id": 22,
+                    "name": "In"
+                }
+            ],
+            "isDecorator": false,
+            "name": "Giant",
+            "outputs": [],
+            "pos": [
+                1150.0,
+                -100.0
+            ],
+            "properties": {
+                "treePath": "Assets/AITrees/BossAttacks/Attack_Giant.json"
+            },
+            "services": []
+        },
+        {
+            "className": "RunBehaviorNode",
+            "decorators": [],
+            "hasBreakpoint": false,
+            "id": 220,
+            "inputs": [
+                {
+                    "id": 24,
+                    "name": "In"
+                }
+            ],
+            "isDecorator": false,
+            "name": "Bomb",
+            "outputs": [],
+            "pos": [
+                1150.0,
+                0.0
+            ],
+            "properties": {
+                "treePath": "Assets/AITrees/BossAttacks/Attack_Bomb.json"
+            },
+            "services": []
+        },
+        {
+            "className": "RunBehaviorNode",
+            "decorators": [],
+            "hasBreakpoint": false,
+            "id": 230,
+            "inputs": [
+                {
+                    "id": 26,
+                    "name": "In"
+                }
+            ],
+            "isDecorator": false,
+            "name": "Rock",
+            "outputs": [],
+            "pos": [
+                1150.0,
+                100.0
+            ],
+            "properties": {
+                "treePath": "Assets/AITrees/BossAttacks/Attack_Rock.json"
+            },
+            "services": []
+        },
+        {
+            "className": "RunBehaviorNode",
+            "decorators": [],
+            "hasBreakpoint": false,
+            "id": 240,
+            "inputs": [
+                {
+                    "id": 28,
+                    "name": "In"
+                }
+            ],
+            "isDecorator": false,
+            "name": "Vortex",
+            "outputs": [],
+            "pos": [
+                1150.0,
+                200.0
+            ],
+            "properties": {
+                "treePath": "Assets/AITrees/BossAttacks/Attack_Vortex.json"
+            },
+            "services": []
+        },
+        {
+            "className": "SpawnPillarNode",
+            "decorators": [],
+            "hasBreakpoint": false,
+            "id": 250,
+            "inputs": [
+                {
+                    "id": 30,
+                    "name": "In"
+                }
+            ],
+            "isDecorator": false,
+            "name": "Pillar",
+            "outputs": [],
+            "pos": [
+                1150.0,
+                300.0
+            ],
+            "properties": {
+                "dropCount": "5",
+                "dropDistanceInterval": "6.0",
+                "dropInterval": "0.4",
+                "indicatorSize": "7.0",
+                "pillarPrefab": "BossPillar",
+                "spawnHeight": "40.0",
+                "telegraphDuration": "1.5"
+            },
+            "services": []
+        }
+    ]
+}

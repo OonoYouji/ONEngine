@@ -1,0 +1,13 @@
+{
+    "endFrame": 60,
+    "loop": true,
+    "name": "TitleText",
+    "startFrame": 0,
+    "tracks": [
+        {
+            "component": "Transform",
+            "keyframes": [],
+            "property": "position"
+        }
+    ]
+}

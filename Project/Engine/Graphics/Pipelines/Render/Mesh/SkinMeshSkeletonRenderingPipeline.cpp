@@ -28,12 +28,15 @@ void SkinMeshSkeletonRenderingPipeline::Initialize(ShaderCompiler* _shaderCompil
 
 		/// input element setting
 		pipeline_->AddInputElement("POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT);
+		pipeline_->AddInputElement("OTHER_POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT);
 		pipeline_->AddInputElement("COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT);
+		pipeline_->AddInputElement("THICKNESS", 0, DXGI_FORMAT_R32_FLOAT);
+		pipeline_->AddInputElement("EXPANSION_DIR", 0, DXGI_FORMAT_R32G32_FLOAT);
 
 		pipeline_->SetFillMode(D3D12_FILL_MODE_SOLID);
 		pipeline_->SetCullMode(D3D12_CULL_MODE_NONE);
 		pipeline_->SetBlendDesc(BlendMode::None());
-		pipeline_->SetTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE);
+		pipeline_->SetTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
 
 		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 0); ///< view projection
 
@@ -78,6 +81,8 @@ void SkinMeshSkeletonRenderingPipeline::Draw(class ECSGroup* _ecs, CameraCompone
 	for (auto& smRenderer : skinMeshRendererArray->GetUsedComponents()) {
 
 		float scale = smRenderer->GetOwner()->GetScale().Length();
+		float jointDebugScale = smRenderer->GetDebugJointSize();
+		float rectDebugScale = smRenderer->GetDebugRectSize();
 
 		for (const Joint& joint : smRenderer->GetSkeleton().joints) {
 			if (!joint.parent.has_value()) {
@@ -94,11 +99,11 @@ void SkinMeshSkeletonRenderingPipeline::Draw(class ECSGroup* _ecs, CameraCompone
 			Vector4 thisColor = Color::kRed;
 
 			/// Sphereの頂点データを取得
-			auto sphereVertices = GetSphereVertices(thisPosition, 1.0f * scale, thisColor, 12);
+			auto sphereVertices = GetSphereVertices(thisPosition, 1.0f * scale * jointDebugScale, thisColor, 1.0f, 12);
 			vertices_.insert(vertices_.end(), sphereVertices.begin(), sphereVertices.end());
 
 			/// Rectの頂点データを取得
-			auto rectVertices = GetRectVertices(thisWorldMatrix, Color::kGreen, Vector2::One * (4.0f * scale));
+			auto rectVertices = GetRectVertices(thisWorldMatrix, Color::kGreen, 1.0f, Vector2::One * (4.0f * scale * rectDebugScale));
 			vertices_.insert(vertices_.end(), rectVertices.begin(), rectVertices.end());
 
 
@@ -111,14 +116,8 @@ void SkinMeshSkeletonRenderingPipeline::Draw(class ECSGroup* _ecs, CameraCompone
 			Vector3 parentPosition = Matrix4x4::Transform(Vector3::Zero, parentWorldMatrix);
 
 			/// 線の頂点データを作成
-			VertexData v0, v1;
-			v0.position = Math::ConvertToVector4(thisPosition, 1.0f);
-			v0.color = thisColor;
-			v1.position = Math::ConvertToVector4(parentPosition, 1.0f);
-			v1.color = thisColor;
-
-			vertices_.push_back(v0);
-			vertices_.push_back(v1);
+			auto lineVertices = GetLineVertices(thisPosition, parentPosition, thisColor, 1.0f);
+			vertices_.insert(vertices_.end(), lineVertices.begin(), lineVertices.end());
 
 			if(vertices_.size() >= maxVertexNum_) {
 				break;
@@ -144,7 +143,7 @@ void SkinMeshSkeletonRenderingPipeline::Draw(class ECSGroup* _ecs, CameraCompone
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 
 	commandList->IASetVertexBuffers(0, 1, &vbv_);
-	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
+	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(commandList, 0);
 
 	/// draw call

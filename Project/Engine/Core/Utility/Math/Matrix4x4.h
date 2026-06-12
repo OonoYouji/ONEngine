@@ -97,6 +97,9 @@ struct Matrix4x4 final {
 	/// @return 変換後のベクトル
 	static Vector3 Transform(const Vector3& _v, const Matrix4x4& _m);
 
+	/// @brief ベクトルの向きだけを行列で変換する（平行移動を無視）
+	static Vector3 TransformNormal(const Vector3& _v, const Matrix4x4& _m);
+
 	/// @brief ベクトルに行列をかける
 	/// @param _v ベクトル
 	/// @param _m 行列

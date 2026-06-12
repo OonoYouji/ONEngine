@@ -1,0 +1,42 @@
+{
+    "components": [
+        {
+            "enable": 1,
+            "matrixCalcFlags": 7,
+            "position": { "x": 0.0, "y": 0.05, "z": 0.0 },
+            "rotate": { "w": 1.0, "x": 0.0, "y": 0.0, "z": 0.0 },
+            "scale": { "x": 7.0, "y": 0.1, "z": 7.0 },
+            "type": "Transform"
+        },
+        {
+            "enable": 1,
+            "material": {
+                "baseColor": { "w": 0.4, "x": 1.0, "y": 0.2, "z": 0.0 },
+                "postEffectFlags": 1
+            },
+            "meshPath": "./Packages/Models/primitive/cylinder.obj",
+            "type": "MeshRenderer"
+        },
+        {
+            "enable": 1,
+            "scripts": [
+                {
+                    "enable": true,
+                    "name": "DamageTrigger",
+                    "damage": 5,
+                    "interval": 0.5,
+                    "targetTag": "Player"
+                },
+                {
+                    "enable": true,
+                    "name": "TimedDestruction",
+                    "lifeTime": 3.0
+                }
+            ],
+            "type": "Script"
+        }
+    ],
+    "guid": "f1re-4re4-0000-0000-000000000001",
+    "name": "BurningArea",
+    "prefabName": "BurningArea"
+}

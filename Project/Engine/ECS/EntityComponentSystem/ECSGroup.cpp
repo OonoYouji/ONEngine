@@ -145,7 +145,7 @@ const std::vector<std::unique_ptr<GameEntity>>& ECSGroup::GetEntities() const {
 	return entityCollection_->GetEntities();
 }
 
-GameEntity* ECSGroup::GetEntity(size_t _id) const {
+GameEntity* ECSGroup::GetEntity(int32_t _id) const {
 	return entityCollection_->GetEntity(_id);
 }
 

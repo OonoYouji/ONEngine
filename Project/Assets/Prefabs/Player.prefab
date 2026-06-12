@@ -1,28 +1,93 @@
 {
+    "active": true,
     "components": [
         {
             "enable": 1,
             "matrixCalcFlags": 7,
             "position": {
-                "x": 229.0957794189453,
-                "y": 1.9371049404144287,
-                "z": 321.23712158203125
+                "x": -141.4119873046875,
+                "y": 11.189128875732422,
+                "z": -117.1068344116211
             },
             "rotate": {
-                "w": 0.7071067690849304,
+                "w": -0.9203310012817383,
                 "x": 0.0,
-                "y": 0.7071067690849304,
-                "z": 0.0
+                "y": 0.3911404013633728,
+                "z": -0.0
             },
             "scale": {
-                "x": 1.0,
-                "y": 1.0000050067901611,
-                "z": 1.0000050067901611
+                "x": 3.7400035858154297,
+                "y": 3.7400014400482178,
+                "z": 3.740001678466797
             },
             "type": "Transform"
         },
         {
+            "CallingReinforcement": {
+                "reinforcementSpeed": 79.0,
+                "spawnBehindDistance": 37.0,
+                "spawnInterval": 0.6000000238418579,
+                "spawnTimer": 0.4618699252605438,
+                "xOffset": 8.0
+            },
+            "HP": {
+                "MAX_HP": 1000,
+                "currentHp": 1000,
+                "disableAutoDestruction": false
+            },
+            "Player": {
+                "<fireCooldownTimer>k__BackingField": 31.16332244873047,
+                "<isGamepadMode>k__BackingField": false,
+                "armLength": 2.0,
+                "currentYaw": -1.1064250469207764,
+                "fireCooldownTimer": 90.26615142822266,
+                "fireInterval": 0.5,
+                "inputDeadZone": 0.0,
+                "isGamepadMode": false,
+                "lastMousePos": {
+                    "x": 66.0,
+                    "y": 73.0
+                },
+                "maxMoveSpeed": 10.0,
+                "mouseIsMovePixel": 0.0,
+                "rotationSpeed": 8.0,
+                "startFreezeDuration": 5.0
+            },
+            "PlayerSmashUp": {
+                "fallDuration": 0.10000000149011612,
+                "riseDuration": 0.20000000298023224,
+                "riseHeight": 3.0,
+                "waitTimeAfterRise": 0.10000000149011612
+            },
             "type": "Variables"
+        },
+        {
+            "enable": 1,
+            "material": {
+                "baseColor": {
+                    "w": 1.0,
+                    "x": 0.9354838728904724,
+                    "y": 0.46271246671676636,
+                    "z": 0.46271246671676636
+                },
+                "baseTextureGuid": "960ec2345ab1ab75a1c74ef79b962c75",
+                "guid": "00000000000000000000000000000000",
+                "normalTextureGuid": "00000000000000000000000000000000",
+                "postEffectFlags": 1,
+                "uvTransform": {
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotate": 0.0,
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    }
+                }
+            },
+            "meshPath": "./Assets/Models/Player/hand.obj",
+            "type": "MeshRenderer"
         },
         {
             "enable": 1,
@@ -30,45 +95,46 @@
                 {
                     "enable": true,
                     "name": "Player"
+                },
+                {
+                    "enable": true,
+                    "name": "CallingReinforcement"
+                },
+                {
+                    "enable": true,
+                    "name": "HP"
+                },
+                {
+                    "enable": true,
+                    "name": "PlayerSmashUp"
+                },
+                {
+                    "enable": true,
+                    "name": "PlayerAudio"
                 }
             ],
             "type": "Script"
         },
         {
             "enable": 1,
-            "radius": 1.0,
-            "state": "Dynamic",
-            "type": "SphereCollider"
+            "path": "",
+            "pitch": 1.0,
+            "type": "AudioSource",
+            "volume": 1.0
         },
         {
+            "categoryBits": 2,
             "enable": 1,
-            "material": {
-                "baseColor": {
-                    "w": 1.0,
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "baseTextureGuid": {
-                    "guid": "00000000000000000000000000000000"
-                },
-                "guid": {
-                    "guid": "00000000000000000000000000000000"
-                },
-                "normalTextureGuid": {
-                    "guid": "00000000000000000000000000000000"
-                },
-                "postEffectFlags": 1
-            },
-            "meshPath": "./Assets/Models/Entity/Animal/Wolf.obj",
-            "type": "MeshRenderer"
+            "freezeY": true,
+            "maskBits": 32,
+            "mass": 1.0,
+            "radius": 3.200000047683716,
+            "state": "Dynamic",
+            "type": "SphereCollider"
         }
     ],
-    "guid": {
-        "guid": "825478230c46398c7c8a5aec2f1bdca8"
-    },
-    "id": 2,
+    "guid": "50ee0d6d6376d262198a7126f641b924",
     "name": "Player",
-    "parent": null,
-    "prefabName": "Player.prefab"
+    "parentGuid": null,
+    "prefabName": ""
 }

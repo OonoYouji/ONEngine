@@ -51,9 +51,11 @@ public:
 	/// public : method
 	/// ===================================================
 
-	WindowManager(class DxManager* _dxm);
+	WindowManager(DxManager* _dxm);
 	~WindowManager();
 
+	/// @brief Instanceの取得
+	static WindowManager* GetInstance();
 
 	/// @brief 初期化
 	void Initialize();
@@ -123,6 +125,7 @@ private:
 	Window*                              pMainWindow_ = nullptr;
 
 	bool                                 isProcessEnd_;
+	bool                                 closeRequested_ = false;
 
 
 public:
@@ -136,6 +139,12 @@ public:
 	/// @brief 現在のアクティブなWindowを取得
 	Window* GetActiveWindow() const;
 
+	/// @brief 終了リクエストが来ているか
+	bool IsCloseRequested() const;
+
+	/// @brief 終了リクエストを設定
+	void SetCloseRequested(bool _isCloseRequested);
+
 private:
 	/// ===================================================
 	/// private : copy delete
@@ -147,5 +156,6 @@ private:
 	WindowManager& operator=(WindowManager&&)      = delete;
 };
 
+void InternalGetWindowSize(Vector2* _size);
 
 } /// ONEngine

@@ -10,6 +10,7 @@ using namespace ONEngine;
 #include "Engine/ECS/Component/Components/ComputeComponents/Script/Script.h"
 #include "Engine/ECS/Component/Components/RendererComponents/Sprite/SpriteRenderer.h"
 #include "Engine/Asset/Collection/AssetCollection.h"
+#include "Engine/Core/DirectX12/GPUTimeStamp/GPUTimeStamp.h"
 
 
 
@@ -21,7 +22,7 @@ SpriteRenderingPipeline::~SpriteRenderingPipeline() {}
 
 
 void SpriteRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxm) {
-
+	pDxManager_ = _dxm;
 	{	/// pipeline 
 
 		Shader shader;
@@ -40,6 +41,12 @@ void SpriteRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 		pipeline_->SetCullMode(D3D12_CULL_MODE_NONE);
 		pipeline_->SetTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
 
+		pipeline_->SetRTVNum(static_cast<uint32_t>(RTVIndex::Count));
+		pipeline_->SetRTVFormat(static_cast<DXGI_FORMAT>(RTVFormat::Color), static_cast<int>(RTVIndex::Color));
+		pipeline_->SetRTVFormat(static_cast<DXGI_FORMAT>(RTVFormat::WorldPosition), static_cast<int>(RTVIndex::WorldPosition));
+		pipeline_->SetRTVFormat(static_cast<DXGI_FORMAT>(RTVFormat::Normal), static_cast<int>(RTVIndex::Normal));
+		pipeline_->SetRTVFormat(static_cast<DXGI_FORMAT>(RTVFormat::Flags), static_cast<int>(RTVIndex::Flags));
+
 
 		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 0);                  ///< ROOT_PARAM_VIEW_PROJECTION : 0
 
@@ -52,6 +59,8 @@ void SpriteRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 
 		pipeline_->AddStaticSampler(D3D12_SHADER_VISIBILITY_PIXEL, 0);         ///< texture sampler
 		pipeline_->SetBlendDesc(BlendMode::Normal());
+
+		pipeline_->SetDepthStencilDesc(DepthNone()); // 2D UIなので深度テストを無効化
 
 		pipeline_->CreatePipeline(_dxm->GetDxDevice());
 
@@ -119,25 +128,54 @@ void SpriteRenderingPipeline::Draw(class ECSGroup* _ecsGroup, CameraComponent* _
 		return;
 	}
 
+	GPUTimeStamp::GetInstance().BeginTimeStamp(GPUTimeStampID::SpriteRendering);
 
-	/// bufferにデータをセット
-	size_t transformIndex = 0;
+	/// 描画データの収集とソート用構造体
+	struct RenderingData {
+		SpriteRenderer* renderer;
+		float z;
+		Matrix4x4 matWorld;
+	};
+	std::vector<RenderingData> renderingDataList;
+	renderingDataList.reserve(spriteRendererArray->GetUsedComponents().size());
+
+	/// 描画対象を収集
 	for (auto& sr : spriteRendererArray->GetUsedComponents()) {
 		if (!CheckComponentEnable(sr)) {
 			continue;
 		}
 
 		if (GameEntity* owner = sr->GetOwner()) {
-
 			/// setup
 			sr->RenderingSetup(pAssetCollection_);
-
-			/// Material, Transformのセット
-			materialsBuffer.SetMappedData(transformIndex, sr->GetGpuMaterial());
-			transformsBuffer_.SetMappedData(transformIndex, owner->GetTransform()->GetMatWorld());
-
-			++transformIndex;
+			
+			renderingDataList.push_back({
+				sr,
+				owner->GetTransform()->position.z, // Z値を保存
+				owner->GetTransform()->GetMatWorld()
+			});
 		}
+	}
+
+	/// Z値でソート (大きい順: 奥から手前へ)
+	std::sort(renderingDataList.begin(), renderingDataList.end(), [](const RenderingData& a, const RenderingData& b) {
+		return a.z > b.z;
+	});
+
+	/// bufferにデータをセット
+	size_t transformIndex = 0;
+	for (const auto& data : renderingDataList) {
+		/// Material, Transformのセット
+		materialsBuffer.SetMappedData(transformIndex, data.renderer->GetGpuMaterial());
+		transformsBuffer_.SetMappedData(transformIndex, data.matWorld);
+		++transformIndex;
+	}
+
+	// 検証用ログ (最初の10回)
+	static int spriteLogCount = 0;
+	if (spriteLogCount < 10) {
+		Console::Log("[SpritePipeline] Drawing " + std::to_string(transformIndex) + " sorted sprites.", LogCategory::Engine);
+		spriteLogCount++;
 	}
 
 	/// 初期値のままなら描画対象なしなので描画しない
@@ -160,10 +198,9 @@ void SpriteRenderingPipeline::Draw(class ECSGroup* _ecsGroup, CameraComponent* _
 	/// ROOT_PARAM_VIEW_PROJECTION : 0
 	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(cmdList, ROOT_PARAM_VIEW_PROJECTION);
 
-	/// 先頭の texture gpu handle をセットする
-	auto& textures = pAssetCollection_->GetTextures();
-	const Asset::Texture* firstTexture = &textures.front();
-	cmdList->SetGraphicsRootDescriptorTable(ROOT_PARAM_TEXTURES, firstTexture->GetSRVGPUHandle());
+	/// テクスチャ記述子ヒープの開始ハンドルをセットする
+	/// (Shader側で textures[material.baseTextureId] としてアクセスするため)
+	cmdList->SetGraphicsRootDescriptorTable(ROOT_PARAM_TEXTURES, pDxManager_->GetDxSRVHeap()->GetSRVStartGPUHandle());
 
 	materialsBuffer.SRVBindForGraphicsCommandList(cmdList, ROOT_PARAM_MATERIAL);
 	transformsBuffer_.SRVBindForGraphicsCommandList(cmdList, ROOT_PARAM_TRANSFORM);
@@ -174,4 +211,7 @@ void SpriteRenderingPipeline::Draw(class ECSGroup* _ecsGroup, CameraComponent* _
 		static_cast<UINT>(transformIndex),
 		0, 0, 0
 	);
+
+	GPUTimeStamp::GetInstance().EndTimeStamp(GPUTimeStampID::SpriteRendering);
 }
+

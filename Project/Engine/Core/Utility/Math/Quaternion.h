@@ -130,11 +130,17 @@ struct Quaternion final {
 	/// @return 逆クォータニオン
 	Quaternion Inverse() const;
 
+	/// @brief クォータニオンの内積を計算する
+	/// @param _other 他のクォータニオン
+	/// @return 内積値
+	float Dot(const Quaternion& _other) const;
+
 	/// ===================================================
 	/// public : operator
 	/// ===================================================
 
 	inline Quaternion& operator*= (const Quaternion& _other);
+	inline Quaternion& operator+= (const Quaternion& _other);
 };
 
 
@@ -142,6 +148,18 @@ struct Quaternion final {
 /// ===================================================
 /// quaternion operator
 /// ===================================================
+
+inline Quaternion operator+ (const Quaternion& _q1, const Quaternion& _q2) {
+	return { _q1.x + _q2.x, _q1.y + _q2.y, _q1.z + _q2.z, _q1.w + _q2.w };
+}
+
+inline Quaternion operator* (const Quaternion& _q, float _f) {
+	return { _q.x * _f, _q.y * _f, _q.z * _f, _q.w * _f };
+}
+
+inline Quaternion operator* (float _f, const Quaternion& _q) {
+	return _q * _f;
+}
 
 inline Quaternion operator* (const Quaternion& _q1, const Quaternion& _q2) {
 	return {
@@ -165,6 +183,19 @@ inline Quaternion operator/ (const Quaternion& _q, float _value) {
 inline Quaternion& Quaternion::operator*=(const Quaternion& _other) {
 	*this = *this * _other;
 	return *this;
+}
+
+inline Quaternion& Quaternion::operator+=(const Quaternion& _other) {
+	*this = *this + _other;
+	return *this;
+}
+
+inline bool operator==(const Quaternion& _q1, const Quaternion& _q2) {
+	return _q1.x == _q2.x && _q1.y == _q2.y && _q1.z == _q2.z && _q1.w == _q2.w;
+}
+
+inline bool operator!=(const Quaternion& _q1, const Quaternion& _q2) {
+	return !(_q1 == _q2);
 }
 
 } /// ONEngine

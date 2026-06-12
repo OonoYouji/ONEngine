@@ -11,6 +11,8 @@ void GPUTimeStamp::Initialize(DxDevice* dxDevice, DxCommand* dxCommand) {
 	maxTimerCount_ = static_cast<uint32_t>(GPUTimeStampID::Count);
 	pDxCommand_ = dxCommand;
 
+	resultsMSec_.assign(maxTimerCount_, -1.0);
+
 	uint32_t totalQueryCount = maxTimerCount_ * kTimestampPerTimer;
 
 	D3D12_QUERY_HEAP_DESC desc = {};
@@ -79,36 +81,35 @@ void GPUTimeStamp::EndTimeStamp(GPUTimeStampID id) {
 }
 
 double GPUTimeStamp::GetTimeStampMSec(GPUTimeStampID id) {
+	if (resultsMSec_.empty()) return -1.0;
 	CheckOutOfRange(id);
+	return resultsMSec_[static_cast<uint32_t>(id)];
+}
+
+void GPUTimeStamp::FetchResults() {
+	if (!readBackResource_.Get()) return;
 
 	uint64_t* data = nullptr;
-	D3D12_RANGE readRange = {};
-
-	readRange.Begin = 0;
-	readRange.End = sizeof(uint64_t) * maxTimerCount_ * kTimestampPerTimer;
+	D3D12_RANGE readRange = { 0, sizeof(uint64_t) * maxTimerCount_ * kTimestampPerTimer };
 
 	HRESULT hr = readBackResource_.Get()->Map(0, &readRange, reinterpret_cast<void**>(&data));
-	if(FAILED(hr)) {
-		return 0.0;
-	}
+	if (FAILED(hr)) return;
+// ... (rest of the method)
+	for (uint32_t i = 0; i < maxTimerCount_; i++) {
+		uint32_t index = i * kTimestampPerTimer;
+		uint64_t startTime = data[index];
+		uint64_t endTime = data[index + 1];
 
-	uint32_t index = GetIndex(id);
-	uint64_t startTime = data[index];
-	uint64_t endTime = data[index + 1];
+		if (startTime == 0 || endTime == 0 || endTime < startTime) {
+			resultsMSec_[i] = -1.0;
+			continue;
+		}
+
+		uint64_t delta = endTime - startTime;
+		resultsMSec_[i] = (static_cast<double>(delta) / static_cast<double>(gpuTimestampFrequency_)) * 1000.0;
+	}
 
 	readBackResource_.Get()->Unmap(0, nullptr);
-
-	/// 例外処理()
-	if(startTime == 0 || endTime == 0) {
-		return -1.0;
-	}
-
-	if(endTime < startTime) {
-		return -1.0;
-	}
-
-	uint64_t delta = endTime - startTime;
-	return (static_cast<double>(delta) / static_cast<double>(gpuTimestampFrequency_)) * 1000.0;
 }
 
 uint32_t GPUTimeStamp::GetIndex(GPUTimeStampID id) {

@@ -43,10 +43,6 @@ void Model::SetRootNode(const Node& _node) {
 	rootNode_ = _node;
 }
 
-void Model::SetAnimationDuration(float _duration) {
-	duration_ = _duration;
-}
-
 const std::string& Model::GetPath() const {
 	return path_;
 }
@@ -55,24 +51,20 @@ const Node& Model::GetRootNode() const {
 	return rootNode_;
 }
 
-const std::unordered_map<std::string, JointWeightData>& Model::GetJointWeightData() const {
-	return jointWeightData_;
+const std::vector<std::unordered_map<uint32_t, JointWeightData>>& Model::GetMeshJointWeightData() const {
+	return meshJointWeightData_;
 }
 
-std::unordered_map<std::string, JointWeightData>& Model::GetJointWeightData() {
-	return jointWeightData_;
+std::vector<std::unordered_map<uint32_t, JointWeightData>>& Model::GetMeshJointWeightData() {
+	return meshJointWeightData_;
 }
 
-const std::unordered_map<std::string, NodeAnimation>& Model::GetNodeAnimationMap() const {
-	return nodeAnimationMap_;
+const std::unordered_map<uint32_t, AnimationClip>& Model::GetAnimationClips() const {
+	return animationClips_;
 }
 
-std::unordered_map<std::string, NodeAnimation>& Model::GetNodeAnimationMap() {
-	return nodeAnimationMap_;
-}
-
-float Model::GetAnimationDuration() const {
-	return duration_;
+std::unordered_map<uint32_t, AnimationClip>& Model::GetAnimationClips() {
+	return animationClips_;
 }
 
 } // namespace ONEngine::Asset

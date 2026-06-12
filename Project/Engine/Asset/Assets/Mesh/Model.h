@@ -55,11 +55,12 @@ private:
 	std::string                        path_;
 
 
-	/// ----- animation data ----- ///
+	/// ----- skeleton & skinning data ----- ///
 	Node rootNode_;
-	std::unordered_map<std::string, JointWeightData> jointWeightData_;
-	std::unordered_map<std::string, NodeAnimation> nodeAnimationMap_;
-	float duration_;
+	std::vector<std::unordered_map<uint32_t, JointWeightData>> meshJointWeightData_;
+	
+	/// ----- animation clips ----- ///
+	std::unordered_map<uint32_t, AnimationClip> animationClips_;
 
 
 public:
@@ -72,7 +73,6 @@ public:
 	void SetMeshes(std::vector<std::shared_ptr<ModelMesh>>&& _meshes);
 	void SetPath(const std::string& _path);
 	void SetRootNode(const Node& _node);
-	void SetAnimationDuration(float _duration);
 
 
 	/// ----- getters ----- ///
@@ -87,16 +87,13 @@ public:
 	/// @brief アニメーションのルートノードを取得
 	const Node& GetRootNode() const;
 
-	/// @brief アニメーションのJointWeightDataを取得
-	const std::unordered_map<std::string, JointWeightData>& GetJointWeightData() const;
-	std::unordered_map<std::string, JointWeightData>& GetJointWeightData();
+	/// @brief アニメーションのJointWeightDataを取得 (メッシュごとのリスト)
+	const std::vector<std::unordered_map<uint32_t, JointWeightData>>& GetMeshJointWeightData() const;
+	std::vector<std::unordered_map<uint32_t, JointWeightData>>& GetMeshJointWeightData();
 
-	/// @brief アニメーションのNodeAnimationのマップを取得
-	const std::unordered_map<std::string, NodeAnimation>& GetNodeAnimationMap() const;
-	std::unordered_map<std::string, NodeAnimation>& GetNodeAnimationMap();
-
-	/// @brief アニメーションの再生時間を取得
-	float GetAnimationDuration() const;
+	/// @brief アニメーションクリップのマップを取得
+	const std::unordered_map<uint32_t, AnimationClip>& GetAnimationClips() const;
+	std::unordered_map<uint32_t, AnimationClip>& GetAnimationClips();
 
 
 };

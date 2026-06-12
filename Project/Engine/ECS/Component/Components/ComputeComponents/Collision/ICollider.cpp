@@ -1,14 +1,14 @@
-#include "ICollider.h"
+﻿#include "ICollider.h"
 
 /// engine
 #include "Engine/ECS/Entity/GameEntity/GameEntity.h"
 
-using namespace ONEngine;
 
+namespace ONEngine {
 
 void ICollider::UpdatePrevPosition() {
 	/// 前フレームの座標を更新する
-	if (GameEntity* owner = GetOwner()) {
+	if(GameEntity* owner = GetOwner()) {
 		prevPosition_ = owner->GetTransform()->GetPosition();
 	}
 }
@@ -21,3 +21,6 @@ CollisionState ICollider::GetCollisionState() const {
 	return collisionState_;
 }
 
+
+
+} /// namespace ONEngine

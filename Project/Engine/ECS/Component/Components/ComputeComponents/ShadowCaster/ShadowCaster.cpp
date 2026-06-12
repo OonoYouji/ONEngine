@@ -132,7 +132,7 @@ void ShadowCaster::CreateShadowCaster() {
 	if (!isCreated_) {
 		isCreated_ = true;
 	} else {
-		Console::LogWarning("ShadowCaster::CreateShadowCaster: ShadowCaster is already created.");
+		//Console::LogWarning("ShadowCaster::CreateShadowCaster: ShadowCaster is already created.");
 		return;
 	}
 

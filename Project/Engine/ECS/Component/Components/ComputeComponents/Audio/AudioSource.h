@@ -2,6 +2,8 @@
 
 /// std
 #include <string>
+#include <list>
+#include <vector>
 
 /// audio
 #include <xaudio2.h>
@@ -49,6 +51,7 @@ public:
 
 	/// 再生
 	void Play();
+	void Stop();
 	void PlayOneShot(float _volume, float _pitch, const std::string& _path);
 
 	/// 追加
@@ -66,6 +69,8 @@ private:
 
 	int state_;
 	bool isPlayingRequest_;
+	bool isStopRequest_ = false;
+	bool isLoop_ = false;
 
 	/// 再生中の音声ソースリスト
 	std::list<IXAudio2SourceVoice*> sourceVoices_;
@@ -87,6 +92,8 @@ public:
 	/// ----- getter ----- ///
 	float GetVolume() const;
 	float GetPitch() const;
+	bool GetLoop() const { return isLoop_; }
+	void SetLoop(bool _loop) { isLoop_ = _loop; }
 	const std::string& GetAudioPath() const;
 	Asset::AudioClip* GetAudioClip() const;
 	int GetState() const;
@@ -100,6 +107,8 @@ void AudioSourceDebug(AudioSource* _as);
 namespace MonoInternalMethods {
 void InternalGetParams(uint64_t _nativeHandle, float* _volume, float* _pitch);
 void InternalSetParams(uint64_t _nativeHandle, float _volume, float _pitch);
+void InternalPlay(uint64_t _nativeHandle);
+void InternalStop(uint64_t _nativeHandle);
 void InternalPlayOneShot(uint64_t _nativeHandle, float _volume, float _pitch, MonoString* _path);
 }
 

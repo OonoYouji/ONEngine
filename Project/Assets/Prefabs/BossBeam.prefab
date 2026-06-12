@@ -1,0 +1,103 @@
+{
+    "active": true,
+    "components": [
+        {
+            "enable": 1,
+            "matrixCalcFlags": 7,
+            "position": {
+                "x": -146.9951934814453,
+                "y": 17.0,
+                "z": -46.902320861816406
+            },
+            "rotate": {
+                "w": 0.5452585816383362,
+                "x": 0.5452585816383362,
+                "y": -0.4502144753932953,
+                "z": 0.4502144753932953
+            },
+            "scale": {
+                "x": 8.0,
+                "y": 50.0,
+                "z": 8.0
+            },
+            "type": "Transform"
+        },
+        {
+            "DamageTrigger": {
+                "damage": 50,
+                "interval": 0.10000000149011612,
+                "slowDuration": 1.0,
+                "slowMultiplier": 0.800000011920929,
+                "targetTag": "Player"
+            },
+            "type": "Variables"
+        },
+        {
+            "enable": 1,
+            "scripts": [
+                {
+                    "enable": true,
+                    "name": "DamageTrigger"
+                }
+            ],
+            "type": "Script"
+        },
+        {
+            "enable": 1,
+            "material": {
+                "baseColor": {
+                    "w": 0.20000000298023224,
+                    "x": 0.939068078994751,
+                    "y": 0.6464574933052063,
+                    "z": 0.11443838477134705
+                },
+                "baseTextureGuid": "14196fa931d9b8c11196cdd7eca20cf6",
+                "guid": "00000000000000000000000000000000",
+                "normalTextureGuid": "00000000000000000000000000000000",
+                "postEffectFlags": 1,
+                "uvTransform": {
+                    "position": {
+                        "x": 0.6677436828613281,
+                        "y": 0.0
+                    },
+                    "rotate": 0.0,
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    }
+                }
+            },
+            "meshPath": "./Packages/Models/primitive/tube.obj",
+            "renderQueue": 2,
+            "type": "MeshRenderer"
+        },
+        {
+            "categoryBits": 16,
+            "enable": 1,
+            "freezeY": false,
+            "isTrigger": true,
+            "maskBits": 6,
+            "mass": 1.0,
+            "size": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "state": "Dynamic",
+            "type": "BoxCollider"
+        },
+        {
+            "autoPlay": true,
+            "clipPath": "./Assets/Anims/UVTransformAnimation.anim",
+            "currentTime": 0.6677436828613281,
+            "isLooping": true,
+            "isPlaying": true,
+            "speed": 3.0,
+            "type": "AnimationPlayer"
+        }
+    ],
+    "guid": "35b3ebb528abc2b4c57be072c43d309b",
+    "name": "BossBeam",
+    "parentGuid": null,
+    "prefabName": "BossBeam"
+}

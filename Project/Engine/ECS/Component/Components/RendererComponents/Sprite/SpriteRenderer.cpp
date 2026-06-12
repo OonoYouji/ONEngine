@@ -2,6 +2,7 @@
 
 /// external
 #include <imgui.h>
+#include <format>
 
 /// engine
 #include "Engine/Core/Utility/Tools/Log.h"
@@ -12,6 +13,8 @@
 /// editor
 #include "Engine/Editor/Math/ImGuiMath.h"
 #include "Engine/Editor/Math/AssetDebugger.h"
+
+#include "Engine/Core/DirectX12/Manager/DxManager.h"
 
 using namespace ONEngine;
 
@@ -74,6 +77,7 @@ void SpriteRenderer::RenderingSetup(Asset::AssetCollection* _assetCollection) {
 			gpuMaterial_.baseTextureId = textureIndex;
 		} else {
 			gpuMaterial_.baseTextureId = 0;
+			Console::LogWarning(std::format("[SpriteRenderer] Texture not found in AssetCollection. GUID: {}. Falling back to default (Index 0).", material_.GetBaseTextureGuid().ToString()));
 		}
 	} else {
 		gpuMaterial_.baseTextureId = 0;
@@ -81,13 +85,15 @@ void SpriteRenderer::RenderingSetup(Asset::AssetCollection* _assetCollection) {
 
 	gpuMaterial_.uvTransform = material_.uvTransform;
 	gpuMaterial_.entityId = owner_ ? static_cast<int32_t>(owner_->GetId()) : 0;
-
-
 }
 
 
 void SpriteRenderer::SetColor(const Vector4& _color) {
-	gpuMaterial_.baseColor = _color;
+	material_.baseColor = _color;
+}
+
+void SpriteRenderer::SetUVTransform(const UVTransform& _uvTransform) {
+	material_.uvTransform = _uvTransform;
 }
 
 const Vector4& SpriteRenderer::GetColor() const {
@@ -96,6 +102,20 @@ const Vector4& SpriteRenderer::GetColor() const {
 
 const GPUMaterial& SpriteRenderer::GetGpuMaterial() const {
 	return gpuMaterial_;
+}
+
+const UVTransform& SpriteRenderer::GetUVTransform() const {
+	return material_.uvTransform;
+}
+
+Vector2 SpriteRenderer::GetTextureSize(Asset::AssetCollection* _assetCollection) const {
+	if (material_.HasBaseTexture()) {
+		Asset::Texture* texture = _assetCollection->GetTextureFromGuid(material_.GetBaseTextureGuid());
+		if (texture) {
+			return texture->GetTextureSize();
+		}
+	}
+	return Vector2(0.0f, 0.0f);
 }
 
 
@@ -122,4 +142,15 @@ void MonoInternalMethods::InternalSetColor(uint64_t _nativeHandle, Vector4 _colo
 	}
 
 	Console::LogError("MonoInternalMethods::InternalSetColor() | native handle is invalid");
+}
+
+Vector2 MonoInternalMethods::InternalGetTextureSize(uint64_t _nativeHandle) {
+	SpriteRenderer* sr = reinterpret_cast<SpriteRenderer*>(_nativeHandle);
+	if (sr) {
+		auto* assetCollection = Asset::AssetCollection::GetInstance();
+		return sr->GetTextureSize(assetCollection);
+	}
+
+	Console::LogError("MonoInternalMethods::InternalGetTextureSize() | native handle is invalid");
+	return Vector2(0.0f, 0.0f);
 }

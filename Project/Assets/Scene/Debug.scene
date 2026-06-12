@@ -1,0 +1,9 @@
+{
+    "entities": [
+        {
+            "path": "./Debug/Camera.entity",
+            "id": 1,
+            "parent": null
+        }
+    ]
+}

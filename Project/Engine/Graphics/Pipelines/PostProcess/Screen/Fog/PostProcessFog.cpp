@@ -53,6 +53,12 @@ void PostProcessFog::Execute(const std::string& _textureName, DxCommand* _dxComm
 
 	auto cmdList = _dxCommand->GetCommandList();
 
+	// バッファが生成されているかチェック（シーン遷移直後などは未生成の可能性がある）
+	if (!mainCamera->GetCameraPosBuffer().Get() || !mainCamera->GetFogParamsBuffer().Get()) {
+		ONEngine::Console::LogWarning("PostProcessFog::Execute: main camera buffers not initialized yet.");
+		return;
+	}
+
 	mainCamera->GetCameraPosBuffer().BindForComputeCommandList(cmdList, CBV_CAMERA_POS);
 	mainCamera->GetFogParamsBuffer().BindForComputeCommandList(cmdList, CBV_FOG_PARAMS);
 
@@ -60,7 +66,9 @@ void PostProcessFog::Execute(const std::string& _textureName, DxCommand* _dxComm
 	if(_textureName.find_last_of("debug") != std::string::npos) {
 		if(ECSGroup* debugGroup = _entityComponentSystem->GetECSGroup("Debug")) {
 			if(CameraComponent* debugCamera = debugGroup->GetMainCamera()) {
-				debugCamera->GetCameraPosBuffer().BindForComputeCommandList(cmdList, CBV_CAMERA_POS);
+				if (debugCamera->GetCameraPosBuffer().Get()) {
+					debugCamera->GetCameraPosBuffer().BindForComputeCommandList(cmdList, CBV_CAMERA_POS);
+				}
 			}
 		}
 	}
@@ -73,6 +81,12 @@ void PostProcessFog::Execute(const std::string& _textureName, DxCommand* _dxComm
 	textureIndices_[0] = _assetCollection->GetTextureIndex(_textureName + "Scene");
 	textureIndices_[1] = _assetCollection->GetTextureIndex(_textureName + "WorldPosition");
 	textureIndices_[2] = _assetCollection->GetTextureIndex("postProcessResult");
+
+	// 全て存在するかチェック
+	if (textureIndices_[0] == -1 || textureIndices_[1] == -1 || textureIndices_[2] == -1) {
+		ONEngine::Console::LogWarning("PostProcessFog::Execute: One or more required textures not found.");
+		return;
+	}
 
 	cmdList->SetComputeRootDescriptorTable(SRV_SCENE_COLOR, textures[textureIndices_[0]].GetSRVGPUHandle());
 	cmdList->SetComputeRootDescriptorTable(SRV_SCENE_WORLD_POSITION, textures[textureIndices_[1]].GetSRVGPUHandle());

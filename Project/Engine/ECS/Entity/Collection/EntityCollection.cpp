@@ -1,4 +1,5 @@
 ﻿#include "EntityCollection.h"
+#include <nlohmann/json.hpp>
 
 using namespace ONEngine;
 
@@ -27,6 +28,7 @@ EntityCollection::EntityCollection(ECSGroup* _ecsGroup, DxManager* _dxm)
 EntityCollection::~EntityCollection() {}
 
 GameEntity* EntityCollection::GenerateEntity(const Guid& _guid, bool _isRuntime) {
+	Console::LogInfo("[SOURCE_DETECTOR] Engine creating Entity (Internal)");
 	auto entity = std::make_unique<GameEntity>();
 	if (entity) {
 		entities_.emplace_back(std::move(entity));
@@ -37,6 +39,8 @@ GameEntity* EntityCollection::GenerateEntity(const Guid& _guid, bool _isRuntime)
 		entityPtr->id_ = NewEntityID(_isRuntime);
 		entityPtr->guid_ = _guid;
 		entityPtr->Awake();
+
+		guidEntityMap_[_guid] = entityPtr;
 
 		return entities_.back().get();
 	}
@@ -71,6 +75,7 @@ void EntityCollection::RemoveEntity(GameEntity* _entity, bool _deleteChildren) {
 	/// Componentの破棄
 	_entity->RemoveComponentAll();
 
+	guidEntityMap_.erase(_entity->GetGuid());
 	RemoveEntityId(_entity->GetId());
 
 	/// 親子関係の解除
@@ -156,6 +161,22 @@ void EntityCollection::RemoveDoNotDestroyEntity(GameEntity* _entity) {
 	}
 }
 
+void EntityCollection::MoveEntity(GameEntity* _entity, size_t _newIndex) {
+	auto it = std::find_if(entities_.begin(), entities_.end(), [_entity](const std::unique_ptr<GameEntity>& e) {
+		return e.get() == _entity;
+	});
+
+	if (it != entities_.end()) {
+		std::unique_ptr<GameEntity> entityPtr = std::move(*it);
+		entities_.erase(it);
+
+		if (_newIndex > entities_.size()) {
+			_newIndex = entities_.size();
+		}
+		entities_.insert(entities_.begin() + _newIndex, std::move(entityPtr));
+	}
+}
+
 int32_t EntityCollection::NewEntityID(bool _isRuntime) {
 	int32_t resultId = 0;
 
@@ -200,10 +221,8 @@ uint32_t EntityCollection::GetEntityId(const std::string& _name) {
 	return 0;
 }
 
-GameEntity* EntityCollection::GetEntity(size_t _entityId) {
-	/// idを検索
-	auto itr = std::find_if(
-		entities_.begin(), entities_.end(),
+GameEntity* EntityCollection::GetEntity(int32_t _entityId) {
+	auto itr = std::find_if(entities_.begin(), entities_.end(),
 		[_entityId](const std::unique_ptr<GameEntity>& entity) {
 			return entity->GetId() == _entityId;
 		}
@@ -213,7 +232,6 @@ GameEntity* EntityCollection::GetEntity(size_t _entityId) {
 		return (*itr).get();
 	}
 
-	Console::LogWarning("Entity not found for ID: " + std::to_string(_entityId));
 	return nullptr;
 }
 
@@ -246,6 +264,12 @@ void EntityCollection::LoadPrefabAll() {
 void EntityCollection::ReloadPrefab(const std::string& _prefabName) {
 	auto itr = prefabs_.find(_prefabName);
 	if (itr == prefabs_.end()) {
+		// 拡張子なしで検索された場合に備えて ".prefab" を付けて再試行
+		std::string nameWithExt = _prefabName + ".prefab";
+		itr = prefabs_.find(nameWithExt);
+	}
+
+	if (itr == prefabs_.end()) {
 		/// もう一度Fileを探索して確認
 		File file = FileSystem::GetFile("./Assets/Prefabs/", _prefabName);
 
@@ -257,19 +281,46 @@ void EntityCollection::ReloadPrefab(const std::string& _prefabName) {
 		///!< 複数あった場合は最初に見つかったものを使用する
 		prefabs_[file.second] = std::make_unique<EntityPrefab>(file.first);
 
-		itr = prefabs_.find(_prefabName);
+		itr = prefabs_.find(file.second);
 	}
 
-	/// prefabを再読み込み
+	// 1. 各エンティティの現在の「カスタム変更（差分）」を一時保存する
+	// ※リロード前のPrefab状態と比較して、何がオーバーライドされているかを記録
+	const std::string& actualPrefabName = itr->first;
+	std::unordered_map<GameEntity*, nlohmann::json> entityDiffs;
+	for (auto& entity : entities_) {
+		if (entity->GetPrefabName() == actualPrefabName || 
+			(!actualPrefabName.empty() && entity->GetPrefabName() == FileSystem::FileNameWithoutExtension(actualPrefabName))) {
+			// ToJson(entity, false) は現在の Prefab との差分を返す
+			entityDiffs[entity.get()] = EntityJsonConverter::ToJson(entity.get(), false);
+		}
+	}
+
+	/// 2. prefabをディスクから再読み込み（これでベースラインが更新される）
 	itr->second->Reload();
+
+	/// 3. 更新されたPrefabベースに、保存しておいた差分を再適用する
+	for (auto& [entity, diff] : entityDiffs) {
+		// まず、新しいPrefabを強制的に適用（ベースラインの更新）
+		ApplyPrefabToEntity(entity, actualPrefabName);
+		
+		// 次に、保存しておいたカスタム差分をマージ適用（オーバーライドの復元）
+		EntityJsonConverter::FromJson(diff, entity, pEcsGroup_->GetGroupName(), true);
+	}
 }
 
 GameEntity* EntityCollection::GenerateEntityFromPrefab(const std::string& _prefabName, bool _isRuntime) {
 	/// prefabが存在するかチェック
 	auto prefabItr = prefabs_.find(_prefabName);
 	if (prefabItr == prefabs_.end()) {
-		Console::LogError("Prefab not found: " + _prefabName);
-		return nullptr;
+		// 拡張子なしで検索された場合に備えて ".prefab" を付けて再試行
+		std::string nameWithExt = _prefabName + ".prefab";
+		prefabItr = prefabs_.find(nameWithExt);
+
+		if (prefabItr == prefabs_.end()) {
+			Console::LogError("Prefab not found: " + _prefabName);
+			return nullptr;
+		}
 	}
 
 	/// prefabを取得
@@ -284,6 +335,12 @@ EntityPrefab* EntityCollection::GetPrefab(const std::string& _fileName) {
 		return prefabs_[_fileName].get();
 	}
 
+	// 拡張子なしで検索された場合に備えて ".prefab" を付けて再試行
+	std::string nameWithExt = _fileName + ".prefab";
+	if (prefabs_.contains(nameWithExt)) {
+		return prefabs_[nameWithExt].get();
+	}
+
 	return nullptr;
 }
 
@@ -296,17 +353,22 @@ void EntityCollection::ApplyPrefabToEntity(GameEntity* _entity, const std::strin
 	/// prefabが存在するかチェック
 	auto prefabItr = prefabs_.find(_prefabName);
 	if (prefabItr == prefabs_.end()) {
-		Console::LogError("Prefab not found: " + _prefabName);
-		return;
+		// 拡張子なしで検索された場合に備えて ".prefab" を付けて再試行
+		std::string nameWithExt = _prefabName + ".prefab";
+		prefabItr = prefabs_.find(nameWithExt);
+
+		if (prefabItr == prefabs_.end()) {
+			Console::LogError("Prefab not found: " + _prefabName);
+			return;
+		}
 	}
 
 	/// prefabを取得
 	EntityPrefab* prefab = prefabItr->second.get();
 
-	/// Jsonからコンポーネントを生成
-	EntityJsonConverter::FromJson(prefab->GetJson(), _entity, pEcsGroup_->GetGroupName());
-
-}
+	/// Jsonからコンポーネントを生成 (Prefab適用時はマージではなく上書き)
+	EntityJsonConverter::FromJson(prefab->GetJson(), _entity, pEcsGroup_->GetGroupName(), false);
+	}
 
 GameEntity* EntityCollection::GenerateEntityRecursive(const nlohmann::json& _json, GameEntity* _parent, bool _isRuntime) {
 

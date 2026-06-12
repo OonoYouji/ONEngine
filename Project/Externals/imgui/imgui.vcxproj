@@ -130,6 +130,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\imgui-node-editor\crude_json.h" />
+    <ClInclude Include="..\imgui-node-editor\imgui_bezier_math.h" />
+    <ClInclude Include="..\imgui-node-editor\imgui_bezier_math.inl" />
+    <ClInclude Include="..\imgui-node-editor\imgui_canvas.h" />
+    <ClInclude Include="..\imgui-node-editor\imgui_extra_math.h" />
+    <ClInclude Include="..\imgui-node-editor\imgui_extra_math.inl" />
+    <ClInclude Include="..\imgui-node-editor\imgui_node_editor.h" />
+    <ClInclude Include="..\imgui-node-editor\imgui_node_editor_internal.h" />
+    <ClInclude Include="..\imgui-node-editor\imgui_node_editor_internal.inl" />
     <ClInclude Include="GraphEditor.h" />
     <ClInclude Include="ImCurveEdit.h" />
     <ClInclude Include="ImGradient.h" />
@@ -151,6 +160,10 @@
     <ClInclude Include="imstb_truetype.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\imgui-node-editor\crude_json.cpp" />
+    <ClCompile Include="..\imgui-node-editor\imgui_canvas.cpp" />
+    <ClCompile Include="..\imgui-node-editor\imgui_node_editor.cpp" />
+    <ClCompile Include="..\imgui-node-editor\imgui_node_editor_api.cpp" />
     <ClCompile Include="GraphEditor.cpp" />
     <ClCompile Include="ImCurveEdit.cpp" />
     <ClCompile Include="ImGradient.cpp" />

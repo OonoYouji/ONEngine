@@ -36,6 +36,8 @@ public:
 
 	Meta<typename Model::MetaData> GetMetaData(const std::string& _filepath);
 
+private:
+
 	/// @brief アニメーションのNodeを読み込む
 	/// @param _node 読み込み対象のaiNodeポインタ
 	/// @return 読み込まれたNode構造体
@@ -43,10 +45,8 @@ public:
 
 	/// @brief アニメーションの読み込み
 	/// @param _model 読み込み対象のModelポインタ
-	/// @param _filepath 読み込み対象のファイルパス
-	void LoadAnimation(Model* _model, const std::string& _filepath);
-
-private:
+	/// @param _scene AssimpのaiScene
+	void LoadAnimation(Model* _model, const aiScene* _scene);
 
 	/// @brief 読み込めるモデルであるのかチェックする
 	/// @param _aiScene チェック対象のモデル

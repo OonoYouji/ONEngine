@@ -1,0 +1,38 @@
+{
+    "active": true,
+    "components": [
+        {
+            "enable": 1,
+            "matrixCalcFlags": 7,
+            "position": {
+                "x": 0.0,
+                "y": -1.300000548362732,
+                "z": -4.599994659423828
+            },
+            "rotate": {
+                "w": 1.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "scale": {
+                "x": 11.300015449523926,
+                "y": 11.300013542175293,
+                "z": 11.300013542175293
+            },
+            "type": "Transform"
+        },
+        {
+            "type": "Variables"
+        },
+        {
+            "enable": 1,
+            "texturePath": "./Assets/Textures/Outscene/rogland_clear_night_2k.dds",
+            "type": "Skybox"
+        }
+    ],
+    "guid": "13627b7ea70743ee62db815f062257f0",
+    "name": "Sky",
+    "parentGuid": "0ee3a6629af617b162fb89e780a52a74",
+    "prefabName": ""
+}

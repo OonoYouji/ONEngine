@@ -47,13 +47,13 @@ public:
 
 	/// @brief render targetとして設定
 	/// @param _dxCommand DxCommandのインスタンスへのポインタ
-	void SetRenderTarget(DxCommand* _dxCommand, DxDSVHeap* _dxDSVHeap);
+	void SetRenderTarget(DxCommand* _dxCommand, DxDSVHeap* _dxDSVHeap, bool _clear = true);
 
 	/// @brief 複数のrender targetとして設定
 	/// @param _dxCommand DxCommandのインスタンスへのポインタ
 	/// @param _dxDSVHeap DxDSVHeapのインスタンスへのポインタ
 	/// @param _other 他のrender textureのvector
-	void SetRenderTarget(DxCommand* _dxCommand, DxDSVHeap* _dxDSVHeap, const std::vector<std::unique_ptr<RenderTexture>>& _other);
+	void SetRenderTarget(DxCommand* _dxCommand, DxDSVHeap* _dxDSVHeap, const std::vector<std::unique_ptr<RenderTexture>>& _other, bool _clear = true);
 
 	/// @brief render textureとして設定
 	/// @param _dxCommand DxCommandのインスタンスへのポインタ
@@ -66,6 +66,8 @@ public:
 	/// @brief RenderTextureの名前を取得
 	/// @return std::string RenderTextureの名前
 	const std::string& GetName() const;
+
+	DxResource& GetDxResource();
 
 private:
 	/// ===================================================

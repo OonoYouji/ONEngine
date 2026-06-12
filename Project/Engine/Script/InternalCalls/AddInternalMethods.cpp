@@ -15,6 +15,7 @@
 #include "Engine/ECS/Component/Components/ComputeComponents/Effect/Effect.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/TerrainCollider.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Animator/Animator.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Collision/BoxCollider.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Collision/SphereCollider.h"
 #include "Engine/ECS/Component/Components/RendererComponents/Skybox/Skybox.h"
@@ -25,11 +26,55 @@
 #include "Engine/ECS/Component/Components/RendererComponents/Primitive/Line2DRenderer.h"
 #include "Engine/ECS/Component/Components/RendererComponents/Primitive/Line3DRenderer.h"
 #include "Engine/ECS/Component/Components/RendererComponents/ScreenPostEffectTag/ScreenPostEffectTag.h"
+#include "Engine/Core/Window/WindowManager.h"
+#include "Engine/Core/Utility/Tools/Log.h"
 
+
+#include "Engine/Core/Utility/Tools/Gizmo.h"
+#include <mutex>
+
+namespace {
+	std::mutex g_GizmoMutex;
+
+	void Internal_SubmitLineBatch(MonoArray* _batch, int _count) {
+		if (!_batch) return;
+
+		// 検証用ログ (毎フレーム出ると多すぎるため、最初の10回だけ詳細を出力)
+		static int receiveLogCount = 0;
+		if (receiveLogCount < 10) {
+			std::string msg = "[C++ Bridge] Internal_SubmitLineBatch received " + std::to_string(_count) + " items.";
+			
+			// 最初の1要素の座標と太さをサンプルとして出力
+			if (_count > 0) {
+				ONEngine::Gizmo::LineData* sample = (ONEngine::Gizmo::LineData*)mono_array_addr(_batch, ONEngine::Gizmo::LineData, 0);
+				if (sample) {
+					msg += " Sample[0]: Start(" + std::to_string(sample->startPosition.x) + "," + std::to_string(sample->startPosition.y) + "," + std::to_string(sample->startPosition.z) + ")";
+					msg += " End(" + std::to_string(sample->endPosition.x) + "," + std::to_string(sample->endPosition.y) + "," + std::to_string(sample->endPosition.z) + ")";
+					msg += " Thickness: " + std::to_string(sample->thickness);
+				}
+			}
+			ONEngine::Console::Log(msg, ONEngine::LogCategory::ScriptEngine);
+			receiveLogCount++;
+		}
+		
+		std::lock_guard<std::mutex> lock(g_GizmoMutex);
+		for (int i = 0; i < _count; ++i) {
+			ONEngine::Gizmo::LineData* data = (ONEngine::Gizmo::LineData*)mono_array_addr(_batch, ONEngine::Gizmo::LineData, i);
+			if (!data) continue;
+
+			// エンジン側のGizmo::DrawLineを呼び出す
+			// 注意: Gizmo::DrawLineは内部でgGizmoSystemを使用するため、初期化済みである必要がある
+			ONEngine::Gizmo::DrawLine(data->startPosition, data->endPosition, data->color, data->thickness);
+		}
+	}
+}
 
 using namespace ONEngine;
 using namespace MonoInternalMethods;
-using namespace MonoInternalMethods;
+
+void ONEngine::AddWindowInternalCalls() {
+	mono_add_internal_call("Window::InternalGetSize", (void*)InternalGetWindowSize);
+}
 
 void ONEngine::AddComponentInternalCalls() {
 
@@ -54,6 +99,8 @@ void ONEngine::AddComponentInternalCalls() {
 	mono_add_internal_call("MeshRenderer::InternalSetColor", (void*)InternalSetMeshColor);
 	mono_add_internal_call("MeshRenderer::InternalGetPostEffectFlags", (void*)InternalGetPostEffectFlags);
 	mono_add_internal_call("MeshRenderer::InternalSetPostEffectFlags", (void*)InternalSetPostEffectFlags);
+	mono_add_internal_call("MeshRenderer::InternalGetRenderQueue", (void*)InternalGetRenderQueue);
+	mono_add_internal_call("MeshRenderer::InternalSetRenderQueue", (void*)InternalSetRenderQueue);
 
 
 	/// skin mesh renderer
@@ -69,13 +116,39 @@ void ONEngine::AddComponentInternalCalls() {
 	mono_add_internal_call("SkinMeshRenderer::InternalSetAnimationScale", (void*)InternalSetAnimationScale);
 	mono_add_internal_call("SkinMeshRenderer::InternalGetJointTransform", (void*)InternalGetJointTransform);
 
+	/// animator
+	mono_add_internal_call("Animator::Internal_Play", (void*)Internal_Play);
+	mono_add_internal_call("Animator::Internal_CrossFade", (void*)Internal_CrossFade);
+	mono_add_internal_call("Animator::Internal_SetPlaybackSpeed", (void*)Internal_SetPlaybackSpeed);
+	mono_add_internal_call("Animator::Internal_SetLoop", (void*)Internal_SetLoop);
+	mono_add_internal_call("Animator::Internal_GetAnimationDuration", (void*)Internal_GetAnimationDuration);
+
 	/// sprite renderer
 	mono_add_internal_call("SpriteRenderer::InternalGetColor", (void*)InternalGetColor);
 	mono_add_internal_call("SpriteRenderer::InternalSetColor", (void*)InternalSetColor);
 
+	/// sphere collider
+	mono_add_internal_call("SphereCollider::InternalGetRadius", (void*)InternalGetRadius);
+	mono_add_internal_call("SphereCollider::InternalSetRadius", (void*)InternalSetRadius);
+	mono_add_internal_call("SphereCollider::InternalIsTrigger", (void*)InternalIsTriggerSphere);
+	mono_add_internal_call("SphereCollider::InternalSetTrigger", (void*)InternalSetTriggerSphere);
+	mono_add_internal_call("SphereCollider::InternalGetMass", (void*)InternalGetMass);
+	mono_add_internal_call("SphereCollider::InternalSetMass", (void*)InternalSetMass);
+
+	/// box collider
+	mono_add_internal_call("BoxCollider::InternalGetSize", (void*)InternalGetSize);
+	mono_add_internal_call("BoxCollider::InternalSetSize", (void*)InternalSetSize);
+	mono_add_internal_call("BoxCollider::InternalIsTrigger", (void*)InternalIsTriggerBox);
+	mono_add_internal_call("BoxCollider::InternalSetTrigger", (void*)InternalSetTriggerBox);
+	mono_add_internal_call("BoxCollider::InternalGetMassBox", (void*)InternalGetMassBox);
+	mono_add_internal_call("BoxCollider::InternalSetMassBox", (void*)InternalSetMassBox);
+	mono_add_internal_call("SpriteRenderer::InternalGetTextureSize", (void*)InternalGetTextureSize);
+
 	/// audio source
 	mono_add_internal_call("AudioSource::InternalGetParams", (void*)InternalGetParams);
 	mono_add_internal_call("AudioSource::InternalSetParams", (void*)InternalSetParams);
+	mono_add_internal_call("AudioSource::InternalPlay", (void*)InternalPlay);
+	mono_add_internal_call("AudioSource::InternalStop", (void*)InternalStop);
 	mono_add_internal_call("AudioSource::InternalPlayOneShot", (void*)InternalPlayOneShot);
 
 }
@@ -97,8 +170,15 @@ void ONEngine::AddEntityInternalCalls() {
 
 	mono_add_internal_call("ECSGroup::InternalCreateEntity", (void*)InternalCreateEntity);
 	mono_add_internal_call("ECSGroup::InternalDestroyEntity", (void*)InternalDestroyEntity);
+	mono_add_internal_call("ECSGroup::InternalGetRootEntityCount", (void*)InternalGetRootEntityCount);
+	mono_add_internal_call("ECSGroup::InternalGetRootEntityId", (void*)InternalGetRootEntityId);
 
-}
+	// AI Debug
+	mono_add_internal_call("BehaviorTree::Internal_UpdateNodeStatus", (void*)Internal_UpdateNodeStatus);
+	mono_add_internal_call("Blackboard::Internal_UpdateBlackboardValue", (void*)Internal_UpdateBlackboardValue);
+	mono_add_internal_call("BehaviorNode::Internal_OnBreakpointHit", (void*)Internal_OnBreakpointHit);
+	}
+
 
 void ONEngine::AddInputInternalCalls() {
 	mono_add_internal_call("Input::InternalTriggerKey", (void*)Input::TriggerKey);
@@ -121,3 +201,10 @@ void ONEngine::AddInputInternalCalls() {
 void ONEngine::AddSceneInternalCalls() {
 	mono_add_internal_call("SceneManager::InternalLoadScene", (void*)InternalLoadScene);
 }
+
+void ONEngine::AddGizmoInternalCalls() {
+	mono_add_internal_call("GizmoBatch::Internal_SubmitLineBatch", (void*)Internal_SubmitLineBatch);
+}
+
+void ONEngine::AddAnimationInternalCalls(); // implementation in AnimationInternalCalls.cpp
+

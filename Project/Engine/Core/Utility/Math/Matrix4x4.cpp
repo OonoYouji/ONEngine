@@ -224,6 +224,17 @@ Vector3 Matrix4x4::Transform(const Vector3& _v, const Matrix4x4& _m) {
 	return { v[0], v[1], v[2] };
 }
 
+Vector3 Matrix4x4::TransformNormal(const Vector3& _v, const Matrix4x4& _m) {
+	/// ----- Vector3に行列をかける (平行移動無視) ----- ///
+
+	float v[3];
+	for (size_t i = 0; i < 3; i++) {
+		v[i] = _v.x * _m.m[0][i] + _v.y * _m.m[1][i] + _v.z * _m.m[2][i];
+	}
+
+	return { v[0], v[1], v[2] };
+}
+
 Vector4 Matrix4x4::Transform(const Vector4& _v, const Matrix4x4& _m) {
 	/// ----- Vector4に行列をかける ----- ///
 

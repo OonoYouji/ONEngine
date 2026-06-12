@@ -8,16 +8,11 @@ using namespace ONEngine;
 #include "Engine/ECS/Component/Components/ComputeComponents/Transform/Transform.h"
 
 void TransformUpdateSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
-	if (!DebugConfig::isDebugging) {
-		Update(_ecs);
-	}
-
+	Update(_ecs);
 }
 
 void TransformUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
-	if (DebugConfig::isDebugging) {
-		Update(_ecs);
-	}
+	Update(_ecs);
 }
 
 

@@ -1,0 +1,296 @@
+{
+    "blackboard": [
+        {
+            "bVal": false,
+            "fVal": 1200.0,
+            "iVal": 0,
+            "key": "CurrentHP",
+            "sVal": "",
+            "type": 2,
+            "vVal": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "bVal": false,
+            "fVal": 1.0,
+            "iVal": 0,
+            "key": "HPRatio",
+            "sVal": "",
+            "type": 2,
+            "vVal": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "bVal": false,
+            "fVal": 0.0,
+            "iVal": 0,
+            "key": "PatrolIndex",
+            "sVal": "",
+            "type": 0,
+            "vVal": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        }
+    ],
+    "comments": [],
+    "links": [
+        {
+            "endPin": 4,
+            "id": 22,
+            "startPin": 2
+        },
+        {
+            "endPin": 8,
+            "id": 23,
+            "startPin": 5
+        },
+        {
+            "endPin": 11,
+            "id": 24,
+            "startPin": 9
+        },
+        {
+            "endPin": 14,
+            "id": 25,
+            "startPin": 9
+        },
+        {
+            "endPin": 17,
+            "id": 26,
+            "startPin": 9
+        },
+        {
+            "endPin": 20,
+            "id": 27,
+            "startPin": 9
+        }
+    ],
+    "nodes": [
+        {
+            "className": "Entry",
+            "decorators": [],
+            "hasBreakpoint": false,
+            "id": 1,
+            "inputs": [],
+            "isDecorator": false,
+            "name": "Boss Root Entry",
+            "outputs": [
+                {
+                    "id": 2,
+                    "name": "Out"
+                }
+            ],
+            "pos": [
+                -200.0,
+                0.0
+            ],
+            "properties": {},
+            "services": []
+        },
+        {
+            "className": "Parallel",
+            "decorators": [],
+            "hasBreakpoint": false,
+            "id": 2,
+            "inputs": [
+                {
+                    "id": 4,
+                    "name": "In"
+                }
+            ],
+            "isDecorator": false,
+            "name": "Boss Core Systems",
+            "outputs": [
+                {
+                    "id": 5,
+                    "name": "Out"
+                }
+            ],
+            "pos": [
+                100.0,
+                0.0
+            ],
+            "properties": {
+                "failurePolicy": "0",
+                "successPolicy": "1"
+            },
+            "services": [
+                {
+                    "className": "HPMonitorService",
+                    "name": "HP Monitor",
+                    "properties": {
+                        "Interval": "0.5",
+                        "currentHPKey": "CurrentHP",
+                        "hpRatioKey": "HPRatio"
+                    }
+                }
+            ]
+        },
+        {
+            "className": "Selector",
+            "decorators": [],
+            "hasBreakpoint": false,
+            "id": 3,
+            "inputs": [
+                {
+                    "id": 8,
+                    "name": "In"
+                }
+            ],
+            "isDecorator": false,
+            "name": "Phase Selector",
+            "outputs": [
+                {
+                    "id": 9,
+                    "name": "Out"
+                }
+            ],
+            "pos": [
+                400.0,
+                50.0
+            ],
+            "properties": {},
+            "services": []
+        },
+        {
+            "className": "RunBehaviorNode",
+            "decorators": [
+                {
+                    "className": "BossPhaseDecorator",
+                    "name": "HP > 100%",
+                    "properties": {
+                        "hpRatioKey": "HPRatio",
+                        "maxHP": "2.0",
+                        "minHP": "1.001"
+                    }
+                }
+            ],
+            "hasBreakpoint": false,
+            "id": 5,
+            "inputs": [
+                {
+                    "id": 11,
+                    "name": "In"
+                }
+            ],
+            "isDecorator": false,
+            "name": "Intro (HP > 100%)",
+            "outputs": [],
+            "pos": [
+                700.0,
+                -300.0
+            ],
+            "properties": {
+                "treePath": "Assets/AITrees/EmptyTree.json"
+            },
+            "services": []
+        },
+        {
+            "className": "RunBehaviorNode",
+            "decorators": [
+                {
+                    "className": "BossPhaseDecorator",
+                    "name": "HP 70-100%",
+                    "properties": {
+                        "hpRatioKey": "HPRatio",
+                        "maxHP": "1.001",
+                        "minHP": "0.7"
+                    }
+                }
+            ],
+            "hasBreakpoint": false,
+            "id": 10,
+            "inputs": [
+                {
+                    "id": 14,
+                    "name": "In"
+                }
+            ],
+            "isDecorator": false,
+            "name": "Phase 1 (HP 70-100%)",
+            "outputs": [],
+            "pos": [
+                700.0,
+                -150.0
+            ],
+            "properties": {
+                "treePath": "Assets/AITrees/BossPhase1.json"
+            },
+            "services": []
+        },
+        {
+            "className": "RunBehaviorNode",
+            "decorators": [
+                {
+                    "className": "BossPhaseDecorator",
+                    "name": "HP 40%-70%",
+                    "properties": {
+                        "hpRatioKey": "HPRatio",
+                        "maxHP": "0.7",
+                        "minHP": "0.4"
+                    }
+                }
+            ],
+            "hasBreakpoint": false,
+            "id": 20,
+            "inputs": [
+                {
+                    "id": 17,
+                    "name": "In"
+                }
+            ],
+            "isDecorator": false,
+            "name": "Phase 2 (HP 40-70%)",
+            "outputs": [],
+            "pos": [
+                700.0,
+                0.0
+            ],
+            "properties": {
+                "treePath": "Assets/AITrees/BossPhase2.json"
+            },
+            "services": []
+        },
+        {
+            "className": "RunBehaviorNode",
+            "decorators": [
+                {
+                    "className": "BossPhaseDecorator",
+                    "name": "HP < 40%",
+                    "properties": {
+                        "hpRatioKey": "HPRatio",
+                        "maxHP": "0.4",
+                        "minHP": "0.0"
+                    }
+                }
+            ],
+            "hasBreakpoint": false,
+            "id": 30,
+            "inputs": [
+                {
+                    "id": 20,
+                    "name": "In"
+                }
+            ],
+            "isDecorator": false,
+            "name": "Phase 3 (HP < 40%)",
+            "outputs": [],
+            "pos": [
+                700.0,
+                150.0
+            ],
+            "properties": {
+                "treePath": "Assets/AITrees/BossPhase3.json"
+            },
+            "services": []
+        }
+    ]
+}

@@ -3,7 +3,6 @@
 
 ConstantBuffer<ViewProjection> viewProjection : register(b0);
 
-
 VSOutput main(VSInput input) {
 	VSOutput output;
 

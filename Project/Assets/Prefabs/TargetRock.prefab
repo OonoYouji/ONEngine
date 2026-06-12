@@ -1,0 +1,96 @@
+{
+    "active": true,
+    "components": [
+        {
+            "enable": 1,
+            "matrixCalcFlags": 7,
+            "position": {
+                "x": 14.029582977294922,
+                "y": 0.9359276294708252,
+                "z": -43.954349517822266
+            },
+            "rotate": {
+                "w": 1.0,
+                "x": 0.0,
+                "y": -0.0,
+                "z": 0.0
+            },
+            "scale": {
+                "x": 3.799999952316284,
+                "y": 3.799999952316284,
+                "z": 3.799999952316284
+            },
+            "type": "Transform"
+        },
+        {
+            "FallingRock": {
+                "_hasImpacted": false,
+                "_isFalling": false,
+                "_targetPos": {
+                    "x": 11.299240112304688,
+                    "y": 2.1915438175201416,
+                    "z": -42.27875518798828
+                },
+                "damage": 40,
+                "fallSpeed": 30.0,
+                "impactRadius": 3.0,
+                "stunDuration": 2.0
+            },
+            "type": "Variables"
+        },
+        {
+            "enable": 1,
+            "scripts": [
+                {
+                    "enable": true,
+                    "name": "FallingRock"
+                }
+            ],
+            "type": "Script"
+        },
+        {
+            "enable": 1,
+            "material": {
+                "baseColor": {
+                    "w": 1.0,
+                    "x": 0.4000000059604645,
+                    "y": 0.30000001192092896,
+                    "z": 0.20000000298023224
+                },
+                "baseTextureGuid": "960ec2345ab1ab75a1c74ef79b962c75",
+                "guid": "00000000000000000000000000000000",
+                "normalTextureGuid": "00000000000000000000000000000000",
+                "postEffectFlags": 1,
+                "uvTransform": {
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotate": 0.0,
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    }
+                }
+            },
+            "meshPath": "./Packages/Models/primitive/sphere.obj",
+            "renderQueue": 2,
+            "type": "MeshRenderer"
+        },
+        {
+            "categoryBits": 32,
+            "enable": 1,
+            "freezeY": true,
+            "isTrigger": false,
+            "maskBits": 6,
+            "mass": 4.900000095367432,
+            "radius": 4.2870001792907715,
+            "state": "Dynamic",
+            "type": "SphereCollider"
+        }
+    ],
+    "guid": "fc3ebcd20175dda6480139603cbb6047",
+    "name": "TargetRock",
+    "parentGuid": null,
+    "prefabName": "TargetRock"
+}

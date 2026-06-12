@@ -1,0 +1,33 @@
+{
+    "active": true,
+    "components": [
+        {
+            "position": {
+                "x": -145.33456420898438,
+                "y": 4.403690338134766,
+                "z": -50.40132141113281
+            },
+            "scale": {
+                "x": 10.0,
+                "y": 10.0,
+                "z": 10.0
+            },
+            "type": "Transform"
+        },
+        {
+            "material": {
+                "baseTextureGuid": "79bc7e017f4bd125db93f4ebdf1e53d0"
+            },
+            "meshPath": "./Packages/Models/BackgroundObjects/Rock2.obj",
+            "type": "MeshRenderer"
+        },
+        {
+            "radius": 8.699999809265137,
+            "type": "SphereCollider"
+        }
+    ],
+    "guid": "c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8",
+    "name": "TargetRock_3",
+    "parentGuid": null,
+    "prefabName": "TargetRock"
+}

@@ -10,8 +10,18 @@
 
 namespace ONEngine::Asset {
 
+namespace {
+	AssetCollection* sInstance = nullptr;
+}
 
-AssetCollection::AssetCollection() = default;
+AssetCollection* AssetCollection::GetInstance() {
+	return sInstance;
+}
+
+
+AssetCollection::AssetCollection() {
+	sInstance = this;
+}
 AssetCollection::~AssetCollection() = default;
 
 void AssetCollection::Initialize(DxManager* dxm) {
@@ -25,6 +35,7 @@ void AssetCollection::Initialize(DxManager* dxm) {
 	assetBundles_[static_cast<size_t>(AssetType::Audio)] = std::make_unique<AssetBundle<AudioClip>>();
 	assetBundles_[static_cast<size_t>(AssetType::Material)] = std::make_unique<AssetBundle<Material>>();
 	assetBundles_[static_cast<size_t>(AssetType::Shader)] = std::make_unique<AssetBundle<Shader>>();
+	assetBundles_[static_cast<size_t>(AssetType::AnimationClip)] = std::make_unique<AssetBundle<AnimationClip>>();
 
 	// ヘルパーを使ってセットアップ（キャスト記述が減りスマートになります）
 	auto* meshBundle = GetBundle<Model>(AssetType::Mesh);
@@ -46,6 +57,13 @@ void AssetCollection::Initialize(DxManager* dxm) {
 	auto* shaderBundle = GetBundle<Shader>(AssetType::Shader);
 	shaderBundle->loader = std::make_unique<AssetLoader<Shader>>();
 	shaderBundle->container = std::make_unique<AssetContainer<Shader>>(128); // 適当な数
+
+	auto* animBundle = GetBundle<AnimationClip>(AssetType::AnimationClip);
+	animBundle->loader = std::make_unique<AssetLoader<AnimationClip>>();
+	animBundle->container = std::make_unique<AssetContainer<AnimationClip>>(128);
+
+	// デフォルトテクスチャを確実に最初にロードする
+	Load("./Packages/Textures/white.png", AssetType::Texture);
 
 	LoadResourcesAsync(GetResourceFilePaths("./Packages/"));
 	LoadResourcesAsync(GetResourceFilePaths("./Assets/"));
@@ -139,6 +157,11 @@ void AssetCollection::AddAsset<Material>(const std::string& filepath, Material&&
 	GetBundle<Material>(AssetType::Material)->container->Add(filepath, std::move(asset));
 }
 
+template<>
+void AssetCollection::AddAsset<AnimationClip>(const std::string& filepath, AnimationClip&& asset) {
+	GetBundle<AnimationClip>(AssetType::AnimationClip)->container->Add(filepath, std::move(asset));
+}
+
 bool AssetCollection::IsAsset(const Guid& guid) const {
 	if(!guid.CheckValid()) {
 		return false;
@@ -168,7 +191,11 @@ bool AssetCollection::ReloadAsset(const std::string& filepath) {
 	AssetType type = GetAssetTypeFromExtension(extension);
 
 	if(auto* bundle = GetBaseBundle(type)) {
-		bundle->Reload(filepath);
+		if (bundle->Contains(filepath)) {
+			bundle->Reload(filepath);
+		} else {
+			bundle->Load(filepath);
+		}
 	}
 
 	return true;
@@ -176,6 +203,7 @@ bool AssetCollection::ReloadAsset(const std::string& filepath) {
 
 std::vector<std::string> AssetCollection::GetResourceFilePaths(const std::string& directoryPath) const {
 	std::vector<std::string> resourcePaths;
+	Console::LogInfo(std::format("AssetCollection: Scanning directory: {}", directoryPath));
 	for(const auto& entry : std::filesystem::recursive_directory_iterator(directoryPath)) {
 		if(entry.is_regular_file()) {
 			std::string path = entry.path().string();
@@ -186,6 +214,7 @@ std::vector<std::string> AssetCollection::GetResourceFilePaths(const std::string
 			}
 		}
 	}
+	Console::LogInfo(std::format("AssetCollection: Found {} assets in {}", resourcePaths.size(), directoryPath));
 	return resourcePaths;
 }
 
@@ -207,6 +236,11 @@ const Guid& AssetCollection::GetAssetGuidFromPath(const std::string& filepath) c
 	AssetType type = GetAssetTypeFromExtension(extension);
 
 	if(auto* bundle = GetBaseBundle(type)) {
+		const Guid& guid = bundle->GetGuid(filepath);
+		if (guid.CheckValid()) return guid;
+
+		// 未登録ならここで一度ロードを試みる (const_castが必要だが安全な範囲)
+		const_cast<AssetCollection*>(this)->ReloadAsset(filepath);
 		return bundle->GetGuid(filepath);
 	}
 
@@ -276,6 +310,14 @@ const AudioClip* AssetCollection::GetAudioClip(const std::string& filepath) cons
 
 AudioClip* AssetCollection::GetAudioClip(const std::string& filepath) {
 	return GetBundle<AudioClip>(AssetType::Audio)->container->Get(filepath);
+}
+
+const AnimationClip* AssetCollection::GetAnimationClip(const std::string& filepath) const {
+	return GetBundle<AnimationClip>(AssetType::AnimationClip)->container->Get(filepath);
+}
+
+AnimationClip* AssetCollection::GetAnimationClip(const std::string& filepath) {
+	return GetBundle<AnimationClip>(AssetType::AnimationClip)->container->Get(filepath);
 }
 
 

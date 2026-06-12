@@ -43,10 +43,40 @@ public:
 		kVector2,
 		kVector3,
 		kVector4,
+		kIntList,
+		kFloatList,
+		kBoolList,
+		kStringList,
+		kVector3List,
+		kObject,
+		kObjectList,
 		Unknown
 	};
 
-	using Var = std::variant<int, float, bool, std::string, Vector2, Vector3, Vector4>;
+	struct GenericObject;
+
+	using Var = std::variant<
+		int, float, bool, std::string, Vector2, Vector3, Vector4,
+		std::vector<int>, std::vector<float>, std::vector<bool>, std::vector<std::string>, std::vector<Vector3>,
+		std::shared_ptr<GenericObject>, std::vector<std::shared_ptr<GenericObject>>
+	>;
+
+	struct GenericObject {
+		std::string typeName;
+		std::map<std::string, Var> fields;
+
+		void Add(const std::string& _name, const Var& _value) {
+			fields[_name] = _value;
+		}
+
+		bool Has(const std::string& _name) const {
+			return fields.contains(_name);
+		}
+	};
+
+	static Var MonoObjectToVar(void* obj, void* type);
+	static std::shared_ptr<GenericObject> MonoObjectToGeneric(void* obj);
+	static void VarToMonoObject(void* obj, void* klass, const Var& var);
 
 
 	/// @brief 変数のグループ、スクリプトごとに使用する予定
@@ -59,6 +89,7 @@ public:
 		void Add(const std::string& _name, const T& _value) {
 			if (keyMap.contains(_name)) {
 				variables[keyMap[_name]] = _value;
+				return;
 			}
 
 			keyMap[_name] = variables.size();
@@ -134,6 +165,12 @@ public:
 
 	/// @brief グループの配列をすべて得る
 	const std::vector<Group>& GetGroups() const;
+
+	/// @brief 変数を設定する（既存なら上書き、なければ追加）
+	/// @param _groupName グループ名
+	/// @param _varName 変数名
+	/// @param _value 値
+	void SetVariable(const std::string& _groupName, const std::string& _varName, const Var& _value);
 
 private:
 	/// ================================================

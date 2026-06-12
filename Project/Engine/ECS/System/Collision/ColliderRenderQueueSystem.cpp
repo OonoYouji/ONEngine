@@ -4,6 +4,7 @@ using namespace ONEngine;
 
 /// engine
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Transform/Transform.h"
 
 ColliderRenderQueueSystem::ColliderRenderQueueSystem() {}
 
@@ -58,8 +59,9 @@ void ColliderRenderQueueSystem::UpdateBoxCollider(ComponentArray<BoxCollider>* _
 
 		const Vector3 position = owner->GetPosition();
 		const Vector3& size = boxCollider->GetSize();
+		const Quaternion& rotate = owner->GetTransform()->GetRotate();
 		// Gizmoを使って立方体を描画する
-		Gizmo::DrawWireCube(position, size, Vector4(0.0f, 1.0f, 0.0f, 1.0f));
+		Gizmo::DrawWireCube(position, size, rotate, Vector4(0.0f, 1.0f, 0.0f, 1.0f));
 	}
 
 }

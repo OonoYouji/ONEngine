@@ -1,0 +1,53 @@
+{
+    "active": true,
+    "components": [
+        {
+            "enable": 1,
+            "matrixCalcFlags": 7,
+            "position": {
+                "x": -34.678016662597656,
+                "y": -47.30500030517578,
+                "z": 0.0
+            },
+            "rotate": {
+                "w": 1.0,
+                "x": 0.0,
+                "y": -0.0,
+                "z": 0.0
+            },
+            "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "type": "Transform"
+        },
+        {
+            "PlayerHPManager": {
+                "bgHeight": 0.11999999731779099,
+                "bgMaxX": 2.0,
+                "bgMinX": 2.0,
+                "gaugeHeight": 30.0,
+                "gaugeMaxX": 1.899999976158142,
+                "gaugeMinX": 0.0,
+                "gaugeWidth": 110.0,
+                "targetEntityName": "Player"
+            },
+            "type": "Variables"
+        },
+        {
+            "enable": 1,
+            "scripts": [
+                {
+                    "enable": true,
+                    "name": "PlayerHPManager"
+                }
+            ],
+            "type": "Script"
+        }
+    ],
+    "guid": "b2f254a913c4b36fd5ba09bdca3912f4",
+    "name": "PlayerHP",
+    "parentGuid": "5eb149f35d365cfbb797f9ff8b14ec18",
+    "prefabName": ""
+}

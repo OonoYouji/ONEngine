@@ -1,0 +1,67 @@
+{
+    "active": true,
+    "components": [
+        {
+            "cameraType": 0,
+            "enable": 1,
+            "farClip": 1000.0,
+            "fogColor": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "fogEnd": 10000.0,
+            "fogStart": 0.0,
+            "fovY": 0.699999988079071,
+            "isDrawFrustum": false,
+            "isMainCamera": true,
+            "nearClip": 0.10000000149011612,
+            "type": "CameraComponent"
+        },
+        {
+            "enable": 1,
+            "matrixCalcFlags": 7,
+            "position": {
+                "x": -107.30145263671875,
+                "y": 66.1216812133789,
+                "z": -185.9530029296875
+            },
+            "rotate": {
+                "w": 0.9723570942878723,
+                "x": 0.23349885642528534,
+                "y": -0.0,
+                "z": 0.0
+            },
+            "scale": {
+                "x": 1.0000064373016357,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "type": "Transform"
+        },
+        {
+            "FollowCamera": {
+                "offsetPos": {
+                    "x": 0.0,
+                    "y": 55.0,
+                    "z": -80.0
+                }
+            },
+            "type": "Variables"
+        },
+        {
+            "enable": 1,
+            "scripts": [
+                {
+                    "enable": true,
+                    "name": "FollowCamera"
+                }
+            ],
+            "type": "Script"
+        }
+    ],
+    "guid": "1d9ec6292e550cf2c7b90213b3e7002b",
+    "name": "Camera",
+    "parentGuid": null,
+    "prefabName": ""
+}

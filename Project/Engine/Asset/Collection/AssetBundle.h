@@ -41,7 +41,7 @@ public:
 		if(container->GetIndex(_filepath) == -1) {
 
 			/// Metaファイル読み込み
-			Meta<T::MetaData> meta = loader->GetMetaData(_filepath + ".meta");
+			Meta<T::MetaData> meta = loader->GetMetaData(_filepath);
 
 			/// ロード&追加
 			auto asset = loader->Load(_filepath, meta);
@@ -54,7 +54,7 @@ public:
 	std::future<void> LoadAsync(const std::string& _filepath) override {
 		return ThreadPool::Instance().Enqueue([this, _filepath]() {
 			if(container->GetIndex(_filepath) == -1) {
-				Meta<T::MetaData> meta = loader->GetMetaData(_filepath + ".meta");
+				Meta<T::MetaData> meta = loader->GetMetaData(_filepath);
 				auto asset = loader->Load(_filepath, meta);
 				if(asset.has_value()) {
 					container->Add(_filepath, std::move(asset.value()));
@@ -67,7 +67,7 @@ public:
 		int32_t index = container->GetIndex(_filepath);
 		if(index != -1) {
 			T* src = container->Get(index);
-			Meta<T::MetaData> meta = loader->GetMetaData(_filepath + ".meta");
+			Meta<T::MetaData> meta = loader->GetMetaData(_filepath);
 			auto reloadedAsset = loader->Reload(_filepath, src, meta);
 			if(reloadedAsset.has_value()) {
 				container->Add(_filepath, std::move(reloadedAsset.value()));

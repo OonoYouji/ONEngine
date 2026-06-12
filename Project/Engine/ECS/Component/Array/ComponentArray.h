@@ -13,7 +13,7 @@
 /// ///////////////////////////////////////////////////
 namespace ONEngine {
 
-static constexpr size_t kComponentCapacity = 1024;
+static constexpr size_t kComponentCapacity = 2048;
 
 class IComponentArray {
 	friend class ComponentCollection;

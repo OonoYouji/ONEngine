@@ -76,10 +76,17 @@ struct Meta {
 };
 
 
-/// @brief MetaBaseをファイルから読み込む
+/// @brief MetaBaseをファイルから読み込む、存在しない場合は生成する
 /// @param filepath 対象の.metaファイルパス
-/// @return 読み込まれたMetaBaseオブジェクト
-MetaBase LoadMetaBaseFromFile(const std::string& filepath);
+/// @param assetPath 元のアセットファイルパス
+/// @return 読み込まれた（または生成された）MetaBaseオブジェクト
+MetaBase LoadOrGenerateMetaBase(const std::string& filepath, const std::string& assetPath);
+
+/// @brief MetaBaseをファイルに保存する
+/// @param filepath 保存先の.metaファイルパス
+/// @param metaBase 保存するMetaBase
+/// @param jMetaData アセット固有のメタデータ（JSON形式）
+void SaveMetaToFile(const std::string& filepath, const MetaBase& metaBase, const nlohmann::json& jMetaData);
 
 
 

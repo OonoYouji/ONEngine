@@ -113,23 +113,28 @@ void FileWatcher::WatchDirectory(std::shared_ptr<WatchTarget> _ctx) {
 	OVERLAPPED overlapped = {};
 	overlapped.hEvent = _ctx->hEvent;
 
-	while (isRunning_) {
-		DWORD bytesReturned = 0;
-		BOOL ok = ReadDirectoryChangesW(
-			_ctx->hDir,
-			buffer,
-			sizeof(buffer),
-			TRUE,
-			FILE_NOTIFY_CHANGE_FILE_NAME |
-			FILE_NOTIFY_CHANGE_DIR_NAME |
-			FILE_NOTIFY_CHANGE_LAST_WRITE,
-			&bytesReturned,
-			&overlapped,
-			nullptr
-		);
+	bool isPending = false;
 
-		if (!ok) {
-			break;
+	while (isRunning_) {
+		if (!isPending) {
+			DWORD bytesReturned = 0;
+			BOOL ok = ReadDirectoryChangesW(
+				_ctx->hDir,
+				buffer,
+				sizeof(buffer),
+				TRUE,
+				FILE_NOTIFY_CHANGE_FILE_NAME |
+				FILE_NOTIFY_CHANGE_DIR_NAME |
+				FILE_NOTIFY_CHANGE_LAST_WRITE,
+				&bytesReturned,
+				&overlapped,
+				nullptr
+			);
+
+			if (!ok) {
+				break;
+			}
+			isPending = true;
 		}
 
 		DWORD wait = WaitForSingleObject(_ctx->hEvent, 100); // タイムアウト付き
@@ -137,32 +142,30 @@ void FileWatcher::WatchDirectory(std::shared_ptr<WatchTarget> _ctx) {
 			break;
 		}
 
-		if (wait != WAIT_OBJECT_0) {
+		if (wait == WAIT_TIMEOUT) {
 			continue;
+		}
+
+		if (wait != WAIT_OBJECT_0) {
+			break;
 		}
 
 		DWORD bytesTransferred = 0;
 		if (!GetOverlappedResult(_ctx->hDir, &overlapped, &bytesTransferred, FALSE)) {
 			/// ----- error ----- ///
-
-			DWORD gle = GetLastError();
-			if (gle == ERROR_OPERATION_ABORTED) {
-				ONEngine::Console::LogError(ONEngine::ConvertString(gle));
-			}
-
 			break;
 		}
 
+		isPending = false;
+
 		/// サイズ保障をすることで破損したメモリを参照しても大丈夫なようにする
 		if (bytesTransferred < sizeof(FILE_NOTIFY_INFORMATION)) {
-			ONEngine::Console::LogError("Invalid data size received.");
-			break;
+			continue;
 		}
 
 		FILE_NOTIFY_INFORMATION* fni = reinterpret_cast<FILE_NOTIFY_INFORMATION*>(buffer);
 		while (true) {
 			if (reinterpret_cast<BYTE*>(fni) + sizeof(FILE_NOTIFY_INFORMATION) > buffer + bytesTransferred) {
-				ONEngine::Console::LogError("Invalid FILE_NOTIFY_INFORMATION structure.");
 				break;
 			}
 

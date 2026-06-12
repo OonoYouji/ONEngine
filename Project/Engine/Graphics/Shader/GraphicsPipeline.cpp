@@ -457,6 +457,31 @@ D3D12_DEPTH_STENCIL_DESC ONEngine::DefaultDepthStencilDesc() {
 	return depthStencilDesc;
 }
 
+D3D12_DEPTH_STENCIL_DESC ONEngine::DepthNone() {
+	D3D12_DEPTH_STENCIL_DESC depthStencilDesc = {};
+	depthStencilDesc.DepthEnable = FALSE;
+	depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
+	depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;
+	depthStencilDesc.StencilEnable = FALSE;
+	return depthStencilDesc;
+}
+
+D3D12_DEPTH_STENCIL_DESC ONEngine::TelegraphDepthStencilDesc() {
+	D3D12_DEPTH_STENCIL_DESC depthStencilDesc = {};
+	depthStencilDesc.DepthEnable = TRUE;
+	depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO; // 深度は書き込まない
+	depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;    // 常に描画（タイルの下に隠れない）
+	return depthStencilDesc;
+}
+
+D3D12_DEPTH_STENCIL_DESC ONEngine::DepthRead() {
+	D3D12_DEPTH_STENCIL_DESC depthStencilDesc = {};
+	depthStencilDesc.DepthEnable = TRUE;
+	depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO; // 深度は書き込まない
+	depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL; // 読み取りは行う
+	return depthStencilDesc;
+}
+
 D3D12_STATIC_SAMPLER_DESC StaticSampler::ClampSampler() {
 	D3D12_STATIC_SAMPLER_DESC sampler = {};
 

@@ -1,4 +1,8 @@
 {
-    "version": 1,
-    "guid": "45ad3f7afc0ed9bdf82893d15262444c"
+    "colorSpace": "Linear",
+    "format": "RGBA8_UNORM",
+    "guid": "44172dffef6d2a125ecda788e6f92e87",
+    "name": "smoke",
+    "type": "Texture",
+    "version": 1
 }

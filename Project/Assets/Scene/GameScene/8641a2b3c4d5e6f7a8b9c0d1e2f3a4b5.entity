@@ -1,0 +1,142 @@
+{
+    "active": true,
+    "components": [
+        {
+            "position": {
+                "x": -81.94673919677734,
+                "z": -45.14229965209961
+            },
+            "rotate": {
+                "w": 1.0,
+                "y": -0.0
+            },
+            "type": "Transform"
+        },
+        {
+            "DamageHandler": {
+                "damageCooldownTime": 0.20000000298023224
+            },
+            "HP": {
+                "currentHp": 840
+            },
+            "type": "Variables"
+        },
+        {
+            "layers": [
+                {
+                    "boneMaskHash": 0,
+                    "states": [
+                        {
+                            "clipId": 1209400024,
+                            "isLoop": false,
+                            "playbackSpeed": 0.4166666567325592,
+                            "time": 1.0063201189041138,
+                            "weight": 1.0
+                        },
+                        {
+                            "clipId": 0,
+                            "isLoop": false,
+                            "playbackSpeed": 0.3333333432674408,
+                            "time": 0.6666666865348816,
+                            "weight": 0.0
+                        }
+                    ],
+                    "weight": 1.0
+                },
+                {
+                    "boneMaskHash": 0,
+                    "states": [
+                        {
+                            "clipId": 0,
+                            "isLoop": true,
+                            "playbackSpeed": 1.0,
+                            "time": 0.0,
+                            "weight": 0.0
+                        },
+                        {
+                            "clipId": 0,
+                            "isLoop": true,
+                            "playbackSpeed": 1.0,
+                            "time": 0.0,
+                            "weight": 0.0
+                        }
+                    ],
+                    "weight": 1.0
+                },
+                {
+                    "boneMaskHash": 0,
+                    "states": [
+                        {
+                            "clipId": 0,
+                            "isLoop": true,
+                            "playbackSpeed": 1.0,
+                            "time": 0.0,
+                            "weight": 0.0
+                        },
+                        {
+                            "clipId": 0,
+                            "isLoop": true,
+                            "playbackSpeed": 1.0,
+                            "time": 0.0,
+                            "weight": 0.0
+                        }
+                    ],
+                    "weight": 1.0
+                },
+                {
+                    "boneMaskHash": 0,
+                    "states": [
+                        {
+                            "clipId": 0,
+                            "isLoop": true,
+                            "playbackSpeed": 1.0,
+                            "time": 0.0,
+                            "weight": 0.0
+                        },
+                        {
+                            "clipId": 0,
+                            "isLoop": true,
+                            "playbackSpeed": 1.0,
+                            "time": 0.0,
+                            "weight": 0.0
+                        }
+                    ],
+                    "weight": 1.0
+                }
+            ],
+            "type": "Animator"
+        },
+        {
+            "scripts": [
+                {
+                    "enable": true,
+                    "name": "BossAI"
+                },
+                {
+                    "enable": true,
+                    "name": "HP"
+                },
+                {
+                    "enable": true,
+                    "name": "BossPerformanceDirector"
+                },
+                {
+                    "enable": true,
+                    "name": "DamageHandler"
+                }
+            ],
+            "type": "Script"
+        },
+        {
+            "desiredRotation": {
+                "w": 0.9998570680618286,
+                "y": -0.016906287521123886
+            },
+            "type": "AgentIntentComponent"
+        }
+    ],
+    "guid": "8641a2b3c4d5e6f7a8b9c0d1e2f3a4b5",
+    "name": "Boss",
+    "parentGuid": null,
+    "prefabName": "Boss"
+}

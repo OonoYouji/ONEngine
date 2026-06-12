@@ -8,7 +8,7 @@
 #include <deque>
 
 /// externals
-#include <nlohmann/json.hpp>
+#include <nlohmann/json_fwd.hpp>
 
 #include "../GameEntity/GameEntity.h"
 #include "../Prefab/EntityPrefab.h"
@@ -46,7 +46,7 @@ public:
 
 	/// 取得
 	uint32_t GetEntityId(const std::string& _name);
-	GameEntity* GetEntity(size_t _entityId);
+	GameEntity* GetEntity(int32_t _entityId);
 	GameEntity* GetEntityFromGuid(const Guid& _guid);
 
 	/// 削除
@@ -57,6 +57,9 @@ public:
 	/// 非破棄エンティティの追加と削除
 	void AddDoNotDestroyEntity(GameEntity* _entity);
 	void RemoveDoNotDestroyEntity(GameEntity* _entity);
+
+	/// エンティティの順番を入れ替える
+	void MoveEntity(GameEntity* _entity, size_t _newIndex);
 
 
 

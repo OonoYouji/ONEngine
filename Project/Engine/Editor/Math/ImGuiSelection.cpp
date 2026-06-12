@@ -8,7 +8,8 @@ using namespace Editor;
 namespace {
 
 	/// ----- ImGuiSelection ----- ///
-	const ONEngine::Guid* gSelectionObjectGuid = &ONEngine::Guid::kInvalid;
+	std::unordered_set<ONEngine::Guid> gSelectedObjects;
+	ONEngine::Guid gLastSelectedObject = ONEngine::Guid::kInvalid;
 	SelectionType gSelectionType = SelectionType::None;
 
 	/// ----- ImGuiInfo ----- ///
@@ -17,13 +18,45 @@ namespace {
 } /// namespace
 
  
-const ONEngine::Guid& ImGuiSelection::GetSelectedObject() {
-	return *gSelectionObjectGuid;
+const std::unordered_set<ONEngine::Guid>& ImGuiSelection::GetSelectedObjects() {
+	return gSelectedObjects;
 }
 
-void ImGuiSelection::SetSelectedObject(const ONEngine::Guid& _entityGuid, SelectionType _type) {
-	gSelectionObjectGuid = &_entityGuid;
+const ONEngine::Guid& ImGuiSelection::GetLastSelectedObject() {
+	return gLastSelectedObject;
+}
+
+void ImGuiSelection::SetSelectedObject(const ONEngine::Guid& _guid, SelectionType _type) {
+	gSelectedObjects.clear();
+	gSelectedObjects.insert(_guid);
+	gLastSelectedObject = _guid;
 	gSelectionType = _type;
+}
+
+void ImGuiSelection::AddSelectedObject(const ONEngine::Guid& _guid, SelectionType _type) {
+	gSelectedObjects.insert(_guid);
+	gLastSelectedObject = _guid;
+	gSelectionType = _type;
+}
+
+void ImGuiSelection::RemoveSelectedObject(const ONEngine::Guid& _guid) {
+	gSelectedObjects.erase(_guid);
+	if (gLastSelectedObject == _guid) {
+		gLastSelectedObject = ONEngine::Guid::kInvalid;
+	}
+	if (gSelectedObjects.empty()) {
+		gSelectionType = SelectionType::None;
+	}
+}
+
+void ImGuiSelection::ClearSelection() {
+	gSelectedObjects.clear();
+	gLastSelectedObject = ONEngine::Guid::kInvalid;
+	gSelectionType = SelectionType::None;
+}
+
+bool ImGuiSelection::IsSelected(const ONEngine::Guid& _guid) {
+	return gSelectedObjects.contains(_guid);
 }
 
 SelectionType ImGuiSelection::GetSelectionType() {

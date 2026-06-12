@@ -11,6 +11,7 @@
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Core/Utility/Utility.h"
+#include "Engine/Core/Utility/Tools/StringHash.h"
 #include "Engine/Asset/Meta/MetaFile.h"
 
 
@@ -18,24 +19,33 @@ namespace ONEngine::Asset {
 
 AssetLoader<Model>::AssetLoader(DxManager* _dxm)
 	: pDxManager_(_dxm) {
-	assimpLoadFlags_ = aiProcess_FlipWindingOrder | aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices;
+	assimpLoadFlags_ = aiProcess_FlipWindingOrder | aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices | aiProcess_Triangulate | aiProcess_LimitBoneWeights;
 }
 
 std::optional<Model> AssetLoader<Model>::Load(const std::string& _filepath, Meta<Model::MetaData> meta) {
 	/// ----- モデルの読み込み ----- ///
 
-	//MetaFile meta;
-	//if(!meta.LoadFromFile(_filepath + ".meta")) {
-	//	meta = GenerateMetaFile(_filepath);
-	//}
-
-	/// ファイルの拡張子を取得
 	const std::string fileExtension = FileSystem::FileExtension(_filepath);
+	Console::LogInfo(std::format("[Load] [Model] - Starting load: \"{}\" (ext: \"{}\")", _filepath, fileExtension));
+
 	Assimp::Importer importer;
-	const aiScene* scene = importer.ReadFile(_filepath, assimpLoadFlags_);
+	const aiScene* scene = nullptr;
+	
+	try {
+		scene = importer.ReadFile(_filepath, assimpLoadFlags_);
+	} catch (const std::exception& e) {
+		Console::LogError(std::format("[Load] [Model] - Assimp Exception: \"{}\", path: \"{}\"", e.what(), _filepath));
+		return std::nullopt;
+	} catch (...) {
+		Console::LogError(std::format("[Load] [Model] - Unknown Assimp Exception, path: \"{}\"", _filepath));
+		return std::nullopt;
+	}
 
 	/// 読み込めるモデルであるのかチェックする
 	if(!ValidateModel(scene)) {
+		if(!scene) {
+			Console::LogError(std::format("[Load] [Model] - Assimp Error: \"{}\", path: \"{}\"", importer.GetErrorString(), _filepath));
+		}
 		return std::nullopt;
 	}
 
@@ -48,8 +58,12 @@ std::optional<Model> AssetLoader<Model>::Load(const std::string& _filepath, Meta
 	model.SetPath(_filepath);
 
 	/// mesh 解析
+	model.GetMeshJointWeightData().resize(scene->mNumMeshes);
+
 	for(uint32_t meshIndex = 0u; meshIndex < scene->mNumMeshes; ++meshIndex) {
 		aiMesh* mesh = scene->mMeshes[meshIndex];
+		Console::LogInfo(std::format("  Mesh[{}]: \"{}\", Vertices: {}, Bones: {}", 
+			meshIndex, mesh->mName.C_Str(), mesh->mNumVertices, mesh->mNumBones));
 
 		/// sceneのデータを使ってMeshを作成する
 		std::vector<Model::Vertex> vertices;
@@ -62,8 +76,8 @@ std::optional<Model> AssetLoader<Model>::Load(const std::string& _filepath, Meta
 		for(uint32_t i = 0; i < mesh->mNumVertices; ++i) {
 			Model::Vertex&& vertex = {
 				Vector4(-mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z, 1.0f),
-				Vector2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y),
-				Vector3(-mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z)
+				mesh->HasTextureCoords(0) ? Vector2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y) : Vector2::Zero,
+				mesh->HasNormals() ? Vector3(-mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z) : Vector3::Up
 			};
 
 			vertices.push_back(vertex);
@@ -85,7 +99,8 @@ std::optional<Model> AssetLoader<Model>::Load(const std::string& _filepath, Meta
 			/// 格納領域の作成
 			aiBone* bone = mesh->mBones[boneIndex];
 			std::string      jointName = bone->mName.C_Str();
-			JointWeightData& jointWeightData = model.GetJointWeightData()[jointName];
+			uint32_t         jointNameHash = StringHash::Get(jointName);
+			JointWeightData& jointWeightData = model.GetMeshJointWeightData()[meshIndex][jointNameHash];
 
 			/// mat bind pose inverseの計算
 			aiMatrix4x4  matBindPoseAssimp = bone->mOffsetMatrix.Inverse();
@@ -112,9 +127,11 @@ std::optional<Model> AssetLoader<Model>::Load(const std::string& _filepath, Meta
 		}
 
 		if(fileExtension == ".gltf") {
-			/// nodeの解析
-			model.SetRootNode(ReadNode(scene->mRootNode));
-			LoadAnimation(&model, _filepath);
+			if(meshIndex == 0) {
+				/// nodeの解析 (ルート一回のみ)
+				model.SetRootNode(ReadNode(scene->mRootNode));
+				LoadAnimation(&model, scene);
+			}
 		}
 
 		/// mesh dataを作成
@@ -128,7 +145,8 @@ std::optional<Model> AssetLoader<Model>::Load(const std::string& _filepath, Meta
 		model.AddMesh(std::move(meshData));
 	}
 
-	Console::Log("[Load] [Model] - path:\"" + _filepath + "\"");
+	Console::LogInfo(std::format("[Load] [Model] - Finished: \"{}\", Total Meshes: {}, Total Clips: {}", 
+		_filepath, scene->mNumMeshes, model.GetAnimationClips().size()));
 
 	return model;
 }
@@ -142,10 +160,11 @@ std::optional<Model> AssetLoader<Model>::Reload(const std::string& _filepath, Mo
 Meta<Model::MetaData> AssetLoader<Model>::GetMetaData(const std::string& _filepath) {
 	Meta<Model::MetaData> res{};
 
-	res.base = LoadMetaBaseFromFile(_filepath);
+	const std::string metaPath = _filepath + ".meta";
+	res.base = LoadOrGenerateMetaBase(metaPath, _filepath);
 
 	nlohmann::json j;
-	std::ifstream ifs(_filepath);
+	std::ifstream ifs(metaPath);
 	if(!ifs.is_open()) {
 		return {};
 	}
@@ -189,92 +208,103 @@ Node AssetLoader<Model>::ReadNode(aiNode* _node) {
 	return result;
 }
 
-void AssetLoader<Model>::LoadAnimation(Model* _model, const std::string& _filepath) {
+void AssetLoader<Model>::LoadAnimation(Model* _model, const aiScene* _scene) {
 	/// ----- アニメーションの読み込み ----- ///
 
-	Assimp::Importer importer;
-	const aiScene* scene = importer.ReadFile(_filepath.c_str(), 0);
-
 	///!< アニメーションが存在しない場合は何もしない
-	if(scene->mAnimations == 0) {
-		Console::Log("[warning] type:Animation, path:\"" + _filepath + "\"");
-		return; ///< アニメーションが存在しない場合は何もしない
+	if(!_scene->mAnimations || _scene->mNumAnimations == 0) {
+		return;
 	}
 
-	/// 解析
-	aiAnimation* animationAssimp = scene->mAnimations[0];
-
-	float duration = _model->GetAnimationDuration();
-	std::unordered_map<std::string, NodeAnimation>& nodeAnimationMap = _model->GetNodeAnimationMap();
-
-	duration = static_cast<float>(animationAssimp->mDuration / animationAssimp->mTicksPerSecond);
-	_model->SetAnimationDuration(duration);
-
-	/// node animationの読み込み
-	for(uint32_t channelIndex = 0u; channelIndex < animationAssimp->mNumChannels; ++channelIndex) {
-
-		/// node animationの解析用データを
-		aiNodeAnim* nodeAnimationAssimp = animationAssimp->mChannels[channelIndex];
-		NodeAnimation& nodeAnimation = nodeAnimationMap[nodeAnimationAssimp->mNodeName.C_Str()];
-
-		/// ---------------------------------------------------
-		/// translateの解析
-		/// ---------------------------------------------------
-		for(uint32_t keyIndex = 0u; keyIndex < nodeAnimationAssimp->mNumPositionKeys; ++keyIndex) {
-
-			/// keyの値を得る
-			aiVectorKey& keyAssimp = nodeAnimationAssimp->mPositionKeys[keyIndex];
-			KeyFrameVector3 keyframe{
-				.time = static_cast<float>(keyAssimp.mTime / animationAssimp->mTicksPerSecond),
-				.value = { -keyAssimp.mValue.x, keyAssimp.mValue.y, keyAssimp.mValue.z }
-			};
-
-			nodeAnimation.translate.push_back(keyframe);
+	for(uint32_t animIndex = 0; animIndex < _scene->mNumAnimations; ++animIndex) {
+		aiAnimation* animationAssimp = _scene->mAnimations[animIndex];
+		
+		std::string clipName = animationAssimp->mName.C_Str();
+		if(clipName.empty()) {
+			clipName = "Animation_" + std::to_string(animIndex);
 		}
 
+		uint32_t clipNameHash = StringHash::Get(clipName);
+		AnimationClip& clip = _model->GetAnimationClips()[clipNameHash];
+		clip.name = clipName;
+		clip.nameHash = clipNameHash;
+		clip.duration = static_cast<float>(animationAssimp->mDuration / animationAssimp->mTicksPerSecond);
 
-		/// ---------------------------------------------------
-		/// rotateの解析
-		/// ---------------------------------------------------
-		for(uint32_t keyIndex = 0u; keyIndex < nodeAnimationAssimp->mNumRotationKeys; ++keyIndex) {
+		Console::Log(std::format("[Load] [AnimationClip] - name:\"{}\", hash: {}, duration: {:.2f}s", clipName, clip.nameHash, clip.duration));
 
-			/// keyの値を得る
-			aiQuatKey& keyAssimp = nodeAnimationAssimp->mRotationKeys[keyIndex];
-			KeyFrameQuaternion keyframe{
-				.time = static_cast<float>(keyAssimp.mTime / animationAssimp->mTicksPerSecond),
-				.value = { keyAssimp.mValue.x, -keyAssimp.mValue.y, -keyAssimp.mValue.z, keyAssimp.mValue.w }
-			};
+		/// node animationの読み込み
+		for(uint32_t channelIndex = 0u; channelIndex < animationAssimp->mNumChannels; ++channelIndex) {
 
-			nodeAnimation.rotate.push_back(keyframe);
+			/// node animationの解析用データを
+			aiNodeAnim* nodeAnimationAssimp = animationAssimp->mChannels[channelIndex];
+			std::string nodeName = nodeAnimationAssimp->mNodeName.C_Str();
+			uint32_t nodeNameHash = StringHash::Get(nodeName);
+			NodeAnimation& nodeAnimation = clip.nodeAnimationMap[nodeNameHash];
+
+			/// ---------------------------------------------------
+			/// translateの解析
+			/// ---------------------------------------------------
+			for(uint32_t keyIndex = 0u; keyIndex < nodeAnimationAssimp->mNumPositionKeys; ++keyIndex) {
+
+				/// keyの値を得る
+				aiVectorKey& keyAssimp = nodeAnimationAssimp->mPositionKeys[keyIndex];
+				KeyFrameVector3 keyframe{
+					.time = static_cast<float>(keyAssimp.mTime / animationAssimp->mTicksPerSecond),
+					.value = { -keyAssimp.mValue.x, keyAssimp.mValue.y, keyAssimp.mValue.z }
+				};
+
+				nodeAnimation.translate.push_back(keyframe);
+			}
+
+
+			/// ---------------------------------------------------
+			/// rotateの解析
+			/// ---------------------------------------------------
+			for(uint32_t keyIndex = 0u; keyIndex < nodeAnimationAssimp->mNumRotationKeys; ++keyIndex) {
+
+				/// keyの値を得る
+				aiQuatKey& keyAssimp = nodeAnimationAssimp->mRotationKeys[keyIndex];
+				KeyFrameQuaternion keyframe{
+					.time = static_cast<float>(keyAssimp.mTime / animationAssimp->mTicksPerSecond),
+					.value = { keyAssimp.mValue.x, -keyAssimp.mValue.y, -keyAssimp.mValue.z, keyAssimp.mValue.w }
+				};
+
+				nodeAnimation.rotate.push_back(keyframe);
+			}
+
+
+			/// ---------------------------------------------------
+			/// scaleの解析
+			/// ---------------------------------------------------
+			for(uint32_t keyIndex = 0u; keyIndex < nodeAnimationAssimp->mNumScalingKeys; ++keyIndex) {
+
+				/// keyの値を得る
+				aiVectorKey& keyAssimp = nodeAnimationAssimp->mScalingKeys[keyIndex];
+				KeyFrameVector3 keyframe{
+					.time = static_cast<float>(keyAssimp.mTime / animationAssimp->mTicksPerSecond),
+					.value = { keyAssimp.mValue.x, keyAssimp.mValue.y, keyAssimp.mValue.z }
+				};
+
+				nodeAnimation.scale.push_back(keyframe);
+			}
 		}
-
-
-		/// ---------------------------------------------------
-		/// scaleの解析
-		/// ---------------------------------------------------
-		for(uint32_t keyIndex = 0u; keyIndex < nodeAnimationAssimp->mNumScalingKeys; ++keyIndex) {
-
-			/// keyの値を得る
-			aiVectorKey& keyAssimp = nodeAnimationAssimp->mScalingKeys[keyIndex];
-			KeyFrameVector3 keyframe{
-				.time = static_cast<float>(keyAssimp.mTime / animationAssimp->mTicksPerSecond),
-				.value = { keyAssimp.mValue.x, keyAssimp.mValue.y, keyAssimp.mValue.z }
-			};
-
-			nodeAnimation.scale.push_back(keyframe);
-		}
-
 	}
 }
 
 bool AssetLoader<Model>::ValidateModel(const aiScene* _aiScene) {
-	if(!_aiScene || !_aiScene->mNumMeshes) {
+	if(!_aiScene) {
+		Console::LogError("AssetLoader<Model>::ValidateModel: aiScene is null.");
+		return false;
+	}
+	if(!_aiScene->mNumMeshes) {
+		Console::LogError("AssetLoader<Model>::ValidateModel: Model has no meshes.");
 		return false;
 	}
 
 	for(unsigned int i = 0; i < _aiScene->mNumMeshes; i++) {
 		const aiMesh* mesh = _aiScene->mMeshes[i];
 		if(!mesh) {
+			Console::LogError(std::format("AssetLoader<Model>::ValidateModel: Mesh[{}] is null.", i));
 			return false;
 		}
 
@@ -294,9 +324,15 @@ bool AssetLoader<Model>::ValidateModel(const aiScene* _aiScene) {
 			}
 		}
 
-		/// 1つでも条件を満たさないメッシュがあれば対象外 
+		/// 1つでも条件を満たさないメッシュがあれば警告を出し、デフォルト値で対応する
 		if(!hasUV || !hasNormals || !isTriangulated) {
-			return false;
+			Console::LogWarning(std::format("AssetLoader<Model>::ValidateModel: Mesh[{}] (\"{}\") lacks some data (UV:{}, Normal:{}, Tri:{}) - Using defaults.", 
+				i, mesh->mName.C_Str(), hasUV, hasNormals, isTriangulated));
+			
+			// 三角形化されていない場合のみ、法線やUVがない場合より致命的なので、一応続行するがAssimpのフラグでカバーされているはず
+			if (!isTriangulated) {
+				// return false; // AssimpのaiProcess_Triangulateがあるので、基本ここには来ないはず
+			}
 		}
 	}
 

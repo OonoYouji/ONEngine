@@ -1,0 +1,75 @@
+{
+    "active": true,
+    "components": [
+        {
+            "enable": 1,
+            "matrixCalcFlags": 7,
+            "position": {
+                "x": 0.0,
+                "y": -6.900000095367432,
+                "z": -23.30000877380371
+            },
+            "rotate": {
+                "w": 1.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "scale": {
+                "x": 973.2000122070313,
+                "y": 44.599998474121094,
+                "z": 1.0
+            },
+            "type": "Transform"
+        },
+        {
+            "BossHPGauge": {
+                "height": 44.599998474121094,
+                "targetEntityName": "Boss",
+                "width": 973.2000122070313
+            },
+            "type": "Variables"
+        },
+        {
+            "enable": 1,
+            "material": {
+                "baseColor": {
+                    "w": 1.0,
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "baseTextureGuid": "615f9d3491deb49d9408c7b5af0371df",
+                "guid": "00000000000000000000000000000000",
+                "normalTextureGuid": "00000000000000000000000000000000",
+                "postEffectFlags": 0,
+                "uvTransform": {
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotate": 0.0,
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    }
+                }
+            },
+            "type": "SpriteRenderer"
+        },
+        {
+            "enable": 1,
+            "scripts": [
+                {
+                    "enable": true,
+                    "name": "BossHPGauge"
+                }
+            ],
+            "type": "Script"
+        }
+    ],
+    "guid": "57dcc015e030306802824effa524029b",
+    "name": "HPBar",
+    "parentGuid": "8ff27c3e2292a09dab12f03c93bc7408",
+    "prefabName": ""
+}

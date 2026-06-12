@@ -1,0 +1,38 @@
+{
+    "active": true,
+    "components": [
+        {
+            "enable": 1,
+            "matrixCalcFlags": 7,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "rotate": {
+                "w": 1.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "type": "Transform"
+        },
+        {
+            "type": "Variables"
+        },
+        {
+            "enable": 1,
+            "scripts": null,
+            "type": "Script"
+        }
+    ],
+    "guid": "66ab698e9b830258c1eebc6308798d5e",
+    "name": "Humans",
+    "parentGuid": "efba6cd221b57f838cc99318ddfbaa89",
+    "prefabName": ""
+}

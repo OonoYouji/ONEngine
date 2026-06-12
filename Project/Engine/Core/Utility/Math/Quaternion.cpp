@@ -308,3 +308,7 @@ Quaternion Quaternion::Inverse() const {
 	float normSquared = norm * norm;    // ノルムの二乗
 	return conjugate / normSquared;
 }
+
+float Quaternion::Dot(const Quaternion& _other) const {
+	return x * _other.x + y * _other.y + z * _other.z + w * _other.w;
+}

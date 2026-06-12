@@ -13,6 +13,7 @@ using namespace ONEngine;
 #include "AddECSSystemFunction.h"
 #include "AddECSComponentFactoryFunction.h"
 #include "ComponentApplyFunc.h"
+#include "Engine/Editor/Views/Windows/Develop/BehaviorTreeEditorWindow.h"
 
 namespace {
 ECSGroup* gGameGroup = nullptr;
@@ -283,7 +284,7 @@ uint64_t MonoInternalMethods::InternalGetComponent(int32_t _entityId, MonoString
 	IComponent* component = entity->GetComponent(typeName);
 
 
-	if(_compId) {
+	if(component && _compId) {
 		*_compId = component->id;
 	}
 
@@ -433,12 +434,16 @@ bool MonoInternalMethods::InternalGetScript(int32_t _entityId, MonoString* _scri
 
 void MonoInternalMethods::InternalCreateEntity(int32_t* _entityId, MonoString* _prefabName, MonoString* _groupName) {
 	std::string groupName = mono_string_to_utf8(_groupName);
+	std::string prefabName = mono_string_to_utf8(_prefabName);
+
+	Console::LogInfo("[SOURCE_DETECTOR] C# requested CreateEntity: Prefab = " + prefabName);
+
 	ECSGroup* group = gECS->GetECSGroup(groupName);
 
 	/// prefabを検索
-	std::string prefabName = mono_string_to_utf8(_prefabName);
-	GameEntity* entity = group->GenerateEntityFromPrefab(prefabName + ".prefab");
+	GameEntity* entity = group->GenerateEntityFromPrefab(prefabName);
 	if(!entity) {
+		Console::LogWarning("[SOURCE_DETECTOR] Prefab not found by name, creating blank entity: " + prefabName);
 		entity = group->GenerateEntity(GenerateGuid(), true);
 		if(!entity) {
 			return;
@@ -469,6 +474,37 @@ void MonoInternalMethods::InternalDestroyEntity(MonoString* _ecsGroupName, int32
 
 
 	mono_free(cstr);
+}
+
+int32_t MonoInternalMethods::InternalGetRootEntityCount(MonoString* _groupName) {
+	std::string groupName = mono_string_to_utf8(_groupName);
+	ECSGroup* group = gECS->GetECSGroup(groupName);
+	if (!group) return 0;
+
+	int count = 0;
+	for (auto& entity : group->GetEntities()) {
+		if (!entity->GetParent()) {
+			count++;
+		}
+	}
+	return count;
+}
+
+int32_t MonoInternalMethods::InternalGetRootEntityId(MonoString* _groupName, int32_t _index) {
+	std::string groupName = mono_string_to_utf8(_groupName);
+	ECSGroup* group = gECS->GetECSGroup(groupName);
+	if (!group) return -1;
+
+	int currentIndex = 0;
+	for (auto& entity : group->GetEntities()) {
+		if (!entity->GetParent()) {
+			if (currentIndex == _index) {
+				return static_cast<int32_t>(entity->GetId());
+			}
+			currentIndex++;
+		}
+	}
+	return -1;
 }
 
 bool MonoInternalMethods::InternalGetEnable(int32_t _entityId, MonoString* _ecsGroupName) {
@@ -546,3 +582,27 @@ void ONEngine::MonoInternalMethods::InternalGetBatch(MonoReflectionType* _typeRe
 
 	mono_free(cstr);
 }
+
+void ONEngine::MonoInternalMethods::Internal_UpdateNodeStatus(uint32_t nodeIdHash, int status, MonoString* treePath) {
+    if (Editor::BehaviorTreeEditorWindow::s_Instance) {
+        if (!treePath) return; // 安全策：パスが空の場合は処理をスキップ
+        std::string path = mono_string_to_utf8(treePath);
+        Editor::BehaviorTreeEditorWindow::s_Instance->UpdateNodeStatus(nodeIdHash, status, path);
+    }
+}
+
+void ONEngine::MonoInternalMethods::Internal_UpdateBlackboardValue(uint32_t keyHash, MonoString* value, MonoString* typeName) {
+    if (Editor::BehaviorTreeEditorWindow::s_Instance) {
+        std::string v = mono_string_to_utf8(value);
+        std::string t = mono_string_to_utf8(typeName);
+        Editor::BehaviorTreeEditorWindow::s_Instance->UpdateBlackboardValue(keyHash, v, t);
+    }
+}
+
+void ONEngine::MonoInternalMethods::Internal_OnBreakpointHit(uint32_t nodeIdHash) {
+    // ブレークポイントヒット時にゲームを一時停止（デバッグ用）
+    ONEngine::DebugConfig::isPause = true; 
+    // ※ONEngineにグローバルなPauseフラグがあると仮定。
+    // 無ければ Time::SetTimeScale(0) 等で代用。
+}
+

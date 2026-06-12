@@ -119,7 +119,7 @@ public:
 	EntityCollection* GetEntityCollection();
 	const std::vector<std::unique_ptr<GameEntity>>& GetEntities() const;
 
-	GameEntity* GetEntity(size_t _id) const;
+	GameEntity* GetEntity(int32_t _id) const;
 
 	const CameraComponent* GetMainCamera() const;
 	CameraComponent* GetMainCamera();

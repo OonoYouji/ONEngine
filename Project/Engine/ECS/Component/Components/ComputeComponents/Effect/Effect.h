@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /// std
 #include <vector>
@@ -85,6 +85,9 @@ public:
 	/// @brief Elementを削除する
 	/// @param _index 削除する要素のインデックス
 	void RemoveElement(size_t _index);
+
+	/// @brief particle を出現させるかのフラグを取得
+	bool GetIsCreateParticle() const { return isCreateParticle_; }
 
 private:
 	/// ===================================================  

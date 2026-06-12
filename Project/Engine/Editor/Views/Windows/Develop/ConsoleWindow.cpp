@@ -1,7 +1,8 @@
-﻿#include "ConsoleWindow.h"
+#include "ConsoleWindow.h"
 
 /// std
 #include <format>
+#include <vector>
 
 /// external
 #include <imgui.h>
@@ -18,53 +19,98 @@ void ConsoleWindow::ShowImGui() {
 		return;
 	}
 
-	/// エンジン側のfpsとデルタタイムを表示
-	std::string&& text = std::format("fps: {:.3f} / delta time: {:.3f}", 1.0f / ONEngine::Time::DeltaTime(), ONEngine::Time::DeltaTime());
-	ImGui::Text(text.c_str());
+	// --- ツールバーの描画 ---
+	if (ImGui::Button("Clear")) {
+		ONEngine::Console::ClearLogBuffer();
+	}
+	ImGui::SameLine();
+	ImGui::Checkbox("Auto-scroll", &autoScroll_);
+	
+	ImGui::SameLine();
+	ImGui::TextUnformatted("|");
+	
+	// レベルフィルタ
+	ImGui::SameLine();
+	ImGui::Checkbox("Info", &showInfo_);
+	ImGui::SameLine();
+	ImGui::Checkbox("Warning", &showWarning_);
+	ImGui::SameLine();
+	ImGui::Checkbox("Error", &showError_);
 
 	ImGui::SameLine();
-	ImGui::Text(" : ");
+	ImGui::TextUnformatted("|");
+
+	// カテゴリフィルタ
 	ImGui::SameLine();
-
-	/// ImGui側のfpsとデルタタイムも表示
-	ImGuiIO& io = ImGui::GetIO();
-	std::string&& imguiText = std::format("imgui -> fps: {:.3f} / delta time: {:.3f}", 1.0f / io.DeltaTime, io.DeltaTime);
-	ImGui::Text(imguiText.c_str());
-
+	ImGui::Checkbox("Engine", &showEngine_);
 	ImGui::SameLine();
-	ImGui::Text(" : ");
+	ImGui::Checkbox("Script", &showScriptEngine_);
 	ImGui::SameLine();
+	ImGui::Checkbox("Game", &showApplication_);
 
-	// 右クリックで全てのログを表示するポップアップを開く
-	if (ImGui::BeginPopupContextItem("LogPopup")) {
-		ImGui::Text("All Logs:");
-		ImGui::Separator();
+	ImGui::Separator();
 
-		logCounts_.clear();
-		for (const auto& message : ONEngine::Console::GetLogVector()) {
-			if (indices_.contains(message)) {
-				logCounts_[message]++;
-			} else {
-				indices_[message] = logs_.size();
-				logs_.push_back(message);
-				logCounts_[message]++;
-			}
-		}
+	// --- ログ表示領域 ---
+	const float footerHeightToReserve = ImGui::GetStyle().ItemSpacing.y + ImGui::GetFrameHeightWithSpacing();
+	ImGui::BeginChild("ScrollingRegion", ImVec2(0, -footerHeightToReserve), false, ImGuiWindowFlags_HorizontalScrollbar);
 
-		for (const auto& log : logs_) {
-			ImGui::Text("count: %d", logCounts_[log]);
-			ImGui::SameLine();
-			ImGui::Spacing();
-			ImGui::SameLine();
-			ImGui::Text(log.c_str());
-		}
+	const auto& allLogs = ONEngine::Console::GetLogVector();
+	
+	// 表示対象のログを事前にフィルタリング
+	static std::vector<size_t> displayIndices;
+	displayIndices.clear();
+	displayIndices.reserve(allLogs.size());
 
-		ImGui::EndPopup();
+	for (size_t i = 0; i < allLogs.size(); ++i) {
+		const auto& entry = allLogs[i];
+		
+		// レベルフィルタリング
+		if (entry.level == ONEngine::LogLevel::Info && !showInfo_) continue;
+		if (entry.level == ONEngine::LogLevel::Warning && !showWarning_) continue;
+		if (entry.level == ONEngine::LogLevel::Error && !showError_) continue;
+
+		// カテゴリフィルタリング
+		if (entry.category == ONEngine::LogCategory::Engine && !showEngine_) continue;
+		if (entry.category == ONEngine::LogCategory::ScriptEngine && !showScriptEngine_) continue;
+		if (entry.category == ONEngine::LogCategory::Application && !showApplication_) continue;
+
+		displayIndices.push_back(i);
 	}
 
-	if (ImGui::IsItemClicked(1)) {
-		ImGui::OpenPopup("LogPopup");
+	ImGuiListClipper clipper;
+	clipper.Begin(static_cast<int>(displayIndices.size()));
+	while (clipper.Step()) {
+		for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++) {
+			const auto& entry = allLogs[displayIndices[i]];
+
+			// カテゴリプレフィックスと色
+			const char* categoryTag = "[Unknown] ";
+			if (entry.category == ONEngine::LogCategory::Engine) categoryTag = "[Engine] ";
+			else if (entry.category == ONEngine::LogCategory::ScriptEngine) categoryTag = "[Script] ";
+			else if (entry.category == ONEngine::LogCategory::Application) categoryTag = "[Game]   ";
+			
+			// レベルに応じた色分け
+			ImVec4 color = ImVec4(1.0f, 1.0f, 1.0f, 1.0f); // Default White
+			if (entry.level == ONEngine::LogLevel::Warning) color = ImVec4(1.0f, 1.0f, 0.0f, 1.0f); // Yellow
+			if (entry.level == ONEngine::LogLevel::Error) color = ImVec4(1.0f, 0.4f, 0.4f, 1.0f);   // Light Red
+
+			ImGui::PushStyleColor(ImGuiCol_Text, color);
+			ImGui::Text("%s%s", categoryTag, entry.message.c_str());
+			ImGui::PopStyleColor();
+		}
 	}
+
+	if (autoScroll_ && ImGui::GetScrollY() >= ImGui::GetScrollMaxY()) {
+		ImGui::SetScrollHereY(1.0f);
+	}
+
+	ImGui::EndChild();
+
+	ImGui::Separator();
+
+	// --- 下部のステータス表示 ---
+	std::string&& stats = std::format("fps: {:.2f} | delta: {:.4f}s", 1.0f / ONEngine::Time::DeltaTime(), ONEngine::Time::DeltaTime());
+	ImGui::Text(stats.c_str());
 
 	ImGui::End();
 }

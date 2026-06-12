@@ -1,0 +1,16 @@
+{
+    "active": true,
+    "components": [
+        {
+            "GameController": {
+                "currentPhase": "Phase 1",
+                "currentStatus": "Playing"
+            },
+            "type": "Variables"
+        }
+    ],
+    "guid": "fedcba0987654321fedcba0987654321",
+    "name": "GameController",
+    "parentGuid": null,
+    "prefabName": "GameController"
+}

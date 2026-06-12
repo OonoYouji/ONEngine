@@ -1,0 +1,33 @@
+{
+    "duration": 2.0,
+    "endFrame": 120,
+    "loop": true,
+    "name": "BeamDissolve2",
+    "startFrame": 0,
+    "tracks": [
+        {
+            "component": "Transform",
+            "keyframes": [
+                {
+                    "in": "Linear",
+                    "t": 0.0,
+                    "v": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "in": "Linear",
+                    "t": 2.0,
+                    "v": {
+                        "x": 0.0,
+                        "y": -360.0,
+                        "z": 0.0
+                    }
+                }
+            ],
+            "property": "rotation"
+        }
+    ]
+}

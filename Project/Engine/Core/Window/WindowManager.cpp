@@ -14,8 +14,16 @@ using namespace ONEngine;
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND _hwnd, UINT _msg, WPARAM _wParam, LPARAM _lParam);
 
 
-namespace {
-	WindowManager* gWindowManager = nullptr;
+static WindowManager* gWindowManager = nullptr;
+
+WindowManager* WindowManager::GetInstance() {
+	return gWindowManager;
+}
+
+void ONEngine::InternalGetWindowSize(Vector2* _size) {
+	if(_size && gWindowManager && gWindowManager->GetMainWindow()) {
+		*_size = gWindowManager->GetMainWindow()->GetWindowSize();
+	}
 }
 
 LRESULT WindowManager::MainWindowProc(HWND _hwnd, UINT _msg, WPARAM _wparam, LPARAM _lparam) {
@@ -27,7 +35,9 @@ LRESULT WindowManager::MainWindowProc(HWND _hwnd, UINT _msg, WPARAM _wparam, LPA
 
 	switch (_msg) {
 	case WM_CLOSE:
-		PostQuitMessage(0);
+		if (gWindowManager) {
+			gWindowManager->SetCloseRequested(true);
+		}
 		return 0;
 	case WM_DESTROY: /// window破棄
 		return 0;
@@ -72,7 +82,7 @@ void WindowManager::Initialize() {
 void WindowManager::Finalize() {
 	windows_.clear();
 	/// COM終了
-	CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+	CoUninitialize();
 }
 
 void WindowManager::Update() {
@@ -244,4 +254,12 @@ Window* WindowManager::GetActiveWindow() const {
 	}
 
 	return GetMainWindow();
+}
+
+bool WindowManager::IsCloseRequested() const {
+	return closeRequested_;
+}
+
+void WindowManager::SetCloseRequested(bool _isCloseRequested) {
+	closeRequested_ = _isCloseRequested;
 }

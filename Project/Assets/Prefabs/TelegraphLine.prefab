@@ -1,0 +1,71 @@
+{
+    "active": true,
+    "components": [
+        {
+            "enable": 1,
+            "matrixCalcFlags": 7,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "rotate": {
+                "w": 1.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "type": "Transform"
+        },
+        {
+            "type": "Variables"
+        },
+        {
+            "enable": 1,
+            "material": {
+                "baseColor": {
+                    "w": 0.5,
+                    "x": 1.0,
+                    "y": 0.25089603662490845,
+                    "z": 0.25089603662490845
+                },
+                "baseTextureGuid": "14196fa931d9b8c11196cdd7eca20cf6",
+                "guid": "00000000000000000000000000000000",
+                "normalTextureGuid": "00000000000000000000000000000000",
+                "postEffectFlags": 1,
+                "uvTransform": {
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.7722223997116089
+                    },
+                    "rotate": 0.0,
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    }
+                }
+            },
+            "meshPath": "./Assets/Models/primitive/front_cube.obj",
+            "renderQueue": 2,
+            "type": "MeshRenderer"
+        },
+        {
+            "autoPlay": true,
+            "clipPath": "./Assets/Anims/Telegraph.anim",
+            "currentTime": 2.3200278282165527,
+            "isLooping": true,
+            "isPlaying": true,
+            "speed": 1.0,
+            "type": "AnimationPlayer"
+        }
+    ],
+    "guid": "13e9a688ff7a87f1fb846a22187fa6c0",
+    "name": "TelegraphLine",
+    "parentGuid": null,
+    "prefabName": "TelegraphLine"
+}

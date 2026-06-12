@@ -10,8 +10,38 @@
     <Filter Include="dialog\stb">
       <UniqueIdentifier>{4D6CAC99-3924-EEE6-A22B-C7428E0289D7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="imgui-node-editor">
+      <UniqueIdentifier>{47CAF613-B3E0-F4A9-FC57-80CB68ADC531}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\imgui-node-editor\crude_json.h">
+      <Filter>imgui-node-editor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\imgui-node-editor\imgui_bezier_math.h">
+      <Filter>imgui-node-editor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\imgui-node-editor\imgui_bezier_math.inl">
+      <Filter>imgui-node-editor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\imgui-node-editor\imgui_canvas.h">
+      <Filter>imgui-node-editor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\imgui-node-editor\imgui_extra_math.h">
+      <Filter>imgui-node-editor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\imgui-node-editor\imgui_extra_math.inl">
+      <Filter>imgui-node-editor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\imgui-node-editor\imgui_node_editor.h">
+      <Filter>imgui-node-editor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\imgui-node-editor\imgui_node_editor_internal.h">
+      <Filter>imgui-node-editor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\imgui-node-editor\imgui_node_editor_internal.inl">
+      <Filter>imgui-node-editor</Filter>
+    </ClInclude>
     <ClInclude Include="GraphEditor.h" />
     <ClInclude Include="ImCurveEdit.h" />
     <ClInclude Include="ImGradient.h" />
@@ -43,6 +73,18 @@
     <ClInclude Include="imstb_truetype.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\imgui-node-editor\crude_json.cpp">
+      <Filter>imgui-node-editor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\imgui-node-editor\imgui_canvas.cpp">
+      <Filter>imgui-node-editor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\imgui-node-editor\imgui_node_editor.cpp">
+      <Filter>imgui-node-editor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\imgui-node-editor\imgui_node_editor_api.cpp">
+      <Filter>imgui-node-editor</Filter>
+    </ClCompile>
     <ClCompile Include="GraphEditor.cpp" />
     <ClCompile Include="ImCurveEdit.cpp" />
     <ClCompile Include="ImGradient.cpp" />

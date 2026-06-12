@@ -1,0 +1,73 @@
+{
+    "active": true,
+    "components": [
+        {
+            "enable": 1,
+            "matrixCalcFlags": 7,
+            "position": {
+                "x": 60.0,
+                "y": -25.0,
+                "z": 0.0
+            },
+            "rotate": {
+                "w": 1.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "scale": {
+                "x": 51.20000076293945,
+                "y": 25.600000381469727,
+                "z": 25.600000381469727
+            },
+            "type": "Transform"
+        },
+        {
+            "DummyStringData": {
+                "value": "./Assets/Sounds/MainGameSounds/se/outGame/select.mp3"
+            },
+            "type": "Variables"
+        },
+        {
+            "enable": 1,
+            "material": {
+                "baseColor": {
+                    "w": 1.0,
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "baseTextureGuid": "2d3e95a98cfd5ec4683af4ae2d350ad4",
+                "guid": "00000000000000000000000000000000",
+                "normalTextureGuid": "00000000000000000000000000000000",
+                "postEffectFlags": 0,
+                "uvTransform": {
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotate": 0.0,
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    }
+                }
+            },
+            "type": "SpriteRenderer"
+        },
+        {
+            "enable": 1,
+            "scripts": [
+                {
+                    "enable": true,
+                    "name": "DummyStringData"
+                }
+            ],
+            "type": "Script"
+        }
+    ],
+    "guid": "ba274ac8b23be6dc85e4f87feec40299",
+    "name": "GameScene",
+    "parentGuid": "77018edbe9d920438d7558b1d61226ff",
+    "prefabName": ""
+}

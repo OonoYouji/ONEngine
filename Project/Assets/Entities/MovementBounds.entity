@@ -1,0 +1,53 @@
+{
+    "active": true,
+    "components": [
+        {
+            "enable": 1,
+            "matrixCalcFlags": 7,
+            "position": {
+                "x": -83.0,
+                "y": 0.0,
+                "z": -86.0
+            },
+            "rotate": {
+                "w": 1.0,
+                "x": 0.0,
+                "y": -0.0,
+                "z": 0.0
+            },
+            "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "type": "Transform"
+        },
+        {
+            "MovementBounds": {
+                "definesBounds": true,
+                "extentX": 75.0,
+                "extentZ": 75.0,
+                "maxX": 60.0,
+                "maxZ": 60.0,
+                "minX": -60.0,
+                "minZ": -60.0,
+                "waitForEntry": false
+            },
+            "type": "Variables"
+        },
+        {
+            "enable": 1,
+            "scripts": [
+                {
+                    "enable": true,
+                    "name": "MovementBounds"
+                }
+            ],
+            "type": "Script"
+        }
+    ],
+    "guid": "cbb53877fd57f5550ada1623f9533723",
+    "name": "MovementBounds",
+    "parentGuid": null,
+    "prefabName": ""
+}
