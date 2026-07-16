@@ -23,6 +23,8 @@
 #include "Engine/Editor/EditorUtils.h"
 #include "Engine/Editor/Manager/ImGuiManager.h"
 #include "Engine/Editor/Math/ImGuiSelection.h"
+#include "Engine/Editor/Manager/PlayState/EditorPlayState.h"
+#include "Engine/Editor/Manager/PlayState/EditorPlayStates.h"
 #include "InspectorWindow.h"
 
 namespace {
@@ -65,26 +67,11 @@ void DebugSceneView::ShowImGui() {
 }
 
 void DebugSceneView::SetGamePlay(bool _isGamePlay) {
-	ONEngine::DebugConfig::isDebugging = _isGamePlay;
-
-	/// ゲームの開始処理
-	if(ONEngine::DebugConfig::isDebugging) {
-		ONEngine::Console::ClearLogBuffer(ONEngine::LogCategory::Application);
-		pSceneManager_->SaveCurrentSceneTemporary();
-
-		/// Monoスクリプトエンジンのホットリロードでスクリプトの初期化を行う
-		/// シーンをロードする前にドメインを最新の状態にしておく
-		ONEngine::MonoScriptEngine::GetInstance().HotReload();
-
-		pSceneManager_->ReloadScene(true);
-		ImGuiSelection::SetSelectedObject(ONEngine::Guid::kInvalid, SelectionType::None);
+	if (_isGamePlay) {
+		EditorPlayStateManager::GetInstance().ChangeState(std::make_unique<PlayModeState>());
 	} else {
-
-		/// 共通の処理（ゲーム開始、停止時に行う処理）
-		pSceneManager_->ReloadScene(true);
-		ImGuiSelection::SetSelectedObject(ONEngine::Guid::kInvalid, SelectionType::None);
+		EditorPlayStateManager::GetInstance().ChangeState(std::make_unique<EditModeState>());
 	}
-
 }
 
 void Editor::DebugSceneView::ShowDebugSceneView(const ImVec2& imagePos) {
@@ -381,7 +368,7 @@ void DebugSceneView::DrawToolbar() {
 	}
 
 	ImVec2 buttonSize = ImVec2(12.0f, 12.0f);
-	bool isGameDebug = ONEngine::DebugConfig::isDebugging;
+	bool isGameDebug = (EditorPlayStateManager::GetInstance().GetCurrentStateType() == PlayStateType::Play);
 
 	if(isGameDebug) {
 		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.125f, 0.263f, 0.388f, 1.0f));
@@ -398,8 +385,21 @@ void DebugSceneView::DrawToolbar() {
 	}
 
 	// 一時停止ボタン
+	bool isPause = (EditorPlayStateManager::GetInstance().GetCurrentStateType() == PlayStateType::Pause);
+	if(isPause) {
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.125f, 0.263f, 0.388f, 1.0f));
+	}
+
 	if(ImGui::ImageButton("##pause", ImTextureID(buttons[1]->GetSRVGPUHandle().ptr), buttonSize)) {
-		ONEngine::DebugConfig::isDebugging = false;
+		if (isPause) {
+			EditorPlayStateManager::GetInstance().ChangeState(std::make_unique<EditModeState>());
+		} else {
+			EditorPlayStateManager::GetInstance().ChangeState(std::make_unique<PauseModeState>());
+		}
+	}
+
+	if(isPause) {
+		ImGui::PopStyleColor(1);
 	}
 
 	ImGui::SameLine();

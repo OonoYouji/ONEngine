@@ -1,4 +1,4 @@
-﻿#include "EditorManager.h"
+#include "EditorManager.h"
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
@@ -22,6 +22,7 @@
 
 #include "HotReloadManager.h"
 #include "Engine/Script/MonoScriptEngine.h"
+#include "Engine/Editor/Manager/PlayState/EditorPlayState.h"
 
 using namespace Editor;
 
@@ -36,6 +37,9 @@ void EditorManager::Initialize(ONEngine::DxManager* dxm, ONEngine::ShaderCompile
 	/// EditCommandへEditorManagerのポインタを渡す
 	EditCommand::pEditorManager_ = this;
 
+	/// ステートマネージャーの初期化
+	EditorPlayStateManager::GetInstance().Initialize(sm);
+
 	/// editor compute の登録
 	AddEditorCompute(dxm, sc, std::make_unique<GameEntityPickingPipeline>());
 	//AddEditorCompute(dxm, sc, std::make_unique<TerrainDataOutput>());
@@ -48,6 +52,9 @@ void EditorManager::Initialize(ONEngine::DxManager* dxm, ONEngine::ShaderCompile
 }
 
 void EditorManager::Update(ONEngine::Asset::AssetCollection* ac) {
+
+	/// ステートマネージャーの更新
+	EditorPlayStateManager::GetInstance().Update();
 
 	/// ホットリロードリクエストの処理（フレームの開始時に行うことでD3D12の状態整合性を保つ）
 	auto hrRequests = Editor::HotReloadManager::GetInstance().ConsumeRequests();
