@@ -1,4 +1,4 @@
-﻿#include "ByteAddressBuffer.h"
+#include "ByteAddressBuffer.h"
 
 using namespace ONEngine;
 
@@ -13,6 +13,9 @@ ByteAddressBuffer::~ByteAddressBuffer() {
 	}
 }
 
+/**
+ * @brief バイトアドレスバッファリソースの生成、SRVのヒープ登録、およびCPUへのマッピングを行います。
+ */
 void ByteAddressBuffer::Create(uint32_t _size, DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap) {
 	/// ----- Bufferを作成する ----- ///
 
@@ -48,11 +51,17 @@ void ByteAddressBuffer::Create(uint32_t _size, DxDevice* _dxDevice, DxSRVHeap* _
 	mappedDataArray_ = { mappedData_, bufferSize_ };
 }
 
+/**
+ * @brief マップされたデータ領域の指定インデックス位置に32ビット符号なし整数値を設定します。
+ */
 void ByteAddressBuffer::SetMappedData(size_t _index, uint32_t _value) {
 	Assert(_index < bufferSize_, "out of range");
 	mappedDataArray_[_index] = _value;
 }
 
+/**
+ * @brief グラフィックスコマンドリストにこのバッファのSRVビューをバインドします。
+ */
 void ByteAddressBuffer::BindToCommandList(UINT _rootParameterIndex, ID3D12GraphicsCommandList* _commandList) {
 	_commandList->SetGraphicsRootDescriptorTable(_rootParameterIndex, gpuHandle_);
 }

@@ -5,6 +5,7 @@ using namespace ONEngine;
 namespace ONEngine::DebugConfig {
 	/// @brief デバッグ中かどうか
 	bool isDebugging = false;
+	bool isPause = false;
 	bool isShowDebugScene = true;
 	bool isShowGameScene = false;
 

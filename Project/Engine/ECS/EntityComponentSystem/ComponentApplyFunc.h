@@ -24,13 +24,21 @@ namespace ComponentApplyFuncs {
 
 void ApplyTransform(void* _element, ECSGroup* _ecsGroup);
 void ApplyMeshRenderer(void* _element, ECSGroup* _ecsGroup);
-
+void ApplyDissolve(void* _element, ECSGroup* _ecsGroup);
+void ApplySprite(void* _element, ECSGroup* _ecsGroup);
+void ApplyAgentIntent(void* _element, ECSGroup* _ecsGroup);
+void ApplyCamera(void* _element, ECSGroup* _ecsGroup);
+void ApplyAnimator(void* _element, ECSGroup* _ecsGroup);
 
 /// Fetch
 
 void FetchTransform(void* _element, ECSGroup* _ecsGroup);
 void FetchMeshRenderer(void* _element, ECSGroup* _ecsGroup);
-
+void FetchDissolve(void* _element, ECSGroup* _ecsGroup);
+void FetchSprite(void* _element, ECSGroup* _ecsGroup);
+void FetchAgentIntent(void* _element, ECSGroup* _ecsGroup);
+void FetchCamera(void* _element, ECSGroup* _ecsGroup);
+void FetchAnimator(void* _element, ECSGroup* _ecsGroup);
 
 
 ComponentApplyFunc GetApplyFunc(MonoClass* _monoClass);

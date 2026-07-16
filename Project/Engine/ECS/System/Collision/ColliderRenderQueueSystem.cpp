@@ -1,18 +1,28 @@
-﻿#include "ColliderRenderQueueSystem.h"
+#include "ColliderRenderQueueSystem.h"
 
 using namespace ONEngine;
 
 /// engine
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Transform/Transform.h"
 
+/**
+ * @brief コンストラクタ
+ */
 ColliderRenderQueueSystem::ColliderRenderQueueSystem() {}
 
+/**
+ * @brief エディタ非実行時のコライダー可視化処理（ギズモの描画）を行います。
+ */
 void ColliderRenderQueueSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
 	UpdateSphereCollider(_ecs->GetComponentArray<SphereCollider>());
 	UpdateBoxCollider(_ecs->GetComponentArray<BoxCollider>());
 }
 
 
+/**
+ * @brief 球体コライダー（SphereCollider）の情報からデバッグ用の球体ギズモを描画キューへ追加します。
+ */
 void ColliderRenderQueueSystem::UpdateSphereCollider(ComponentArray<SphereCollider>* _sphereColliderArray) {
 
 	/// SphereColliderが存在するか確認(空ならreturn)
@@ -39,6 +49,9 @@ void ColliderRenderQueueSystem::UpdateSphereCollider(ComponentArray<SphereCollid
 
 }
 
+/**
+ * @brief ボックスコライダー（BoxCollider）の情報からデバッグ用の直方体ギズモを描画キューへ追加します。
+ */
 void ColliderRenderQueueSystem::UpdateBoxCollider(ComponentArray<BoxCollider>* _boxColliderArray) {
 
 	/// BoxColliderが存在するか確認(空ならreturn)
@@ -58,8 +71,9 @@ void ColliderRenderQueueSystem::UpdateBoxCollider(ComponentArray<BoxCollider>* _
 
 		const Vector3 position = owner->GetPosition();
 		const Vector3& size = boxCollider->GetSize();
+		const Quaternion& rotate = owner->GetTransform()->GetRotate();
 		// Gizmoを使って立方体を描画する
-		Gizmo::DrawWireCube(position, size, Vector4(0.0f, 1.0f, 0.0f, 1.0f));
+		Gizmo::DrawWireCube(position, size, rotate, Vector4(0.0f, 1.0f, 0.0f, 1.0f));
 	}
 
 }

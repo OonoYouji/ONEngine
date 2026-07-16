@@ -1,4 +1,4 @@
-﻿#include "TerrainColliderVertexGenerator.h"
+#include "TerrainColliderVertexGenerator.h"
 
 using namespace ONEngine;
 
@@ -8,9 +8,15 @@ using namespace ONEngine;
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/TerrainCollider.h"
 
 
+/**
+ * @brief コンストラクタ
+ */
 TerrainColliderVertexGenerator::TerrainColliderVertexGenerator(class DxManager* _dxm)
 	: pDxManager_(_dxm) {}
 
+/**
+ * @brief エディタ非実行時の地形編集完了時に、GPU側の地形頂点データをCPU側にコピーします。
+ */
 void TerrainColliderVertexGenerator::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
 
 	ComponentArray<TerrainCollider>* colliderArray = _ecs->GetComponentArray<TerrainCollider>();
@@ -39,6 +45,9 @@ void TerrainColliderVertexGenerator::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
 
 }
 
+/**
+ * @brief ランタイム実行時のゲーム進行に追従し、リアルタイムに変更されたGPU地形頂点データをCPU側にコピーします。
+ */
 void TerrainColliderVertexGenerator::RuntimeUpdate(ECSGroup*) {
 
 }

@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /// engine
 #include "Engine/Core/Utility/Utility.h"
@@ -8,6 +8,10 @@
 
 namespace ONEngine {
 
+/**
+ * @struct VoxelTerrainChunk
+ * @brief ボクセル地形で分割管理される個々のチャンク（領域）データ。GPU側で生成された頂点バッファと頂点数を保持します。
+ */
 struct VoxelTerrainChunk {
 
 	struct Vertex {

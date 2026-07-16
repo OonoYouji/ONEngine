@@ -1,7 +1,8 @@
-﻿#include "InspectorWindow.h"
+#include "InspectorWindow.h"
 
 /// std
 #include <format>
+#include <algorithm>
 
 /// external
 #include <imgui.h>
@@ -24,6 +25,7 @@
 #include "Engine/ECS/Component/Components/ComputeComponents/Light/Light.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Audio/AudioSource.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Effect/Effect.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/ParticleSystem/ParticleSystem.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Terrain.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/TerrainCollider.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Grass/GrassField.h"
@@ -33,6 +35,11 @@
 #include "Engine/ECS/Component/Components/ComputeComponents/Script/Script.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/ShadowCaster/ShadowCaster.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/VoxelTerrain/VoxelTerrain.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Agent/AgentIntentComponent.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Animator/Animator.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Animation/AnimationPlayer.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Transform/Transform.h"
+
 /// renderer
 #include "Engine/ECS/Component/Components/RendererComponents/Skybox/Skybox.h"
 #include "Engine/ECS/Component/Components/RendererComponents/Mesh/MeshRenderer.h"
@@ -58,34 +65,38 @@ InspectorWindow::InspectorWindow(const std::string& windowName, DxManager* dxm, 
 	/// ---------------------------------------------------
 
 	/// compute
-	RegisterComponent<Transform>(ComponentType::Compute, [&](IComponent* comp) { ComponentDebug::TransformDebug(static_cast<Transform*>(comp)); });
-	RegisterComponent<DirectionalLight>(ComponentType::Compute, [&](IComponent* comp) { DirectionalLightDebug(static_cast<DirectionalLight*>(comp)); });
-	RegisterComponent<AudioSource>(ComponentType::Compute, [&](IComponent* comp) { ComponentDebug::AudioSourceDebug(static_cast<AudioSource*>(comp)); });
-	RegisterComponent<Variables>(ComponentType::Compute, [&](IComponent* comp) { ComponentDebug::VariablesDebug(static_cast<Variables*>(comp)); });
-	RegisterComponent<Effect>(ComponentType::Compute, [&](IComponent* comp) { ComponentDebug::EffectDebug(static_cast<Effect*>(comp)); });
-	RegisterComponent<Terrain>(ComponentType::Compute, [&](IComponent* comp) { ComponentDebug::TerrainDebug(static_cast<Terrain*>(comp), pEcs_, pAssetCollection_); });
-	RegisterComponent<TerrainCollider>(ComponentType::Compute, [&](IComponent* comp) { ComponentDebug::TerrainColliderDebug(static_cast<TerrainCollider*>(comp)); });
-	RegisterComponent<GrassField>(ComponentType::Compute, [&](IComponent* comp) { ComponentDebug::GrassFieldDebug(static_cast<GrassField*>(comp), pAssetCollection_); });
-	RegisterComponent<CameraComponent>(ComponentType::Compute, [&](IComponent* comp) { ComponentDebug::CameraDebug(static_cast<CameraComponent*>(comp)); });
-	RegisterComponent<ShadowCaster>(ComponentType::Compute, [&](IComponent* comp) { ComponentDebug::ShadowCasterDebug(static_cast<ShadowCaster*>(comp)); });
+	RegisterComponentMulti<Transform>(ComponentType::Compute, [&](const std::vector<Transform*>& comps) { ComponentDebug::TransformDebug(comps); });
+	RegisterComponent<DirectionalLight>(ComponentType::Compute, [&](DirectionalLight* comp) { DirectionalLightDebug(comp); });
+	RegisterComponent<AudioSource>(ComponentType::Compute, [&](AudioSource* comp) { ComponentDebug::AudioSourceDebug(comp); });
+	RegisterComponent<Variables>(ComponentType::Compute, [&](Variables* comp) { ComponentDebug::VariablesDebug(comp); });
+	RegisterComponent<AnimationPlayer>(ComponentType::Compute, [&](AnimationPlayer* comp) { ComponentDebug::AnimationPlayerDebug(comp); });
+	RegisterComponent<Effect>(ComponentType::Compute, [&](Effect* comp) { ComponentDebug::EffectDebug(comp); });
+	RegisterComponent<ParticleSystem>(ComponentType::Compute, [&](ParticleSystem* comp) { ONEngine::ParticleSystemDebug(comp); });
+	RegisterComponent<Terrain>(ComponentType::Compute, [&](Terrain* comp) { ComponentDebug::TerrainDebug(comp, pEcs_, pAssetCollection_); });
+	RegisterComponent<TerrainCollider>(ComponentType::Compute, [&](TerrainCollider* comp) { ComponentDebug::TerrainColliderDebug(comp); });
+	RegisterComponent<GrassField>(ComponentType::Compute, [&](GrassField* comp) { ComponentDebug::GrassFieldDebug(comp, pAssetCollection_); });
+	RegisterComponent<CameraComponent>(ComponentType::Compute, [&](CameraComponent* comp) { ComponentDebug::CameraDebug(comp); });
+	RegisterComponent<ShadowCaster>(ComponentType::Compute, [&](ShadowCaster* comp) { ComponentDebug::ShadowCasterDebug(comp); });
+	RegisterComponent<AgentIntentComponent>(ComponentType::Compute, [&](AgentIntentComponent* comp) { ComponentDebug::AgentIntentComponentDebug(comp); });
+	RegisterComponentMulti<Animator>(ComponentType::Compute, [&](const std::vector<Animator*>& comps) { ComponentDebug::AnimatorDebug(comps); });
 
-	RegisterComponent<Script>(ComponentType::Script, [&](IComponent* comp) { ComponentDebug::ScriptDebug(static_cast<Script*>(comp)); });
+	RegisterComponent<Script>(ComponentType::Script, [&](Script* comp) { ComponentDebug::ScriptDebug(comp); });
 
 	/// renderer
-	RegisterComponent<VoxelTerrain>(ComponentType::Renderer, [&](IComponent* comp) { ComponentDebug::VoxelTerrainDebug(static_cast<VoxelTerrain*>(comp), pDxManager_, pAssetCollection_); });
-	RegisterComponent<MeshRenderer>(ComponentType::Renderer, [&](IComponent* comp) { ComponentDebug::MeshRendererDebug(static_cast<MeshRenderer*>(comp), pAssetCollection_); });
-	RegisterComponent<CustomMeshRenderer>(ComponentType::Renderer, [&](IComponent* comp) { CustomMeshRendererDebug(static_cast<CustomMeshRenderer*>(comp)); });
-	RegisterComponent<DissolveMeshRenderer>(ComponentType::Renderer, [&](IComponent* comp) { ShowGUI(static_cast<DissolveMeshRenderer*>(comp), pAssetCollection_); });
-	RegisterComponent<SpriteRenderer>(ComponentType::Renderer, [&](IComponent* comp) { ComponentDebug::SpriteDebug(static_cast<SpriteRenderer*>(comp), pAssetCollection_); });
-	RegisterComponent<Line2DRenderer>(ComponentType::Renderer, [&]([[maybe_unused]] IComponent* comp) {});
-	RegisterComponent<Line3DRenderer>(ComponentType::Renderer, [&]([[maybe_unused]] IComponent* comp) {});
-	RegisterComponent<SkinMeshRenderer>(ComponentType::Renderer, [&](IComponent* comp) { ComponentDebug::SkinMeshRendererDebug(static_cast<SkinMeshRenderer*>(comp), pAssetCollection_); });
-	RegisterComponent<ScreenPostEffectTag>(ComponentType::Renderer, [&](IComponent* comp) { ComponentDebug::ScreenPostEffectTagDebug(static_cast<ScreenPostEffectTag*>(comp)); });
-	RegisterComponent<Skybox>(ComponentType::Renderer, [&](IComponent* comp) { ComponentDebug::SkyboxDebug(static_cast<Skybox*>(comp)); });
+	RegisterComponent<VoxelTerrain>(ComponentType::Renderer, [&](VoxelTerrain* comp) { ComponentDebug::VoxelTerrainDebug(comp, pDxManager_, pAssetCollection_); });
+	RegisterComponent<MeshRenderer>(ComponentType::Renderer, [&](MeshRenderer* comp) { ComponentDebug::MeshRendererDebug(comp, pAssetCollection_); });
+	RegisterComponent<CustomMeshRenderer>(ComponentType::Renderer, [&](CustomMeshRenderer* comp) { CustomMeshRendererDebug(comp); });
+	RegisterComponent<DissolveMeshRenderer>(ComponentType::Renderer, [&](DissolveMeshRenderer* comp) { ShowGUI(comp, pAssetCollection_); });
+	RegisterComponent<SpriteRenderer>(ComponentType::Renderer, [&](SpriteRenderer* comp) { ComponentDebug::SpriteDebug(comp, pAssetCollection_); });
+	RegisterComponent<Line2DRenderer>(ComponentType::Renderer, [&](Line2DRenderer* /*comp*/) {});
+	RegisterComponent<Line3DRenderer>(ComponentType::Renderer, [&](Line3DRenderer* /*comp*/) {});
+	RegisterComponent<SkinMeshRenderer>(ComponentType::Renderer, [&](SkinMeshRenderer* comp) { ComponentDebug::SkinMeshRendererDebug(comp, pAssetCollection_); });
+	RegisterComponent<ScreenPostEffectTag>(ComponentType::Renderer, [&](ScreenPostEffectTag* comp) { ComponentDebug::ScreenPostEffectTagDebug(comp); });
+	RegisterComponent<Skybox>(ComponentType::Renderer, [&](Skybox* comp) { ComponentDebug::SkyboxDebug(comp); });
 
 	/// collider
-	RegisterComponent<SphereCollider>(ComponentType::Collider, [&](IComponent* comp) { ComponentDebug::SphereColliderDebug(static_cast<SphereCollider*>(comp)); });
-	RegisterComponent<BoxCollider>(ComponentType::Collider, [&](IComponent* comp) { ComponentDebug::BoxColliderDebug(static_cast<BoxCollider*>(comp)); });
+	RegisterComponent<SphereCollider>(ComponentType::Collider, [&](SphereCollider* comp) { ComponentDebug::SphereColliderDebug(comp); });
+	RegisterComponent<BoxCollider>(ComponentType::Collider, [&](BoxCollider* comp) { ComponentDebug::BoxColliderDebug(comp); });
 
 
 
@@ -108,7 +119,11 @@ void InspectorWindow::ShowImGui() {
 	}
 
 	SelectionType type = ImGuiSelection::GetSelectionType();
-	inspectorFunctions_[static_cast<size_t>(type)]();
+	if (type == SelectionType::Entity) {
+		EntityInspector();
+	} else {
+		inspectorFunctions_[static_cast<size_t>(type)]();
+	}
 
 	ImGui::End();
 }
@@ -116,14 +131,16 @@ void InspectorWindow::ShowImGui() {
 
 void InspectorWindow::EntityInspector() {
 
-	/// guidの取得、無効値なら抜ける
-	const Guid& selectionGuid = ImGuiSelection::GetSelectedObject();
-	if(!selectionGuid.CheckValid()) { return; }
+	/// 選択している全エンティティの取得
+	std::vector<GameEntity*> selectedEntities = GetSelectedEntities();
+	if(selectedEntities.empty()) { return; }
 
-	/// 選択しているエンティティの検索、見つからなければ即時終了
-	GameEntity* selectedEntity = GetSelectedEntity(selectionGuid);
-	if(!selectedEntity) { return; }
+	if (selectedEntities.size() > 1) {
+		MultiEntityInspector(selectedEntities);
+		return;
+	}
 
+	GameEntity* selectedEntity = selectedEntities[0];
 
 	ShowEntityMenuBar(selectedEntity);
 	ShowEntityBasicInfo(selectedEntity);
@@ -131,6 +148,38 @@ void InspectorWindow::EntityInspector() {
 	ShowEntityComponents(selectedEntity);
 	ShowAddComponentPopup(selectedEntity);
 
+}
+
+void InspectorWindow::MultiEntityInspector(const std::vector<ONEngine::GameEntity*>& entities) {
+	ImGui::Text("%zu objects selected", entities.size());
+	ImGui::Separator();
+
+	ShowMultiEntityBasicInfo(entities);
+	ImGui::Separator();
+	ShowMultiEntityComponents(entities);
+	ShowMultiAddComponentPopup(entities);
+}
+
+std::vector<GameEntity*> InspectorWindow::GetSelectedEntities() {
+	std::vector<GameEntity*> res;
+	const auto& selectedGuids = ImGuiSelection::GetSelectedObjects();
+	
+	for (const auto& guid : selectedGuids) {
+		if (!guid.CheckValid()) continue;
+		
+		GameEntity* entity = GetSelectedEntity(guid);
+		if (entity) res.push_back(entity);
+	}
+	
+	// 最後に選択したものがインスペクタの基準になるように順序を調整（オプション）
+	const Guid& lastGuid = ImGuiSelection::GetLastSelectedObject();
+	std::sort(res.begin(), res.end(), [&](GameEntity* a, GameEntity* b) {
+		if (a->GetGuid() == lastGuid) return true;
+		if (b->GetGuid() == lastGuid) return false;
+		return a->GetId() < b->GetId();
+	});
+
+	return res;
 }
 
 ///
@@ -144,6 +193,12 @@ GameEntity* InspectorWindow::GetSelectedEntity(const ONEngine::Guid& entityGuid)
 	for(auto& group : pEcs_->GetECSGroups()) {
 		res = group.second->GetEntityFromGuid(entityGuid);
 		if(res) { return res; }
+	}
+
+	// GetECSGroupsに入っていない動的なグループ（Debug用など）も明示的にチェック
+	if (auto debugGroup = pEcs_->GetECSGroup("Debug")) {
+		res = debugGroup->GetEntityFromGuid(entityGuid);
+		if (res) return res;
 	}
 
 	return nullptr;
@@ -202,6 +257,45 @@ void InspectorWindow::ShowEntityBasicInfo(ONEngine::GameEntity* entity) {
 	ImMathf::Checkbox("entity active", &entity->active);
 }
 
+void InspectorWindow::ShowMultiEntityBasicInfo(const std::vector<ONEngine::GameEntity*>& entities) {
+	// 名前
+	bool allSameName = true;
+	std::string firstName = entities[0]->GetName();
+	for (size_t i = 1; i < entities.size(); ++i) {
+		if (entities[i]->GetName() != firstName) {
+			allSameName = false;
+			break;
+		}
+	}
+	
+	std::string nameLabel = allSameName ? firstName : "Mixed...";
+	ImGuiInputTextReadOnly("entity names", nameLabel);
+
+	// アクティブフラグ
+	bool allSameActive = true;
+	bool firstActive = entities[0]->active;
+	for (size_t i = 1; i < entities.size(); ++i) {
+		if (entities[i]->active != firstActive) {
+			allSameActive = false;
+			break;
+		}
+	}
+
+	bool active = firstActive;
+	if (allSameActive) {
+		if (ImMathf::Checkbox("entity active", &active)) {
+			for (auto e : entities) e->active = active;
+		}
+	} else {
+		// Mixed state
+		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.5f, 0.5f, 0.5f, 1.0f));
+		if (ImGui::Button("Mixed Active (Set All True)")) {
+			for (auto e : entities) e->active = true;
+		}
+		ImGui::PopStyleColor();
+	}
+}
+
 ///
 /// エンティティのコンポーネントを表示する
 ///  
@@ -211,10 +305,48 @@ void InspectorWindow::ShowEntityComponents(ONEngine::GameEntity* entity) {
 	}
 }
 
+void InspectorWindow::ShowMultiEntityComponents(const std::vector<ONEngine::GameEntity*>& entities) {
+	// 共通コンポーネントの抽出
+	if (entities.empty()) return;
+
+	std::map<size_t, std::vector<IComponent*>> commonComponents;
+	
+	// 初番目のエンティティのコンポーネントをベースにする
+	for (auto& [hash, comp] : entities[0]->GetComponents()) {
+		commonComponents[hash].push_back(comp);
+	}
+
+	// 2番目以降のエンティティと比較して、共通でないものを削除
+	for (size_t i = 1; i < entities.size(); ++i) {
+		auto& comps = entities[i]->GetComponents();
+		for (auto it = commonComponents.begin(); it != commonComponents.end(); ) {
+			auto compItr = comps.find(it->first);
+			if (compItr != comps.end()) {
+				it->second.push_back(compItr->second);
+				++it;
+			} else {
+				it = commonComponents.erase(it);
+			}
+		}
+	}
+
+	// 共通コンポーネントの描画
+	for (auto& [hash, comps] : commonComponents) {
+		DrawMultiComponentNode(entities, hash, comps);
+	}
+}
+
 ///
 /// エンティティに対してコンポーネントを追加するためのポップアップ
 ///
 void InspectorWindow::ShowAddComponentPopup(ONEngine::GameEntity* entity) {
+	std::vector<GameEntity*> entities = { entity };
+	ShowMultiAddComponentPopup(entities);
+}
+
+void InspectorWindow::ShowMultiAddComponentPopup(const std::vector<ONEngine::GameEntity*>& entities) {
+	if (entities.empty()) return;
+
 	ImGui::Separator();
 
 	const float indentSize = 4 * ImGui::GetStyle().IndentSpacing;
@@ -229,67 +361,51 @@ void InspectorWindow::ShowAddComponentPopup(ONEngine::GameEntity* entity) {
 
 	if(ImGui::BeginPopup("AddComponent")) {
 
-		/// ==============================================
-		/// 1. 検索バーの描画と入力処理
-		/// ==============================================
-		static char searchBuffer[256] = ""; // 検索用バッファ
+		static char searchBuffer[256] = ""; 
 
-		// ポップアップが開かれた瞬間にバッファをクリアし、フォーカスを当てる
 		if(ImGui::IsWindowAppearing()) {
 			memset(searchBuffer, 0, sizeof(searchBuffer));
 			ImGui::SetKeyboardFocusHere();
 		}
 
-		// Hint付きの入力フィールド（何も入力されていない時に薄い文字を出す）
 		ImGui::InputTextWithHint("##SearchComp", "Search Component...", searchBuffer, IM_ARRAYSIZE(searchBuffer));
 		ImGui::Separator();
 
-		// 入力された検索文字列を小文字に変換（大文字小文字を区別しない検索のため）
 		std::string searchStr = searchBuffer;
 		std::transform(searchStr.begin(), searchStr.end(), searchStr.begin(), [](unsigned char c) { return std::tolower(c); });
 		bool isSearching = !searchStr.empty();
 
-		/// ==============================================
-		/// 2. コンポーネントをTypeごとに分類する
-		/// ==============================================
 		std::map<ComponentType, std::vector<std::string>> categorizedComponents;
 		for(const auto& uiBinding : componentUIBindings_) {
 			categorizedComponents[uiBinding.second.type].push_back(uiBinding.second.name);
 		}
 
-		/// ==============================================
-		/// 3. メニューまたは検索結果の描画
-		/// ==============================================
 		for(auto& [type, names] : categorizedComponents) {
 			std::sort(names.begin(), names.end());
 
 			if(isSearching) {
-				// ----------------------------------------
-				// 検索中：カテゴリを無視してマッチしたものをフラット表示
-				// ----------------------------------------
 				for(const auto& name : names) {
-					// コンポーネント名も小文字に変換して比較
 					std::string lowerName = name;
 					std::transform(lowerName.begin(), lowerName.end(), lowerName.begin(), [](unsigned char c) { return std::tolower(c); });
 
-					// 検索文字列が含まれていたら表示
 					if(lowerName.find(searchStr) != std::string::npos) {
 						if(ImGui::MenuItem(name.c_str())) {
-							pEditorManager_->ExecuteCommand<AddComponentCommand>(entity, name);
-							ImGui::CloseCurrentPopup(); // 追加したらポップアップを閉じる
+							for (auto e : entities) {
+								pEditorManager_->ExecuteCommand<AddComponentCommand>(e, name);
+							}
+							ImGui::CloseCurrentPopup();
 						}
 					}
 				}
 			} else {
-				// ----------------------------------------
-				// 検索していない時：カテゴリごとにサブメニュー化
-				// ----------------------------------------
 				std::string typeName{ magic_enum::enum_name(type) };
 				if(ImGui::BeginMenu(typeName.c_str())) {
 					for(const auto& name : names) {
 						if(ImGui::MenuItem(name.c_str())) {
-							pEditorManager_->ExecuteCommand<AddComponentCommand>(entity, name);
-							ImGui::CloseCurrentPopup(); // 追加したらポップアップを閉じる
+							for (auto e : entities) {
+								pEditorManager_->ExecuteCommand<AddComponentCommand>(e, name);
+							}
+							ImGui::CloseCurrentPopup();
 						}
 					}
 					ImGui::EndMenu();
@@ -312,7 +428,6 @@ ImVec4 InspectorWindow::GetComponentBaseColor(ComponentType type) const {
 	case ComponentType::Collider: return ImVec4(0.50f, 0.30f, 0.15f, 0.70f);
 	default:                      return ImGui::GetStyleColorVec4(ImGuiCol_Header);
 	}
-	return ImVec4();
 }
 
 
@@ -364,6 +479,34 @@ void InspectorWindow::DrawComponentNode(ONEngine::GameEntity* entity, auto& itr)
 	}
 }
 
+void InspectorWindow::DrawMultiComponentNode(const std::vector<ONEngine::GameEntity*>& entities, size_t hash, const std::vector<ONEngine::IComponent*>& comps) {
+	std::string compName = componentUIBindings_.contains(hash) ? componentUIBindings_[hash].name : "Unknown Component";
+	std::string label = compName + "##Multi" + std::to_string(hash);
+
+	ImGui::PushID(label.c_str());
+
+	ComponentType compType = componentUIBindings_.contains(hash) ? componentUIBindings_[hash].type : ComponentType::Compute;
+	ImVec4 baseColor = GetComponentBaseColor(compType);
+
+	bool isHeaderOpen = DrawMultiComponentHeaderUI(comps, compName, baseColor);
+
+	bool isDeleted = false;
+	if (isHeaderOpen) {
+		isDeleted = HandleMultiComponentPopupMenu(entities, hash, compName);
+		
+		if (!isDeleted) {
+			// 全員有効かチェック
+			bool allEnabled = true;
+			for (auto c : comps) if (!c->enable) { allEnabled = false; break; }
+			
+			DrawMultiComponentInnerContent(comps, hash, allEnabled);
+		}
+		ImGui::TreePop();
+	}
+
+	ImGui::PopID();
+}
+
 bool InspectorWindow::DrawComponentHeaderUI(ONEngine::IComponent* comp, const std::string& compName, ImVec4 baseColor) {
 	ImGui::PushStyleColor(ImGuiCol_Header, baseColor);
 	ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(baseColor.x + 0.05f, baseColor.y + 0.05f, baseColor.z + 0.05f, 0.8f));
@@ -409,6 +552,55 @@ bool InspectorWindow::DrawComponentHeaderUI(ONEngine::IComponent* comp, const st
 	return isHeaderOpen;
 }
 
+bool InspectorWindow::DrawMultiComponentHeaderUI(const std::vector<ONEngine::IComponent*>& comps, const std::string& compName, ImVec4 baseColor) {
+	ImGui::PushStyleColor(ImGuiCol_Header, baseColor);
+	ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(baseColor.x + 0.05f, baseColor.y + 0.05f, baseColor.z + 0.05f, 0.8f));
+	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4, 4));
+
+	ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_DefaultOpen;
+	bool isHeaderOpen = ImGui::TreeNodeEx("##header", flags, "");
+
+	ImGui::SameLine();
+	ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 2.0f);
+
+	bool allEnabled = true;
+	bool firstEnabled = comps[0]->enable;
+	for (auto c : comps) if (static_cast<bool>(c->enable) != firstEnabled) { allEnabled = false; break; }
+
+	ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0, 0, 0, 0));
+	ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, ImVec4(1, 1, 1, 0.1f));
+	ImGui::PushStyleColor(ImGuiCol_FrameBgActive, ImVec4(1, 1, 1, 0.2f));
+	ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0, 0, 0, 0));
+
+	bool enabled = firstEnabled;
+	if (allEnabled) {
+		if (ImGui::Checkbox("##enabled", &enabled)) {
+			for (auto c : comps) c->enable = enabled;
+		}
+	} else {
+		if (ImGui::Button("-##mixed_enabled", ImVec2(ImGui::GetFrameHeight(), ImGui::GetFrameHeight()))) {
+			for (auto c : comps) c->enable = true;
+		}
+	}
+	ImGui::PopStyleColor(4);
+
+	ImGui::SameLine();
+	ImGui::TextDisabled("(?)");
+	ImGui::SameLine();
+	ImGui::TextUnformatted(compName.c_str());
+
+	float button_size = ImGui::GetFrameHeight();
+	ImGui::SameLine(ImGui::GetContentRegionAvail().x + ImGui::GetCursorPosX() - button_size - 4.0f);
+	if(ImGui::Button("::", ImVec2(button_size, button_size))) {
+		ImGui::OpenPopup("MultiCompPopup");
+	}
+
+	ImGui::PopStyleVar();
+	ImGui::PopStyleColor(2);
+
+	return isHeaderOpen;
+}
+
 bool InspectorWindow::HandleComponentPopupMenu(ONEngine::GameEntity* entity, ONEngine::IComponent* comp, const std::string& compName, auto& itr) {
 	bool isDeleted = false;
 
@@ -428,12 +620,44 @@ bool InspectorWindow::HandleComponentPopupMenu(ONEngine::GameEntity* entity, ONE
 	return isDeleted;
 }
 
+bool InspectorWindow::HandleMultiComponentPopupMenu(const std::vector<ONEngine::GameEntity*>& entities, size_t hash, const std::string& compName) {
+	bool isDeleted = false;
+
+	if(ImGui::BeginPopup("MultiCompPopup")) {
+		if(ImGui::MenuItem("Remove Component from all")) {
+			for (auto e : entities) {
+				auto comps = e->GetComponents();
+				if (comps.contains(hash)) {
+					pEditorManager_->ExecuteCommand<RemoveComponentCommand>(e, compName, nullptr);
+				}
+			}
+			isDeleted = true;
+		}
+		ImGui::EndPopup();
+	}
+
+	return isDeleted;
+}
+
 void InspectorWindow::DrawComponentInnerContent(ONEngine::IComponent* comp, size_t componentTypeId, bool enabled) {
 	ImGui::Indent(22.0f);
 	if(!enabled) ImGui::BeginDisabled();
 
 	if(componentUIBindings_.contains(componentTypeId)) {
-		componentUIBindings_[componentTypeId].function(comp);
+		std::vector<IComponent*> comps = { comp };
+		componentUIBindings_[componentTypeId].function(comps);
+	}
+
+	if(!enabled) ImGui::EndDisabled();
+	ImGui::Unindent(22.0f);
+}
+
+void InspectorWindow::DrawMultiComponentInnerContent(const std::vector<ONEngine::IComponent*>& comps, size_t componentTypeId, bool enabled) {
+	ImGui::Indent(22.0f);
+	if(!enabled) ImGui::BeginDisabled();
+
+	if(componentUIBindings_.contains(componentTypeId)) {
+		componentUIBindings_[componentTypeId].function(comps);
 	}
 
 	if(!enabled) ImGui::EndDisabled();
@@ -443,13 +667,14 @@ void InspectorWindow::DrawComponentInnerContent(ONEngine::IComponent* comp, size
 void InspectorWindow::AssetInspector() {
 	/// Typeごとに表示を変える
 
-	Asset::AssetType type = pAssetCollection_->GetAssetTypeFromGuid(ImGuiSelection::GetSelectedObject());
+	const Guid& selectionGuid = ImGuiSelection::GetLastSelectedObject();
+	Asset::AssetType type = pAssetCollection_->GetAssetTypeFromGuid(selectionGuid);
 
 	switch(type) {
 	case Asset::AssetType::Texture:
 	{
 		ImGui::Text("Texture Inspector");
-		ONEngine::Asset::Texture* texture = pAssetCollection_->GetTextureFromGuid(ImGuiSelection::GetSelectedObject());
+		ONEngine::Asset::Texture* texture = pAssetCollection_->GetTextureFromGuid(selectionGuid);
 		if(texture) {
 			TextureAssetInspector(texture);
 		}
@@ -464,18 +689,6 @@ void InspectorWindow::AssetInspector() {
 		break;
 	case Asset::AssetType::Material:
 		ImGui::Text("Material Inspector");
-
-		/*
-		* use shader     : 使用するshader
-		* albedo color	 : ベースの色
-		* albedo texture : 使用するテクスチャ
-		* used normal	 : 法線マップを使用するかどうか
-		* normal texture : 使用する法線マップ
-		*/
-
-
-
-
 		break;
 	}
 
@@ -523,7 +736,11 @@ void InspectorWindow::TextureAssetInspector(ONEngine::Asset::Texture* tex) {
 
 	/// 枠を表示
 	ImGui::BeginChild("TextureFrame", displaySize, true, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
-	ImGui::Image((ImTextureID)(uintptr_t)tex->GetSRVGPUHandle().ptr, displaySize);
+	if(tex->IsStandard2D()) {
+		ImGui::Image((ImTextureID)(uintptr_t)tex->GetSRVGPUHandle().ptr, displaySize);
+	} else {
+		ImGui::Text("Preview not supported\n(CubeMap or 3D Texture)");
+	}
 	ImGui::EndChild();
 }
 

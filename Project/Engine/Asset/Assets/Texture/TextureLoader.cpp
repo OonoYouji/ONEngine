@@ -1,8 +1,9 @@
-﻿#include "TextureLoader.h"
+#include "TextureLoader.h"
 
 /// std
 #include <fstream>
 #include <mutex>
+#include <format>
 
 /// externals
 #include <magic_enum/magic_enum.hpp>
@@ -31,9 +32,20 @@ DXGI_FORMAT GetDxgiFormatFromString(const std::string& _formatStr) {
 
 namespace ONEngine::Asset {
 
+/**
+ * @brief コンストラクタ。アセットコレクションとDirectXマネージャへの参照を設定します。
+ * @param _dxm DirectX12マネージャのポインタ
+ * @param _ac アセットコレクション管理クラスのポインタ
+ */
 AssetLoader<Texture>::AssetLoader(DxManager* _dxm, AssetCollection* _ac)
 	: pDxManager_(_dxm), pAssetCollection_(_ac) {}
 
+/**
+ * @brief ディスクからテクスチャ（PNG, DDS等）をロードします。メタデータに応じて2D/3Dの分岐を行います。
+ * @param _filepath ロード対象のファイルパス
+ * @param meta テクスチャアセットのメタデータ
+ * @return ロードされたTextureアセット（失敗時はstd::nullopt）
+ */
 std::optional<Texture> AssetLoader<Texture>::Load(const std::string& _filepath, Meta<Texture::MetaData> meta) {
 	std::optional<Texture> res{};
 
@@ -57,6 +69,13 @@ std::optional<Texture> AssetLoader<Texture>::Load(const std::string& _filepath, 
 	return res;
 }
 
+/**
+ * @brief 既存のテクスチャに対して再ロード（リロード）を実行します。
+ * @param _filepath 再ロード対象 of ファイルパス
+ * @param _src 再ロード元のTextureオブジェクトへのポインタ
+ * @param meta テクスチャアセットのメタデータ
+ * @return 再ロードされたTextureアセット（失敗時はstd::nullopt）
+ */
 std::optional<Texture> AssetLoader<Texture>::Reload(const std::string& _filepath, Texture* _src, Meta<Texture::MetaData> meta) {
 	std::optional<Texture> res{};
 
@@ -80,13 +99,19 @@ std::optional<Texture> AssetLoader<Texture>::Reload(const std::string& _filepath
 	return res;
 }
 
+/**
+ * @brief テクスチャに対応するメタデータを取得します。
+ * @param _filepath 対象アセットファイルのパス
+ * @return 解析・構築されたメタデータオブジェクト
+ */
 Meta<Texture::MetaData> AssetLoader<Texture>::GetMetaData(const std::string& _filepath) {
 	Meta<Texture::MetaData> res{};
 
-	res.base = LoadMetaBaseFromFile(_filepath);
+	const std::string metaPath = _filepath + ".meta";
+	res.base = LoadOrGenerateMetaBase(metaPath, _filepath);
 
 	nlohmann::json j;
-	std::ifstream ifs(_filepath);
+	std::ifstream ifs(metaPath);
 	if(!ifs.is_open()) {
 		return {};
 	}
@@ -102,6 +127,11 @@ Meta<Texture::MetaData> AssetLoader<Texture>::GetMetaData(const std::string& _fi
 }
 
 
+/**
+ * @brief 2Dテクスチャとしてファイルをロードします。
+ * @param _filepath 読み込み対象のファイルパス
+ * @return ロードされたTextureアセット（失敗時はstd::nullopt）
+ */
 std::optional<Texture> AssetLoader<Texture>::Load2DTexture(const std::string& _filepath) {
 	Texture texture;
 
@@ -174,6 +204,8 @@ std::optional<Texture> AssetLoader<Texture>::Load2DTexture(const std::string& _f
 		Vector2 textureSize = { static_cast<float>(metadata.width), static_cast<float>(metadata.height) };
 		texture.textureSize_ = textureSize;
 		texture.srvFormat_ = metadata.format;
+		texture.isCubeMap_ = metadata.IsCubemap();
+		texture.arraySize_ = static_cast<UINT>(metadata.arraySize);
 
 		Console::Log("[Success Texture Info] Path: \"" + _filepath + "\"");
 		Console::Log(" - DescriptorIndex: " + std::to_string(texture.srvHandle_->descriptorIndex));
@@ -182,6 +214,11 @@ std::optional<Texture> AssetLoader<Texture>::Load2DTexture(const std::string& _f
 	return std::move(texture);
 }
 
+/**
+ * @brief 3Dテクスチャとしてファイルをロードします。
+ * @param _filepath 読み込み対象のファイルパス
+ * @return ロードされたTextureアセット（失敗時はstd::nullopt）
+ */
 std::optional<Texture> AssetLoader<Texture>::Load3DTexture(const std::string& _filepath) {
 	Texture texture;
 
@@ -255,6 +292,12 @@ std::optional<Texture> AssetLoader<Texture>::Load3DTexture(const std::string& _f
 	return std::move(texture);
 }
 
+/**
+ * @brief 2Dテクスチャの再ロードを行います。
+ * @param _filepath 対象のファイルパス
+ * @param _src 再ロード元のテクスチャ
+ * @return 再ロードされたTextureオブジェクト
+ */
 std::optional<Texture> AssetLoader<Texture>::Reload2DTexture(const std::string& _filepath, Texture* _src) {
 	Texture texture = *_src;
 
@@ -314,6 +357,8 @@ std::optional<Texture> AssetLoader<Texture>::Reload2DTexture(const std::string& 
 		Vector2 textureSize = { static_cast<float>(metadata.width), static_cast<float>(metadata.height) };
 		texture.textureSize_ = textureSize;
 		texture.srvFormat_ = metadata.format;
+		texture.isCubeMap_ = metadata.IsCubemap();
+		texture.arraySize_ = static_cast<UINT>(metadata.arraySize);
 
 		Console::Log("[Success Reload Texture Info] Path: \"" + _filepath + "\"");
 	}
@@ -321,6 +366,12 @@ std::optional<Texture> AssetLoader<Texture>::Reload2DTexture(const std::string& 
 	return std::move(texture);
 }
 
+/**
+ * @brief 3Dテクスチャの再ロードを行います。
+ * @param _filepath 対象のファイルパス
+ * @param _src 再ロード元のテクスチャ
+ * @return 再ロードされたTextureオブジェクト
+ */
 std::optional<Texture> AssetLoader<Texture>::Reload3DTexture(const std::string& _filepath, Texture* _src) {
 	Texture texture = *_src;
 
@@ -389,13 +440,30 @@ std::optional<Texture> AssetLoader<Texture>::Reload3DTexture(const std::string& 
 	return std::move(texture);
 }
 
+/**
+ * @brief DirectXTexを用いて、指定ファイルを2Dピクセルデータ（ScratchImage）としてロードします。
+ * @param _filepath 対象ファイルパス
+ * @return 読み込まれた ScratchImage
+ */
 DirectX::ScratchImage AssetLoader<Texture>::LoadScratchImage2D(const std::string& _filepath) {
 	DirectX::ScratchImage image{};
 	std::wstring          filePathW = ConvertString(_filepath);
+	HRESULT hr = S_OK;
+
 	if(_filepath.ends_with(".dds")) {
-		DirectX::LoadFromDDSFile(filePathW.c_str(), DirectX::DDS_FLAGS_NONE, nullptr, image);
+		hr = DirectX::LoadFromDDSFile(filePathW.c_str(), DirectX::DDS_FLAGS_NONE, nullptr, image);
 	} else {
-		DirectX::LoadFromWICFile(filePathW.c_str(), DirectX::WIC_FLAGS_FORCE_SRGB, nullptr, image);
+		hr = DirectX::LoadFromWICFile(filePathW.c_str(), DirectX::WIC_FLAGS_FORCE_SRGB, nullptr, image);
+		if (FAILED(hr)) {
+			// sRGB強制で失敗した場合は、フラグなしでリトライ（グレースケールや特殊フォーマット用）
+			hr = DirectX::LoadFromWICFile(filePathW.c_str(), DirectX::WIC_FLAGS_NONE, nullptr, image);
+		}
+	}
+
+	if (FAILED(hr)) {
+		std::lock_guard<std::mutex> lock(s_textureGpuMutex);
+		Console::LogError(std::format("[Load Failed] [Texture WIC/DDS] - HRESULT: 0x{:08X}, Path: \"{}\"", (uint32_t)hr, _filepath));
+		return DirectX::ScratchImage{};
 	}
 
 	DirectX::ScratchImage mipImages{};
@@ -403,11 +471,21 @@ DirectX::ScratchImage AssetLoader<Texture>::LoadScratchImage2D(const std::string
 	if(DirectX::IsCompressed(image.GetMetadata().format)) {
 		mipImages = std::move(image);
 	} else {
-		DirectX::GenerateMipMaps(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::TEX_FILTER_SRGB, 0, mipImages);
+		hr = DirectX::GenerateMipMaps(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::TEX_FILTER_SRGB, 0, mipImages);
+		if (FAILED(hr)) {
+			std::lock_guard<std::mutex> lock(s_textureGpuMutex);
+			Console::LogWarning(std::format("[MipMap Failed] [Texture] - HRESULT: 0x{:08X}, Path: \"{}\"", (uint32_t)hr, _filepath));
+			mipImages = std::move(image);
+		}
 	}
 	return mipImages;
 }
 
+/**
+ * @brief DirectXTexを用いて、指定ファイルを3Dピクセルデータ（ScratchImage）としてロードします。
+ * @param _filepath 対象ファイルパス
+ * @return 読み込まれた ScratchImage
+ */
 DirectX::ScratchImage AssetLoader<Texture>::LoadScratchImage3D(const std::string& _filepath) {
 	if(!_filepath.ends_with(".dds")) {
 		std::lock_guard<std::mutex> lock(s_textureGpuMutex);
@@ -446,6 +524,12 @@ DirectX::ScratchImage AssetLoader<Texture>::LoadScratchImage3D(const std::string
 	return mipImages;
 }
 
+/**
+ * @brief DirectX12の2Dテクスチャ用GPUリソースを作成します。
+ * @param _dxDevice デバイスポインタ
+ * @param _metadata テクスチャのメタデータ
+ * @return 作成された DxResource
+ */
 DxResource AssetLoader<Texture>::CreateTextureResource2D(DxDevice* _dxDevice, const DirectX::TexMetadata& _metadata) {
 	D3D12_RESOURCE_DESC desc{};
 	desc.Width = UINT(_metadata.width);
@@ -464,6 +548,12 @@ DxResource AssetLoader<Texture>::CreateTextureResource2D(DxDevice* _dxDevice, co
 	return dxResource;
 }
 
+/**
+ * @brief DirectX12の3Dテクスチャ用GPUリソースを作成します。
+ * @param _dxDevice デバイスポインタ
+ * @param _metadata テクスチャのメタデータ
+ * @return 作成された DxResource
+ */
 DxResource AssetLoader<Texture>::CreateTextureResource3D(DxDevice* _dxDevice, const DirectX::TexMetadata& _metadata) {
 	if(_metadata.dimension != DirectX::TEX_DIMENSION_TEXTURE3D) {
 		std::lock_guard<std::mutex> lock(s_textureGpuMutex);
@@ -490,6 +580,12 @@ DxResource AssetLoader<Texture>::CreateTextureResource3D(DxDevice* _dxDevice, co
 	return dxResource;
 }
 
+/**
+ * @brief CPU側の画素データをGPUテクスチャメモリにアップロードします。
+ * @param _texture アップロード先D3D12テクスチャリソース
+ * @param _mipScratchImage アップロード元画素データ（ScratchImage）
+ * @return コピーに使用した中間アップロードバッファの DxResource
+ */
 DxResource AssetLoader<Texture>::UploadTextureData(ID3D12Resource* _texture, const DirectX::ScratchImage& _mipScratchImage) {
 	DxDevice* dxDevice = pDxManager_->GetDxDevice();
 

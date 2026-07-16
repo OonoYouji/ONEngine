@@ -1,4 +1,4 @@
-﻿#include "ImGuiCommand.h"
+#include "ImGuiCommand.h"
 
 
 /// externals
@@ -9,6 +9,9 @@
 
 using namespace Editor;
 
+/**
+ * @brief ImGuiのDragIntでintを操作するコマンド
+ */
 bool ImMathf::DragInt(const std::string& _label, int* _pv, int _step, int _min, int _max) {
 	static int startValue{};
 
@@ -27,6 +30,9 @@ bool ImMathf::DragInt(const std::string& _label, int* _pv, int _step, int _min, 
 	return edit;
 }
 
+/**
+ * @brief ImGuiのDragInt2でVector2Intを操作するコマンド
+ */
 bool ImMathf::DragInt2(const std::string& _label, ONEngine::Vector2Int* _pv, int _step, int _min, int _max) {
 	static ONEngine::Vector2Int startValue{};
 
@@ -45,6 +51,9 @@ bool ImMathf::DragInt2(const std::string& _label, ONEngine::Vector2Int* _pv, int
 	return edit;
 }
 
+/**
+ * @brief ImGuiのDragInt3でVector3Intを操作するコマンド
+ */
 bool ImMathf::DragInt3(const std::string& _label, ONEngine::Vector3Int* _pv, int _step, int _min, int _max) {
 	static ONEngine::Vector3Int startValue{};
 
@@ -63,6 +72,9 @@ bool ImMathf::DragInt3(const std::string& _label, ONEngine::Vector3Int* _pv, int
 	return edit;
 }
 
+/**
+ * @brief ImGuiのDragFloatでfloatを操作するコマンド
+ */
 bool ImMathf::DragFloat(const std::string& _label, float* _pv, float _step, float _min, float _max, const char* _format) {
 	static float startValue{};
 
@@ -81,6 +93,9 @@ bool ImMathf::DragFloat(const std::string& _label, float* _pv, float _step, floa
 	return edit;
 }
 
+/**
+ * @brief ImGuiのDragFloat2でVector2を操作するコマンド
+ */
 bool ImMathf::DragFloat2(const std::string& _label, ONEngine::Vector2* _pv, float _step, float _min, float _max) {
 	static ONEngine::Vector2 startValue{};
 
@@ -100,6 +115,9 @@ bool ImMathf::DragFloat2(const std::string& _label, ONEngine::Vector2* _pv, floa
 }
 
 
+/**
+ * @brief ImGuiのDragFloat3でVector3を操作するコマンド
+ */
 bool ImMathf::DragFloat3(const std::string& _label, ONEngine::Vector3* _pv, float _step, float _min, float _max) {
 	static ONEngine::Vector3 startValue{};
 
@@ -119,6 +137,9 @@ bool ImMathf::DragFloat3(const std::string& _label, ONEngine::Vector3* _pv, floa
 	return edit;
 }
 
+/**
+ * @brief 4つの浮動小数点値をドラッグ操作で編集できるUIウィジェットを表示します。
+ */
 bool ImMathf::DragFloat4(const std::string& _label, ONEngine::Vector4* _pv, float _step, float _min, float _max) {
 	static ONEngine::Vector4 startValue{};
 
@@ -138,6 +159,9 @@ bool ImMathf::DragFloat4(const std::string& _label, ONEngine::Vector4* _pv, floa
 	return edit;
 }
 
+/**
+ * @brief クォータニオンの値をEulerに変換しドラッグ操作で調整します。
+ */
 bool ImMathf::DragQuaternion(const std::string& _label, ONEngine::Quaternion* _pq, float _step, float _min, float _max) {
 	static ONEngine::Quaternion startValue{};
 
@@ -162,6 +186,9 @@ bool ImMathf::DragQuaternion(const std::string& _label, ONEngine::Quaternion* _p
 	return false;
 }
 
+/**
+ * @brief フラグを切り替えるチェックボックスを表示します。
+ */
 bool ImMathf::Checkbox(const std::string& _label, bool* _pv) {
 
 	static bool startValue{};

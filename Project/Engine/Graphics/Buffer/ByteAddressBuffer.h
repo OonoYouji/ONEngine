@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /// std
 #include <vector>
@@ -15,30 +15,47 @@
 /// //////////////////////////////////////////////////////
 namespace ONEngine {
 
+/**
+ * @class ByteAddressBuffer
+ * @brief バイト単位でアドレス指定可能な汎用D3D12バッファ（ByteAddressBuffer）およびCPU側マッピング領域を管理するクラス
+ */
 class ByteAddressBuffer final {
 public:
 	/// ==================================================
 	/// public : methods
 	/// ==================================================
 
+	/**
+	 * @brief コンストラクタ
+	 */
 	ByteAddressBuffer();
+
+	/**
+	 * @brief デストラクタ。確保したSRV記述子ヒープ領域の解放を行います。
+	 */
 	~ByteAddressBuffer();
 
-	/// @brief Bufferを作成する
-	/// @param _size Bufferのサイズ
-	/// @param _dxDevice DxDeviceのポインタ
-	/// @param _dxSRVHeap DxSRVHeapのポインタ
+	/**
+	 * @brief バイトアドレスバッファリソースの生成、SRVのヒープ登録、およびCPUへのマッピングを行います。
+	 * @param _size 要素数（アライメントに合うサイズに内部切り上げされます）
+	 * @param _dxDevice デバイスポインタ
+	 * @param _dxSRVHeap SRV用のディスクリプタヒープポインタ
+	 */
 	void Create(uint32_t _size, DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap);
 
 
-	/// @brief 指定したインデックスに対応するマップされたデータの値を設定する
-	/// @param _index 設定対象のデータのインデックス
-	/// @param _value 設定する値（32ビット符号なし整数）
+	/**
+	 * @brief マップされたデータ領域の指定インデックス位置に32ビット符号なし整数値を設定します。
+	 * @param _index 32ビット要素のインデックス
+	 * @param _value 書き込む値
+	 */
 	void SetMappedData(size_t _index, uint32_t _value);
 
-	/// @brief コマンドリストにバインドする
-	/// @param _rootParameterIndex パラメータインデックス
-	/// @param _commandList CommandListのポインタ
+	/**
+	 * @brief グラフィックスコマンドリストにこのバッファのSRVビューをバインドします。
+	 * @param _rootParameterIndex ルートパラメータのインデックス
+	 * @param _commandList 対象のコマンドリストポインタ
+	 */
 	void BindToCommandList(UINT _rootParameterIndex, ID3D12GraphicsCommandList* _commandList);
 
 private:

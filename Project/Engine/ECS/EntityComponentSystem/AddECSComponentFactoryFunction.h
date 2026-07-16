@@ -4,10 +4,12 @@
 #include "Engine/ECS/Component/Collection/ComponentCollection.h"
 
 /// compute
+#include "Engine/ECS/Component/Components/ComputeComponents/Script/Script.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Terrain.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Light/Light.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Audio/AudioSource.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Effect/Effect.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/ParticleSystem/ParticleSystem.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/TerrainCollider.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Grass/GrassField.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
@@ -15,6 +17,9 @@
 #include "Engine/ECS/Component/Components/ComputeComponents/Collision/SphereCollider.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/ShadowCaster/ShadowCaster.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/VoxelTerrain/VoxelTerrain.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Agent/AgentIntentComponent.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Animator/Animator.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Animation/AnimationPlayer.h"
 
 /// renderer
 #include "Engine/ECS/Component/Components/RendererComponents/Skybox/Skybox.h"
@@ -31,17 +36,23 @@ namespace ONEngine {
 
 inline void AddComponentFactoryFunction(ComponentCollection* _compCollection) {
 	/// compute
+	_compCollection->RegisterComponentFactory<Script>();
 	_compCollection->RegisterComponentFactory<Transform>();
 	_compCollection->RegisterComponentFactory<DirectionalLight>();
 	_compCollection->RegisterComponentFactory<AudioSource>();
 	_compCollection->RegisterComponentFactory<Variables>();
 	_compCollection->RegisterComponentFactory<Effect>();
+	_compCollection->RegisterComponentFactory<ParticleSystem>();
 	_compCollection->RegisterComponentFactory<Terrain>();
 	_compCollection->RegisterComponentFactory<GrassField>();
 	_compCollection->RegisterComponentFactory<TerrainCollider>();
 	_compCollection->RegisterComponentFactory<CameraComponent>();
 	_compCollection->RegisterComponentFactory<ShadowCaster>();
 	_compCollection->RegisterComponentFactory<VoxelTerrain>();
+	_compCollection->RegisterComponentFactory<AgentIntentComponent>();
+	_compCollection->RegisterComponentFactory<Animator>();
+	_compCollection->RegisterComponentFactory<AnimationPlayer>();
+
 
 	/// renderer
 	_compCollection->RegisterComponentFactory<MeshRenderer>();

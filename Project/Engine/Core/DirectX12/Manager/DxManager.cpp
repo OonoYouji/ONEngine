@@ -1,4 +1,4 @@
-﻿#include "DxManager.h"
+#include "DxManager.h"
 
 using namespace ONEngine;
 
@@ -10,6 +10,9 @@ using namespace ONEngine;
 DxManager::DxManager() = default;
 DxManager::~DxManager() = default;
 
+/**
+ * @brief デバッグレイヤーの設定、デバイスの生成、コマンド関連（Queue, Allocator, List）の構築、および各種ディスクリプタヒープの確保を行います。
+ */
 void DxManager::Initialize() {
 
 	/// deug layerをセット
@@ -46,12 +49,18 @@ void DxManager::Initialize() {
 
 }
 
+/**
+ * @brief SRV/CBV/UAV用ディスクリプタヒープを現在有効なコマンドリストに設定します。
+ */
 void DxManager::HeapBindToCommandList() {
 	GetDxSRVHeap()->BindToCommandList(
 		GetDxCommand()->GetCommandList()
 	);
 }
 
+/**
+ * @brief 指定されたユニーク名で、新しいデプスステンシルバッファを生成・追加します。
+ */
 DxDepthStencil* DxManager::AddDepthStencil(const std::string& _name) {
 	/// ----- 新規のDxDepthStencilを作成 ----- ///
 
@@ -68,26 +77,44 @@ DxDepthStencil* DxManager::AddDepthStencil(const std::string& _name) {
 
 
 
+/**
+ * @brief DxDeviceオブジェクトを取得します。
+ */
 DxDevice* DxManager::GetDxDevice() const {
 	return dxDevice_.get();
 }
 
+/**
+ * @brief DxCommandオブジェクトを取得します。
+ */
 DxCommand* DxManager::GetDxCommand() const {
 	return dxCommand_.get();
 }
 
+/**
+ * @brief SRV用ディスクリプタヒープオブジェクトを取得します。
+ */
 DxSRVHeap* DxManager::GetDxSRVHeap() const {
 	return static_cast<DxSRVHeap*>(dxDescriptorHeaps_[DescriptorHeapType_CBV_SRV_UAV].get());
 }
 
+/**
+ * @brief RTV用ディスクリプタヒープオブジェクトを取得します。
+ */
 DxRTVHeap* DxManager::GetDxRTVHeap() const {
 	return static_cast<DxRTVHeap*>(dxDescriptorHeaps_[DescriptorHeapType_RTV].get());
 }
 
+/**
+ * @brief DSV用ディスクリプタヒープオブジェクトを取得します。
+ */
 DxDSVHeap* DxManager::GetDxDSVHeap() const {
 	return static_cast<DxDSVHeap*>(dxDescriptorHeaps_[DescriptorHeapType_DSV].get());
 }
 
+/**
+ * @brief 名前を指定して、該当するデプスステンシルバッファオブジェクトを取得します。
+ */
 DxDepthStencil* DxManager::GetDxDepthStencil(const std::string& _name) const {
 	if(depthStencilNameMap_.contains(_name)) {
 		size_t index = depthStencilNameMap_.at(_name);

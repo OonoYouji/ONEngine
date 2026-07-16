@@ -11,6 +11,7 @@
 #include "Engine/Asset/Collection/AssetCollection.h"
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Core/Window/WindowManager.h"
+#include "Engine/Scene/SceneManager.h"
 #include "Engine/Core/Config/EngineConfig.h"
 #include "Engine/Core/Utility/Time/Time.h"
 #include "Engine/Core/Utility/Input/Input.h"

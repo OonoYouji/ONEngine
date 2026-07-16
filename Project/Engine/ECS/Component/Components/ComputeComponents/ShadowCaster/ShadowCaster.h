@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /// externals
 #include <nlohmann/json.hpp>
@@ -37,6 +37,10 @@ struct ShadowParameter {
 /// ///////////////////////////////////////////////////
 /// 影の投影を行うためのコンポーネント
 /// ///////////////////////////////////////////////////
+/**
+ * @class ShadowCaster
+ * @brief ゲーム世界内で影を生成・描画するためのライトビュー射影行列やシャドウマップテクスチャ用のカメラ、およびシャドウパラメータを管理するコンポーネントクラス
+ */
 class ShadowCaster : public IComponent {
 	friend void ComponentDebug::ShadowCasterDebug(ShadowCaster* _shadowCaster);
 	friend void from_json(const nlohmann::json& _j, ShadowCaster& _c);
@@ -46,22 +50,38 @@ public:
 	/// public : methods
 	/// ===========================================
 
+	/**
+	 * @brief コンストラクタ
+	 */
 	ShadowCaster();
+
+	/**
+	 * @brief デストラクタ
+	 */
 	~ShadowCaster() override;
 
 
-	/// @brief 自身をシャドウキャスターとして作成
+	/**
+	 * @brief 内部のシャドウマッピング用深度記述カメラなどを生成し、シャドウキャスターとしての初期設定を行います。
+	 */
 	void CreateShadowCaster();
 
-	/// @brief DirectionalLightからライトビュー行列を設定
-	/// @param _directionLight DirectionalLightへのポインタ
+	/**
+	 * @brief 指定されたディレクショナルライトの照射方向に基づいて、影用のビュー・プロジェクション行列を再計算して更新します。
+	 * @param _ecsGroup ECS管理グループ（他カメラやオーナー検索用）
+	 * @param _directionLight 影を生成する元となる平行光源
+	 */
 	void CalculationLightViewMatrix(class ECSGroup* _ecsGroup, class DirectionalLight* _directionLight);
 
 
-	/// @brief 影の投影用のカメラを取得する
-	/// @return 投影用カメラ
+	/**
+	 * @brief 影描画のレンダリングに使用するカメラコンポーネントのポインタを取得します。
+	 */
 	CameraComponent* GetShadowCasterCamera();
 
+	/**
+	 * @brief PCF半径やシャドウバイアスなど、シェーダに渡すための影パラメータ構造体を取得します。
+	 */
 	ShadowParameter GetShadowParameters() const;
 
 private:

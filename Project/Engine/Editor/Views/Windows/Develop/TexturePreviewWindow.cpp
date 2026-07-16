@@ -49,8 +49,12 @@ void TexturePreviewWindow::ShowImGui() {
 
 		
 		/// ----- テクスチャのプレビュー表示 ----- ///
-		ImGui::Image(reinterpret_cast<ImTextureID>(texture->GetSRVHandle().
-			gpuHandle.ptr), imageSize, ImVec2(0.0f, 0.0f), ImVec2(1.0f, 1.0f));
+		if(texture->IsStandard2D()) {
+			ImGui::Image(reinterpret_cast<ImTextureID>(texture->GetSRVHandle().
+				gpuHandle.ptr), imageSize, ImVec2(0.0f, 0.0f), ImVec2(1.0f, 1.0f));
+		} else {
+			ImGui::Text("Preview not supported (CubeMap or 3D Texture)");
+		}
 
 	}
 

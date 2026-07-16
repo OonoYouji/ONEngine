@@ -1,0 +1,15 @@
+{
+    "active": true,
+    "components": [
+        {
+            "Reinforcement": {
+                "supportedScale": 4.0
+            },
+            "type": "Variables"
+        }
+    ],
+    "guid": "63b223e40a794572e67369f21f263246",
+    "name": "Reinforcement",
+    "parentGuid": null,
+    "prefabName": "Reinforcement"
+}

@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /// externals
 #include <imgui/imgui.h>
@@ -50,9 +50,8 @@ void DrawField(T& obj, Field<T, FieldType> field) {
 	auto& value = obj.*(field.member);
 
 	if constexpr(std::is_same_v<FieldType, std::string>) {
-		char buffer[256];
-		strncpy(buffer, value.c_str(), sizeof(buffer));
-		buffer[sizeof(buffer) - 1] = '\0';
+		char buffer[256] = {};
+		value.copy(buffer, sizeof(buffer) - 1);
 
 		if(ImGui::InputText(field.name, buffer, sizeof(buffer))) {
 			value = buffer;

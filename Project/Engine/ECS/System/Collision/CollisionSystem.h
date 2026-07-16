@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /// std
 #include <deque>
@@ -25,28 +25,55 @@ struct CollisionInfo {
 /// ///////////////////////////////////////////////////
 /// 衝突判定の計算を行い、コールバック関数を呼び出すシステム
 /// ///////////////////////////////////////////////////
+/**
+ * @class CollisionSystem
+ * @brief エンティティ間のコライダー衝突判定、押し戻し（プッシュバック）処理、および衝突判定に基づくコールバック（OnCollisionEnter/Stay/Exit）を毎フレーム制御するシステムクラス
+ */
 class CollisionSystem : public ECSISystem {
 public:
 	/// =======================================
 	/// public : methods
 	/// =======================================
 
+	/**
+	 * @brief コンストラクタ
+	 */
 	CollisionSystem();
+
+	/**
+	 * @brief デストラクタ
+	 */
 	virtual ~CollisionSystem() = default;
 
+	/**
+	 * @brief 毎フレームのコライダー衝突判定と押し戻し、衝突ステート遷移計算を実行します。
+	 * @param _ecs 対象となるECSグループへのポインタ
+	 */
 	void RuntimeUpdate(class ECSGroup* _ecs);
 
-	/// コールバック関数の呼び出し
+	/**
+	 * @brief 新たに衝突を開始した（Enter状態の）エンティティペアのC#イベントを通知します。
+	 */
 	void CallEnterFunc(const std::string& _ecsGroupName);
+
+	/**
+	 * @brief 衝突を継続している（Stay状態の）エンティティペアのC#イベントを通知します。
+	 */
 	void CallStayFunc(const std::string& _ecsGroupName);
+
+	/**
+	 * @brief 衝突を終了した（Exit状態の）エンティティペアのC#イベントを通知します。
+	 */
 	void CallExitFunc(const std::string& _ecsGroupName);
 
-	/// @brief AとBの押し戻しを行う
-	/// @param _a Aエンティティのポインタ
-	/// @param _aState Aエンティティのコリジョン状態
-	/// @param _b Bエンティティのポインタ
-	/// @param _bState Bエンティティのコリジョン状態
-	/// @param _info AとBの衝突情報
+	/**
+	 * @brief 衝突したエンティティ同士の押し戻し（プッシュバック）処理を行います。
+	 * @param _a 衝突側エンティティ A へのポインタ
+	 * @param _aState エンティティ A のコリジョン状態（静的/動的）
+	 * @param _b 被衝突側エンティティ B へのポインタ
+	 * @param _bState エンティティ B のコリジョン状態
+	 * @param _info 衝突時の接触面法線や貫通深度を含む衝突情報
+	 */
 	void PushBack(
 		class GameEntity* _a, CollisionState _aState,
 		class GameEntity* _b, CollisionState _bState,
@@ -84,9 +111,24 @@ class BoxCollider;
 */
 
 namespace CheckMethod {
+    /**
+     * @brief 球体と球体の衝突判定を行います。
+     */
 	bool CollisionCheckSphereVsSphere(SphereCollider* _s1, SphereCollider* _s2, CollisionInfo* _info);
+
+    /**
+     * @brief 球体とボックスの衝突判定を行います。
+     */
 	bool CollisionCheckSphereVsBox(SphereCollider* _s, BoxCollider* _b, CollisionInfo* _info);
+
+    /**
+     * @brief ボックスと球体の衝突判定を行います。
+     */
 	bool CollisionCheckBoxVsSphere(BoxCollider* _b, SphereCollider* _s, CollisionInfo* _info);
+
+    /**
+     * @brief ボックスとボックスの衝突判定を行います。
+     */
 	bool CollisionCheckBoxVsBox(BoxCollider* _b1, BoxCollider* _b2, CollisionInfo* _info);
 }
 

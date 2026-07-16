@@ -1,7 +1,8 @@
-﻿#pragma once
+#pragma once
 
 #include "Engine/Core/Utility/Math/Vector3.h"
 #include "Engine/Core/Utility/Math/Color.h"
+#include "Engine/Core/Utility/Math/Quaternion.h"
 
 /// ///////////////////////////////////////////////////
 /// gizmoのクラス
@@ -23,15 +24,17 @@ public:
 	};
 
 	struct CubeData {
-		Vector3 position; ///< 箱の位置
-		Vector3 size;     ///< 箱のサイズ
-		Vector4 color;    ///< 箱の色
+		Vector3 position;    ///< 箱の位置
+		Vector3 size;        ///< 箱のサイズ
+		Quaternion rotate;   ///< 箱の回転
+		Vector4 color;       ///< 箱の色
 	};
 
 	struct LineData {
 		Vector3 startPosition; ///< 線の開始地点
 		Vector3 endPosition;   ///< 線の終了地点
 		Vector4 color;         ///< 線の色
+		float thickness;       ///< 線の太さ
 	};
 
 private:
@@ -39,11 +42,20 @@ private:
 	/// private : methods
 	/// ====================================
 
+	/**
+	 * @brief プライベートコンストラクタ（静的ユーティリティクラス）
+	 */
 	Gizmo() = default;
+
+	/**
+	 * @brief デストラクタ
+	 */
 	~Gizmo() = default;
 
-	/// @brief 初期化関数、rendering pipelineクラスで呼び出す
-	/// @param _maxDrawInstanceCount 描画するインスタンスの最大数を返す
+	/**
+	 * @brief ギズモシステムの初期化を行います（描画インスタンス上限の設定など）。
+	 * @param _maxDrawInstanceCount 最大描画インスタンス数
+	 */
 	static void Initialize(const size_t _maxDrawInstanceCount);
 
 	/// ----- 各形状の配列を返す ----- ///
@@ -53,7 +65,9 @@ private:
 	static const std::vector<CubeData>& GetWireCubeData();
 	static const std::vector<LineData>& GetLineData();
 
-	/// @brief データのリセット
+	/**
+	 * @brief 蓄積された描画要求ギズモデータをクリア（リセット）します。毎フレームの開始時に呼び出されます。
+	 */
 	static void Reset();
 
 public:
@@ -61,41 +75,57 @@ public:
 	/// public : static methods
 	/// ====================================
 
-	/// @brief 球の描画
-	/// @param _position ワールド座標
-	/// @param _radius 球の半径
-	/// @param _color 球の色
+	/**
+	 * @brief デバッグ用のソリッド球体を描画登録します。
+	 * @param _position 球の中心（ワールド座標）
+	 * @param _radius 球の半径
+	 * @param _color 描画色（RGBA）
+	 */
 	static void DrawSphere(const Vector3& _position, float _radius, const Vector4& _color = Color::kWhite);
 
-	/// @brief ワイヤーフレームの球を描画
-	/// @param _position ワールド座標
-	/// @param _radius 球の半径
-	/// @param _color 球の色
+	/**
+	 * @brief デバッグ用のワイヤーフレーム球体を描画登録します。
+	 * @param _position 球の中心（ワールド座標）
+	 * @param _radius 球の半径
+	 * @param _color 描画色（RGBA）
+	 */
 	static void DrawWireSphere(const Vector3& _position, float _radius, const Vector4& _color = Color::kWhite);
 
-	/// @brief 箱の描画
-	/// @param _position ワールド座標
-	/// @param _size 箱のサイズ
-	/// @param _color 箱の色
-	static void DrawCube(const Vector3& _position, const Vector3& _size, const Vector4& _color = Color::kWhite);
+	/**
+	 * @brief デバッグ用のソリッド立方体（OBB対応）を描画登録します。
+	 * @param _position 立方体の中心座標
+	 * @param _size 立方体の各軸方向のサイズ
+	 * @param _rotate 立方体の回転（クォータニオン）
+	 * @param _color 描画色
+	 */
+	static void DrawCube(const Vector3& _position, const Vector3& _size, const Quaternion& _rotate = Quaternion::kIdentity, const Vector4& _color = Color::kWhite);
 
-	/// @brief ワイヤーフレームの箱を描画
-	/// @param _position ワールド座標
-	/// @param _size 箱のサイズ
-	/// @param _color 箱の色 
-	static void DrawWireCube(const Vector3& _position, const Vector3& _size, const Vector4& _color = Color::kWhite);
+	/**
+	 * @brief デバッグ用のワイヤーフレーム立方体（OBB対応）を描画登録します。
+	 * @param _position 立方体の中心座標
+	 * @param _size 立方体の各軸方向のサイズ
+	 * @param _rotate 立方体の回転
+	 * @param _color 描画色
+	 */
+	static void DrawWireCube(const Vector3& _position, const Vector3& _size, const Quaternion& _rotate = Quaternion::kIdentity, const Vector4& _color = Color::kWhite);
 
-	/// @brief 線の描画
-	/// @param _startPosition 線の始点
-	/// @param _endPosition 線の終点
-	/// @param _color 線の色
-	static void DrawLine(const Vector3& _startPosition, const Vector3& _endPosition, const Vector4& _color = Color::kWhite);
+	/**
+	 * @brief デバッグ用の線分を描画登録します。
+	 * @param _startPosition 線の始点座標
+	 * @param _endPosition 線の終点座標
+	 * @param _color 描画色
+	 * @param _thickness 線の太さ（ピクセル幅）
+	 */
+	static void DrawLine(const Vector3& _startPosition, const Vector3& _endPosition, const Vector4& _color = Color::kWhite, float _thickness = 1.0f);
 
-	/// @brief Rayの描画
-	/// @param _position 線の始点 
-	/// @param _direction 線の方向
-	/// @param _color 線の色
-	static void DrawRay(const Vector3& _position, const Vector3& _direction, const Vector4& _color = Color::kWhite);
+	/**
+	 * @brief デバッグ用の光線（始点と方向ベクトル）を描画登録します。
+	 * @param _position 光線の始点
+	 * @param _direction 光線の方向ベクトル
+	 * @param _color 描画色
+	 * @param _thickness 線の太さ
+	 */
+	static void DrawRay(const Vector3& _position, const Vector3& _direction, const Vector4& _color = Color::kWhite, float _thickness = 1.0f);
 
 };
 

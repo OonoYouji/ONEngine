@@ -1,4 +1,4 @@
-﻿#include "CameraComponent.h"
+#include "CameraComponent.h"
 
 #include <array>
 
@@ -105,6 +105,9 @@ void ImGuiShowFrustum(const Frustum& _frustum) {
 }	/// namespace
 
 
+/**
+ * @brief エディタ用：CameraComponentのデバッグ表示処理（GUI描画等）を行います。
+ */
 void ComponentDebug::CameraDebug(CameraComponent* _camera) {
 	if(!_camera) {
 		return;
@@ -182,6 +185,9 @@ void ComponentDebug::CameraDebug(CameraComponent* _camera) {
 
 }
 
+/**
+ * @brief JSONからのデシリアライズ
+ */
 void ONEngine::from_json(const nlohmann::json& _j, CameraComponent& _c) {
 	_c.isMainCameraRequest_ = _j.value("isMainCamera", true);
 	_c.fovY_ = _j.value("fovY", 0.7f);
@@ -196,6 +202,9 @@ void ONEngine::from_json(const nlohmann::json& _j, CameraComponent& _c) {
 	};
 }
 
+/**
+ * @brief JSONへのシリアライズ
+ */
 void ONEngine::to_json(nlohmann::json& _j, const CameraComponent& _c) {
 	_j = nlohmann::json{
 		{ "type", "CameraComponent" },
@@ -217,6 +226,9 @@ void ONEngine::to_json(nlohmann::json& _j, const CameraComponent& _c) {
 /// ///////////////////////////////////////////////////
 /// カメラのコンポーネント
 /// ///////////////////////////////////////////////////
+/**
+ * @brief コンストラクタ
+ */
 CameraComponent::CameraComponent() {
 	/// デフォルト値を設定
 	fovY_ = 0.7f;
@@ -227,8 +239,14 @@ CameraComponent::CameraComponent() {
 	isDrawFrustum_ = false;
 	orthographicSize_ = EngineConfig::kWindowSize;
 }
+/**
+ * @brief デストラクタ
+ */
 CameraComponent::~CameraComponent() {}
 
+/**
+ * @brief トランスフォームと設定値（FOV等）からビュー行列、プロジェクション行列を再計算して更新します。
+ */
 void CameraComponent::UpdateViewProjection() {
 	GameEntity* entity = GetOwner();
 	if(!entity) {
@@ -262,6 +280,9 @@ void CameraComponent::UpdateViewProjection() {
 	cBufferFogParams_.SetMappedData(fogParams_);
 }
 
+/**
+ * @brief 指定されたワールド空間のAABB（中心とサイズ）がカメラの視錐台（フラスタム）の範囲内に交差しているかを判定します。
+ */
 bool CameraComponent::IsVisible(const Vector3& center, const Vector3& size) const {
 	Vector3 min = center - (size / 2.0f);
 	Vector3 max = center + (size / 2.0f);
@@ -294,6 +315,9 @@ bool CameraComponent::IsVisible(const Vector3& center, const Vector3& size) cons
 	return true;
 }
 
+/**
+ * @brief 指定された目標の方向（あるいは注視点ベクトル）を向くようにカメラの回転トランスフォームを更新します。
+ */
 void CameraComponent::LookAt(const Vector3& direction) {
 	Transform* transform = GetOwner()->GetComponent<Transform>();
 	if(!transform) { return; }
@@ -302,6 +326,9 @@ void CameraComponent::LookAt(const Vector3& direction) {
 	transform->rotate = Quaternion::LookAt(Vector3::Zero, direction);
 }
 
+/**
+ * @brief ビュー・プロジェクション行列をGPUへ転送するための定数バッファを生成します。
+ */
 void CameraComponent::MakeViewProjection(DxDevice* _dxDevice) {
 	viewProjection_.Create(_dxDevice);
 	viewProjection_.SetMappedData(ViewProjection(
@@ -321,6 +348,9 @@ void CameraComponent::MakeViewProjection(DxDevice* _dxDevice) {
 /// CameraMath
 /// ///////////////////////////////////////////////////
 
+/**
+ * @brief 視野角（Y軸）、アスペクト比、クリッピング面から透視投影（パースペクティブ）行列を作成します。
+ */
 Matrix4x4 CameraMath::MakePerspectiveFovMatrix(float _fovY, float _aspectRatio, float _nearClip, float _farClip) {
 	/// ----- 透視投影行列の作成 ----- ///
 
@@ -332,6 +362,9 @@ Matrix4x4 CameraMath::MakePerspectiveFovMatrix(float _fovY, float _aspectRatio, 
 	);
 }
 
+/**
+ * @brief 平行投影（オーソグラフィック）行列を作成します。
+ */
 Matrix4x4 CameraMath::MakeOrthographicMatrix(float _left, float _right, float _bottom, float _top, float _znear, float _zfar) {
 	/// ----- 平行投影行列の作成 ----- ///
 
@@ -352,50 +385,86 @@ Matrix4x4 CameraMath::MakeOrthographicMatrix(float _left, float _right, float _b
 	return result;
 }
 
+/**
+ * @brief このカメラをメインカメラとして登録要求するかどうかを設定します。
+ */
 void CameraComponent::SetIsMainCameraRequest(bool _isMainCamera) {
 	isMainCameraRequest_ = _isMainCamera;
 }
 
+/**
+ * @brief カメラの投影タイプ（3D/2D）を設定します。
+ */
 void CameraComponent::SetCameraType(int _cameraType) {
 	cameraType_ = _cameraType;
 }
 
+/**
+ * @brief 2D平行投影時の縦横サイズを設定します。
+ */
 void CameraComponent::SetOrthographicSize(const Vector2& _size) {
 	orthographicSize_ = _size;
 }
 
+/**
+ * @brief メインカメラ要求フラグの状態を取得します。
+ */
 bool CameraComponent::GetIsMainCameraRequest() const {
 	return isMainCameraRequest_;
 }
 
+/**
+ * @brief 現在のカメラタイプ（3D/2D）を取得します。
+ */
 int CameraComponent::GetCameraType() const {
 	return cameraType_;
 }
 
+/**
+ * @brief 定数バッファがすでに正しく生成されているかを判定します。
+ */
 bool CameraComponent::IsMakeViewProjection() const {
 	return viewProjection_.Get() != nullptr;
 }
 
+/**
+ * @brief 算出されたビュー・プロジェクション行列（CPUデータ）の参照を取得します。
+ */
 const ViewProjection& CameraComponent::GetViewProjection() const {
 	return viewProjection_.GetMappingData();
 }
 
+/**
+ * @brief GPUへバインドするためのビュー・プロジェクション定数バッファ参照を取得します。
+ */
 ConstantBuffer<ViewProjection>& CameraComponent::GetViewProjectionBuffer() {
 	return viewProjection_;
 }
 
+/**
+ * @brief カメラのワールド位置座標を送るための定数バッファ参照を取得します。
+ */
 ConstantBuffer<Vector4>& CameraComponent::GetCameraPosBuffer() {
 	return cameraPosBuffer_;
 }
 
-ConstantBuffer<CameraComponent::FogParams>& ONEngine::CameraComponent::GetFogParamsBuffer() {
+/**
+ * @brief フォグ設定パラメータを送るための定数バッファ参照を取得します。
+ */
+ConstantBuffer<CameraComponent::FogParams>& CameraComponent::GetFogParamsBuffer() {
 	return cBufferFogParams_;
 }
 
+/**
+ * @brief ビュー行列（matView）を取得します。
+ */
 const Matrix4x4& CameraComponent::GetViewMatrix() const {
 	return matView_;
 }
 
+/**
+ * @brief 射影（プロジェクション）行列を取得します。
+ */
 const Matrix4x4& CameraComponent::GetProjectionMatrix() const {
 	return matProjection_;
 }

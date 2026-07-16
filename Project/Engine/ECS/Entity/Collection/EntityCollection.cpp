@@ -1,4 +1,5 @@
-﻿#include "EntityCollection.h"
+#include "EntityCollection.h"
+#include <nlohmann/json.hpp>
 
 using namespace ONEngine;
 
@@ -26,7 +27,11 @@ EntityCollection::EntityCollection(ECSGroup* _ecsGroup, DxManager* _dxm)
 
 EntityCollection::~EntityCollection() {}
 
+/**
+ * @brief 指定されたGUIDを使用して、新規にゲームエンティティを生成して管理下に置きます。
+ */
 GameEntity* EntityCollection::GenerateEntity(const Guid& _guid, bool _isRuntime) {
+	Console::LogInfo("[SOURCE_DETECTOR] Engine creating Entity (Internal)");
 	auto entity = std::make_unique<GameEntity>();
 	if (entity) {
 		entities_.emplace_back(std::move(entity));
@@ -38,11 +43,16 @@ GameEntity* EntityCollection::GenerateEntity(const Guid& _guid, bool _isRuntime)
 		entityPtr->guid_ = _guid;
 		entityPtr->Awake();
 
+		guidEntityMap_[_guid] = entityPtr;
+
 		return entities_.back().get();
 	}
 	return nullptr;
 }
 
+/**
+ * @brief 指定されたエンティティを破棄します（子エンティティも同時に破棄可能です）。
+ */
 void EntityCollection::RemoveEntity(GameEntity* _entity, bool _deleteChildren) {
 
 	if (_entity == nullptr) {
@@ -71,6 +81,7 @@ void EntityCollection::RemoveEntity(GameEntity* _entity, bool _deleteChildren) {
 	/// Componentの破棄
 	_entity->RemoveComponentAll();
 
+	guidEntityMap_.erase(_entity->GetGuid());
 	RemoveEntityId(_entity->GetId());
 
 	/// 親子関係の解除
@@ -102,6 +113,9 @@ void EntityCollection::RemoveEntity(GameEntity* _entity, bool _deleteChildren) {
 
 }
 
+/**
+ * @brief 使用済みIDを管理コンテナから削除・再利用キューに返却します。
+ */
 void EntityCollection::RemoveEntityId(int32_t _id) {
 	if (_id > 0) {
 		/// 初期化時のidから削除
@@ -117,6 +131,9 @@ void EntityCollection::RemoveEntityId(int32_t _id) {
 	}
 }
 
+/**
+ * @brief 管理しているすべてのエンティティを削除（クリーンアップ）します。
+ */
 void EntityCollection::RemoveEntityAll() {
 	std::vector<GameEntity*> toRemove;
 	toRemove.reserve(entities_.size()); // 最適化
@@ -136,6 +153,9 @@ void EntityCollection::RemoveEntityAll() {
 
 }
 
+/**
+ * @brief シーン遷移時に破棄しない非破棄（DontDestroyOnLoad）エンティティを追加します。
+ */
 void EntityCollection::AddDoNotDestroyEntity(GameEntity* _entity) {
 	if (_entity == nullptr) {
 		return;
@@ -149,6 +169,9 @@ void EntityCollection::AddDoNotDestroyEntity(GameEntity* _entity) {
 	doNotDestroyEntities_.push_back(_entity);
 }
 
+/**
+ * @brief 非破棄エンティティリストから除外します。
+ */
 void EntityCollection::RemoveDoNotDestroyEntity(GameEntity* _entity) {
 	auto itr = std::remove(doNotDestroyEntities_.begin(), doNotDestroyEntities_.end(), _entity);
 	if (itr != doNotDestroyEntities_.end()) {
@@ -156,6 +179,28 @@ void EntityCollection::RemoveDoNotDestroyEntity(GameEntity* _entity) {
 	}
 }
 
+/**
+ * @brief エンティティのリスト内順序（ヒエラルキーのソート等）を入れ替えます。
+ */
+void EntityCollection::MoveEntity(GameEntity* _entity, size_t _newIndex) {
+	auto it = std::find_if(entities_.begin(), entities_.end(), [_entity](const std::unique_ptr<GameEntity>& e) {
+		return e.get() == _entity;
+	});
+
+	if (it != entities_.end()) {
+		std::unique_ptr<GameEntity> entityPtr = std::move(*it);
+		entities_.erase(it);
+
+		if (_newIndex > entities_.size()) {
+			_newIndex = entities_.size();
+		}
+		entities_.insert(entities_.begin() + _newIndex, std::move(entityPtr));
+	}
+}
+
+/**
+ * @brief 新規のエンティティに割り当てるためのIDを発行します。
+ */
 int32_t EntityCollection::NewEntityID(bool _isRuntime) {
 	int32_t resultId = 0;
 
@@ -190,6 +235,9 @@ int32_t EntityCollection::NewEntityID(bool _isRuntime) {
 	return resultId;
 }
 
+/**
+ * @brief 指定した名前のエンティティIDを取得します。
+ */
 uint32_t EntityCollection::GetEntityId(const std::string& _name) {
 	for (auto& entity : entities_) {
 		if (entity->name_ == _name) {
@@ -200,10 +248,11 @@ uint32_t EntityCollection::GetEntityId(const std::string& _name) {
 	return 0;
 }
 
-GameEntity* EntityCollection::GetEntity(size_t _entityId) {
-	/// idを検索
-	auto itr = std::find_if(
-		entities_.begin(), entities_.end(),
+/**
+ * @brief 配列内インデックスあるいはIDから特定のゲームエンティティを取得します。
+ */
+GameEntity* EntityCollection::GetEntity(int32_t _entityId) {
+	auto itr = std::find_if(entities_.begin(), entities_.end(),
 		[_entityId](const std::unique_ptr<GameEntity>& entity) {
 			return entity->GetId() == _entityId;
 		}
@@ -213,10 +262,12 @@ GameEntity* EntityCollection::GetEntity(size_t _entityId) {
 		return (*itr).get();
 	}
 
-	Console::LogWarning("Entity not found for ID: " + std::to_string(_entityId));
 	return nullptr;
 }
 
+/**
+ * @brief GUIDをもとに特定のゲームエンティティを検索して取得します。
+ */
 GameEntity* EntityCollection::GetEntityFromGuid(const Guid& _guid) {
 	auto itr = guidEntityMap_.find(_guid);
 	if (itr != guidEntityMap_.end()) {
@@ -226,6 +277,9 @@ GameEntity* EntityCollection::GetEntityFromGuid(const Guid& _guid) {
 	return nullptr;
 }
 
+/**
+ * @brief Prefabsフォルダ配下の全プレハブアセットファイルを読み込みます。
+ */
 void EntityCollection::LoadPrefabAll() {
 	/// Assets/Prefabs フォルダから全てのプレハブを読み込む
 	std::string prefabPath = "./Assets/Prefabs/";
@@ -243,8 +297,17 @@ void EntityCollection::LoadPrefabAll() {
 	}
 }
 
+/**
+ * @brief 指定したプレハブをファイルから再ロードし、キャッシュを更新します。
+ */
 void EntityCollection::ReloadPrefab(const std::string& _prefabName) {
 	auto itr = prefabs_.find(_prefabName);
+	if (itr == prefabs_.end()) {
+		// 拡張子なしで検索された場合に備えて ".prefab" を付けて再試行
+		std::string nameWithExt = _prefabName + ".prefab";
+		itr = prefabs_.find(nameWithExt);
+	}
+
 	if (itr == prefabs_.end()) {
 		/// もう一度Fileを探索して確認
 		File file = FileSystem::GetFile("./Assets/Prefabs/", _prefabName);
@@ -257,19 +320,49 @@ void EntityCollection::ReloadPrefab(const std::string& _prefabName) {
 		///!< 複数あった場合は最初に見つかったものを使用する
 		prefabs_[file.second] = std::make_unique<EntityPrefab>(file.first);
 
-		itr = prefabs_.find(_prefabName);
+		itr = prefabs_.find(file.second);
 	}
 
-	/// prefabを再読み込み
+	// 1. 各エンティティの現在の「カスタム変更（差分）」を一時保存する
+	// ※リロード前のPrefab状態と比較して、何がオーバーライドされているかを記録
+	const std::string& actualPrefabName = itr->first;
+	std::unordered_map<GameEntity*, nlohmann::json> entityDiffs;
+	for (auto& entity : entities_) {
+		if (entity->GetPrefabName() == actualPrefabName || 
+			(!actualPrefabName.empty() && entity->GetPrefabName() == FileSystem::FileNameWithoutExtension(actualPrefabName))) {
+			// ToJson(entity, false) は現在の Prefab との差分を返す
+			entityDiffs[entity.get()] = EntityJsonConverter::ToJson(entity.get(), false);
+		}
+	}
+
+	/// 2. prefabをディスクから再読み込み（これでベースラインが更新される）
 	itr->second->Reload();
+
+	/// 3. 更新されたPrefabベースに、保存しておいた差分を再適用する
+	for (auto& [entity, diff] : entityDiffs) {
+		// まず、新しいPrefabを強制的に適用（ベースラインの更新）
+		ApplyPrefabToEntity(entity, actualPrefabName);
+		
+		// 次に、保存しておいたカスタム差分をマージ適用（オーバーライドの復元）
+		EntityJsonConverter::FromJson(diff, entity, pEcsGroup_->GetGroupName(), true);
+	}
 }
 
+/**
+ * @brief 指定されたプレハブ情報に基づいて、新規エンティティをクローン生成します。
+ */
 GameEntity* EntityCollection::GenerateEntityFromPrefab(const std::string& _prefabName, bool _isRuntime) {
 	/// prefabが存在するかチェック
 	auto prefabItr = prefabs_.find(_prefabName);
 	if (prefabItr == prefabs_.end()) {
-		Console::LogError("Prefab not found: " + _prefabName);
-		return nullptr;
+		// 拡張子なしで検索された場合に備えて ".prefab" を付けて再試行
+		std::string nameWithExt = _prefabName + ".prefab";
+		prefabItr = prefabs_.find(nameWithExt);
+
+		if (prefabItr == prefabs_.end()) {
+			Console::LogError("Prefab not found: " + _prefabName);
+			return nullptr;
+		}
 	}
 
 	/// prefabを取得
@@ -279,14 +372,26 @@ GameEntity* EntityCollection::GenerateEntityFromPrefab(const std::string& _prefa
 	return GenerateEntityRecursive(prefab->GetJson(), nullptr, _isRuntime);
 }
 
+/**
+ * @brief 指定したファイル名のプレハブオブジェクトを取得します。
+ */
 EntityPrefab* EntityCollection::GetPrefab(const std::string& _fileName) {
 	if (prefabs_.contains(_fileName)) {
 		return prefabs_[_fileName].get();
 	}
 
+	// 拡張子なしで検索された場合に備えて ".prefab" を付けて再試行
+	std::string nameWithExt = _fileName + ".prefab";
+	if (prefabs_.contains(nameWithExt)) {
+		return prefabs_[nameWithExt].get();
+	}
+
 	return nullptr;
 }
 
+/**
+ * @brief 既存のエンティティに対してプレハブの構成データ（コンポーネント等）を同期・適用します。
+ */
 void EntityCollection::ApplyPrefabToEntity(GameEntity* _entity, const std::string& _prefabName) {
 	if (!_entity) {
 		Console::LogError("Entity is null when applying prefab: " + _prefabName);
@@ -296,18 +401,26 @@ void EntityCollection::ApplyPrefabToEntity(GameEntity* _entity, const std::strin
 	/// prefabが存在するかチェック
 	auto prefabItr = prefabs_.find(_prefabName);
 	if (prefabItr == prefabs_.end()) {
-		Console::LogError("Prefab not found: " + _prefabName);
-		return;
+		// 拡張子なしで検索された場合に備えて ".prefab" を付けて再試行
+		std::string nameWithExt = _prefabName + ".prefab";
+		prefabItr = prefabs_.find(nameWithExt);
+
+		if (prefabItr == prefabs_.end()) {
+			Console::LogError("Prefab not found: " + _prefabName);
+			return;
+		}
 	}
 
 	/// prefabを取得
 	EntityPrefab* prefab = prefabItr->second.get();
 
-	/// Jsonからコンポーネントを生成
-	EntityJsonConverter::FromJson(prefab->GetJson(), _entity, pEcsGroup_->GetGroupName());
+	/// Jsonからコンポーネントを生成 (Prefab適用時はマージではなく上書き)
+	EntityJsonConverter::FromJson(prefab->GetJson(), _entity, pEcsGroup_->GetGroupName(), false);
+	}
 
-}
-
+/**
+ * @brief シリアライズされたJSONデータをもとに、親子関係を含め再帰的にエンティティおよびコンポーネントを復元生成します。
+ */
 GameEntity* EntityCollection::GenerateEntityRecursive(const nlohmann::json& _json, GameEntity* _parent, bool _isRuntime) {
 
 	/*
@@ -358,22 +471,37 @@ GameEntity* EntityCollection::GenerateEntityRecursive(const nlohmann::json& _jso
 
 
 
+/**
+ * @brief メイン3Dカメラを設定します。
+ */
 void EntityCollection::SetMainCamera(CameraComponent* _camera) {
 	mainCamera_ = _camera;
 }
 
+/**
+ * @brief メイン2Dカメラを設定します。
+ */
 void EntityCollection::SetMainCamera2D(CameraComponent* _camera) {
 	mainCamera2D_ = _camera;
 }
 
+/**
+ * @brief メイン3Dカメラオブジェクトを取得します。
+ */
 CameraComponent* EntityCollection::GetMainCamera() {
 	return mainCamera_;
 }
 
+/**
+ * @brief メイン2Dカメラオブジェクトを取得します。
+ */
 CameraComponent* EntityCollection::GetMainCamera2D() {
 	return mainCamera2D_;
 }
 
+/**
+ * @brief コレクション内の全ゲームエンティティのリスト（読み取り専用）を取得します。
+ */
 const std::vector<std::unique_ptr<GameEntity>>& EntityCollection::GetEntities() const {
 	return entities_;
 }

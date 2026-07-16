@@ -1,4 +1,4 @@
-﻿#include "DxDevice.h"
+#include "DxDevice.h"
 
 using namespace ONEngine;
 
@@ -16,6 +16,9 @@ using namespace ONEngine;
 DxDevice::DxDevice() = default;
 DxDevice::~DxDevice() = default;
 
+/**
+ * @brief DXGIファクトリの生成、最適なGPU（アダプタ）の選択、D3D12デバイス（ID3D12Device / ID3D12Device10）の初期化、およびデバッグレイヤーの有効化を行います。
+ */
 void DxDevice::Initialize() {
 
 	HRESULT hr = S_FALSE;
@@ -85,14 +88,23 @@ void DxDevice::Initialize() {
 
 }
 
+/**
+ * @brief DXGIファクトリ（IDXGIFactory7）を取得します。
+ */
 IDXGIFactory7* DxDevice::GetFactory() const {
 	return dxgiFactory_.Get();
 }
 
+/**
+ * @brief D3D12デバイス（ID3D12Device）を取得します。
+ */
 ID3D12Device* DxDevice::GetDevice() const {
 	return device_.Get();
 }
 
+/**
+ * @brief D3D12デバイス（ID3D12Device10）を取得します。
+ */
 ID3D12Device10* DxDevice::GetDevice10() const {
 	return device10_.Get();
 }

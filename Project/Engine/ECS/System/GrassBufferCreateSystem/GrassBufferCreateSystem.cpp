@@ -1,4 +1,4 @@
-﻿#include "GrassBufferCreateSystem.h"
+#include "GrassBufferCreateSystem.h"
 
 using namespace ONEngine;
 
@@ -8,9 +8,19 @@ using namespace ONEngine;
 #include "Engine/ECS/Component/Array/ComponentArray.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Grass/GrassField.h"
 
+/**
+ * @brief コンストラクタ
+ */
 GrassBufferCreateSystem::GrassBufferCreateSystem(DxManager* _dxm) : pDxManager_(_dxm) {}
+
+/**
+ * @brief デストラクタ
+ */
 GrassBufferCreateSystem::~GrassBufferCreateSystem() = default;
 
+/**
+ * @brief エディタ非実行時の草バッファの初期化・更新チェックを行います。
+ */
 void GrassBufferCreateSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
 	/// ----- ランタイム外で生成する(デバッグ時にRuntimeを起動していなくてもよいように) ----- ///
 
@@ -44,7 +54,9 @@ void GrassBufferCreateSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
 	}
 }
 
+/**
+ * @brief ランタイム実行時の草バッファの初期化・更新チェックを実行します。
+ */
 void GrassBufferCreateSystem::RuntimeUpdate(ECSGroup* /*_ecs*/) {
 	// ランタイム中の更新処理をここに実装
 }
-

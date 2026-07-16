@@ -1,4 +1,5 @@
-﻿#include "MeshRenderer.h"
+#include "MeshRenderer.h"
+#include <nlohmann/json.hpp>
 
 /// std
 #include <format>
@@ -24,9 +25,13 @@ MeshRenderer::MeshRenderer() {
 
 MeshRenderer::~MeshRenderer() = default;
 
+/**
+ * @brief アセットコレクションから、指定されたパスのメッシュ・マテリアル・テクスチャデータを取得し、描画に必要なGPU用定数バッファのセットアップを行います。
+ */
 void MeshRenderer::SetupRenderData(Asset::AssetCollection* _assetCollection) {
 	gpuMaterial_.postEffectFlags = material_.postEffectFlags;
 	gpuMaterial_.baseColor = material_.baseColor;
+	gpuMaterial_.uvTransform = material_.uvTransform;
 	gpuMaterial_.entityId = GetOwner() ? GetOwner()->GetId() : 0;
 
 	if (material_.HasBaseTexture()) {
@@ -36,39 +41,94 @@ void MeshRenderer::SetupRenderData(Asset::AssetCollection* _assetCollection) {
 	}
 }
 
+/**
+ * @brief 描画に使用するメッシュアセットのファイルパス（.objや.fbx等）を設定します。
+ */
 void MeshRenderer::SetMeshPath(const std::string& _path) {
 	meshPath_ = _path;
 }
 
+/**
+ * @brief 描画カラー（RGBA）を設定します。
+ */
 void MeshRenderer::SetColor(const Vector4& _color) {
 	material_.baseColor = _color;
 }
 
+/**
+ * @brief ポストエフェクト描画制御フラグを設定します（アウトライン、Dissolve等）。
+ */
 void MeshRenderer::SetPostEffectFlags(uint32_t _flags) {
 	material_.postEffectFlags = _flags;
 }
 
+/**
+ * @brief UVトランスフォーム（テクスチャのタイリングやオフセットなど）を設定します。
+ */
+void MeshRenderer::SetUVTransform(const UVTransform& _uvTransform) {
+	material_.uvTransform = _uvTransform;
+}
+
+/**
+ * @brief 描画プライオリティ（RenderQueue）を設定します（Background, Telegraph, Default等）。
+ */
+void MeshRenderer::SetRenderQueue(RenderQueue _queue) {
+	renderQueue_ = _queue;
+}
+
+/**
+ * @brief 現在の描画プライオリティを取得します。
+ */
+RenderQueue MeshRenderer::GetRenderQueue() const {
+	return renderQueue_;
+}
+
+/**
+ * @brief 設定されているメッシュアセットのファイルパスを取得します。
+ */
 const std::string& MeshRenderer::GetMeshPath() const {
 	return meshPath_;
 }
 
+/**
+ * @brief 設定されているカラー値を取得します。
+ */
 const Vector4& MeshRenderer::GetColor() const {
 	return material_.baseColor;
 }
 
+/**
+ * @brief 定数バッファ送信用にパックされたGPUマテリアルデータ（GPUMaterial）を取得します。
+ */
 const GPUMaterial& MeshRenderer::GetGpuMaterial() const {
 	return gpuMaterial_;
 }
 
+/**
+ * @brief ポストエフェクト描画制御フラグを取得します。
+ */
 uint32_t MeshRenderer::GetPostEffectFlags() const {
 	return material_.postEffectFlags;
 }
 
+/**
+ * @brief UVトランスフォームパラメータを取得します。
+ */
+const UVTransform& MeshRenderer::GetUVTransform() const {
+	return material_.uvTransform;
+}
+
+/**
+ * @brief アタッチされているカラーマップテクスチャのGuidを取得します。
+ */
 const Guid& MeshRenderer::GetTextureGuid() const {
 	return material_.guid;
 }
 
 
+/**
+ * @brief C#（Mono）インターフェース用：メッシュ名を取得します。
+ */
 MonoString* ONEngine::InternalGetMeshName(uint64_t _nativeHandle) {
 	/// ptrから MeshRenderer を取得
 	MeshRenderer* renderer = reinterpret_cast<MeshRenderer*>(_nativeHandle);
@@ -80,6 +140,9 @@ MonoString* ONEngine::InternalGetMeshName(uint64_t _nativeHandle) {
 	return mono_string_new(mono_domain_get(), renderer->GetMeshPath().c_str());
 }
 
+/**
+ * @brief C#（Mono）インターフェース用：メッシュ名を設定します。
+ */
 void ONEngine::InternalSetMeshName(uint64_t _nativeHandle, MonoString* _meshName) {
 	/// ptrから MeshRenderer を取得
 	MeshRenderer* renderer = reinterpret_cast<MeshRenderer*>(_nativeHandle);
@@ -97,6 +160,9 @@ void ONEngine::InternalSetMeshName(uint64_t _nativeHandle, MonoString* _meshName
 	}
 }
 
+/**
+ * @brief C#（Mono）インターフェース用：メッシュカラーを取得します。
+ */
 Vector4 ONEngine::InternalGetMeshColor(uint64_t _nativeHandle) {
 	/// ptrから MeshRenderer を取得
 	MeshRenderer* renderer = reinterpret_cast<MeshRenderer*>(_nativeHandle);
@@ -108,6 +174,9 @@ Vector4 ONEngine::InternalGetMeshColor(uint64_t _nativeHandle) {
 	return renderer->GetColor();
 }
 
+/**
+ * @brief C#（Mono）インターフェース用：メッシュカラーを設定します。
+ */
 void ONEngine::InternalSetMeshColor(uint64_t _nativeHandle, Vector4 _color) {
 	/// ptrから MeshRenderer を取得
 	MeshRenderer* renderer = reinterpret_cast<MeshRenderer*>(_nativeHandle);
@@ -118,6 +187,9 @@ void ONEngine::InternalSetMeshColor(uint64_t _nativeHandle, Vector4 _color) {
 	}
 }
 
+/**
+ * @brief C#（Mono）インターフェース用：ポストエフェクトフラグを取得します。
+ */
 uint32_t ONEngine::InternalGetPostEffectFlags(uint64_t _nativeHandle) {
 	/// ptrから MeshRenderer を取得
 	MeshRenderer* renderer = reinterpret_cast<MeshRenderer*>(_nativeHandle);
@@ -128,6 +200,9 @@ uint32_t ONEngine::InternalGetPostEffectFlags(uint64_t _nativeHandle) {
 	return renderer->GetPostEffectFlags();
 }
 
+/**
+ * @brief C#（Mono）インターフェース用：ポストエフェクトフラグを設定します。
+ */
 void ONEngine::InternalSetPostEffectFlags(uint64_t _nativeHandle, uint32_t _flags) {
 	/// ptrから MeshRenderer を取得
 	MeshRenderer* renderer = reinterpret_cast<MeshRenderer*>(_nativeHandle);
@@ -138,6 +213,25 @@ void ONEngine::InternalSetPostEffectFlags(uint64_t _nativeHandle, uint32_t _flag
 	}
 }
 
+/**
+ * @brief C#（Mono）インターフェース用：描画キュー優先度を取得します。
+ */
+uint32_t ONEngine::InternalGetRenderQueue(uint64_t _nativeHandle) {
+	MeshRenderer* renderer = reinterpret_cast<MeshRenderer*>(_nativeHandle);
+	return renderer ? static_cast<uint32_t>(renderer->GetRenderQueue()) : 2;
+}
+
+/**
+ * @brief C#（Mono）インターフェース用：描画キュー優先度を設定します。
+ */
+void ONEngine::InternalSetRenderQueue(uint64_t _nativeHandle, uint32_t _queue) {
+	MeshRenderer* renderer = reinterpret_cast<MeshRenderer*>(_nativeHandle);
+	if (renderer) renderer->SetRenderQueue(static_cast<RenderQueue>(_queue));
+}
+
+/**
+ * @brief エディタ用：MeshRendererコンポーネントのデバッグ表示（Gui描画等）処理を行います。
+ */
 void ComponentDebug::MeshRendererDebug(MeshRenderer* _mr, Asset::AssetCollection* _assetCollection) {
 	if (!_mr) {
 		return;
@@ -152,6 +246,11 @@ void ComponentDebug::MeshRendererDebug(MeshRenderer* _mr, Asset::AssetCollection
 		_mr->SetColor(color);
 	}
 
+	const char* queueNames[] = { "Background", "Telegraph", "Default" };
+	int currentQueue = static_cast<int>(_mr->renderQueue_);
+	if (ImGui::Combo("Render Queue", &currentQueue, queueNames, 3)) {
+		_mr->renderQueue_ = static_cast<RenderQueue>(currentQueue);
+	}
 
 	ImGui::Spacing();
 
@@ -249,6 +348,9 @@ void ComponentDebug::MeshRendererDebug(MeshRenderer* _mr, Asset::AssetCollection
 }
 
 
+/**
+ * @brief JSONからのデシリアライズ
+ */
 void ONEngine::from_json(const nlohmann::json& _j, MeshRenderer& _m) {
 	if (_j.contains("enable")) {
 		_m.enable = _j.at("enable").get<int>();
@@ -262,13 +364,21 @@ void ONEngine::from_json(const nlohmann::json& _j, MeshRenderer& _m) {
 		_m.material_ = _j.at("material").get<Asset::Material>();
 	}
 
+	if (_j.contains("renderQueue")) {
+		_m.renderQueue_ = static_cast<RenderQueue>(_j.at("renderQueue").get<uint32_t>());
+	}
+
 }
 
+/**
+ * @brief JSONへのシリアライズ
+ */
 void ONEngine::to_json(nlohmann::json& _j, const MeshRenderer& _m) {
 	_j = nlohmann::json{
 		{ "type", "MeshRenderer" },
 		{ "enable", _m.enable },
 		{ "meshPath", _m.GetMeshPath() },
 		{ "material", _m.material_ },
+		{ "renderQueue", static_cast<uint32_t>(_m.renderQueue_) },
 	};
 }

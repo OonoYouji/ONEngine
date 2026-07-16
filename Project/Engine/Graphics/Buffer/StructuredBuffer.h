@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /// directX12
 #include <d3d12.h>
@@ -29,6 +29,11 @@ struct Handle {
 /// ///////////////////////////////////////////////////
 /// ストラクチャードバッファ用クラス
 /// ///////////////////////////////////////////////////
+/**
+ * @class StructuredBuffer
+ * @brief 構造化データ（配列型データ）をGPUとやり取りするためのD3D12ストラクチャードバッファ（SRV/UAV/Append/Consume）を管理するテンプレートクラス
+ * @tparam T バッファ要素の構造体型
+ */
 template <typename T>
 class StructuredBuffer final {
 public:
@@ -36,67 +41,124 @@ public:
 	/// public : methods
 	/// ===================================================
 
+	/**
+	 * @brief コンストラクタ
+	 */
 	StructuredBuffer();
+
+	/**
+	 * @brief デストラクタ。アロケーションされたSRV/UAV等のディスクリプタインデックスを解放します。
+	 */
 	~StructuredBuffer();
 
-	/// @brief SRVバッファの生成
-	/// @param _size Bufferのサイズ
-	/// @param _dxDevice DxDeviceへのポインタ
-	/// @param _dxSRVHeap DxSRVHeapへのポインタ
+	/**
+	 * @brief 読み取り専用（SRV）のストラクチャードバッファを生成し、自動的にCPUメモリマッピングを行います。
+	 * @param _size 要素数（配列サイズ）
+	 * @param _dxDevice デバイスオブジェクトポインタ
+	 * @param _dxSRVHeap SRV用のディスクリプタヒープポインタ
+	 */
 	void Create(uint32_t _size, DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap);
 
-	/// @brief UAVバッファの生成
-	/// @param _size Bufferのサイズ
-	/// @param _dxDevice DxDeviceへのポインタ
-	/// @param _dxCommand DxCommandへのポインタ
-	/// @param _dxSRVHeap DxSRVHeapへのポインタ
+	/**
+	 * @brief GPU側で書き込み可能（UAV）なストラクチャードバッファを生成します。
+	 * @param _size 要素数
+	 * @param _dxDevice デバイスポインタ
+	 * @param _dxCommand バリア同期用コマンドポインタ
+	 * @param _dxSRVHeap UAVのビュー登録先ヒープポインタ
+	 */
 	void CreateUAV(uint32_t _size, DxDevice* _dxDevice, DxCommand* _dxCommand, DxSRVHeap* _dxSRVHeap);
 
-	/// @brief AppendBufferの生成
-	/// @param _size Bufferのサイズ
-	/// @param _dxDevice DxDeviceへのポインタ
-	/// @param _dxCommand DxCommandへのポインタ
-	/// @param _dxSRVHeap DxSRVHeapへのポインタ
+	/**
+	 * @brief アペンドバッファ（UAVによる可変長配列）を生成します（カウンタリソース等も内部確保されます）。
+	 * @param _size 最大要素数
+	 * @param _dxDevice デバイスポインタ
+	 * @param _dxCommand コマンドポインタ
+	 * @param _dxSRVHeap ビュー登録先ヒープポインタ
+	 */
 	void CreateAppendBuffer(uint32_t _size, DxDevice* _dxDevice, DxCommand* _dxCommand, DxSRVHeap* _dxSRVHeap);
 
-	/// @brief SRVとUAVの両方を生成する
-	/// @param _size Bufferのサイズ
-	/// @param _dxDevice DxDeviceへのポインタ
-	/// @param _dxCommand DxCommandへのポインタ
-	/// @param _dxSRVHeap DxSRVHeapへのポインタ
+	/**
+	 * @brief SRVおよびUAVの両方のビューを備えたストラクチャードバッファを生成します。
+	 * @param _size 要素数
+	 * @param _dxDevice デバイスポインタ
+	 * @param _dxCommand コマンドポインタ
+	 * @param _dxSRVHeap ディスクリプタヒープポインタ
+	 */
 	void CreateSRVAndUAV(uint32_t _size, DxDevice* _dxDevice, DxCommand* _dxCommand, DxSRVHeap* _dxSRVHeap);
 
 
 
 	/* ----- append structure buffer methods ----- */
 
+	/**
+	 * @brief リードバックバッファを経由して、GPU上の特定のインデックスのデータを読み取り、CPU側に返します。
+	 * @param dxCommand コマンドポインタ
+	 * @param index 取得するデータのインデックス
+	 * @return 取得したデータ構造体
+	 */
 	T Readback(DxCommand* dxCommand, uint32_t index);
 
-	/// @brief AppendBufferのカウンタをリセットする
-	/// @param _dxCommand DxCommandへのポインタ
+	/**
+	 * @brief アペンドバッファの追加要素数カウンタをゼロにリセットします。
+	 * @param _dxCommand コマンドポインタ
+	 */
 	void ResetCounter(DxCommand* _dxCommand);
 
-	/// @brief AppendBufferのカウンタを読み取る
-	/// @param _dxCommand DxCommandへのポインタ
-	/// @return Counterの値
+	/**
+	 * @brief 現在のアペンドバッファの要素カウンタ値をGPU側から読み出してCPUへ返します。
+	 * @param _dxCommand コマンドポインタ
+	 * @return カウンタ値（アペンドされた要素数）
+	 */
 	uint32_t ReadCounter(DxCommand* _dxCommand);
 
 
 	/// SRV用のバインド
+	/**
+	 * @brief SRVビューをグラフィックスコマンドリストのパラメータにバインドします。
+	 */
 	void SRVBindForGraphicsCommandList(ID3D12GraphicsCommandList* _cmdList, UINT _rootParameterIndex) const;
+
+	/**
+	 * @brief SRVビューをコンピュートコマンドリストのパラメータにバインドします。
+	 */
 	void SRVBindForComputeCommandList(ID3D12GraphicsCommandList* _cmdList, UINT _rootParameterIndex) const;
 
 	/// UAV用のバインド
+	/**
+	 * @brief UAVビューをグラフィックスコマンドリストのパラメータにバインドします。
+	 */
 	void UAVBindForGraphicsCommandList(ID3D12GraphicsCommandList* _cmdList, UINT _rootParameterIndex) const;
+
+	/**
+	 * @brief UAVビューをコンピュートコマンドリストのパラメータにバインドします。
+	 */
 	void UAVBindForComputeCommandList(ID3D12GraphicsCommandList* _cmdList, UINT _rootParameterIndex) const;
 
 	/// Append用のバインド
+	/**
+	 * @brief アペンドUAVビューをグラフィックスコマンドリストにバインドします。
+	 */
 	void AppendBindForGraphicsCommandList(ID3D12GraphicsCommandList* _cmdList, UINT _rootParameterIndex) const;
+
+	/**
+	 * @brief アペンドUAVビューをコンピュートコマンドリストにバインドします。
+	 */
 	void AppendBindForComputeCommandList(ID3D12GraphicsCommandList* _cmdList, UINT _rootParameterIndex) const;
 
 
 	/// データの設定、取得
+	/**
+	 * @brief マップされたバッファ内の指定インデックス位置にCPU側データを設定（コピー）します。
+	 * @param _index 要素インデックス
+	 * @param _setValue 設定するデータ値
+	 */
 	void SetMappedData(size_t _index, const T& _setValue);
+
+	/**
+	 * @brief マップされたバッファ内の指定インデックスの要素を取得します。
+	 * @param _index 要素インデックス
+	 * @return データ要素への定数参照
+	 */
 	const T& GetMappedData(size_t _index) const;
 
 

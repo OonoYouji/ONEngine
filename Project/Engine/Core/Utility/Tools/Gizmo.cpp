@@ -1,4 +1,4 @@
-﻿#include "Gizmo.h"
+#include "Gizmo.h"
 
 using namespace ONEngine;
 
@@ -51,6 +51,10 @@ namespace {
 
 
 
+/**
+ * @brief ギズモシステムの初期化を行います。
+ * @param _maxDrawInstanceCount 最大描画インスタンス数
+ */
 void Gizmo::Initialize(const size_t _maxDrawInstanceCount) {
 	gGizmoSystem = std::make_unique<GizmoSystem>(_maxDrawInstanceCount);
 }
@@ -77,6 +81,9 @@ const std::vector<Gizmo::LineData>& Gizmo::GetLineData() {
 	return gGizmoSystem->lineData_;
 }
 
+/**
+ * @brief 蓄積された描画要求ギズモデータをクリアします。毎フレームの開始時に呼び出されます。
+ */
 void Gizmo::Reset() {
 	gGizmoSystem->sphereData_.clear();
 	gGizmoSystem->cubeData_.clear();
@@ -88,36 +95,56 @@ void Gizmo::Reset() {
 
 #ifdef DEBUG_MODE
 
+/**
+ * @brief デバッグ用のソリッド球体を描画登録します。
+ */
 void Gizmo::DrawSphere(const Vector3& _position, float _radius, const Vector4& _color) {
 	gGizmoSystem->sphereData_.push_back({ _position, _radius, _color });
 }
 
+/**
+ * @brief デバッグ用のワイヤーフレーム球体を描画登録します。
+ */
 void Gizmo::DrawWireSphere(const Vector3& _position, float _radius, const Vector4& _color) {
 	gGizmoSystem->wireSphereData_.push_back({ _position, _radius, _color });
 }
 
-void Gizmo::DrawCube(const Vector3& _position, const Vector3& _size, const Vector4& _color) {
-	gGizmoSystem->cubeData_.push_back({ _position, _size, _color });
+/**
+ * @brief デバッグ用のソリッド立方体（OBB対応）を描画登録します。
+ */
+void Gizmo::DrawCube(const Vector3& _position, const Vector3& _size, const Quaternion& _rotate, const Vector4& _color) {
+	gGizmoSystem->cubeData_.push_back({ _position, _size, _rotate, _color });
 }
 
-void Gizmo::DrawWireCube(const Vector3& _position, const Vector3& _size, const Vector4& _color) {
-	gGizmoSystem->wireCubeData_.push_back({ _position, _size, _color });
+/**
+ * @brief デバッグ用のワイヤーフレーム立方体（OBB対応）を描画登録します。
+ */
+void Gizmo::DrawWireCube(const Vector3& _position, const Vector3& _size, const Quaternion& _rotate, const Vector4& _color) {
+	gGizmoSystem->wireCubeData_.push_back({ _position, _size, _rotate, _color });
 }
 
-void Gizmo::DrawLine(const Vector3& _startPosition, const Vector3& _endPosition, const Vector4& _color) {
-	gGizmoSystem->lineData_.push_back({ _startPosition, _endPosition, _color });
+/**
+ * @brief デバッグ用の線分を描画登録します。
+ */
+void Gizmo::DrawLine(const Vector3& _startPosition, const Vector3& _endPosition, const Vector4& _color, float _thickness) {
+	if (!gGizmoSystem) return;
+	gGizmoSystem->lineData_.push_back({ _startPosition, _endPosition, _color, _thickness });
 }
 
-void Gizmo::DrawRay(const Vector3& _position, const Vector3& _direction, const Vector4& _color) {
-	gGizmoSystem->lineData_.push_back({ _position, _position + _direction, _color });
+/**
+ * @brief デバッグ用の光線を描画登録します。
+ */
+void Gizmo::DrawRay(const Vector3& _position, const Vector3& _direction, const Vector4& _color, float _thickness) {
+	if (!gGizmoSystem) return;
+	gGizmoSystem->lineData_.push_back({ _position, _position + _direction, _color, _thickness });
 }
 
 #else /// RELEASE_BUILD
 /// リリース用に空の関数を定義
 void Gizmo::DrawSphere(const Vector3&, float, const Vector4&) {}
 void Gizmo::DrawWireSphere(const Vector3&, float, const Vector4&) {}
-void Gizmo::DrawCube(const Vector3&, const Vector3&, const Vector4&) {}
-void Gizmo::DrawWireCube(const Vector3&, const Vector3&, const Vector4&) {}
-void Gizmo::DrawLine(const Vector3&, const Vector3&, const Vector4&) {}
-void Gizmo::DrawRay(const Vector3&, const Vector3&, const Vector4&) {}
+void Gizmo::DrawCube(const Vector3&, const Vector3&, const Quaternion&, const Vector4&) {}
+void Gizmo::DrawWireCube(const Vector3&, const Vector3&, const Quaternion&, const Vector4&) {}
+void Gizmo::DrawLine(const Vector3&, const Vector3&, const Vector4&, float) {}
+void Gizmo::DrawRay(const Vector3&, const Vector3&, const Vector4&, float) {}
 #endif // DEBUG_BUILD

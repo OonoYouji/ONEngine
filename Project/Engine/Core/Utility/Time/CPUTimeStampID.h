@@ -7,6 +7,9 @@ namespace ONEngine {
 /// ///////////////////////////////////////////////////
 enum class CPUTimeStampID {
 	CSharpScriptUpdate,
+	ECSUpdate,
+	RenderUpdate,
+	PhysicsUpdate,
 	Count, /// 要素数カウント用
 };
 

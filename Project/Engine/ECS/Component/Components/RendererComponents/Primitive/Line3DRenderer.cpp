@@ -1,13 +1,23 @@
-﻿#include "Line3DRenderer.h"
+#include "Line3DRenderer.h"
 
 using namespace ONEngine;
 
+/**
+ * @brief コンストラクタ
+ */
 Line3DRenderer::Line3DRenderer() {
 	lineCount_ = 0;
 }
+
+/**
+ * @brief デストラクタ
+ */
 Line3DRenderer::~Line3DRenderer() {}
 
 
+/**
+ * @brief 描画する3D線分のパラメータを設定します。
+ */
 void Line3DRenderer::SetLine(const Vector3& _start, const Vector3& _end, const Vector4& _color) {
 	
 	///< 今回追加するラインの頂点数が、現在の頂点数を超える場合は、頂点数を増やす

@@ -39,6 +39,8 @@ class DissolveMeshRenderingPipeline : public IRenderingPipeline {
 		uint32_t textureId;
 		uint32_t dissolveCompare;
 		float threshold;
+		float edgeWidth;
+		Vector4 edgeColor;
 	};
 
 

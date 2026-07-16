@@ -15,11 +15,12 @@
 
 namespace ONEngine {
 
-/// <summary>
-/// _conditionがfalseの場合、エラーメッセージを表示してデバッグを停止する
-/// </summary>
-/// <param name="_condition">    : 止めるかどうかの条件、falseの場合止まる </param>
-/// <param name="_errorMessage"> : メッセージボックスに表示するテキスト     </param>
+/**
+ * @brief 指定した条件が false の場合、エラーメッセージのダイアログを表示してプログラムの実行を一時停止（デバッグブレーク）します。
+ * @param _condition アサーション条件。false の場合に停止します。
+ * @param _errorMessage ダイアログやログに表示する詳細なエラーメッセージ
+ * @param _location 呼び出し元のソースファイル位置情報（自動設定されます）
+ */
 inline void Assert(bool _condition, const char* _errorMessage, const std::source_location& _location = std::source_location::current()) {
 	if (!_condition) {
 
@@ -47,10 +48,11 @@ inline void Assert(bool _condition, const char* _errorMessage, const std::source
 }
 
 
-/// <summary>
-/// _conditionがfalseの場合、エラーメッセージを表示してデバッグを停止する
-/// </summary>
-/// <param name="_condition">    : 止めるかどうかの条件、falseの場合止まる </param>
+/**
+ * @brief 指定した条件が false の場合、デフォルトのメッセージでアサーションエラーを発生させます。
+ * @param _condition アサーション条件。false の場合に停止します。
+ * @param _location 呼び出し元のソースファイル位置情報（自動設定されます）
+ */
 inline void Assert(bool _condition, const std::source_location& _location = std::source_location::current()) {
 	Assert(_condition, "Assertion failed", _location); ///< デフォルトのエラーメッセージを使用
 }

@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /// std
 #include <memory>
@@ -13,22 +13,29 @@
 namespace ONEngine::Asset {
 
 
-/// ///////////////////////////////////////////////////
-/// Meshの集合体、モデルデータ (アニメーションがある場合も含む)
-/// ///////////////////////////////////////////////////
+/**
+ * @class Model
+ * @brief 描画用のメッシュ（複数）やスケルトン、アニメーションクリップなどを保持するモデルアセットクラス
+ */
 class Model final : public IAsset {
 public:
 
-	/// @brief Model用のメタデータ
+	/**
+	 * @struct MetaData
+	 * @brief モデルアセット固有のメタデータ
+	 */
 	struct MetaData {
-		float scale;
+		float scale; ///< モデルの読み込みスケール倍率
 	};
 
-
+	/**
+	 * @struct Vertex
+	 * @brief モデルのメッシュで使用する標準的な頂点レイアウト構造体
+	 */
 	struct Vertex {
-		Vector4 position;
-		Vector2 uv;
-		Vector3 normal;
+		Vector4 position; ///< 頂点座標
+		Vector2 uv;       ///< テクスチャ座標
+		Vector3 normal;   ///< 法線ベクトル
 	};
 
 	using ModelMesh = Mesh<Vertex>;
@@ -37,13 +44,26 @@ public:
 	/// public : methods
 	/// ===================================================
 
+	/**
+	 * @brief コンストラクタ
+	 */
 	Model();
+
+	/**
+	 * @brief デストラクタ
+	 */
 	~Model() override;
 
-	/// @brief mesh の新規追加
-	/// @param _mesh meshのunique_ptr
+	/**
+	 * @brief モデルにメッシュ（ModelMesh）を追加します。
+	 * @param _mesh 追加するメッシュの shared_ptr 右辺参照
+	 */
 	void AddMesh(std::shared_ptr<ModelMesh>&& _mesh);
 
+	/**
+	 * @brief 空のメッシュ（ModelMesh）を新規生成してモデルに追加します。
+	 * @return 追加されたメッシュオブジェクトへの生ポインタ
+	 */
 	ModelMesh* CreateMesh();
 
 private:
@@ -51,15 +71,16 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	std::vector<std::shared_ptr<ModelMesh>> meshes_;
-	std::string                        path_;
+	std::vector<std::shared_ptr<ModelMesh>> meshes_; ///< モデルを構成するメッシュリスト
+	std::string                        path_;   ///< アセットソースのファイルパス
 
 
-	/// ----- animation data ----- ///
-	Node rootNode_;
-	std::unordered_map<std::string, JointWeightData> jointWeightData_;
-	std::unordered_map<std::string, NodeAnimation> nodeAnimationMap_;
-	float duration_;
+	/// ----- skeleton & skinning data ----- ///
+	Node rootNode_;                                                           ///< スケルトン木構造のルートノード
+	std::vector<std::unordered_map<uint32_t, JointWeightData>> meshJointWeightData_; ///< 各メッシュの頂点に対するジョイントウェイトマップリスト
+	
+	/// ----- animation clips ----- ///
+	std::unordered_map<uint32_t, AnimationClip> animationClips_;              ///< ジョイント別（ID別）のインポートされたアニメーションクリップマップ
 
 
 public:
@@ -67,36 +88,76 @@ public:
 	/// public : accessor
 	/// ===================================================
 
-	/// ----- setters ----- ///
+	/// ----- setters ----- ----- ///
 
+	/**
+	 * @brief メッシュリストをセットします。
+	 * @param _meshes メッシュの shared_ptr 配列
+	 */
 	void SetMeshes(std::vector<std::shared_ptr<ModelMesh>>&& _meshes);
+
+	/**
+	 * @brief ソースアセットのファイルパスを設定します。
+	 * @param _path アセットのファイルパス
+	 */
 	void SetPath(const std::string& _path);
+
+	/**
+	 * @brief スケルトンのルートノードをセットします。
+	 * @param _node ルートノード
+	 */
 	void SetRootNode(const Node& _node);
-	void SetAnimationDuration(float _duration);
 
 
 	/// ----- getters ----- ///
 
-	/// @brief Modelのソースパスを取得
+	/**
+	 * @brief モデルアセットのファイルパスを取得します。
+	 * @return パス文字列の定数参照
+	 */
 	const std::string& GetPath() const;
 
-	/// @brief Modelが持つMesh群を取得
+	/**
+	 * @brief モデルが持つメッシュリストを取得（読み取り専用）します。
+	 * @return メッシュリストの参照
+	 */
 	const std::vector<std::shared_ptr<ModelMesh>>& GetMeshes() const;
+
+	/**
+	 * @brief モデルが持つメッシュリストを取得します。
+	 * @return メッシュリストの参照
+	 */
 	std::vector<std::shared_ptr<ModelMesh>>& GetMeshes();
 
-	/// @brief アニメーションのルートノードを取得
+	/**
+	 * @brief スケルトンのルートノードを取得します。
+	 * @return ルートノードの定数参照
+	 */
 	const Node& GetRootNode() const;
 
-	/// @brief アニメーションのJointWeightDataを取得
-	const std::unordered_map<std::string, JointWeightData>& GetJointWeightData() const;
-	std::unordered_map<std::string, JointWeightData>& GetJointWeightData();
+	/**
+	 * @brief ジョイントウェイトマップのリストを取得（読み取り専用）します。
+	 * @return ジョイントウェイトのマップ配列
+	 */
+	const std::vector<std::unordered_map<uint32_t, JointWeightData>>& GetMeshJointWeightData() const;
 
-	/// @brief アニメーションのNodeAnimationのマップを取得
-	const std::unordered_map<std::string, NodeAnimation>& GetNodeAnimationMap() const;
-	std::unordered_map<std::string, NodeAnimation>& GetNodeAnimationMap();
+	/**
+	 * @brief ジョイントウェイトマップのリストを取得します。
+	 * @return ジョイントウェイトのマップ配列
+	 */
+	std::vector<std::unordered_map<uint32_t, JointWeightData>>& GetMeshJointWeightData();
 
-	/// @brief アニメーションの再生時間を取得
-	float GetAnimationDuration() const;
+	/**
+	 * @brief インポートされたアニメーションクリップのマップを取得（読み取り専用）します。
+	 * @return アニメーションクリップマップ
+	 */
+	const std::unordered_map<uint32_t, AnimationClip>& GetAnimationClips() const;
+
+	/**
+	 * @brief インポートされたアニメーションクリップのマップを取得します。
+	 * @return アニメーションクリップマップ
+	 */
+	std::unordered_map<uint32_t, AnimationClip>& GetAnimationClips();
 
 
 };

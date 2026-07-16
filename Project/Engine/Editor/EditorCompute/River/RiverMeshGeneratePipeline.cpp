@@ -46,19 +46,19 @@ void RiverMeshGeneratePipeline::Execute(ONEngine::EntityComponentSystem* _ecs, O
 
 	ONEngine::ECSGroup* ecsGroup = _ecs->GetCurrentGroup();
 	if (!ecsGroup) {
-		ONEngine::Console::LogError("RiverMeshGeneratePipeline::Execute: ECSGroup is null");
+		//ONEngine::Console::LogError("RiverMeshGeneratePipeline::Execute: ECSGroup is null");
 		return;
 	}
 
 	ONEngine::ComponentArray<ONEngine::Terrain>* terrainArray = ecsGroup->GetComponentArray<ONEngine::Terrain>();
 	if (!terrainArray || terrainArray->GetUsedComponents().empty()) {
-		ONEngine::Console::LogError("RiverMeshGeneratePipeline::Execute: Terrain component array is null");
+		//ONEngine::Console::LogError("RiverMeshGeneratePipeline::Execute: Terrain component array is null");
 		return;
 	}
 
 	ONEngine::Terrain* terrain = terrainArray->GetUsedComponents().front();
 	if (!terrain) {
-		ONEngine::Console::LogError("RiverMeshGeneratePipeline::Execute: Terrain component is null");
+		//ONEngine::Console::LogError("RiverMeshGeneratePipeline::Execute: Terrain component is null");
 		return;
 	}
 

@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /// std
 #include <vector>
@@ -186,62 +186,80 @@ public:
 	/// public : methods
 	/// ===========================================
 
+	/**
+	 * @brief コンストラクタ
+	 */
 	VoxelTerrain();
+
+	/**
+	 * @brief デストラクタ
+	 */
 	~VoxelTerrain() override;
 
 
-	/// @brief チャンクのGuid設定を行う
-	/// @param _assetCollection AssetCollectionのポインタ
+	/**
+	 * @brief 各地形チャンクの3DテクスチャアセットのGuidをアセットコレクションと紐づけ設定します。
+	 * @param _assetCollection 検索元アセット
+	 */
 	void SettingChunksGuid(Asset::AssetCollection* _assetCollection);
 
-	/// @brief Bufferが生成されているかチェックする
-	/// @return true: 生成済み, false: 未生成
+	/**
+	 * @brief 描画用バッファが正常に生成済みかを判定します。
+	 */
 	bool CheckCreatedBuffers() const;
 
-	/// @brief Bufferの生成を行う
-	/// @param _dxDevice DxDeviceのポインタ
-	/// @param _dxSRVHeap DxSRVHeapのポインタ
+	/**
+	 * @brief 地形情報、LOD設定、マテリアルなどの定数・構造化バッファを生成します。
+	 */
 	void CreateBuffers(DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap, Asset::AssetCollection* _assetCollection);
 
-	/// @brief GraphicsPipeline用のバッファ設定を行う
-	/// @param _cmdList GraphicsCommandListのポインタ
-	/// @param _rootParamIndices 
-	/// [0]: VoxelTerrainInfo, 
-	/// [1]: ChunkArray, 
-	/// [2]: Material,
-	/// [3]: LODInfo,
-	/// [4]: CliffMaterial,
-	/// [5]: UsedTextureIds
+	/**
+	 * @brief 地形描画パイプラインに必要な各定数バッファやSRVディスクリプタをコマンドリストにバインド設定します。
+	 */
 	void SetupGraphicBuffers(ID3D12GraphicsCommandList* _cmdList, const std::array<UINT, 6> _rootParamIndices, Asset::AssetCollection* _assetCollection);
 
-	/// テクスチャのステートを変更する
+	/**
+	 * @brief 地形テクスチャのリソースステート（D3D12_RESOURCE_STATES）を遷移させます。
+	 */
 	void TransitionTextureStates(class DxCommand* _dxCommand, Asset::AssetCollection* _assetCollection, D3D12_RESOURCE_STATES _afterState);
 
-	/// @brief 現在のチャンクの総数を取得する
-	/// @return 今あるチャンクの総数
+	/**
+	 * @brief XZのグリッド数から算出される最大チャンク数を取得します。
+	 */
 	UINT MaxChunkCount() const;
 
-	/// @brief チャンクの大きさを取得する
-	/// @return 
+	/**
+	 * @brief XZ方向における分割チャンク数を取得します。
+	 */
 	const Vector2Int& GetChunkCountXZ() const;
 
-	/// @brief チャンクの大きさを取得する
-	/// @return チャンクの大きさ
+	/**
+	 * @brief チャンク1つあたりのボクセル解像度サイズ（縦・横・高さ）を取得します。
+	 */
 	const Vector3Int& GetChunkSize() const;
 
 
+	/**
+	 * @brief 地形描画マテリアルデータを定数バッファへ設定します。
+	 */
 	void SettingMaterial(Asset::AssetCollection* assetCollection);
+
+	/**
+	 * @brief ボクセルサイズや原点座標など、地形設定パラメータを定数バッファへ書き込み同期します。
+	 */
 	void SettingTerrainInfo();
 
 
 	/// --------------- エディタ用 関数 --------------- ///
 
-	/// @brief エディタ用のバッファが生成されているかチェックする
-	/// @return true: 生成済み, false: 未生成
+	/**
+	 * @brief エディタ用編集パラメータバッファが生成済みかを判定します。
+	 */
 	bool CheckBufferCreatedForEditor() const;
 
-	/// @brief エディタ用のバッファの生成を行う
-	/// @param _dxDevice DxDeviceのポインタ
+	/**
+	 * @brief ブラシ編集操作等でGPU側で使用する定数・編集一時バッファを生成します。
+	 */
 	void CreateEditorBuffers(DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap);
 
 	/// @brief エディタ用のバッファをパイプラインに設定する

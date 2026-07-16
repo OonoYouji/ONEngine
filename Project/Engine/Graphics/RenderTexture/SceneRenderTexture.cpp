@@ -40,10 +40,11 @@ void SceneRenderTexture::Initialize(
 
 }
 
-void SceneRenderTexture::SetRenderTarget(DxCommand* _dxCommand, DxDSVHeap* _dxDSVHeap) {
+void SceneRenderTexture::SetRenderTarget(DxCommand* _dxCommand, DxDSVHeap* _dxDSVHeap, bool _clear) {
 	renderTextures_[0]->SetRenderTarget(
 		_dxCommand, _dxDSVHeap,
-		renderTextures_
+		renderTextures_,
+		_clear
 	);
 }
 
@@ -70,5 +71,9 @@ const std::string& SceneRenderTexture::GetName(size_t _index) const {
 
 const std::string& SceneRenderTexture::GetName() const {
 	return name_;
+}
+
+DxResource& SceneRenderTexture::GetDxResource(size_t _index) {
+	return renderTextures_[_index]->GetDxResource();
 }
 

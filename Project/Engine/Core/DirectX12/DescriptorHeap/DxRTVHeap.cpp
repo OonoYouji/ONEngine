@@ -1,4 +1,4 @@
-﻿#include "DxRTVHeap.h"
+#include "DxRTVHeap.h"
 
 using namespace ONEngine;
 
@@ -8,6 +8,9 @@ using namespace ONEngine;
 DxRTVHeap::DxRTVHeap(DxDevice* _dxDevice, uint32_t _maxHeapSize) : IDxDescriptorHeap(_dxDevice, _maxHeapSize) {}
 DxRTVHeap::~DxRTVHeap() = default;
 
+/**
+ * @brief RTV用のディスクリプタヒープ（ID3D12DescriptorHeap）をデバイスを通じて新規に生成します。
+ */
 void DxRTVHeap::Initialize() {
 	ID3D12Device* pDevice = pDxDevice_->GetDevice();
 

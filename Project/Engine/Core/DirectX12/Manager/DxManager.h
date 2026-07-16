@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /// std
 #include <memory>
@@ -18,23 +18,41 @@
 /// /////////////////////////////////////////////////
 namespace ONEngine {
 
+/**
+ * @class DxManager
+ * @brief DirectX12のコアオブジェクト（Device, CommandList, DescriptorHeap, DepthStencil）を統括管理するクラス
+ */
 class DxManager final {
 public:
 	/// ===================================================
 	/// public : method
 	/// ===================================================
 	
+	/**
+	 * @brief コンストラクタ
+	 */
 	DxManager();
+
+	/**
+	 * @brief デストラクタ
+	 */
 	~DxManager();
 	
-	/// @brief 初期化
+	/**
+	 * @brief デバッグレイヤーの設定、デバイスの生成、コマンド関連（Queue, Allocator, List）の構築、および各種ディスクリプタヒープの確保を行います。
+	 */
 	void Initialize();
 
-	/// @brief SRVHeapをCommandListにバインドする
+	/**
+	 * @brief SRV/CBV/UAV用ディスクリプタヒープを現在有効なコマンドリストに設定（バインディング）します。
+	 */
 	void HeapBindToCommandList();
 
-	/// @brief 追加のDepthStencilを作成する
-	/// @return 作成されたDepthStencilのポインタ
+	/**
+	 * @brief 指定されたユニーク名で、新しいデプスステンシルバッファを生成・追加します。
+	 * @param _name デプスステンシルに割り当てる識別名
+	 * @return 追加されたDxDepthStencilのポインタ
+	 */
 	DxDepthStencil* AddDepthStencil(const std::string& _name);
 
 private:
@@ -56,29 +74,41 @@ public:
 	/// public : accessor
 	/// ===================================================
 
-	/// @brief DxDeviceのインスタンスの取得
-	/// @return DxDeviceインスタンス
+	/**
+	 * @brief DxDevice（デバイスラッパー）オブジェクトを取得します。
+	 * @return DxDeviceポインタ
+	 */
 	DxDevice* GetDxDevice() const;
 
-	/// @brief DxCommandのインスタンスの取得
-	/// @return DxCommandインスタンス
+	/**
+	 * @brief DxCommand（コマンドリスト・アロケータラッパー）オブジェクトを取得します。
+	 * @return DxCommandポインタ
+	 */
 	DxCommand* GetDxCommand() const;
 
-	/// @brief DxSRVHeapのインスタンスの取得
-	/// @return DxSRVHeapインスタンス
+	/**
+	 * @brief SRV用ディスクリプタヒープオブジェクト（DxSRVHeap）を取得します。
+	 * @return DxSRVHeapポインタ
+	 */
 	DxSRVHeap* GetDxSRVHeap() const;
 
-	/// @brief DxRTVHeapのインスタンスの取得
-	/// @return DxRTVHeapインスタンス
+	/**
+	 * @brief RTV用ディスクリプタヒープオブジェクト（DxRTVHeap）を取得します。
+	 * @return DxRTVHeapポインタ
+	 */
 	DxRTVHeap* GetDxRTVHeap() const; 
 
-	/// @brief DxDSVHeapのインスタンスの取得
-	/// @return DxDSVHeapインスタンス
+	/**
+	 * @brief DSV用ディスクリプタヒープオブジェクト（DxDSVHeap）を取得します。
+	 * @return DxDSVHeapポインタ
+	 */
 	DxDSVHeap* GetDxDSVHeap() const;
 
-	/// @brief 名前からDxDepthStencilを取得する
-	/// @param _name DxDepthStencilの名前
-	/// @return 見つかったDxDepthStencilのポインタ、見つからなかった場合はnullptr
+	/**
+	 * @brief 名前を指定して、該当するデプスステンシルバッファオブジェクトを取得します。
+	 * @param _name 取得したいデプスステンシルの識別名
+	 * @return DxDepthStencilポインタ（見つからない場合は nullptr）
+	 */
 	DxDepthStencil* GetDxDepthStencil(const std::string& _name) const;
 
 private:

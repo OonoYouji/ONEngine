@@ -22,12 +22,12 @@ namespace ONEngine {
 class DxManager;
 class EntityComponentSystem;
 class ShaderCompiler;
+class SceneManager;
 }
 
 namespace ONEngine::Asset {
 class AssetCollection;
 }
-
 
 
 namespace Editor {
@@ -51,7 +51,7 @@ public:
 	EditorManager(ONEngine::EntityComponentSystem* ecs);
 	~EditorManager();
 
-	void Initialize(ONEngine::DxManager* dxm, ONEngine::ShaderCompiler* sc);
+	void Initialize(ONEngine::DxManager* dxm, ONEngine::ShaderCompiler* sc, ONEngine::SceneManager* sm);
 
 	void Update(ONEngine::Asset::AssetCollection* ac);
 
@@ -70,6 +70,9 @@ public:
 	void Undo();
 	void Redo();
 
+	/// ----- mark dirty ----- ///
+	void MarkSceneDirty();
+
 	/// ----- editor compute ----- ///
 
 	void AddEditorCompute(ONEngine::DxManager* dxm, ONEngine::ShaderCompiler* sc, std::unique_ptr<IEditorCompute> compute);
@@ -83,6 +86,7 @@ private:
 	/// ----- other class ----- ///
 	ONEngine::EntityComponentSystem* pEcs_;
 	ONEngine::DxManager* pDxManager_;
+	ONEngine::SceneManager* pSceneManager_;
 
 	/// ----- clipboard ----- ///
 	Clipboard clipboard_;
@@ -117,20 +121,27 @@ inline std::unique_ptr<T> EditorManager::CloneCommand(Args&&... args) {
 template<IsEditorCommand T, typename ...Args>
 inline void EditorManager::ExecuteCommand(Args && ... args) {
 	std::unique_ptr<T> command = std::make_unique<T>(args...);
+	ONEngine::Console::Log(std::format("[UndoDebug] Executing Command: {}", typeid(T).name()));
+	
 	EDITOR_STATE state = command->Execute();
 	if(state == EDITOR_STATE_RUNNING) {
 		runningCommand_ = command.get();
+		ONEngine::Console::Log("[UndoDebug] Command state: RUNNING");
 	}
 
 	commandStack_.push_back(std::move(command));
+	ONEngine::Console::Log(std::format("[UndoDebug] Command pushed to stack. Current stack size: {}", commandStack_.size()));
+
 	if(state == EDITOR_STATE_FINISH) {
-		ONEngine::Console::Log("Command Executed: " + std::string(typeid(T).name()));
+		ONEngine::Console::Log(std::format("Command Executed: {}", typeid(T).name()));
+		MarkSceneDirty();
 	} else {
-		ONEngine::Console::Log("Command Failed: " + std::string(typeid(T).name()));
+		ONEngine::Console::Log(std::format("Command Failed/Pending: {}", typeid(T).name()));
 	}
 
 	/// redoスタックにコマンドがあればクリアする
 	if(redoStack_.size() > 0) {
+		ONEngine::Console::Log(std::format("[UndoDebug] Clearing redo stack (size: {})", redoStack_.size()));
 		redoStack_.clear();
 	}
 }

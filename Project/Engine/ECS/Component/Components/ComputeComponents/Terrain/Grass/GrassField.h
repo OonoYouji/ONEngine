@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /// std
 #include <string>
@@ -38,29 +38,45 @@ class AssetCollection;
 /// ////////////////////////////////////////////////////////
 namespace ONEngine {
 
+/**
+ * @struct GrassData
+ * @brief 個々の草ブレードの発生座標、曲げ方向（接線）、スケール、およびアニメーション等で使用する乱数パラメータを保持する構造体
+ */
 struct GrassData {
-	Vector3 position;
-	Vector3 tangent;
-	float scale;
-	float random01;
+	Vector3 position; ///< 草ブレードのワールド座標（または地形ローカル）
+	Vector3 tangent;  ///< 風などによる曲がりを規定する接線ベクトル
+	float scale;      ///< 草のサイズスケール
+	float random01;   ///< 0.0〜1.0 のランダム値（アニメーション同期ズレ用）
 };
 
 /// ////////////////////////////////////////////////////////
 /// Editor
 /// ////////////////////////////////////////////////////////
 namespace ComponentDebug {
-void GrassFieldDebug(GrassField* _grassField, Asset::AssetCollection* _assetCollection);
+    /**
+     * @brief エディタ用：GrassFieldコンポーネントのデバッグ表示（Gui描画等）処理を行います。
+     */
+    void GrassFieldDebug(GrassField* _grassField, Asset::AssetCollection* _assetCollection);
 }
 
 /// ////////////////////////////////////////////////////////
 /// json変換
 /// ////////////////////////////////////////////////////////
+
+/**
+ * @brief JSONへのシリアライズ
+ */
 void to_json(nlohmann::json& _j, const GrassField& _p);
+
+/**
+ * @brief JSONからのデシリアライズ
+ */
 void from_json(const nlohmann::json& _j, GrassField& _p);
 
-/// ////////////////////////////////////////////////////////
-/// Terrainに生やすための草の群クラス
-/// ////////////////////////////////////////////////////////
+/**
+ * @class GrassField
+ * @brief 地形（Terrain）上に大量の草ブレード（Grass Blade）をプロシージャル配置し、GPUでのジオメトリシェーダ等を用いたインスタンシング描画を制御するコンポーネントクラス
+ */
 class GrassField : public IComponent {
 	/// friendクラス
 	friend class ::Editor::GrassArrangementPipeline;
@@ -74,21 +90,36 @@ public:
 	/// public : methods
 	/// ===================================================
 
+	/**
+	 * @brief コンストラクタ
+	 */
 	GrassField();
+
+	/**
+	 * @brief デストラクタ
+	 */
 	~GrassField();
 
-	/// 草のバッファを初期化する
+	/**
+	 * @brief 最大草ブレード数に対応するGPUバッファ（UAV構造化バッファ等）を構築・初期化します。
+	 */
 	void Initialize(
 		uint32_t _maxBladeCount,
 		DxDevice* _dxDevice, DxCommand* _dxCommand, DxSRVHeap* _dxSRVHeap
 	);
 
-	/// material_をBufferにMapする
+	/**
+	 * @brief マテリアル定数バッファ等の描画に必要な定数リソースデータをセットアップ（GPUへ転送）します。
+	 */
 	void SetupRenderingData(Asset::AssetCollection* _assetCollection);
-	/// rwGrassInstanceBuffer_の開始インデックスを設定する
+	/**
+	 * @brief 描画コマンド用の開始インデックスバッファパラメータを設定・構築します。
+	 */
 	void StartIndexMapping(UINT _oneDrawInstanceCount);
 
-	/// rwGrassInstanceBuffer_のインスタンス数を読む
+	/**
+	 * @brief 配置完了した有効な草ブレードインスタンス数を調べるカウンタバッファから、CPU側に本数を読み戻します。
+	 */
 	void AppendBufferReadCounter(DxManager* _dxm, DxCommand* _dxCommand);
 
 private:
@@ -116,15 +147,34 @@ public:
 	/// public : accessors
 	/// ===================================================
 
-	/// 草のインスタンスバッファの取得
+	/**
+	 * @brief 草インスタンスデータ用の構造化バッファオブジェクトへの参照を取得します。
+	 */
 	StructuredBuffer<GrassData>& GetRwGrassInstanceBuffer();
+	/**
+	 * @brief 描画コマンド用の開始インデックス構造化バッファを取得します。
+	 */
 	StructuredBuffer<uint32_t>& GetStartIndexBufferRef();
+	/**
+	 * @brief 風アニメーション等に使う時間情報を転送する構造化バッファを取得します。
+	 */
 	StructuredBuffer<float>& GetTimeBuffer();
+	/**
+	 * @brief マテリアルパラメータ（GPUMaterial）の定数バッファを取得します。
+	 */
 	ConstantBuffer<GPUMaterial>& GetMaterialBufferRef();
 
-	/// 最大草の本数の取得
+	/**
+	 * @brief 最大配置可能草ブレード数を取得します。
+	 */
 	uint32_t GetMaxGrassCount() const;
+	/**
+	 * @brief バッファ初期構築完了フラグを取得します。
+	 */
 	bool GetIsCreated() const;
+	/**
+	 * @brief 実際に配置完了した草ブレードインスタンス数を取得します。
+	 */
 	uint32_t GetInstanceCount() const;
 };
 

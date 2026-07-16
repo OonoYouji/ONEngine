@@ -25,6 +25,7 @@ namespace ONEngine {
 class SkinMeshRenderer : public IRenderComponent {
 	friend class SkinMeshUpdateSystem;
 	friend class SkinMeshRenderingPipeline;
+	friend class AnimatorUpdateSystem;
 public:
 	/// =========================================
 	/// public : methods
@@ -46,8 +47,10 @@ private:
 	float animationTime_;
 	float duration_;
 	float animationScale_;
+	float debugJointSize_;
+	float debugRectSize_;
 
-	std::unordered_map<std::string, NodeAnimation> nodeAnimationMap_;
+	std::unordered_map<uint32_t, NodeAnimation> nodeAnimationMap_;
 	std::optional<SkinCluster> skinCluster_; ///< スキンアニメーションのデータ
 	Skeleton skeleton_; ///< ボーンデータ
 	bool isChangingMesh_;
@@ -66,6 +69,9 @@ public:
 	void SetAnimationTime(float _time);
 	void SetDuration(float _duration);
 	void SetAnimationScale(float _scale);
+	void SetDebugJointSize(float _size);
+	void SetDebugRectSize(float _size);
+	void SetNodeAnimationMap(const std::unordered_map<uint32_t, NodeAnimation>& _map);
 
 
 	const std::string& GetMeshPath() const;
@@ -77,6 +83,8 @@ public:
 	float GetAnimationTime() const;
 	float GetDuration() const;
 	float GetAnimationScale() const;
+	float GetDebugJointSize() const;
+	float GetDebugRectSize() const;
 
 	const Skeleton& GetSkeleton() const;
 

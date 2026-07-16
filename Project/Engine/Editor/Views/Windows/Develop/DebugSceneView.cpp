@@ -1,4 +1,4 @@
-﻿#include "DebugSceneView.h"
+#include "DebugSceneView.h"
 
 /// std
 #include <array>
@@ -42,8 +42,6 @@ namespace Editor {
 DebugSceneView::DebugSceneView(ONEngine::EntityComponentSystem* _ecs, ONEngine::Asset::AssetCollection* _assetCollection, ONEngine::SceneManager* _sceneManager, InspectorWindow* _inspector)
 	: pEcs_(_ecs), pAssetCollection_(_assetCollection), pSceneManager_(_sceneManager), pInspector_(_inspector) {
 
-	manipulateOperation_ = ImGuizmo::OPERATION::TRANSLATE; // 初期操作モードは移動
-	manipulateMode_ = ImGuizmo::MODE::WORLD; // 初期モードはワールド座標
 }
 
 
@@ -71,13 +69,15 @@ void DebugSceneView::SetGamePlay(bool _isGamePlay) {
 
 	/// ゲームの開始処理
 	if(ONEngine::DebugConfig::isDebugging) {
+		ONEngine::Console::ClearLogBuffer(ONEngine::LogCategory::Application);
 		pSceneManager_->SaveCurrentSceneTemporary();
+
+		/// Monoスクリプトエンジンのホットリロードでスクリプトの初期化を行う
+		/// シーンをロードする前にドメインを最新の状態にしておく
+		ONEngine::MonoScriptEngine::GetInstance().HotReload();
 
 		pSceneManager_->ReloadScene(true);
 		ImGuiSelection::SetSelectedObject(ONEngine::Guid::kInvalid, SelectionType::None);
-
-		/// Monoスクリプトエンジンのホットリロードでスクリプトの初期化を行う
-		ONEngine::MonoScriptEngine::GetInstance().HotReload();
 	} else {
 
 		/// 共通の処理（ゲーム開始、停止時に行う処理）
@@ -88,7 +88,7 @@ void DebugSceneView::SetGamePlay(bool _isGamePlay) {
 }
 
 void Editor::DebugSceneView::ShowDebugSceneView(const ImVec2& imagePos) {
-	std::vector<OverlaySection> sections;
+	std::vector<OverlaySection> leftSections;
 
 	{
 		// 地形描画 セクション
@@ -105,30 +105,161 @@ void Editor::DebugSceneView::ShowDebugSceneView(const ImVec2& imagePos) {
 			{ "EditorCompute", Format("%f ms", editorComputeTime), IM_COL32(255, 255, 255, 255) },
 			{ "BrushPreview", Format("%f ms", editorComputeBrushPreview), IM_COL32(255, 255, 255, 255) },
 		};
-		sections.push_back(renderer);
+		leftSections.push_back(renderer);
 	}
 
 	{
-		/// C#スクリプト セクション
-		double scriptUpdateTime = ONEngine::CPUTimeStamp::GetInstance().GetElapsedTimeMicroseconds(ONEngine::CPUTimeStampID::CSharpScriptUpdate); // マイクロ秒
-		OverlaySection renderer;
-		renderer.name = "C#スクリプト";
-		renderer.opened = true;
-		renderer.items = {
-			{ "C# Script Update", Format("%f ms", scriptUpdateTime), IM_COL32(255, 255, 255, 255) }
+		/// CPUパフォーマンス セクション
+		auto& cpu = ONEngine::CPUTimeStamp::GetInstance();
+		double scriptUpdateTime = cpu.GetElapsedTimeMicroseconds(ONEngine::CPUTimeStampID::CSharpScriptUpdate) / 1000.0;
+		double ecsUpdateTime = cpu.GetElapsedTimeMicroseconds(ONEngine::CPUTimeStampID::ECSUpdate) / 1000.0;
+		double renderUpdateTime = cpu.GetElapsedTimeMicroseconds(ONEngine::CPUTimeStampID::RenderUpdate) / 1000.0;
+		double physicsUpdateTime = cpu.GetElapsedTimeMicroseconds(ONEngine::CPUTimeStampID::PhysicsUpdate) / 1000.0;
+		double totalCpuTime = scriptUpdateTime + ecsUpdateTime + renderUpdateTime + physicsUpdateTime;
+
+		OverlaySection cpuSection;
+		cpuSection.name = "CPUパフォーマンス";
+		cpuSection.opened = true;
+		cpuSection.items = {
+			{ "Total CPU", Format("%.3f ms", totalCpuTime), IM_COL32(255, 255, 100, 255) },
+			{ "C# Script", Format("%.3f ms", scriptUpdateTime), IM_COL32(255, 255, 255, 255) },
+			{ "ECS Update", Format("%.3f ms", ecsUpdateTime), IM_COL32(255, 255, 255, 255) },
+			{ "Physics", Format("%.3f ms", physicsUpdateTime), IM_COL32(255, 255, 255, 255) },
+			{ "Render Update", Format("%.3f ms", renderUpdateTime), IM_COL32(255, 255, 255, 255) },
+			{ "FPS", Format("%.1f", 1.0f / ONEngine::Time::DeltaTime()), IM_COL32(100, 255, 100, 255) }
 		};
-		sections.push_back(renderer);
+		leftSections.push_back(cpuSection);
 	}
 
-	// 描画
-	DrawSceneOverlayStats(imagePos, sections);
+	{
+		/// GPUパフォーマンス セクション
+		auto& gpu = ONEngine::GPUTimeStamp::GetInstance();
+		OverlaySection gpuSection;
+		gpuSection.name = "GPUパフォーマンス";
+		gpuSection.opened = true;
+		gpuSection.items = {
+			{ "Total GPU", Format("%.3f ms", gpu.GetTimeStampMSec(ONEngine::GPUTimeStampID::RenderingTotal)), IM_COL32(255, 255, 100, 255) },
+			{ "ShadowMap", Format("%.3f ms", gpu.GetTimeStampMSec(ONEngine::GPUTimeStampID::ShadowMap)), IM_COL32(255, 255, 255, 255) },
+			{ "MainScene", Format("%.3f ms", gpu.GetTimeStampMSec(ONEngine::GPUTimeStampID::MainScene)), IM_COL32(255, 255, 255, 255) },
+			{ "PostProcess", Format("%.3f ms", gpu.GetTimeStampMSec(ONEngine::GPUTimeStampID::PostProcess)), IM_COL32(255, 255, 255, 255) },
+			{ "Mesh", Format("%.3f ms", gpu.GetTimeStampMSec(ONEngine::GPUTimeStampID::MeshRendering)), IM_COL32(200, 200, 255, 255) },
+			{ "SkinMesh", Format("%.3f ms", gpu.GetTimeStampMSec(ONEngine::GPUTimeStampID::SkinMeshRendering)), IM_COL32(200, 200, 255, 255) },
+			{ "Dissolve", Format("%.3f ms", gpu.GetTimeStampMSec(ONEngine::GPUTimeStampID::DissolveMeshRendering)), IM_COL32(200, 200, 255, 255) },
+			{ "Sprite", Format("%.3f ms", gpu.GetTimeStampMSec(ONEngine::GPUTimeStampID::SpriteRendering)), IM_COL32(200, 200, 255, 255) },
+			{ "Particle", Format("%.3f ms", gpu.GetTimeStampMSec(ONEngine::GPUTimeStampID::ParticleRendering)), IM_COL32(200, 200, 255, 255) }
+		};
+		leftSections.push_back(gpuSection);
+	}
+
+	// 1カラム目（左側）の描画
+	DrawSceneOverlayStats(imagePos, leftSections, 8.0f);
+
+	// 2カラム目（右側）のデータ作成
+	std::vector<OverlaySection> rightSections;
+	{
+		auto& mono = ONEngine::MonoScriptEngine::GetInstance();
+		auto* image = mono.Image();
+		auto* domain = mono.Domain();
+		if (image && domain) {
+			auto* aiUpdaterClass = mono_class_from_name(image, "", "AIUpdater");
+			if (aiUpdaterClass) {
+				auto* vtable = mono_class_vtable(domain, aiUpdaterClass);
+				auto* nameField = mono_class_get_field_from_name(aiUpdaterClass, "lastBossName");
+				auto* actionField = mono_class_get_field_from_name(aiUpdaterClass, "lastBossAction");
+				auto* phaseField = mono_class_get_field_from_name(aiUpdaterClass, "lastBossPhase");
+
+				if (vtable && nameField && actionField && phaseField) {
+					MonoString* nameStr = nullptr;
+					MonoString* actionStr = nullptr;
+					MonoString* phaseStr = nullptr;
+					mono_field_static_get_value(vtable, nameField, &nameStr);
+					mono_field_static_get_value(vtable, actionField, &actionStr);
+					mono_field_static_get_value(vtable, phaseField, &phaseStr);
+
+					std::string bossName = "Unknown";
+					if (nameStr) {
+						char* cstr = mono_string_to_utf8(nameStr);
+						bossName = cstr;
+						mono_free(cstr);
+					}
+
+					std::string bossAction = "Idle";
+					if (actionStr) {
+						char* cstr = mono_string_to_utf8(actionStr);
+						bossAction = cstr;
+						mono_free(cstr);
+					}
+
+					std::string bossPhase = "Intro";
+					if (phaseStr) {
+						char* cstr = mono_string_to_utf8(phaseStr);
+						bossPhase = cstr;
+						mono_free(cstr);
+					}
+
+					OverlaySection bossSection;
+					bossSection.name = "ボスの状態監視";
+					bossSection.opened = true;
+					bossSection.items = {
+						{ "Entity Name", bossName, IM_COL32(255, 255, 255, 255) },
+						{ "Current Phase", bossPhase, IM_COL32(255, 200, 100, 255) },
+						{ "Current Action", bossAction, IM_COL32(100, 255, 255, 255) }
+					};
+					rightSections.push_back(bossSection);
+				}
+			}
+
+			// --- GameController の情報を追加 ---
+			auto* gcClass = mono_class_from_name(image, "", "GameController");
+			if (gcClass) {
+				auto* statusField = mono_class_get_field_from_name(gcClass, "currentStatus");
+				auto* phaseField = mono_class_get_field_from_name(gcClass, "currentPhase");
+				auto* vtable = mono_class_vtable(domain, gcClass);
+
+				if (vtable && statusField && phaseField) {
+					MonoString* statusStr = nullptr;
+					MonoString* phaseStr = nullptr;
+					mono_field_static_get_value(vtable, statusField, &statusStr);
+					mono_field_static_get_value(vtable, phaseField, &phaseStr);
+
+					std::string gameStatus = "N/A";
+					if (statusStr) {
+						char* cstr = mono_string_to_utf8(statusStr);
+						gameStatus = cstr;
+						mono_free(cstr);
+					}
+
+					std::string gcPhase = "N/A";
+					if (phaseStr) {
+						char* cstr = mono_string_to_utf8(phaseStr);
+						gcPhase = cstr;
+						mono_free(cstr);
+					}
+
+					OverlaySection gcSection;
+					gcSection.name = "GameController 監視";
+					gcSection.opened = true;
+					gcSection.items = {
+						{ "Game Status", gameStatus, IM_COL32(255, 255, 255, 255) },
+						{ "GC Phase Sync", gcPhase, IM_COL32(200, 255, 100, 255) }
+					};
+					rightSections.push_back(gcSection);
+				}
+			}
+		}
+	}
+
+	// 2カラム目（右側）の描画
+	if (!rightSections.empty()) {
+		DrawSceneOverlayStats(imagePos, rightSections, 250.0f);
+	}
 }
 
-void DebugSceneView::DrawSceneOverlayStats(const ImVec2& imagePos, const std::vector<OverlaySection>& sections) {
+void DebugSceneView::DrawSceneOverlayStats(const ImVec2& imagePos, const std::vector<OverlaySection>& sections, float xOffset) {
 	ImDrawList* drawList = ImGui::GetForegroundDrawList();
 
 	float y = imagePos.y + 8.0f; // 上マージン
-	float x = imagePos.x + 8.0f; // 左マージン
+	float x = imagePos.x + xOffset; // オフセットに基づいた左マージン
 
 	auto DrawSeparator = [&](const std::vector<OverlayItem>& items)
 	{
@@ -203,7 +334,7 @@ void DebugSceneView::DrawSceneOverlayStats(const ImVec2& imagePos, const std::ve
 void DebugSceneView::HandleCameraFocus() {
 	if(ImGui::IsWindowHovered() || ImGui::IsWindowFocused()) {
 		if(ONEngine::Input::TriggerKey(DIK_F)) {
-			ONEngine::Guid selectedGuid = ImGuiSelection::GetSelectedObject();
+			ONEngine::Guid selectedGuid = ImGuiSelection::GetLastSelectedObject();
 			if(selectedGuid.CheckValid()) {
 				ONEngine::GameEntity* targetEntity = pEcs_->GetCurrentGroup()->GetEntityFromGuid(selectedGuid);
 				if(targetEntity) {
@@ -283,6 +414,25 @@ void DebugSceneView::DrawToolbar() {
 	// スタッツの表示トグル (メンバ変数に変更)
 	ImGui::Checkbox("show scene stats", &isDrawSceneStats_);
 
+	ImGui::SameLine();
+
+	// 2D/3D モードの切り替え
+	bool is2D = Editor::Is2DMode();
+	if (ImGui::RadioButton("2D", is2D)) {
+		Editor::Set2DMode(true);
+		if (auto* cam = pEcs_->GetECSGroup("Debug")->GetMainCamera()) {
+			cam->SetCameraType(static_cast<int>(ONEngine::CameraType::Type2D));
+			cam->GetOwner()->GetTransform()->SetRotate(ONEngine::Quaternion::kIdentity);
+		}
+	}
+	ImGui::SameLine();
+	if (ImGui::RadioButton("3D", !is2D)) {
+		Editor::Set2DMode(false);
+		if (auto* cam = pEcs_->GetECSGroup("Debug")->GetMainCamera()) {
+			cam->SetCameraType(static_cast<int>(ONEngine::CameraType::Type3D));
+		}
+	}
+
 	// ImGuiInfo の右寄せ表示
 	{
 		ImGui::SameLine();
@@ -327,7 +477,7 @@ void DebugSceneView::DrawSceneTexture(ImVec2& outImagePos, ImVec2& outImageSize)
 /// ギズモ操作と統計情報の表示
 ///
 void DebugSceneView::DrawGizmoAndOverlays(const ImVec2& imagePos, const ImVec2& imageSize) {
-	Editor::SetEntity(ImGuiSelection::GetSelectedObject());
+	Editor::SetEntity(ImGuiSelection::GetLastSelectedObject());
 
 	ONEngine::Vector2 imagePosV = { imagePos.x, imagePos.y };
 	ONEngine::Vector2 imageSizeV = { imageSize.x, imageSize.y };

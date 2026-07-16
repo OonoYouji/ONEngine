@@ -6,6 +6,7 @@
 
 /// engine
 #include "Engine/Asset/Collection/AssetCollection.h"
+#include "Engine/Core/Config/EngineConfig.h"
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
@@ -120,6 +121,8 @@ public:
 	ONEngine::Guid selectedEntityGuid_ = ONEngine::Guid::kInvalid;
 	ONEngine::Matrix4x4 pivotMatrix_ = ONEngine::Matrix4x4::kIdentity;
 
+	bool is2DMode_ = false;
+
 };
 
 
@@ -147,7 +150,7 @@ void Editor::UpdatePivot(ONEngine::EntityComponentSystem* _ecs) {
 	}
 
 
-	ImGuizmo::SetOrthographic(false);
+	ImGuizmo::SetOrthographic(gPivotInstance.is2DMode_);
 	ImGuizmo::SetDrawlist();
 	ImGuizmo::SetRect(
 		gPivotInstance.drawRectPos_.x,
@@ -180,14 +183,43 @@ void Editor::UpdatePivot(ONEngine::EntityComponentSystem* _ecs) {
 	}
 
 
-
 	ONEngine::Transform* transform = entity->GetComponent<ONEngine::Transform>();
 	gPivotInstance.pivotMatrix_ = transform->matWorld;
 
+	ONEngine::Matrix4x4 viewMatrix = cameraComp->GetViewMatrix();
+	ONEngine::Matrix4x4 projectionMatrix = cameraComp->GetProjectionMatrix();
+
+	if (gPivotInstance.is2DMode_) {
+		/// 2Dモード用の行列を作成
+		/// ビュー行列：カメラの平行移動(X, Y)のみを反映。Zは固定して手前に配置し、正面(Z+)を向く。
+		ONEngine::Vector3 camPos = cameraComp->GetOwner()->GetPosition();
+		viewMatrix = ONEngine::Matrix4x4::MakeTranslate({ -camPos.x, -camPos.y, 1000.0f });
+
+		/// 投影行列：平行投影。Z範囲を広く取り、クリッピングを防ぐ。
+		ONEngine::Vector2 orthoSize = ONEngine::EngineConfig::kWindowSize;
+
+		projectionMatrix = ONEngine::CameraMath::MakeOrthographicMatrix(
+			-orthoSize.x / 2.0f, orthoSize.x / 2.0f,
+			-orthoSize.y / 2.0f, orthoSize.y / 2.0f,
+			0.0f, 2000.0f
+		);
+	}
+
+	int currentOperation = manipulateOperation_;
+	if (gPivotInstance.is2DMode_) {
+		if (currentOperation == ImGuizmo::OPERATION::TRANSLATE) {
+			currentOperation = ImGuizmo::OPERATION::TRANSLATE_X | ImGuizmo::OPERATION::TRANSLATE_Y;
+		} else if (currentOperation == ImGuizmo::OPERATION::ROTATE) {
+			currentOperation = ImGuizmo::OPERATION::ROTATE_Z;
+		} else if (currentOperation == ImGuizmo::OPERATION::SCALE) {
+			currentOperation = ImGuizmo::OPERATION::SCALE_X | ImGuizmo::OPERATION::SCALE_Y;
+		}
+	}
+
 	ImGuizmo::Manipulate(
-		&cameraComp->GetViewMatrix().m[0][0],
-		&cameraComp->GetProjectionMatrix().m[0][0],
-		(ImGuizmo::OPERATION)manipulateOperation_, // TRANSLATE, ROTATE, SCALE
+		&viewMatrix.m[0][0],
+		&projectionMatrix.m[0][0],
+		(ImGuizmo::OPERATION)currentOperation, // TRANSLATE, ROTATE, SCALE
 		(ImGuizmo::MODE)manipulateMode_, // WORLD or LOCAL
 		&gPivotInstance.pivotMatrix_.m[0][0]
 	);
@@ -227,7 +259,9 @@ void Editor::UpdatePivot(ONEngine::EntityComponentSystem* _ecs) {
 						ONEngine::Vector3::Length({ matParent.m[2][0], matParent.m[2][1], matParent.m[2][2] })
 					};
 
-					scaleV /= parentScale;
+					if (parentScale.x != 0.0f) scaleV.x /= parentScale.x;
+					if (parentScale.y != 0.0f) scaleV.y /= parentScale.y;
+					if (parentScale.z != 0.0f) scaleV.z /= parentScale.z;
 				}
 			}
 		}
@@ -265,5 +299,13 @@ void Editor::ClearEntity() {
 void Editor::SetDrawRect(const ONEngine::Vector2& _pos, const ONEngine::Vector2& _size) {
 	gPivotInstance.drawRectPos_ = _pos;
 	gPivotInstance.drawRectSize_ = _size;
+}
+
+void Editor::Set2DMode(bool _is2DMode) {
+	gPivotInstance.is2DMode_ = _is2DMode;
+}
+
+bool Editor::Is2DMode() {
+	return gPivotInstance.is2DMode_;
 }
 

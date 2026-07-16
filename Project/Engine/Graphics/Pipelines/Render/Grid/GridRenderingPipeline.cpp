@@ -1,4 +1,4 @@
-﻿#include "GridRenderingPipeline.h"
+#include "GridRenderingPipeline.h"
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
@@ -50,7 +50,7 @@ void GridRenderingPipeline::Initialize(ShaderCompiler* sc, DxManager* dxm) {
 
 }
 
-void GridRenderingPipeline::Draw(ECSGroup* ecs, CameraComponent* camera, DxCommand* dxCommand) {
+void GridRenderingPipeline::Draw(ECSGroup* /*ecs*/, CameraComponent* camera, DxCommand* dxCommand) {
 
 	///
 	/// 早期リターンの条件を羅列

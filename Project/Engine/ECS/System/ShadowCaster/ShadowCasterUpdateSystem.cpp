@@ -1,4 +1,4 @@
-﻿#include "ShadowCasterUpdateSystem.h"
+#include "ShadowCasterUpdateSystem.h"
 
 using namespace ONEngine;
 
@@ -9,9 +9,19 @@ using namespace ONEngine;
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Light/Light.h"
 
+/**
+ * @brief コンストラクタ
+ */
 ShadowCasterUpdateSystem::ShadowCasterUpdateSystem() = default;
+
+/**
+ * @brief デストラクタ
+ */
 ShadowCasterUpdateSystem::~ShadowCasterUpdateSystem() = default;
 
+/**
+ * @brief エディタ非実行時のシャドウキャスター情報の更新処理を行います。
+ */
 void ShadowCasterUpdateSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
 	if (!DebugConfig::isDebugging) {
 		Update(_ecs);
@@ -19,12 +29,18 @@ void ShadowCasterUpdateSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
 
 }
 
+/**
+ * @brief ランタイム実行時のシャドウキャスター情報の更新処理を実行します。
+ */
 void ShadowCasterUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
 	if (DebugConfig::isDebugging) {
 		Update(_ecs);
 	}
 }
 
+/**
+ * @brief 指定されたECSグループ内の全シャドウキャスターのビュープロジェクション同期と定数バッファ同期を行う共通更新処理です。
+ */
 void ShadowCasterUpdateSystem::Update(ECSGroup* _ecs) {
 	/// ----- ShadowCasterの更新 ----- ///
 

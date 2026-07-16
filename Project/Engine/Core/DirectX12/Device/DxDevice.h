@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /// directX
 #include <d3d12.h>
@@ -11,16 +11,29 @@
 /// /////////////////////////////////////////////////
 namespace ONEngine {
 
+/**
+ * @class DxDevice
+ * @brief DirectX12のメインデバイスおよびDXGIファクトリ・アダプタの生成とライフサイクルを管理するクラス
+ */
 class DxDevice {
 public:
 	/// ===================================================
 	/// public : method
 	/// ===================================================
 	
+	/**
+	 * @brief コンストラクタ
+	 */
 	DxDevice();
+
+	/**
+	 * @brief デストラクタ
+	 */
 	~DxDevice();
 	
-	/// @brief 初期化
+	/**
+	 * @brief DXGIファクトリの生成、最適なGPU（アダプタ）の選択、D3D12デバイス（ID3D12Device / ID3D12Device10）の初期化、およびデバッグレイヤーの有効化を行います。
+	 */
 	void Initialize();
 
 private:
@@ -38,16 +51,22 @@ public:
 	/// public : accessor
 	/// ===================================================
 
-	/// @brief DxgiFactoryのインスタンスの取得
-	/// @return DxgiFactoryインスタンス
+	/**
+	 * @brief DXGIファクトリ（IDXGIFactory7）を取得します。
+	 * @return IDXGIFactory7ポインタ
+	 */
 	IDXGIFactory7* GetFactory() const;
 
-	/// @brief Deviceのインスタンスの取得
-	/// @return Deviceインスタンス
+	/**
+	 * @brief D3D12デバイス（ID3D12Device）を取得します。
+	 * @return ID3D12Deviceポインタ
+	 */
 	ID3D12Device* GetDevice() const;
 
-	/// @brief Device10のインスタンスの取得
-	/// @return Device10インスタンス
+	/**
+	 * @brief D3D12デバイス（ID3D12Device10）を取得します。
+	 * @return ID3D12Device10ポインタ
+	 */
 	ID3D12Device10* GetDevice10() const;
 };
 

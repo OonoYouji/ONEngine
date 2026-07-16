@@ -15,6 +15,7 @@
 
 /// editor
 #include "Engine/Editor/Manager/EditorManager.h"
+#include "Engine/Editor/Manager/HotReloadManager.h"
 #include "Engine/Editor/Math/AssetPayload.h"
 #include "Engine/Editor/Math/ImGuiMath.h"
 #include "Engine/Editor/Math/ImGuiSelection.h"
@@ -79,6 +80,30 @@ ProjectWindow::~ProjectWindow() {}
 /// プロジェクトウィンドウの表示
 ///
 void ProjectWindow::ShowImGui() {
+	// ファイル監視イベントの処理
+	for(const auto& ev : fileWatcher_.ConsumeEvents()) {
+		if(ev.type == FileEvent::Type::File) {
+			std::string relPath = GetRelativePath(ev.path);
+			if(ev.action == FileEvent::Action::Modified || ev.action == FileEvent::Action::RenamedNew) {
+				// リロードリクエストをキューイング（即時実行するとD3D12のコマンドリスト競合でクラッシュするため）
+				HotReloadManager::GetInstance().RequestAssetReload(relPath);
+
+				// C#スクリプトの場合はホットリロードをリクエスト
+				if(relPath.ends_with(".cs")) {
+					HotReloadManager::GetInstance().RequestScriptHotReload();
+				}
+			}
+		}
+
+		// キャッシュの更新
+		std::filesystem::path parentPath = std::filesystem::path(ev.path).parent_path();
+		UpdateDirectoryCache(parentPath);
+		
+		if(currentPath_ == parentPath) {
+			UpdateFileCache(currentPath_);
+		}
+	}
+
 	if(ImGui::Begin(windowName_.c_str())) {
 		ImGui::Columns(2);
 
@@ -95,10 +120,7 @@ void ProjectWindow::ShowImGui() {
 		ImGui::NextColumn();
 
 		// 右側：ファイルビュー
-		if(ImGui::BeginChild("FileView")) {
-			DrawFileView(currentPath_);
-		}
-		ImGui::EndChild();
+		DrawFileView(currentPath_);
 
 		ImGui::Columns(1);
 	}
@@ -142,6 +164,8 @@ void ProjectWindow::DrawDirectoryTree(const std::filesystem::path& directory) {
 	if(ImGui::IsItemClicked()) {
 		currentPath_ = directory;
 		UpdateFileCache(currentPath_);
+		searchBuffer_.clear(); // フォルダ選択で検索解除
+		isSearching_ = false;
 	}
 
 	if(isOpen) {
@@ -158,21 +182,108 @@ void ProjectWindow::DrawDirectoryTree(const std::filesystem::path& directory) {
 /// ファイルのビュー表示
 ///
 void ProjectWindow::DrawFileView(const std::filesystem::path& directory) {
-	std::string dirStr = directory.string();
-	if(!fileCache_.contains(dirStr)) {
-		UpdateFileCache(directory);
+	// --- 検索バーとフィルタの描画 (固定部) ---
+	float filterWidth = 100.0f;
+	float spacing = 8.0f;
+	float totalWidth = ImGui::GetContentRegionAvail().x;
+
+	ImGui::PushItemWidth(totalWidth - filterWidth - spacing);
+	if (ImGuiInputText("##ProjectSearch", &searchBuffer_, ImGuiInputTextFlags_AutoSelectAll, "search file...")) {
 	}
+	if (ImGui::IsItemDeactivatedAfterEdit() || !searchBuffer_.empty()) {
+		isSearching_ = !searchBuffer_.empty();
+	} else {
+		isSearching_ = false;
+	}
+	ImGui::PopItemWidth();
+
+	ImGui::SameLine(0, spacing);
+
+	ImGui::PushItemWidth(filterWidth);
+	if (ImGuiInputText("##ProjectFilter", &filterBuffer_, ImGuiInputTextFlags_AutoSelectAll, ".ext")) {
+	}
+	if (ImGui::IsItemDeactivatedAfterEdit() || !filterBuffer_.empty()) {
+		isFiltering_ = !filterBuffer_.empty();
+	} else {
+		isFiltering_ = false;
+	}
+	ImGui::PopItemWidth();
+
+	// 検索文字列が空でない場合にグローバル検索を実行
+	if (isSearching_) {
+		searchedFiles_.clear();
+		std::string query = searchBuffer_;
+		std::transform(query.begin(), query.end(), query.begin(), ::tolower);
+		
+		std::string extQuery = filterBuffer_;
+		std::transform(extQuery.begin(), extQuery.end(), extQuery.begin(), ::tolower);
+		if (!extQuery.empty() && extQuery[0] != '.') extQuery = "." + extQuery;
+
+		for (const auto& root : rootPaths_) {
+			if (!std::filesystem::exists(root)) continue;
+			for (const auto& entry : std::filesystem::recursive_directory_iterator(root)) {
+				if (entry.path().extension() == ".meta") continue;
+
+				std::string filename = entry.path().filename().string();
+				std::string filenameLower = filename;
+				std::transform(filenameLower.begin(), filenameLower.end(), filenameLower.begin(), ::tolower);
+
+				bool matchName = filenameLower.find(query) != std::string::npos;
+				bool matchExt = true;
+				if (isFiltering_) {
+					std::string ext = entry.path().extension().string();
+					std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+					matchExt = (ext == extQuery);
+				}
+
+				if (matchName && matchExt) {
+					FileItem item;
+					item.path = entry.path();
+					item.isDirectory = entry.is_directory();
+					item.relativePath = GetRelativePath(entry.path());
+
+					// アイコン設定
+					std::string ext = item.path.extension().string();
+					std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+					if (item.isDirectory) {
+						item.displayTexture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/FileIcons/FolderIcon.png");
+						if (!item.displayTexture) item.displayTexture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/FileIcons/FolderIcon.dds");
+					} else if (ext == ".cs") {
+						item.displayTexture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/FileIcons/ph-file-c-sharp-none-256.png");
+					} else {
+						item.displayTexture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/FileIcons/FileIcon.png");
+					}
+
+					searchedFiles_.push_back(item);
+				}
+			}
+		}
+	}
+	ImGui::Spacing();
 
 	bool requestChangeDir = false;
 	std::filesystem::path nextTargetDir;
 
-	DrawBreadcrumbs(directory, requestChangeDir, nextTargetDir);
-	DrawFileList(directory, requestChangeDir, nextTargetDir);
+	if (isSearching_) {
+		ImGui::Text("Search Results for \"%s\"%s", searchBuffer_.c_str(), isFiltering_ ? (std::string(" (Type: ") + filterBuffer_ + ")").c_str() : "");
+		ImGui::Separator();
+	} else {
+		// パンくずリスト（固定部）
+		DrawBreadcrumbs(directory, requestChangeDir, nextTargetDir);
+	}
 
-	// ディレクトリ移動リクエストの処理（パンくずリスト・ダブルクリック共通）
-	if(requestChangeDir) {
+	// ここから下をスクロール可能にする
+	if (ImGui::BeginChild("FileListScrollArea", ImVec2(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar)) {
+		DrawFileList(directory, requestChangeDir, nextTargetDir);
+	}
+	ImGui::EndChild();
+
+	// ディレクトリ移動リクエストの処理
+	if (requestChangeDir) {
 		currentPath_ = nextTargetDir;
 		UpdateFileCache(currentPath_);
+		searchBuffer_.clear();
+		isSearching_ = false;
 	}
 }
 
@@ -206,6 +317,10 @@ void ProjectWindow::DrawBreadcrumbs(const std::filesystem::path& directory, bool
 		isFirst = false;
 	}
 	ImGui::PopStyleColor();
+	if (isFiltering_) {
+		ImGui::SameLine();
+		ImGui::TextDisabled(" (Filter: %s)", filterBuffer_.c_str());
+	}
 	ImGui::Separator();
 	ImGui::Spacing();
 	// ----------------------------------------
@@ -217,9 +332,42 @@ void ProjectWindow::DrawBreadcrumbs(const std::filesystem::path& directory, bool
 void ProjectWindow::DrawFileList(const std::filesystem::path& directory, bool& outRequestChangeDir, std::filesystem::path& outNextTargetDir) {
 	std::string dirStr = directory.string();
 
-	if(!fileCache_.contains(dirStr) || fileCache_[dirStr].empty()) return;
+	// 検索中なら searchedFiles_ を、そうでなければキャッシュを使用
+	std::vector<FileItem> filteredFiles;
+	std::vector<FileItem>* pFiles = nullptr;
 
-	auto& files = fileCache_[dirStr];
+	if (isSearching_) {
+		pFiles = &searchedFiles_;
+	} else {
+		if (!fileCache_.contains(dirStr) || fileCache_[dirStr].empty()) return;
+		
+		if (isFiltering_) {
+			std::string extQuery = filterBuffer_;
+			std::transform(extQuery.begin(), extQuery.end(), extQuery.begin(), ::tolower);
+			if (!extQuery.empty() && extQuery[0] != '.') extQuery = "." + extQuery;
+
+			for (const auto& file : fileCache_[dirStr]) {
+				if (file.isDirectory) {
+					filteredFiles.push_back(file);
+					continue;
+				}
+				std::string ext = file.path.extension().string();
+				std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+				if (ext == extQuery) {
+					filteredFiles.push_back(file);
+				}
+			}
+			pFiles = &filteredFiles;
+		} else {
+			pFiles = &fileCache_[dirStr];
+		}
+	}
+
+	auto& files = *pFiles;
+	if (files.empty()) {
+		if (isSearching_ || isFiltering_) ImGui::Text("No files match your criteria.");
+		return;
+	}
 
 	// 削除予約用の変数
 	std::filesystem::path pendingDeletePath;
@@ -343,7 +491,12 @@ void ProjectWindow::PopupContextMenu(const std::filesystem::path& filepath, std:
 	if(ImGui::BeginPopup("FileContextMenu")) {
 		if(ImGui::MenuItem("Reload")) {
 			std::string path = GetRelativePath(filepath);
-			pAssetCollection_->ReloadAsset(path);
+			HotReloadManager::GetInstance().RequestAssetReload(path);
+
+			// スクリプトならホットリロードも要求
+			if (path.ends_with(".cs")) {
+				HotReloadManager::GetInstance().RequestScriptHotReload();
+			}
 		}
 
 		// --- 削除機能の追加 ---
@@ -413,6 +566,12 @@ void ProjectWindow::UpdateFileCache(const std::filesystem::path& directory) {
 				if(!item.displayTexture) item.displayTexture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/FileIcons/FolderIcon.dds");
 			} else if(ONEngine::Asset::CheckAssetType(ext, ONEngine::Asset::AssetType::Texture)) {
 				item.displayTexture = pAssetCollection_->GetTexture(item.relativePath);
+				
+				// TextureCubeやTexture3Dの場合はプレビューを表示するとシェーダー側でクラッシュするため、
+				// プレビュー用テクスチャを無効にしてデフォルトアイコンを表示させる
+				if (item.displayTexture && !item.displayTexture->IsStandard2D()) {
+					item.displayTexture = nullptr;
+				}
 			} else if(ONEngine::Asset::CheckAssetType(ext, ONEngine::Asset::AssetType::Audio)) {
 				item.displayTexture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/FileIcons/lets-icons-sound-none-256.png");
 			} else if(ext == ".cs") {

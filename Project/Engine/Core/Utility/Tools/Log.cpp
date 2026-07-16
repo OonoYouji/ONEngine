@@ -1,8 +1,5 @@
 #include "Log.h"
 
-using namespace ONEngine;
-
-
 #include <comdef.h>
 #include <Windows.h>
 
@@ -10,6 +7,10 @@ using namespace ONEngine;
 #include <fstream>
 #include <filesystem>
 #include <chrono>
+#include <mutex>
+#include <sstream>
+#include <iomanip>
+#include <ctime>
 
 /// external
 #include <spdlog/spdlog.h>
@@ -19,10 +20,16 @@ using namespace ONEngine;
 /// engine
 #include "Engine/Core/Config/EngineConfig.h"
 
+namespace ONEngine {
+
 namespace {
 
 	/// @brief 現在の年月日時間をstringで取得する
 	/// @return 
+	/**
+	 * @brief 現在のシステム日時を取得し、ファイル名等に使用可能な文字列フォーマットに変換します。
+	 * @return "YYYYMMDD_HHMMSS" 形式の文字列
+	 */
 	std::string GetCurrentDateTimeString() {
 		std::time_t now = std::time(nullptr);
 		std::tm timeInfo{};
@@ -42,6 +49,10 @@ namespace {
 
 	/// @brief 現在の時間をstringで取得する
 	/// @return 
+	/**
+	 * @brief 現在のシステム時刻を取得し、ログ出力用のタイムスタンプフォーマットに変換します。
+	 * @return "[HH:MM:SS] " 形式の文字列
+	 */
 	std::string GetCurrentTimeString() {
 		std::time_t now = std::time(nullptr);
 		std::tm timeInfo{};
@@ -59,7 +70,7 @@ namespace {
 	std::string gMessage;
 
 	/// メンバ変数としてstaticで宣言したくないのでここで定義
-	std::vector<std::string> gLogBuffer_;
+	std::vector<LogEntry> gLogBuffer_;
 	std::mutex gMutex_;
 
 } /// namespace
@@ -70,6 +81,9 @@ namespace {
 /// ////////////////////////////////////////////////
 
 
+/**
+ * @brief ログ出力システムの初期化（非同期スレッドプールおよびログファイルのローテーション設定）を行います。
+ */
 void Console::Initialize() {
 
 	/// 念のため一度だけ初期化するように制限をかける
@@ -82,7 +96,11 @@ void Console::Initialize() {
 	spdlog::init_thread_pool(8192, 1);
 
 	/// ログ出力先(日付入り)
+#ifdef DEBUG_MODE
 	const std::string logDir = "../Generated/Log/";
+#else 
+	const std::string logDir = "./Log/";
+#endif
 	const std::string fileName = "engine" + GetCurrentDateTimeString() + ".log";
 	auto sink = std::make_shared<spdlog::sinks::rotating_file_sink_mt>(
 		logDir + fileName, 10 * 1024 * 1024, 3);
@@ -101,14 +119,23 @@ void Console::Initialize() {
 	initialized = true;
 }
 
+/**
+ * @brief ログ出力システムのクリーンアップ（spdlogの破棄等）を行います。
+ */
 void Console::Finalize() {
 	spdlog::info("Logger finalized.");
 	spdlog::shutdown();
 }
 
-void Console::AddToBuffer(const std::string& _msg) {
+/**
+ * @brief メモリバッファに新しいログを追加します。最大ログ数を超えた場合は古いログから削除されます。
+ * @param _msg ログメッセージ
+ * @param _level ログ重要度レベル
+ * @param _category ログカテゴリ
+ */
+void Console::AddToBuffer(const std::string& _msg, LogLevel _level, LogCategory _category) {
 	std::lock_guard<std::mutex> lock(gMutex_);
-	gLogBuffer_.push_back(_msg);
+	gLogBuffer_.push_back({ _level, _category, _msg });
 
 	/// ログの最大数を制限
 	if (gLogBuffer_.size() > MAX_LOG_BUFFER_SIZE) {
@@ -119,35 +146,89 @@ void Console::AddToBuffer(const std::string& _msg) {
 
 Console::~Console() {}
 
-void Console::Log(const std::string& _message) {
-	AddToBuffer(_message);
+/**
+ * @brief 一般ログ（Infoレベル）を出力します。
+ * @param _message メッセージ文字列（UTF-8）
+ * @param _category ログカテゴリ
+ */
+void Console::Log(const std::string& _message, LogCategory _category) {
+	AddToBuffer(_message, LogLevel::Info, _category);
 	spdlog::info(_message);
+	OutputDebugStringA(("[Log] " + _message + "\n").c_str());
 }
 
-void Console::Log(const std::wstring& _message) {
-	Log(ConvertString(_message));
+/**
+ * @brief 一般ログ（Infoレベル）を出力します。ワイド文字列版。
+ * @param _message ワイドメッセージ文字列（UTF-16）
+ * @param _category ログカテゴリ
+ */
+void Console::Log(const std::wstring& _message, LogCategory _category) {
+	Log(ConvertString(_message), _category);
 }
 
-void Console::LogInfo(const std::string& _message) {
-	AddToBuffer("[info] " + _message);
+/**
+ * @brief 情報ログ（Infoレベル）を出力します。
+ * @param _message メッセージ文字列
+ * @param _category ログカテゴリ
+ */
+void Console::LogInfo(const std::string& _message, LogCategory _category) {
+	AddToBuffer(_message, LogLevel::Info, _category);
 	spdlog::info(_message);
+	OutputDebugStringA(("[Info] " + _message + "\n").c_str());
 }
 
-void Console::LogError(const std::string& _message) {
-	AddToBuffer("[error] " + _message);
+/**
+ * @brief エラーログ（Errorレベル）を出力します。
+ * @param _message メッセージ文字列
+ * @param _category ログカテゴリ
+ */
+void Console::LogError(const std::string& _message, LogCategory _category) {
+	AddToBuffer(_message, LogLevel::Error, _category);
 	spdlog::error(_message);
+	OutputDebugStringA(("[Error] " + _message + "\n").c_str());
 }
 
-void Console::LogWarning(const std::string& _message) {
-	AddToBuffer("[warning] " + _message);
+/**
+ * @brief 警告ログ（Warningレベル）を出力します。
+ * @param _message メッセージ文字列
+ * @param _category ログカテゴリ
+ */
+void Console::LogWarning(const std::string& _message, LogCategory _category) {
+	AddToBuffer(_message, LogLevel::Warning, _category);
 	spdlog::warn(_message);
+	OutputDebugStringA(("[Warning] " + _message + "\n").c_str());
 }
 
-const std::vector<std::string>& Console::GetLogVector() {
-	std::lock_guard<std::mutex> lock(gMutex_);
+/**
+ * @brief これまでにバッファに格納されたすべてのログエントリの配列を取得します。
+ * @return ログエントリを格納したstd::vectorの参照
+ */
+const std::vector<LogEntry>& Console::GetLogVector() {
 	return gLogBuffer_;
 }
 
+/**
+ * @brief 格納されているログバッファをクリアします。
+ * @param _category 特定のカテゴリのみクリアしたい場合に指定します。省略時は全クリア。
+ */
+void Console::ClearLogBuffer(std::optional<LogCategory> _category) {
+	std::lock_guard<std::mutex> lock(gMutex_);
+	if (!_category.has_value()) {
+		gLogBuffer_.clear();
+	} else {
+		gLogBuffer_.erase(
+			std::remove_if(gLogBuffer_.begin(), gLogBuffer_.end(),
+				[_category](const LogEntry& entry) {
+					return entry.category == _category.value();
+				}),
+			gLogBuffer_.end()
+		);
+	}
+}
+
+/**
+ * @brief ログ出力をシャットダウンし、終了時にログをファイルへ永続化します。
+ */
 void Console::Shutdown() {
 	Finalize();
 }
@@ -156,7 +237,12 @@ void Console::Shutdown() {
 /// 文字列変換関数
 /// ////////////////////////////////////////////////
 
-std::string ONEngine::ConvertString(const std::wstring& _wstr) {
+/**
+ * @brief ワイド文字列（std::wstring）をマルチバイト文字列（std::string）に変換します。
+ * @param _wstr ソースのワイド文字列
+ * @return 変換後のマルチバイト文字列
+ */
+std::string ConvertString(const std::wstring& _wstr) {
 
 	/// 引数が空の場合は空文字を返す
 	if (_wstr.empty()) {
@@ -175,7 +261,12 @@ std::string ONEngine::ConvertString(const std::wstring& _wstr) {
 	return result;
 }
 
-std::wstring ONEngine::ConvertString(const std::string& _str) {
+/**
+ * @brief マルチバイト文字列（std::string）をワイド文字列（std::wstring）に変換します。
+ * @param _str ソースのマルチバイト文字列
+ * @return 変換後のワイド文字列
+ */
+std::wstring ConvertString(const std::string& _str) {
 
 	/// 引数が空の場合は空文字を返す
 	if (_str.empty()) {
@@ -196,7 +287,12 @@ std::wstring ONEngine::ConvertString(const std::string& _str) {
 
 
 
-std::string ONEngine::ConvertTCHARToString(const TCHAR* tstr) {
+/**
+ * @brief WindowsのTCHAR*（環境に応じた文字列）をマルチバイト文字列（std::string）に変換します。
+ * @param tstr ソースのTCHAR文字列ポインタ
+ * @return 変換後のマルチバイト文字列
+ */
+std::string ConvertTCHARToString(const TCHAR* tstr) {
 #ifdef UNICODE
 	// TCHAR == wchar_t
 	int len = WideCharToMultiByte(CP_UTF8, 0, tstr, -1, nullptr, 0, nullptr, nullptr);
@@ -210,21 +306,21 @@ std::string ONEngine::ConvertTCHARToString(const TCHAR* tstr) {
 #endif
 }
 
-std::string ONEngine::ConvertString(DWORD _dw) {
+/**
+ * @brief DWORD型（符号なし32bit）の数値を10進数の文字列に変換します。
+ * @param _dw ソースのDWORD値
+ * @return 変換後の文字列
+ */
+std::string ConvertString(DWORD _dw) {
 	return std::to_string(_dw);
 }
 
-std::string ONEngine::HrToString(HRESULT _hr) {
-	//_com_error err(_hr);
-	//const wchar_t* wmsg = err.ErrorMessage();
-
-	//// UTF-16 → UTF-8 変換
-	//int sizeNeeded = WideCharToMultiByte(CP_UTF8, 0, wmsg, -1, nullptr, 0, nullptr, nullptr);
-	//std::string msg(sizeNeeded - 1, 0); // 終端を除く
-	//WideCharToMultiByte(CP_UTF8, 0, wmsg, -1, msg.data(), sizeNeeded, nullptr, nullptr);
-
-	//return msg;
-
+/**
+ * @brief HRESULTエラーコードに対応するエラー内容の文字列を取得します。
+ * @param _hr HRESULTエラーコード
+ * @return エラー内容のマルチバイト文字列
+ */
+std::string HrToString(HRESULT _hr) {
 	char* errorMsg = nullptr;
 
 	FormatMessageA(
@@ -243,5 +339,4 @@ std::string ONEngine::HrToString(HRESULT _hr) {
 	return errorString;
 }
 
-
-
+} /// namespace ONEngine

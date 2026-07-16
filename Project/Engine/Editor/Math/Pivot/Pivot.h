@@ -23,6 +23,9 @@ void ClearEntity();
 
 void SetDrawRect(const ONEngine::Vector2& _pos, const ONEngine::Vector2& _size);
 
+void Set2DMode(bool _is2DMode);
+bool Is2DMode();
+
 
 ///// @brief 現在選択されているもののGuidリストを取得する (１つしか選択されていない場合もベクターで返す)
 ///// @return 選択されているエンティティのGuidリスト

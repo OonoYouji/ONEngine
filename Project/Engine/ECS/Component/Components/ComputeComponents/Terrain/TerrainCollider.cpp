@@ -1,4 +1,4 @@
-﻿#include "TerrainCollider.h"
+#include "TerrainCollider.h"
 
 /// externals
 #include <imgui.h>
@@ -11,6 +11,9 @@
 
 using namespace ONEngine;
 
+/**
+ * @brief エディタ用：TerrainColliderコンポーネントのデバッグ表示（Gui描画等）処理を行います。
+ */
 void ComponentDebug::TerrainColliderDebug(TerrainCollider* _collider) {
 	if (!_collider) {
 		return;
@@ -40,11 +43,17 @@ void ComponentDebug::TerrainColliderDebug(TerrainCollider* _collider) {
 	Editor::ImMathf::DragFloat("max slope angle", &_collider->maxSlopeAngle_, 0.1f, 0.0f, 90.0f, "%.2f rad");
 }
 
+/**
+ * @brief JSONからのデシリアライズ
+ */
 void ONEngine::from_json(const nlohmann::json& _j, TerrainCollider& _c) {
 	_c.enable = _j.value("enable", 1);
 	_c.maxSlopeAngle_ = _j.value("maxSlopeAngle", 0.0f);
 }
 
+/**
+ * @brief JSONへのシリアライズ
+ */
 void ONEngine::to_json(nlohmann::json& _j, const TerrainCollider& _c) {
 	_j = {
 		{ "type", "TerrainCollider" },
@@ -59,17 +68,26 @@ void ONEngine::to_json(nlohmann::json& _j, const TerrainCollider& _c) {
 /// 地形のコライダーコンポーネント
 /// ///////////////////////////////////////////////////
 
+/**
+ * @brief コンストラクタ
+ */
 TerrainCollider::TerrainCollider() {
 	pTerrain_ = nullptr;
 	isVertexGenerationRequested_ = true;
 }
 
+/**
+ * @brief 同一Entity内にある地形（Terrain）コンポーネントをアタッチ・関連付けます。
+ */
 void TerrainCollider::AttachTerrain() {
 	if (GameEntity* entity = GetOwner()) {
 		pTerrain_ = entity->GetComponent<Terrain>();
 	}
 }
 
+/**
+ * @brief GPU側で変形された地形の頂点バッファデータをCPU側の二次元配列（グリッド情報）へ読み込みコピーします。
+ */
 void TerrainCollider::CopyVertices(DxManager* _dxm) {
 	/// terrainから RWVertices をコピーする
 	if (!pTerrain_) {
@@ -133,6 +151,9 @@ void TerrainCollider::CopyVertices(DxManager* _dxm) {
 
 }
 
+/**
+ * @brief 指定されたワールド座標点（XZ）における地形の正確な高さを取得（グリッド間はバイリニア補間）します。
+ */
 float TerrainCollider::GetHeight(const Vector3& _position) {
 	/// 条件が満たされない場合は0を返す
 	if (!pTerrain_) {
@@ -190,6 +211,9 @@ float TerrainCollider::GetHeight(const Vector3& _position) {
 	return vertexPosition.y; // 補間後の高さ
 }
 
+/**
+ * @brief 指定されたワールド座標点（XZ）における地形斜面の勾配（傾斜方向ベクトル）を算出します。
+ */
 Vector3 TerrainCollider::GetGradient(const Vector3& _position) {
 	/// 地形のローカル座標に変換
 	const Matrix4x4&& kMatInverse = pTerrain_->GetOwner()->GetTransform()->matWorld.Inverse();
@@ -220,6 +244,9 @@ Vector3 TerrainCollider::GetGradient(const Vector3& _position) {
 	return { slopeX, 0.0f, slopeZ };
 }
 
+/**
+ * @brief 指定されたワールド座標が地形のXZ範囲内に含まれているかを判定します。
+ */
 bool TerrainCollider::IsInsideTerrain(const Vector3& _position) {
 	const Matrix4x4&& kMatInverse = pTerrain_->GetOwner()->GetTransform()->matWorld.Inverse();
 	Vector3 localPosition = Matrix4x4::Transform(_position, kMatInverse);
@@ -233,26 +260,44 @@ bool TerrainCollider::IsInsideTerrain(const Vector3& _position) {
 	return true;
 }
 
+/**
+ * @brief 関連付けられている地形コンポーネントへのポインタを取得します。
+ */
 Terrain* TerrainCollider::GetTerrain() const {
 	return pTerrain_;
 }
 
+/**
+ * @brief コライダーが保持する地形頂点グリッドの二次元配列を読み取り専用で取得します。
+ */
 const std::vector<std::vector<TerrainVertex>>& TerrainCollider::GetVertices() const {
 	return vertices_;
 }
 
+/**
+ * @brief コライダーが保持する地形頂点グリッドの二次元配列を取得します。
+ */
 std::vector<std::vector<TerrainVertex>>& TerrainCollider::GetVertices() {
 	return vertices_;
 }
 
+/**
+ * @brief コライダーデータの構築が完了しているかを取得します。
+ */
 bool TerrainCollider::GetIsCreated() const {
 	return isCreated_;
 }
 
+/**
+ * @brief 頂点のGPUコピー・再生成リクエスト状態を設定します。
+ */
 void TerrainCollider::SetIsVertexGenerationRequested(bool _isRequested) {
 	isVertexGenerationRequested_ = _isRequested;
 }
 
+/**
+ * @brief キャラクターなどが侵入不可能な最大傾斜角（度数法）を取得します。
+ */
 float TerrainCollider::GetMaxSlopeAngle() const {
 	return maxSlopeAngle_;
 }

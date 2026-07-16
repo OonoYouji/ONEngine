@@ -1,4 +1,4 @@
-#include "Line2DRenderingPipeline.h"
+﻿#include "Line2DRenderingPipeline.h"
 
 using namespace ONEngine;
 
@@ -39,8 +39,13 @@ void Line2DRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 		pipeline_->SetTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE);
 		pipeline_->SetBlendDesc(BlendMode::Normal());
 
-		pipeline_->SetRTVNum(1);
-		pipeline_->SetRTVFormats({ DXGI_FORMAT_R8G8B8A8_UNORM });
+		pipeline_->SetDepthStencilDesc(DepthNone());
+
+		pipeline_->SetRTVNum(static_cast<uint32_t>(RTVIndex::Count));
+		pipeline_->SetRTVFormat(static_cast<DXGI_FORMAT>(RTVFormat::Color), static_cast<int>(RTVIndex::Color));
+		pipeline_->SetRTVFormat(static_cast<DXGI_FORMAT>(RTVFormat::WorldPosition), static_cast<int>(RTVIndex::WorldPosition));
+		pipeline_->SetRTVFormat(static_cast<DXGI_FORMAT>(RTVFormat::Normal), static_cast<int>(RTVIndex::Normal));
+		pipeline_->SetRTVFormat(static_cast<DXGI_FORMAT>(RTVFormat::Flags), static_cast<int>(RTVIndex::Flags));
 
 		/// create pipeline
 		pipeline_->CreatePipeline(_dxm->GetDxDevice());

@@ -1,4 +1,4 @@
-﻿#include "DxResource.h"
+#include "DxResource.h"
 
 using namespace ONEngine;
 
@@ -15,6 +15,9 @@ using namespace ONEngine;
 DxResource::DxResource() = default;
 DxResource::~DxResource() = default;
 
+/**
+ * @brief CPUから書き込み可能なアップロードバッファ（定数バッファなど）を生成します。
+ */
 void DxResource::CreateResource(DxDevice* _dxDevice, size_t _sizeInByte) {
 	HRESULT result = S_FALSE;
 
@@ -47,6 +50,9 @@ void DxResource::CreateResource(DxDevice* _dxDevice, size_t _sizeInByte) {
 	Assert(SUCCEEDED(result), "Resource creation failed.");
 }
 
+/**
+ * @brief UAV（Unordered Access View）として使用可能なデフォルトヒープ上のバッファを生成します。
+ */
 void DxResource::CreateUAVResource(DxDevice* _dxDevice, class DxCommand* _dxCommand, size_t _sizeInByte) {
 	/// ----- UAVリソースとして作成する ----- ///
 
@@ -74,7 +80,10 @@ void DxResource::CreateUAVResource(DxDevice* _dxDevice, class DxCommand* _dxComm
 	Assert(SUCCEEDED(result), "UAV Resource creation failed.");
 }
 
-void DxResource::CreateDefaultHeap(DxDevice* _dxDevice, DxCommand* _dxCommand, size_t _sizeInByte, D3D12_RESOURCE_STATES initState = D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER) {
+/**
+ * @brief GPUのみがアクセス可能なデフォルトヒープ上にバッファを生成します。
+ */
+void DxResource::CreateDefaultHeap(DxDevice* _dxDevice, DxCommand* _dxCommand, size_t _sizeInByte, D3D12_RESOURCE_STATES initState) {
 	D3D12_HEAP_PROPERTIES heapProps{};
 	heapProps.Type = D3D12_HEAP_TYPE_DEFAULT; // ここがポイント
 
@@ -103,6 +112,9 @@ void DxResource::CreateDefaultHeap(DxDevice* _dxDevice, DxCommand* _dxCommand, s
 	);
 }
 
+/**
+ * @brief CPUから書き込み可能でGPUからも参照可能なアップロードヒープバッファを生成します。
+ */
 void ONEngine::DxResource::CreateUploadHeap(DxDevice* dxDevice, DxCommand* dxCommand, size_t sizeInByte, D3D12_RESOURCE_STATES initState) {
 	D3D12_HEAP_PROPERTIES heapProps{};
 	heapProps.Type = D3D12_HEAP_TYPE_UPLOAD;
@@ -132,6 +144,9 @@ void ONEngine::DxResource::CreateUploadHeap(DxDevice* dxDevice, DxCommand* dxCom
 	);
 }
 
+/**
+ * @brief ID3D12Device::CreateCommittedResourceを直接呼び出し、任意のプロパティでバッファを確保します。
+ */
 void DxResource::CreateCommittedResource(DxDevice* _dxDevice, const D3D12_HEAP_PROPERTIES* _pHeapProperties, D3D12_HEAP_FLAGS _HeapFlags, const D3D12_RESOURCE_DESC* _pDesc, D3D12_RESOURCE_STATES _InitialResourceState, const D3D12_CLEAR_VALUE* _pOptimizedClearValue) {
 	currentState_ = _InitialResourceState;
 
@@ -150,6 +165,9 @@ void DxResource::CreateCommittedResource(DxDevice* _dxDevice, const D3D12_HEAP_P
 	}
 }
 
+/**
+ * @brief レンダーターゲットとして描画可能なテクスチャリソースを生成します。
+ */
 void DxResource::CreateRenderTextureResource(DxDevice* _dxDevice, const Vector2& _size, DXGI_FORMAT _format, const Vector4& _clearColor) {
 	/// ----- RTVとして利用できるようリソースを作成する ----- ///
 
@@ -182,6 +200,9 @@ void DxResource::CreateRenderTextureResource(DxDevice* _dxDevice, const Vector2&
 	);
 }
 
+/**
+ * @brief コンピュートシェーダ（UAV）から書き込み可能なテクスチャリソースを生成します。
+ */
 void DxResource::CreateUAVTextureResource(DxDevice* _dxDevice, const Vector2& _size, DXGI_FORMAT _format) {
 	/// ----- UAV用のテクスチャとして作成する ----- ///
 
@@ -210,6 +231,9 @@ void DxResource::CreateUAVTextureResource(DxDevice* _dxDevice, const Vector2& _s
 	Assert(SUCCEEDED(result), "UAV Texture Resource creation failed.");
 }
 
+/**
+ * @brief 指定された明示的な状態遷移バリアを作成してコマンドリストに記録し、内部状態を追跡します。
+ */
 void DxResource::CreateBarrier(D3D12_RESOURCE_STATES _before, D3D12_RESOURCE_STATES _after, DxCommand* _dxCommand) {
 	::CreateBarrier(resource_.Get(), _before, _after, _dxCommand);
 	currentState_ = _after;
@@ -230,6 +254,9 @@ void DxResource::CreateBarrier(D3D12_RESOURCE_STATES _before, D3D12_RESOURCE_STA
 	//}
 }
 
+/**
+ * @brief 内部で記録している現在の状態から、指定された変更後の状態への遷移バリアを作成し記録します。
+ */
 void DxResource::CreateBarrier(D3D12_RESOURCE_STATES _after, DxCommand* _dxCommand) {
 	::CreateBarrier(resource_.Get(), currentState_, _after, _dxCommand);
 
@@ -251,23 +278,38 @@ void DxResource::CreateBarrier(D3D12_RESOURCE_STATES _after, DxCommand* _dxComma
 	currentState_ = _after;
 }
 
+/**
+ * @brief 内部のID3D12Resource生ポインタを取得します。
+ */
 ID3D12Resource* DxResource::Get() const {
 	return resource_.Get();
 }
 
+/**
+ * @brief 内部のComPtr<ID3D12Resource>参照を取得します。
+ */
 ComPtr<ID3D12Resource>& DxResource::GetComPtr() {
 	return resource_;
 }
 
+/**
+ * @brief 現在追跡しているリソース状態を取得します。
+ */
 D3D12_RESOURCE_STATES DxResource::GetCurrentState() const {
 	return currentState_;
 }
 
+/**
+ * @brief 追跡している現在のリソース状態フラグを強制的に上書き設定します。
+ */
 void DxResource::SetCurrentState(D3D12_RESOURCE_STATES _state) {
 	currentState_ = _state;
 }
 
 
+/**
+ * @brief D3D12デバッグオブジェクトの登録名（SetNameされた文字列）を取得します（デバッグ用）。
+ */
 std::wstring ONEngine::GetD3D12Name(ID3D12Object* _object) {
 	UINT size = 0;
 
@@ -292,6 +334,9 @@ std::wstring ONEngine::GetD3D12Name(ID3D12Object* _object) {
 	return name;
 }
 
+/**
+ * @brief 生のリソースポインタに対して状態遷移（Transition）バリアを記録します。
+ */
 void ONEngine::CreateBarrier(ID3D12Resource* _resource, D3D12_RESOURCE_STATES _before, D3D12_RESOURCE_STATES _after, DxCommand* _dxCommand) {
 	/// ----- リソースバリアーの作成 ----- ///
 
@@ -310,6 +355,9 @@ void ONEngine::CreateBarrier(ID3D12Resource* _resource, D3D12_RESOURCE_STATES _b
 	_dxCommand->GetCommandList()->ResourceBarrier(1, &barrier);
 }
 
+/**
+ * @brief 複数のDxResourceラッパーオブジェクトに対し、同一の遷移前状態から遷移後状態への一括バリアを適用します。
+ */
 void ONEngine::CreateBarriers(std::vector<DxResource*>& _resources, D3D12_RESOURCE_STATES _before, D3D12_RESOURCE_STATES _after, DxCommand* _dxCommand) {
 	/// ----- 複数リソースのバリアー作成 ----- ///
 
@@ -343,6 +391,9 @@ void ONEngine::CreateBarriers(std::vector<DxResource*>& _resources, D3D12_RESOUR
 	}
 }
 
+/**
+ * @brief 複数のDxResourceラッパーオブジェクトに対し、それぞれが現在保持している状態から指定の状態への一括遷移バリアを適用します。
+ */
 void ONEngine::CreateBarriers(std::vector<DxResource*>& _resources, D3D12_RESOURCE_STATES _after, DxCommand* _dxCommand) {
 
 	/// ----- 複数リソースのバリアー作成 ----- ///

@@ -58,16 +58,24 @@ project "DirectXTex"
 project "ImGui"
     kind "StaticLib"
     language "C++"
+    warnings "Off"
     location "Externals/ImGui/"
     targetdir "../Generated/Outputs/%{cfg.buildcfg}/"
     objdir "../Generated/Obj/%{cfg.buildcfg}/ImGui/"
 
     includedirs {
         "$(ProjectDir)",
-        "$(ProjectDir)/ImGui"
+        "$(ProjectDir)/ImGui",
+        "$(ProjectDir)/ImGui",
     }
 
-    files { "Externals/ImGui/**.h", "Externals/ImGui/**.cpp" }
+    files { 
+        "Externals/ImGui/**.h",
+        "Externals/ImGui/**.cpp",
+        "Externals/imgui-node-editor/**.h",
+        "Externals/imgui-node-editor/**.cpp",
+        "Externals/imgui-node-editor/**.inl",
+    }
 
     filter "configurations:Debug"
          runtime "Debug"

@@ -11,11 +11,15 @@ void Editor::ShowTexture2DPreview(const std::string& _name, ONEngine::Asset::Tex
 	}
 
 	if(_texture) {
-		ONEngine::Vector2 aspectRatio = _textureSize;
-		aspectRatio /= (std::max)(aspectRatio.x, aspectRatio.y);
+		if(_texture->IsStandard2D()) {
+			ONEngine::Vector2 aspectRatio = _textureSize;
+			aspectRatio /= (std::max)(aspectRatio.x, aspectRatio.y);
 
-		ImTextureID texId = reinterpret_cast<ImTextureID>(_texture->GetSRVGPUHandle().ptr);
-		ImGui::Image(texId, ImVec2(_previewFactor * aspectRatio.x, _previewFactor * aspectRatio.y));
+			ImTextureID texId = reinterpret_cast<ImTextureID>(_texture->GetSRVGPUHandle().ptr);
+			ImGui::Image(texId, ImVec2(_previewFactor * aspectRatio.x, _previewFactor * aspectRatio.y));
+		} else {
+			ImGui::Text("Preview not supported\n(CubeMap or 3D Texture)");
+		}
 	} else {
 		/// テクスチャがない場合はドラッグドロップ領域を表示する
 		ImVec2 size = ImVec2(_previewFactor, _previewFactor);

@@ -1,17 +1,27 @@
-﻿#include "Line2DRenderer.h"
+#include "Line2DRenderer.h"
 
 /// engine
 #include "Engine/Graphics/Pipelines/Collection/RenderingPipelineCollection.h"
 
 using namespace ONEngine;
 
+/**
+ * @brief コンストラクタ
+ */
 Line2DRenderer::Line2DRenderer() {
 	renderingData_.vertices.reserve(32);
 	lineCount_ = 0;
 }
+
+/**
+ * @brief デストラクタ
+ */
 Line2DRenderer::~Line2DRenderer() {}
 
 
+/**
+ * @brief 描画する線分のパラメータを設定します。
+ */
 void Line2DRenderer::SetLine(const Vector2& _start, const Vector2& _end, const Vector4& _color) {
 
 	///< 今回追加するラインの頂点数が、現在の頂点数を超える場合は、頂点数を増やす

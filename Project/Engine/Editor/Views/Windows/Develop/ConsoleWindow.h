@@ -30,10 +30,15 @@ private:
 	/// private : methods
 	/// ===================================================
 
-	std::vector<std::string> logs_;
-	std::unordered_map<std::string, size_t> indices_;
-	std::unordered_map<std::string, size_t> logCounts_;
-	
+	bool showInfo_ = true;
+	bool showWarning_ = true;
+	bool showError_ = true;
+
+	bool showEngine_ = true;
+	bool showScriptEngine_ = true;
+	bool showApplication_ = true;
+
+	bool autoScroll_ = true;
 
 };
 

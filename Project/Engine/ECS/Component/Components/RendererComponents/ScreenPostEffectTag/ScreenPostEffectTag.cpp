@@ -1,4 +1,4 @@
-﻿#include "ScreenPostEffectTag.h"
+#include "ScreenPostEffectTag.h"
 
 /// std
 #include <vector>
@@ -25,16 +25,25 @@ namespace {
 
 } /// namespace
 
+/**
+ * @brief 指定したポストプロセスの有効/無効を設定します。
+ */
 void ScreenPostEffectTag::SetPostEffectEnable(PostEffectType _type, bool _enable) {
 	gFlags.flags[static_cast<size_t>(_type)] = _enable;
 }
 
+/**
+ * @brief 指定したポストプロセスが有効であるかを判定します。
+ */
 bool ScreenPostEffectTag::GetPostEffectEnable(PostEffectType _type) const {
 	return gFlags.flags[static_cast<size_t>(_type)];
 }
 
 
 
+/**
+ * @brief エディタ用：ScreenPostEffectTagコンポーネントのデバッグ表示（Gui描画等）処理を行います。
+ */
 void ComponentDebug::ScreenPostEffectTagDebug(ScreenPostEffectTag* _component) {
 	if (!_component) {
 		return;
@@ -50,6 +59,9 @@ void ComponentDebug::ScreenPostEffectTagDebug(ScreenPostEffectTag* _component) {
 
 }
 
+/**
+ * @brief JSONからのデシリアライズ
+ */
 void ONEngine::from_json(const nlohmann::json& _j, ScreenPostEffectTag& _c) {
 	if (_j.contains("enable")) {
 		_c.enable = _j["enable"].get<int>();
@@ -67,6 +79,9 @@ void ONEngine::from_json(const nlohmann::json& _j, ScreenPostEffectTag& _c) {
 	}
 }
 
+/**
+ * @brief JSONへのシリアライズ
+ */
 void ONEngine::to_json(nlohmann::json& _j, const ScreenPostEffectTag& _c) {
 	_j["type"] = "ScreenPostEffectTag";
 	_j["enable"] = _c.enable;

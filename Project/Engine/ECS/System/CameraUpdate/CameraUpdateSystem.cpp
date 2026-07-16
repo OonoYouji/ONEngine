@@ -1,4 +1,4 @@
-﻿#include "CameraUpdateSystem.h"
+#include "CameraUpdateSystem.h"
 
 using namespace ONEngine;
 
@@ -11,6 +11,9 @@ using namespace ONEngine;
 
 namespace {
 
+	/**
+	 * @brief 試錐台（フラスタム）のデバッグ用ライン描画を行うヘルパー関数です。
+	 */
 	void DrawFrustumDebug(const CameraComponent* _camera, float _size = 1.0f) {
 		/// ----- 試錐台のデバッグ表示 ----- ///
 
@@ -85,11 +88,17 @@ namespace {
 }	/// namespace
 
 
+/**
+ * @brief コンストラクタ
+ */
 CameraUpdateSystem::CameraUpdateSystem(DxDevice* _dxDevice) : pDxDevice_(_dxDevice) {
 	pMainCamera_ = nullptr;
 	pMainCamera2D_ = nullptr;
 }
 
+/**
+ * @brief エディタ非実行時のカメラ更新（ビュー調整やGPU転送など）処理を行います。
+ */
 void CameraUpdateSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
 	if (!DebugConfig::isDebugging) {
 		Update(_ecs);
@@ -97,12 +106,18 @@ void CameraUpdateSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
 
 }
 
+/**
+ * @brief ランタイム実行時のカメラ更新（カメラ追従、ビュー・プロジェクション行列再計算およびGPU転送）を実行します。
+ */
 void CameraUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
 	if(DebugConfig::isDebugging) {
 		Update(_ecs);
 	}
 }
 
+/**
+ * @brief 指定されたECSグループ内の全カメラのビュープロジェクションの再計算と定数バッファ同期を行う共通更新処理です。
+ */
 void CameraUpdateSystem::Update(ECSGroup* _ecs) {
 
 	/// カメラのComponentを集める

@@ -1,4 +1,4 @@
-﻿#include "Window.h"
+#include "Window.h"
 
 using namespace ONEngine;
 
@@ -24,6 +24,9 @@ Window::~Window() {
 }
 
 
+/**
+ * @brief ウィンドウクラスの登録、ウィンドウの生成、およびスワップチェーンの初期化を行います。
+ */
 void Window::Initialize(const std::wstring& _windowName, const Vector2& _windowSize, DxManager* _dxm) {
 
 	pDxManager_ = _dxm;
@@ -39,6 +42,9 @@ void Window::Initialize(const std::wstring& _windowName, const Vector2& _windowS
 	isFullScreen_ = false;
 }
 
+/**
+ * @brief 描画前処理。レンダーターゲットビューの切り替えやバリア作成等を行います。
+ */
 void Window::PreDraw() {
 	ID3D12GraphicsCommandList* commandList = pDxManager_->GetDxCommand()->GetCommandList();
 
@@ -47,11 +53,17 @@ void Window::PreDraw() {
 	dxSwapChain_->ClearBackBuffer(commandList);
 }
 
+/**
+ * @brief 描画後処理。レンダーターゲットをプレゼンテーション状態に戻すバリアを作成します。
+ */
 void Window::PostDraw() {
 	ID3D12GraphicsCommandList* commandList = pDxManager_->GetDxCommand()->GetCommandList();
 	dxSwapChain_->CreateBarrier(commandList, D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
 }
 
+/**
+ * @brief Alt+Enterキーなどによるウィンドウモード切り替えのキー判定を行います。
+ */
 void Window::Update() {
 	if (Input::PressKey(DIK_RALT) || Input::PressKey(DIK_LALT)) {
 		if (Input::TriggerKey(DIK_RETURN)) {
@@ -60,14 +72,23 @@ void Window::Update() {
 	}
 }
 
+/**
+ * @brief スワップチェーンのPresentを実行し、描画内容を画面に表示します。
+ */
 void Window::Present() {
 	dxSwapChain_->Present();
 }
 
+/**
+ * @brief ウィンドウが有効か判定します。
+ */
 bool Window::IsOpenWindow() {
 	return hwnd_ != nullptr && IsWindow(hwnd_);
 }
 
+/**
+ * @brief フルスクリーンとウィンドウモードの切り替えを行います。
+ */
 void Window::ToggleFullScreen() {
 	/// ハイドかどうかを確認、ハイドならフルスクにしない
 	if (!IsOpenWindow() || processMessage_) {
@@ -117,18 +138,30 @@ void Window::ToggleFullScreen() {
 	isFullScreen_ = !isFullScreen_;
 }
 
+/**
+ * @brief ウィンドウハンドル（HWND）を取得します。
+ */
 HWND Window::GetHwnd() const {
 	return hwnd_;
 }
 
+/**
+ * @brief ウィンドウクラス（WNDCLASS）を取得します。
+ */
 const WNDCLASS& Window::GetWNDCLASS() const {
 	return windowClass_;
 }
 
+/**
+ * @brief 最新のプロセスメッセージIDを取得します。
+ */
 UINT Window::GetProcessMessage() const {
 	return processMessage_;
 }
 
+/**
+ * @brief ウィンドウの現在のクライアントサイズを取得します。
+ */
 const Vector2& Window::GetWindowSize() const {
 	return windowSize_;
 }

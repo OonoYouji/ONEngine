@@ -10,6 +10,7 @@ using namespace ONEngine;
 #include "Engine/ECS/Component/Components/RendererComponents/Mesh/MeshRenderer.h"
 #include "Engine/ECS/Component/Components/RendererComponents/Mesh/CustomMeshRenderer.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
+#include "Engine/Core/DirectX12/GPUTimeStamp/GPUTimeStamp.h"
 
 
 MeshRenderingPipeline::MeshRenderingPipeline(Asset::AssetCollection* _assetCollection)
@@ -59,9 +60,33 @@ void MeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManage
 		pipeline_->SetBlendDesc(BlendMode::Normal());
 		pipeline_->SetDepthStencilDesc(DefaultDepthStencilDesc());
 
-
 		pipeline_->CreatePipeline(_dxm->GetDxDevice());
 
+		// --- Telegraph専用パイプラインの生成 ---
+		telegraphPipeline_ = std::make_unique<GraphicsPipeline>();
+		telegraphPipeline_->SetShader(&shader);
+		telegraphPipeline_->AddInputElement("POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT);
+		telegraphPipeline_->AddInputElement("TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT);
+		telegraphPipeline_->AddInputElement("NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT);
+		telegraphPipeline_->SetFillMode(D3D12_FILL_MODE_SOLID);
+		telegraphPipeline_->SetCullMode(D3D12_CULL_MODE_BACK);
+		telegraphPipeline_->SetTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
+		telegraphPipeline_->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 0);
+		telegraphPipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
+		telegraphPipeline_->AddDescriptorRange(1, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
+		telegraphPipeline_->AddDescriptorRange(2, Asset::MAX_TEXTURE_COUNT, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
+		telegraphPipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
+		telegraphPipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 0);
+		telegraphPipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 1);
+		telegraphPipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 2);
+		telegraphPipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_VERTEX, 3);
+		telegraphPipeline_->AddStaticSampler(D3D12_SHADER_VISIBILITY_PIXEL, 0);
+		telegraphPipeline_->Add32BitConstant(D3D12_SHADER_VISIBILITY_VERTEX, 1);
+		
+		telegraphPipeline_->SetBlendDesc(BlendMode::Normal());
+		telegraphPipeline_->SetDepthStencilDesc(TelegraphDepthStencilDesc()); // Z-Test Always, Z-Write Off
+		
+		telegraphPipeline_->CreatePipeline(_dxm->GetDxDevice());
 	}
 
 
@@ -83,44 +108,64 @@ void MeshRenderingPipeline::Draw(class ECSGroup* _ecs, CameraComponent* _camera,
 		return;
 	}
 
-	/// mesh path ごとに mesh renderer を分類
-	std::unordered_map<std::string, std::list<MeshRenderer*>> pathMeshMap;
+	GPUTimeStamp::GetInstance().BeginTimeStamp(GPUTimeStampID::MeshRendering);
+
+	/// レイヤーごとに分類
+	std::unordered_map<RenderQueue, std::unordered_map<std::string, std::list<MeshRenderer*>>> queueMap;
 	for (const auto& meshRenderer : meshRendererArray->GetUsedComponents()) {
 		if(!CheckComponentEnable(meshRenderer)) {
 			continue;
 		}
 
-		/// meshが読み込まれていなければ、デフォルトのメッシュを使用
-		if (!pAssetCollection_->GetModel(meshRenderer->GetMeshPath())) {
-			Console::Log("Mesh not found: " + meshRenderer->GetMeshPath());
-			pathMeshMap["./Assets/Models/primitive/cube.obj"].push_back(meshRenderer);
-			continue;
-		}
+		RenderQueue queue = meshRenderer->GetRenderQueue();
+		std::string meshPath = meshRenderer->GetMeshPath();
 
-		pathMeshMap[meshRenderer->GetMeshPath()].push_back(meshRenderer);
+		/// meshが読み込まれていなければ、デフォルトのメッシュを使用
+		if (!pAssetCollection_->GetModel(meshPath)) {
+			meshPath = "./Assets/Models/primitive/cube.obj";
+		}
+		queueMap[queue][meshPath].push_back(meshRenderer);
 	}
 
 
 	auto cmdList = _dxCommand->GetCommandList();
 
-	/// ----- CommandListに必要な設定を行う ----- ///
-
-	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	/// Bufferのバインド
-	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(cmdList, 0);
 	auto& textures = pAssetCollection_->GetTextures();
-	cmdList->SetGraphicsRootDescriptorTable(3, (*textures.begin()).GetSRVGPUHandle());
 
 	transformIndex_ = 0;
 	instanceIndex_ = 0;
 
-	RenderingMesh(cmdList, &pathMeshMap, textures);
+	/// 1. Backgroundの描画
+	if (queueMap.count(RenderQueue::Background)) {
+		pipeline_->SetPipelineStateForCommandList(_dxCommand);
+		_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(cmdList, 0);
+		cmdList->SetGraphicsRootDescriptorTable(3, (*textures.begin()).GetSRVGPUHandle());
+		Drawing(cmdList, queueMap[RenderQueue::Background], textures);
+	}
+
+	/// 2. Telegraphの描画 (専用のZ-Test無視パイプライン)
+	if (queueMap.count(RenderQueue::Telegraph)) {
+		telegraphPipeline_->SetPipelineStateForCommandList(_dxCommand);
+		_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(cmdList, 0);
+		cmdList->SetGraphicsRootDescriptorTable(3, (*textures.begin()).GetSRVGPUHandle());
+		Drawing(cmdList, queueMap[RenderQueue::Telegraph], textures);
+	}
+
+	/// 3. Defaultの描画 (通常のパイプライン)
+	if (queueMap.count(RenderQueue::Default)) {
+		pipeline_->SetPipelineStateForCommandList(_dxCommand);
+		_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(cmdList, 0);
+		cmdList->SetGraphicsRootDescriptorTable(3, (*textures.begin()).GetSRVGPUHandle());
+		Drawing(cmdList, queueMap[RenderQueue::Default], textures);
+	}
+
+
+	GPUTimeStamp::GetInstance().EndTimeStamp(GPUTimeStampID::MeshRendering);
 }
 
-void MeshRenderingPipeline::RenderingMesh(ID3D12GraphicsCommandList* _cmdList, std::unordered_map<std::string, std::list<MeshRenderer*>>* _meshRendererPerMesh, const std::vector<Asset::Texture>& _textures) {
-	for (auto& [meshPath, renderers] : (*_meshRendererPerMesh)) {
+void MeshRenderingPipeline::Drawing(ID3D12GraphicsCommandList* _cmdList, std::unordered_map<std::string, std::list<MeshRenderer*>>& _pathMeshMap, const std::vector<Asset::Texture>& _textures) {
+	for (auto& [meshPath, renderers] : _pathMeshMap) {
 
 		/// modelの取得、なければ次へ
 		const Asset::Model*&& model = pAssetCollection_->GetModel(meshPath);
@@ -183,3 +228,4 @@ void MeshRenderingPipeline::RenderingMesh(ID3D12GraphicsCommandList* _cmdList, s
 		instanceIndex_ += static_cast<UINT>(renderers.size());
 	}
 }
+

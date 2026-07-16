@@ -1,4 +1,4 @@
-﻿#include "DissolveMeshRenderer.h"
+#include "DissolveMeshRenderer.h"
 
 /// externals
 #include <magic_enum/magic_enum.hpp>
@@ -10,61 +10,128 @@
 
 using namespace ONEngine;
 
+/**
+ * @brief エディタ用：DissolveMeshRendererコンポーネントのデバッグ表示（Gui描画等）処理を行います。
+ */
 void ONEngine::ShowGUI(DissolveMeshRenderer* _dmr, Asset::AssetCollection* _ac) {
 	if(!_dmr) {
 		return;
 	}
 
-	Editor::AssetPayload* payload = nullptr;
+	/// param get
+	Vector4& color = _dmr->material_.baseColor;
 
-	/// mesh
+	/// edit
+	if (Editor::ImGuiColorEdit("color", &color)) {
+		// color updated
+	}
+
+	ImGui::Spacing();
+
+	/// meshの変更
 	std::string meshName = _ac->GetAssetPath<Asset::Model>(_dmr->meshGuid_);
-	ImGui::Text("Mesh: ");
-	ImGui::SameLine();
+	ImGui::Text("mesh path");
 	ImGui::InputText("##mesh", meshName.data(), meshName.capacity(), ImGuiInputTextFlags_ReadOnly);
-	payload = Editor::DragDrop::GetDragDropPayload();
-	if(payload) {
-		if(_ac->GetAssetTypeFromGuid(payload->guid) == Asset::AssetType::Mesh) {
-			_dmr->meshGuid_ = payload->guid;
+	if (ImGui::BeginDragDropTarget()) {
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("AssetData")) {
+			if (payload->Data) {
+				Editor::AssetPayload* assetPayload = *static_cast<Editor::AssetPayload**>(payload->Data);
+				if (_ac->GetAssetTypeFromGuid(assetPayload->guid) == Asset::AssetType::Mesh) {
+					_dmr->meshGuid_ = assetPayload->guid;
+					Console::Log(std::format("Mesh path set to: {}", assetPayload->filePath));
+				}
+			}
 		}
+		ImGui::EndDragDropTarget();
 	}
 
-	/// dissolve texture
-	const float texturePreviewSize = 64.0f;
-	const std::string dissolveTexName = _ac->GetAssetPath<Asset::Texture>(_dmr->dissolveTexture_);
-	const Asset::Texture* dissolveTex = _ac->GetTextureFromGuid(_dmr->dissolveTexture_);
-	Editor::ShowTexture2DPreview(dissolveTexName, const_cast<Asset::Texture*>(dissolveTex), dissolveTex->GetTextureSize(), texturePreviewSize);
-	payload = Editor::DragDrop::GetDragDropPayload();
-	if(payload) {
-		if(_ac->GetAssetTypeFromGuid(payload->guid) == Asset::AssetType::Texture) {
-			_dmr->dissolveTexture_ = payload->guid;
+	/// textureの変更 (Dissolve)
+	ImGui::Text("dissolve texture path");
+
+	/// ----------------------------------------------
+	/// テクスチャのプレビュー表示
+	/// ----------------------------------------------
+	bool hasTextureGuid = _dmr->dissolveTexture_ != Guid::kInvalid;
+	if (hasTextureGuid) {
+		const Asset::Texture* tex = _ac->GetTextureFromGuid(_dmr->dissolveTexture_);
+		if (tex) {
+			Vector2 aspectRatio = tex->GetTextureSize();
+			aspectRatio /= (std::max)(aspectRatio.x, aspectRatio.y);
+
+			ImTextureID texId = reinterpret_cast<ImTextureID>(tex->GetSRVGPUHandle().ptr);
+			ImGui::Image(texId, ImVec2(64.0f * aspectRatio.x, 64.0f * aspectRatio.y));
 		}
+	} else {
+		/// テクスチャがない場合はドラッグドロップ領域を表示する
+		ImVec2 size = ImVec2(64, 64);
+		ImVec2 pos = ImGui::GetCursorScreenPos();
+		ImDrawList* drawList = ImGui::GetWindowDrawList();
+
+		ImGui::InvisibleButton("DropAreaDissolve", size);
+
+		ImU32 imColor = IM_COL32(100, 100, 255, 100); // 半透明の青
+		drawList->AddRectFilled(pos, ImVec2(pos.x + size.x, pos.y + size.y), imColor, 4.0f);
+		drawList->AddRect(pos, ImVec2(pos.x + size.x, pos.y + size.y), IM_COL32(255, 255, 255, 200), 4.0f, 0, 2.0f);
 	}
+
+	/// ----------------------------------------------
+	/// ドラッグアンドドロップでテクスチャを設定
+	/// ----------------------------------------------
+	if (ImGui::BeginDragDropTarget()) {
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("AssetData")) {
+			if (payload->Data) {
+				Editor::AssetPayload* assetPayload = *static_cast<Editor::AssetPayload**>(payload->Data);
+				if (_ac->GetAssetTypeFromGuid(assetPayload->guid) == Asset::AssetType::Texture) {
+					_dmr->dissolveTexture_ = assetPayload->guid;
+					Console::Log(std::format("Dissolve Texture path set to: {}", assetPayload->filePath));
+				}
+			}
+		}
+		ImGui::EndDragDropTarget();
+	}
+
+	ImGui::Spacing();
+	ImGui::SeparatorText("Dissolve Settings");
 
 	/// compare
 	Editor::Combo<DissolveCompare>("Dissolve Compare", _dmr->dissolveCompare_);
-
 	Editor::SliderFloat("Dissolve Threshold", _dmr->dissolveThreshold_, 0.0f, 1.0f);
+	Editor::SliderFloat("Edge Width", _dmr->edgeWidth_, 0.0f, 0.5f);
+	Editor::ImGuiColorEdit("Edge Color", &_dmr->edgeColor_);
 
+	ImGui::Spacing();
 
 	/// material
-	Editor::ImMathf::MaterialEdit("Material##MeshRenderer", &_dmr->material_, _ac);
-
+	Editor::ImMathf::MaterialEdit("Material##DissolveMeshRenderer", &_dmr->material_, _ac);
 
 }
 
+/**
+ * @brief JSONからのデシリアライズ
+ */
 void ONEngine::from_json(const nlohmann::json& _j, DissolveMeshRenderer& _dmr) {
 	_dmr.meshGuid_ = _j.value("meshGuid", Guid::kInvalid);
 	_dmr.material_ = _j.value("material", Asset::Material());
 	_dmr.dissolveTexture_ = _j.value("dissolveTexture", Guid::kInvalid);
+	_dmr.dissolveCompare_ = _j.value("dissolveCompare", DissolveCompare::LessEqual);
+	_dmr.dissolveThreshold_ = _j.value("dissolveThreshold", 1.0f);
+	_dmr.edgeWidth_ = _j.value("edgeWidth", 0.05f);
+	_dmr.edgeColor_ = _j.value("edgeColor", Vector4(1.0f, 0.5f, 0.0f, 1.0f));
 }
 
+/**
+ * @brief JSONへのシリアライズ
+ */
 void ONEngine::to_json(nlohmann::json& _j, const DissolveMeshRenderer& _dmr) {
 	_j = {
 		{ "type", "DissolveMeshRenderer" },
 		{ "meshGuid", _dmr.meshGuid_ },
 		{ "material", _dmr.material_ },
-		{ "dissolveTexture", _dmr.dissolveTexture_ }
+		{ "dissolveTexture", _dmr.dissolveTexture_ },
+		{ "dissolveCompare", _dmr.dissolveCompare_ },
+		{ "dissolveThreshold", _dmr.dissolveThreshold_ },
+		{ "edgeWidth", _dmr.edgeWidth_ },
+		{ "edgeColor", _dmr.edgeColor_ }
 	};
 }
 
@@ -72,18 +139,35 @@ void ONEngine::to_json(nlohmann::json& _j, const DissolveMeshRenderer& _dmr) {
 /// ここから DissolveMeshRenderer の定義
 /// ///////////////////////////////////////////////////
 
-DissolveMeshRenderer::DissolveMeshRenderer() {}
+/**
+ * @brief コンストラクタ
+ */
+DissolveMeshRenderer::DissolveMeshRenderer() {
+	dissolveThreshold_ = 1.0f;
+}
+/**
+ * @brief デストラクタ
+ */
 DissolveMeshRenderer::~DissolveMeshRenderer() {}
 
 
+/**
+ * @brief 描画するメッシュアセットのGuidを取得します。
+ */
 const Guid& DissolveMeshRenderer::GetMeshGuid() const {
 	return meshGuid_;
 }
 
+/**
+ * @brief 境界しきい値算出用のディゾルブノイズテクスチャのGuidを取得します。
+ */
 const Guid& DissolveMeshRenderer::GetDissolveTextureGuid() const {
 	return dissolveTexture_;
 }
 
+/**
+ * @brief アセットコレクションからディゾルブテクスチャのバインドインデックス（SRV）を取得します。
+ */
 uint32_t DissolveMeshRenderer::GetDissolveTextureId(Asset::AssetCollection* _ac) const {
 	const Asset::Texture* dissolveTex = _ac->GetTextureFromGuid(dissolveTexture_);
 	if(dissolveTex) {
@@ -92,12 +176,18 @@ uint32_t DissolveMeshRenderer::GetDissolveTextureId(Asset::AssetCollection* _ac)
 	return 0;
 }
 
+/**
+ * @brief 現在のディゾルブの進行度しきい値を取得します。
+ */
 float DissolveMeshRenderer::GetDissolveThreshold() const {
 	return dissolveThreshold_;
 }
 
+/**
+ * @brief GPUへ転送するためのマテリアル定数データをパックして取得します。
+ */
 GPUMaterial DissolveMeshRenderer::GetGPUMaterial(Asset::AssetCollection* _ac) const {
-	GPUMaterial result;
+	GPUMaterial result{};
 	result.uvTransform = material_.uvTransform;
 	result.baseColor = material_.baseColor;
 	result.postEffectFlags = material_.postEffectFlags;
@@ -113,8 +203,12 @@ GPUMaterial DissolveMeshRenderer::GetGPUMaterial(Asset::AssetCollection* _ac) co
 	return result;
 }
 
-uint32_t ONEngine::DissolveMeshRenderer::GetDissolveCompare() const {
+/**
+ * @brief ディゾルブ比較処理のタイプ（LessEqual/GreaterEqual）を取得します。
+ */
+uint32_t DissolveMeshRenderer::GetDissolveCompare() const {
 	return static_cast<uint32_t>(dissolveCompare_);
 }
+
 
 

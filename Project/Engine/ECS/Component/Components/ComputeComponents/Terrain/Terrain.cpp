@@ -1,4 +1,4 @@
-﻿#include "Terrain.h"
+#include "Terrain.h"
 
 /// std
 #include <array>
@@ -24,6 +24,9 @@ using namespace ONEngine;
 /// 地形のComponentのデバッグ用関数
 /// ///////////////////////////////////////////////////
 
+/**
+ * @brief エディタ用：Terrainコンポーネントのデバッグ表示（Gui描画等）処理を行います。
+ */
 void ComponentDebug::TerrainDebug(Terrain* _terrain, EntityComponentSystem* _ecs, Asset::AssetCollection * _assetCollection) {
 	if (!_terrain) {
 		return;
@@ -151,6 +154,9 @@ void ComponentDebug::TerrainDebug(Terrain* _terrain, EntityComponentSystem* _ecs
 	_terrain->river_.Edit(_ecs);
 }
 
+/**
+ * @brief エディタ用：地形テクスチャスプラット編集モード用のGui描画および操作処理を行います。
+ */
 bool ComponentDebug::TerrainTextureEditModeDebug(std::array<std::string, 4>* _texturePaths, int32_t* _usedTextureIndex, Asset::AssetCollection* _assetCollection) {
 	/// ----- テクスチャのパスを変更する処理 ----- ///
 
@@ -237,6 +243,9 @@ bool ComponentDebug::TerrainTextureEditModeDebug(std::array<std::string, 4>* _te
 }
 
 
+/**
+ * @brief JSONからのデシリアライズ
+ */
 void ONEngine::from_json(const nlohmann::json& _j, Terrain& _t) {
 	_t.enable = _j.value("enable", 1);
 	_t.editorInfo_.brushRadius = _j.value("brushRadius", 10.0f);
@@ -251,6 +260,9 @@ void ONEngine::from_json(const nlohmann::json& _j, Terrain& _t) {
 	_t.material_.postEffectFlags = PostEffectFlags_Lighting | PostEffectFlags_Shadow;
 }
 
+/**
+ * @brief JSONへのシリアライズ
+ */
 void ONEngine::to_json(nlohmann::json& _j, const Terrain& _t) {
 	_j = nlohmann::json{
 		{ "type", "Terrain" },
@@ -274,6 +286,9 @@ void ONEngine::to_json(nlohmann::json& _j, const Terrain& _t) {
 /// ///////////////////////////////////////////////////
 
 
+/**
+ * @brief コンストラクタ
+ */
 Terrain::Terrain() {
 
 	isCreated_ = false;
@@ -306,16 +321,25 @@ Terrain::Terrain() {
 
 }
 
+/**
+ * @brief デストラクタ
+ */
 Terrain::~Terrain() {}
 
 
 
+/**
+ * @brief 地形頂点およびインデックスを保持するGPUバッファ（UAV構造化バッファ）を生成します。
+ */
 void Terrain::CreateVerticesAndIndicesBuffers(DxDevice* _dxDevice, DxCommand* _dxCommand, DxSRVHeap* _dxSrvHeap) {
 	/// ----- UAV buffer の作成 ----- ///
 	rwVertices_.CreateUAV(GetMaxVertexNum(), _dxDevice, _dxCommand, _dxSrvHeap);
 	rwIndices_.CreateUAV(GetMaxIndexNum(), _dxDevice, _dxCommand, _dxSrvHeap);
 }
 
+/**
+ * @brief 計算シェーダ等で編集したリソースを、描画（VBV/IBV経由でのレンダリング）に適したステートへ移行するバリアを生成します。
+ */
 void Terrain::CreateRenderingBarriers(DxCommand* _dxCommand) {
 	rwVertices_.GetResource().CreateBarrier(
 		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
@@ -330,6 +354,9 @@ void Terrain::CreateRenderingBarriers(DxCommand* _dxCommand) {
 	);
 }
 
+/**
+ * @brief 描画用に移行したリソースステートを、計算・編集用の元ステート（UAV）へ復元するバリアを生成します。
+ */
 void Terrain::RestoreResourceBarriers(DxCommand* _dxCommand) {
 	rwVertices_.GetResource().CreateBarrier(
 		D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER,
@@ -344,6 +371,9 @@ void Terrain::RestoreResourceBarriers(DxCommand* _dxCommand) {
 	);
 }
 
+/**
+ * @brief レンダリング呼び出し用の頂点バッファビュー（D3D12_VERTEX_BUFFER_VIEW）を取得します。
+ */
 D3D12_VERTEX_BUFFER_VIEW Terrain::CreateVBV() {
 	D3D12_VERTEX_BUFFER_VIEW vbv = {};
 	vbv.BufferLocation = rwVertices_.GetResource().Get()->GetGPUVirtualAddress();
@@ -352,6 +382,9 @@ D3D12_VERTEX_BUFFER_VIEW Terrain::CreateVBV() {
 	return vbv;
 }
 
+/**
+ * @brief レンダリング呼び出し用のインデックスバッファビュー（D3D12_INDEX_BUFFER_VIEW）を取得します。
+ */
 D3D12_INDEX_BUFFER_VIEW Terrain::CreateIBV() {
 	D3D12_INDEX_BUFFER_VIEW ibv = {};
 	ibv.BufferLocation = rwIndices_.GetResource().Get()->GetGPUVirtualAddress();
@@ -360,6 +393,9 @@ D3D12_INDEX_BUFFER_VIEW Terrain::CreateIBV() {
 	return ibv;
 }
 
+/**
+ * @brief 地形の描画マテリアルパラメータ（カラー、テクスチャスロット等）をGPUバインド用のGPUMaterial構造に変換して取得します。
+ */
 GPUMaterial Terrain::GetMaterialData() {
 	return GPUMaterial{
 		.uvTransform = material_.uvTransform,
@@ -369,54 +405,93 @@ GPUMaterial Terrain::GetMaterialData() {
 	};
 }
 
+/**
+ * @brief 地形を構成するスプラットテクスチャアセットパスの一覧を取得します。
+ */
 const std::array<std::string, kMaxTerrainTextureNum>& Terrain::GetSplatTexPaths() const {
 	return splattingTexPaths_;
 }
 
+/**
+ * @brief GPU側の地形頂点構造化バッファの読み取り専用参照を取得します。
+ */
 const StructuredBuffer<TerrainVertex>& Terrain::GetRwVertices() const {
 	return rwVertices_;
 }
 
+/**
+ * @brief GPU側の地形インデックス構造化バッファの読み取り専用参照を取得します。
+ */
 const StructuredBuffer<uint32_t>& Terrain::GetRwIndices() const {
 	return rwIndices_;
 }
 
+/**
+ * @brief 頂点バッファを保持する低レベルリソース（DxResource）への参照を取得します。
+ */
 DxResource& Terrain::GetVerticesResource() {
 	return rwVertices_.GetResource();
 }
 
+/**
+ * @brief バッファ初期構築完了フラグを設定します。
+ */
 void Terrain::SetIsCreated(bool _isCreated) {
 	isCreated_ = _isCreated;
 }
 
+/**
+ * @brief バッファ初期構築完了フラグを取得します。
+ */
 bool Terrain::GetIsCreated() const {
 	return isCreated_;
 }
 
+/**
+ * @brief 最大頂点数を取得します。
+ */
 uint32_t Terrain::GetMaxVertexNum() {
 	return maxVertexNum_;
 }
 
+/**
+ * @brief 最大インデックス数を取得します。
+ */
 uint32_t Terrain::GetMaxIndexNum() {
 	return maxIndexNum_;
 }
 
+/**
+ * @brief 地形タイリング幅（XZサイズ）を取得します。
+ */
 const Vector2& Terrain::GetSize() const {
 	return terrainSize_;
 }
 
+/**
+ * @brief 地形エディタ情報の読み取り専用参照を取得します。
+ */
 const TerrainEditorInfo& Terrain::GetEditorInfo() const {
 	return editorInfo_;
 }
 
+/**
+ * @brief 地形上に配置された川（River）オブジェクトへのポインタを取得します。
+ */
 River* Terrain::GetRiver() {
 	return &river_;
 }
 
+/**
+ * @brief プロシージャル（計算ベース）描画が有効であるかを取得します。
+ */
 bool Terrain::GetIsRenderingProcedural() const {
 	return isRenderingProcedural_;
 }
 
+/**
+ * @brief プロシージャル描画の有効/無効を設定します。
+ */
 void Terrain::SetIsRenderingProcedural(bool _isRenderingProcedural) {
 	isRenderingProcedural_ = _isRenderingProcedural;
 }

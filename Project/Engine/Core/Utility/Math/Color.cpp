@@ -1,4 +1,4 @@
-﻿#include "Color.h"
+#include "Color.h"
 
 using namespace ONEngine;
 
@@ -12,10 +12,21 @@ const Color Color::kGreen = Color(0.0f, 1.0f, 0.0f, 1.0f); ///< 緑
 const Color Color::kBlue  = Color(0.0f, 0.0f, 1.0f, 1.0f); ///< 青
 
 
+/**
+ * @brief 32ビットカラーコード（例: 0xFFFFFFFF）から色を初期化するコンストラクタ
+ * @param _colorCode RGBAカラーコード
+ */
 Color::Color(uint32_t _colorCode) {
 	SetColorCode(_colorCode);
 }
 
+/**
+ * @brief HSVカラー空間の値をRGB（Vector4）に変換します。
+ * @param _h 色相 (0.0 ~ 360.0)
+ * @param _s 彩度 (0.0 ~ 1.0)
+ * @param _v 明度 (0.0 ~ 1.0)
+ * @return RGB（Alphaは1.0）のVector4ベクトル
+ */
 Vector4 Color::HSVtoRGB(float _h, float _s, float _v) {
 	float c = _v * _s;
 	float x = c * (1 - std::fabsf(std::fmodf(_h / 60.0f, 2) - 1));
@@ -39,6 +50,12 @@ Vector4 Color::HSVtoRGB(float _h, float _s, float _v) {
 	return Vector4(r + m, g + m, b + m, 1.0f);
 }
 
+/**
+ * @brief HSV値をRGB値に変換し、自身のRGBA値にセットします（Alphaは1.0）。
+ * @param _h 色相 (0.0 ~ 360.0)
+ * @param _s 彩度 (0.0 ~ 1.0)
+ * @param _v 明度 (0.0 ~ 1.0)
+ */
 void Color::SetHSVtoRGB(float _h, float _s, float _v) {
 	Vector4 color = HSVtoRGB(_h, _s, _v);
 	r = color.x;
@@ -47,6 +64,10 @@ void Color::SetHSVtoRGB(float _h, float _s, float _v) {
 	a = color.w;
 }
 
+/**
+ * @brief 32ビットカラーコード（RGBA）からRGBAに展開し、自身にセットします。
+ * @param _colorCode RGBAカラーコード
+ */
 void Color::SetColorCode(uint32_t _colorCode) {
 	r = static_cast<float>((_colorCode >> 24) & 0xFF) / 255.0f;
 	g = static_cast<float>((_colorCode >> 16) & 0xFF) / 255.0f;

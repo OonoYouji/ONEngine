@@ -66,6 +66,7 @@ private:
 
 	/// ----- other class ----- ///
 	ImGuiManager* pImGuiManager_;
+	ONEngine::SceneManager* pSceneManager_;
 
 	/// ----- collection window ----- ///
 	std::vector<std::unique_ptr<IEditorWindowContainer>> parentWindows_;

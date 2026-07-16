@@ -20,6 +20,7 @@ static const Vector2 kDebugWindowSize = Vector2(16.0f, 9.0f) * 110.0f; // 120が
 
 /// @brief デバッグ中かどうか
 extern bool isDebugging;
+extern bool isPause;
 extern bool isShowDebugScene;
 extern bool isShowGameScene;
 

@@ -1,4 +1,8 @@
 {
-    "version": 1,
-    "guid": "7e8c160c2f053464621775b9408c2ec9"
+    "colorSpace": "Linear",
+    "format": "RGBA8_UNORM",
+    "guid": "15c483f2b00f883febb73740a2dc88f1",
+    "name": "gradationLine",
+    "type": "Texture",
+    "version": 1
 }

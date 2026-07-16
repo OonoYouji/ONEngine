@@ -1,10 +1,16 @@
-﻿#include "FocusEntityCommand.h"
+#include "FocusEntityCommand.h"
 
 namespace Editor {
 
+/**
+ * @brief コンストラクタ
+ */
 FocusEntityCommand::FocusEntityCommand(ONEngine::EntityComponentSystem* ecs, ONEngine::GameEntity* targetEntity)
 	: pEcs_(ecs), targetEntity_(targetEntity), isExecuted_(false) {}
 
+/**
+ * @brief コマンドの実行（デバッグカメラの位置を、対象エンティティが見える位置へ移動させます）。
+ */
 EDITOR_STATE FocusEntityCommand::Execute() {
 	if(!pEcs_ || !targetEntity_) {
 		return EDITOR_STATE_FAILED; // ※エンジン側の定義に合わせてください
@@ -44,6 +50,9 @@ EDITOR_STATE FocusEntityCommand::Execute() {
 	return EDITOR_STATE_FINISH; // ※エンジン側の定義に合わせてください
 }
 
+/**
+ * @brief コマンドの取り消し処理（フォーカス実行前のカメラ座標・回転角度に戻します）。
+ */
 EDITOR_STATE FocusEntityCommand::Undo() {
 	if(!pEcs_) {
 		return EDITOR_STATE_FAILED;

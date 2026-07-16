@@ -1,4 +1,4 @@
-﻿#include "AssetCollection.h"
+#include "AssetCollection.h"
 
 /// std
 #include <filesystem>
@@ -10,10 +10,34 @@
 
 namespace ONEngine::Asset {
 
+namespace {
+	AssetCollection* sInstance = nullptr;
+}
 
-AssetCollection::AssetCollection() = default;
+/**
+ * @brief アセットコレクションのグローバルインスタンスを取得します。
+ * @return インスタンスのポインタ
+ */
+AssetCollection* AssetCollection::GetInstance() {
+	return sInstance;
+}
+
+
+/**
+ * @brief コンストラクタ
+ */
+AssetCollection::AssetCollection() {
+	sInstance = this;
+}
+/**
+ * @brief デストラクタ
+ */
 AssetCollection::~AssetCollection() = default;
 
+/**
+ * @brief 各アセットタイプのローダーとコンテナを紐付け、デフォルトアセット等のロードを行います。
+ * @param dxm DirectX12マネージャのポインタ
+ */
 void AssetCollection::Initialize(DxManager* dxm) {
 
 	const size_t assetTypeCount = static_cast<size_t>(AssetType::Count);
@@ -25,6 +49,7 @@ void AssetCollection::Initialize(DxManager* dxm) {
 	assetBundles_[static_cast<size_t>(AssetType::Audio)] = std::make_unique<AssetBundle<AudioClip>>();
 	assetBundles_[static_cast<size_t>(AssetType::Material)] = std::make_unique<AssetBundle<Material>>();
 	assetBundles_[static_cast<size_t>(AssetType::Shader)] = std::make_unique<AssetBundle<Shader>>();
+	assetBundles_[static_cast<size_t>(AssetType::AnimationClip)] = std::make_unique<AssetBundle<AnimationClip>>();
 
 	// ヘルパーを使ってセットアップ（キャスト記述が減りスマートになります）
 	auto* meshBundle = GetBundle<Model>(AssetType::Mesh);
@@ -47,12 +72,23 @@ void AssetCollection::Initialize(DxManager* dxm) {
 	shaderBundle->loader = std::make_unique<AssetLoader<Shader>>();
 	shaderBundle->container = std::make_unique<AssetContainer<Shader>>(128); // 適当な数
 
+	auto* animBundle = GetBundle<AnimationClip>(AssetType::AnimationClip);
+	animBundle->loader = std::make_unique<AssetLoader<AnimationClip>>();
+	animBundle->container = std::make_unique<AssetContainer<AnimationClip>>(128);
+
+	// デフォルトテクスチャを確実に最初にロードする
+	Load("./Packages/Textures/white.png", AssetType::Texture);
+
 	LoadResourcesAsync(GetResourceFilePaths("./Packages/"));
 	LoadResourcesAsync(GetResourceFilePaths("./Assets/"));
 
 	WaitAllLoads();
 }
 
+/**
+ * @brief 複数のアセットファイルパスのリストを受け取り、同期的に一括ロードします。
+ * @param filePaths ファイルパス配列
+ */
 void AssetCollection::LoadResources(const std::vector<std::string>& filePaths) {
 	for(auto& path : filePaths) {
 		AssetType type = GetAssetTypeFromExtension(FileSystem::FileExtension(path));
@@ -66,6 +102,10 @@ void AssetCollection::LoadResources(const std::vector<std::string>& filePaths) {
 ///
 /// アセットの非同期読み込み
 ///
+/**
+ * @brief 複数のアセットファイルパスのリストを受け取り、非同期（スレッドプール）でロードタスクを発行します。
+ * @param filePaths ファイルパス配列
+ */
 void AssetCollection::LoadResourcesAsync(const std::vector<std::string>& filePaths) {
 	for(auto& path : filePaths) {
 
@@ -87,6 +127,9 @@ void AssetCollection::LoadResourcesAsync(const std::vector<std::string>& filePat
 }
 
 /// [非同期化による追加] 投げた非同期ロードがすべて終わるまで待機
+/**
+ * @brief 現在実行中のすべての非同期ロードタスクの完了を待機します。
+ */
 void AssetCollection::WaitAllLoads() {
 	for(auto& task : pendingTasks_) {
 		if(task.valid()) {
@@ -97,13 +140,21 @@ void AssetCollection::WaitAllLoads() {
 	pendingTasks_.clear();
 }
 
+/**
+ * @brief 複数のアセットを一括アンロード（削除）します。
+ * @param filePaths 対象ファイルのパス配列
+ */
 void AssetCollection::UnloadResources(const std::vector<std::string>& filePaths) {
 	for(auto& path : filePaths) {
 		UnloadAssetByPath(path);
 	}
 }
 
-void AssetCollection::UnloadAssetByPath(const std::string& filepath) {
+/**
+ * @brief 指定パスのアセットをアンロードします。アセットの拡張子などからタイプを自動判定します。
+ * @param filepath アンロード対象のファイルパス
+ */
+void ONEngine::Asset::AssetCollection::UnloadAssetByPath(const std::string& filepath) {
 	/// アセットの削除
 	const std::string extension = FileSystem::FileExtension(filepath);
 	const AssetType type = GetAssetTypeFromExtension(extension);
@@ -112,6 +163,11 @@ void AssetCollection::UnloadAssetByPath(const std::string& filepath) {
 	}
 }
 
+/**
+ * @brief アセットタイプを指定して、単一のアセットを同期的にロードします。
+ * @param filepath アセットのファイルパス
+ * @param type アセットのタイプ
+ */
 void AssetCollection::Load(const std::string& filepath, AssetType type) {
 	if(auto* bundle = GetBaseBundle(type)) {
 		bundle->Load(filepath);
@@ -139,6 +195,16 @@ void AssetCollection::AddAsset<Material>(const std::string& filepath, Material&&
 	GetBundle<Material>(AssetType::Material)->container->Add(filepath, std::move(asset));
 }
 
+template<>
+void AssetCollection::AddAsset<AnimationClip>(const std::string& filepath, AnimationClip&& asset) {
+	GetBundle<AnimationClip>(AssetType::AnimationClip)->container->Add(filepath, std::move(asset));
+}
+
+/**
+ * @brief 指定されたGUIDを持つデータがアセット（登録済み）であるかを検証します。
+ * @param guid 検証対象のGUID
+ * @return アセットである場合はtrue、そうでない場合はfalse
+ */
 bool AssetCollection::IsAsset(const Guid& guid) const {
 	if(!guid.CheckValid()) {
 		return false;
@@ -152,6 +218,11 @@ bool AssetCollection::IsAsset(const Guid& guid) const {
 	return false;
 }
 
+/**
+ * @brief 指定パスのアセットがロード済みであるか判定します。
+ * @param filepath アセットのファイルパス
+ * @return 保持している場合はtrue、そうでない場合はfalse
+ */
 bool AssetCollection::HasAsset(const std::string& filepath) {
 	const std::string extension = FileSystem::FileExtension(filepath);
 	AssetType type = GetAssetTypeFromExtension(extension);
@@ -163,19 +234,34 @@ bool AssetCollection::HasAsset(const std::string& filepath) {
 	return false;
 }
 
+/**
+ * @brief 指定パスのアセットを再ロード（ディスクからリロード）します。
+ * @param filepath 再ロード対象のアセットパス
+ * @return リロードに成功した場合はtrue、失敗またはキャッシュにない場合はfalse
+ */
 bool AssetCollection::ReloadAsset(const std::string& filepath) {
 	const std::string extension = FileSystem::FileExtension(filepath);
 	AssetType type = GetAssetTypeFromExtension(extension);
 
 	if(auto* bundle = GetBaseBundle(type)) {
-		bundle->Reload(filepath);
+		if (bundle->Contains(filepath)) {
+			bundle->Reload(filepath);
+		} else {
+			bundle->Load(filepath);
+		}
 	}
 
 	return true;
 }
 
+/**
+ * @brief 指定ディレクトリ以下のすべてのサポート対象アセット（メタファイルに紐づく拡張子）のパスリストを取得します。
+ * @param directoryPath ディレクトリパス
+ * @return サポート対象ファイルのパス配列
+ */
 std::vector<std::string> AssetCollection::GetResourceFilePaths(const std::string& directoryPath) const {
 	std::vector<std::string> resourcePaths;
+	Console::LogInfo(std::format("AssetCollection: Scanning directory: {}", directoryPath));
 	for(const auto& entry : std::filesystem::recursive_directory_iterator(directoryPath)) {
 		if(entry.is_regular_file()) {
 			std::string path = entry.path().string();
@@ -186,6 +272,7 @@ std::vector<std::string> AssetCollection::GetResourceFilePaths(const std::string
 			}
 		}
 	}
+	Console::LogInfo(std::format("AssetCollection: Found {} assets in {}", resourcePaths.size(), directoryPath));
 	return resourcePaths;
 }
 
@@ -207,6 +294,11 @@ const Guid& AssetCollection::GetAssetGuidFromPath(const std::string& filepath) c
 	AssetType type = GetAssetTypeFromExtension(extension);
 
 	if(auto* bundle = GetBaseBundle(type)) {
+		const Guid& guid = bundle->GetGuid(filepath);
+		if (guid.CheckValid()) return guid;
+
+		// 未登録ならここで一度ロードを試みる (const_castが必要だが安全な範囲)
+		const_cast<AssetCollection*>(this)->ReloadAsset(filepath);
 		return bundle->GetGuid(filepath);
 	}
 
@@ -276,6 +368,14 @@ const AudioClip* AssetCollection::GetAudioClip(const std::string& filepath) cons
 
 AudioClip* AssetCollection::GetAudioClip(const std::string& filepath) {
 	return GetBundle<AudioClip>(AssetType::Audio)->container->Get(filepath);
+}
+
+const AnimationClip* AssetCollection::GetAnimationClip(const std::string& filepath) const {
+	return GetBundle<AnimationClip>(AssetType::AnimationClip)->container->Get(filepath);
+}
+
+AnimationClip* AssetCollection::GetAnimationClip(const std::string& filepath) {
+	return GetBundle<AnimationClip>(AssetType::AnimationClip)->container->Get(filepath);
 }
 
 

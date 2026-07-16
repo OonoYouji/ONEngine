@@ -1,4 +1,4 @@
-﻿#include "InputSystem.h"
+#include "InputSystem.h"
 
 using namespace ONEngine;
 
@@ -16,6 +16,9 @@ using namespace ONEngine;
 InputSystem::InputSystem() = default;
 InputSystem::~InputSystem() = default;
 
+/**
+ * @brief DirectInputの生成および各入力デバイスのインスタンス生成・初期化を行います。
+ */
 void InputSystem::Initialize(WindowManager* _windowManager, Editor::ImGuiManager* _imGuiManager) {
 	pWindowManager_ = _windowManager;
 
@@ -44,12 +47,18 @@ void InputSystem::Initialize(WindowManager* _windowManager, Editor::ImGuiManager
 	gamepad_->Initialize(directInput_.Get(), pWindowManager_);
 }
 
+/**
+ * @brief 毎フレーム呼び出され、全入力デバイスのデータをポーリングして状態を更新します。
+ */
 void InputSystem::Update() {
 	keyboard_->Update(pWindowManager_->GetActiveWindow());
 	mouse_->Update(pWindowManager_->GetActiveWindow());
 	gamepad_->Update(pWindowManager_->GetActiveWindow());
 }
 
+/**
+ * @brief C#（Mono）側からゲームパッドの入力値を取得するためのバインド関数。
+ */
 void MonoInternalMethods::InternalGetGamepadThumb(int _axisIndex, float* _x, float* _y) {
 	Vector2 v = {};
 	switch (_axisIndex) {
@@ -65,18 +74,27 @@ void MonoInternalMethods::InternalGetGamepadThumb(int _axisIndex, float* _x, flo
 	*_y = v.y;
 }
 
+/**
+ * @brief C#（Mono）側からマウスのフレーム移動量を取得するためのバインド関数。
+ */
 void MonoInternalMethods::InternalGetMouseVelocity(float* _x, float* _y) {
 	const Vector2& velocity = Input::GetMouseVelocity();
 	*_x = velocity.x;
 	*_y = velocity.y;
 }
 
+/**
+ * @brief C#（Mono）側からマウスのスクリーン座標を取得するためのバインド関数。
+ */
 void MonoInternalMethods::InternalGetMousePosition(float* _x, float* _y) {
 	const Vector2& position = Input::GetMousePosition();
 	*_x = position.x;
 	*_y = position.y;
 }
 
+/**
+ * @brief C#（Mono）側からマウスホイールの回転量を取得するためのバインド関数。
+ */
 void ONEngine::MonoInternalMethods::InternalGetMouseWheel(float* _wheel) {
 	float wheel = Input::GetMouseWheel();
 	if(_wheel) {

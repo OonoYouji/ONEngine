@@ -1,0 +1,16 @@
+{
+    "active": true,
+    "components": [
+        {
+            "FieldGridLine": {
+                "lineIndex": 11,
+                "yScale": 6.0
+            },
+            "type": "Variables"
+        }
+    ],
+    "guid": "e3986c5be745adb9711950baa5e9e267",
+    "name": "FieldGridLine_Col",
+    "parentGuid": null,
+    "prefabName": "FieldGridLine_Col"
+}

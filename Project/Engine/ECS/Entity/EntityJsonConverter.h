@@ -9,18 +9,29 @@
 namespace ONEngine {
 
 namespace EntityJsonConverter {
-nlohmann::json ToJson(const GameEntity* _entity);
+/**
+ * @brief ゲームエンティティの構成データ（トランスフォーム、アタッチされたコンポーネント、子エンティティなど）をJSONオブジェクトへシリアライズします。
+ * @param _entity 対象エンティティ
+ * @param _forceFull trueの場合、プレハブの差分ではなく完全なデータをシリアライズします
+ * @return シリアライズされたJSONオブジェクト
+ */
+nlohmann::json ToJson(const GameEntity* _entity, bool _forceFull = false);
 
 
-/// @brief JsonからGameEntityを生成する
-/// @param _json GameEntityのJsonデータ
-/// @param _entity 生成に使用するGameEntityのポインタ
-/// @param _groupName 生成元のECSGroup名
-void FromJson(const nlohmann::json& _json, GameEntity* _entity, const std::string& _groupName);
+/**
+ * @brief シリアライズされたJSONデータからゲームエンティティの構成要素（名前、有効状態、コンポーネントパラメータ等）をデシリアライズして復元・マージします。
+ * @param _json ゲームエンティティのシリアライズJSONデータ
+ * @param _entity 復元先のゲームエンティティポインタ
+ * @param _groupName 所属するECSGroup名
+ * @param _merge trueの場合は既存の構成にマージし、falseの場合は上書きします
+ */
+void FromJson(const nlohmann::json& _json, GameEntity* _entity, const std::string& _groupName, bool _merge = true);
 
-/// @brief Transform専用のJsonからGameEntityを生成する
-/// @param _json 生成元のJsonデータ
-/// @param _entity 生成先のGameEntityのポインタ
+/**
+ * @brief ゲームエンティティのTransformコンポーネントに限定してJSONデータからトランスフォームパラメータ（位置、回転、縮尺等）を復元適用します。
+ * @param _json トランスフォームデータを含むJSONオブジェクト
+ * @param _entity 反映先のゲームエンティティポインタ
+ */
 void TransformFromJson(const nlohmann::json& _json, GameEntity* _entity);
 };
 

@@ -115,6 +115,12 @@ public:
 	/// @param _name ImageInfoの名前
 	/// @return 見つかったImageInfoのポインタ、見つからなかった場合はnullptr
 	const ImGuiSceneImageInfo* GetSceneImageInfo(const std::string& _name) const;
+
+	/// @brief WindowManagerの取得
+	ONEngine::WindowManager* GetWindowManager() const { return pWindowManager_; }
+
+	/// @brief SceneManagerの取得
+	ONEngine::SceneManager* GetSceneManager() const { return pSceneManager_; }
 };
 
 

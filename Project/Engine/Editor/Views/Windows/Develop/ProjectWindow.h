@@ -89,6 +89,14 @@ private:
 	/// ファイルリストのキャッシュ
 	std::unordered_map<std::string, std::vector<FileItem>> fileCache_;
 
+	/// ----- 検索用 ----- ///
+	std::string searchBuffer_;
+	std::vector<FileItem> searchedFiles_;
+	bool isSearching_ = false;
+
+	/// ----- フィルタ用 ----- ///
+	std::string filterBuffer_;
+	bool isFiltering_ = false;
 
 	FileWatcher fileWatcher_;
 

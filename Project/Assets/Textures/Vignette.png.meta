@@ -1,4 +1,8 @@
 {
-    "version": 1,
-    "guid": "7ce590dfa912a3c74535c2ec46cc5e8d"
+    "colorSpace": "Linear",
+    "format": "RGBA8_UNORM",
+    "guid": "1d5101d848a75af5e3ec2efcf5d1a4ab",
+    "name": "Vignette",
+    "type": "Texture",
+    "version": 1
 }

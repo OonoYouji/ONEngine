@@ -68,6 +68,8 @@ public:
 	void SetCurrentGroupName(const std::string& _name);
 	const std::string& GetCurrentGroupName() const;
 
+	DxManager* GetDxManager() const { return pDxManager_; }
+
 	/// すべてのECSグループの取得
 	const std::unordered_map<std::string, std::unique_ptr<ECSGroup>>& GetECSGroups() const;
 
@@ -197,6 +199,9 @@ void InternalCreateEntity(int32_t* _entityId, MonoString* _prefabName, MonoStrin
 /// @param _entityId 対象のエンティティID
 void InternalDestroyEntity(MonoString* _ecsGroupName, int32_t _entityId);
 
+int32_t InternalGetRootEntityCount(MonoString* _groupName);
+int32_t InternalGetRootEntityId(MonoString* _groupName, int32_t _index);
+
 
 /// @brief エンティティの有効/無効の取得
 /// @param _entityId 対象のエンティティ
@@ -214,6 +219,9 @@ void InternalSetEnable(int32_t _entityId, bool _enable, MonoString* _ecsGroupNam
 void InternalSetBatch(MonoReflectionType* _typeReflection, MonoArray* _batchArray, int _count, MonoString* _ecsGroupName);
 void InternalGetBatch(MonoReflectionType* _typeReflection, MonoArray* _batchArray, int _count, MonoString* _ecsGroupName);
 
+void Internal_UpdateNodeStatus(uint32_t nodeIdHash, int status, MonoString* treePath);
+void Internal_UpdateBlackboardValue(uint32_t keyHash, MonoString* value, MonoString* typeName);
+void Internal_OnBreakpointHit(uint32_t nodeIdHash);
 
 } // namespace MonoInternalMethods
 

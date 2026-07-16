@@ -10,6 +10,8 @@ struct DissolveParams {
 	uint id;
 	uint dissolveCompare;
 	float threshold;
+	float edgeWidth;
+	float4 edgeColor;
 };
 
 
@@ -30,14 +32,23 @@ PSOutput main(VSOutput input) {
 
 	DissolveParams dissolveParam = dissolveParams[input.instanceId];
 	float4 dissolveTextureColor = textures[dissolveParam.id].Sample(textureSampler, input.uv);
+	
+	// Calculate luminance (Rec. 709 standard weights)
+	float dissolveValue = dot(dissolveTextureColor.rgb, float3(0.2126f, 0.7152f, 0.0722f));
+
+	float edge = 0.0f;
 	if (dissolveParam.dissolveCompare == DISSOLVE_COMPARE_LESS) {
-		if (dissolveTextureColor.a > dissolveParam.threshold) {
+		if (dissolveValue > dissolveParam.threshold) {
 			discard;
 		}
+		// Calculate edge glow
+		edge = smoothstep(dissolveParam.threshold - dissolveParam.edgeWidth, dissolveParam.threshold, dissolveValue);
 	} else if (dissolveParam.dissolveCompare == DISSOLVE_COMPARE_GREATER) {
-		if (dissolveTextureColor.a < dissolveParam.threshold) {
+		if (dissolveValue < dissolveParam.threshold) {
 			discard;
 		}
+		// Calculate edge glow
+		edge = smoothstep(dissolveParam.threshold + dissolveParam.edgeWidth, dissolveParam.threshold, dissolveValue);
 	}
     
 	Material material = materials[input.instanceId];
@@ -45,6 +56,10 @@ PSOutput main(VSOutput input) {
 	float4 textureColor = textures[textureIds[input.instanceId].id].Sample(textureSampler, uv);
 	
 	output.color = textureColor * material.baseColor;
+	
+	// Apply edge glow
+	output.color.rgb += edge * dissolveParam.edgeColor.rgb * dissolveParam.edgeColor.a;
+
 	output.worldPosition = input.worldPosition;
 	output.normal = float4(input.normal, 1.0f);
 	output.flags = float4(material.postEffectFlags, material.entityId, 0, 1);

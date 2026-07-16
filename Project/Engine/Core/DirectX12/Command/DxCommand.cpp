@@ -20,6 +20,9 @@ DxCommand::DxCommand()
 DxCommand::~DxCommand() = default;
 
 
+/**
+ * @brief コマンドキュー、アロケータ、グラフィックスコマンドリスト、およびフェンスの生成と初期化を行います。
+ */
 void DxCommand::Initialize(DxDevice* _dxDevice) {
 	HRESULT result = S_FALSE;
 
@@ -67,6 +70,9 @@ void DxCommand::Initialize(DxDevice* _dxDevice) {
 	Console::Log("dx command create success!!");
 }
 
+/**
+ * @brief 構築されたコマンドリストを閉じ、コマンドキューに投げて実行します。
+ */
 void DxCommand::CommandExecute() {
 	/// ----- CommandListのClose、Execute、Wait ----- ///
 
@@ -77,11 +83,17 @@ void DxCommand::CommandExecute() {
 	commandQueue_->ExecuteCommandLists(1, commandLists);
 }
 
+/**
+ * @brief コマンドリストをキューで実行し、GPUの処理完了までスレッドを待機（ブロック）させます。
+ */
 void DxCommand::CommandExecuteAndWait() {
 	CommandExecute();
 	WaitForGpuComplete();
 }
 
+/**
+ * @brief 次のフレームの描画命令を記録するため、コマンドアロケータとコマンドリストを再利用可能状態にします。
+ */
 void DxCommand::CommandReset() {
 	/// ----- CommandAllocatorとCommandListのReset ----- ///
 
@@ -92,6 +104,9 @@ void DxCommand::CommandReset() {
 	Assert(SUCCEEDED(hr), "Failed to reset command list.");
 }
 
+/**
+ * @brief フェンスを使用して、GPUがコマンドキューに積まれたすべての処理を終えるまでCPU側スレッドを待機させます。
+ */
 void DxCommand::WaitForGpuComplete() {
 	/// ----- GPUの処理を待つ ----- ///
 
@@ -106,10 +121,16 @@ void DxCommand::WaitForGpuComplete() {
 	}
 }
 
+/**
+ * @brief コマンドキュー（ID3D12CommandQueue）オブジェクトを取得します。
+ */
 ID3D12CommandQueue* DxCommand::GetCommandQueue() const {
 	return commandQueue_.Get();
 }
 
+/**
+ * @brief コマンドリスト（ID3D12GraphicsCommandList6）オブジェクトを取得します。
+ */
 ID3D12GraphicsCommandList6* DxCommand::GetCommandList() const {
 	return commandList_.Get();
 }

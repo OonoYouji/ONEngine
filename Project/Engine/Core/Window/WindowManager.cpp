@@ -1,4 +1,4 @@
-﻿#include "WindowManager.h"
+#include "WindowManager.h"
 
 using namespace ONEngine;
 
@@ -14,10 +14,27 @@ using namespace ONEngine;
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND _hwnd, UINT _msg, WPARAM _wParam, LPARAM _lParam);
 
 
-namespace {
-	WindowManager* gWindowManager = nullptr;
+static WindowManager* gWindowManager = nullptr;
+
+/**
+ * @brief シングルトンインスタンスを取得します。
+ */
+WindowManager* WindowManager::GetInstance() {
+	return gWindowManager;
 }
 
+/**
+ * @brief C#（Mono）側からウィンドウクライアントサイズを取得するためのバインド関数。
+ */
+void ONEngine::InternalGetWindowSize(Vector2* _size) {
+	if(_size && gWindowManager && gWindowManager->GetMainWindow()) {
+		*_size = gWindowManager->GetMainWindow()->GetWindowSize();
+	}
+}
+
+/**
+ * @brief メインウィンドウ用のウィンドウプロシージャ（メッセージハンドラ）。
+ */
 LRESULT WindowManager::MainWindowProc(HWND _hwnd, UINT _msg, WPARAM _wparam, LPARAM _lparam) {
 #ifdef DEBUG_MODE
 	if (ImGui_ImplWin32_WndProcHandler(_hwnd, _msg, _wparam, _lparam)) {
@@ -27,7 +44,9 @@ LRESULT WindowManager::MainWindowProc(HWND _hwnd, UINT _msg, WPARAM _wparam, LPA
 
 	switch (_msg) {
 	case WM_CLOSE:
-		PostQuitMessage(0);
+		if (gWindowManager) {
+			gWindowManager->SetCloseRequested(true);
+		}
 		return 0;
 	case WM_DESTROY: /// window破棄
 		return 0;
@@ -36,6 +55,9 @@ LRESULT WindowManager::MainWindowProc(HWND _hwnd, UINT _msg, WPARAM _wparam, LPA
 	return DefWindowProc(_hwnd, _msg, _wparam, _lparam);
 }
 
+/**
+ * @brief サブウィンドウ用のウィンドウプロシージャ（メッセージハンドラ）。
+ */
 LRESULT WindowManager::SubWindowProc(HWND _hwnd, UINT _msg, WPARAM _wparam, LPARAM _lparam) {
 #ifdef DEBUG_MODE
 	if (ImGui_ImplWin32_WndProcHandler(_hwnd, _msg, _wparam, _lparam)) {
@@ -61,6 +83,9 @@ WindowManager::WindowManager(DxManager* _dxm)
 WindowManager::~WindowManager() = default;
 
 
+/**
+ * @brief COMの初期化およびシングルトンインスタンスの設定を行います。
+ */
 void WindowManager::Initialize() {
 	/// COM初期化
 	CoInitializeEx(nullptr, COINIT_MULTITHREADED);
@@ -69,12 +94,18 @@ void WindowManager::Initialize() {
 	gWindowManager = this;
 }
 
+/**
+ * @brief 全てのウィンドウ破棄およびCOMの解放を行います。
+ */
 void WindowManager::Finalize() {
 	windows_.clear();
 	/// COM終了
-	CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+	CoUninitialize();
 }
 
+/**
+ * @brief 全ウィンドウのウィンドウメッセージ処理およびライフサイクル更新を行います。
+ */
 void WindowManager::Update() {
 
 	/// windowの更新
@@ -111,26 +142,41 @@ void WindowManager::Update() {
 
 }
 
+/**
+ * @brief メインウィンドウの描画前処理を行います。
+ */
 void WindowManager::MainWindowPreDraw() {
 	GetMainWindow()->PreDraw();
 }
 
+/**
+ * @brief メインウィンドウの描画後処理を行います。
+ */
 void WindowManager::MainWindowPostDraw() {
 	GetMainWindow()->PostDraw();
 }
 
+/**
+ * @brief 全ウィンドウに対する描画前処理を一括実行します。
+ */
 void WindowManager::PreDrawAll() {
 	for (auto& window : windows_) {
 		window->PreDraw();
 	}
 }
 
+/**
+ * @brief 全ウィンドウに対する描画後処理を一括実行します。
+ */
 void WindowManager::PostDrawAll() {
 	for (auto& window : windows_) {
 		window->PostDraw();
 	}
 }
 
+/**
+ * @brief 全ウィンドウのスワップチェーンプレゼンテーションを一括実行します。
+ */
 void WindowManager::PresentAll() {
 	for (auto& window : windows_) {
 		window->Present();
@@ -139,6 +185,9 @@ void WindowManager::PresentAll() {
 
 
 
+/**
+ * @brief 新しいウィンドウを生成して登録します。
+ */
 Window* WindowManager::GenerateWindow(const std::wstring& _windowName, const Vector2& _windowSize, WindowType _windowType, UINT _windowStyle) {
 	std::unique_ptr<Window> newWindow = std::make_unique<Window>();
 
@@ -157,6 +206,9 @@ Window* WindowManager::GenerateWindow(const std::wstring& _windowName, const Vec
 	return resultPtr;
 }
 
+/**
+ * @brief 実際にWin32ウィンドウを構築する内部関数です。
+ */
 void WindowManager::CreateGameWindow(const wchar_t* _title, const Vector2& _size, UINT _windowStyle, Window* _windowPtr, WindowType _windowType) {
 
 	timeBeginPeriod(1);
@@ -207,6 +259,9 @@ void WindowManager::CreateGameWindow(const wchar_t* _title, const Vector2& _size
 	ShowWindow(_windowPtr->hwnd_, SW_SHOW);
 }
 
+/**
+ * @brief メインウィンドウ固有の毎フレーム更新処理を行います。
+ */
 void WindowManager::UpdateMainWindow() {
 	pMainWindow_->Update();
 
@@ -230,10 +285,16 @@ void WindowManager::UpdateMainWindow() {
 	pMainWindow_->processMessage_ = false;
 }
 
+/**
+ * @brief メインウィンドウのオブジェクトポインタを取得します。
+ */
 Window* WindowManager::GetMainWindow() const {
 	return pMainWindow_;
 }
 
+/**
+ * @brief 現在フォアグラウンドまたはアクティブになっているウィンドウを取得します。
+ */
 Window* WindowManager::GetActiveWindow() const {
 
 	HWND activeWindow = GetForegroundWindow();
@@ -244,4 +305,18 @@ Window* WindowManager::GetActiveWindow() const {
 	}
 
 	return GetMainWindow();
+}
+
+/**
+ * @brief アプリケーションへの終了要求が発生しているか判定します。
+ */
+bool WindowManager::IsCloseRequested() const {
+	return closeRequested_;
+}
+
+/**
+ * @brief アプリケーションの終了要求フラグを明示的にセットします。
+ */
+void WindowManager::SetCloseRequested(bool _isCloseRequested) {
+	closeRequested_ = _isCloseRequested;
 }

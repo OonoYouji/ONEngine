@@ -60,7 +60,7 @@ void RiverRenderingPipeline::Draw(ECSGroup* _ecs, CameraComponent* _camera, DxCo
 
 	ComponentArray<Terrain>* terrainArray = _ecs->GetComponentArray<Terrain>();
 	if (!terrainArray || terrainArray->GetUsedComponents().empty()) {
-		Console::LogError("RiverRenderingPipeline::Draw: Terrain component array is null");
+		// Console::LogError("RiverRenderingPipeline::Draw: Terrain component array is null");
 		return;
 	}
 

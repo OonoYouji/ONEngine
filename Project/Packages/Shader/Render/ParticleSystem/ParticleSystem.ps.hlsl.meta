@@ -1,0 +1,9 @@
+{
+    "entryPoint": "main",
+    "guid": "a4f978ae2fe3d6499a720ec168e1fdfe",
+    "name": "ParticleSystem.ps",
+    "profile": "vs_6_0",
+    "shaderStage": "Vertex",
+    "type": "Shader",
+    "version": 1
+}

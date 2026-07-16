@@ -68,6 +68,10 @@ public:
 	/// @return GPU 実行時間（ミリ秒）。取得できない場合は負の値。
 	double GetTimeStampMSec(GPUTimeStampID id);
 
+	/// @brief GPU 側から全タイムスタンプ結果を取得してキャッシュする
+	/// 毎フレームの描画後に一度だけ呼ぶことで、個別の Map/Unmap を回避する
+	void FetchResults();
+
 private:
 
 	/// @brief タイマー ID からクエリヒープ上のインデックスを計算する
@@ -90,6 +94,9 @@ private:
 
 	uint64_t gpuTimestampFrequency_ = 0;
 	uint32_t maxTimerCount_ = 10;
+
+	/// 計測結果のキャッシュ (ミリ秒)
+	std::vector<double> resultsMSec_;
 };
 
 } /// namespace ONEngine

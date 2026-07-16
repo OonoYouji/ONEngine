@@ -1,4 +1,4 @@
-﻿#include "Keyboard.h"
+#include "Keyboard.h"
 
 using namespace ONEngine;
 
@@ -14,6 +14,9 @@ using namespace ONEngine;
 Keyboard::Keyboard() = default;
 Keyboard::~Keyboard() = default;
 
+/**
+ * @brief キーボード入力デバイスの初期化およびデータフォーマット、協調レベルの設定を行います。
+ */
 void Keyboard::Initialize(IDirectInput8* _directInput, WindowManager* _windowManager) {
 	HRESULT hr = _directInput->CreateDevice(
 		GUID_SysKeyboard, &keyboard_, NULL);
@@ -38,6 +41,9 @@ void Keyboard::Initialize(IDirectInput8* _directInput, WindowManager* _windowMan
 }
 
 
+/**
+ * @brief 毎フレームキーボードの最新のキー状態を取得し、前フレームの状態を保存します。
+ */
 void Keyboard::Update(Window* _window) {
 	keyboard_->SetCooperativeLevel(
 		_window->GetHwnd(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY

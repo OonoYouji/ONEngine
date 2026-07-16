@@ -52,7 +52,7 @@ void TerrainVertexEditorCompute::Execute(ONEngine::EntityComponentSystem* _ecs, 
 
 	ONEngine::ComponentArray<ONEngine::Terrain>* terrainArray = _ecs->GetCurrentGroup()->GetComponentArray<ONEngine::Terrain>();
 	if (!terrainArray || terrainArray->GetUsedComponents().empty()) {
-		ONEngine::Console::LogError("TerrainVertexEditorCompute::Execute: Terrain component array is null");
+		//ONEngine::Console::LogError("TerrainVertexEditorCompute::Execute: Terrain component array is null");
 		return;
 	}
 

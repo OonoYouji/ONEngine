@@ -1,4 +1,4 @@
-﻿#include "ShadowCaster.h"
+#include "ShadowCaster.h"
 
 /// external
 #include <imgui.h>
@@ -32,6 +32,9 @@ namespace {
 }
 
 
+/**
+ * @brief エディタ用：ShadowCasterコンポーネントのデバッグ表示（Gui描画等）処理を行います。
+ */
 void ComponentDebug::ShadowCasterDebug(ShadowCaster* _shadowCaster) {
 	if (!_shadowCaster) {
 		return;
@@ -78,6 +81,9 @@ void ComponentDebug::ShadowCasterDebug(ShadowCaster* _shadowCaster) {
 
 }
 
+/**
+ * @brief JSONからのデシリアライズ
+ */
 void ONEngine::from_json(const nlohmann::json& _j, ShadowCaster& _c) {
 	_c.enable = _j.value("enable", static_cast<int>(true));
 
@@ -92,6 +98,9 @@ void ONEngine::from_json(const nlohmann::json& _j, ShadowCaster& _c) {
 
 }
 
+/**
+ * @brief JSONへのシリアライズ
+ */
 void ONEngine::to_json(nlohmann::json& _j, const ShadowCaster& _c) {
 	_j = {
 		{ "type", "ShadowCaster" },
@@ -112,6 +121,9 @@ void ONEngine::to_json(nlohmann::json& _j, const ShadowCaster& _c) {
 /// 影の投影を行うためのコンポーネント
 /// ///////////////////////////////////////////////////
 
+/**
+ * @brief コンストラクタ
+ */
 ShadowCaster::ShadowCaster()
 	: camera_(nullptr),
 	isCreated_(false),
@@ -125,14 +137,20 @@ ShadowCaster::ShadowCaster()
 
 };
 
+/**
+ * @brief デストラクタ
+ */
 ShadowCaster::~ShadowCaster() = default;
 
+/**
+ * @brief 内部のシャドウマッピング用深度記述カメラなどを生成し、シャドウキャスターとしての初期設定を行います。
+ */
 void ShadowCaster::CreateShadowCaster() {
 	/// 生成済みかチェック
 	if (!isCreated_) {
 		isCreated_ = true;
 	} else {
-		Console::LogWarning("ShadowCaster::CreateShadowCaster: ShadowCaster is already created.");
+		//Console::LogWarning("ShadowCaster::CreateShadowCaster: ShadowCaster is already created.");
 		return;
 	}
 
@@ -143,6 +161,9 @@ void ShadowCaster::CreateShadowCaster() {
 	camera_->SetOrthographicSize(Vector2::HD * factor);
 }
 
+/**
+ * @brief 指定されたディレクショナルライトの照射方向に基づいて、影用のビュー・プロジェクション行列を再計算して更新します。
+ */
 void ShadowCaster::CalculationLightViewMatrix(ECSGroup* _ecsGroup, DirectionalLight* _directionLight) {
 	/// nullチェック
 	if (!_directionLight) {
@@ -177,10 +198,16 @@ void ShadowCaster::CalculationLightViewMatrix(ECSGroup* _ecsGroup, DirectionalLi
 
 }
 
+/**
+ * @brief 影描画のレンダリングに使用するカメラコンポーネントのポインタを取得します。
+ */
 CameraComponent* ShadowCaster::GetShadowCasterCamera() {
 	return camera_;
 }
 
+/**
+ * @brief PCF半径やシャドウバイアスなど、シェーダに渡すための影パラメータ構造体を取得します。
+ */
 ShadowParameter ShadowCaster::GetShadowParameters() const {
 	return ShadowParameter{
 		.screenSize = EngineConfig::kWindowSize,

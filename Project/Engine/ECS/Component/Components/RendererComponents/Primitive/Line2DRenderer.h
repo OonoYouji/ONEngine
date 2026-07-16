@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /// engine
 #include "../../Interface/IComponent.h"
@@ -11,19 +11,32 @@
 /// ///////////////////////////////////////////////////
 namespace ONEngine {
 
+/**
+ * @class Line2DRenderer
+ * @brief 2Dの線（ライン）を描画するためのレンダラーコンポーネントクラス
+ */
 class Line2DRenderer final : public IRenderComponent {
 public:
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
 	
+	/**
+	 * @brief コンストラクタ
+	 */
 	Line2DRenderer();
+
+	/**
+	 * @brief デストラクタ
+	 */
 	~Line2DRenderer();
 
-	/// @brief lineの設定
-	/// @param _start 初期値
-	/// @param _end   終了値
-	/// @param _color 色
+	/**
+	 * @brief 描画する線分のパラメータを設定します。
+	 * @param _start 始点のスクリーン座標（2D）
+	 * @param _end 終点のスクリーン座標（2D）
+	 * @param _color カラー（RGBA）
+	 */
 	void SetLine(const Vector2& _start, const Vector2& _end, const Vector4& _color);
 
 private:
@@ -40,7 +53,14 @@ public:
 	/// public : accessor
 	/// ===================================================
 	
+	/**
+	 * @brief 描画パイプライン用データ（読み取り専用）を取得します。
+	 */
 	const Line2DRenderingPipeline::RenderingData& GetRenderingData() const { return renderingData_; }
+
+	/**
+	 * @brief 描画パイプライン用データのポインタを取得します。
+	 */
 	Line2DRenderingPipeline::RenderingData* GetRenderingDataPtr() { return &renderingData_; }
 
 };

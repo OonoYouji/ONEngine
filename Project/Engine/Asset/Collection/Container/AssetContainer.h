@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /// std
 #include <string>
@@ -19,14 +19,23 @@ namespace ONEngine::Asset {
 /// ///////////////////////////////////////////////////
 /// アセットのインターフェイスクラス
 /// ///////////////////////////////////////////////////
+/**
+ * @class IAssetContainer
+ * @brief アセットコンテナの非テンプレート基底クラス
+ */
 class IAssetContainer {
 public:
+	/**
+	 * @brief デストラクタ
+	 */
 	virtual ~IAssetContainer() = default;
 };
 
-/// ///////////////////////////////////////////////////
-/// リソースのコンテナクラス
-/// ///////////////////////////////////////////////////
+/**
+ * @class AssetContainer
+ * @brief スレッドセーフに型安全なアセットを管理するコンテナテンプレートクラス
+ * @tparam T IsAsset コンセプトを満たすアセット型
+ */
 template <IsAsset T>
 class AssetContainer : public IAssetContainer {
 public:
@@ -34,34 +43,111 @@ public:
 	/// public : methods
 	/// ===================================================
 
+	/**
+	 * @brief 最大アセット数を指定してコンテナを初期化します。
+	 * @param _maxResourceSize 最大管理リソース数
+	 */
 	AssetContainer(size_t _maxResourceSize);
+
+	/**
+	 * @brief デストラクタ
+	 */
 	~AssetContainer();
 
-	/// 追加
+	/**
+	 * @brief アセットをコンテナに追加します。既に同じキーがある場合は上書きされます。
+	 * @param _key 登録キー（通常はファイルパス）
+	 * @param _t 追加するアセットオブジェクト
+	 * @return 追加・更新されたアセットオブジェクトへのポインタ
+	 */
 	T* Add(const std::string& _key, T _t);
 
-	/// 削除
+	/**
+	 * @brief 指定したキーのアセットを削除します。
+	 * @param _key 削除対象のキー
+	 */
 	void Remove(const std::string& _key);
+
+	/**
+	 * @brief 指定したインデックスのアセットを削除します。
+	 * @param _index 削除対象のインデックス
+	 */
 	void Remove(int32_t _index);
 
 
 	/// --------------- 取得用 --------------- ///
 
+	/**
+	 * @brief 指定キーに対応するアセットへのポインタを取得します。
+	 * @param _key 登録キー
+	 * @return アセットオブジェクトへのポインタ（存在しない場合はnullptr）
+	 */
 	T* Get(const std::string& _key);
+
+	/**
+	 * @brief 指定したインデックスに対応するアセットへのポインタを取得します。
+	 * @param _index インデックス
+	 * @return アセットオブジェクトへのポインタ（範囲外の場合はnullptr）
+	 */
 	T* Get(int32_t _index);
+
+	/**
+	 * @brief コンテナの先頭のアセットを取得します。
+	 * @return 先頭アセットオブジェクトへのポインタ
+	 */
 	T* GetFirst();
 
+	/**
+	 * @brief 指定インデックスに紐づく登録キー（パスなど）を取得します。
+	 * @param _index インデックス
+	 * @return キー文字列への参照
+	 */
 	const std::string& GetKey(int32_t _index) const;
 
+	/**
+	 * @brief 指定キーのコンテナ内インデックスを取得します。
+	 * @param _key 登録キー
+	 * @return インデックス（見つからない場合は -1）
+	 */
 	int32_t GetIndex(const std::string& _key) const;
+
+	/**
+	 * @brief 指定GUIDのアセットのコンテナ内インデックスを取得します。
+	 * @param _guid 検索するGUID
+	 * @return インデックス（見つからない場合は -1）
+	 */
 	int32_t GetIndex(const Guid& _guid) const;
 
+	/**
+	 * @brief コンテナで保持する全アセット配列を取得（読み取り専用）します。
+	 * @return アセット配列の定数参照
+	 */
 	const std::vector<T>& GetValues() const;
+
+	/**
+	 * @brief コンテナで保持する全アセット配列を取得します。
+	 * @return アセット配列の参照
+	 */
 	std::vector<T>& GetValues();
 
+	/**
+	 * @brief 登録キーからインデックスを引くマップを取得します。
+	 * @return キーとインデックスの対応マップ定数参照
+	 */
 	const std::unordered_map<std::string, int32_t>& GetIndexMap() const;
 
+	/**
+	 * @brief キーに紐づくアセットのGUIDを取得します。
+	 * @param _key 登録キー
+	 * @return GUIDオブジェクトの定数参照
+	 */
 	const Guid& GetGuid(const std::string& _key) const;
+
+	/**
+	 * @brief インデックスに紐づくアセットのGUIDを取得します。
+	 * @param _index インデックス
+	 * @return GUIDオブジェクトの定数参照
+	 */
 	const Guid& GetGuid(int32_t _index) const;
 
 private:
@@ -69,15 +155,15 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	mutable std::shared_mutex mtx_;
+	mutable std::shared_mutex mtx_;                                    ///< 排他制御用の共有ミューテックス
 
-	std::unordered_map<std::string, int32_t> indexMap_;
-	std::unordered_map<int32_t, std::string> reverseIndexMap_;
+	std::unordered_map<std::string, int32_t> indexMap_;                ///< キーからインデックスへのマップ
+	std::unordered_map<int32_t, std::string> reverseIndexMap_;         ///< インデックスからキーへのマップ
 
-	std::unordered_map<Guid, int32_t> guidToIndexMap_;
-	std::unordered_map<int32_t, Guid> indexToGuidMap_;
+	std::unordered_map<Guid, int32_t> guidToIndexMap_;                 ///< GUIDからインデックスへのマップ
+	std::unordered_map<int32_t, Guid> indexToGuidMap_;                 ///< インデックスからGUIDへのマップ
 
-	std::vector<T> values_;
+	std::vector<T> values_;                                            ///< 管理される実アセットデータ配列
 };
 
 /// ///////////////////////////////////////////////////
