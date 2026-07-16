@@ -58,7 +58,7 @@ namespace {
 // -------------------------------------------------------------
 // Sequence Wrapper Interface Implementation
 // -------------------------------------------------------------
-void AnimationSequenceWrapper::Add(int type) {
+void AnimationSequenceWrapper::Add(int /*type*/) {
     if (clip) {
         clipCopy = *clip;
         clip->tracks.push_back({ "Transform", "position.x", {} });
@@ -369,8 +369,6 @@ void AnimationEditorWindow::ShowImGui() {
 
         ImGui::BeginGroup();
         bool rangeChanged = false;
-        int oldStart = mutableClip->startFrame;
-        int oldEnd = mutableClip->endFrame;
         
         rangeChanged |= ImGui::DragInt("Start Frame", &mutableClip->startFrame, 1, 0, mutableClip->endFrame - 1);
         if (ImGui::IsItemActivated()) sequence.clipCopy = *mutableClip;

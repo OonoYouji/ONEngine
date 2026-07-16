@@ -1,4 +1,4 @@
-﻿#include "DragDrop.h"
+#include "DragDrop.h"
 
 /// externals
 #include <imgui.h>
@@ -9,7 +9,7 @@
 
 using namespace Editor;
 
-void Editor::DragDrop::SetDragDropPayload(const std::string& _filepath, const ONEngine::Guid& _guid, ONEngine::Asset::AssetCollection* _ac) {
+void Editor::DragDrop::SetDragDropPayload(const std::string& _filepath, const ONEngine::Guid& /*_guid*/, ONEngine::Asset::AssetCollection* _ac) {
 	if(ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
 		static AssetPayload payload;
 		payload.filePath = _filepath;

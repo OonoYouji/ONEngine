@@ -149,7 +149,6 @@ namespace {
 				}
 				return j;
 			}
-			return json();
 			}, var);
 	}
 

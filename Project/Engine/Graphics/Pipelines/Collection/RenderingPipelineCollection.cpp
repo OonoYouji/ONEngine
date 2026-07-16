@@ -1,4 +1,4 @@
-﻿#include "RenderingPipelineCollection.h"
+#include "RenderingPipelineCollection.h"
 
 using namespace ONEngine;
 
@@ -127,7 +127,7 @@ void RenderingPipelineCollection::PreDrawEntities(CameraComponent* _3dCamera, Ca
 	}
 }
 
-void RenderingPipelineCollection::DrawEntities(CameraComponent* _3dCamera, CameraComponent* _2dCamera) {
+void RenderingPipelineCollection::DrawEntities(CameraComponent* _3dCamera, CameraComponent* /*_2dCamera*/) {
 
 	/// シーンを描画するので現在のGroupを使用する
 	ECSGroup* ecsGroup = pEntityComponentSystem_->GetCurrentGroup();
@@ -146,7 +146,7 @@ void RenderingPipelineCollection::DrawParticles(CameraComponent* _3dCamera) {
 	}
 }
 
-void RenderingPipelineCollection::DrawGizmos(CameraComponent* _3dCamera) {
+void RenderingPipelineCollection::DrawGizmos(CameraComponent* /*_3dCamera*/) {
 	//if (gizmoRenderer_ && IsEnableCamera(_3dCamera)) {
 	//	gizmoRenderer_->Draw(pEntityComponentSystem_->GetCurrentGroup(), _3dCamera, pDxManager_->GetDxCommand());
 	//}
@@ -179,7 +179,7 @@ void RenderingPipelineCollection::DrawEntities2D(CameraComponent* _2dCamera, con
 	}
 }
 
-void RenderingPipelineCollection::DrawSelectedPrefab(CameraComponent* _3dCamera, CameraComponent* _2dCamera) {
+void RenderingPipelineCollection::DrawSelectedPrefab(CameraComponent* _3dCamera, CameraComponent* /*_2dCamera*/) {
 	/// ----- 選択されているPrefabの描画 ----- ///
 
 	/// デバッグ用のGroupを使用する

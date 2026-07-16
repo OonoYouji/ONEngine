@@ -38,7 +38,7 @@ struct AnimationSequenceWrapper : public ImSequencer::SequenceInterface {
     int GetItemCount() const override { return clip ? (int)clip->tracks.size() : 0; }
 
     int GetItemTypeCount() const override { return 0; }
-    const char* GetItemTypeName(int typeIndex) const override { return ""; }
+    const char* GetItemTypeName(int /*typeIndex*/) const override { return ""; }
     const char* GetItemLabel(int index) const override {
         if (!clip || index < 0 || index >= clip->tracks.size()) return "";
         // キャッシュ用の一時文字列領域はImGuiの仕組みに頼るか工夫が必要
@@ -59,7 +59,7 @@ struct AnimationSequenceWrapper : public ImSequencer::SequenceInterface {
     void Duplicate(int index) override;
     
     // カスタム描画でキーフレームをプロットする
-    size_t GetCustomHeight(int index) override { return 15; }
+    size_t GetCustomHeight(int /*index*/) override { return 15; }
     void CustomDraw(int index, ImDrawList* draw_list, const ImRect& rc, const ImRect& legendRect, const ImRect& clippingRect, const ImRect& legendClippingRect) override;
 
     // --- Interaction State ---

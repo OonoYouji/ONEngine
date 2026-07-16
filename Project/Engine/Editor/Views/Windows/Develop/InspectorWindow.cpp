@@ -88,8 +88,8 @@ InspectorWindow::InspectorWindow(const std::string& windowName, DxManager* dxm, 
 	RegisterComponent<CustomMeshRenderer>(ComponentType::Renderer, [&](CustomMeshRenderer* comp) { CustomMeshRendererDebug(comp); });
 	RegisterComponent<DissolveMeshRenderer>(ComponentType::Renderer, [&](DissolveMeshRenderer* comp) { ShowGUI(comp, pAssetCollection_); });
 	RegisterComponent<SpriteRenderer>(ComponentType::Renderer, [&](SpriteRenderer* comp) { ComponentDebug::SpriteDebug(comp, pAssetCollection_); });
-	RegisterComponent<Line2DRenderer>(ComponentType::Renderer, [&](Line2DRenderer* comp) {});
-	RegisterComponent<Line3DRenderer>(ComponentType::Renderer, [&](Line3DRenderer* comp) {});
+	RegisterComponent<Line2DRenderer>(ComponentType::Renderer, [&](Line2DRenderer* /*comp*/) {});
+	RegisterComponent<Line3DRenderer>(ComponentType::Renderer, [&](Line3DRenderer* /*comp*/) {});
 	RegisterComponent<SkinMeshRenderer>(ComponentType::Renderer, [&](SkinMeshRenderer* comp) { ComponentDebug::SkinMeshRendererDebug(comp, pAssetCollection_); });
 	RegisterComponent<ScreenPostEffectTag>(ComponentType::Renderer, [&](ScreenPostEffectTag* comp) { ComponentDebug::ScreenPostEffectTagDebug(comp); });
 	RegisterComponent<Skybox>(ComponentType::Renderer, [&](Skybox* comp) { ComponentDebug::SkyboxDebug(comp); });
@@ -428,7 +428,6 @@ ImVec4 InspectorWindow::GetComponentBaseColor(ComponentType type) const {
 	case ComponentType::Collider: return ImVec4(0.50f, 0.30f, 0.15f, 0.70f);
 	default:                      return ImGui::GetStyleColorVec4(ImGuiCol_Header);
 	}
-	return ImVec4();
 }
 
 
@@ -566,7 +565,7 @@ bool InspectorWindow::DrawMultiComponentHeaderUI(const std::vector<ONEngine::ICo
 
 	bool allEnabled = true;
 	bool firstEnabled = comps[0]->enable;
-	for (auto c : comps) if (c->enable != firstEnabled) { allEnabled = false; break; }
+	for (auto c : comps) if (static_cast<bool>(c->enable) != firstEnabled) { allEnabled = false; break; }
 
 	ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0, 0, 0, 0));
 	ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, ImVec4(1, 1, 1, 0.1f));

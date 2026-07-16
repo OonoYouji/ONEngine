@@ -1,4 +1,4 @@
-﻿#include "EntityComponentSystem.h"
+#include "EntityComponentSystem.h"
 
 using namespace ONEngine;
 
@@ -599,7 +599,7 @@ void ONEngine::MonoInternalMethods::Internal_UpdateBlackboardValue(uint32_t keyH
     }
 }
 
-void ONEngine::MonoInternalMethods::Internal_OnBreakpointHit(uint32_t nodeIdHash) {
+void ONEngine::MonoInternalMethods::Internal_OnBreakpointHit(uint32_t /*nodeIdHash*/) {
     // ブレークポイントヒット時にゲームを一時停止（デバッグ用）
     ONEngine::DebugConfig::isPause = true; 
     // ※ONEngineにグローバルなPauseフラグがあると仮定。

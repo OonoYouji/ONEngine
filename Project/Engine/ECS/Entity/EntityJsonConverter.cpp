@@ -133,7 +133,7 @@ nlohmann::json EntityJsonConverter::ToJson(const GameEntity* _entity, bool _forc
 	return entityJson;
 }
 
-void EntityJsonConverter::FromJson(const nlohmann::json& _json, GameEntity* _entity, const std::string& _groupName, bool _merge) {
+void EntityJsonConverter::FromJson(const nlohmann::json& _json, GameEntity* _entity, const std::string& /*_groupName*/, bool _merge) {
 
 	/// name, prefabNameを設定
 	if (_json.contains("name")) {

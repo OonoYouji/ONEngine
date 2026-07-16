@@ -162,7 +162,7 @@ void HierarchyWindow::DrawMenuScene() {
 			IGFD::FileDialogConfig config;
 			config.path = scenePath.string();
 			// ディレクトリを表示しないように設定
-			config.userFileAttributes = [](IGFD::FileInfos* infos, IGFD::UserDatas userDatas) -> bool {
+			config.userFileAttributes = [](IGFD::FileInfos* infos, IGFD::UserDatas /*userDatas*/) -> bool {
 				return !infos->fileType.isDir();
 			};
 			ImGuiFileDialog::Instance()->OpenDialog("LoadSceneDialog", "Choose Scene", ".scene", config);

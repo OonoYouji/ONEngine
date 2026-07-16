@@ -1,4 +1,4 @@
-﻿#include "DebugSceneView.h"
+#include "DebugSceneView.h"
 
 /// std
 #include <array>
@@ -207,43 +207,43 @@ void Editor::DebugSceneView::ShowDebugSceneView(const ImVec2& imagePos) {
 					};
 					rightSections.push_back(bossSection);
 				}
+			}
 
-				// --- GameController の情報を追加 ---
-				auto* gcClass = mono_class_from_name(image, "", "GameController");
-				if (gcClass) {
-					auto* statusField = mono_class_get_field_from_name(gcClass, "currentStatus");
-					auto* phaseField = mono_class_get_field_from_name(gcClass, "currentPhase");
-					auto* vtable = mono_class_vtable(domain, gcClass);
+			// --- GameController の情報を追加 ---
+			auto* gcClass = mono_class_from_name(image, "", "GameController");
+			if (gcClass) {
+				auto* statusField = mono_class_get_field_from_name(gcClass, "currentStatus");
+				auto* phaseField = mono_class_get_field_from_name(gcClass, "currentPhase");
+				auto* vtable = mono_class_vtable(domain, gcClass);
 
-					if (vtable && statusField && phaseField) {
-						MonoString* statusStr = nullptr;
-						MonoString* phaseStr = nullptr;
-						mono_field_static_get_value(vtable, statusField, &statusStr);
-						mono_field_static_get_value(vtable, phaseField, &phaseStr);
+				if (vtable && statusField && phaseField) {
+					MonoString* statusStr = nullptr;
+					MonoString* phaseStr = nullptr;
+					mono_field_static_get_value(vtable, statusField, &statusStr);
+					mono_field_static_get_value(vtable, phaseField, &phaseStr);
 
-						std::string gameStatus = "N/A";
-						if (statusStr) {
-							char* cstr = mono_string_to_utf8(statusStr);
-							gameStatus = cstr;
-							mono_free(cstr);
-						}
-
-						std::string gcPhase = "N/A";
-						if (phaseStr) {
-							char* cstr = mono_string_to_utf8(phaseStr);
-							gcPhase = cstr;
-							mono_free(cstr);
-						}
-
-						OverlaySection gcSection;
-						gcSection.name = "GameController 監視";
-						gcSection.opened = true;
-						gcSection.items = {
-							{ "Game Status", gameStatus, IM_COL32(255, 255, 255, 255) },
-							{ "GC Phase Sync", gcPhase, IM_COL32(200, 255, 100, 255) }
-						};
-						rightSections.push_back(gcSection);
+					std::string gameStatus = "N/A";
+					if (statusStr) {
+						char* cstr = mono_string_to_utf8(statusStr);
+						gameStatus = cstr;
+						mono_free(cstr);
 					}
+
+					std::string gcPhase = "N/A";
+					if (phaseStr) {
+						char* cstr = mono_string_to_utf8(phaseStr);
+						gcPhase = cstr;
+						mono_free(cstr);
+					}
+
+					OverlaySection gcSection;
+					gcSection.name = "GameController 監視";
+					gcSection.opened = true;
+					gcSection.items = {
+						{ "Game Status", gameStatus, IM_COL32(255, 255, 255, 255) },
+						{ "GC Phase Sync", gcPhase, IM_COL32(200, 255, 100, 255) }
+					};
+					rightSections.push_back(gcSection);
 				}
 			}
 		}
