@@ -1,4 +1,4 @@
-﻿#include "ModelLoader.h"
+#include "ModelLoader.h"
 
 /// std
 #include <fstream>
@@ -17,11 +17,21 @@
 
 namespace ONEngine::Asset {
 
+/**
+ * @brief コンストラクタ。DirectXマネージャへの参照を設定し、Assimpのインポートフラグを初期化します。
+ * @param _dxm DirectX12マネージャのポインタ
+ */
 AssetLoader<Model>::AssetLoader(DxManager* _dxm)
 	: pDxManager_(_dxm) {
 	assimpLoadFlags_ = aiProcess_FlipWindingOrder | aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices | aiProcess_Triangulate | aiProcess_LimitBoneWeights;
 }
 
+/**
+ * @brief ディスクからモデルアセットファイル（FBX, OBJ等）を読み込みます。
+ * @param _filepath 読み込み対象のファイルパス
+ * @param meta モデルアセットのメタデータ
+ * @return ロードされたModelアセット（失敗時はstd::nullopt）
+ */
 std::optional<Model> AssetLoader<Model>::Load(const std::string& _filepath, Meta<Model::MetaData> meta) {
 	/// ----- モデルの読み込み ----- ///
 
@@ -151,12 +161,24 @@ std::optional<Model> AssetLoader<Model>::Load(const std::string& _filepath, Meta
 	return model;
 }
 
+/**
+ * @brief 既存のモデルに対して再ロード（リロード）を実行します。
+ * @param _filepath 再ロード対象のファイルパス
+ * @param _src 再ロード元のModelオブジェクトへのポインタ
+ * @param meta モデルアセットのメタデータ
+ * @return 再ロードされたModelアセット（失敗時はstd::nullopt）
+ */
 std::optional<Model> AssetLoader<Model>::Reload(const std::string& _filepath, Model* /*_src*/, Meta<Model::MetaData> meta) {
 	/// モデルの再読み込みは特殊な操作をする必要がないのでもう一度読み込んだ内容を渡す
 	return Load(_filepath, meta);
 }
 
 
+/**
+ * @brief モデルに対応するメタデータを取得します。
+ * @param _filepath 対象アセットファイルのパス
+ * @return 解析・構築されたメタデータオブジェクト
+ */
 Meta<Model::MetaData> AssetLoader<Model>::GetMetaData(const std::string& _filepath) {
 	Meta<Model::MetaData> res{};
 
@@ -180,6 +202,11 @@ Meta<Model::MetaData> AssetLoader<Model>::GetMetaData(const std::string& _filepa
 
 
 
+/**
+ * @brief AssimpのaiNodeからスケルトン用ノード（Node）を再帰的に読み込みます。
+ * @param _node 走査対象のaiNodeポインタ
+ * @return 構築されたNode構造体
+ */
 Node AssetLoader<Model>::ReadNode(aiNode* _node) {
 	/// ----- nodeの読み込み ----- ///
 
@@ -208,6 +235,11 @@ Node AssetLoader<Model>::ReadNode(aiNode* _node) {
 	return result;
 }
 
+/**
+ * @brief AssimpのaiSceneに含まれるアニメーションデータを解析し、Modelにインポートします。
+ * @param _model インポート先のModelポインタ
+ * @param _scene Assimp의 aiSceneポインタ
+ */
 void AssetLoader<Model>::LoadAnimation(Model* _model, const aiScene* _scene) {
 	/// ----- アニメーションの読み込み ----- ///
 
@@ -291,6 +323,11 @@ void AssetLoader<Model>::LoadAnimation(Model* _model, const aiScene* _scene) {
 	}
 }
 
+/**
+ * @brief ロードしたシーンデータがエンジン側で処理可能な構成であるかを検証します。
+ * @param _aiScene 解析されたAssimpのaiSceneポインタ
+ * @return 処理可能な場合はtrue、不適合なデータの場合はfalse
+ */
 bool AssetLoader<Model>::ValidateModel(const aiScene* _aiScene) {
 	if(!_aiScene) {
 		Console::LogError("AssetLoader<Model>::ValidateModel: aiScene is null.");

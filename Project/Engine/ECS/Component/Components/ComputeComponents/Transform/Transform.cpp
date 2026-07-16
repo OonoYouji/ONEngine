@@ -32,10 +32,16 @@ Transform::Transform() {
 Transform::~Transform() = default;
 
 
+/**
+ * @brief 位置・回転・縮尺をもとにローカル/ワールド行列の再計算と更新を行います。
+ */
 void Transform::Update() {
 	matWorld = Matrix4x4::MakeScale(scale) * Matrix4x4::MakeRotate(Quaternion::Normalize(rotate)) * Matrix4x4::MakeTranslate(position);
 }
 
+/**
+ * @brief トランスフォームの状態をデフォルト（原点、回転なし、縮尺1）にリセットします。
+ */
 void Transform::Reset() {
 	position = Vector3::Zero;
 	rotate = Quaternion::kIdentity;
@@ -45,40 +51,67 @@ void Transform::Reset() {
 	matWorld = Matrix4x4::kIdentity;
 }
 
+/**
+ * @brief 位置を設定します。
+ */
 void Transform::SetPosition(const Vector3& _v) {
 	position = _v;
 }
 
+/**
+ * @brief オイラー角を指定して回転を設定します。
+ */
 void Transform::SetRotate(const Vector3& _v) {
 	euler = _v; // ここでの _v は度数法を想定
 	SyncQuaternionFromEuler();
 }
 
+/**
+ * @brief クォータニオンを指定して回転を設定します。
+ */
 void Transform::SetRotate(const Quaternion& _q) {
 	rotate = _q;
 	SyncEulerFromQuaternion();
 }
 
+/**
+ * @brief 縮尺を設定します。
+ */
 void Transform::SetScale(const Vector3& _v) {
 	scale = _v;
 }
 
+/**
+ * @brief 現在のローカル位置座標を取得します。
+ */
 const Vector3& Transform::GetPosition() const {
 	return position;
 }
 
+/**
+ * @brief 現在のクォータニオン回転を取得します。
+ */
 const Quaternion& Transform::GetRotate() const {
 	return rotate;
 }
 
+/**
+ * @brief 現在の縮尺を取得します。
+ */
 const Vector3& Transform::GetScale() const {
 	return scale;
 }
 
+/**
+ * @brief 算出済みのワールド行列を取得します。
+ */
 const Matrix4x4& Transform::GetMatWorld() const {
 	return matWorld;
 }
 
+/**
+ * @brief エディタ等での編集用オイラー角（euler）からクォータニオン回転（rotate）を再構築・同期します。
+ */
 void Transform::SyncQuaternionFromEuler() {
 	Vector3 rad = {
 		euler.x * Math::Deg2Rad,
@@ -89,6 +122,9 @@ void Transform::SyncQuaternionFromEuler() {
 	lastSyncedRotate = rotate;
 }
 
+/**
+ * @brief 現在のクォータニオン回転（rotate）からエディタ編集用のオイラー角（euler）を同期・算出します。
+ */
 void Transform::SyncEulerFromQuaternion() {
 	Vector3 rad = Quaternion::ToEuler(rotate);
 	euler = {
@@ -104,12 +140,18 @@ void Transform::SyncEulerFromQuaternion() {
 /// mono からのTransform取得用関数
 /// ===================================================
 
+/**
+ * @brief トランスフォームの行列の明示的な再計算。
+ */
 void ONEngine::UpdateTransform(Transform* _transform) {
 	if(GameEntity* entity = _transform->GetOwner()) {
 		entity->UpdateTransform();
 	}
 }
 
+/**
+ * @brief C#（Mono）インターフェース用：位置座標の取得
+ */
 void ONEngine::InternalGetPosition(uint64_t _nativeHandle, float* _x, float* _y, float* _z) {
 	Transform* transform = reinterpret_cast<Transform*>(_nativeHandle);
 	if(!transform) {
@@ -125,6 +167,9 @@ void ONEngine::InternalGetPosition(uint64_t _nativeHandle, float* _x, float* _y,
 	if(_z) { *_z = position.z; }
 }
 
+/**
+ * @brief C#（Mono）インターフェース用：ローカル位置座標の取得
+ */
 void ONEngine::InternalGetLocalPosition(uint64_t _nativeHandle, float* _x, float* _y, float* _z) {
 	Transform* transform = reinterpret_cast<Transform*>(_nativeHandle);
 	if(!transform) {
@@ -137,6 +182,9 @@ void ONEngine::InternalGetLocalPosition(uint64_t _nativeHandle, float* _x, float
 	if(_z) { *_z = transform->position.z; }
 }
 
+/**
+ * @brief C#（Mono）インターフェース用：回転（クォータニオン）の取得
+ */
 void ONEngine::InternalGetRotate(uint64_t _nativeHandle, float* _x, float* _y, float* _z, float* _w) {
 	Transform* transform = reinterpret_cast<Transform*>(_nativeHandle);
 	if(!transform) {
@@ -150,6 +198,9 @@ void ONEngine::InternalGetRotate(uint64_t _nativeHandle, float* _x, float* _y, f
 	if(_w) { *_w = transform->rotate.w; }
 }
 
+/**
+ * @brief C#（Mono）インターフェース用：縮尺の取得
+ */
 void ONEngine::InternalGetScale(uint64_t _nativeHandle, float* _x, float* _y, float* _z) {
 	Transform* transform = reinterpret_cast<Transform*>(_nativeHandle);
 	if(!transform) {
@@ -162,6 +213,9 @@ void ONEngine::InternalGetScale(uint64_t _nativeHandle, float* _x, float* _y, fl
 	if(_z) { *_z = transform->scale.z; }
 }
 
+/**
+ * @brief C#（Mono）インターフェース用：位置座標の設定
+ */
 void ONEngine::InternalSetPosition(uint64_t _nativeHandle, float _x, float _y, float _z) {
 	Transform* transform = reinterpret_cast<Transform*>(_nativeHandle);
 	if(!transform) {
@@ -175,6 +229,9 @@ void ONEngine::InternalSetPosition(uint64_t _nativeHandle, float _x, float _y, f
 	UpdateTransform(transform); // 更新を呼び出す
 }
 
+/**
+ * @brief C#（Mono）インターフェース用：ローカル位置座標の設定
+ */
 void ONEngine::InternalSetLocalPosition(uint64_t _nativeHandle, float _x, float _y, float _z) {
 	Transform* transform = reinterpret_cast<Transform*>(_nativeHandle);
 	if(!transform) {
@@ -188,6 +245,9 @@ void ONEngine::InternalSetLocalPosition(uint64_t _nativeHandle, float _x, float 
 	UpdateTransform(transform); // 更新を呼び出す
 }
 
+/**
+ * @brief C#（Mono）インターフェース用：回転（クォータニオン）の設定
+ */
 void ONEngine::InternalSetRotate(uint64_t _nativeHandle, float _x, float _y, float _z, float _w) {
 	Transform* transform = reinterpret_cast<Transform*>(_nativeHandle);
 	if(!transform) {
@@ -203,6 +263,9 @@ void ONEngine::InternalSetRotate(uint64_t _nativeHandle, float _x, float _y, flo
 	UpdateTransform(transform); // 更新を呼び出す
 }
 
+/**
+ * @brief C#（Mono）インターフェース用：縮尺の設定
+ */
 void ONEngine::InternalSetScale(uint64_t _nativeHandle, float _x, float _y, float _z) {
 	Transform* transform = reinterpret_cast<Transform*>(_nativeHandle);
 	if(!transform) {
@@ -216,11 +279,17 @@ void ONEngine::InternalSetScale(uint64_t _nativeHandle, float _x, float _y, floa
 	UpdateTransform(transform); // 更新を呼び出す
 }
 
+/**
+ * @brief エディタ用：Transformコンポーネントのデバッグ表示処理（GUI描画等）を行います。
+ */
 void ComponentDebug::TransformDebug(Transform* _transform) {
 	std::vector<Transform*> transforms = { _transform };
 	TransformDebug(transforms);
 }
 
+/**
+ * @brief エディタ用：複数Transformコンポーネントの一括デバッグ表示処理を行います。
+ */
 void ComponentDebug::TransformDebug(const std::vector<Transform*>& _transforms) {
 	if(_transforms.empty()) {
 		return;
@@ -354,6 +423,9 @@ void ComponentDebug::TransformDebug(const std::vector<Transform*>& _transforms) 
 }
 
 
+/**
+ * @brief JSONからのデシリアライズ
+ */
 void ONEngine::from_json(const nlohmann::json& _j, Transform& _t) {
 	_t.enable = _j.at("enable").get<int>();
 	_t.position = _j.at("position").get<Vector3>();
@@ -364,6 +436,9 @@ void ONEngine::from_json(const nlohmann::json& _j, Transform& _t) {
 	_t.Update();
 }
 
+/**
+ * @brief JSONへのシリアライズ
+ */
 void ONEngine::to_json(nlohmann::json& _j, const Transform& _t) {
 	_j = nlohmann::json{
 		{ "type", "Transform" },

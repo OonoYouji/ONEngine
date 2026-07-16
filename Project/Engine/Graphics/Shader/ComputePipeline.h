@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /// directX
 #include <d3d12.h>
@@ -16,70 +16,101 @@
 /// ///////////////////////////////////////////////////
 namespace ONEngine {
 
+/**
+ * @class ComputePipeline
+ * @brief コンピュートシェーダ（CS）用パイプライン（ルートシグネチャ、パイプラインステートオブジェクト(PSO)）を定義・生成・バインドするためのクラス
+ */
 class ComputePipeline {
 public:
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
 
+	/**
+	 * @brief コンストラクタ
+	 */
 	ComputePipeline();
+
+	/**
+	 * @brief デストラクタ
+	 */
 	~ComputePipeline();
 
-	/// @brief pipelineを生成する
-	/// @param _dxDevice DxDeviceへのポインタ
+	/**
+	 * @brief 登録されたコンピュートシェーダおよびルートパラメータ設定をもとに、ルートシグネチャとコンピュートPSO（Compute PSO）を生成します。
+	 * @param _dxDevice デバイスポインタ
+	 */
 	void CreatePipeline(class DxDevice* _dxDevice);
 
 
 	/*--- root signature ---*/
 
-	/// @brief 使用する shaderへのポインタをセットする
-	/// @param _shader 使用するshader
+	/**
+	 * @brief 使用するシェーダオブジェクト（CSステージのBlobを保持）を登録します。
+	 * @param _shader 設定するShaderオブジェクトポインタ
+	 */
 	void SetShader(Shader* _shader);
 
-	/// @brief constant buffer viewを追加する
-	/// @param _shaderVisibility shaderの種類
-	/// @param _shaderRegister  register(b0)の0の部分
+	/**
+	 * @brief ルートパラメータに定数バッファビュー（CBV）の直接記述スロットを追加します。
+	 * @param _shaderVisibility 対象となるシェーダステージ
+	 * @param _shaderRegister HLSLレジスタ番号（register(bXX)のXX部）
+	 */
 	void AddCBV(D3D12_SHADER_VISIBILITY _shaderVisibility, uint32_t _shaderRegister);
 
-	/// @brief 32bit constantを追加する
-	/// @param _shaderVisibility shaderの種類
-	/// @param _shaderRegister   register(b0)の0の部分
+	/**
+	 * @brief ルートパラメータに32ビットのインライン定数（Root Constants）を追加します。
+	 * @param _shaderVisibility 対象シェーダ
+	 * @param _shaderRegister HLSLレジスタ番号
+	 * @param _num32bitValue 転送する32ビット値の個数
+	 */
 	void Add32BitConstant(D3D12_SHADER_VISIBILITY _shaderVisibility, uint32_t _shaderRegister, uint32_t _num32bitValue = 1u);
 
-	/// @brief descriptor rangeを追加する
-	/// @param _baseShaderRegister register(b0)の0の部分
-	/// @param _numDescriptor      descriptorの数
-	/// @param _rangeType          descriptorの種類(CBV, SRV, UAV)
+	/**
+	 * @brief ディスクリプタテーブル用のレンジ（連続したビュー範囲）を定義して内部リストに追加します。
+	 * @param _baseShaderRegister 先頭のHLSLレジスタ番号
+	 * @param _numDescriptor この範囲で確保するディスクリプタの総数
+	 * @param _rangeType レンジの形式（CBV, SRV, UAV）
+	 */
 	void AddDescriptorRange(uint32_t _baseShaderRegister, uint32_t _numDescriptor, D3D12_DESCRIPTOR_RANGE_TYPE  _rangeType);
 
-	/// @brief descriptor tableを追加する
-	/// @param _shaderVisibility 使用するshaderの種類(vs, ps)
-	/// @param _descriptorIndex descriptor rangeの配列のインデックス
+	/**
+	 * @brief ルートパラメータに、追加済みのディスクリプタレンジを参照するディスクリプタテーブルスロットを追加します。
+	 * @param _shaderVisibility 対象シェーダステージ
+	 * @param _descriptorIndex バインドするディスクリプタレンジの配列インデックス
+	 */
 	void AddDescriptorTable(D3D12_SHADER_VISIBILITY _shaderVisibility, uint32_t _descriptorIndex);
 
-	/// @brief static samplerを追加する
-	/// @param _shaderVisibility 使用するshaderの種類(vs, ps)
-	/// @param _shaderRegister   shaderのregister(s0)の0の部分
-	/// @param _isComparisonSampler 比較サンプラーにするかどうか
+	/**
+	 * @brief ルートパラメータに静的サンプラを追加します。
+	 * @param _shaderVisibility 対象シェーダ
+	 * @param _shaderRegister レジスタ番号（register(sXX)）
+	 * @param _isComparisonSampler 比較（シャドウマップ参照等）用サンプラにするかどうか
+	 */
 	void AddStaticSampler(D3D12_SHADER_VISIBILITY _shaderVisibility, uint32_t _shaderRegister, bool _isComparisonSampler = false);
 
-	/// @brief fill modeを設定する
-	/// @param _fillMode 設定するfill mode
+	/**
+	 * @brief ラスタライザのフィルモードを設定します。
+	 */
 	void SetFillMode(D3D12_FILL_MODE _fillMode);
 
-	/// @brief カリングの設定
-	/// @param _cullMode カリングモード
+	/**
+	 * @brief ラスタライザのカリングモードを設定します。
+	 */
 	void SetCullMode(D3D12_CULL_MODE _cullMode);
 
-	/// @brief TopologyTypeを設定する
-	/// @param _topologyType 設定するtopology type
+	/**
+	 * @brief プリミティブトポロジーのトポロジータイプを設定します。
+	 */
 	void SetTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE _topologyType);
 
 
 	/*--- pipeline state ---*/
 
-	/// @brief コマンドリストにパイプラインステートをセットする
-	/// @param _dxCommand command listを管理しているクラスへのポインタ
+	/**
+	 * @brief コマンドリストにコンピュートPSOおよびルートシグネチャをバインドします。
+	 * @param _dxCommand コマンド管理者ポインタ
+	 */
 	void SetPipelineStateForCommandList(class DxCommand* _dxCommand);
 
 
@@ -88,12 +119,14 @@ private:
 	/// private : methods
 	/// ===================================================
 
-	/// @brief root signatureを生成する
-	/// @param _dxDevice DxDeviceへのポインタ
+	/**
+	 * @brief ルートシグネチャを内部生成します。
+	 */
 	void CreateRootSignature(class DxDevice* _dxDevice);
 
-	/// @brief pipeline state objectを生成する
-	/// @param _dxDevice DxDeviceへのポインタ
+	/**
+	 * @brief コンピュートパイプラインステート（Compute PSO）を内部生成します。
+	 */
 	void CreatePipelineStateObject(class DxDevice* _dxDevice);
 
 private:

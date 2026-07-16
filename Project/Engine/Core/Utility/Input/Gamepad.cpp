@@ -1,4 +1,4 @@
-﻿#include "Gamepad.h"
+#include "Gamepad.h"
 
 using namespace ONEngine;
 
@@ -12,6 +12,9 @@ using namespace ONEngine;
 Gamepad::Gamepad() {}
 Gamepad::~Gamepad() {}
 
+/**
+ * @brief ゲームパッド接続の初期状態セットアップ等を行います。
+ */
 void Gamepad::Initialize(IDirectInput8* _directInput, WindowManager* _windowManager) {
 
 	HRESULT hr = _directInput->CreateDevice(GUID_SysKeyboard, &gamepadDevice_, NULL);
@@ -34,6 +37,9 @@ void Gamepad::Initialize(IDirectInput8* _directInput, WindowManager* _windowMana
 	Assert(SUCCEEDED(hr), "Failed to set cooperative level for gamepad device");
 }
 
+/**
+ * @brief 毎フレームゲームパッドの接続状態および最新の入力フレーム（XINPUT_STATE）を取得・保存します。
+ */
 void Gamepad::Update(Window* /*_window*/) {
 
 	/// 前フレームの状態を保存

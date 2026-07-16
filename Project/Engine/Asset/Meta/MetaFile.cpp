@@ -1,4 +1,4 @@
-﻿#include "MetaFile.h"
+#include "MetaFile.h"
 
 /// std
 #include <fstream>
@@ -142,6 +142,12 @@ namespace ONEngine::Asset {
 //	return metaFile;
 //}
 
+/**
+ * @brief 指定されたメタファイルパスから共通メタデータ（MetaBase）をロードします。存在しない場合は新規生成を行います。
+ * @param filepath 対象の .meta ファイルパス
+ * @param assetPath アセット本体のファイルパス
+ * @return 取得した（または新規に作成・保存された）MetaBaseオブジェクト
+ */
 MetaBase LoadOrGenerateMetaBase(const std::string& filepath, const std::string& assetPath) {
 
 	nlohmann::json j;
@@ -188,6 +194,12 @@ MetaBase LoadOrGenerateMetaBase(const std::string& filepath, const std::string& 
 	return metaBase;
 }
 
+/**
+ * @brief メタデータ（共通部および固有部）を指定ファイルパスにJSON形式で保存します。
+ * @param filepath 保存先の .meta ファイルパス
+ * @param metaBase 共通のメタデータ
+ * @param jMetaData アセット固有のメタデータ
+ */
 void SaveMetaToFile(const std::string& filepath, const MetaBase& metaBase, const nlohmann::json& jMetaData) {
 	nlohmann::json j;
 	j["version"] = 1;

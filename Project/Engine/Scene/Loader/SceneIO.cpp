@@ -1,4 +1,4 @@
-﻿#include "SceneIO.h"
+#include "SceneIO.h"
 
 using namespace ONEngine;
 
@@ -18,34 +18,62 @@ using namespace ONEngine;
 #include "Engine/Script/MonoScriptEngine.h"
 #include "Engine/Core/Utility/FileSystem/FileSystem.h"
 
+/**
+ * @brief コンストラクタ。シーンの保存先ディレクトリを設定します。
+ * @param _ecs ECS管理クラスへのポインタ
+ */
 SceneIO::SceneIO(EntityComponentSystem* _ecs) : pEcs_(_ecs) {
 	fileName_ = "";
 	fileDirectory_ = "./Assets/Scene/";
 }
+/**
+ * @brief デストラクタ。
+ */
 SceneIO::~SceneIO() {}
 
+/**
+ * @brief 指定したECSグループのエンティティデータをシーンファイルに出力します。
+ * @param _sceneName 保存するシーン名
+ * @param _ecsGroup 保存対象のECSグループ
+ */
 void SceneIO::Output(const std::string& _sceneName, ECSGroup* _ecsGroup) {
-	/* sceneをjsonに保存する */
 	fileName_ = _sceneName + ".scene";
 	SaveScene(fileName_, _ecsGroup);
 }
 
+/**
+ * @brief 指定したシーンファイルを読み込み、エンティティを生成してECSグループに復元します。
+ * @param _sceneName 読み込むシーン名
+ * @param _ecsGroup 復元対象のECSグループ
+ */
 void SceneIO::Input(const std::string& _sceneName, ECSGroup* _ecsGroup) {
-	/* jsonを読み込んでsceneに変換する */
 	fileName_ = _sceneName + ".scene";
 	LoadScene(fileName_, _ecsGroup);
 }
 
+/**
+ * @brief シーンのエンティティデータをメモリ上のテンポラリ領域に一時保存します。
+ * @param _ecsGroup 対象のECSグループ
+ */
 void SceneIO::OutputTemporary(ECSGroup* _ecsGroup) {
 	tempSceneJson_.clear();
 	SaveSceneToJson(tempSceneJson_, _ecsGroup);
 }
 
+/**
+ * @brief メモリ上に一時保存されたデータからECSグループを復元します。
+ * @param _ecsGroup 対象のECSグループ
+ */
 void SceneIO::InputTemporary(ECSGroup* _ecsGroup) {
 	MonoScriptEngine::GetInstance().ClearECSGroup(_ecsGroup->GetGroupName());
 	LoadSceneFromJson(tempSceneJson_, _ecsGroup);
 }
 
+/**
+ * @brief シーンファイルおよび各エンティティの個別ファイル (.entity) を物理ディスクに保存します。
+ * @param _filename シーンファイル名
+ * @param _ecsGroup 対象のECSグループ
+ */
 void SceneIO::SaveScene(const std::string& _filename, ECSGroup* _ecsGroup) {
 	nlohmann::json sceneJson = nlohmann::json::object();
 	std::string sceneName = FileSystem::FileNameWithoutExtension(_filename);
@@ -108,6 +136,11 @@ void SceneIO::SaveScene(const std::string& _filename, ECSGroup* _ecsGroup) {
 	OutputJson(sceneJson, _filename);
 }
 
+/**
+ * @brief シーンファイルを読み込み、そこに記述された各エンティティの定義ファイルを読み込みロードします。
+ * @param _filename シーンファイル名
+ * @param _ecsGroup 対象のECSグループ
+ */
 void SceneIO::LoadScene(const std::string& _filename, ECSGroup* _ecsGroup) {
 	MonoScriptEngine::GetInstance().ClearECSGroup(_ecsGroup->GetGroupName());
 
@@ -174,6 +207,11 @@ void SceneIO::LoadScene(const std::string& _filename, ECSGroup* _ecsGroup) {
 	LoadSceneFromJson(fullSceneJson, _ecsGroup);
 }
 
+/**
+ * @brief ECSグループ内の全エンティティを走査し、シリアライズ用のJSON形式に変換します。
+ * @param _output 出力先JSON
+ * @param _ecsGroup 対象のECSグループ
+ */
 void SceneIO::SaveSceneToJson(nlohmann::json& _output, ECSGroup* _ecsGroup) {
 
 	auto& entities = _ecsGroup->GetEntities();
@@ -197,6 +235,11 @@ void SceneIO::SaveSceneToJson(nlohmann::json& _output, ECSGroup* _ecsGroup) {
 
 }
 
+/**
+ * @brief シーンのJSONデータから、エンティティおよびコンポーネントを生成・復元し、親子関係を設定します。
+ * @param _input 入力JSON
+ * @param _ecsGroup ロード先のECSグループ
+ */
 void SceneIO::LoadSceneFromJson(const nlohmann::json& _input, ECSGroup* _ecsGroup) {
 	std::unordered_map<Guid, GameEntity*> entityMap;
 	std::unordered_map<uint32_t, GameEntity*> oldIdMap; // 互換性用
@@ -271,6 +314,11 @@ void SceneIO::LoadSceneFromJson(const nlohmann::json& _input, ECSGroup* _ecsGrou
 	MonoScriptEngine::GetInstance().SyncInitialComponentsToCS(_ecsGroup);
 }
 
+/**
+ * @brief JSONデータを指定したファイル名でディスクに書き出します。
+ * @param _json 保存対象のJSONデータ
+ * @param _filename 保存先ファイル名
+ */
 void SceneIO::OutputJson(const nlohmann::json& _json, const std::string& _filename) {
 	/// ファイルが無かったら生成する
 	if (!std::filesystem::exists(fileDirectory_ + _filename)) {

@@ -45,14 +45,28 @@ namespace {
 }
 
 
+/**
+ * @brief コンストラクタ。リロード回数カウンターを初期化します。
+ */
 MonoScriptEngine::MonoScriptEngine() : domainReloadCounter_(0) {}
+
+/**
+ * @brief デストラクタ。
+ */
 MonoScriptEngine::~MonoScriptEngine() = default;
 
+/**
+ * @brief シングルトンインスタンスを取得します。
+ * @return MonoScriptEngineの唯一のインスタンスの参照
+ */
 MonoScriptEngine& MonoScriptEngine::GetInstance() {
 	static MonoScriptEngine instance;
 	return instance;
 }
 
+/**
+ * @brief MonoのJITランタイムを初期化し、C#アセンブリ（DLL）をロードします。
+ */
 void MonoScriptEngine::Initialize() {
 
 	SetEnvironmentVariableA("PATH", "Packages/mono/bin;C:/Windows/System32");
@@ -104,6 +118,9 @@ void MonoScriptEngine::Initialize() {
 	RegisterFunctions();
 }
 
+/**
+ * @brief Monoランタイムを終了し、確保したドメインなどのリソースをクリーンアップします。
+ */
 void MonoScriptEngine::Finalize() {
 	if (domain_) {
 		mono_jit_cleanup(domain_);
@@ -111,6 +128,9 @@ void MonoScriptEngine::Finalize() {
 	}
 }
 
+/**
+ * @brief C++エンジン側の各機能（入力、ECS、イベント、デバッグログ等）をC#内部呼び出しにバインド登録します。
+ */
 void MonoScriptEngine::RegisterFunctions() {
 	/// 関数の登録
 	AddComponentInternalCalls();
@@ -172,6 +192,9 @@ void MonoScriptEngine::RegisterFunctions() {
 	}
 }
 
+/**
+ * @brief C# DLLをリビルドした後に、ランタイムのドメインを破棄・再生成してホットリロードを行います。
+ */
 void MonoScriptEngine::HotReload() {
 	MonoDomain* oldDomain = domain_;
 	std::string oldDllPath = currentDllPath_;
@@ -217,10 +240,20 @@ void MonoScriptEngine::HotReload() {
 	Console::Log("Reloaded assembly successfully in new domain.", LogCategory::ScriptEngine);
 }
 
+/**
+ * @brief ECSシステム管理オブジェクトへのポインタを設定します。
+ * @param _ecs ECSオブジェクトポインタ
+ */
 void MonoScriptEngine::SetEcsPtr(EntityComponentSystem* _ecs) {
 	pEcs_ = _ecs;
 }
 
+/**
+ * @brief 指定されたディレクトリと接頭辞から、最新更新日時のアセンブリ（DLL）を探します。
+ * @param _dirPath 検索ディレクトリのパス
+ * @param _baseName DLLファイル名のベース（接頭辞）
+ * @return 見つかった場合は最新のファイルパス、ない場合は std::nullopt
+ */
 std::optional<std::string> MonoScriptEngine::FindLatestDll(const std::string& _dirPath, const std::string& _baseName) {
 	std::regex pattern(_baseName + R"(.*\.dll)"); // プレフィックスが一致する全てのDLL
 	std::optional<std::string> latestFile;
@@ -255,6 +288,9 @@ std::optional<std::string> MonoScriptEngine::FindLatestDll(const std::string& _d
 	return latestFile;
 }
 
+/**
+ * @brief C#側のエンティティ情報を全て削除し、クリア状態にリセットします。
+ */
 void MonoScriptEngine::ResetCS() {
 	MonoClass* monoClass = mono_class_from_name(image_, "", "EntityComponentSystem");
 	if (!monoClass) {
@@ -278,6 +314,12 @@ void MonoScriptEngine::ResetCS() {
 	}
 }
 
+/**
+ * @brief C#側のEntityクラスオブジェクトを取得します。
+ * @param _ecsGroupName 所属するグループ名
+ * @param _entityId 対象エンティティID
+ * @return C# EntityオブジェクトのMonoポインタ
+ */
 MonoObject* MonoScriptEngine::GetEntityFromCS(const std::string& _ecsGroupName, int32_t _entityId) {
 	MonoClass* monoClass = mono_class_from_name(image_, "", "EntityComponentSystem");
 	if (!monoClass) {
@@ -307,6 +349,13 @@ MonoObject* MonoScriptEngine::GetEntityFromCS(const std::string& _ecsGroupName, 
 	return result;
 }
 
+/**
+ * @brief C#側の指定エンティティから指定された名前のMonoBehaviour（スクリプト）オブジェクトを取得します。
+ * @param _ecsGroupName 所属するグループ名
+ * @param _entityId 対象エンティティID
+ * @param _behaviorName 取得対象のスクリプトクラス名
+ * @return MonoBehaviourオブジェクトのMonoポインタ
+ */
 MonoObject* MonoScriptEngine::GetMonoBehaviorFromCS(const std::string& _ecsGroupName, int32_t _entityId, const std::string& _behaviorName) {
 	MonoClass* monoClass = mono_class_from_name(image_, "", "EntityComponentSystem");
 	if (!monoClass) {
@@ -337,6 +386,11 @@ MonoObject* MonoScriptEngine::GetMonoBehaviorFromCS(const std::string& _ecsGroup
 	return result;
 }
 
+/**
+ * @brief C#オブジェクト（MonoObject）の所有者となっているC++側のGameEntityをIDから解決して取得します。
+ * @param _obj 検索元となるC#オブジェクト
+ * @return 所有者であるGameEntityのポインタ。見つからない場合はnullptr。
+ */
 GameEntity* MonoScriptEngine::GetOwnerEntity(MonoObject* _obj) {
 	if (!_obj || !image_ || !pEcs_) return nullptr;
 
@@ -387,6 +441,11 @@ GameEntity* MonoScriptEngine::GetOwnerEntity(MonoObject* _obj) {
 	return nullptr;
 }
 
+/**
+ * @brief 指定したGuidを持つC++側のGameEntityを全ECSグループから走査して取得します。
+ * @param _guid 対象のGuid
+ * @return 合致するGameEntityのポインタ。見つからない場合はnullptr。
+ */
 GameEntity* MonoScriptEngine::GetOwnerEntity(const Guid& _guid) {
 	if (!pEcs_) return nullptr;
 
@@ -398,6 +457,11 @@ GameEntity* MonoScriptEngine::GetOwnerEntity(const Guid& _guid) {
 	return nullptr;
 }
 
+/**
+ * @brief エンティティのGuidから、そのエンティティが所属しているECSグループ名を取得します。
+ * @param _guid 対象エンティティのGuid
+ * @return 所属しているECSグループ名
+ */
 std::string MonoScriptEngine::GetGroupNameByEntityGuid(const Guid& _guid) {
 	if (!pEcs_) return "";
 
@@ -410,6 +474,14 @@ std::string MonoScriptEngine::GetGroupNameByEntityGuid(const Guid& _guid) {
 	return "";
 }
 
+/**
+ * @brief C#のアセンブリからクラスを検索し、その中に定義されたメソッドを取得します。親クラスも再帰検索します。
+ * @param _namespace クラスの名前空間
+ * @param _className クラス名
+ * @param _methodName メソッド名
+ * @param _argsCount 引数の数
+ * @return 取得したMonoMethodのポインタ。見つからない場合はnullptr。
+ */
 MonoMethod* MonoScriptEngine::GetMethodFromCS(const std::string& _namespace, const std::string& _className, const std::string& _methodName, int _argsCount) {
 	/// MonoClassを取得
 	MonoClass* monoClass = mono_class_from_name(image_, _namespace.c_str(), _className.c_str());
@@ -429,6 +501,10 @@ MonoMethod* MonoScriptEngine::GetMethodFromCS(const std::string& _namespace, con
 	return nullptr;
 }
 
+/**
+ * @brief ホットリロード用にカウンタを進めた一意な名前の新しいアプリドメイン（AppDomain）を生成します。
+ * @return 生成されたMonoDomainのポインタ。失敗した場合はnullptr。
+ */
 MonoDomain* MonoScriptEngine::CreateReloadDomain() {
 	std::string domainName = "ReloadedDomain_" + std::to_string(++domainReloadCounter_);
 
@@ -441,26 +517,50 @@ MonoDomain* MonoScriptEngine::CreateReloadDomain() {
 	return domain;
 }
 
+/**
+ * @brief 現在のアプリドメインを取得します。
+ * @return MonoDomainポインタ
+ */
 MonoDomain* MonoScriptEngine::Domain() const {
 	return domain_;
 }
 
+/**
+ * @brief 現在ロードされているMonoアセンブリイメージを取得します。
+ * @return MonoImageポインタ
+ */
 MonoImage* MonoScriptEngine::Image() const {
 	return image_;
 }
 
+/**
+ * @brief 現在のアセンブリメタデータオブジェクトを取得します。
+ * @return MonoAssemblyポインタ
+ */
 MonoAssembly* MonoScriptEngine::Assembly() const {
 	return assembly_;
 }
 
+/**
+ * @brief ホットリロード要求の状態フラグを設定します。
+ * @param _request 設定するフラグ値
+ */
 void MonoScriptEngine::SetIsHotReloadRequest(bool _request) {
 	isHotReloadRequest_ = _request;
 }
 
+/**
+ * @brief ホットリロードが現在要求されているかどうかを判定します。
+ * @return 要求されている場合はtrue
+ */
 bool MonoScriptEngine::GetIsHotReloadRequest() const {
 	return isHotReloadRequest_;
 }
 
+/**
+ * @brief C#アセンブリからBehaviorNodeクラスを継承するすべての具象クラスの情報を取得します。
+ * @return 検出したノードクラス情報のリスト
+ */
 std::vector<MonoScriptEngine::NodeClassInfo> MonoScriptEngine::GetBehaviorNodeClasses() {
 	std::vector<NodeClassInfo> nodeClasses;
 	if (!image_) return nodeClasses;
@@ -513,6 +613,11 @@ std::vector<MonoScriptEngine::NodeClassInfo> MonoScriptEngine::GetBehaviorNodeCl
 	return nodeClasses;
 }
 
+/**
+ * @brief 指定されたC#のクラス名が持つ、すべての公開（public）メンバフィールドの情報をリフレクションによって取得します。
+ * @param className 対象のクラス名（完全修飾名可）
+ * @return 検出したフィールド情報のリスト
+ */
 std::vector<MonoScriptEngine::FieldInfo> MonoScriptEngine::GetClassFields(const std::string& className) {
 	std::vector<FieldInfo> fields;
 	if (!image_) return fields;
@@ -560,6 +665,10 @@ std::vector<MonoScriptEngine::FieldInfo> MonoScriptEngine::GetClassFields(const 
 	return fields;
 }
 
+/**
+ * @brief BehaviorDecorator または BehaviorService を継承するすべてのC#クラスの情報を取得します。
+ * @return 検出したモジュールクラス情報のリスト
+ */
 std::vector<MonoScriptEngine::NodeClassInfo> MonoScriptEngine::GetBehaviorModuleClasses() {
 	std::vector<NodeClassInfo> moduleClasses;
 	if (!image_) return moduleClasses;
@@ -595,6 +704,13 @@ std::vector<MonoScriptEngine::NodeClassInfo> MonoScriptEngine::GetBehaviorModule
 	return moduleClasses;
 }
 
+/**
+ * @brief AIUpdater経由で、C++側からC#側のエージェント意図（Intents）の一括更新処理を呼び出します。
+ * @param data AIデータの配列ポインタ
+ * @param count 要素数
+ * @param deltaTime フレーム経過時間
+ * @param groupName 所属するECSグループ名
+ */
 void MonoScriptEngine::UpdateAiIntents(void* data, int count, float deltaTime, const std::string& groupName) {
 	if (!updateAiIntentsMethod_) {
 		Console::LogWarning("AIUpdater.UpdateIntents method not found in C#.", LogCategory::ScriptEngine);
@@ -617,6 +733,11 @@ void MonoScriptEngine::UpdateAiIntents(void* data, int count, float deltaTime, c
 	}
 }
 
+/**
+ * @brief 指定されたエンティティIDの特定の名前付きイベントが完了したことをC#のBlackboardManagerに通知します。
+ * @param entityId 対象のエンティティID
+ * @param eventName 完了したイベント名
+ */
 void MonoScriptEngine::NotifyEventCompleted(int32_t entityId, const std::string& eventName) {
 	if (!notifyEventCompletedMethod_) {
 		return;
@@ -641,6 +762,10 @@ void MonoScriptEngine::NotifyEventCompleted(int32_t entityId, const std::string&
 	}
 }
 
+/**
+ * @brief C#側の指定された名前のECSグループデータを消去（クリア）します。
+ * @param _name 対象のECSグループ名
+ */
 void MonoScriptEngine::ClearECSGroup(const std::string& _name) {
 	if (!clearEcsGroupMethod_) {
 		return;
@@ -659,6 +784,10 @@ void MonoScriptEngine::ClearECSGroup(const std::string& _name) {
 	}
 }
 
+/**
+ * @brief C++側のECSグループに含まれる全エンティティの初期情報を、C#の該当グループオブジェクトに同期します。
+ * @param _ecsGroup 同期対象のC++側のECSグループ
+ */
 void MonoScriptEngine::SyncInitialComponentsToCS(ECSGroup* _ecsGroup) {
 	if (!_ecsGroup) {
 		return;
@@ -732,6 +861,13 @@ void MonoScriptEngine::SyncInitialComponentsToCS(ECSGroup* _ecsGroup) {
 	Console::Log("Successfully synced initial components to C# for group: " + ecsGroupName, LogCategory::ScriptEngine);
 }
 
+/**
+ * @brief 指定されたクラスおよびその親クラスを親方向に再帰的に検索し、合致するMonoMethodポインタを返します。
+ * @param _class 対象クラスのMonoClassポインタ
+ * @param _methodName 検索するメソッド名
+ * @param _paramCount 引数の数
+ * @return 検出したMonoMethodポインタ。見つからない場合はnullptr。
+ */
 MonoMethod* MonoScriptEngineUtils::FindMethodInClassOrParents(MonoClass* _class, const char* _methodName, int _paramCount) {
 	while (_class) {
 		MonoMethod* method = mono_class_get_method_from_name(_class, _methodName, _paramCount);
@@ -742,6 +878,12 @@ MonoMethod* MonoScriptEngineUtils::FindMethodInClassOrParents(MonoClass* _class,
 	return nullptr;
 }
 
+/**
+ * @brief 指定されたクラスおよびその親クラスを親方向に再帰的に検索し、合致するMonoClassFieldポインタを返します。
+ * @param _class 対象クラスのMonoClassポインタ
+ * @param _name 検索するフィールド名
+ * @return 検出したMonoClassFieldポインタ。見つからない場合はnullptr。
+ */
 MonoClassField* ONEngine::MonoScriptEngineUtils::FindFieldRecursive(MonoClass* _class, const char* _name) {
 	while(_class) {
 		MonoClassField* field = mono_class_get_field_from_name(_class, _name);

@@ -1,4 +1,4 @@
-﻿#include "TerrainCollision.h"
+#include "TerrainCollision.h"
 
 using namespace ONEngine;
 
@@ -10,8 +10,14 @@ using namespace ONEngine;
 #include "Engine/ECS/Component/Components/ComputeComponents/Collision/SphereCollider.h"
 
 
+/**
+ * @brief エディタ非実行時の地形接地・高さ補正処理を行います。
+ */
 void TerrainCollision::OutsideOfRuntimeUpdate(ECSGroup*) {}
 
+/**
+ * @brief ランタイム実行時の全アクティブエンティティに対する地形接地・高さ補正計算を実行します。
+ */
 void TerrainCollision::RuntimeUpdate(ECSGroup* _ecs) {
 
 	/// TerrainColliderの配列を取得＆使用中のコンポーネントがなければ終了
@@ -125,6 +131,9 @@ void TerrainCollision::RuntimeUpdate(ECSGroup* _ecs) {
 	}
 }
 
+/**
+ * @brief 指定したワールド座標直下にある地形の傾斜角を取得します。
+ */
 float TerrainCollision::GetSlopeAngle(TerrainCollider* _tCollider, const Vector3& _position) {
 	Vector3 grad = _tCollider->GetGradient(_position);
 	float magnitude = std::sqrt(grad.x * grad.x + grad.z * grad.z);

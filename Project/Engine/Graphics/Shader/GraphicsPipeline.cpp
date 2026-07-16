@@ -1,4 +1,4 @@
-﻿#include "GraphicsPipeline.h"
+#include "GraphicsPipeline.h"
 
 using namespace ONEngine;
 
@@ -41,6 +41,9 @@ GraphicsPipeline::GraphicsPipeline() {
 }
 GraphicsPipeline::~GraphicsPipeline() {}
 
+/**
+ * @brief パイプライン（RootSignature / PSO）を一括生成します。
+ */
 void GraphicsPipeline::CreatePipeline(DxDevice* _dxDevice) {
 	/// root signatureとpipeline state objectを生成する
 	CreateRootSignature(_dxDevice);
@@ -57,6 +60,9 @@ void GraphicsPipeline::SetShader(Shader* _shader) {
 	pShader_ = _shader;
 }
 
+/**
+ * @brief 頂点レイアウト要素を登録します。
+ */
 void GraphicsPipeline::AddInputElement(const std::string& _semanticName, uint32_t _semanticIndex, DXGI_FORMAT _format, UINT _inputSlot) {
 	/// ----- Input Elementを追加 ----- ///
 
@@ -71,6 +77,9 @@ void GraphicsPipeline::AddInputElement(const std::string& _semanticName, uint32_
 	semanticNames_.push_back(_semanticName);
 }
 
+/**
+ * @brief 定数バッファビュー（CBV）の直接記述ルートパラメータを追加します。
+ */
 void GraphicsPipeline::AddCBV(D3D12_SHADER_VISIBILITY _shaderVisibility, uint32_t _shaderRegister) {
 	/// ----- Constant Buffer Viewを追加 ----- ///
 
@@ -82,6 +91,9 @@ void GraphicsPipeline::AddCBV(D3D12_SHADER_VISIBILITY _shaderVisibility, uint32_
 	rootParameters_.push_back(parameter);
 }
 
+/**
+ * @brief シェーダリソースビュー（SRV）の直接記述ルートパラメータを追加します。
+ */
 void GraphicsPipeline::AddSRV(D3D12_SHADER_VISIBILITY _shaderVisibility, uint32_t _shaderRegister) {
 	/// ----- Shader Resource Viewを追加 ----- ///
 
@@ -93,6 +105,9 @@ void GraphicsPipeline::AddSRV(D3D12_SHADER_VISIBILITY _shaderVisibility, uint32_
 	rootParameters_.push_back(parameter);
 }
 
+/**
+ * @brief ルートパラメータに32ビットのインライン定数を追加します。
+ */
 void GraphicsPipeline::Add32BitConstant(D3D12_SHADER_VISIBILITY _shaderVisibility, uint32_t _shaderRegister, uint32_t _num32bitValue) {
 	/// ----- 32bit定数を追加 ----- ///
 
@@ -105,6 +120,9 @@ void GraphicsPipeline::Add32BitConstant(D3D12_SHADER_VISIBILITY _shaderVisibilit
 	rootParameters_.push_back(parameter);
 }
 
+/**
+ * @brief テーブルの参照記述子レンジを追加します。
+ */
 void GraphicsPipeline::AddDescriptorRange(uint32_t _baseShaderRegister, uint32_t _numDescriptor, D3D12_DESCRIPTOR_RANGE_TYPE  _rangeType) {
 	/// ----- Descriptor Rangeを追加 ----- ///
 
@@ -117,6 +135,9 @@ void GraphicsPipeline::AddDescriptorRange(uint32_t _baseShaderRegister, uint32_t
 	descriptorRanges_.push_back(range);
 }
 
+/**
+ * @brief ディスクリプタテーブルを追加します。
+ */
 void GraphicsPipeline::AddDescriptorTable(D3D12_SHADER_VISIBILITY _shaderVisibility, uint32_t _descriptorIndex) {
 	/// ----- Descriptor Tableを追加 ----- ///
 
@@ -131,6 +152,9 @@ void GraphicsPipeline::AddDescriptorTable(D3D12_SHADER_VISIBILITY _shaderVisibil
 	rootParameters_.push_back(parameter);
 }
 
+/**
+ * @brief デフォルト設定の静的サンプラを追加します。
+ */
 void GraphicsPipeline::AddStaticSampler(D3D12_SHADER_VISIBILITY _shaderVisibility, uint32_t _shaderRegister) {
 	/// ----- Static Samplerを追加 ----- ///
 
@@ -147,6 +171,9 @@ void GraphicsPipeline::AddStaticSampler(D3D12_SHADER_VISIBILITY _shaderVisibilit
 	staticSamplers_.push_back(sampler);
 }
 
+/**
+ * @brief カスタム設定の静的サンプラを追加します。
+ */
 void GraphicsPipeline::AddStaticSampler(const D3D12_STATIC_SAMPLER_DESC& _samplerDesc, D3D12_SHADER_VISIBILITY _shaderVisibility, uint32_t _shaderRegister) {
 	/// ----- Static Samplerを追加 ----- ///
 
@@ -199,6 +226,9 @@ void GraphicsPipeline::SetRTVFormat(DXGI_FORMAT _rtvFormat, uint32_t _rtvIndex) 
 	rtvFormats_[_rtvIndex] = _rtvFormat;
 }
 
+/**
+ * @brief コマンドリストにパイプラインステートおよびルートシグネチャをバインドします。
+ */
 void GraphicsPipeline::SetPipelineStateForCommandList(DxCommand* _dxCommand) {
 	_dxCommand->GetCommandList()->SetPipelineState(pipelineState_.Get());
 	_dxCommand->GetCommandList()->SetGraphicsRootSignature(rootSignature_.Get());
@@ -207,6 +237,9 @@ void GraphicsPipeline::SetPipelineStateForCommandList(DxCommand* _dxCommand) {
 
 
 
+/**
+ * @brief ルートシグネチャ（ID3D12RootSignature）を内部生成します。
+ */
 void GraphicsPipeline::CreateRootSignature(DxDevice* _dxDevice) {
 	/// ----- root signatureの生成 ----- ///
 
@@ -241,6 +274,9 @@ void GraphicsPipeline::CreateRootSignature(DxDevice* _dxDevice) {
 	Assert(SUCCEEDED(hr), "error...");
 }
 
+/**
+ * @brief グラフィックスパイプラインステート（PSO）を内部生成します。
+ */
 void GraphicsPipeline::CreatePipelineStateObject(DxDevice* _dxDevice) {
 	/// ----- pipeline state objectの生成 ----- ///
 
@@ -300,6 +336,9 @@ void GraphicsPipeline::CreatePipelineStateObject(DxDevice* _dxDevice) {
 	}
 }
 
+/**
+ * @brief メッシュ・アンプリフィケーションシェーダを含んだメッシュシェーダPSOの内部生成を行います。
+ */
 void GraphicsPipeline::CreateMeshPipelineStateObject(DxDevice* _dxDevice) {
 	/// ----- pipeline state objectの生成(MeshShader用) ----- ///
 

@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /// std
 #include <variant>
@@ -11,6 +11,10 @@
 /// //////////////////////////////////////////////////
 namespace ONEngine {
 
+/**
+ * @class EffectMainModule
+ * @brief エフェクト粒子の初期化（初期速度、サイズ、回転、カラー、寿命等）や物理的な挙動に関する設定データを管理するモジュールクラス
+ */
 class EffectMainModule final {
 	friend class Effect;
 	friend class EffectUpdateSystem;
@@ -25,7 +29,10 @@ public:
 	};
 
 
-	/// @brief 定数データ
+	/**
+	 * @struct ConstantData
+	 * @brief 単一の定数値を表す構造体
+	 */
 	template<typename T>
 	struct ConstantData {
 		ConstantData() = default;
@@ -34,7 +41,10 @@ public:
 		T constant;
 	};
 
-	/// @brief 2つの定数データ
+	/**
+	 * @struct TwoConstantData
+	 * @brief 最小値と最大値のペアによる範囲指定を表す構造体
+	 */
 	template<typename T>
 	struct TwoConstantData {
 		TwoConstantData() = default;
@@ -44,14 +54,15 @@ public:
 		std::pair<T, T> constant;
 	};
 
-	/// @brief 値の型
+	/// @brief 定数または範囲データ
 	template<typename T>
 	using Value = std::variant<ConstantData<T>, TwoConstantData<T>>;
 
-	/// @brief Valueの中の値を取得する  
-	/// @tparam T 値の型  
-	/// @param value Value型のデータ  
-	/// @return 中の値  
+	/**
+	 * @brief Valueから最小・最大範囲（単一値の場合は同じ値のペア）を展開取得します。
+	 * @param value 対象データ
+	 * @return 最小・最大値のペア
+	 */
 	template<typename T>
 	std::pair<T, T> GetValue(const Value<T>& value) const {
 		return std::visit([](auto&& _arg) -> std::pair<T, T> {
@@ -72,7 +83,14 @@ public:
 	/// public : methods
 	/// ===================================================
 
+	/**
+	 * @brief コンストラクタ
+	 */
 	EffectMainModule();
+
+	/**
+	 * @brief デストラクタ
+	 */
 	~EffectMainModule();
 
 
@@ -98,41 +116,103 @@ public:
 	/// public : accessors
 	/// ====================================================
 
+	/**
+	 * @brief 残り寿命を取得します。
+	 */
 	float GetLifeLeftTime() const { return lifeLeftTime_; }
+
+	/**
+	 * @brief 開始速度を取得します。
+	 */
 	float GetStartSpeed() const { return startSpeed_; }
+
+	/**
+	 * @brief 重力影響倍率を取得します。
+	 */
 	float GetGravityModifier() const { return gravityModifier_; }
 
+	/**
+	 * @brief 残り寿命を設定します。
+	 */
 	void SetLifeLeftTime(float _time) { lifeLeftTime_ = _time; }
+
+	/**
+	 * @brief 開始速度を設定します。
+	 */
 	void SetStartSpeed(float _speed) { startSpeed_ = _speed; }
+
+	/**
+	 * @brief 重力影響倍率を設定します。
+	 */
 	void SetGravityModifier(float _gravity) { gravityModifier_ = _gravity; }
 
+	/**
+	 * @brief 開始速度の定数データを設定します。
+	 */
 	void SetSpeedStartData(const ConstantData<float>& _data) { speedStartData_ = _data; }
+
+	/**
+	 * @brief 開始速度の範囲指定データを設定します。
+	 */
 	void SetSpeedStartData(const TwoConstantData<float>& _data) { speedStartData_ = _data; }
 
+	/**
+	 * @brief 開始サイズの定数データを設定します。
+	 */
 	void SetSizeStartData(const ConstantData<Vector3>& _data) { sizeStartData_ = _data; }
+
+	/**
+	 * @brief 開始サイズの範囲指定データを設定します。
+	 */
 	void SetSizeStartData(const TwoConstantData<Vector3>& _data) { sizeStartData_ = _data; }
 
+	/**
+	 * @brief 開始回転角度の定数データを設定します。
+	 */
 	void SetRotateStartData(const ConstantData<Vector3>& _data) { rotateStartData_ = _data; }
+
+	/**
+	 * @brief 開始回転角度の範囲指定データを設定します。
+	 */
 	void SetRotateStartData(const TwoConstantData<Vector3>& _data) { rotateStartData_ = _data; }
 
+	/**
+	 * @brief 開始カラーの定数データを設定します。
+	 */
 	void SetColorStartData(const ConstantData<Color>& _data) { colorStartData_ = _data; }
+
+	/**
+	 * @brief 開始カラーの範囲指定データを設定します。
+	 */
 	void SetColorStartData(const TwoConstantData<Color>& _data) { colorStartData_ = _data; }
 
 
 
 
+	/**
+	 * @brief 開始速度データ範囲を取得します。
+	 */
 	std::pair<float, float> GetSpeedStartData() const {
 		return GetValue(speedStartData_);
 	}
 
+	/**
+	 * @brief 開始サイズデータ範囲を取得します。
+	 */
 	std::pair<Vector3, Vector3> GetSizeStartData() const {
 		return GetValue(sizeStartData_);
 	}
 
+	/**
+	 * @brief 開始回転角度データ範囲を取得します。
+	 */
 	std::pair<Vector3, Vector3> GetRotateStartData() const {
 		return GetValue(rotateStartData_);
 	}
 
+	/**
+	 * @brief 開始カラーデータ範囲を取得します。
+	 */
 	std::pair<Color, Color> GetColorStartData() const {
 		return GetValue(colorStartData_);
 	}

@@ -1,4 +1,4 @@
-﻿#include "MaterialLoader.h"
+#include "MaterialLoader.h"
 
 /// std
 #include <fstream>
@@ -10,6 +10,12 @@
 namespace ONEngine::Asset {
 
 
+/**
+ * @brief ディスクからマテリアル設定（.mate）ファイルをロードします。
+ * @param _filepath ロード対象のファイルパス
+ * @param meta マテリアルのメタデータ
+ * @return ロードされたMaterialアセット（失敗時はstd::nullopt）
+ */
 std::optional<Material> AssetLoader<Material>::Load(const std::string& _filepath, Meta<Material::MetaData> meta) {
 	/// ファイルを開く
 	std::ifstream ifs(_filepath);
@@ -40,12 +46,24 @@ std::optional<Material> AssetLoader<Material>::Load(const std::string& _filepath
 	return std::move(material);
 }
 
+/**
+ * @brief 既存のマテリアルに対して再ロード（リロード）を実行します。
+ * @param _filepath 再ロード対象のファイルパス
+ * @param _src 再ロード元のMaterialオブジェクトへのポインタ
+ * @param meta マテリアルのメタデータ
+ * @return 再ロードされたMaterialアセット（失敗時はstd::nullopt）
+ */
 std::optional<Material> AssetLoader<Material>::Reload(const std::string& _filepath, Material* /*_src*/, Meta<Material::MetaData> meta) {
 	/// Materialの再読み込みは新規読み込みと同じ処理を行う
 	return std::move(Load(_filepath, meta));
 }
 
 
+/**
+ * @brief マテリアルアセットに対応するメタデータを取得します。
+ * @param _filepath 対象アセットファイルのパス
+ * @return 解析・構築されたメタデータオブジェクト
+ */
 Meta<Material::MetaData> AssetLoader<Material>::GetMetaData(const std::string& _filepath) {
 	Meta<Material::MetaData> res{};
 

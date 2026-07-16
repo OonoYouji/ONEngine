@@ -1,4 +1,4 @@
-﻿#include "AddInternalMethods.h"
+#include "AddInternalMethods.h"
 
 /// externals
 #include <mono/jit/jit.h>
@@ -36,6 +36,11 @@
 namespace {
 	std::mutex g_GizmoMutex;
 
+	/**
+	 * @brief C#側から送られてきたGizmoラインの描画バッチデータを処理し、C++のGizmo描画システムに転送します。
+	 * @param _batch Gizmo::LineData 構造体の Mono 配列へのポインタ
+	 * @param _count 配列の要素数
+	 */
 	void Internal_SubmitLineBatch(MonoArray* _batch, int _count) {
 		if (!_batch) return;
 
@@ -72,10 +77,16 @@ namespace {
 using namespace ONEngine;
 using namespace MonoInternalMethods;
 
+/**
+ * @brief Window関連の内部関数をMonoにバインドします。
+ */
 void ONEngine::AddWindowInternalCalls() {
 	mono_add_internal_call("Window::InternalGetSize", (void*)InternalGetWindowSize);
 }
 
+/**
+ * @brief 各コンポーネント（Transform, Mesh, Sprite, Collider, Audio等）の操作関数をMonoにバインドします。
+ */
 void ONEngine::AddComponentInternalCalls() {
 
 	/// batch
@@ -153,6 +164,9 @@ void ONEngine::AddComponentInternalCalls() {
 
 }
 
+/**
+ * @brief エンティティの生成・破棄、プロパティ操作、C#スクリプトの着脱、AI用の動作ツリー操作などをMonoにバインドします。
+ */
 void ONEngine::AddEntityInternalCalls() {
 	/// entity
 	mono_add_internal_call("Entity::InternalAddComponent", (void*)InternalAddComponent);
@@ -180,6 +194,9 @@ void ONEngine::AddEntityInternalCalls() {
 	}
 
 
+/**
+ * @brief キーボード、ゲームパッド、マウスなどの各種入力判定メソッドをMonoにバインドします。
+ */
 void ONEngine::AddInputInternalCalls() {
 	mono_add_internal_call("Input::InternalTriggerKey", (void*)Input::TriggerKey);
 	mono_add_internal_call("Input::InternalPressKey", (void*)Input::PressKey);
@@ -198,10 +215,16 @@ void ONEngine::AddInputInternalCalls() {
 	mono_add_internal_call("Input::InternalGetMouseWheel", (void*)InternalGetMouseWheel);
 }
 
+/**
+ * @brief シーン遷移を管理するSceneManagerのメソッドをMonoにバインドします。
+ */
 void ONEngine::AddSceneInternalCalls() {
 	mono_add_internal_call("SceneManager::InternalLoadScene", (void*)InternalLoadScene);
 }
 
+/**
+ * @brief Gizmo描画用（LineBatch）のデータ送信メソッドをMonoにバインドします。
+ */
 void ONEngine::AddGizmoInternalCalls() {
 	mono_add_internal_call("GizmoBatch::Internal_SubmitLineBatch", (void*)Internal_SubmitLineBatch);
 }

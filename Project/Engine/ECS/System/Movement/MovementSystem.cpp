@@ -1,4 +1,4 @@
-﻿#include "MovementSystem.h"
+#include "MovementSystem.h"
 #include "Engine/ECS/EntityComponentSystem/ECSGroup.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Agent/AgentIntentComponent.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Transform/Transform.h"
@@ -9,8 +9,14 @@
 
 namespace ONEngine {
 
+/**
+ * @brief コンストラクタ
+ */
 MovementSystem::MovementSystem() {}
 
+/**
+ * @brief 毎フレームの移動計算および位置更新処理を実行します。
+ */
 void MovementSystem::RuntimeUpdate(ECSGroup* _ecs) {
     CPUTimeStamp::GetInstance().BeginTimeStamp(CPUTimeStampID::PhysicsUpdate);
     if (!_ecs) {

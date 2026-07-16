@@ -14,24 +14,34 @@ namespace ONEngine {
 
 class AgentIntentComponent;
 
-/// Json変換
+/**
+ * @brief JSONからのデシリアライズ
+ */
 void from_json(const nlohmann::json& _j, AgentIntentComponent& _c);
+
+/**
+ * @brief JSONへのシリアライズ
+ */
 void to_json(nlohmann::json& _j, const AgentIntentComponent& _c);
 
 namespace ComponentDebug {
-void AgentIntentComponentDebug(AgentIntentComponent* comp);
+    /**
+     * @brief エディタ用：AgentIntentComponentのデバッグ表示（Gui描画等）処理を行います。
+     */
+    void AgentIntentComponentDebug(AgentIntentComponent* comp);
 }
 
 
-/// ///////////////////////////////////////////////////
-/// AIの「意図」を格納するコンポーネント
-/// C#側で計算され、C++側で行動に変換される
-/// ///////////////////////////////////////////////////
+/**
+ * @class AgentIntentComponent
+ * @brief AI（C#側スクリプトなど）が決定した「移動方向」「目標回転向き」「攻撃フラグ」などの行動意図を格納し、C++の物理挙動システムへと橋渡しするためのコンポーネントクラス
+ */
 class AgentIntentComponent : public IComponent {
 public:
-	/// <summary>
-	/// C++とC#でデータを一括同期するための構造体
-	/// </summary>
+	/**
+	 * @struct BatchData
+	 * @brief C++とC#間でのデータ一括同期（インターオプ）用にメモリレイアウトを整えた構造体
+	 */
 	struct BatchData {
 	    uint32_t compId;
 	    Vector3 desiredMoveDirection;
@@ -50,10 +60,16 @@ public:
 	/// public : methods
 	/// ===================================================
 
+	/**
+	 * @brief コンストラクタ
+	 */
 	AgentIntentComponent() {
 		Reset();
 	}
 
+	/**
+	 * @brief 行動意図の状態をデフォルトパラメータにリセットします。
+	 */
 	void Reset() override {
 		desiredMoveDirection = Vector3::Zero;
 		desiredRotation = Quaternion::kIdentity;

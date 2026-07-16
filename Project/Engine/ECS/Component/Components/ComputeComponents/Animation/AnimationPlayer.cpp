@@ -1,4 +1,4 @@
-﻿#include "AnimationPlayer.h"
+#include "AnimationPlayer.h"
 
 /// external
 #include <imgui.h>
@@ -135,15 +135,24 @@ namespace {
     }
 }
 
+/**
+ * @brief コンストラクタ
+ */
 AnimationPlayer::AnimationPlayer() {
     Reset();
     InitializeRegistry();
 }
 
+/**
+ * @brief デストラクタ
+ */
 AnimationPlayer::~AnimationPlayer() {
     ClearBindings();
 }
 
+/**
+ * @brief アニメーションプレイヤーの状態をデフォルトにリセットします。
+ */
 void AnimationPlayer::Reset() {
     ClearBindings();
     clipPath = "";
@@ -155,6 +164,9 @@ void AnimationPlayer::Reset() {
     isBound = false;
 }
 
+/**
+ * @brief 構築されたポインタ参照バインド情報をクリアし、登録されたC#側のGCハンドルも解放します。
+ */
 void AnimationPlayer::ClearBindings() {
     for (auto& b : bindings) {
         if (b.monoGcHandle != 0) {
@@ -165,15 +177,24 @@ void AnimationPlayer::ClearBindings() {
     isBound = false;
 }
 
+/**
+ * @brief アニメーションを再生状態（isPlaying = true）にします。
+ */
 void AnimationPlayer::Play() {
     isPlaying = true;
     Bind();
 }
 
+/**
+ * @brief アニメーションの再生を一時停止（isPlaying = false、時間維持）します。
+ */
 void AnimationPlayer::Pause() {
     isPlaying = false;
 }
 
+/**
+ * @brief アニメーションの再生を停止し、時間を再生開始（時間 = 0.0f）に戻します。
+ */
 void AnimationPlayer::Stop() {
     isPlaying = false;
     
@@ -188,6 +209,9 @@ void AnimationPlayer::Stop() {
     shouldApplyOnce = true;
 }
 
+/**
+ * @brief アニメーションクリップアセットのパス（.animファイル等）を設定します。
+ */
 void AnimationPlayer::SetClip(const std::string& _path) {
     std::string path = _path;
     std::replace(path.begin(), path.end(), '\\', '/');
@@ -198,6 +222,9 @@ void AnimationPlayer::SetClip(const std::string& _path) {
     ClearBindings(); // クリップが変わったらバインドをやり直す
 }
 
+/**
+ * @brief 所属エンティティのトランスフォームや各コンポーネント変数、C#スクリプトフィールドへの直接ポインタ参照（バインド）を構築します。
+ */
 void AnimationPlayer::Bind() {
     ClearBindings();
 
@@ -282,6 +309,9 @@ void AnimationPlayer::Bind() {
     }
 }
 
+/**
+ * @brief JSONからのデシリアライズ
+ */
 void ONEngine::from_json(const nlohmann::json& _j, AnimationPlayer& _a) {
     _a.clipPath = _j.value("clipPath", "");
     _a.currentTime = _j.value("currentTime", 0.0f);
@@ -291,6 +321,9 @@ void ONEngine::from_json(const nlohmann::json& _j, AnimationPlayer& _a) {
     _a.autoPlay = _j.value("autoPlay", true);
 }
 
+/**
+ * @brief JSONへのシリアライズ
+ */
 void ONEngine::to_json(nlohmann::json& _j, const AnimationPlayer& _a) {
     _j = nlohmann::json{
         { "type", "AnimationPlayer" },
@@ -303,6 +336,9 @@ void ONEngine::to_json(nlohmann::json& _j, const AnimationPlayer& _a) {
     };
 }
 
+/**
+ * @brief エディタ用：AnimationPlayerコンポーネントのデバッグ表示（Gui描画等）処理を行います。
+ */
 void ComponentDebug::AnimationPlayerDebug(AnimationPlayer* _player) {
     if (!_player) return;
 

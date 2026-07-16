@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /// std
 #include <vector>
@@ -41,31 +41,44 @@ namespace ONEngine {
 static const uint32_t kMaxTerrainTextureNum = 4u;
 
 namespace ComponentDebug {
-void TerrainDebug(Terrain* _terrain, EntityComponentSystem* _ecs, Asset::AssetCollection* _assetCollection);
+    /**
+     * @brief エディタ用：Terrainコンポーネントのデバッグ表示（Gui描画等）処理を行います。
+     */
+    void TerrainDebug(Terrain* _terrain, EntityComponentSystem* _ecs, Asset::AssetCollection* _assetCollection);
 
-/// テクスチャモードの編集
-bool TerrainTextureEditModeDebug(std::array<std::string, kMaxTerrainTextureNum>* _texturePaths, int32_t* _usedTextureIndex, Asset::AssetCollection* _assetCollection);
+    /**
+     * @brief エディタ用：地形テクスチャスプラット編集モード用のGui描画および操作処理を行います。
+     */
+    bool TerrainTextureEditModeDebug(std::array<std::string, kMaxTerrainTextureNum>* _texturePaths, int32_t* _usedTextureIndex, Asset::AssetCollection* _assetCollection);
 } // namespace ComponentDebug
 
-/// Json変換
+/**
+ * @brief JSONからのデシリアライズ
+ */
 void from_json(const nlohmann::json& _j, Terrain& _t);
+
+/**
+ * @brief JSONへのシリアライズ
+ */
 void to_json(nlohmann::json& _j, const Terrain& _t);
 
 
-/// ///////////////////////////////////////////////////
-/// 地形のエディター情報
-/// ///////////////////////////////////////////////////
+/**
+ * @struct TerrainEditorInfo
+ * @brief 地形エディタでのリアルタイム勾配・テクスチャペイント編集に必要なブラシ設定を保持する構造体
+ */
 struct TerrainEditorInfo {
 	float brushRadius;        ///< ブラシの半径
 	float brushStrength;      ///< ブラシの強さ
-	int32_t editMode;         ///< 編集モード
-	int32_t usedTextureIndex; ///< 使用しているテクスチャのインデックス
+	int32_t editMode;         ///< 編集モード（勾配、テクスチャなど）
+	int32_t usedTextureIndex; ///< ペイントに使用するスプラットテクスチャのインデックス
 };
 
 
-/// ///////////////////////////////////////////////////
-/// 地形のコンポーネント
-/// ///////////////////////////////////////////////////
+/**
+ * @class Terrain
+ * @brief 高度マップおよび複数テクスチャスプラッティングを用いた地形（Terrain）表現を管理し、GPUによる変形や描画用バッファ制御を行うコンポーネントクラス
+ */
 class Terrain : public IComponent {
 	friend class ::Editor::TerrainVertexEditorCompute;
 
@@ -99,28 +112,44 @@ public:
 	/// public : methods
 	/// =========================================
 
+	/**
+	 * @brief コンストラクタ
+	 */
 	Terrain();
+
+	/**
+	 * @brief デストラクタ
+	 */
 	~Terrain() override;
 
-	/// @brief VerticesとIndicesのUAVBufferを作成する
+	/**
+	 * @brief 地形頂点およびインデックスを保持するGPUバッファ（UAV構造化バッファ）を生成します。
+	 */
 	void CreateVerticesAndIndicesBuffers(DxDevice* _dxDevice, DxCommand* _dxCommand, DxSRVHeap* _dxSrvHeap);
 
 
-	/// @brief VBVとIBVのバリアを生成する(描画用に)
-	/// @param _dxCommand DxCommandへのポインタ
+	/**
+	 * @brief 計算シェーダ等で編集したリソースを、描画（VBV/IBV経由でのレンダリング）に適したステートへ移行するバリアを生成します。
+	 */
 	void CreateRenderingBarriers(DxCommand* _dxCommand);
 
-	/// @brief VBVとIBVのバリアを復元する(計算用に)
-	/// @param _dxCommand DxCommandへのポインタ
+	/**
+	 * @brief 描画用に移行したリソースステートを、計算・編集用の元ステート（UAV）へ復元するバリアを生成します。
+	 */
 	void RestoreResourceBarriers(DxCommand* _dxCommand);
 
-	/// @brief 描画用にVBVを生成する
+	/**
+	 * @brief レンダリング呼び出し用の頂点バッファビュー（D3D12_VERTEX_BUFFER_VIEW）を取得します。
+	 */
 	D3D12_VERTEX_BUFFER_VIEW CreateVBV();
-	/// @brief 描画用にIBVを生成する
+	/**
+	 * @brief レンダリング呼び出し用のインデックスバッファビュー（D3D12_INDEX_BUFFER_VIEW）を取得します。
+	 */
 	D3D12_INDEX_BUFFER_VIEW CreateIBV();
 
-	/// @brief 自身のMaterialデータをGPUマテリアルデータに変換して返す
-	/// @return GPUMaterialデータ
+	/**
+	 * @brief 地形の描画マテリアルパラメータ（カラー、テクスチャスロット等）をGPUバインド用のGPUMaterial構造に変換して取得します。
+	 */
 	GPUMaterial GetMaterialData();
 
 private:
@@ -158,29 +187,77 @@ public:
 	/// public : accessor
 	/// ====================================================
 
+	/**
+	 * @brief 地形を構成するスプラットテクスチャアセットパスの一覧を取得します。
+	 */
 	const std::array<std::string, kMaxTerrainTextureNum>& GetSplatTexPaths() const;
 
 	/// ----- buffer ----- ///
+
+	/**
+	 * @brief GPU側の地形頂点構造化バッファの読み取り専用参照を取得します。
+	 */
 	const StructuredBuffer<TerrainVertex>& GetRwVertices() const;
+
+	/**
+	 * @brief GPU側の地形インデックス構造化バッファの読み取り専用参照を取得します。
+	 */
 	const StructuredBuffer<uint32_t>& GetRwIndices() const;
+
+	/**
+	 * @brief 頂点バッファを保持する低レベルリソース（DxResource）への参照を取得します。
+	 */
 	DxResource& GetVerticesResource();
 
+	/**
+	 * @brief バッファ初期構築完了フラグを設定します。
+	 */
 	void SetIsCreated(bool _isCreated);
+
+	/**
+	 * @brief バッファ初期構築完了フラグを取得します。
+	 */
 	bool GetIsCreated() const;
 
+	/**
+	 * @brief 最大頂点数を取得します。
+	 */
 	uint32_t GetMaxVertexNum();
+
+	/**
+	 * @brief 最大インデックス数を取得します。
+	 */
 	uint32_t GetMaxIndexNum();
 
+	/**
+	 * @brief 地形タイリング幅（XZサイズ）を取得します。
+	 */
 	const Vector2& GetSize() const;
 
 	/// ----- edit ----- ///
+
+	/**
+	 * @brief 地形エディタ情報の読み取り専用参照を取得します。
+	 */
 	const TerrainEditorInfo& GetEditorInfo() const;
 
 	/// ----- river ----- ///
+
+	/**
+	 * @brief 地形上に配置された川（River）オブジェクトへのポインタを取得します。
+	 */
 	River* GetRiver();
 
 	/// ----- flags ----- ///
+
+	/**
+	 * @brief プロシージャル（計算ベース）描画が有効であるかを取得します。
+	 */
 	bool GetIsRenderingProcedural() const;
+
+	/**
+	 * @brief プロシージャル描画の有効/無効を設定します。
+	 */
 	void SetIsRenderingProcedural(bool _isRenderingProcedural);
 
 };

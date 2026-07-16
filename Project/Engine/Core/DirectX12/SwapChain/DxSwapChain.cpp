@@ -1,4 +1,4 @@
-﻿#include "DxSwapChain.h"
+#include "DxSwapChain.h"
 
 using namespace ONEngine;
 
@@ -24,6 +24,9 @@ DxSwapChain::~DxSwapChain() {
 }
 
 
+/**
+ * @brief 指定されたウィンドウに紐付くDXGIスワップチェーンを生成し、バックバッファとRTVの登録、ビューポートとシザー矩形の設定を行います。
+ */
 void DxSwapChain::Initialize(DxManager* _dxm, Window* _window) {
 
 	/// 引数を保存
@@ -112,12 +115,18 @@ void DxSwapChain::Initialize(DxManager* _dxm, Window* _window) {
 	Console::Log("dx swap chain create success!!");
 }
 
+/**
+ * @brief ビューポートおよびシザー矩形設定を現在のアクティブなコマンドリストにバインドします。
+ */
 void DxSwapChain::BindViewportAndScissorRectForCommandList(ID3D12GraphicsCommandList* _commandList) const {
 	/// ビューポートとシザー矩形の設定
 	_commandList->RSSetViewports(1, &viewport_);
 	_commandList->RSSetScissorRects(1, &scissorRect_);
 }
 
+/**
+ * @brief 現在のアクティブなバックバッファに対し、リソース状態遷移バリアを作成・設定します。
+ */
 void DxSwapChain::CreateBarrier(ID3D12GraphicsCommandList* _commandList, D3D12_RESOURCE_STATES _before, D3D12_RESOURCE_STATES _after) {
 	D3D12_RESOURCE_BARRIER barrier{};
 	barrier.Type                   = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
@@ -128,6 +137,9 @@ void DxSwapChain::CreateBarrier(ID3D12GraphicsCommandList* _commandList, D3D12_R
 	_commandList->ResourceBarrier(1, &barrier);
 }
 
+/**
+ * @brief 現在のアクティブなバックバッファレンダーターゲットを指定されたクリア色でクリアします。
+ */
 void DxSwapChain::ClearBackBuffer(ID3D12GraphicsCommandList* _commandList) {
 	UINT bbIndex = swapChain_->GetCurrentBackBufferIndex();
 
@@ -140,6 +152,9 @@ void DxSwapChain::ClearBackBuffer(ID3D12GraphicsCommandList* _commandList) {
 	_commandList->ClearRenderTargetView(rtvHandles_[bbIndex], clearColor, 0, nullptr);
 }
 
+/**
+ * @brief バックバッファとフロントバッファを交換（画面表示）します。
+ */
 void DxSwapChain::Present() {
 	UINT presentFlags = 0;
 

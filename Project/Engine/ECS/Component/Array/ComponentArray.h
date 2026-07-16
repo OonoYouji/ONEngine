@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /// std
 #include <vector>
@@ -15,16 +15,45 @@ namespace ONEngine {
 
 static constexpr size_t kComponentCapacity = 2048;
 
+/**
+ * @class IComponentArray
+ * @brief 特定のコンポーネント配列（ComponentArray）の型非依存な操作を提供する抽象クラス
+ */
 class IComponentArray {
 	friend class ComponentCollection;
 public:
 
 	virtual ~IComponentArray() = default;
 
+	/**
+	 * @brief 型非依存のインターフェースとして新規コンポーネントを追加します。
+	 * @return 追加されたコンポーネントの基底ポインタ
+	 */
 	virtual IComponent* AddComponentUntyped() = 0;
+
+	/**
+	 * @brief 指定されたインデックスのコンポーネントを削除し、再利用リストへ登録します。
+	 * @param _index 削除対象のインデックス
+	 */
 	virtual void RemoveComponent(size_t _index) = 0;
+
+	/**
+	 * @brief 指定したコンポーネントの配列内インデックスを取得します。
+	 * @param _component 検索対象のコンポーネント
+	 * @return 配列のインデックス
+	 */
 	virtual size_t GetComponentIndex(IComponent* _component) = 0;
+
+	/**
+	 * @brief 新規に追加するコンポーネントのIDを発行します。
+	 * @return 新規ID
+	 */
 	virtual size_t NewComponentId() = 0;
+
+	/**
+	 * @brief 現在アクティブなコンポーネントの総数を取得します。
+	 * @return 使用中コンポーネント数
+	 */
 	virtual size_t GetUsedComponentCount() = 0;
 
 protected:
@@ -33,9 +62,10 @@ protected:
 };
 
 
-/// ///////////////////////////////////////////////////
-/// ComponentArrayクラス
-/// ///////////////////////////////////////////////////
+/**
+ * @class ComponentArray
+ * @brief 同一型のコンポーネント（Comp）をメモリ上に連続して管理し、IDとインデックスのマップ、削除・再利用の追跡を行うジェネリックコンテナ
+ */
 template <IsComponent Comp>
 class ComponentArray final : public IComponentArray {
 	friend class ComponentCollection;
@@ -44,39 +74,61 @@ public:
 	/// public : methods
 	/// ===================================================
 
+	/**
+	 * @brief コンストラクタ。上限数をあらかじめ予約（reserve）します。
+	 */
 	ComponentArray();
 	~ComponentArray() override = default;
 
 
-	/// @brief Comp型のComponentの追加
+	/**
+	 * @brief 指定されたコンポーネント型（Comp）を配列に追加します。
+	 * @return 追加されたコンポーネントへの型付きポインタ
+	 */
 	Comp* AddComponent();
 
-	/// @brief Interface型のComponentを返す
+	/**
+	 * @brief 型非依存のインターフェースとして新規コンポーネントを追加します（再利用キューを考慮）。
+	 * @return 基底型（IComponent）のポインタ
+	 */
 	IComponent* AddComponentUntyped() override;
 
-	/// @brief Comp型の_index番目のComponentを取得する
-	/// @param _index 配列のインデックス
-	/// @return 取得したComponentのポインタ、失敗したら nullptr
+	/**
+	 * @brief 配列のインデックスから特定のコンポーネントを取得します。
+	 * @param _index 配列内インデックス
+	 * @return 対象コンポーネントの型付きポインタ。範囲外の場合は nullptr
+	 */
 	Comp* GetComponent(size_t _index);
 
-	/// @brief _index番目のComponentを削除する
-	/// @param _index ComponentArrayのインデックス
+	/**
+	 * @brief 指定されたIDに対応するインデックス位置のコンポーネントを削除（無効化）します。
+	 * @param _index 削除対象のID（内部インデックス）
+	 */
 	void RemoveComponent(size_t _index) override;
 
-	/// @brief ポインタからComponentArrayのインデックスを取得する
-	/// @param _component ComponentArrayの要素
-	/// @return _componentのIndex
+	/**
+	 * @brief 指定されたコンポーネントポインタが属する配列内のインデックスを検索します。
+	 * @param _component 検索対象ポインタ
+	 * @return インデックス
+	 */
 	size_t GetComponentIndex(IComponent* _component) override;
 
-	/// @brief 使用中のComponent数を取得する
-	/// @return 使用中のComponent数
+	/**
+	 * @brief 現在アクティブ（削除されていない）コンポーネントの総数を取得します。
+	 * @return 使用中コンポーネント数
+	 */
 	size_t GetUsedComponentCount() override;
 
-	/// @brief 新しいComponentのIDを取得する
-	/// @return 新規Id
+	/**
+	 * @brief 新しいコンポーネントIDを発行します。
+	 * @return 新規ID
+	 */
 	size_t NewComponentId() override;
 
-	/// @brief 使用中のComponentArrayを取得する
+	/**
+	 * @brief 現在使用中（アクティブ）であるすべての型付きコンポーネントへのポインタの配列を取得します。
+	 * @return 使用中コンポーネントポインタのリストの参照
+	 */
 	std::vector<Comp*>& GetUsedComponents();
 
 private:

@@ -154,6 +154,9 @@ namespace {
 
 }	/// namespace
 
+/**
+ * @brief Mono上のC#オブジェクトをエンジン用のVar（std::variant）に変換します。
+ */
 Variables::Var Variables::MonoObjectToVar(void* obj, void* type) {
 	int typeId = mono_type_get_type((MonoType*)type);
 
@@ -247,6 +250,9 @@ Variables::Var Variables::MonoObjectToVar(void* obj, void* type) {
 	return 0;
 }
 
+/**
+ * @brief Mono上のC#オブジェクトを汎用データ構造（GenericObject）に変換します。
+ */
 std::shared_ptr<Variables::GenericObject> Variables::MonoObjectToGeneric(void* obj) {
 	if (!obj) return nullptr;
 	auto gen = std::make_shared<Variables::GenericObject>();
@@ -265,6 +271,9 @@ std::shared_ptr<Variables::GenericObject> Variables::MonoObjectToGeneric(void* o
 	return gen;
 }
 
+/**
+ * @brief エンジン用のVarからC#上のMonoオブジェクトへ値を設定・変換します。
+ */
 void Variables::VarToMonoObject(void* obj, void* klass, const Variables::Var& var) {
 	if (!obj || !std::holds_alternative<std::shared_ptr<Variables::GenericObject>>(var)) return;
 	auto gen = std::get<std::shared_ptr<Variables::GenericObject>>(var);
@@ -306,6 +315,9 @@ void Variables::VarToMonoObject(void* obj, void* klass, const Variables::Var& va
 	}
 }
 
+/**
+ * @brief JSONからのデシリアライズ
+ */
 void ONEngine::from_json(const nlohmann::json& _j, Variables& _v) {
 	_v.groupKeyMap_.clear();
 	_v.groups_.clear();
@@ -322,6 +334,9 @@ void ONEngine::from_json(const nlohmann::json& _j, Variables& _v) {
 	}
 }
 
+/**
+ * @brief JSONへのシリアライズ
+ */
 void ONEngine::to_json(nlohmann::json& _j, const Variables& _v) {
 	_j = nlohmann::json::object();
 	_j["type"] = "Variables";
@@ -334,13 +349,22 @@ void ONEngine::to_json(nlohmann::json& _j, const Variables& _v) {
 	}
 }
 
+/**
+ * @brief コンストラクタ
+ */
 Variables::Variables() {
 	groupKeyMap_.clear();
 	groups_.clear();
 }
 
+/**
+ * @brief デストラクタ
+ */
 Variables::~Variables() = default;
 
+/**
+ * @brief JSONファイルを読み込んで管理変数を設定します。
+ */
 void Variables::LoadJson(const std::string& _path) {
 	std::string ext = FileSystem::FileExtension(_path);
 	if (ext != ".json" && ext != ".entity") return;
@@ -372,6 +396,9 @@ void Variables::LoadJson(const std::string& _path) {
 	}
 }
 
+/**
+ * @brief 管理変数をJSONファイルとして書き出して保存します。
+ */
 void Variables::SaveJson(const std::string& _path) {
 	nlohmann::json j;
 	GameEntity* owner = GetOwner();
@@ -388,6 +415,9 @@ void Variables::SaveJson(const std::string& _path) {
 	ofs << j.dump(4);
 }
 
+/**
+ * @brief スクリプト上のシリアライズ対象のフィールド変数を自動登録します。
+ */
 void Variables::RegisterScriptVariables() {
 	Script* script = GetOwner()->GetComponent<Script>();
 	if (!script) return;
@@ -417,6 +447,9 @@ void Variables::RegisterScriptVariables() {
 	}
 }
 
+/**
+ * @brief スクリプト側の型構造に合わせ、登録済みのスクリプト変数を再読み込み（同期）します。
+ */
 void Variables::ReloadScriptVariables() {
 	Script* script = GetOwner()->GetComponent<Script>();
 	if (!script) return;
@@ -444,6 +477,9 @@ void Variables::ReloadScriptVariables() {
 	}
 }
 
+/**
+ * @brief スクリプト実行環境（C#インスタンスなど）に変数の値を設定・同期させます。
+ */
 void Variables::SetScriptVariables(const std::string& _scriptName) {
 	GameEntity* owner = GetOwner();
 	if (!owner) return;
@@ -495,6 +531,9 @@ void Variables::SetScriptVariables(const std::string& _scriptName) {
 	}
 }
 
+/**
+ * @brief 変数のグループ(スクリプト単位)を追加します。
+ */
 size_t Variables::AddGroup(const std::string& _name) {
 	if (groupKeyMap_.contains(_name)) return groupKeyMap_.at(_name);
 	Group group; group.name = _name;
@@ -504,16 +543,34 @@ size_t Variables::AddGroup(const std::string& _name) {
 	return index;
 }
 
+/**
+ * @brief 指定したグループ名に対応するグループ情報を取得します。
+ */
 const Variables::Group& Variables::GetGroup(const std::string& _name) const { return groups_[groupKeyMap_.at(_name)]; }
+/**
+ * @brief 指定された名前のグループが存在するかを判定します。
+ */
 bool Variables::HasGroup(const std::string& _name) const { return groupKeyMap_.contains(_name); }
+/**
+ * @brief グループ名とインデックスマップへの参照を取得します。
+ */
 const std::unordered_map<std::string, size_t>& Variables::GetGroupKeyMap() const { return groupKeyMap_; }
+/**
+ * @brief 全グループの配列リストを取得します。
+ */
 const std::vector<Variables::Group>& Variables::GetGroups() const { return groups_; }
 
+/**
+ * @brief 指定されたグループ内の変数値を明示的に上書きまたは新規追加設定します。
+ */
 void Variables::SetVariable(const std::string& _groupName, const std::string& _varName, const Var& _value) {
 	size_t groupIdx = HasGroup(_groupName) ? groupKeyMap_.at(_groupName) : AddGroup(_groupName);
 	groups_[groupIdx].Add(_varName, _value);
 }
 
+/**
+ * @brief エディタ用：Variablesコンポーネントが保持する変数のインスペクタデバッグ表示処理を行います。
+ */
 void ComponentDebug::VariablesDebug(Variables* _variables) {
 	if (!_variables) return;
 	if (ImGui::Button("export entity")) {
@@ -527,5 +584,11 @@ void ComponentDebug::VariablesDebug(Variables* _variables) {
 	}
 }
 
+/**
+ * @brief 変数の生のvariant参照を取得します。
+ */
 const Variables::Var& Variables::Group::Get(const std::string& _name) const { return variables[keyMap.at(_name)]; }
+/**
+ * @brief 指定された変数がグループに登録されているかを判定します。
+ */
 bool Variables::Group::Has(const std::string& _name) const { return keyMap.contains(_name); }

@@ -1,4 +1,4 @@
-﻿#include "Shader.h"
+#include "Shader.h"
 
 using namespace ONEngine;
 
@@ -12,10 +12,16 @@ using namespace ONEngine;
 Shader::Shader() = default;
 Shader::~Shader() = default;
 
+/**
+ * @brief 使用するコンパイラを指定して初期化します。
+ */
 void Shader::Initialize(ShaderCompiler* _compiler) {
 	pShaderCompiler_ = _compiler;
 }
 
+/**
+ * @brief 指定されたHLSLファイルをコンパイルし、対応するステージにバイナリ（Blob）を保存します。
+ */
 bool Shader::CompileShader(const std::wstring& _filePath, const wchar_t* _profile, Type _type, const std::wstring& _entryPoint) {
 	/// ----- Typeごとにコンパイル結果を保存 ----- ///
 

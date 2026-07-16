@@ -1,4 +1,4 @@
-﻿#include "RenderTexture.h"
+#include "RenderTexture.h"
 
 using namespace ONEngine;
 
@@ -10,6 +10,9 @@ using namespace ONEngine;
 RenderTexture::RenderTexture() = default;
 RenderTexture::~RenderTexture() = default;
 
+/**
+ * @brief レンダーターゲットテクスチャリソースを生成し、RTVとSRVへのアロケーション・バインドを行います。
+ */
 void RenderTexture::Initialize(DXGI_FORMAT _format, const Vector4& _clearColor, const Vector2& _textureSize, const std::string& _name, DxManager* _dxm, DxDepthStencil* _dxDepthStencil, Asset::AssetCollection* _assetCollection) {
 	clearColor_ = _clearColor;
 	name_ = _name;
@@ -63,6 +66,9 @@ void RenderTexture::Initialize(DXGI_FORMAT _format, const Vector4& _clearColor, 
 	);
 }
 
+/**
+ * @brief 単一のレンダーターゲットとしてコマンドリストに設定します。
+ */
 void RenderTexture::SetRenderTarget(DxCommand* _dxCommand, DxDSVHeap* _dxDSVHeap, bool _clear) {
 	auto command = _dxCommand->GetCommandList();
 	uint32_t dsvIndex = pDxDepthStencil_->GetDepthDsvHandle();
@@ -76,6 +82,9 @@ void RenderTexture::SetRenderTarget(DxCommand* _dxCommand, DxDSVHeap* _dxDSVHeap
 	}
 }
 
+/**
+ * @brief 複数（MRT）のレンダーターゲットとしてコマンドリストに一括設定します。
+ */
 void RenderTexture::SetRenderTarget(DxCommand* _dxCommand, DxDSVHeap* _dxDSVHeap, const std::vector<std::unique_ptr<class RenderTexture>>& _others, bool _clear) {
 	auto command = _dxCommand->GetCommandList();
 	uint32_t dsvIndex = pDxDepthStencil_->GetDepthDsvHandle();
@@ -97,6 +106,9 @@ void RenderTexture::SetRenderTarget(DxCommand* _dxCommand, DxDSVHeap* _dxDSVHeap
 	}
 }
 
+/**
+ * @brief リソースのステートをRENDER_TARGETへ移行するバリアを積みます。
+ */
 void RenderTexture::CreateBarrierRenderTarget(DxCommand* _dxCommand) {
 	texture_->GetDxResource().CreateBarrier(
 		D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE,
@@ -105,6 +117,9 @@ void RenderTexture::CreateBarrierRenderTarget(DxCommand* _dxCommand) {
 	);
 }
 
+/**
+ * @brief リソースのステートをシェーダ読み取り可能な状態（PIXEL_SHADER_RESOURCE）へ移行するバリアを積みます。
+ */
 void RenderTexture::CreateBarrierPixelShaderResource(DxCommand* _dxCommand) {
 	texture_->GetDxResource().CreateBarrier(
 		D3D12_RESOURCE_STATE_RENDER_TARGET,
@@ -113,10 +128,16 @@ void RenderTexture::CreateBarrierPixelShaderResource(DxCommand* _dxCommand) {
 	);
 }
 
+/**
+ * @brief このレンダーターゲットテクスチャの識別名を取得します。
+ */
 const std::string& RenderTexture::GetName() const {
 	return name_;
 }
 
+/**
+ * @brief 内部テクスチャのDX12リソースオブジェクトを取得します。
+ */
 DxResource& RenderTexture::GetDxResource() {
 	return texture_->GetDxResource();
 }
@@ -130,6 +151,9 @@ DxResource& RenderTexture::GetDxResource() {
 UAVTexture::UAVTexture() = default;
 UAVTexture::~UAVTexture() = default;
 
+/**
+ * @brief UAV用テクスチャの初期化とアセット登録を行います。
+ */
 void UAVTexture::Initialize(const std::string& _textureName, DxManager* _dxm, Asset::AssetCollection* _assetCollection) {
 	Asset::Texture uavTexture;
 	_assetCollection->AddAsset<Asset::Texture>(_textureName, std::move(uavTexture));

@@ -1,4 +1,4 @@
-﻿#include "DissolveMeshRenderer.h"
+#include "DissolveMeshRenderer.h"
 
 /// externals
 #include <magic_enum/magic_enum.hpp>
@@ -10,6 +10,9 @@
 
 using namespace ONEngine;
 
+/**
+ * @brief エディタ用：DissolveMeshRendererコンポーネントのデバッグ表示（Gui描画等）処理を行います。
+ */
 void ONEngine::ShowGUI(DissolveMeshRenderer* _dmr, Asset::AssetCollection* _ac) {
 	if(!_dmr) {
 		return;
@@ -103,6 +106,9 @@ void ONEngine::ShowGUI(DissolveMeshRenderer* _dmr, Asset::AssetCollection* _ac) 
 
 }
 
+/**
+ * @brief JSONからのデシリアライズ
+ */
 void ONEngine::from_json(const nlohmann::json& _j, DissolveMeshRenderer& _dmr) {
 	_dmr.meshGuid_ = _j.value("meshGuid", Guid::kInvalid);
 	_dmr.material_ = _j.value("material", Asset::Material());
@@ -113,6 +119,9 @@ void ONEngine::from_json(const nlohmann::json& _j, DissolveMeshRenderer& _dmr) {
 	_dmr.edgeColor_ = _j.value("edgeColor", Vector4(1.0f, 0.5f, 0.0f, 1.0f));
 }
 
+/**
+ * @brief JSONへのシリアライズ
+ */
 void ONEngine::to_json(nlohmann::json& _j, const DissolveMeshRenderer& _dmr) {
 	_j = {
 		{ "type", "DissolveMeshRenderer" },
@@ -130,20 +139,35 @@ void ONEngine::to_json(nlohmann::json& _j, const DissolveMeshRenderer& _dmr) {
 /// ここから DissolveMeshRenderer の定義
 /// ///////////////////////////////////////////////////
 
+/**
+ * @brief コンストラクタ
+ */
 DissolveMeshRenderer::DissolveMeshRenderer() {
 	dissolveThreshold_ = 1.0f;
 }
+/**
+ * @brief デストラクタ
+ */
 DissolveMeshRenderer::~DissolveMeshRenderer() {}
 
 
+/**
+ * @brief 描画するメッシュアセットのGuidを取得します。
+ */
 const Guid& DissolveMeshRenderer::GetMeshGuid() const {
 	return meshGuid_;
 }
 
+/**
+ * @brief 境界しきい値算出用のディゾルブノイズテクスチャのGuidを取得します。
+ */
 const Guid& DissolveMeshRenderer::GetDissolveTextureGuid() const {
 	return dissolveTexture_;
 }
 
+/**
+ * @brief アセットコレクションからディゾルブテクスチャのバインドインデックス（SRV）を取得します。
+ */
 uint32_t DissolveMeshRenderer::GetDissolveTextureId(Asset::AssetCollection* _ac) const {
 	const Asset::Texture* dissolveTex = _ac->GetTextureFromGuid(dissolveTexture_);
 	if(dissolveTex) {
@@ -152,10 +176,16 @@ uint32_t DissolveMeshRenderer::GetDissolveTextureId(Asset::AssetCollection* _ac)
 	return 0;
 }
 
+/**
+ * @brief 現在のディゾルブの進行度しきい値を取得します。
+ */
 float DissolveMeshRenderer::GetDissolveThreshold() const {
 	return dissolveThreshold_;
 }
 
+/**
+ * @brief GPUへ転送するためのマテリアル定数データをパックして取得します。
+ */
 GPUMaterial DissolveMeshRenderer::GetGPUMaterial(Asset::AssetCollection* _ac) const {
 	GPUMaterial result{};
 	result.uvTransform = material_.uvTransform;
@@ -173,7 +203,10 @@ GPUMaterial DissolveMeshRenderer::GetGPUMaterial(Asset::AssetCollection* _ac) co
 	return result;
 }
 
-uint32_t ONEngine::DissolveMeshRenderer::GetDissolveCompare() const {
+/**
+ * @brief ディゾルブ比較処理のタイプ（LessEqual/GreaterEqual）を取得します。
+ */
+uint32_t DissolveMeshRenderer::GetDissolveCompare() const {
 	return static_cast<uint32_t>(dissolveCompare_);
 }
 

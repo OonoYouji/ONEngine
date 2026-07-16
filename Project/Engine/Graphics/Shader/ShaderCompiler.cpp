@@ -1,4 +1,4 @@
-﻿#include "ShaderCompiler.h"
+#include "ShaderCompiler.h"
 
 using namespace ONEngine;
 
@@ -18,6 +18,9 @@ using namespace ONEngine;
 ShaderCompiler::ShaderCompiler() {}
 ShaderCompiler::~ShaderCompiler() {}
 
+/**
+ * @brief DXCのユーティリティ（IDxcUtils）、コンパイラ（IDxcCompiler3）、およびデフォルトのインクルードハンドラを初期化します。
+ */
 void ShaderCompiler::Initialize() {
 	HRESULT result = S_FALSE;
 
@@ -35,6 +38,9 @@ void ShaderCompiler::Initialize() {
 }
 
 
+/**
+ * @brief DirectX Shader Compiler を使用して、HLSLファイルを指定されたプロファイルでコンパイルします。
+ */
 ComPtr<IDxcBlob> ShaderCompiler::CompileShader(const std::wstring& _filePath, const wchar_t* _profile, const std::wstring& _entryPoint) {
 	HRESULT hr = S_FALSE;
 

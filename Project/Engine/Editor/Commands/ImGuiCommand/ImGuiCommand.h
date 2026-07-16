@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /// std
 #include <string>
@@ -97,8 +97,11 @@ namespace ImMathf {
 
 
 
-/// @brief T型の値を変更するコマンド
-/// @tparam T 変更する値の型 (T型のoperator=が定義されている必要がある)
+/**
+ * @class ModifyValueCommand
+ * @brief 各種コンポーネントの基本型変数（int, float, Vector3等）が ImGui のドラッグUI経由で変更された際、Undo / Redo の編集履歴操作を行えるように値の前後状態を管理する汎用テンプレートコマンドクラス
+ * @tparam T 変更対象となる値の型
+ */
 template <typename T>
 class ModifyValueCommand : public IEditCommand {
 public:
@@ -106,10 +109,25 @@ public:
 	/// public : methods
 	/// ===================================================
 
+	/**
+	 * @brief コンストラクタ
+	 * @param _v 変更対象となるメモリ上の変数へのポインタ
+	 * @param _old 変更前の値
+	 * @param _new 変更後の値
+	 */
 	ModifyValueCommand(T* _v, const T& _old, const T& _new)
 		: pValue_(_v), oldValue_(_old), newValue_(_new) {
 	}
+
+	/**
+	 * @brief デストラクタ
+	 */
 	~ModifyValueCommand() = default;
+
+	/**
+	 * @brief コマンドの実行（指定のメモリ領域に新しい値を書き込みます）。
+	 * @return 実行結果ステート
+	 */
 	EDITOR_STATE Execute() {
 		if (pValue_) {
 			*pValue_ = newValue_;
@@ -119,6 +137,11 @@ public:
 		}
 		return EDITOR_STATE::EDITOR_STATE_FINISH;
 	}
+
+	/**
+	 * @brief コマンドの取り消し処理（指定のメモリ領域に変更前の値を書き戻します）。
+	 * @return 実行結果ステート
+	 */
 	EDITOR_STATE Undo() {
 		if (pValue_) {
 			*pValue_ = oldValue_;

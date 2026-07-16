@@ -17,6 +17,9 @@ DxDepthStencil::DxDepthStencil() {}
 DxDepthStencil::~DxDepthStencil() {}
 
 
+/**
+ * @brief 深度ステンシルテクスチャリソースを作成し、DSVヒープおよびSRVヒープへビューを登録・初期化します。
+ */
 void DxDepthStencil::Initialize(DxDevice* _dxDevice, DxDSVHeap* _dxDsvHeap, DxSRVHeap* _dxSrvHeap) {
 	/// ----- depth stencil 作成 ----- ///
 	
@@ -85,6 +88,9 @@ void DxDepthStencil::Initialize(DxDevice* _dxDevice, DxDSVHeap* _dxDsvHeap, DxSR
 	Console::Log("dx depth stencil create success!!");
 }
 
+/**
+ * @brief 深度バッファをピクセルシェーダで参照可能なステート（PIXEL_SHADER_RESOURCE）に遷移するリソースバリアを積みます。
+ */
 void DxDepthStencil::CreateBarrierPixelShaderResource(ID3D12GraphicsCommandList* _cmdList) {
 
 	/// すでにpixel shader resourceなら何もしない
@@ -105,6 +111,9 @@ void DxDepthStencil::CreateBarrierPixelShaderResource(ID3D12GraphicsCommandList*
 	currentResourceState_ = D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE;
 }
 
+/**
+ * @brief 深度バッファを書き込み可能ステート（DEPTH_WRITE）に遷移するリソースバリアを積みます。
+ */
 void DxDepthStencil::CreateBarrierDepthWrite(ID3D12GraphicsCommandList* _cmdList) {
 
 	/// すでにdepth writeなら何もしない
@@ -125,10 +134,16 @@ void DxDepthStencil::CreateBarrierDepthWrite(ID3D12GraphicsCommandList* _cmdList
 
 }
 
+/**
+ * @brief 深度リソースのSRVディスクリプタインデックスを取得します。
+ */
 uint32_t DxDepthStencil::GetDepthSrvHandle() const {
 	return depthSrvHandle_;
 }
 
+/**
+ * @brief 深度リソースのDSVディスクリプタインデックスを取得します。
+ */
 uint32_t DxDepthStencil::GetDepthDsvHandle() const {
 	return depthDsvHandle_;
 }

@@ -9,6 +9,12 @@
 
 using namespace ONEngine;
 
+/**
+ * @brief キーフレーム情報（Vector3）に基づき、指定時間の線形補間値を計算します。
+ * @param _keyFrames キーフレームリスト
+ * @param _time 取得したい時点の時間
+ * @return 補間されたVector3オブジェクト
+ */
 Vector3 ANIME_MATH::CalculateValue(const std::vector<KeyFrameVector3>& _keyFrames, float _time) {
 	/// ----- Vector3のキーフレーム配列を計算 ----- ///
 
@@ -32,6 +38,12 @@ Vector3 ANIME_MATH::CalculateValue(const std::vector<KeyFrameVector3>& _keyFrame
 	return _keyFrames.back().value;
 }
 
+/**
+ * @brief キーフレーム情報（Quaternion）に基づき、指定時間の球面線形補間値を計算します。
+ * @param _keyFrames キーフレームリスト
+ * @param _time 取得したい時点の時間
+ * @return 補間されたQuaternionオブジェクト
+ */
 Quaternion ANIME_MATH::CalculateValue(const std::vector<KeyFrameQuaternion>& _keyFrames, float _time) {
 	/// ----- Quaternionのキーフレーム配列を計算 ----- ///
 
@@ -56,6 +68,13 @@ Quaternion ANIME_MATH::CalculateValue(const std::vector<KeyFrameQuaternion>& _ke
 	return _keyFrames.back().value;
 }
 
+/**
+ * @brief アセットのノード木構造から、再帰的にジョイントを構築し、リストに追加します。
+ * @param _node 起点となるノード
+ * @param _parent 親ジョイントのインデックス（存在しない場合はnullopt）
+ * @param _joints 追加先のジョイント配列
+ * @return 生成されたジョイントのインデックス
+ */
 int32_t ANIME_MATH::CreateJoint(const Node& _node, const std::optional<int32_t>& _parent, std::vector<Joint>& _joints) {
 	/// ----- ノードからジョイントを作成 ----- ///
 
@@ -84,6 +103,11 @@ int32_t ANIME_MATH::CreateJoint(const Node& _node, const std::optional<int32_t>&
 	return selfIndex;
 }
 
+/**
+ * @brief ルートノードからスケルトン構造（ジョイントの集合・親子関係マップ）を構築します。
+ * @param _rootNode ルートノード
+ * @return 構築されたSkeletonオブジェクト
+ */
 Skeleton ANIME_MATH::CreateSkeleton(const Node& _rootNode) {
 	/// ----- ノードからスケルトンを作成 ----- ///
 	Console::LogInfo("ANIME_MATH::CreateSkeleton: Starting skeleton creation.");
@@ -99,6 +123,13 @@ Skeleton ANIME_MATH::CreateSkeleton(const Node& _rootNode) {
 	return result;
 }
 
+/**
+ * @brief GPUでスキンメッシュアニメーションを行うためのスキンクラスターを作成します。
+ * @param _skeleton ジョイント構造を持つスケルトン
+ * @param _model 対象のModelアセット
+ * @param _dxm DirectX12マネージャのポインタ
+ * @return 作成されたSkinClusterオブジェクト
+ */
 SkinCluster ANIME_MATH::CreateSkinCluster(const Skeleton& _skeleton, Asset::Model* _model, DxManager* _dxm) {
 	/// ----- スキンクラスターを作成 ----- ///
 	Console::LogInfo(std::format("ANIME_MATH::CreateSkinCluster: Starting (Joints: {}, Meshes: {})", 
@@ -203,6 +234,13 @@ SkinCluster ANIME_MATH::CreateSkinCluster(const Skeleton& _skeleton, Asset::Mode
 	return result;
 }
 
+/**
+ * @brief 現在のアニメーション再生状態およびブレンド割合に基づいて、特定ジョイントの補間SRTデータをサンプリングします。
+ * @param _clips モデルに含まれる全アニメーションクリップマップ
+ * @param _state 現在のアニメーション再生状態
+ * @param _jointNameHash 対象ジョイント名のハッシュ
+ * @param _outTransform サンプリング結果を格納する構造体の参照
+ */
 void ANIME_MATH::SampleAnimation(const std::unordered_map<uint32_t, AnimationClip>& _clips, const AnimationState& _state, uint32_t _jointNameHash, SampledTransform& _outTransform) {
     auto itClip = _clips.find(_state.clipId);
     if (itClip == _clips.end()) return;

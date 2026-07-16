@@ -9,6 +9,12 @@
 
 using namespace ONEngine::Asset;
 
+/**
+ * @brief ディスクからアニメーションクリップ（.anim）ファイルをJSONとしてロードします。
+ * @param _filepath ロード対象のファイルパス
+ * @param meta アニメーションクリップのメタデータ
+ * @return ロードされたAnimationClipアセット（失敗時はstd::nullopt）
+ */
 std::optional<AnimationClip> AssetLoader<AnimationClip>::Load(const std::string& _filepath, typename Meta<AnimationClip::MetaData> meta) {
     std::ifstream file(_filepath);
     if (!file.is_open()) return std::nullopt;
@@ -73,10 +79,22 @@ std::optional<AnimationClip> AssetLoader<AnimationClip>::Load(const std::string&
     return clip;
 }
 
+/**
+ * @brief 既存のアニメーションクリップに対して再ロード（リロード）を実行します。
+ * @param _filepath 再ロード対象のファイルパス
+ * @param _src 再ロード元のAnimationClipオブジェクトへのポインタ
+ * @param meta アニメーションクリップのメタデータ
+ * @return 再ロードされたAnimationClipアセット（失敗時はstd::nullopt）
+ */
 std::optional<AnimationClip> AssetLoader<AnimationClip>::Reload(const std::string& _filepath, AnimationClip* /*_src*/, typename Meta<AnimationClip::MetaData> meta) {
     return Load(_filepath, meta);
 }
 
+/**
+ * @brief アニメーションクリップに対応するメタデータを取得します。
+ * @param _filepath 対象アセットファイルのパス
+ * @return 解析・構築されたメタデータオブジェクト
+ */
 Meta<typename AnimationClip::MetaData> AssetLoader<AnimationClip>::GetMetaData(const std::string& _filepath) {
     std::string metaPath = _filepath + ".meta";
     MetaBase base = LoadOrGenerateMetaBase(metaPath, _filepath);

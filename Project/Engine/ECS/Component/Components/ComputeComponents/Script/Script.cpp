@@ -1,4 +1,4 @@
-﻿#include "Script.h"
+#include "Script.h"
 
 
 /// engine
@@ -16,6 +16,9 @@ using namespace ONEngine;
 using namespace Editor::CSGui;
 
 
+/**
+ * @brief スクリプトがC#インスタンスとして有効化されているかを取得します。
+ */
 bool Script::ScriptData::GetEnable(GameEntity* _entity) {
 	MonoScriptEngine& monoEngine = MonoScriptEngine::GetInstance();
 	MonoObject* obj = monoEngine.GetMonoBehaviorFromCS(
@@ -33,6 +36,9 @@ bool Script::ScriptData::GetEnable(GameEntity* _entity) {
 	return enable;
 }
 
+/**
+ * @brief スクリプトのC#インスタンスとしての有効/無効を設定します。
+ */
 void Script::ScriptData::SetEnable(GameEntity* _entity, bool _enable) {
 	MonoScriptEngine& monoEngine = MonoScriptEngine::GetInstance();
 	MonoObject* obj = monoEngine.GetMonoBehaviorFromCS(
@@ -54,12 +60,21 @@ void Script::ScriptData::SetEnable(GameEntity* _entity, bool _enable) {
 
 
 
+/**
+ * @brief コンストラクタ
+ */
 Script::Script() {
 	SetIsAdded(false);
 }
 
+/**
+ * @brief デストラクタ
+ */
 Script::~Script() {}
 
+/**
+ * @brief スクリプト名（クラス名）を指定して、C#スクリプトを新規に登録・アタッチします。
+ */
 void Script::AddScript(const std::string& _scriptName) {
 	/// すでにアタッチされているかチェック
 	if(scriptIndexMap_.contains(_scriptName)) {
@@ -74,6 +89,9 @@ void Script::AddScript(const std::string& _scriptName) {
 	scriptDataList_.push_back(std::move(newScriptData));
 }
 
+/**
+ * @brief 指定された名前のC#スクリプトが登録済みかを判定します。
+ */
 bool Script::Contains(const std::string& _scriptName) const {
 	if(scriptIndexMap_.contains(_scriptName)) {
 		return true;
@@ -82,6 +100,9 @@ bool Script::Contains(const std::string& _scriptName) const {
 	return false;
 }
 
+/**
+ * @brief 指定されたスクリプトをデタッチ・削除します。
+ */
 void Script::RemoveScript(const std::string& _scriptName) {
 	if(!scriptIndexMap_.contains(_scriptName)) {
 		Console::LogWarning("Script " + _scriptName + " not found, cannot remove.");
@@ -100,6 +121,9 @@ void Script::RemoveScript(const std::string& _scriptName) {
 	scriptDataList_.erase(scriptDataList_.begin() + index);
 }
 
+/**
+ * @brief 登録インデックスからアタッチされているスクリプト名を取得します。
+ */
 const std::string& Script::GetScriptName(size_t _index) const {
 	if(_index < scriptDataList_.size()) {
 		return scriptDataList_[_index].scriptName;
@@ -109,6 +133,9 @@ const std::string& Script::GetScriptName(size_t _index) const {
 	return scriptDataList_[0].scriptName;
 }
 
+/**
+ * @brief 現在アタッチされている全スクリプト名のリストを取得します。
+ */
 std::vector<std::string> Script::GetScriptNames() const {
 	std::vector<std::string> scriptNames;
 	for(auto& script : scriptDataList_) {
@@ -118,14 +145,23 @@ std::vector<std::string> Script::GetScriptNames() const {
 	return scriptNames;
 }
 
+/**
+ * @brief アタッチされているC#スクリプトデータ（メタ情報）の読み取り専用リストを取得します。
+ */
 const std::vector<Script::ScriptData>& Script::GetScriptDataList() const {
 	return scriptDataList_;
 }
 
+/**
+ * @brief アタッチされているC#スクリプトデータ（メタ情報）のリストを取得します。
+ */
 std::vector<Script::ScriptData>& Script::GetScriptDataList() {
 	return scriptDataList_;
 }
 
+/**
+ * @brief 指定したスクリプト名に対応するメタデータへのポインタを取得します（無ければ nullptr）。
+ */
 Script::ScriptData* Script::GetScriptData(const std::string& _scriptName) {
 	for(auto& data : scriptDataList_) {
 		if(data.scriptName == _scriptName) {
@@ -137,6 +173,9 @@ Script::ScriptData* Script::GetScriptData(const std::string& _scriptName) {
 	return nullptr;
 }
 
+/**
+ * @brief 指定したスクリプト名に対応するC#インスタンスの有効/無効を設定します。
+ */
 void Script::SetEnable(const std::string& _scriptName, bool _enable) {
 	/// スクリプト名が一致するものを探す
 	for(auto& script : scriptDataList_) {
@@ -152,6 +191,9 @@ void Script::SetEnable(const std::string& _scriptName, bool _enable) {
 	Console::LogWarning("Script " + _scriptName + " not found, cannot set enable state.");
 }
 
+/**
+ * @brief 指定したスクリプト名に対応するC#インスタンスが有効であるかを取得します。
+ */
 bool Script::GetEnable(const std::string& _scriptName) {
 	/// スクリプト名が一致するものを探す
 	for(auto& script : scriptDataList_) {
@@ -164,14 +206,23 @@ bool Script::GetEnable(const std::string& _scriptName) {
 	return false;
 }
 
+/**
+ * @brief スクリプト側へエンティティのアタッチ登録が完了したかのフラグを設定します。
+ */
 void Script::SetIsAdded(bool _added) {
 	isAdded_ = _added;
 }
 
+/**
+ * @brief スクリプト側へエンティティのアタッチ登録が完了したかのフラグを取得します。
+ */
 bool Script::GetIsAdded() const {
 	return isAdded_;
 }
 
+/**
+ * @brief エディタ用：Scriptコンポーネントのデバッグ表示（Gui描画等）処理を行います。
+ */
 void ComponentDebug::ScriptDebug(Script* _script) {
 	if(!_script) {
 		return;
@@ -338,6 +389,9 @@ void ComponentDebug::ScriptDebug(Script* _script) {
 
 }
 
+/**
+ * @brief JSONからのデシリアライズ
+ */
 void ONEngine::from_json(const nlohmann::json& _j, Script& _s) {
 	_s.enable = _j.at("enable").get<int>();
 	if(_j.contains("scripts")) {
@@ -362,6 +416,9 @@ void ONEngine::from_json(const nlohmann::json& _j, Script& _s) {
 	}
 }
 
+/**
+ * @brief JSONへのシリアライズ
+ */
 void ONEngine::to_json(nlohmann::json& _j, const Script& _s) {
 	nlohmann::json scriptJsons;
 	for(auto& scriptData : _s.GetScriptDataList()) {

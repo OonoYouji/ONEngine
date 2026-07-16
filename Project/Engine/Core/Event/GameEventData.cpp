@@ -7,11 +7,17 @@ using json = nlohmann::json;
 
 namespace ONEngine {
 
+    /**
+     * @brief シングルトンインスタンスを取得します。
+     */
     GameEventManager& GameEventManager::GetInstance() {
         static GameEventManager instance;
         return instance;
     }
 
+/**
+     * @brief 初期化処理。Load関数を呼び出しJSONからデータを取得します。
+     */
     void GameEventManager::Initialize() {
         static bool initialized = false;
         if (initialized) return;
@@ -20,6 +26,9 @@ namespace ONEngine {
         initialized = true;
     }
 
+/**
+     * @brief JSONファイル（GameEvents.json）から設定データをロードします。
+     */
     void GameEventManager::Load() {
         std::ifstream file(kConfigPath);
         if (!file.is_open()) return;
@@ -73,6 +82,9 @@ namespace ONEngine {
         isDirty_ = false;
     }
 
+/**
+     * @brief 現在保持している設定データをJSONファイルに書き込みます。
+     */
     void GameEventManager::Save() {
         json data;
         
@@ -116,44 +128,71 @@ namespace ONEngine {
         }
     }
 
+/**
+     * @brief 指定された名前の攻撃パラメータ定義を取得します。
+     */
     const AttackDefinition* GameEventManager::GetAttack(const std::string& _name) const {
         auto it = attacks_.find(_name);
         if (it != attacks_.end()) return &it->second;
         return nullptr;
     }
 
+/**
+     * @brief 攻撃定義を追加または更新し、Dirtyフラグを設定します。
+     */
     void GameEventManager::AddAttack(const AttackDefinition& _attack) {
         attacks_[_attack.name] = _attack;
     }
 
+/**
+     * @brief 指定された名前の攻撃定義を削除します。
+     */
     void GameEventManager::RemoveAttack(const std::string& _name) {
         attacks_.erase(_name);
     }
 
+/**
+     * @brief 指定された名前のアニメーションパラメータ定義を取得します。
+     */
     const AnimationDefinition* GameEventManager::GetAnimation(const std::string& _name) const {
         auto it = animations_.find(_name);
         if (it != animations_.end()) return &it->second;
         return nullptr;
     }
 
+/**
+     * @brief アニメーション定義を追加または更新します。
+     */
     void GameEventManager::AddAnimation(const AnimationDefinition& _anim) {
         animations_[_anim.name] = _anim;
     }
 
+/**
+     * @brief 指定された名前のアニメーション定義を削除します。
+     */
     void GameEventManager::RemoveAnimation(const std::string& _name) {
         animations_.erase(_name);
     }
 
+/**
+     * @brief 指定された名前のエフェクトパラメータ定義を取得します。
+     */
     const EffectDefinition* GameEventManager::GetEffect(const std::string& _name) const {
         auto it = effects_.find(_name);
         if (it != effects_.end()) return &it->second;
         return nullptr;
     }
 
+/**
+     * @brief エフェクト定義を追加または更新します。
+     */
     void GameEventManager::AddEffect(const EffectDefinition& _effect) {
         effects_[_effect.name] = _effect;
     }
 
+/**
+     * @brief 指定された名前のエフェクト定義を削除します。
+     */
     void GameEventManager::RemoveEffect(const std::string& _name) {
         effects_.erase(_name);
     }

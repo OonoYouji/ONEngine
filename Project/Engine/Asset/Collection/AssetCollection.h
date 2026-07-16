@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /// std
 #include <memory>
@@ -32,76 +32,126 @@ static const uint32_t MAX_MODEL_COUNT     = 128;  ///< 最大モデル数
 static const uint32_t MAX_AUDIOCLIP_COUNT = 128;  ///< 最大オーディオクリップ数
 static const uint32_t MAX_MATERIAL_COUNT  = 128;  ///< 最大マテリアル数
 
-/// ///////////////////////////////////////////////////
-/// グラフィクスリソースのコレクション
-/// ///////////////////////////////////////////////////
+/**
+ * @class AssetCollection
+ * @brief 全てのアセット（テクスチャ、モデル、シェーダー、マテリアル、オーディオ、アニメーション）を一括で管理・ロード・検索するシングルトン風のコレクションクラス
+ */
 class AssetCollection final {
 public:
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
 
+	/**
+	 * @brief コンストラクタ
+	 */
 	AssetCollection();
+	/**
+	 * @brief デストラクタ
+	 */
 	~AssetCollection();
 
-	/// @brief インスタンスの取得
+	/**
+	 * @brief アセットコレクションのグローバルインスタンスを取得します。
+	 * @return インスタンスのポインタ
+	 */
 	static AssetCollection* GetInstance();
 
-	/// @brief 初期化関数
-	/// @param _dxm DxManagerのポインタ
+	/**
+	 * @brief アセットコレクションを初期化し、各アセット型に応じたバンドルを生成します。
+	 * @param dxm DirectX12デバイスを保持するマネージャ
+	 */
 	void Initialize(DxManager* dxm);
 
-	/// 読み込み
+	/**
+	 * @brief アセットタイプを指定して、単一のアセットを同期的にロードします。
+	 * @param filepath アセットのファイルパス
+	 * @param type アセットのタイプ
+	 */
 	void Load(const std::string& filepath, AssetType type);
+	/**
+	 * @brief 複数のアセットファイルパスのリストを受け取り、同期的に一括ロードします。
+	 * @param filepaths ファイルパス配列
+	 */
 	void LoadResources(const std::vector<std::string>& filepaths);
 
+	/**
+	 * @brief 複数のアセットファイルパスのリストを受け取り、非同期（スレッドプール）でロードタスクを発行します。
+	 * @param filepaths ファイルパス配列
+	 */
 	void LoadResourcesAsync(const std::vector<std::string>& filepaths);
+	/**
+	 * @brief 現在実行中のすべての非同期ロードタスクの完了を待機します。
+	 */
 	void WaitAllLoads();
 
-	/// アンロード
+	/**
+	 * @brief 複数のアセットを一括アンロード（削除）します。
+	 * @param filepaths 対象ファイルのパス配列
+	 */
 	void UnloadResources(const std::vector<std::string>& filepaths);
+	/**
+	 * @brief 指定パスのアセットをアンロードします。アセットの拡張子などからタイプを自動判定します。
+	 * @param filepath アンロード対象のファイルパス
+	 */
 	void UnloadAssetByPath(const std::string& filepath);
 
 
-	/// @brief アセットを取得する
-	/// @tparam T 取得したアセットの型
-	/// @param _guid アセットのGuid
-	/// @return 所得できたアセットのポインタ、見つからなかった場合はnullptr
+	/**
+	 * @brief GUIDからロード済みアセットを検索して取得します。
+	 * @tparam T アセットの型
+	 * @param guid 対象アセットのGUID
+	 * @return 取得できたアセットのポインタ（見つからない場合はnullptr）
+	 */
 	template <IsAsset T>
 	const T* GetAsset(const Guid& guid) const;
 
-	/// @brief アセットのパスを取得する
-	/// @tparam T 取得したアセットの型
-	/// @param _guid アセットのGuid
-	/// @return 取得出来たアセットのパスの参照
+	/**
+	 * @brief GUIDからアセットの登録パス（ファイルパス）を取得します。
+	 * @tparam T アセットの型
+	 * @param guid 対象アセットのGUID
+	 * @return 登録キー文字列への定数参照（見つからない場合は空文字）
+	 */
 	template <IsAsset T>
 	const std::string& GetAssetPath(const Guid& guid) const;
 
 
-	/// @brief アセットの追加
-	/// @tparam T 追加するアセットの型
-	/// @param _filepath アセットへのファイルパス
-	/// @param _asset 追加するアセットのインスタンス
+	/**
+	 * @brief 手動生成されたアセットオブジェクトを直接コレクションに追加します。
+	 * @tparam T アセットの型
+	 * @param filepath 登録キーとして使用するダミー・または対応するファイルパス
+	 * @param asset 追加するアセットオブジェクトの右辺参照
+	 */
 	template <IsAsset T>
 	void AddAsset(const std::string& filepath, T&& asset);
 
-	/// @brief guidがアセットの物かチェックする
-	/// @param _guid Guid
-	/// @return true: アセット, false: アセットではない
+	/**
+	 * @brief 指定されたGUIDを持つデータがアセット（登録済み）であるかを検証します。
+	 * @param guid 検証対象のGUID
+	 * @return アセットである場合はtrue、そうでない場合はfalse
+	 */
 	bool IsAsset(const Guid& guid) const;
 
 
-	/// @brief アセットを持っているのかチェックする
-	/// @param _filepath アセットのファイルパス
-	/// @return true: 持っている, false: 持っていない
+	/**
+	 * @brief 指定パスのアセットがロード済み（キャッシュあり）であるか判定します。
+	 * @param filepath アセットのファイルパス
+	 * @return 保持している場合はtrue、そうでない場合はfalse
+	 */
 	bool HasAsset(const std::string& filepath);
 
-	/// @brief アセットのリロード
-	/// @param _filepath リロード対象のアセットパス
-	/// @return true: リロード成功, false: リロード失敗
+	/**
+	 * @brief 指定パスのアセットを再ロード（ディスクからリロード）します。
+	 * @param filepath 再ロード対象のアセットパス
+	 * @return リロードに成功した場合はtrue、失敗またはキャッシュにない場合はfalse
+	 */
 	bool ReloadAsset(const std::string& filepath);
 
-	/// リソースパスの取得
+	/**
+	 * @brief 指定ディレクトリ以下のすべてのサポート対象アセット（メタファイルに紐づく拡張子）のパスリストを取得します。
+	 * @param directoryPath ディレクトリパス
+	 * @return サポート対象ファイルのパス配列
+	 */
 	std::vector<std::string> GetResourceFilePaths(const std::string& directoryPath) const;
 
 
@@ -128,9 +178,9 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	std::vector<std::unique_ptr<IAssetBundle>> assetBundles_;
+	std::vector<std::unique_ptr<IAssetBundle>> assetBundles_; ///< 各アセット型に対応したバンドルの配列
 
-	std::vector<std::future<void>> pendingTasks_;
+	std::vector<std::future<void>> pendingTasks_;             ///< 実行中の非同期ロードタスクリスト
 
 
 public:
@@ -138,19 +188,32 @@ public:
 	/// public : accessor
 	/// ===================================================
 
-	/// @brief アセットのパスからGuidを取得する
-	/// @param _filepath ファイルパス
-	/// @return 取得したGuidの参照
+	/**
+	 * @brief アセットファイルパスから紐づくアセットのGUIDを取得します。
+	 * @param filepath アセットのパス
+	 * @return 対応するGUIDオブジェクトの定数参照（見つからない場合はGuid::kInvalid）
+	 */
 	const Guid& GetAssetGuidFromPath(const std::string& filepath) const;
 
-	/// @brief Guidからアセットのタイプを取得する
-	/// @param _guid AssetのGuid
-	/// @return Assetのタイプ
+	/**
+	 * @brief 指定GUIDのアセットタイプを判別して返します。
+	 * @param guid 対象アセットのGUID
+	 * @return 判別されたAssetType（見つからない場合はAssetType::None）
+	 */
 	AssetType GetAssetTypeFromGuid(const Guid& guid) const;
 
 
-	/// ゲッタ モデル
+	/**
+	 * @brief パスを指定してModelアセットをロード済みキャッシュから取得（読み取り専用）します。
+	 * @param filepath モデルのファイルパス
+	 * @return Modelオブジェクトへのポインタ
+	 */
 	const Model* GetModel(const std::string& filepath) const;
+	/**
+	 * @brief パスを指定してModelアセットをロード済みキャッシュから取得します。
+	 * @param filepath モデルのファイルパス
+	 * @return Modelオブジェクトへのポインタ
+	 */
 	Model* GetModel(const std::string& filepath);
 
 
@@ -158,19 +221,43 @@ public:
 	/// texture methods
 	/// --------------------------------------------------
 
-	/// ゲッタ テクスチャ
+	/**
+	 * @brief パスを指定してTextureアセットを取得（読み取り専用）します。
+	 * @param filepath テクスチャのファイルパス
+	 * @return Textureオブジェクトへのポインタ
+	 */
 	const Texture* GetTexture(const std::string& filepath) const;
+	/**
+	 * @brief パスを指定してTextureアセットを取得します。
+	 * @param filepath テクスチャのファイルパス
+	 * @return Textureオブジェクトへのポインタ
+	 */
 	Texture* GetTexture(const std::string& filepath);
+	/**
+	 * @brief 指定テクスチャパスに対応するコンテナ内インデックスを取得します。
+	 * @param filepath テクスチャのパス
+	 * @return インデックス（見つからない場合は -1）
+	 */
 	int32_t GetTextureIndex(const std::string& filepath) const;
+	/**
+	 * @brief ディスクリプタヒープなどで利用するテクスチャインデックスから、そのパスを取得します。
+	 * @param index インデックス
+	 * @return パス文字列への定数参照
+	 */
 	const std::string& GetTexturePath(size_t index) const;
+	/**
+	 * @brief コレクションされているすべてのテクスチャ配列を取得します。
+	 * @return Texture配列の定数参照
+	 */
 	const std::vector<Texture>& GetTextures() const;
 
-	/// @brief GuidからTextureのインデックスを取得する
-	/// @param _guid 探索対象のGuid
-	/// @return 見つかった場合のインデックス、見つからなかった場合は無効値
+	/**
+	 * @brief GUIDからTextureのコンテナ内インデックスを取得します。
+	 * @param guid 検索するGUID
+	 * @return インデックス（見つからない場合は -1）
+	 */
 	int32_t GetTextureIndexFromGuid(const Guid& guid) const;
 
-	/// @brief GuidからTextureのパスを取得する
 	/// @param _guid 探索対象のGuid
 	/// @return 見つかった場合のパス、見つからなかった場合は空文字
 	const std::string& GetTexturePath(const Guid& guid) const;

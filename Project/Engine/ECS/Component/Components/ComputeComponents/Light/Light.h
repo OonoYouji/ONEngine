@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /// engine
 #include "../../Interface/IComponent.h"
@@ -10,6 +10,10 @@
 /// ////////////////////////////////////////////////////////////
 namespace ONEngine {
 
+/**
+ * @class DirectionalLight
+ * @brief 無限遠からの平行光源（太陽光等）を表し、光源の向き、強度、およびライトカラーを保持するライトコンポーネントクラス
+ */
 class DirectionalLight : public IComponent {
 	friend class AnimationPlayer;
 public:
@@ -18,7 +22,14 @@ public:
 	/// public : methods
 	/// ===================================================
 
+	/**
+	 * @brief コンストラクタ
+	 */
 	DirectionalLight();
+
+	/**
+	 * @brief デストラクタ
+	 */
 	~DirectionalLight() {}
 
 private:
@@ -35,35 +46,45 @@ public:
 	/// public : accessor
 	/// ===================================================
 	
-	/// @brief 光の強度の設定
-	/// @param _intensity 光の強度
+	/**
+	 * @brief ライトの照度強度を設定します。
+	 */
 	void SetIntensity(float _intensity) { intensity_ = _intensity; }
 	
-	/// @brief 光の方向の設定
-	/// @param _direction 光の方向
+	/**
+	 * @brief ライトの照射方向（ベクトル）を設定します。
+	 */
 	void SetDirection(const Vector3& _direction) { direction_ = _direction; }
 	
-	/// @brief 光の色の設定
-	/// @param _color 光の色
+	/**
+	 * @brief ライトのカラー（RGBA）を設定します。
+	 */
 	void SetColor(const Vector4& _color) { color_ = _color; }
 
 
-	/// @brief 光の強度の取得
-	/// @return 光の強度
+	/**
+	 * @brief 現在の照度強度を取得します。
+	 */
 	float GetIntensity() const { return intensity_; }
 	
-	/// @brief 光の方向の取得
-	/// @return 光の方向
+	/**
+	 * @brief 現在の照射方向を取得します。
+	 */
 	const Vector3& GetDirection() const { return direction_; }
 
-	/// @brief 光の色の取得
-	/// @return 光の色
+	/**
+	 * @brief 現在のライトカラーを取得します。
+	 */
 	const Vector4& GetColor() const { return color_; }
 
-	/// @brief アニメーション制御用強度への参照取得
+	/**
+	 * @brief アニメーション制御用：強度変数への参照を取得。
+	 */
 	float& GetIntensityForAnimation() { return intensity_; }
 
-	/// @brief アニメーション制御用色への参照取得
+	/**
+	 * @brief アニメーション制御用：カラー変数への参照を取得。
+	 */
 	Vector4& GetColorForAnimation() { return color_; }
 };
 

@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /// windows
 #include <Windows.h>
@@ -18,6 +18,10 @@
 /// ///////////////////////////////////////////////////
 namespace ONEngine {
 
+/**
+ * @class Window
+ * @brief Win32アプリケーションウィンドウのライフサイクルとDirectX12スワップチェーンを管理するクラス
+ */
 class Window {
 	friend class WindowManager;
 public:
@@ -25,31 +29,53 @@ public:
 	/// public : method
 	/// ===================================================
 
+	/**
+	 * @brief コンストラクタ
+	 */
 	Window();
+
+	/**
+	 * @brief デストラクタ
+	 */
 	~Window();
 
-	/// @brief 初期化
-	/// @param _windowName Windowの名前
-	/// @param _windowSize Windowのサイズ
-	/// @param _dxm DxManagerのポインタ
+	/**
+	 * @brief ウィンドウクラスの登録、ウィンドウの生成、およびスワップチェーンの初期化を行います。
+	 * @param _windowName ウィンドウのタイトル（ワイド文字列）
+	 * @param _windowSize ウィンドウのクライアント領域サイズ
+	 * @param _dxm DirectX12デバイスなどを管理するDxManagerのポインタ
+	 */
 	void Initialize(const std::wstring& _windowName, const Vector2& _windowSize, class DxManager* _dxm);
 
-	/// @brief 描画前に行う処理
+	/**
+	 * @brief 描画前処理。レンダーターゲットビューの切り替え等を行います。
+	 */
 	void PreDraw();
-	/// @brief 描画後に行う処理
+
+	/**
+	 * @brief 描画後処理。リソースバリアのトランジションなどを行います。
+	 */
 	void PostDraw();
 
-	/// @brief 更新
+	/**
+	 * @brief ウィンドウメッセージのポーリングおよび処理を行います。
+	 */
 	void Update();
 
-	/// @brief FrontBufferとBackBufferの交換
+	/**
+	 * @brief スワップチェーンのPresentを実行し、描画内容を画面に表示します。
+	 */
 	void Present();
 
-	/// @brief Windowが開いているか
-	/// @return true:開いている false:閉じている
+	/**
+	 * @brief ウィンドウが現在開いており、破棄されていない状態か判定します。
+	 * @return 開いていれば true、閉じられていれば false
+	 */
 	bool IsOpenWindow();
 
-	/// @brief フルスクリーンの切り替え
+	/**
+	 * @brief フルスクリーンとウィンドウモードの切り替えを行います。
+	 */
 	void ToggleFullScreen();
 
 private:
@@ -82,16 +108,28 @@ public:
 	/// public : accessor
 	/// ===================================================
 
-	/// @brief HWNDの取得
+	/**
+	 * @brief ウィンドウハンドル（HWND）を取得します。
+	 * @return HWND
+	 */
 	HWND GetHwnd() const;
 
-	/// @brief WNDCLASSの取得
+	/**
+	 * @brief 登録されたウィンドウクラス（WNDCLASS）を取得します。
+	 * @return WNDCLASS
+	 */
 	const WNDCLASS& GetWNDCLASS() const;
 
-	/// @brief プロセスメッセージの取得
+	/**
+	 * @brief 最新の更新処理で処理されたウィンドウメッセージIDを取得します。
+	 * @return メッセージID
+	 */
 	UINT GetProcessMessage() const;
 
-	/// @brief Windowサイズの取得
+	/**
+	 * @brief ウィンドウの現在のクライアントサイズを取得します。
+	 * @return ウィンドウサイズベクトル (Vector2)
+	 */
 	const Vector2& GetWindowSize() const;
 
 

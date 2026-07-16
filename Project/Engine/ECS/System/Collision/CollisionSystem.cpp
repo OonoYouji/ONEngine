@@ -1,4 +1,4 @@
-﻿#include "CollisionSystem.h"
+#include "CollisionSystem.h"
 
 using namespace ONEngine;
 
@@ -26,6 +26,9 @@ struct hash<std::pair<int, int>> {
 }
 
 
+/**
+ * @brief コンストラクタ
+ */
 CollisionSystem::CollisionSystem() {
 
 	std::string sphereCompName = typeid(SphereCollider).name();
@@ -67,6 +70,9 @@ CollisionSystem::CollisionSystem() {
 }
 
 
+/**
+ * @brief 毎フレームのコライダー衝突判定と押し戻し、衝突ステート遷移計算を実行します。
+ */
 void CollisionSystem::RuntimeUpdate(ECSGroup* _ecs) {
 	CPUTimeStamp::GetInstance().BeginTimeStamp(CPUTimeStampID::PhysicsUpdate);
 
@@ -225,6 +231,9 @@ void CollisionSystem::RuntimeUpdate(ECSGroup* _ecs) {
 	CPUTimeStamp::GetInstance().EndTimeStamp(CPUTimeStampID::PhysicsUpdate);
 }
 
+/**
+ * @brief 新たに衝突を開始した（Enter状態の）エンティティペアのC#イベントを通知します。
+ */
 void CollisionSystem::CallEnterFunc(const std::string& _ecsGroupName) {
 	MonoScriptEngine& monoEngine = MonoScriptEngine::GetInstance();
 
@@ -282,6 +291,9 @@ void CollisionSystem::CallEnterFunc(const std::string& _ecsGroupName) {
 	}
 }
 
+/**
+ * @brief 衝突を継続している（Stay状態の）エンティティペアのC#イベントを通知します。
+ */
 void CollisionSystem::CallStayFunc(const std::string& _ecsGroupName) {
 	MonoScriptEngine& monoEngine = MonoScriptEngine::GetInstance();
 
@@ -338,6 +350,9 @@ void CollisionSystem::CallStayFunc(const std::string& _ecsGroupName) {
 	}
 }
 
+/**
+ * @brief 衝突を終了した（Exit状態の）エンティティペアのC#イベントを通知します。
+ */
 void CollisionSystem::CallExitFunc(const std::string& _ecsGroupName) {
 	MonoScriptEngine& monoEngine = MonoScriptEngine::GetInstance();
 
@@ -396,6 +411,9 @@ void CollisionSystem::CallExitFunc(const std::string& _ecsGroupName) {
 	}
 }
 
+/**
+ * @brief 衝突したエンティティ同士の押し戻し（プッシュバック）処理を行います。
+ */
 void CollisionSystem::PushBack(GameEntity* _a, CollisionState _aState, GameEntity* _b, CollisionState _bState, const CollisionInfo& _info) {
 	if(!_a || !_b) {
 		return;
@@ -445,6 +463,9 @@ void CollisionSystem::PushBack(GameEntity* _a, CollisionState _aState, GameEntit
 }
 
 
+/**
+ * @brief 球体と球体の衝突判定を行います。
+ */
 bool CheckMethod::CollisionCheckSphereVsSphere(SphereCollider* _s1, SphereCollider* _s2, CollisionInfo* _info) {
 	if(!_s1 || !_s2) {
 		return false; // 型が一致しない場合は衝突なし
@@ -466,6 +487,9 @@ bool CheckMethod::CollisionCheckSphereVsSphere(SphereCollider* _s1, SphereCollid
 	return distance <= (_s1->GetRadius() + _s2->GetRadius());
 }
 
+/**
+ * @brief 球体とボックスの衝突判定を行います。
+ */
 bool CheckMethod::CollisionCheckSphereVsBox(SphereCollider* _s, BoxCollider* _b, CollisionInfo* _info) {
 	if(!_s || !_b) {
 		return false; // 型が一致しない場合は衝突なし
@@ -474,6 +498,9 @@ bool CheckMethod::CollisionCheckSphereVsBox(SphereCollider* _s, BoxCollider* _b,
 	return CollisionCheckBoxVsSphere(_b, _s, _info);
 }
 
+/**
+ * @brief ボックスと球体の衝突判定を行います。
+ */
 bool CheckMethod::CollisionCheckBoxVsSphere(BoxCollider* _b, SphereCollider* _s, CollisionInfo* _info) {
 	if(!_b || !_s) {
 		return false;
@@ -569,6 +596,9 @@ bool CheckMethod::CollisionCheckBoxVsSphere(BoxCollider* _b, SphereCollider* _s,
 	return true;
 }
 
+/**
+ * @brief ボックスとボックスの衝突判定を行います。
+ */
 bool CheckMethod::CollisionCheckBoxVsBox(BoxCollider* _b1, BoxCollider* _b2, CollisionInfo* _info) {
 	if(!_b1 || !_b2) {
 		return false;

@@ -1,4 +1,4 @@
-﻿#include "MeshBufferRecreate.h"
+#include "MeshBufferRecreate.h"
 
 using namespace ONEngine;
 
@@ -6,8 +6,14 @@ using namespace ONEngine;
 #include "../../EntityComponentSystem/EntityComponentSystem.h"
 #include "../../Component/Components/RendererComponents/Mesh/CustomMeshRenderer.h"
 
+/**
+ * @brief コンストラクタ
+ */
 MeshBufferRecreate::MeshBufferRecreate(DxDevice* _dxDevice) : pDxDevice_(_dxDevice) {}
 
+/**
+ * @brief カスタムメッシュのバッファ更新・再生成処理を毎フレーム実行します。
+ */
 void MeshBufferRecreate::RuntimeUpdate(ECSGroup* _ecs) {
 	/// ----- MeshRendererでBufferの再生成要求が出た場合Bufferを生成しなおす処理 ----- ///
 

@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /// directX
 #include <d3d12.h>
@@ -26,29 +26,46 @@ public:
 	/// public : method
 	/// ===================================================
 	
+	/**
+	 * @brief コンストラクタ
+	 */
 	DxSwapChain();
+
+	/**
+	 * @brief デストラクタ。確保したRTVディスクリプタヒープのインデックス解放を行います。
+	 */
 	~DxSwapChain();
 	
-	/// @brief 初期化
-	/// @param _dxm DxManagerのインスタンス
-	/// @param _window    このSwapChainを使用するWindowのインスタンス
+	/**
+	 * @brief 指定されたウィンドウに紐付くDXGIスワップチェーンを生成し、バックバッファとRTVの登録、ビューポートとシザー矩形の設定を行います。
+	 * @param _dxm デバイスやヒープを管理するDxManagerのポインタ
+	 * @param _window 対象となるウィンドウオブジェクトのポインタ
+	 */
 	void Initialize(class DxManager* _dxm, class Window* _window);
 
-	/// @brief CommandListにViewportとScissorRectをセットする
-	/// @param _commandList CommandListのポインター
+	/**
+	 * @brief ビューポートおよびシザー矩形設定を現在のアクティブなコマンドリストにバインドします。
+	 * @param _commandList 設定先のグラフィックスコマンドリストポインタ
+	 */
 	void BindViewportAndScissorRectForCommandList(ID3D12GraphicsCommandList* _commandList) const;
 
-	/// @brief バリアを作成する
-	/// @param _commandList CommandListのポインター
-	/// @param _before Resourceの現在の状態
-	/// @param _after Resourceの変更後の状態
+	/**
+	 * @brief 現在のアクティブなバックバッファに対し、リソース状態遷移（Transition）バリアを作成・設定します。
+	 * @param _commandList コマンドリストポインタ
+	 * @param _before 遷移前のリソース状態（D3D12_RESOURCE_STATES）
+	 * @param _after 遷移後のリソース状態
+	 */
 	void CreateBarrier(ID3D12GraphicsCommandList* _commandList, D3D12_RESOURCE_STATES _before, D3D12_RESOURCE_STATES _after);
 
-	/// @brief BackBufferをクリアする
-	/// @param _commandList CommandListのポインター
+	/**
+	 * @brief 現在のアクティブなバックバッファレンダーターゲットを指定されたクリア色（デフォルトは黒）でクリアします。
+	 * @param _commandList コマンドリストポインタ
+	 */
 	void ClearBackBuffer(ID3D12GraphicsCommandList* _commandList);
 
-	/// @brief FrontBufferとBackBufferの交換
+	/**
+	 * @brief バックバッファとフロントバッファを交換（画面表示）します。
+	 */
 	void Present();
 
 private:

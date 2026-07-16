@@ -1,4 +1,4 @@
-﻿#include "AudioClipLoader.h"
+#include "AudioClipLoader.h"
 
 /// std
 #include <fstream>
@@ -22,6 +22,12 @@
 
 namespace ONEngine::Asset {
 
+/**
+ * @brief ディスクからWAV形式の音声ファイルをロードします。
+ * @param _filepath ロード対象のファイルパス
+ * @param meta 音声のメタデータ
+ * @return ロードされたAudioClipアセット（失敗時はstd::nullopt）
+ */
 std::optional<AudioClip> AssetLoader<AudioClip>::Load(const std::string& _filepath, Meta<AudioClip::MetaData> meta) {
 	/// ----- オーディオクリップの読み込み ----- ///
 
@@ -128,11 +134,23 @@ std::optional<AudioClip> AssetLoader<AudioClip>::Load(const std::string& _filepa
 	return std::move(audioClip);
 }
 
+/**
+ * @brief 既存のAudioClipアセットに対して再ロード（リロード）を実行します。
+ * @param _filepath 再ロード対象のファイルパス
+ * @param _src 再ロード元のAudioClipオブジェクトへのポインタ
+ * @param meta 音声のメタデータ
+ * @return 再ロードされたAudioClipアセット（失敗時はstd::nullopt）
+ */
 std::optional<AudioClip> AssetLoader<AudioClip>::Reload(const std::string& _filepath, AudioClip* /*_src*/, Meta<AudioClip::MetaData> meta) {
 	return std::move(Load(_filepath, meta));
 }
 
 
+/**
+ * @brief 音声アセットに対応するメタデータを取得します。
+ * @param _filepath 対象アセットファイルのパス
+ * @return 解析・構築されたメタデータオブジェクト
+ */
 Meta<AudioClip::MetaData> AssetLoader<AudioClip>::GetMetaData(const std::string& _filepath) {
 	Meta<AudioClip::MetaData> res{};
 

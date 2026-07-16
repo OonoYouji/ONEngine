@@ -1,4 +1,4 @@
-﻿#include "ScriptUpdateSystem.h"
+#include "ScriptUpdateSystem.h"
 
 using namespace ONEngine;
 
@@ -16,15 +16,24 @@ using namespace ONEngine;
 #include "Engine/Script/MonoScriptEngine.h"
 #include "Engine/Core/Utility/Time/CPUTimeStamp.h"
 
+/**
+ * @brief コンストラクタ
+ */
 ScriptUpdateSystem::ScriptUpdateSystem(ECSGroup* _ecs) {
 	MonoScriptEngine& monoEngine = MonoScriptEngine::GetInstance();
 	MakeScriptMethod(monoEngine.Image(), _ecs->GetGroupName());
 }
 
+/**
+ * @brief デストラクタ
+ */
 ScriptUpdateSystem::~ScriptUpdateSystem() {
 	ReleaseGCHandle();
 }
 
+/**
+ * @brief エディタ停止中（非実行時）のスクリプト更新処理を行います。
+ */
 void ScriptUpdateSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
 	/// ----- HotReloadをしたときにC#側がリセットされるのでスクリプトを追加し直す----- ///
 
@@ -49,6 +58,9 @@ void ScriptUpdateSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
 	}
 }
 
+/**
+ * @brief ランタイム実行時のスクリプト（C#側の全Entity更新ロジック）を実行します。
+ */
 void ScriptUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
 #ifdef DEBUG_MODE
 	CPUTimeStamp::GetInstance().BeginTimeStamp(CPUTimeStampID::CSharpScriptUpdate);
@@ -66,6 +78,9 @@ void ScriptUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
 #endif // DEBUG_MODE
 }
 
+/**
+ * @brief ECSグループ内のすべてのエンティティおよびアタッチされているコンポーネント情報をC#のスクリプトエンジンに登録します。
+ */
 void ScriptUpdateSystem::AddAllEntitiesAndComponents(ECSGroup* _ecsGroup) {
 	/// スクリプトを持たないエンティティも追加することでC#で扱いやすくする
 	for (auto& entity : _ecsGroup->GetEntities()) {
@@ -73,6 +88,9 @@ void ScriptUpdateSystem::AddAllEntitiesAndComponents(ECSGroup* _ecsGroup) {
 	}
 }
 
+/**
+ * @brief 個々のエンティティ情報をC#スクリプトエンジンに新しく登録します。
+ */
 bool ScriptUpdateSystem::AddEntityToScript(GameEntity* _entity) {
 	/// runtime中に生成したオブジェクトは無視
 	//if (_entity->GetId() < 0) {
@@ -162,6 +180,9 @@ bool ScriptUpdateSystem::AddEntityToScript(GameEntity* _entity) {
 	return true;
 }
 
+/**
+ * @brief C#側のEcsGroupの更新メソッドを直接呼び出します。
+ */
 void ScriptUpdateSystem::CallUpdateEcsGroup() {
 
 	/// 関数呼び出しの条件
@@ -190,6 +211,9 @@ void ScriptUpdateSystem::CallUpdateEcsGroup() {
 }
 
 
+/**
+ * @brief Monoアセンブリイメージおよび対象ECSグループ情報から、対応するC#側のメソッドポインタを取得・準備します。
+ */
 void ScriptUpdateSystem::MakeScriptMethod(MonoImage* _image, const std::string& _ecsGroupName) {
 
 	/// --------------------------------------------------------------------------------
@@ -240,6 +264,9 @@ void ScriptUpdateSystem::MakeScriptMethod(MonoImage* _image, const std::string& 
 
 }
 
+/**
+ * @brief GC（ガベージコレクション）されないようにピン留めしている各種C#オブジェクトのGCHandleを解放します。
+ */
 void ScriptUpdateSystem::ReleaseGCHandle() {
 	if (gcHandle_ != 0) {
 		mono_gchandle_free(gcHandle_);
@@ -252,11 +279,21 @@ void ScriptUpdateSystem::ReleaseGCHandle() {
 /// デバッグ用のスクリプト更新システム
 /// ///////////////////////////////////////////////
 
+/**
+ * @brief デバッグ用：コンストラクタ
+ */
 DebugScriptUpdateSystem::DebugScriptUpdateSystem(ECSGroup* _ecs)
 	: ScriptUpdateSystem(_ecs) {
 }
+
+/**
+ * @brief デバッグ用：デストラクタ
+ */
 DebugScriptUpdateSystem::~DebugScriptUpdateSystem() {}
 
+/**
+ * @brief デバッグ用：エディタ非実行時のデバッグ用スクリプト更新処理を行います。
+ */
 void DebugScriptUpdateSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
 	/// 作成中のPrefabを更新してしまう問題を防ぐため、デバッグカメラのみ追加する
 
@@ -275,4 +312,7 @@ void DebugScriptUpdateSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
 	CallUpdateEcsGroup();
 }
 
+/**
+ * @brief デバッグ用：ランタイム実行時のデバッグ用スクリプト更新処理を実行します。
+ */
 void DebugScriptUpdateSystem::RuntimeUpdate(ECSGroup* /*_ecs*/) {}

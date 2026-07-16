@@ -1,4 +1,4 @@
-﻿#include "Material.h"
+#include "Material.h"
 
 /// std
 #include <fstream>
@@ -12,6 +12,10 @@
 
 namespace ONEngine::Asset {
 
+/**
+ * @brief デフォルト値が設定された新しいマテリアルを生成します。
+ * @return 生成されたMaterialオブジェクト
+ */
 Material GenerateMaterial() {
 	/// ----- 新規のMaterialを作成して返す ----- ///
 	Material material;
@@ -23,6 +27,11 @@ Material GenerateMaterial() {
 	return material;
 }
 
+/**
+ * @brief 指定されたファイルパスにマテリアルファイルを新規生成します。
+ * @param _filepath 生成するファイルパス
+ * @param _material 参照するマテリアル（nullptrならデフォルト値を使用）
+ */
 void GenerateMaterialFile(const std::string& _filepath, Material* _material) {
 	/// _filepathにマテリアル情報を書き込む
 
@@ -64,6 +73,11 @@ void GenerateMaterialFile(const std::string& _filepath, Material* _material) {
 /// Json変換
 /// ---------------------------------------------------
 
+/**
+ * @brief jsonオブジェクトからMaterialオブジェクトへデシリアライズを行います。
+ * @param _j jsonオブジェクト
+ * @param _material 復元先マテリアルの参照
+ */
 void from_json(const nlohmann::json& _j, Material& _material) {
 	/// ----- JsonデータをMaterialに変換する ----- ///
 
@@ -89,6 +103,11 @@ void from_json(const nlohmann::json& _j, Material& _material) {
 	}
 }
 
+/**
+ * @brief Materialオブジェクトからjsonオブジェクトへシリアライズを行います。
+ * @param _j jsonオブジェクト
+ * @param _material 変換元マテリアル
+ */
 void to_json(nlohmann::json& _j, const Material& _material) {
 	/// ----- MaterialデータをJsonに変換する ----- ///
 	_j = {
@@ -106,23 +125,41 @@ void to_json(nlohmann::json& _j, const Material& _material) {
 /// Material
 /// //////////////////////////////////////////////////////////
 
+/**
+ * @brief コンストラクタ。デフォルト値を設定します。
+ */
 Material::Material() {
 	baseColor = Vector4::White;
 	postEffectFlags = 1;
 	uvTransform = UVTransform();
 };
+/**
+ * @brief デストラクタ。
+ */
 Material::~Material() = default;
 
 
 
+/**
+ * @brief アルベドテクスチャが設定されているか判定します。
+ * @return 設定されている場合はtrue
+ */
 bool Material::HasBaseTexture() const {
 	return baseTextureGuid_.has_value();
 }
 
+/**
+ * @brief アルベドテクスチャのGUIDを取得します。
+ * @return アルベドテクスチャのGUID
+ */
 const Guid& Material::GetBaseTextureGuid() const {
 	return baseTextureGuid_.value();
 }
 
+/**
+ * @brief アルベドテクスチャのGUIDを設定します。
+ * @param _guid 設定するGUID
+ */
 void Material::SetBaseTextureGuid(const Guid& _guid) {
 	/// ----- base texture guidの設定 ----- ///
 	if(baseTextureGuid_.has_value()) {
@@ -133,14 +170,26 @@ void Material::SetBaseTextureGuid(const Guid& _guid) {
 	}
 }
 
+/**
+ * @brief 法線テクスチャが設定されているか判定します。
+ * @return 設定されている場合はtrue
+ */
 bool Material::HasNormalTexture() const {
 	return normalTextureGuid_.has_value();
 }
 
+/**
+ * @brief 法線テクスチャのGUIDを取得します。
+ * @return 法線テクスチャのGUID
+ */
 const Guid& Material::GetNormalTextureGuid() const {
 	return normalTextureGuid_.value();
 }
 
+/**
+ * @brief 法線テクスチャのGUIDを設定します。
+ * @param _guid 設定するGUID
+ */
 void Material::SetNormalTextureGuid(const Guid& _guid) {
 	/// ----- 法線 texture の guid を登録 ----- ///
 	if(normalTextureGuid_.has_value()) {

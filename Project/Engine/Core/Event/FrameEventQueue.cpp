@@ -8,16 +8,25 @@
 
 namespace ONEngine {
 
+    /**
+     * @brief シングルトンインスタンスを取得します。
+     */
     FrameEventQueue& FrameEventQueue::GetInstance() {
         static FrameEventQueue instance;
         return instance;
     }
 
+/**
+     * @brief イベントをキューの末尾に追加します（スレッドセーフ）。
+     */
     void FrameEventQueue::Enqueue(const Event& event) {
         std::lock_guard<std::mutex> lock(queueMutex_);
         queue_.push_back(event);
     }
 
+/**
+     * @brief 攻撃（当たり判定発生）イベントを生成してキューに追加します。
+     */
     void FrameEventQueue::EnqueueAttackEvent(const std::string& attackName, int32_t ownerId, float damage, float radius, float duration, float offsetForward, float offsetUp) {
         Event event;
         event.type = EventType::Attack;
@@ -33,6 +42,9 @@ namespace ONEngine {
         GetInstance().Enqueue(event);
     }
 
+/**
+     * @brief エフェクト（パーティクル等）発生イベントを生成してキューに追加します。
+     */
     void FrameEventQueue::EnqueueEffectEvent(const std::string& effectName, int32_t entityId, float scale, float duration) {
         Event event;
         event.type = EventType::Effect;
@@ -45,6 +57,9 @@ namespace ONEngine {
         GetInstance().Enqueue(event);
     }
 
+/**
+     * @brief 一般的な名前付きカスタムイベントを生成してキューに追加します。
+     */
     void FrameEventQueue::EnqueueNamedEvent(const std::string& eventName, int32_t entityId) {
         Event event;
         event.type = EventType::NamedEvent;
@@ -55,6 +70,9 @@ namespace ONEngine {
         GetInstance().Enqueue(event);
     }
 
+/**
+     * @brief キューに溜まった全てのイベントを処理（フラッシュ）し、キューをクリアします。
+     */
     void FrameEventQueue::Flush() {
         // 現在のキューをローカルにスワップして、ロック時間を最小限に抑える
         std::vector<Event> processingQueue;

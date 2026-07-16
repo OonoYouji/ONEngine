@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /// externals
 #include <nlohmann/json.hpp>
@@ -40,6 +40,10 @@ void to_json(nlohmann::json& _j, const CameraComponent& _c);
 /// ///////////////////////////////////////////////////
 /// カメラのコンポーネント
 /// ///////////////////////////////////////////////////
+/**
+ * @class CameraComponent
+ * @brief 3Dおよび2Dの描画範囲を制御するための視野、射影設定、ビュー・プロジェクション行列（ViewProjection）定数バッファを管理するカメラコンポーネントクラス
+ */
 class CameraComponent : public IComponent {
 	/// ----- friend class ----- ///
 	friend class CameraUpdateSystem;
@@ -64,21 +68,34 @@ public:
 	/// public : methods
 	/// ===================================================
 
+	/**
+	 * @brief コンストラクタ
+	 */
 	CameraComponent();
+
+	/**
+	 * @brief デストラクタ
+	 */
 	~CameraComponent() override;
 
-	/// @brief ViewProjection行列の更新
+	/**
+	 * @brief トランスフォームと設定値（FOV等）からビュー行列、プロジェクション行列を再計算して更新します。
+	 */
 	void UpdateViewProjection();
 
 
-	/// @brief カメラのフラスタム内にあるか判定を撮る
-	/// @param center 対象の中心
-	/// @param size 対象の大きさ
-	/// @return true: カメラから見える、 false: カメラから見えない
+	/**
+	 * @brief 指定されたワールド空間のAABB（中心とサイズ）がカメラの視錐台（フラスタム）の範囲内に交差しているかを判定します。
+	 * @param center 判定対象AABBの中心点
+	 * @param size 判定対象AABBの3軸サイズ
+	 * @return 視錐台の内部または交差している場合は true、完全に外側の場合は false
+	 */
 	bool IsVisible(const Vector3& center, const Vector3& size) const;
 
-	/// @brief カメラを特定方向に向ける
-	/// @param direction 向ける方向
+	/**
+	 * @brief 指定された目標の方向（あるいは注視点ベクトル）を向くようにカメラの回転トランスフォームを更新します。
+	 * @param direction 目標方向
+	 */
 	void LookAt(const Vector3& direction);
 
 private:
@@ -86,8 +103,10 @@ private:
 	/// private : methods
 	/// ===================================================
 
-	/// @brief ViewProjectionのBufferを作成
-	/// @param _dxDevice Buffer作成に使うDxDevice
+	/**
+	 * @brief ビュー・プロジェクション行列をGPUへ転送するための定数バッファを生成します。
+	 * @param _dxDevice 生成に使用するDxDevice
+	 */
 	void MakeViewProjection(class DxDevice* _dxDevice);
 
 
@@ -121,23 +140,66 @@ public:
 	/// public : accessor
 	/// ====================================================
 
+	/**
+	 * @brief このカメラをメインカメラとして登録要求するかどうかを設定します。
+	 */
 	void SetIsMainCameraRequest(bool _isMainCamera);
+
+	/**
+	 * @brief カメラの投影タイプ（3D/2D）を設定します。
+	 * @param _cameraType CameraType（Type3D=0, Type2D=1等）
+	 */
 	void SetCameraType(int _cameraType);
+
+	/**
+	 * @brief 2D平行投影時の縦横サイズを設定します。
+	 */
 	void SetOrthographicSize(const Vector2& _size);
 
 
+	/**
+	 * @brief メインカメラ要求フラグの状態を取得します。
+	 */
 	bool GetIsMainCameraRequest() const;
+
+	/**
+	 * @brief 現在のカメラタイプ（3D/2D）を取得します。
+	 */
 	int GetCameraType() const;
 
+	/**
+	 * @brief 定数バッファがすでに正しく生成されているかを判定します。
+	 */
 	bool IsMakeViewProjection() const;
 
+	/**
+	 * @brief 算出されたビュー・プロジェクション行列（CPUデータ）の参照を取得します。
+	 */
 	const ViewProjection& GetViewProjection() const;
+
+	/**
+	 * @brief GPUへバインドするためのビュー・プロジェクション定数バッファ参照を取得します。
+	 */
 	ConstantBuffer<ViewProjection>& GetViewProjectionBuffer();
 
+	/**
+	 * @brief カメラのワールド位置座標を送るための定数バッファ参照を取得します。
+	 */
 	ConstantBuffer<Vector4>& GetCameraPosBuffer();
+
+	/**
+	 * @brief フォグ設定パラメータを送るための定数バッファ参照を取得します。
+	 */
 	ConstantBuffer<FogParams>& GetFogParamsBuffer();
 
+	/**
+	 * @brief ビュー行列（matView）を取得します。
+	 */
 	const Matrix4x4& GetViewMatrix() const;
+
+	/**
+	 * @brief 射影（プロジェクション）行列を取得します。
+	 */
 	const Matrix4x4& GetProjectionMatrix() const;
 
 };
@@ -147,22 +209,26 @@ public:
 /// @brief カメラ関連の数学関数群
 namespace CameraMath {
 
-/// @brief perspective matrix の作成
-/// @param _fovY 視野角
-/// @param _aspectRatio アスペクト比 
-/// @param _nearClip 最小描画距離
-/// @param _farClip 最大描画距離
-/// @return 作成された perspective matrix
+/**
+ * @brief 視野角（Y軸）、アスペクト比、クリッピング面から透視投影（パースペクティブ）行列を作成します。
+ * @param _fovY 垂直視野角（ラジアン）
+ * @param _aspectRatio アスペクト比
+ * @param _nearClip 手前クリップ面距離
+ * @param _farClip 奥クリップ面距離
+ * @return 射影行列
+ */
 Matrix4x4 MakePerspectiveFovMatrix(float _fovY, float _aspectRatio, float _nearClip, float _farClip);
 
-/// @brief 平行投影行列の作成
-/// @param _left 左
-/// @param _right 右
-/// @param _bottom 下
-/// @param _top 上
-/// @param _znear 手前
-/// @param _zfar 奥行き
-/// @return 平行投影行列
+/**
+ * @brief 平行投影（オーソグラフィック）行列を作成します。
+ * @param _left 描画範囲の左端
+ * @param _right 描画範囲の右端
+ * @param _bottom 描画範囲の下端
+ * @param _top 描画範囲の上端
+ * @param _znear 手前クリップ面距離
+ * @param _zfar 奥クリップ面距離
+ * @return 射影行列
+ */
 Matrix4x4 MakeOrthographicMatrix(float _left, float _right, float _bottom, float _top, float _znear, float _zfar);
 
 }

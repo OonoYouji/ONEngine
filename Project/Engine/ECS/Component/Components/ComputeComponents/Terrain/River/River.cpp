@@ -1,4 +1,4 @@
-﻿#include "River.h"
+#include "River.h"
 
 /// std
 #include <fstream>
@@ -17,6 +17,9 @@
 using namespace ONEngine;
 
 
+/**
+ * @brief Catmull-Rom スプライン曲線上の点を計算補間します。
+ */
 RiverControlPoint ONEngine::CatmullRom(const RiverControlPoint& _p0, const RiverControlPoint& _p1, const RiverControlPoint& _p2, const RiverControlPoint& _p3, float _t) {
 	RiverControlPoint result;
 	result.position = Math::CatmullRomPosition(_p0.position, _p1.position, _p2.position, _p3.position, _t);
@@ -24,6 +27,9 @@ RiverControlPoint ONEngine::CatmullRom(const RiverControlPoint& _p0, const River
 	return result;
 }
 
+/**
+ * @brief 制御点配列から指定サンプリング密度でスプラインに沿った補間点配列を生成します。
+ */
 std::vector<RiverControlPoint> ONEngine::SampleRiverSpline(const std::vector<RiverControlPoint>& _points, int _samplePerSegment) {
 	std::vector<RiverControlPoint> result;
 
@@ -52,9 +58,19 @@ std::vector<RiverControlPoint> ONEngine::SampleRiverSpline(const std::vector<Riv
 
 
 
+/**
+ * @brief コンストラクタ
+ */
 River::River() : samplePerSegment_(10), isCreatedBuffers_(false), isGenerateMeshRequest_(false) {};
+
+/**
+ * @brief デストラクタ
+ */
 River::~River() = default;
 
+/**
+ * @brief エディタ用：川のパラメータや制御点の追加・削除など編集用Guiの描画処理を行います。
+ */
 void River::Edit(EntityComponentSystem* /*_ecs*/) {
 	/// ----- 川の編集 ----- ///
 
@@ -143,6 +159,9 @@ void River::Edit(EntityComponentSystem* /*_ecs*/) {
 	DrawSplineCurve();
 }
 
+/**
+ * @brief 川の制御点設定を外部JSONファイルへ保存します。
+ */
 void River::SaveToJson(const std::string& _name) {
 
 	/// ファイルに保存
@@ -196,6 +215,9 @@ void River::SaveToJson(const std::string& _name) {
 	outputFile.close();
 }
 
+/**
+ * @brief 外部JSONファイルから川の制御点設定を読み込みます。
+ */
 void River::LoadFromJson(const std::string& _name) {
 	/// ファイルを読み込む
 	const std::string filepath = "./Packages/Jsons/Terrain/" + _name + ".json";
@@ -223,6 +245,9 @@ void River::LoadFromJson(const std::string& _name) {
 
 }
 
+/**
+ * @brief シーン上にスプラインのパス線分や制御点用ギズモ（エディタ用）を描画します。
+ */
 void River::DrawSplineCurve() {
 	/// spline曲線をGizmoで描画する
 	createdPoints_ = SampleRiverSpline(controlPoints_, samplePerSegment_);
@@ -236,6 +261,9 @@ void River::DrawSplineCurve() {
 	}
 }
 
+/**
+ * @brief GPU側で川メッシュを格納・変形するためのUAV/CBVバッファを生成します。
+ */
 void River::CreateBuffers(DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap, DxCommand* _dxCommand) {
 	uint32_t totalSegments = static_cast<uint32_t>(createdPoints_.size() - 3);
 	uint32_t totalSamples = static_cast<uint32_t>(totalSegments * samplePerSegment_);
@@ -250,6 +278,9 @@ void River::CreateBuffers(DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap, DxCommand*
 	isCreatedBuffers_ = true;
 }
 
+/**
+ * @brief 制御点バッファ等へCPU側のデータをアップロード・転送します。
+ */
 void River::SetBufferData() {
 	for (size_t i = 0; i < controlPoints_.size(); i++) {
 		controlPointBuf_.SetMappedData(i, controlPoints_[i]);
@@ -266,6 +297,9 @@ void River::SetBufferData() {
 		});
 }
 
+/**
+ * @brief 川用の水面マテリアルパラメータ（描画時のテクスチャインデックスやOwner Entity情報）を設定します。
+ */
 void River::SetMaterialData(int32_t _entityId, int32_t _texIndex) {
 	materialBuffer_.SetMappedData({
 		.uvTransform = {
@@ -282,6 +316,9 @@ void River::SetMaterialData(int32_t _entityId, int32_t _texIndex) {
 	);
 }
 
+/**
+ * @brief 計算シェーダ等で変形したバッファを、描画（VBV/IBV経由でのレンダリング）に適したステートへ移行するバリアを生成します。
+ */
 void River::CreateRenderingBarriers(DxCommand* _dxCommand) {
 	rwVertices_.GetResource().CreateBarrier(
 		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
@@ -296,6 +333,9 @@ void River::CreateRenderingBarriers(DxCommand* _dxCommand) {
 	);
 }
 
+/**
+ * @brief 描画用に移行したリソースステートを、計算用の元ステート（UAV）へ復元するバリアを生成します。
+ */
 void River::RestoreResourceBarriers(DxCommand* _dxCommand) {
 	rwVertices_.GetResource().CreateBarrier(
 		D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER,
@@ -310,6 +350,9 @@ void River::RestoreResourceBarriers(DxCommand* _dxCommand) {
 	);
 }
 
+/**
+ * @brief レンダリング呼び出し用の頂点バッファビュー（D3D12_VERTEX_BUFFER_VIEW）を取得します。
+ */
 D3D12_VERTEX_BUFFER_VIEW River::CreateVBV() {
 	D3D12_VERTEX_BUFFER_VIEW vbv = {};
 	vbv.BufferLocation = rwVertices_.GetResource().Get()->GetGPUVirtualAddress();
@@ -318,6 +361,9 @@ D3D12_VERTEX_BUFFER_VIEW River::CreateVBV() {
 	return vbv;
 }
 
+/**
+ * @brief レンダリング呼び出し用のインデックスバッファビュー（D3D12_INDEX_BUFFER_VIEW）を取得します。
+ */
 D3D12_INDEX_BUFFER_VIEW River::CreateIBV() {
 	D3D12_INDEX_BUFFER_VIEW ibv = {};
 	ibv.BufferLocation = rwIndices_.GetResource().Get()->GetGPUVirtualAddress();
@@ -326,50 +372,86 @@ D3D12_INDEX_BUFFER_VIEW River::CreateIBV() {
 	return ibv;
 }
 
+/**
+ * @brief セグメント辺あたりの補間サンプル数を取得します。
+ */
 int River::GetSamplePerSegment() const {
 	return samplePerSegment_;
 }
 
+/**
+ * @brief 現在登録されている制御点（コントロールポイント）の数を取得します。
+ */
 int River::GetNumControlPoint() const {
 	return static_cast<int>(controlPoints_.size());
 }
 
+/**
+ * @brief 川メッシュの動的再生成要求フラグを取得します。
+ */
 bool River::GetIsGenerateMeshRequest() const {
 	return isGenerateMeshRequest_;
 }
 
+/**
+ * @brief 川メッシュの動的再生成要求フラグを設定します。
+ */
 void River::SetIsGenerateMeshRequest(bool _request) {
 	isGenerateMeshRequest_ = _request;
 }
 
+/**
+ * @brief 定数バッファ（Param）を取得します。
+ */
 const ConstantBuffer<River::Param>& River::GetParamBuffer() const {
 	return paramBuf_;
 }
 
+/**
+ * @brief マテリアル定数バッファ（GPUMaterial）を取得します。
+ */
 const ConstantBuffer<GPUMaterial>& River::GetMaterialBuffer() const {
 	return materialBuffer_;
 }
 
+/**
+ * @brief 生成された川頂点を保持する構造化バッファの読み取り専用参照を取得します。
+ */
 const StructuredBuffer<RiverVertex>& River::GetRwVertices() const {
 	return rwVertices_;
 }
 
+/**
+ * @brief 生成された川インデックスを保持する構造化バッファの読み取り専用参照を取得します。
+ */
 const StructuredBuffer<uint32_t>& River::GetRwIndices() const {
 	return rwIndices_;
 }
 
+/**
+ * @brief 制御点配列のGPU構造化バッファを取得します。
+ */
 const StructuredBuffer<RiverControlPoint>& River::GetControlPointBuffer() const {
 	return controlPointBuf_;
 }
 
+/**
+ * @brief 各バッファが生成済みであるかを取得します。
+ */
 bool River::GetIsCreatedBuffers() const {
 	return isCreatedBuffers_;
 }
 
+/**
+ * @brief 川インデックスバッファの総要素数を取得します。
+ */
 UINT River::GetTotalIndices() const {
 	return totalIndices_;
 }
 
+/**
+ * @brief 川頂点バッファの総要素数を取得します。
+ */
 UINT River::GetTotalVertices() const {
 	return totalVertices_;
 }

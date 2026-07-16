@@ -14,29 +14,50 @@ namespace ONEngine {
 /// /////////////////////////////////////////////////
 /// dx12のコマンドを管理するクラス
 /// /////////////////////////////////////////////////
+/**
+ * @class DxCommand
+ * @brief DirectX12のコマンドキュー、コマンドアロケータ、グラフィックスコマンドリスト、およびGPU同期フェンスを管理するクラス
+ */
 class DxCommand {
 public:
 	/// ===================================================
 	/// public : method
 	/// ===================================================
 
+	/**
+	 * @brief コンストラクタ
+	 */
 	DxCommand();
+
+	/**
+	 * @brief デストラクタ。GPUとの同期を待機してからリソースを破棄します。
+	 */
 	~DxCommand();
 
-	/// @brief DxCommandの初期化
-	/// @param _dxDevice DxDeviceのインスタンス
+	/**
+	 * @brief コマンドキュー、アロケータ、グラフィックスコマンドリスト、およびフェンスの生成と初期化を行います。
+	 * @param _dxDevice 生成に使用するDxDeviceポインタ
+	 */
 	void Initialize(class DxDevice* _dxDevice);
 
-	/// @brief CommandListを実行
+	/**
+	 * @brief 構築されたコマンドリストを閉じ、コマンドキューに投げて実行します。
+	 */
 	void CommandExecute();
 
-	/// @brief CommandListを実行、GPUの処理を待つ
+	/**
+	 * @brief コマンドリストをキューで実行し、GPUの処理完了までスレッドを待機（ブロック）させます。
+	 */
 	void CommandExecuteAndWait();
 
-	/// @brief CommandAllocatorとCommandListをリセットする
+	/**
+	 * @brief 次のフレームの描画命令を記録するため、コマンドアロケータとコマンドリストを再利用可能状態（Reset）にします。
+	 */
 	void CommandReset();
 
-	/// @brief GPUの処理が完了するまで待機する
+	/**
+	 * @brief フェンスを使用して、GPUがコマンドキューに積まれたすべての処理を終えるまでCPU側スレッドを待機（同期）させます。
+	 */
 	void WaitForGpuComplete();
 
 
@@ -58,10 +79,16 @@ public:
 	/// public : accessor
 	/// ===================================================
 
-	/// @brief CommandQueueの取得
+	/**
+	 * @brief コマンドキュー（ID3D12CommandQueue）オブジェクトを取得します。
+	 * @return ID3D12CommandQueueポインタ
+	 */
 	ID3D12CommandQueue* GetCommandQueue() const;
 
-	/// @brief CommandListの取得
+	/**
+	 * @brief コマンドリスト（ID3D12GraphicsCommandList6）オブジェクトを取得します。
+	 * @return ID3D12GraphicsCommandList6ポインタ
+	 */
 	ID3D12GraphicsCommandList6* GetCommandList() const;
 
 

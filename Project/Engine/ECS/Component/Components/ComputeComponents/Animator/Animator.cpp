@@ -1,4 +1,4 @@
-﻿#include "Animator.h"
+#include "Animator.h"
 #include "Engine/Core/Utility/Tools/Log.h"
 
 /// engine
@@ -14,10 +14,16 @@
 
 namespace ONEngine {
 
+/**
+ * @brief コンストラクタ
+ */
 Animator::Animator() {
     Console::LogInfo("Animator: Component created.");
 }
 
+/**
+ * @brief 指定したアニメーションクリップを即座に再生します。
+ */
 void Animator::Play(uint32_t _clipId, uint32_t _layerIndex) {
     if (_layerIndex >= MAX_ANIMATION_LAYERS) return;
 
@@ -36,6 +42,9 @@ void Animator::Play(uint32_t _clipId, uint32_t _layerIndex) {
     layer.transitionTimer = 0.0f;
 }
 
+/**
+ * @brief 指定した秒数（duration）をかけて、別のアニメーションクリップへクロスフェード（ブレンド）遷移を行います。
+ */
 void Animator::CrossFade(uint32_t _clipId, float _duration, uint32_t _layerIndex) {
     if (_layerIndex >= MAX_ANIMATION_LAYERS) return;
 
@@ -61,16 +70,25 @@ void Animator::CrossFade(uint32_t _clipId, float _duration, uint32_t _layerIndex
     layer.transitionTimer = 0.0f;
 }
 
+/**
+ * @brief 指定レイヤーのアニメーション再生速度を設定します。
+ */
 void Animator::SetPlaybackSpeed(float _speed, uint32_t _layerIndex) {
     if (_layerIndex >= MAX_ANIMATION_LAYERS) return;
     layers[_layerIndex].states[0].playbackSpeed = _speed;
 }
 
+/**
+ * @brief 指定レイヤーのアニメーションのループ再生を設定します。
+ */
 void Animator::SetLoop(bool _isLoop, uint32_t _layerIndex) {
     if (_layerIndex >= MAX_ANIMATION_LAYERS) return;
     layers[_layerIndex].states[0].isLoop = _isLoop;
 }
 
+/**
+ * @brief 指定されたアニメーションクリップの総再生長さ（秒）を取得します。
+ */
 float Animator::GetAnimationDuration(uint32_t _clipId) const {
     if (_clipId == 0) return 0.0f;
 
@@ -130,7 +148,10 @@ float Animator::GetAnimationDuration(uint32_t _clipId) const {
     return 0.0f;
 }
 
-void from_json(const nlohmann::json& _j, Animator& _animator) {
+/**
+ * @brief JSONからのデシリアライズ
+ */
+void ONEngine::from_json(const nlohmann::json& _j, Animator& _animator) {
     if (_j.contains("enable")) {
         _animator.enable = _j.at("enable").get<int>();
     }
@@ -165,7 +186,10 @@ void from_json(const nlohmann::json& _j, Animator& _animator) {
     }
 }
 
-void to_json(nlohmann::json& _j, const Animator& _animator) {
+/**
+ * @brief JSONへのシリアライズ
+ */
+void ONEngine::to_json(nlohmann::json& _j, const Animator& _animator) {
     _j = nlohmann::json{
         { "type", "Animator" },
         { "enable", _animator.enable },
@@ -198,35 +222,50 @@ void to_json(nlohmann::json& _j, const Animator& _animator) {
     _j["layers"] = layersJson;
 }
 
-void Internal_Play(uint64_t _nativeHandle, uint32_t _clipId, uint32_t _layerIndex) {
+/**
+ * @brief C#（Mono）インターフェース用：指定クリップの即座再生
+ */
+void ONEngine::Internal_Play(uint64_t _nativeHandle, uint32_t _clipId, uint32_t _layerIndex) {
     Animator* animator = reinterpret_cast<Animator*>(_nativeHandle);
     if (animator) {
         animator->Play(_clipId, _layerIndex);
     }
 }
 
-void Internal_CrossFade(uint64_t _nativeHandle, uint32_t _clipId, float _duration, uint32_t _layerIndex) {
+/**
+ * @brief C#（Mono）インターフェース用：指定クリップへのクロスフェード開始
+ */
+void ONEngine::Internal_CrossFade(uint64_t _nativeHandle, uint32_t _clipId, float _duration, uint32_t _layerIndex) {
     Animator* animator = reinterpret_cast<Animator*>(_nativeHandle);
     if (animator) {
         animator->CrossFade(_clipId, _duration, _layerIndex);
     }
 }
 
-void Internal_SetPlaybackSpeed(uint64_t _nativeHandle, float _speed, uint32_t _layerIndex) {
+/**
+ * @brief C#（Mono）インターフェース用：再生速度の設定
+ */
+void ONEngine::Internal_SetPlaybackSpeed(uint64_t _nativeHandle, float _speed, uint32_t _layerIndex) {
     Animator* animator = reinterpret_cast<Animator*>(_nativeHandle);
     if (animator) {
         animator->SetPlaybackSpeed(_speed, _layerIndex);
     }
 }
 
-void Internal_SetLoop(uint64_t _nativeHandle, bool _isLoop, uint32_t _layerIndex) {
+/**
+ * @brief C#（Mono）インターフェース用：ループ再生設定の変更
+ */
+void ONEngine::Internal_SetLoop(uint64_t _nativeHandle, bool _isLoop, uint32_t _layerIndex) {
     Animator* animator = reinterpret_cast<Animator*>(_nativeHandle);
     if (animator) {
         animator->SetLoop(_isLoop, _layerIndex);
     }
 }
 
-float Internal_GetAnimationDuration(uint64_t _nativeHandle, uint32_t _clipId) {
+/**
+ * @brief C#（Mono）インターフェース用：アニメーションの総長さ（秒）取得
+ */
+float ONEngine::Internal_GetAnimationDuration(uint64_t _nativeHandle, uint32_t _clipId) {
     Animator* animator = reinterpret_cast<Animator*>(_nativeHandle);
     if (animator) {
         return animator->GetAnimationDuration(_clipId);
@@ -235,11 +274,17 @@ float Internal_GetAnimationDuration(uint64_t _nativeHandle, uint32_t _clipId) {
 }
 
 namespace ComponentDebug {
+    /**
+     * @brief エディタ用：Animatorコンポーネントのデバッグ表示（Gui描画等）処理を行います。
+     */
     void AnimatorDebug(Animator* _animator) {
         std::vector<Animator*> animators = { _animator };
         AnimatorDebug(animators);
     }
 
+    /**
+     * @brief エディタ用：複数Animatorコンポーネントの一括デバッグ表示処理を行います。
+     */
     void AnimatorDebug(const std::vector<Animator*>& _animators) {
         if (_animators.empty()) return;
 

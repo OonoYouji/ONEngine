@@ -1,4 +1,4 @@
-﻿#include "ComputePipeline.h"
+#include "ComputePipeline.h"
 
 using namespace ONEngine;
 #include <iostream>
@@ -14,6 +14,9 @@ ComputePipeline::ComputePipeline() {
 }
 ComputePipeline::~ComputePipeline() = default;
 
+/**
+ * @brief パイプライン（RootSignature / Compute PSO）を一括生成します。
+ */
 void ComputePipeline::CreatePipeline(DxDevice* _dxDevice) {
 	CreateRootSignature(_dxDevice);
 	CreatePipelineStateObject(_dxDevice);
@@ -25,6 +28,9 @@ void ComputePipeline::SetShader(Shader* _shader) {
 	shader_ = _shader;
 }
 
+/**
+ * @brief 定数バッファビュー（CBV）の直接記述ルートパラメータを追加します。
+ */
 void ComputePipeline::AddCBV(D3D12_SHADER_VISIBILITY _shaderVisibility, uint32_t _shaderRegister) {
 	/// ----- CBVの追加 ----- ///
 
@@ -36,6 +42,9 @@ void ComputePipeline::AddCBV(D3D12_SHADER_VISIBILITY _shaderVisibility, uint32_t
 	rootParameters_.push_back(parameter);
 }
 
+/**
+ * @brief ルートパラメータに32ビットのインライン定数を追加します。
+ */
 void ComputePipeline::Add32BitConstant(D3D12_SHADER_VISIBILITY _shaderVisibility, uint32_t _shaderRegister, uint32_t _num32bitValue) {
 	/// ----- 32bit constantの追加 ----- ///
 
@@ -48,6 +57,9 @@ void ComputePipeline::Add32BitConstant(D3D12_SHADER_VISIBILITY _shaderVisibility
 	rootParameters_.push_back(parameter);
 }
 
+/**
+ * @brief テーブルの参照記述子レンジを追加します。
+ */
 void ComputePipeline::AddDescriptorRange(uint32_t _baseShaderRegister, uint32_t _numDescriptor, D3D12_DESCRIPTOR_RANGE_TYPE  _rangeType) {
 	/// ----- descriptor rangeの追加 ----- ///
 
@@ -60,6 +72,9 @@ void ComputePipeline::AddDescriptorRange(uint32_t _baseShaderRegister, uint32_t 
 	descriptorRanges_.push_back(range);
 }
 
+/**
+ * @brief ディスクリプタテーブルを追加します。
+ */
 void ComputePipeline::AddDescriptorTable(D3D12_SHADER_VISIBILITY _shaderVisibility, uint32_t _descriptorIndex) {
 	/// ----- descriptor tableの追加 ----- ///
 
@@ -75,6 +90,9 @@ void ComputePipeline::AddDescriptorTable(D3D12_SHADER_VISIBILITY _shaderVisibili
 	rootParameters_.push_back(parameter);
 }
 
+/**
+ * @brief 静的サンプラを追加します。
+ */
 void ComputePipeline::AddStaticSampler(D3D12_SHADER_VISIBILITY _shaderVisibility, uint32_t _shaderRegister, bool _isComparisonSampler) {
 	/// ----- static samplerの追加 ----- ///
 
@@ -113,6 +131,9 @@ void ComputePipeline::SetTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE _topologyTyp
 	primitiveTopologyType_ = _topologyType;
 }
 
+/**
+ * @brief コマンドリストにコンピュートPSOおよびルートシグネチャをバインドします。
+ */
 void ComputePipeline::SetPipelineStateForCommandList(DxCommand* _dxCommand) {
 	_dxCommand->GetCommandList()->SetPipelineState(pipelineState_.Get());
 	_dxCommand->GetCommandList()->SetComputeRootSignature(rootSignature_.Get());
@@ -120,6 +141,9 @@ void ComputePipeline::SetPipelineStateForCommandList(DxCommand* _dxCommand) {
 
 
 
+/**
+ * @brief ルートシグネチャを内部生成します。
+ */
 void ComputePipeline::CreateRootSignature(DxDevice* _dxDevice) {
 	/// ----- root signatureの生成 ----- ///
 
@@ -155,6 +179,9 @@ void ComputePipeline::CreateRootSignature(DxDevice* _dxDevice) {
 	Assert(SUCCEEDED(hr), "error...");
 }
 
+/**
+ * @brief コンピュートパイプラインステート（Compute PSO）を内部生成します。
+ */
 void ComputePipeline::CreatePipelineStateObject(DxDevice* _dxDevice) {
 	/// ----- pipeline state objectの生成 ----- ///
 

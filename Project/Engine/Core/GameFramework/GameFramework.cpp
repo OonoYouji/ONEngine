@@ -1,4 +1,4 @@
-﻿#include "GameFramework.h"
+#include "GameFramework.h"
 
 using namespace ONEngine;
 
@@ -31,6 +31,9 @@ GameFramework::~GameFramework() {
 	windowManager_->Finalize();
 }
 
+/**
+ * @brief エンジン全体および各モジュールの初期化を実行します。初期化完了までに要した時間を出力します。
+ */
 void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 
 	/// 初期化にかかる時間の計測開始
@@ -106,6 +109,9 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 
 }
 
+/**
+ * @brief ゲームのメインループを実行します。入力、時間、ECSシステム、イベントバッファ、描画処理の順に毎フレーム更新します。
+ */
 void GameFramework::Run() {
 
 	/// game loopが終了するまで回す
@@ -164,6 +170,9 @@ void GameFramework::Run() {
 
 }
 
+/**
+ * @brief デバッグ用の起動時シーン（JSON定義）をロードします。
+ */
 void GameFramework::LoadDebugScene() {
 	sceneManager_->GetSceneIO()->Input("Debug", entityComponentSystem_->GetECSGroup("Debug"));
 }

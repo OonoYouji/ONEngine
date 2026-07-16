@@ -1,4 +1,4 @@
-﻿#include "DxDSVHeap.h"
+#include "DxDSVHeap.h"
 
 using namespace ONEngine;
 
@@ -8,6 +8,9 @@ using namespace ONEngine;
 DxDSVHeap::DxDSVHeap(DxDevice* _dxDevice, uint32_t _maxHeapSize) : IDxDescriptorHeap(_dxDevice, _maxHeapSize) {}
 DxDSVHeap::~DxDSVHeap() = default;
 
+/**
+ * @brief DSV用のディスクリプタヒープ（ID3D12DescriptorHeap）をデバイスを通じて新規に生成します。
+ */
 void DxDSVHeap::Initialize() {
 	ID3D12Device* device = pDxDevice_->GetDevice();
 

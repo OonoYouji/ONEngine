@@ -1,4 +1,4 @@
-﻿#include "ComponentJsonConverter.h"
+#include "ComponentJsonConverter.h"
 
 /// std
 #include <unordered_map>
@@ -105,6 +105,9 @@ namespace {
 	JsonConverter jsonConverter;
 }
 
+/**
+ * @brief 任意のIComponentポインタから、型情報を判別し対応するJSONオブジェクトへシリアライズします。
+ */
 nlohmann::json ComponentJsonConverter::ToJson(const IComponent* _component) {
 	std::string name = GetComponentTypeName(_component);
 
@@ -116,6 +119,9 @@ nlohmann::json ComponentJsonConverter::ToJson(const IComponent* _component) {
 	return itr->second(_component);
 }
 
+/**
+ * @brief JSONオブジェクトからデータをパースし、対応するコンポーネントインスタンスへパラメータをデシリアライズします。
+ */
 void ComponentJsonConverter::FromJson(const nlohmann::json& _j, IComponent* _component) {
 	std::string name = GetComponentTypeName(_component);
 

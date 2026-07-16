@@ -16,6 +16,10 @@ namespace ONEngine {
         RandomBetweenTwoCurves
     };
 
+    /**
+     * @struct MinMaxFloat
+     * @brief 定数値、あるいは最小・最大値の範囲からランダムな浮動小数点を生成するための構造体
+     */
     struct MinMaxFloat {
         MinMaxState state;
         float constant;
@@ -23,19 +27,41 @@ namespace ONEngine {
         float maxVal;
         // AnimationCurve curve; // Future
 
+        /**
+         * @brief デフォルトコンストラクタ
+         */
         MinMaxFloat() : state(MinMaxState::Constant), constant(0.0f), minVal(0.0f), maxVal(1.0f) {}
+        /**
+         * @brief 定数値を指定するコンストラクタ
+         */
         MinMaxFloat(float _c) : state(MinMaxState::Constant), constant(_c), minVal(0.0f), maxVal(1.0f) {}
+        /**
+         * @brief 最小・最大値を指定してランダム範囲とするコンストラクタ
+         */
         MinMaxFloat(float _min, float _max) : state(MinMaxState::RandomBetweenTwoConstants), constant(0.0f), minVal(_min), maxVal(_max) {}
     };
 
+    /**
+     * @struct MinMaxColor
+     * @brief 単一のカラー値、あるいは最小・最大カラーの範囲からランダムなカラーを生成するための構造体
+     */
     struct MinMaxColor {
         MinMaxState state;
         Color constant;
         Color minVal;
         Color maxVal;
 
+        /**
+         * @brief デフォルトコンストラクタ
+         */
         MinMaxColor() : state(MinMaxState::Constant), constant(Color::kWhite), minVal(Color::kWhite), maxVal(Color::kWhite) {}
+        /**
+         * @brief 単一のカラーを指定するコンストラクタ
+         */
         MinMaxColor(const Color& _c) : state(MinMaxState::Constant), constant(_c), minVal(Color::kWhite), maxVal(Color::kWhite) {}
+        /**
+         * @brief 最小・最大カラーを指定してランダム範囲とするコンストラクタ
+         */
         MinMaxColor(const Color& _min, const Color& _max) : state(MinMaxState::RandomBetweenTwoConstants), constant(Color::kWhite), minVal(_min), maxVal(_max) {}
     };
 
@@ -47,10 +73,18 @@ namespace ONEngine {
         float alpha;
         float time;
     };
+
+    /**
+     * @struct ParticleSystemGradient
+     * @brief 時間経過割合（0.0f〜1.0f）におけるカラーとアルファのキーフレームリストを保持し、中間値を補間算出する構造体
+     */
     struct ParticleSystemGradient {
         std::vector<GradientColorKey> colorKeys;
         std::vector<GradientAlphaKey> alphaKeys;
 
+        /**
+         * @brief 指定時間における補間カラーを算出します。
+         */
         Color Evaluate(float time) const;
     };
 
@@ -58,8 +92,17 @@ namespace ONEngine {
         float time;
         float value;
     };
+
+    /**
+     * @struct AnimationCurve
+     * @brief 時間に対応するキーフレーム値の配列を保持し、任意の時間における補間値を算出する構造体
+     */
     struct AnimationCurve {
         std::vector<AnimationCurveKey> keys;
+
+        /**
+         * @brief 指定時間における補間値を算出します。
+         */
         float Evaluate(float time) const;
     };
 
@@ -153,6 +196,9 @@ namespace ONEngine {
         MinMaxCurve speedModifier;
         SimulationSpace space = SimulationSpace::Local;
 
+        /**
+         * @brief デフォルトコンストラクタ。速度補正係数を 1.0f に初期化します。
+         */
         ParticleSystemVelocityOverLifetime() {
             speedModifier.constant = 1.0f;
         }

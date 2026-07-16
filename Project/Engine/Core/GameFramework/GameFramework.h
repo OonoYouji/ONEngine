@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /// std
 #include <memory>
@@ -21,23 +21,40 @@
 /// ///////////////////////////////////////////////////
 namespace ONEngine {
 
+/**
+ * @class GameFramework
+ * @brief ゲームエンジン全体の初期化、メインループ実行、各基盤モジュール（DirectX, Window, ECS, Script, Rendering, Editor）の制御を行う中心クラス
+ */
 class GameFramework final {
 public:
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
 
+	/**
+	 * @brief コンストラクタ
+	 */
 	GameFramework();
+
+	/**
+	 * @brief デストラクタ。各種基盤モジュールの終了処理を行います。
+	 */
 	~GameFramework();
 
-	/// @brief 初期化処理
-	/// @param _startSetting 開始時の設定
+	/**
+	 * @brief エンジン全体および各モジュールの初期化を実行します。
+	 * @param _startSetting 開始時のウィンドウサイズやタイトル等の設定パラメータ
+	 */
 	void Initialize(const GameFrameworkConfig& _startSetting);
 
-	/// @brief ゲームのメインループ
+	/**
+	 * @brief ゲームのメインループを実行します。ウィンドウが閉じられるまで処理を繰り返します。
+	 */
 	void Run();
 
-	/// debug用のシーン.jsonを読み込む
+	/**
+	 * @brief デバッグ用の起動時シーン（JSON定義）をロードします。
+	 */
 	void LoadDebugScene();
 
 private:
@@ -45,14 +62,14 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	std::unique_ptr<DxManager> dxManager_;
-	std::unique_ptr<WindowManager> windowManager_;
-	std::unique_ptr<SceneManager> sceneManager_;
-	std::unique_ptr<EntityComponentSystem> entityComponentSystem_;
-	std::unique_ptr<RenderingFramework> renderingFramework_;
+	std::unique_ptr<DxManager> dxManager_;                         ///< DirectX12コアシステム管理
+	std::unique_ptr<WindowManager> windowManager_;                 ///< ウィンドウシステム管理
+	std::unique_ptr<SceneManager> sceneManager_;                   ///< シーン遷移管理
+	std::unique_ptr<EntityComponentSystem> entityComponentSystem_; ///< ECSによるゲームオブジェクト・システム管理
+	std::unique_ptr<RenderingFramework> renderingFramework_;       ///< 描画パイプライン管理
 
-	std::unique_ptr<Editor::ImGuiManager> imGuiManager_;
-	std::unique_ptr<Editor::EditorManager> editorManager_;
+	std::unique_ptr<Editor::ImGuiManager> imGuiManager_;           ///< ImGui表示管理
+	std::unique_ptr<Editor::EditorManager> editorManager_;         ///< エディタウィンドウ群管理
 };
 
 } // namespace ONEngine

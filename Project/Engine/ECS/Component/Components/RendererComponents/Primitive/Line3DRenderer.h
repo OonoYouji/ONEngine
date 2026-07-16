@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /// engine
 #include "../../Interface/IComponent.h"
@@ -11,19 +11,32 @@
 /// ///////////////////////////////////////////////////
 namespace ONEngine {
 
+/**
+ * @class Line3DRenderer
+ * @brief 3D空間上にデバッグ用などの線分（ライン）を描画するためのレンダラーコンポーネントクラス
+ */
 class Line3DRenderer final : public IComponent {
 public:
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
 
+	/**
+	 * @brief コンストラクタ
+	 */
 	Line3DRenderer();
+
+	/**
+	 * @brief デストラクタ
+	 */
 	~Line3DRenderer();
 
-	/// @brief lineの設定
-	/// @param _start 初期地
-	/// @param _end   終了地
-	/// @param _color ラインの色
+	/**
+	 * @brief 描画する3D線分のパラメータを設定します。
+	 * @param _start 始点の3Dワールド座標
+	 * @param _end 終点の3Dワールド座標
+	 * @param _color カラー（RGBA）
+	 */
 	void SetLine(const Vector3& _start, const Vector3& _end, const Vector4& _color);
 
 private:
@@ -40,6 +53,9 @@ public:
 	/// public : accessor
 	/// ===================================================
 
+	/**
+	 * @brief 描画する頂点データの配列（読み取り専用）を取得します。
+	 */
 	const std::vector<Line3DRenderingPipeline::VertexData>& GetVertices() const { return vertices_; }
 
 };

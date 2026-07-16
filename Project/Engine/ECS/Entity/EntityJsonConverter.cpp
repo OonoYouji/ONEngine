@@ -74,6 +74,9 @@ namespace {
 	}
 }
 
+/**
+ * @brief ゲームエンティティの構成データ（トランスフォーム、アタッチされたコンポーネント、子エンティティなど）をJSONオブジェクトへシリアライズします。
+ */
 nlohmann::json EntityJsonConverter::ToJson(const GameEntity* _entity, bool _forceFull) {
 	if (!_entity) {
 		return nlohmann::json();
@@ -133,6 +136,9 @@ nlohmann::json EntityJsonConverter::ToJson(const GameEntity* _entity, bool _forc
 	return entityJson;
 }
 
+/**
+ * @brief シリアライズされたJSONデータからゲームエンティティの構成要素（名前、有効状態、コンポーネントパラメータ等）をデシリアライズして復元・マージします。
+ */
 void EntityJsonConverter::FromJson(const nlohmann::json& _json, GameEntity* _entity, const std::string& /*_groupName*/, bool _merge) {
 
 	/// name, prefabNameを設定
@@ -184,6 +190,9 @@ void EntityJsonConverter::FromJson(const nlohmann::json& _json, GameEntity* _ent
 	}
 }
 
+/**
+ * @brief ゲームエンティティのTransformコンポーネントに限定してJSONデータからトランスフォームパラメータ（位置、回転、縮尺等）を復元適用します。
+ */
 void EntityJsonConverter::TransformFromJson(const nlohmann::json& _json, GameEntity* _entity) {
 	/// transformだけjsonから読み込む
 

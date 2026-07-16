@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /// std
 #include <unordered_map>
@@ -12,58 +12,85 @@
 /// //////////////////////////////////////////////
 namespace ONEngine {
 
+/**
+ * @class ComponentCollection
+ * @brief すべてのコンポーネント配列（ComponentArray）を一括管理し、型あるいは型名文字列によるコンポーネントの生成・検索・一括削除を司るファクトリ＆マネージャクラス
+ */
 class ComponentCollection {
 public:
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
 
+	/**
+	 * @brief コンストラクタ
+	 */
 	ComponentCollection();
+
+	/**
+	 * @brief デストラクタ
+	 */
 	~ComponentCollection();
 
 
-	/// @brief Componentのファクトリを登録する
-	/// @tparam Comp Componentの型
+	/**
+	 * @brief 特定のコンポーネント型（Comp）に対する生成ファクトリおよび配列を登録します。
+	 * @tparam Comp 登録対象のコンポーネント型
+	 */
 	template<IsComponent Comp>
 	void RegisterComponentFactory();
 
-	/// @brief 新規Componentを追加する
-	/// @tparam Comp Componentの型
-	/// @return 追加されたComponentのポインタ、失敗したら nullptr
+	/**
+	 * @brief 指定されたコンポーネント型（Comp）を新規生成し、登録します（配列が存在しない場合は自動登録）。
+	 * @tparam Comp 生成するコンポーネント型
+	 * @return 追加されたコンポーネントの型付きポインタ
+	 */
 	template<IsComponent Comp>
 	Comp* AddComponent();
 
-	/// @brief 新規Componentを追加する
-	/// @param _name Componentの名前
-	/// @return 追加されたComponentのポインタ、失敗したら nullptr
+	/**
+	 * @brief コンポーネント名の文字列を指定して、新規コンポーネントを追加します。
+	 * @param _name コンポーネントのクラス名（例: "Transform", "MeshRenderer" など）
+	 * @return 生成されたコンポーネントの基底（IComponent）ポインタ
+	 */
 	IComponent* AddComponent(const std::string& _name);
 
-	/// @brief Componentを取得する
-	/// @tparam Comp Componentの型
-	/// @param _index Arrayのインデックス
-	/// @return Componentのポインタ、失敗したら nullptr
+	/**
+	 * @brief 型と配列内インデックスを指定して、コンポーネントを取得します。
+	 * @tparam Comp 取得したいコンポーネントの型
+	 * @param _index 配列内インデックス
+	 * @return 対象コンポーネントのポインタ
+	 */
 	template<IsComponent Comp>
 	Comp* GetComponent(size_t _index);
 
-	/// @brief Componentの削除
-	/// @tparam Comp 削除するComponentの型
-	/// @param _index Arrayのインデックス
+	/**
+	 * @brief 型付きで、指定されたインデックスのコンポーネントを削除します。
+	 * @tparam Comp 削除対象のコンポーネント型
+	 * @param _index 配列内インデックス
+	 */
 	template<IsComponent Comp>
 	void RemoveComponent(size_t _index);
 
-	/// @brief Componentの削除
-	/// @param _hash CompのHash
-	/// @param _id ArrayのIndex
+	/**
+	 * @brief コンポーネントのハッシュとIDを指定して、コンポーネントを削除します。
+	 * @param _hash コンポーネント型のハッシュ値
+	 * @param _id 対象のコンポーネントID
+	 */
 	void RemoveComponent(size_t _hash, size_t _id);
 
-	/// @brief _entityのComponentをすべて削除する
-	/// @param _entity 削除対象のEntity
+	/**
+	 * @brief 指定されたゲームエンティティ（GameEntity）にアタッチされているすべてのコンポーネントを一括削除します。
+	 * @param _entity 対象のゲームエンティティポインタ
+	 */
 	void RemoveComponentAll(class GameEntity* _entity);
 
 
-	/// @brief Componentの配列を取得する
-	/// @tparam Comp Componentの型
-	/// @return ComponentArray
+	/**
+	 * @brief 指定されたコンポーネント型（Comp）に対応するコンポーネント配列オブジェクトを取得します。
+	 * @tparam Comp 対象コンポーネント型
+	 * @return ComponentArrayポインタ
+	 */
 	template <IsComponent Comp>
 	ComponentArray<Comp>* GetComponentArray();
 

@@ -1,4 +1,4 @@
-﻿#include "AudioPlaybackSystem.h"
+#include "AudioPlaybackSystem.h"
 
 
 /// engine
@@ -10,6 +10,9 @@
 
 namespace ONEngine {
 
+/**
+ * @brief コンストラクタ
+ */
 AudioPlaybackSystem::AudioPlaybackSystem(Asset::AssetCollection* _assetCollection)
 	: pAssetCollection_(_assetCollection) {
 
@@ -24,11 +27,20 @@ AudioPlaybackSystem::AudioPlaybackSystem(Asset::AssetCollection* _assetCollectio
 	Assert(SUCCEEDED(hr));
 }
 
+/**
+ * @brief デストラクタ
+ */
 AudioPlaybackSystem::~AudioPlaybackSystem() {}
 
 
+/**
+ * @brief エディタ非実行時のオーディオ更新処理
+ */
 void AudioPlaybackSystem::OutsideOfRuntimeUpdate(ECSGroup* /*_ecs*/) {}
 
+/**
+ * @brief 毎フレームのオーディオ再生状態の更新処理
+ */
 void AudioPlaybackSystem::RuntimeUpdate(ECSGroup* _ecs) {
 	/// AudioSourceコンポーネントの配列を取得、有効かチェック
 	ComponentArray<AudioSource>* asArray = _ecs->GetComponentArray<AudioSource>();
@@ -98,6 +110,9 @@ void AudioPlaybackSystem::RuntimeUpdate(ECSGroup* _ecs) {
 
 }
 
+/**
+ * @brief AudioSourceコンポーネントに対し、アセット情報に基づきXAudio2のソースボイス・バッファ構築を設定します。
+ */
 void AudioPlaybackSystem::SetAudioClip(AudioSource* _audioSource) {
 	if(_audioSource->path_.empty()) return;
 
@@ -109,6 +124,9 @@ void AudioPlaybackSystem::SetAudioClip(AudioSource* _audioSource) {
 	}
 }
 
+/**
+ * @brief 指定したAudioSourceコンポーネントの音声を再生開始します。
+ */
 void AudioPlaybackSystem::PlayAudio(AudioSource* _audioSource) {
 	if(!_audioSource->pAudioClip_) {
 		Console::LogError("[CPP Audio] Cannot play - AudioClip is null");
@@ -144,6 +162,9 @@ void AudioPlaybackSystem::PlayAudio(AudioSource* _audioSource) {
 	_audioSource->sourceVoices_.push_back(sourceVoice);
 }
 
+/**
+ * @brief SEのワンショット（一度限りの重ね合わせ再生）再生を行います。
+ */
 void AudioPlaybackSystem::PlayOneShot(Asset::AudioClip* _audioClip, float _volume, float _pitch, const std::string& /*_path*/) {
 	IXAudio2SourceVoice* sourceVoice = nullptr;
 	sourceVoice = _audioClip->CreateSourceVoice(xAudio2_.Get());
@@ -165,6 +186,9 @@ void AudioPlaybackSystem::PlayOneShot(Asset::AudioClip* _audioClip, float _volum
 	oneShotAudios_.push_back(sourceVoice);
 }
 
+/**
+ * @brief AudioSourceコンポーネントが現在再生中かなどの状態を取得します。
+ */
 int AudioPlaybackSystem::GetAudioState(AudioSource* _audioSource) {
 	Asset::AudioClip* clip = _audioSource->pAudioClip_;
 	if(!clip) {

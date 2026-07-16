@@ -1,14 +1,20 @@
-﻿#include "ThreadPool.h"
+#include "ThreadPool.h"
 
 namespace ONEngine {
 
 thread_local WorkerContext* ThreadPool::tlsContext_ = nullptr;
 
+/**
+ * @brief シングルトンインスタンスを取得します。
+ */
 ThreadPool& ThreadPool::Instance() {
 	static ThreadPool instance;
 	return instance;
 }
 
+/**
+ * @brief 現在この関数を呼び出したスレッドのワーカースレッド固有コンテキストを取得します（スレッドローカル）。
+ */
 WorkerContext* ThreadPool::GetWorkerContext() {
 	return tlsContext_;
 }
@@ -17,6 +23,9 @@ ThreadPool::~ThreadPool() {
 	Shutdown();
 }
 
+/**
+ * @brief スレッドプールの初期化を行い、指定された数のワーカースレッドを起動します。
+ */
 void ThreadPool::Initialize(DxDevice* device, size_t threadCount) {
 	if(running_) return;
 
@@ -32,6 +41,9 @@ void ThreadPool::Initialize(DxDevice* device, size_t threadCount) {
 	}
 }
 
+/**
+ * @brief 全スレッドに終了をシグナルし、ジョブが完了するのを待機してスレッドプールをシャットダウンします。
+ */
 void ThreadPool::Shutdown() {
 	if(!running_) return;
 
@@ -50,6 +62,9 @@ void ThreadPool::Shutdown() {
 	contexts_.clear();
 }
 
+/**
+ * @brief 各ワーカースレッドで無限ループとして動作するジョブ取得・実行ループ。
+ */
 void ThreadPool::WorkerLoop(size_t index) {
 	tlsContext_ = &contexts_[index];
 

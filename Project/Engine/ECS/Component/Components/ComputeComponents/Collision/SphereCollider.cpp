@@ -1,4 +1,4 @@
-﻿#include "SphereCollider.h"
+#include "SphereCollider.h"
 
 /// std
 #include <bit>
@@ -13,6 +13,9 @@
 
 using namespace ONEngine;
 
+/**
+ * @brief エディタ用：SphereColliderコンポーネントのデバッグ表示（Gui描画等）処理を行います。
+ */
 void ComponentDebug::SphereColliderDebug(SphereCollider* _c) {
 	if(!_c) {
 		return;
@@ -100,6 +103,9 @@ void ComponentDebug::SphereColliderDebug(SphereCollider* _c) {
 }
 
 
+/**
+ * @brief JSONからのデシリアライズ
+ */
 void ONEngine::from_json(const nlohmann::json& _j, SphereCollider& _s) {
 	_s.enable = _j.value("enable", 1);
 	_s.radius_ = _j.value("radius", 1.0f);
@@ -111,6 +117,9 @@ void ONEngine::from_json(const nlohmann::json& _j, SphereCollider& _s) {
 	_s.maskBits_ = _j.value("maskBits", static_cast<uint32_t>(CollisionFilter::ALL));
 }
 
+/**
+ * @brief JSONへのシリアライズ
+ */
 void ONEngine::to_json(nlohmann::json& _j, const SphereCollider& _s) {
 	_j = nlohmann::json{
 		{ "type", "SphereCollider" },
@@ -126,44 +135,71 @@ void ONEngine::to_json(nlohmann::json& _j, const SphereCollider& _s) {
 }
 
 
+/**
+ * @brief コンストラクタ
+ */
 SphereCollider::SphereCollider() {
 	// デフォルトの値をセット
 	radius_ = 1.0f;
 }
 
+/**
+ * @brief 球体コライダーの半径を設定します。
+ */
 void SphereCollider::SetRadius(float _radius) {
 	radius_ = _radius;
 }
 
+/**
+ * @brief 球体コライダーの半径を取得します。
+ */
 float SphereCollider::GetRadius() const {
 	return radius_;
 }
 
+/**
+ * @brief C#（Mono）インターフェース用：コライダーの半径を取得
+ */
 float ONEngine::InternalGetRadius(uint64_t _nativeHandle) {
 	SphereCollider* c = reinterpret_cast<SphereCollider*>(_nativeHandle);
 	return c ? c->GetRadius() : 0.0f;
 }
 
+/**
+ * @brief C#（Mono）インターフェース用：コライダーの半径を設定
+ */
 void ONEngine::InternalSetRadius(uint64_t _nativeHandle, float _radius) {
 	SphereCollider* c = reinterpret_cast<SphereCollider*>(_nativeHandle);
 	if(c) c->SetRadius(_radius);
 }
 
+/**
+ * @brief C#（Mono）インターフェース用：トリガーモードかの判定を取得
+ */
 bool ONEngine::InternalIsTriggerSphere(uint64_t _nativeHandle) {
 	SphereCollider* c = reinterpret_cast<SphereCollider*>(_nativeHandle);
 	return c ? c->IsTrigger() : false;
 }
 
+/**
+ * @brief C#（Mono）インターフェース用：トリガーモードの設定を変更
+ */
 void ONEngine::InternalSetTriggerSphere(uint64_t _nativeHandle, bool _trigger) {
 	SphereCollider* c = reinterpret_cast<SphereCollider*>(_nativeHandle);
 	if(c) c->SetTrigger(_trigger);
 }
 
+/**
+ * @brief C#（Mono）インターフェース用：質量を取得
+ */
 float ONEngine::InternalGetMass(uint64_t _nativeHandle) {
 	SphereCollider* c = reinterpret_cast<SphereCollider*>(_nativeHandle);
 	return c ? c->GetMass() : 1.0f;
 }
 
+/**
+ * @brief C#（Mono）インターフェース用：質量を設定
+ */
 void ONEngine::InternalSetMass(uint64_t _nativeHandle, float _mass) {
 	SphereCollider* c = reinterpret_cast<SphereCollider*>(_nativeHandle);
 	if(c) c->SetMass(_mass);

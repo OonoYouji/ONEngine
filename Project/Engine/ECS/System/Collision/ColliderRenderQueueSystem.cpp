@@ -1,4 +1,4 @@
-﻿#include "ColliderRenderQueueSystem.h"
+#include "ColliderRenderQueueSystem.h"
 
 using namespace ONEngine;
 
@@ -6,14 +6,23 @@ using namespace ONEngine;
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Transform/Transform.h"
 
+/**
+ * @brief コンストラクタ
+ */
 ColliderRenderQueueSystem::ColliderRenderQueueSystem() {}
 
+/**
+ * @brief エディタ非実行時のコライダー可視化処理（ギズモの描画）を行います。
+ */
 void ColliderRenderQueueSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
 	UpdateSphereCollider(_ecs->GetComponentArray<SphereCollider>());
 	UpdateBoxCollider(_ecs->GetComponentArray<BoxCollider>());
 }
 
 
+/**
+ * @brief 球体コライダー（SphereCollider）の情報からデバッグ用の球体ギズモを描画キューへ追加します。
+ */
 void ColliderRenderQueueSystem::UpdateSphereCollider(ComponentArray<SphereCollider>* _sphereColliderArray) {
 
 	/// SphereColliderが存在するか確認(空ならreturn)
@@ -40,6 +49,9 @@ void ColliderRenderQueueSystem::UpdateSphereCollider(ComponentArray<SphereCollid
 
 }
 
+/**
+ * @brief ボックスコライダー（BoxCollider）の情報からデバッグ用の直方体ギズモを描画キューへ追加します。
+ */
 void ColliderRenderQueueSystem::UpdateBoxCollider(ComponentArray<BoxCollider>* _boxColliderArray) {
 
 	/// BoxColliderが存在するか確認(空ならreturn)

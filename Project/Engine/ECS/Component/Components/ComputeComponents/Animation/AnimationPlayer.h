@@ -12,21 +12,45 @@ struct _MonoClassField;
 
 namespace ONEngine {
 
+/**
+ * @class AnimationPlayer
+ * @brief トランスフォームの座標、カラー、スクリプト変数などの任意プロパティを、アニメーションクリップ（キーフレームデータ）に従って時間変化再生させるアニメーションプレイヤーコンポーネントクラス
+ */
 class AnimationPlayer : public IComponent {
 public:
+    /**
+     * @brief コンストラクタ
+     */
     AnimationPlayer();
+
+    /**
+     * @brief デストラクタ
+     */
     ~AnimationPlayer() override;
 
+    /**
+     * @brief アニメーションプレイヤーの状態をデフォルトにリセットします。
+     */
     void Reset() override;
 
-    /// @brief アニメーションを再生する
+    /**
+     * @brief アニメーションを再生状態（isPlaying = true）にします。
+     */
     void Play();
-    /// @brief アニメーションを一時停止する
+
+    /**
+     * @brief アニメーションの再生を一時停止（isPlaying = false、時間維持）します。
+     */
     void Pause();
-    /// @brief アニメーションを停止する
+
+    /**
+     * @brief アニメーションの再生を停止し、時間を再生開始（時間 = 0.0f）に戻します。
+     */
     void Stop();
 
-    /// @brief 使用するアニメーションクリップを設定する
+    /**
+     * @brief アニメーションクリップアセットのパス（.animファイル等）を設定します。
+     */
     void SetClip(const std::string& _path);
 
     /// ===============================================
@@ -41,7 +65,10 @@ public:
     bool autoPlay = true;
     bool shouldApplyOnce = false; // Stop時などに一度だけ値を適用するためのフラグ
 
-    /// アニメーション対象のプロパティを解決したキャッシュ
+    /**
+     * @struct PropertyBinding
+     * @brief アニメーション対象のコンポーネント変数ポインタやC#スクリプトフィールドを直接バインドするためのキャッシュ構造体
+     */
     struct PropertyBinding {
         IComponent* targetComponent;
         std::string propertyPath;
@@ -64,17 +91,31 @@ public:
     std::vector<PropertyBinding> bindings;
     bool isBound = false;
 
-    /// @brief エンティティのコンポーネントに対してプロパティをバインドする
+    /**
+     * @brief 所属エンティティのトランスフォームや各コンポーネント変数、C#スクリプトフィールドへの直接ポインタ参照（バインド）を構築します。
+     */
     void Bind();
 
-    /// @brief バインド情報をクリアし、GCハンドルを解放する
+    /**
+     * @brief 構築されたポインタ参照バインド情報をクリアし、登録されたC#側のGCハンドルも解放します。
+     */
     void ClearBindings();
 };
 
+/**
+ * @brief JSONからのデシリアライズ
+ */
 void from_json(const nlohmann::json& _j, AnimationPlayer& _a);
+
+/**
+ * @brief JSONへのシリアライズ
+ */
 void to_json(nlohmann::json& _j, const AnimationPlayer& _a);
 
 namespace ComponentDebug {
+    /**
+     * @brief エディタ用：AnimationPlayerコンポーネントのデバッグ表示（Gui描画等）処理を行います。
+     */
     void AnimationPlayerDebug(AnimationPlayer* _player);
 }
 

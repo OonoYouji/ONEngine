@@ -1,4 +1,4 @@
-﻿#include "GrassField.h"
+#include "GrassField.h"
 
 /// externals
 #include <imgui.h>
@@ -20,6 +20,9 @@ using namespace ONEngine;
 /// Json Serialization
 /// ////////////////////////////////////////////////////////
 
+/**
+ * @brief JSONへのシリアライズ
+ */
 void ONEngine::to_json(nlohmann::json& _j, const GrassField& _p) {
 	/// GrassField -> Json
 	_j = {
@@ -30,6 +33,9 @@ void ONEngine::to_json(nlohmann::json& _j, const GrassField& _p) {
 	};
 }
 
+/**
+ * @brief JSONからのデシリアライズ
+ */
 void ONEngine::from_json(const nlohmann::json& _j, GrassField& _p) {
 	/// Json -> GrassField
 	_p.maxGrassCount_ = _j.value("maxGrassCount", 128);
@@ -43,6 +49,9 @@ void ONEngine::from_json(const nlohmann::json& _j, GrassField& _p) {
 /// ImGuiデバッグ関数
 /// ////////////////////////////////////////////////////////
 
+/**
+ * @brief エディタ用：GrassFieldコンポーネントのデバッグ表示（Gui描画等）処理を行います。
+ */
 void ComponentDebug::GrassFieldDebug(GrassField* _grassField, Asset::AssetCollection* _assetCollection) {
 
 	/// 草の最大本数
@@ -81,11 +90,20 @@ void ComponentDebug::GrassFieldDebug(GrassField* _grassField, Asset::AssetCollec
 /// GrassField
 /// ////////////////////////////////////////////////////////
 
+/**
+ * @brief コンストラクタ
+ */
 GrassField::GrassField() :
 	maxGrassCount_(static_cast<uint32_t>(std::pow(2, 32) - 1)), distributionTexturePath_(""), isCreated_(false), isArranged_(false) {
 };
+/**
+ * @brief デストラクタ
+ */
 GrassField::~GrassField() = default;
 
+/**
+ * @brief 最大草ブレード数に対応するGPUバッファ（UAV構造化バッファ等）を構築・初期化します。
+ */
 void GrassField::Initialize(uint32_t _maxBladeCount, DxDevice* _dxDevice, DxCommand* _dxCommand, DxSRVHeap* _dxSRVHeap) {
 	/// すでに生成されていたら何もしない
 	if (isCreated_) {
@@ -106,6 +124,9 @@ void GrassField::Initialize(uint32_t _maxBladeCount, DxDevice* _dxDevice, DxComm
 	materialBuffer_.Create(_dxDevice);
 }
 
+/**
+ * @brief マテリアル定数バッファ等の描画に必要な定数リソースデータをセットアップ（GPUへ転送）します。
+ */
 void GrassField::SetupRenderingData(Asset::AssetCollection* _assetCollection) {
 
 	GPUMaterial gpuMaterial{};
@@ -134,6 +155,9 @@ void GrassField::SetupRenderingData(Asset::AssetCollection* _assetCollection) {
 	materialBuffer_.SetMappedData(gpuMaterial);
 }
 
+/**
+ * @brief 描画コマンド用の開始インデックスバッファパラメータを設定・構築します。
+ */
 void GrassField::StartIndexMapping(UINT _oneDrawInstanceCount) {
 	//
 
@@ -145,6 +169,9 @@ void GrassField::StartIndexMapping(UINT _oneDrawInstanceCount) {
 
 }
 
+/**
+ * @brief 配置完了した有効な草ブレードインスタンス数を調べるカウンタバッファから、CPU側に本数を読み戻します。
+ */
 void GrassField::AppendBufferReadCounter(DxManager* _dxm, DxCommand* _dxCommand) {
 	/// ----- GrassInstanceBufferのカウンターを呼んでインスタンス数を数える ----- ///
 
@@ -166,30 +193,51 @@ void GrassField::AppendBufferReadCounter(DxManager* _dxm, DxCommand* _dxCommand)
 
 }
 
+/**
+ * @brief 草インスタンスデータ用の構造化バッファオブジェクトへの参照を取得します。
+ */
 StructuredBuffer<GrassData>& GrassField::GetRwGrassInstanceBuffer() {
 	return rwGrassInstanceBuffer_;
 }
 
+/**
+ * @brief 描画コマンド用の開始インデックス構造化バッファを取得します。
+ */
 StructuredBuffer<uint32_t>& GrassField::GetStartIndexBufferRef() {
 	return startIndexBuffer_;
 }
 
+/**
+ * @brief 風アニメーション等に使う時間情報を転送する構造化バッファを取得します。
+ */
 StructuredBuffer<float>& GrassField::GetTimeBuffer() {
 	return timeBuffer_;
 }
 
+/**
+ * @brief マテリアルパラメータ（GPUMaterial）の定数バッファを取得します。
+ */
 ConstantBuffer<GPUMaterial>& GrassField::GetMaterialBufferRef() {
 	return materialBuffer_;
 }
 
+/**
+ * @brief 最大配置可能草ブレード数を取得します。
+ */
 uint32_t GrassField::GetMaxGrassCount() const {
 	return maxGrassCount_;
 }
 
+/**
+ * @brief バッファ初期構築完了フラグを取得します。
+ */
 bool GrassField::GetIsCreated() const {
 	return isCreated_;
 }
 
+/**
+ * @brief 実際に配置完了した草ブレードインスタンス数を取得します。
+ */
 uint32_t GrassField::GetInstanceCount() const {
 	return instanceCount_;
 }

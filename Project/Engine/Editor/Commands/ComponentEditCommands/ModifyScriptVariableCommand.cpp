@@ -12,20 +12,32 @@
 
 namespace Editor {
 
+/**
+ * @brief コンストラクタ
+ */
 ModifyScriptVariableCommand::ModifyScriptVariableCommand(ONEngine::GameEntity* _entity, const std::string& _scriptName, const std::string& _fieldName, int _monoType, const VariantValue& _oldValue, const VariantValue& _newValue)
     : entityGuid_(_entity->GetGuid()), scriptName_(_scriptName), fieldName_(_fieldName), monoType_(_monoType), oldValue_(_oldValue), newValue_(_newValue) {
 }
 
+/**
+ * @brief コマンドの実行（新しい値を変数へ設定します）。
+ */
 EDITOR_STATE ModifyScriptVariableCommand::Execute() {
     ApplyValue(newValue_);
     return EDITOR_STATE_FINISH;
 }
 
+/**
+ * @brief コマンドの取り消し処理（元の古い値を変数へ再設定します）。
+ */
 EDITOR_STATE ModifyScriptVariableCommand::Undo() {
     ApplyValue(oldValue_);
     return EDITOR_STATE_FINISH;
 }
 
+/**
+ * @brief C# アセンブリを介し、対象フィールドへバリアント値を適切にキャストして書き込みます。
+ */
 void ModifyScriptVariableCommand::ApplyValue(const VariantValue& _value) {
     auto& monoEngine = ONEngine::MonoScriptEngine::GetInstance();
     

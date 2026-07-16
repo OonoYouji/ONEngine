@@ -1,4 +1,4 @@
-﻿#include "BoxCollider.h"
+#include "BoxCollider.h"
 
 #include <magic_enum/magic_enum.hpp>
 
@@ -11,6 +11,9 @@
 
 using namespace ONEngine;
 
+/**
+ * @brief エディタ用：BoxColliderコンポーネントのデバッグ表示（Gui描画等）処理を行います。
+ */
 void ComponentDebug::BoxColliderDebug(BoxCollider* _bc) {
 	if(!_bc) {
 		return;
@@ -95,6 +98,9 @@ void ComponentDebug::BoxColliderDebug(BoxCollider* _bc) {
 	Editor::DrawVec3Control("size", _bc->size_, 0.1f, 0.0f, 1024.0f, 100.0f, &unified);
 }
 
+/**
+ * @brief JSONからのデシリアライズ
+ */
 void ONEngine::from_json(const nlohmann::json& _j, BoxCollider& _b) {
 	_b.enable = _j.value("enable", 1);
 	_b.size_ = _j.value("size", Vector3::One);
@@ -106,6 +112,9 @@ void ONEngine::from_json(const nlohmann::json& _j, BoxCollider& _b) {
 	_b.maskBits_ = _j.value("maskBits", static_cast<uint32_t>(CollisionFilter::ALL));
 }
 
+/**
+ * @brief JSONへのシリアライズ
+ */
 void ONEngine::to_json(nlohmann::json& _j, const BoxCollider& _b) {
 	_j = nlohmann::json{
 		{ "type", "BoxCollider" },
@@ -121,44 +130,71 @@ void ONEngine::to_json(nlohmann::json& _j, const BoxCollider& _b) {
 }
 
 
+/**
+ * @brief コンストラクタ
+ */
 BoxCollider::BoxCollider() {
 	// デフォルトの値をセット
 	size_ = Vector3::One; // サイズを1x1x1に初期化
 }
 
+/**
+ * @brief 直方体コライダーのサイズを設定します。
+ */
 void BoxCollider::SetSize(const Vector3& _size) {
 	size_ = _size;
 }
 
+/**
+ * @brief 直方体コライダーのサイズを取得します。
+ */
 const Vector3& BoxCollider::GetSize() const {
 	return size_;
 }
 
+/**
+ * @brief C#（Mono）インターフェース用：コライダーサイズを取得
+ */
 Vector3 ONEngine::InternalGetSize(uint64_t _nativeHandle) {
 	BoxCollider* c = reinterpret_cast<BoxCollider*>(_nativeHandle);
 	return c ? c->GetSize() : Vector3::Zero;
 }
 
+/**
+ * @brief C#（Mono）インターフェース用：コライダーサイズを設定
+ */
 void ONEngine::InternalSetSize(uint64_t _nativeHandle, Vector3 _size) {
 	BoxCollider* c = reinterpret_cast<BoxCollider*>(_nativeHandle);
 	if(c) c->SetSize(_size);
 }
 
+/**
+ * @brief C#（Mono）インターフェース用：トリガーモードかの判定を取得
+ */
 bool ONEngine::InternalIsTriggerBox(uint64_t _nativeHandle) {
 	BoxCollider* c = reinterpret_cast<BoxCollider*>(_nativeHandle);
 	return c ? c->IsTrigger() : false;
 }
 
+/**
+ * @brief C#（Mono）インターフェース用：トリガーモードの設定を変更
+ */
 void ONEngine::InternalSetTriggerBox(uint64_t _nativeHandle, bool _trigger) {
 	BoxCollider* c = reinterpret_cast<BoxCollider*>(_nativeHandle);
 	if(c) c->SetTrigger(_trigger);
 }
 
+/**
+ * @brief C#（Mono）インターフェース用：質量を取得
+ */
 float ONEngine::InternalGetMassBox(uint64_t _nativeHandle) {
 	BoxCollider* c = reinterpret_cast<BoxCollider*>(_nativeHandle);
 	return c ? c->GetMass() : 1.0f;
 }
 
+/**
+ * @brief C#（Mono）インターフェース用：質量を設定
+ */
 void ONEngine::InternalSetMassBox(uint64_t _nativeHandle, float _mass) {
 	BoxCollider* c = reinterpret_cast<BoxCollider*>(_nativeHandle);
 	if(c) c->SetMass(_mass);

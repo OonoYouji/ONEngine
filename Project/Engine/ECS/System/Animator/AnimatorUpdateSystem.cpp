@@ -17,10 +17,16 @@ namespace ONEngine {
 
 std::unordered_map<uint32_t, BoneMask> AnimatorUpdateSystem::boneMasks_;
 
+/**
+ * @brief ボーンマスク（特定の関節にのみアニメーションを適用するフィルタ設定）をシステムに登録します。
+ */
 void AnimatorUpdateSystem::RegisterBoneMask(const BoneMask& _boneMask) {
     boneMasks_[_boneMask.nameHash] = _boneMask;
 }
 
+/**
+ * @brief ボーン階層を再帰的に巡回し、ローカル姿勢からグローバルワールド行列を計算して更新します。
+ */
 void AnimatorUpdateSystem::UpdateSkeletonRecursive(SkinMeshRenderer* _smr, int32_t _jointIndex, const std::optional<int32_t>& _parentIndex) {
     Skeleton& skeleton = _smr->skeleton_;
     Joint& joint = skeleton.joints[_jointIndex];
@@ -43,6 +49,9 @@ void AnimatorUpdateSystem::UpdateSkeletonRecursive(SkinMeshRenderer* _smr, int32
     }
 }
 
+/**
+ * @brief 各ジョイント行列をGPUスキンクラスターバッファ（定数/構造化バッファ）へ転送可能な形式に書き込み同期します。
+ */
 void AnimatorUpdateSystem::UpdateSkinCluster(SkinMeshRenderer* _smr) {
     if (!_smr->skinCluster_) return;
     
@@ -60,6 +69,9 @@ void AnimatorUpdateSystem::UpdateSkinCluster(SkinMeshRenderer* _smr) {
     }
 }
 
+/**
+ * @brief 毎フレームのAnimator更新処理およびスキンメッシュボーン階層への適用処理を実行します。
+ */
 void AnimatorUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
     if (!_ecs) return;
 

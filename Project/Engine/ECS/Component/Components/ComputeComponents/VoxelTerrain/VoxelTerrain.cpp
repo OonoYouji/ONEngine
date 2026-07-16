@@ -1,4 +1,4 @@
-﻿#include "VoxelTerrain.h"
+#include "VoxelTerrain.h"
 
 /// std
 #include <algorithm>
@@ -21,6 +21,9 @@
 
 namespace ONEngine {
 
+/**
+ * @brief エディタ用：VoxelTerrainコンポーネントのデバッグ表示（Gui描画等）処理を行います。
+ */
 void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* vt, DxManager* _dxm, Asset::AssetCollection* _ac) {
 	if(!vt) {
 		Console::LogError("VoxelTerrainDebug: _voxelTerrain is nullptr");
@@ -349,6 +352,9 @@ void ComponentDebug::VoxelTerrainDebug(VoxelTerrain* vt, DxManager* _dxm, Asset:
 }
 
 
+/**
+ * @brief チャンクリストのデシリアライズ
+ */
 void ONEngine::from_json(const nlohmann::json& _j, std::vector<Chunk>& _chunks) {
 	nlohmann::json jChunks = _j["chunks"];
 
@@ -363,6 +369,9 @@ void ONEngine::from_json(const nlohmann::json& _j, std::vector<Chunk>& _chunks) 
 	}
 }
 
+/**
+ * @brief チャンクリストのシリアライズ
+ */
 void ONEngine::to_json(nlohmann::json& _j, const std::vector<Chunk>& _chunks) {
 	nlohmann::json jChunks;
 
@@ -375,6 +384,9 @@ void ONEngine::to_json(nlohmann::json& _j, const std::vector<Chunk>& _chunks) {
 	};
 }
 
+/**
+ * @brief JSONからのデシリアライズ
+ */
 void ONEngine::from_json(const nlohmann::json& _j, VoxelTerrain& vt) {
 	/// Json -> VoxelTerrain
 	vt.enable = _j.value("enable", 1);
@@ -410,6 +422,9 @@ void ONEngine::from_json(const nlohmann::json& _j, VoxelTerrain& vt) {
 	vt.lodInfo_.lod = _j.value("lod", 1);
 }
 
+/**
+ * @brief JSONへのシリアライズ
+ */
 void ONEngine::to_json(nlohmann::json& _j, const VoxelTerrain& _voxelTerrain) {
 	/// VoxelTerrain -> Json
 	_j = {
@@ -451,6 +466,9 @@ void ONEngine::to_json(nlohmann::json& _j, const VoxelTerrain& _voxelTerrain) {
 /// ボクセルで表現された地形
 /// ///////////////////////////////////////////////////
 
+/**
+ * @brief コンストラクタ
+ */
 VoxelTerrain::VoxelTerrain() {
 	/// x*z でチャンクが並ぶ想定
 	chunkCountXZ_ = Vector2Int{ 10, 10 };
@@ -461,6 +479,9 @@ VoxelTerrain::VoxelTerrain() {
 	}
 }
 
+/**
+ * @brief デストラクタ
+ */
 VoxelTerrain::~VoxelTerrain() {
 	if(pDxSRVHeap_) {
 		/// 使用しているUAVテクスチャの解放を行う
@@ -472,6 +493,9 @@ VoxelTerrain::~VoxelTerrain() {
 	}
 }
 
+/**
+ * @brief 各地形チャンクの3DテクスチャアセットのGuidをアセットコレクションと紐づけ設定します。
+ */
 void VoxelTerrain::SettingChunksGuid(Asset::AssetCollection* _assetCollection) {
 	maxChunkCount_ = static_cast<size_t>(chunkCountXZ_.x * chunkCountXZ_.y);
 	if(maxChunkCount_ > chunks_.size()) {
@@ -491,6 +515,9 @@ void VoxelTerrain::SettingChunksGuid(Asset::AssetCollection* _assetCollection) {
 	}
 }
 
+/**
+ * @brief 描画用バッファが正常に生成済みかを判定します。
+ */
 bool VoxelTerrain::CheckCreatedBuffers() const {
 	bool isCreated = false;
 
@@ -501,6 +528,9 @@ bool VoxelTerrain::CheckCreatedBuffers() const {
 	return isCreated;
 }
 
+/**
+ * @brief 地形情報、LOD設定、マテリアルなどの定数・構造化バッファを生成します。
+ */
 void VoxelTerrain::CreateBuffers(DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap, Asset::AssetCollection* _assetCollection) {
 	UINT chunkCount = static_cast<UINT>(32 * 32);
 
@@ -524,6 +554,9 @@ void VoxelTerrain::CreateBuffers(DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap, Ass
 	}
 }
 
+/**
+ * @brief 地形描画パイプラインに必要な各定数バッファやSRVディスクリプタをコマンドリストにバインド設定します。
+ */
 void VoxelTerrain::SetupGraphicBuffers(ID3D12GraphicsCommandList* _cmdList, const std::array<UINT, 6> _rootParamIndices, Asset::AssetCollection* _assetCollection) {
 	maxChunkCount_ = static_cast<UINT>(chunkCountXZ_.x * chunkCountXZ_.y);
 
@@ -559,6 +592,9 @@ void VoxelTerrain::SetupGraphicBuffers(ID3D12GraphicsCommandList* _cmdList, cons
 	sBufferChunks_.SRVBindForGraphicsCommandList(_cmdList, _rootParamIndices[2]);
 }
 
+/**
+ * @brief 地形テクスチャのリソースステート（D3D12_RESOURCE_STATES）を遷移させます。
+ */
 void VoxelTerrain::TransitionTextureStates(DxCommand* _dxCommand, Asset::AssetCollection* _assetCollection, D3D12_RESOURCE_STATES _afterState) {
 	/// チャンク用テクスチャの状態遷移
 	std::vector<DxResource*> resources;
@@ -574,18 +610,30 @@ void VoxelTerrain::TransitionTextureStates(DxCommand* _dxCommand, Asset::AssetCo
 	CreateBarriers(resources, _afterState, _dxCommand);
 }
 
+/**
+ * @brief XZのグリッド数から算出される最大チャンク数を取得します。
+ */
 UINT VoxelTerrain::MaxChunkCount() const {
 	return maxChunkCount_;
 }
 
+/**
+ * @brief XZ方向における分割チャンク数を取得します。
+ */
 const Vector2Int& VoxelTerrain::GetChunkCountXZ() const {
 	return chunkCountXZ_;
 }
 
+/**
+ * @brief チャンク1つあたりのボクセル解像度サイズ（縦・横・高さ）を取得します。
+ */
 const Vector3Int& VoxelTerrain::GetChunkSize() const {
 	return chunkSize_;
 }
 
+/**
+ * @brief 地形描画マテリアルデータを定数バッファへ設定します。
+ */
 void VoxelTerrain::SettingMaterial(Asset::AssetCollection* assetCollection) {
 	{	/// DefaultMaterialの設定
 		int32_t baseTextureId = 0;
@@ -645,6 +693,9 @@ void VoxelTerrain::SettingMaterial(Asset::AssetCollection* assetCollection) {
 	}
 }
 
+/**
+ * @brief ボクセルサイズや原点座標など、地形設定パラメータを定数バッファへ書き込み同期します。
+ */
 void VoxelTerrain::SettingTerrainInfo() {
 	cBufferTerrainInfo_.SetMappedData(
 		GPUData::VoxelTerrainInfo{
@@ -656,6 +707,9 @@ void VoxelTerrain::SettingTerrainInfo() {
 	);
 }
 
+/**
+ * @brief エディタ用編集パラメータバッファが生成済みかを判定します。
+ */
 bool VoxelTerrain::CheckBufferCreatedForEditor() const {
 	bool result = false;
 
@@ -665,6 +719,9 @@ bool VoxelTerrain::CheckBufferCreatedForEditor() const {
 	return result;
 }
 
+/**
+ * @brief ブラシ編集操作等でGPU側で使用する定数・編集一時バッファを生成します。
+ */
 void VoxelTerrain::CreateEditorBuffers(DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap) {
 	UINT chunkCount = static_cast<UINT>(32 * 32);
 
@@ -676,6 +733,9 @@ void VoxelTerrain::CreateEditorBuffers(DxDevice* _dxDevice, DxSRVHeap* _dxSRVHea
 	cBufferBitMask_.Create(_dxDevice);
 }
 
+/**
+ * @brief エディタ用の入力パラメータ（マウス、ブラシ設定等）をコマンドリストのルートパラメータにバインドします。
+ */
 void VoxelTerrain::SetupEditorBuffers(ID3D12GraphicsCommandList* _cmdList, const std::array<UINT, 5> _rootParamIndices, const GPUData::InputInfo& _inputInfo) {
 	/// InputInfoの設定
 	cBufferInputInfo_.SetMappedData(_inputInfo);
@@ -697,6 +757,9 @@ void VoxelTerrain::SetupEditorBuffers(ID3D12GraphicsCommandList* _cmdList, const
 	sBufferEditorChunks_.SRVBindForComputeCommandList(_cmdList, _rootParamIndices[3]);
 }
 
+/**
+ * @brief 各チャンクテクスチャに対応するUAV（Unordered Access View）ディスクリプタを生成しヒープに登録します。
+ */
 void VoxelTerrain::CreateChunkTextureUAV(DxCommand* _dxCommand, DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap) {
 
 	pDxSRVHeap_ = _dxSRVHeap;
@@ -745,6 +808,9 @@ void VoxelTerrain::CreateChunkTextureUAV(DxCommand* _dxCommand, DxDevice* _dxDev
 	}
 }
 
+/**
+ * @brief 編集用バッファに書き込まれたボクセル編集結果を、元の地形3Dテクスチャバッファへ同期コピーします。
+ */
 void VoxelTerrain::CopyEditorTextureToChunkTexture(DxCommand* _dxCommand) {
 	D3D12_RESOURCE_STATES srvTextureBefore = chunks_[0].pTexture->GetDxResource().GetCurrentState();
 	D3D12_RESOURCE_STATES uavTextureBefore = chunks_[0].uavTexture.GetDxResource().GetCurrentState();
@@ -771,6 +837,9 @@ void VoxelTerrain::CopyEditorTextureToChunkTexture(DxCommand* _dxCommand) {
 	}
 }
 
+/**
+ * @brief 指定された一部のチャンクIDに対して、エディタ編集テクスチャを元の3Dテクスチャバッファへ部分同期コピーします。
+ */
 void VoxelTerrain::CopyEditorTextureToChunkTexture(DxCommand* dxCommand, const std::vector<int>& copyChunkIDs) {
 	D3D12_RESOURCE_STATES srvTextureBefore = chunks_[0].pTexture->GetDxResource().GetCurrentState();
 	D3D12_RESOURCE_STATES uavTextureBefore = chunks_[0].uavTexture.GetDxResource().GetCurrentState();
@@ -813,6 +882,9 @@ void VoxelTerrain::CopyEditorTextureToChunkTexture(DxCommand* dxCommand, const s
 	}
 }
 
+/**
+ * @brief 編集されたチャンクのIDを蓄積リストへ追加登録します。
+ */
 void VoxelTerrain::PushBackEditChunkID(const std::vector<int>& editChunkID) {
 	editedChunkIDs_.insert(editedChunkIDs_.end(), editChunkID.begin(), editChunkID.end());
 
@@ -821,6 +893,9 @@ void VoxelTerrain::PushBackEditChunkID(const std::vector<int>& editChunkID) {
 	editedChunkIDs_.erase(std::unique(editedChunkIDs_.begin(), editedChunkIDs_.end()), editedChunkIDs_.end());
 }
 
+/**
+ * @brief 現在の編集ブラシ半径を取得します。
+ */
 uint32_t VoxelTerrain::GetBrushRadius() const {
 	if(!cBufferEditInfo_.Get()) {
 		return 0;
@@ -829,7 +904,10 @@ uint32_t VoxelTerrain::GetBrushRadius() const {
 	return cBufferEditInfo_.GetMappingData().brushRadius;
 }
 
-float ONEngine::VoxelTerrain::GetBrushStrength() const {
+/**
+ * @brief 現在の編集ブラシ強度を取得します。
+ */
+float VoxelTerrain::GetBrushStrength() const {
 	if(!cBufferEditInfo_.Get()) {
 		return 0.0f;
 	}

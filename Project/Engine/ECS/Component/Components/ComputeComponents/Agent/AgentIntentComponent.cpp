@@ -6,6 +6,9 @@
 namespace ONEngine {
 
 
+/**
+ * @brief エディタ用：AgentIntentComponentのデバッグ表示（Gui描画等）処理を行います。
+ */
 void ComponentDebug::AgentIntentComponentDebug(AgentIntentComponent* comp) {
 	if(!comp) {
 		return;
@@ -19,6 +22,9 @@ void ComponentDebug::AgentIntentComponentDebug(AgentIntentComponent* comp) {
 	ImGui::InputInt("Target ID", &comp->targetEntityId);
 }
 
+/**
+ * @brief JSONからのデシリアライズ
+ */
 void from_json(const nlohmann::json& _j, AgentIntentComponent& _c) {
 	_c.enable = _j.at("enable").get<int>();
 	if (_j.contains("desiredMoveDirection")) {
@@ -44,6 +50,9 @@ void from_json(const nlohmann::json& _j, AgentIntentComponent& _c) {
 	}
 }
 
+/**
+ * @brief JSONへのシリアライズ
+ */
 void to_json(nlohmann::json& _j, const AgentIntentComponent& _c) {
 	_j = nlohmann::json{
 		{ "type", "AgentIntentComponent" },

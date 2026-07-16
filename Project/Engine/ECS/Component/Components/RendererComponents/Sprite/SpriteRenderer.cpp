@@ -1,4 +1,4 @@
-﻿#include "SpriteRenderer.h"
+#include "SpriteRenderer.h"
 
 /// external
 #include <imgui.h>
@@ -22,6 +22,9 @@ using namespace ONEngine;
 /// デバッグ用のSpriteRenderer
 /// /////////////////////////////////////////////////////////////
 
+/**
+ * @brief エディタ用：SpriteRendererコンポーネントのデバッグ表示（Gui描画等）処理を行います。
+ */
 void ComponentDebug::SpriteDebug(SpriteRenderer* _sr, Asset::AssetCollection* _assetCollection) {
 	if (!_sr) {
 		return;
@@ -36,6 +39,9 @@ void ComponentDebug::SpriteDebug(SpriteRenderer* _sr, Asset::AssetCollection* _a
 }
 
 
+/**
+ * @brief JSONへのシリアライズ
+ */
 void ONEngine::to_json(nlohmann::json& _j, const SpriteRenderer& _sr) {
 	_j = nlohmann::json{
 		{ "type", "SpriteRenderer" },
@@ -44,6 +50,9 @@ void ONEngine::to_json(nlohmann::json& _j, const SpriteRenderer& _sr) {
 	};
 }
 
+/**
+ * @brief JSONからのデシリアライズ
+ */
 void ONEngine::from_json(const nlohmann::json& _j, SpriteRenderer& _sr) {
 	_sr.enable = _j.value("enable", static_cast<int>(true));
 	_sr.material_ = _j.value("material", Asset::Material{});
@@ -66,6 +75,9 @@ SpriteRenderer::SpriteRenderer() {
 }
 SpriteRenderer::~SpriteRenderer() {}
 
+/**
+ * @brief アセットコレクションからテクスチャのバインディング情報を取得し、GPU描画に必要な定数バッファのセットアップを行います。
+ */
 void SpriteRenderer::RenderingSetup(Asset::AssetCollection* _assetCollection) {
 
 	gpuMaterial_.baseColor = material_.baseColor;
@@ -88,26 +100,44 @@ void SpriteRenderer::RenderingSetup(Asset::AssetCollection* _assetCollection) {
 }
 
 
+/**
+ * @brief スプライトのカラー（RGBA）を設定します。
+ */
 void SpriteRenderer::SetColor(const Vector4& _color) {
 	material_.baseColor = _color;
 }
 
+/**
+ * @brief スプライトのUV変形（オフセット、スケール等）を設定します。
+ */
 void SpriteRenderer::SetUVTransform(const UVTransform& _uvTransform) {
 	material_.uvTransform = _uvTransform;
 }
 
+/**
+ * @brief 現在のスプライトカラーを取得します。
+ */
 const Vector4& SpriteRenderer::GetColor() const {
 	return gpuMaterial_.baseColor;
 }
 
+/**
+ * @brief GPUへ転送するためのマテリアルデータを取得します。
+ */
 const GPUMaterial& SpriteRenderer::GetGpuMaterial() const {
 	return gpuMaterial_;
 }
 
+/**
+ * @brief 現在のスプライトUV変形設定を取得します。
+ */
 const UVTransform& SpriteRenderer::GetUVTransform() const {
 	return material_.uvTransform;
 }
 
+/**
+ * @brief スプライトが使用しているテクスチャの解像度（ピクセル幅・高さ）を取得します。
+ */
 Vector2 SpriteRenderer::GetTextureSize(Asset::AssetCollection* _assetCollection) const {
 	if (material_.HasBaseTexture()) {
 		Asset::Texture* texture = _assetCollection->GetTextureFromGuid(material_.GetBaseTextureGuid());
@@ -123,6 +153,9 @@ Vector2 SpriteRenderer::GetTextureSize(Asset::AssetCollection* _assetCollection)
 /// csで使用するための関数群
 /// ===================================================
 
+/**
+ * @brief C#（Mono）インターフェース用：スプライトカラーを取得します。
+ */
 Vector4 MonoInternalMethods::InternalGetColor(uint64_t _nativeHandle) {
 	SpriteRenderer* sr = reinterpret_cast<SpriteRenderer*>(_nativeHandle);
 	if (sr) {
@@ -134,6 +167,9 @@ Vector4 MonoInternalMethods::InternalGetColor(uint64_t _nativeHandle) {
 	return Vector4();
 }
 
+/**
+ * @brief C#（Mono）インターフェース用：スプライトカラーを設定します。
+ */
 void MonoInternalMethods::InternalSetColor(uint64_t _nativeHandle, Vector4 _color) {
 	SpriteRenderer* sr = reinterpret_cast<SpriteRenderer*>(_nativeHandle);
 	if (sr) {
@@ -144,6 +180,9 @@ void MonoInternalMethods::InternalSetColor(uint64_t _nativeHandle, Vector4 _colo
 	Console::LogError("MonoInternalMethods::InternalSetColor() | native handle is invalid");
 }
 
+/**
+ * @brief C#（Mono）インターフェース用：テクスチャサイズを取得します。
+ */
 Vector2 MonoInternalMethods::InternalGetTextureSize(uint64_t _nativeHandle) {
 	SpriteRenderer* sr = reinterpret_cast<SpriteRenderer*>(_nativeHandle);
 	if (sr) {

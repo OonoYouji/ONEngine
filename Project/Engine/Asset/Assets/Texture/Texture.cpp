@@ -1,4 +1,4 @@
-﻿#include "Texture.h"
+#include "Texture.h"
 
 /// directX12
 #include <wrl/client.h>
@@ -43,6 +43,11 @@ void Printf(const char* _fmt, Args... _args) {
 
 namespace ONEngine::Asset {
 
+/**
+ * @brief jsonオブジェクトからTextureFormat列挙型へのデシリアライズを行います。
+ * @param j jsonオブジェクト
+ * @param format 変換先TextureFormatの参照
+ */
 void from_json(const nlohmann::json& j, TextureFormat& format) {
 	if (j.is_string()) {
 		auto opt = magic_enum::enum_cast<TextureFormat>(j.get<std::string>(), magic_enum::case_insensitive);
@@ -54,10 +59,20 @@ void from_json(const nlohmann::json& j, TextureFormat& format) {
 	}
 }
 
+/**
+ * @brief TextureFormat列挙型からjsonオブジェクトへのシリアライズを行います。
+ * @param j jsonオブジェクト
+ * @param format 変換元TextureFormat
+ */
 void to_json(nlohmann::json& j, const TextureFormat& format) {
 	j = std::string(magic_enum::enum_name(format));
 }
 
+/**
+ * @brief jsonオブジェクトからColorSpace列挙型へのデシリアライズを行います。
+ * @param j jsonオブジェクト
+ * @param colorSpace 変換先ColorSpaceの参照
+ */
 void from_json(const nlohmann::json& j, ColorSpace& colorSpace) {
 	if (j.is_string()) {
 		auto opt = magic_enum::enum_cast<ColorSpace>(j.get<std::string>(), magic_enum::case_insensitive);
@@ -69,6 +84,11 @@ void from_json(const nlohmann::json& j, ColorSpace& colorSpace) {
 	}
 }
 
+/**
+ * @brief ColorSpace列挙型からjsonオブジェクトへのシリアライズを行います。
+ * @param j jsonオブジェクト
+ * @param colorSpace 変換元ColorSpace
+ */
 void to_json(nlohmann::json& j, const ColorSpace& colorSpace) {
 	j = std::string(magic_enum::enum_name(colorSpace));
 }
@@ -86,6 +106,14 @@ void Texture::CreateEmptyUAVHandle() {
 	uavHandle_.emplace(Handle());
 }
 
+/**
+ * @brief 書き込み可能なレンダリングリソース（UAV）としてテクスチャを作成します。
+ * @param _width テクスチャの幅
+ * @param _height テクスチャの高さ
+ * @param _dxDevice グラフィックスデバイス
+ * @param _dxSRVHeap SRV用のディスクリプタヒープ
+ * @param _dxgiFormat DXGIフォーマット
+ */
 void Texture::CreateUAVTexture(UINT _width, UINT _height, DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap, DXGI_FORMAT _dxgiFormat) {
 	// テクスチャディスクリプション
 	D3D12_RESOURCE_DESC texDesc = {};
@@ -135,6 +163,15 @@ void Texture::CreateUAVTexture(UINT _width, UINT _height, DxDevice* _dxDevice, D
 }
 
 
+/**
+ * @brief 3DのUAVテクスチャを作成します。
+ * @param _width 幅
+ * @param _height 高さ
+ * @param _depth 奥行き
+ * @param _dxDevice デバイス
+ * @param _dxSRVHeap ディスクリプタヒープ
+ * @param _uavFormat DXGIフォーマット
+ */
 void Texture::CreateUAVTexture3DWithUAV(
 	UINT _width, UINT _height, UINT _depth,
 	DxDevice* _dxDevice,
@@ -191,6 +228,15 @@ void Texture::CreateUAVTexture3DWithUAV(
 }
 
 
+/**
+ * @brief 既存の3DテクスチャにUAVビューを追加します。
+ * @param _width 幅
+ * @param _height 高さ
+ * @param _depth 奥行き
+ * @param _dxDevice デバイス
+ * @param _dxSRVHeap ディスクリプタヒープ
+ * @param _dxgiFormat DXGIフォーマット
+ */
 void Texture::CreateUAVTexture3D(UINT _width, UINT _height, UINT _depth, DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap, DXGI_FORMAT _dxgiFormat) {
 	// テクスチャディスクリプション
 	D3D12_RESOURCE_DESC texDesc = {};
@@ -239,6 +285,12 @@ void Texture::CreateUAVTexture3D(UINT _width, UINT _height, UINT _depth, DxDevic
 	Console::Log(" - DescriptorIndex: " + std::to_string(index));
 }
 
+/**
+ * @brief テクスチャをファイル（PNGなど）に非同期出力します。
+ * @param _filename ファイル名
+ * @param _dxDevice デバイス
+ * @param _dxCommand コマンドリスト
+ */
 void Texture::OutputTexture(const std::wstring& _filename, DxDevice* _dxDevice, DxCommand* _dxCommand) {
 	/// Readbackリソースを作成（1行ごとのAlignmentに注意）
 	D3D12_RESOURCE_DESC desc = dxResource_.Get()->GetDesc();
@@ -304,6 +356,12 @@ void Texture::OutputTexture(const std::wstring& _filename, DxDevice* _dxDevice, 
 	readbackTexture_.Get()->Unmap(0, nullptr);
 }
 
+/**
+ * @brief 3Dテクスチャをファイル（DDS）に出力します。
+ * @param _filename ファイル名
+ * @param _dxDevice デバイス
+ * @param _dxCommand コマンドリスト
+ */
 void Texture::OutputTexture3D(const std::wstring& _filename, DxDevice* _dxDevice, DxCommand* _dxCommand) {
 	auto desc = dxResource_.Get()->GetDesc();
 	if(desc.Dimension != D3D12_RESOURCE_DIMENSION_TEXTURE3D) {
@@ -413,6 +471,14 @@ void Texture::OutputTexture3D(const std::wstring& _filename, DxDevice* _dxDevice
 	volumeScratch.Release();
 }
 
+/**
+ * @brief 3Dテクスチャのサイズをリサイズし再生成します。
+ * @param _newSize 新しい2D解像度
+ * @param _newDepth 新しい奥行き
+ * @param _dxDevice デバイス
+ * @param _dxCommand コマンドリスト
+ * @param _dxSRVHeap ディスクリプタヒープ
+ */
 void Texture::ResizeTexture3D(const Vector2& _newSize, UINT _newDepth, DxDevice* _dxDevice, DxCommand* _dxCommand, DxSRVHeap* _dxSRVHeap) {
 	Assert(dxResource_.Get());
 
@@ -515,6 +581,9 @@ void Texture::ResizeTexture3D(const Vector2& _newSize, UINT _newDepth, DxDevice*
 
 
 
+/**
+ * @brief テクスチャのデバッグ識別名を設定します。
+ */
 void Texture::SetName(const std::string& _name) {
 	name_ = _name;
 	if(dxResource_.Get()) {
@@ -523,22 +592,37 @@ void Texture::SetName(const std::string& _name) {
 }
 
 
+/**
+ * @brief SRV用のディスクリプタ情報をセットします。
+ */
 void Texture::SetSRVHandle(const Handle& _handle) {
 	srvHandle_ = _handle;
 }
 
+/**
+ * @brief UAV用のディスクリプタ情報をセットします。
+ */
 void Texture::SetUAVHandle(const Handle& _handle) {
 	uavHandle_ = _handle;
 }
 
+/**
+ * @brief SRVディスクリプタ情報を個別にセットします。
+ */
 void Texture::SetSRVHandle(uint32_t _descriptorIndex, D3D12_CPU_DESCRIPTOR_HANDLE _cpuHandle, D3D12_GPU_DESCRIPTOR_HANDLE _gpuHandle) {
 	srvHandle_ = Handle{ _descriptorIndex, _cpuHandle, _gpuHandle };
 }
 
+/**
+ * @brief UAVディスクリプタ情報を個別にセットします。
+ */
 void Texture::SetUAVHandle(uint32_t _descriptorIndex, D3D12_CPU_DESCRIPTOR_HANDLE _cpuHandle, D3D12_GPU_DESCRIPTOR_HANDLE _gpuHandle) {
 	uavHandle_ = Handle{ _descriptorIndex, _cpuHandle, _gpuHandle };
 }
 
+/**
+ * @brief SRV用ディスクリプタインデックスをセットします。
+ */
 void Texture::SetSRVDescriptorIndex(uint32_t _index) {
 	srvHandle_->descriptorIndex = _index;
 }
@@ -551,6 +635,9 @@ void Texture::SetSRVGPUHandle(D3D12_GPU_DESCRIPTOR_HANDLE _gpuHandle) {
 	srvHandle_->gpuHandle = _gpuHandle;
 }
 
+/**
+ * @brief UAV用ディスクリプタインデックスをセットします。
+ */
 void Texture::SetUAVDescriptorIndex(uint32_t _index) {
 	uavHandle_->descriptorIndex = _index;
 }
@@ -563,6 +650,9 @@ void Texture::SetUAVGPUHandle(D3D12_GPU_DESCRIPTOR_HANDLE _gpuHandle) {
 	uavHandle_->gpuHandle = _gpuHandle;
 }
 
+/**
+ * @brief SRV用のディスクリプタハンドル情報を取得します。
+ */
 const Texture::Handle& Texture::GetSRVHandle() const {
 	Assert(srvHandle_.has_value());
 	return srvHandle_.value();
@@ -573,6 +663,9 @@ const Texture::Handle& Texture::GetUAVHandle() const {
 	return uavHandle_.value();
 }
 
+/**
+ * @brief SRV用のディスクリプタインデックスを取得します。
+ */
 uint32_t Texture::GetSRVDescriptorIndex() const {
 	Assert(srvHandle_.has_value());
 	return srvHandle_->descriptorIndex;
@@ -588,6 +681,9 @@ D3D12_GPU_DESCRIPTOR_HANDLE Texture::GetSRVGPUHandle() const {
 	return srvHandle_->gpuHandle;
 }
 
+/**
+ * @brief SRVハンドル情報が正常にアロケートされているかを取得します。
+ */
 bool Texture::HasSRVHandle() const {
 	return srvHandle_.has_value();
 }
@@ -611,6 +707,9 @@ bool Texture::HasUAVHandle() const {
 	return uavHandle_.has_value();
 }
 
+/**
+ * @brief テクスチャのDX12リソースオブジェクト（読み取り専用）を取得します。
+ */
 const DxResource& Texture::GetDxResource() const {
 	return dxResource_;
 }
@@ -619,6 +718,9 @@ DxResource& Texture::GetDxResource() {
 	return dxResource_;
 }
 
+/**
+ * @brief テクスチャの2Dピクセル解像度を取得します。
+ */
 const Vector2& Texture::GetTextureSize() const {
 	return textureSize_;
 }
@@ -629,6 +731,13 @@ UINT Texture::GetTextureDepth() const {
 
 
 
+/**
+ * @brief CPU側の画素バッファデータをPNG画像ファイルに書き出します。
+ * @param _filename 保存先のファイルパス
+ * @param _width 幅
+ * @param _height 高さ
+ * @param _overwrite 上書き保存するかどうか
+ */
 void SaveTextureToPNG(const std::wstring& _filename, size_t _width, size_t _height, bool _overwrite) {
 
 	/// _filenameの先のディレクトリが存在しない場合は作成
@@ -677,6 +786,14 @@ void SaveTextureToPNG(const std::wstring& _filename, size_t _width, size_t _heig
 
 }
 
+/**
+ * @brief CPU側の画素データをDDS形式のテクスチャファイルに書き出します（3D/ボリューム用）。
+ * @param _filename 保存先のファイルパス
+ * @param _width 幅
+ * @param _height 高さ
+ * @param _depth 奥行き
+ * @param _overwrite 上書きするかどうか
+ */
 void SaveTextureToDDS(const std::wstring& _filename, size_t _width, size_t _height, size_t _depth, bool _overwrite) {
 
 	/// _filenameの先のディレクトリが存在しない場合は作成

@@ -1,4 +1,4 @@
-﻿#include "ComponentEditCommands.h"
+#include "ComponentEditCommands.h"
 
 
 /// std
@@ -23,11 +23,17 @@ using namespace Editor;
 /// エンティティのデータ出力コマンド
 /// ////////////////////////////////////////////////
 
+/**
+ * @brief コンストラクタ
+ */
 EntityDataOutputCommand::EntityDataOutputCommand(GameEntity* _entity) {
 	pEntity_ = _entity;
 	outputFilePath_ = "Assets/Entities/" + pEntity_->GetName() + ".entity";
 }
 
+/**
+ * @brief コマンドの実行（エンティティデータをシリアライズしてファイル出力します）。
+ */
 EDITOR_STATE EntityDataOutputCommand::Execute() {
 	if (!pEntity_) return EDITOR_STATE_FAILED;
 
@@ -47,6 +53,9 @@ EDITOR_STATE EntityDataOutputCommand::Execute() {
 	return EDITOR_STATE::EDITOR_STATE_FINISH;
 }
 
+/**
+ * @brief コマンドの取り消し処理。
+ */
 EDITOR_STATE EntityDataOutputCommand::Undo() {
 	return EDITOR_STATE::EDITOR_STATE_FINISH;
 }
@@ -56,10 +65,16 @@ EDITOR_STATE EntityDataOutputCommand::Undo() {
 /// エンティティのデータ入力コマンド
 /// ///////////////////////////////////////////////
 
+/**
+ * @brief コンストラクタ
+ */
 EntityDataInputCommand::EntityDataInputCommand(GameEntity* _entity) : pEntity_(_entity) {
 	inputFilePath_ = "Assets/Entities/" + pEntity_->GetName() + ".entity";
 }
 
+/**
+ * @brief コマンドの実行（JSONファイルからデシリアライズしてエンティティのパラメータを再設定します）。
+ */
 EDITOR_STATE EntityDataInputCommand::Execute() {
 	if (!pEntity_) return EDITOR_STATE_FAILED;
 
@@ -81,10 +96,16 @@ EDITOR_STATE EntityDataInputCommand::Execute() {
 	return EDITOR_STATE::EDITOR_STATE_FINISH;
 }
 
+/**
+ * @brief コマンドの取り消し処理。
+ */
 EDITOR_STATE EntityDataInputCommand::Undo() {
 	return EDITOR_STATE::EDITOR_STATE_FINISH;
 }
 
+/**
+ * @brief 対象となるエンティティを設定します。
+ */
 void EntityDataInputCommand::SetEntity(GameEntity* _entity) {
 	pEntity_ = _entity;
 	inputFilePath_ = "Assets/Jsons/" + pEntity_->GetName() + "Components.json";
@@ -95,11 +116,17 @@ void EntityDataInputCommand::SetEntity(GameEntity* _entity) {
 /// Componentの追加
 /// ///////////////////////////////////////////////
 
+/**
+ * @brief コンストラクタ
+ */
 AddComponentCommand::AddComponentCommand(GameEntity* _entity, const std::string& _componentName) {
 	pEntity_ = _entity;
 	componentName_ = _componentName;
 }
 
+/**
+ * @brief コマンドの実行（指定されたコンポーネントを生成・エンティティへ追加します）。
+ */
 EDITOR_STATE AddComponentCommand::Execute() {
 	if (!pEntity_) {
 		Console::Log("AddComponentCommand: Entity is nullptr");
@@ -115,6 +142,9 @@ EDITOR_STATE AddComponentCommand::Execute() {
 	return EDITOR_STATE::EDITOR_STATE_FINISH;
 }
 
+/**
+ * @brief コマンドの取り消し処理。
+ */
 EDITOR_STATE AddComponentCommand::Undo() {
 
 	return EDITOR_STATE::EDITOR_STATE_FINISH;
@@ -125,10 +155,16 @@ EDITOR_STATE AddComponentCommand::Undo() {
 /// Componentの削除
 /// ///////////////////////////////////////////////
 
+/**
+ * @brief コンストラクタ
+ */
 RemoveComponentCommand::RemoveComponentCommand(GameEntity* _entity, const std::string& _componentName, std::unordered_map<size_t, IComponent*>::iterator* _resultItr)
 	: pEntity_(_entity), componentName_(_componentName), pIterator_(_resultItr) {}
 
 
+/**
+ * @brief コマンドの実行（エンティティから指定コンポーネントを切り離して削除リストへ移動します）。
+ */
 EDITOR_STATE RemoveComponentCommand::Execute() {
 
 	if (!pEntity_) {
@@ -153,6 +189,9 @@ EDITOR_STATE RemoveComponentCommand::Execute() {
 	return EDITOR_STATE_FINISH;
 }
 
+/**
+ * @brief コマンドの取り消し処理。
+ */
 EDITOR_STATE RemoveComponentCommand::Undo() {
 	return EDITOR_STATE_FINISH;
 }
@@ -163,9 +202,15 @@ EDITOR_STATE RemoveComponentCommand::Undo() {
 /// ReloadAllScriptsCommand
 /// ////////////////////////////////////////////////
 
+/**
+ * @brief コンストラクタ
+ */
 ReloadAllScriptsCommand::ReloadAllScriptsCommand(ECSGroup* _ecs, SceneManager* _sceneManager)
 	: pEcsGroup_(_ecs), pSceneManager_(_sceneManager) {}
 
+/**
+ * @brief コマンドの実行（C#スクリプトの再読み込みをトリガーし、ECSのバインドを再構築します）。
+ */
 EDITOR_STATE ReloadAllScriptsCommand::Execute() {
 
 	/// シーンを読み直す
@@ -175,6 +220,9 @@ EDITOR_STATE ReloadAllScriptsCommand::Execute() {
 	return EDITOR_STATE_FINISH;
 }
 
+/**
+ * @brief コマンドの取り消し。
+ */
 EDITOR_STATE ReloadAllScriptsCommand::Undo() {
 	return EDITOR_STATE_FINISH;
 }

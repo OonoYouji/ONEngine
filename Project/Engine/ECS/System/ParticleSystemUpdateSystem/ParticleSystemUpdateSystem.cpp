@@ -142,8 +142,14 @@ namespace ONEngine {
 
     // --- System Methods ---
 
+    /**
+     * @brief コンストラクタ
+     */
     ParticleSystemUpdateSystem::ParticleSystemUpdateSystem() : ECSISystem() {}
 
+    /**
+     * @brief エディタ非実行時のパーティクル更新処理（およびギズモ等の表示）を行います。
+     */
     void ParticleSystemUpdateSystem::OutsideOfRuntimeUpdate(class ECSGroup* _ecs) {
         DrawGizmos(_ecs);
 
@@ -166,6 +172,9 @@ namespace ONEngine {
         }
     }
 
+    /**
+     * @brief 毎フレームのパーティクルシミュレーション状態の更新処理を実行します。
+     */
     void ParticleSystemUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
         DrawGizmos(_ecs);
 
@@ -184,6 +193,9 @@ namespace ONEngine {
         }
     }
 
+    /**
+     * @brief 単一の ParticleSystem コンポーネントにおけるシミュレーション計算を1ステップ進めます。
+     */
     void ParticleSystemUpdateSystem::UpdateSingleSystem(ParticleSystem* ps, GameEntity* entity, float dt) {
         Transform* transform = entity->GetTransform();
         if (!transform) return;
@@ -369,6 +381,9 @@ namespace ONEngine {
         ps->hasPreviousWorldMat = true;
     }
 
+    /**
+     * @brief エディタ用：パーティクルエミッター（形状等）のデバッグ用ギズモを描画します。
+     */
     void ParticleSystemUpdateSystem::DrawGizmos(class ECSGroup* _ecs) {
         if (!_ecs) return;
         auto& entities = _ecs->GetEntities();

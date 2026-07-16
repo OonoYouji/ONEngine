@@ -1,14 +1,20 @@
-﻿#define NOMINMAX
+#define NOMINMAX
 #include "CollisionCheck.h"
 
 using namespace ONEngine;
 
+/**
+ * @brief 線分と球の衝突判定を行います。
+ */
 bool CollisionCheck::LineVsSphere(const Vector3& _lineStart, const Vector3& _lineEnd, const Vector3& /*_sphereCenter*/, float /*_sphereRadius*/) {
 	Vector3 lineDiff = _lineEnd - _lineStart;
 
 	return false;
 }
 
+/**
+ * @brief 線分と三角形の衝突判定を行います。
+ */
 bool CollisionCheck::LineVsTriangle(const Vector3& _lineStart, const Vector3& _lineEnd, const std::array<Vector3, 3>& _triangleVertices) {
 
 	Vector3&& lineDiff = _lineEnd - _lineStart;
@@ -49,6 +55,9 @@ bool CollisionCheck::LineVsTriangle(const Vector3& _lineStart, const Vector3& _l
 	return false;
 }
 
+/**
+ * @brief レイ（半直線）と球の衝突判定を行います。
+ */
 bool CollisionCheck::RayVsSphere(const Vector3& _rayStartPosition, const Vector3& _rayDirection, const Vector3& _sphereCenter, float _sphereRadius) {
 
 	Vector3&& rayDirection = _rayDirection.Normalize();
@@ -63,6 +72,9 @@ bool CollisionCheck::RayVsSphere(const Vector3& _rayStartPosition, const Vector3
 	return distance <= _sphereRadius;
 }
 
+/**
+ * @brief レイ（半直線）と箱（AABB）の衝突判定を行います。
+ */
 bool CollisionCheck::RayVsCube(const Vector3& _rayStartPosition, const Vector3& _rayDirection, const Vector3& _cubePosition, const Vector3& _cubeSize) {
 	Vector3 aabbMin = _cubePosition - _cubeSize / 2.0f;
 	Vector3 aabbMax = _cubePosition + _cubeSize / 2.0f;
@@ -97,6 +109,9 @@ bool CollisionCheck::RayVsCube(const Vector3& _rayStartPosition, const Vector3& 
 	return false;
 }
 
+/**
+ * @brief 箱（AABB）同士の衝突判定を行います。
+ */
 bool CollisionCheck::CubeVsCube(
 	const Vector3& _cube1Position, const Vector3& _cube1Size, const Vector3& _cube2Position, const Vector3& _cube2Size,
 	Vector3* _outNormal, float* _outPenetration) {
@@ -143,6 +158,9 @@ bool CollisionCheck::CubeVsCube(
 	return true;
 }
 
+/**
+ * @brief 箱（AABB）と球の衝突判定を行います。
+ */
 bool CollisionCheck::CubeVsSphere(
 	const Vector3& _cubePosition, const Vector3& _cubeSize, const Vector3& _sphereCenter, float _sphereRadius,
 	Vector3* _outClosestPoint, float* _outDistance) {
@@ -174,6 +192,9 @@ bool CollisionCheck::CubeVsSphere(
 	return false;
 }
 
+/**
+ * @brief 箱（AABB）とカプセル形状の衝突判定を行います。
+ */
 bool CollisionCheck::CubeVsCapsule(const Vector3& _cubePosition, const Vector3& _cubeSize, const Vector3& _capsuleStart, const Vector3& _capsuleEnd, float _capsuleRadius) {
 	Vector3 capsulePoint, boxPoint;
 	CollisionMath::ClosestPointsSegmentAABB(
@@ -187,6 +208,9 @@ bool CollisionCheck::CubeVsCapsule(const Vector3& _cubePosition, const Vector3& 
 	return distance < _capsuleRadius;
 }
 
+/**
+ * @brief 球同士の衝突判定を行います。
+ */
 bool CollisionCheck::SphereVsSphere(const Vector3& _sphere1Center, float _sphere1Radius, const Vector3& _sphere2Center, float _sphere2Radius) {
 	float distance = Vector3::Length(_sphere1Center - _sphere2Center);
 	if (distance <= _sphere1Radius + _sphere2Radius) {
@@ -196,6 +220,9 @@ bool CollisionCheck::SphereVsSphere(const Vector3& _sphere1Center, float _sphere
 	return false;
 }
 
+/**
+ * @brief 球とカプセル形状の衝突判定を行います。
+ */
 bool CollisionCheck::SphereVsCapsule(const Vector3& _sphereCenter, float _sphereRadius, const Vector3& _capsuleStart, const Vector3& _capsuleEnd, float _capsuleRadius) {
 	/// 最近接点を求める
 	Vector3 capsuleDirection = _capsuleEnd - _capsuleStart;
@@ -224,6 +251,9 @@ bool CollisionCheck::SphereVsCapsule(const Vector3& _sphereCenter, float _sphere
 	return distance < (_sphereRadius + _capsuleRadius);
 }
 
+/**
+ * @brief 任意の座標点から、指定されたAABB（最小/最大境界）上で最も近接する点を算出します。
+ */
 Vector3 CollisionMath::ClosestPointOnAABB(const Vector3& _point, const Vector3& _aabbMin, const Vector3& _aabbMax) {
 	/// 各軸ごとにクランプして最も近い点を求める
 	return {
@@ -233,6 +263,9 @@ Vector3 CollisionMath::ClosestPointOnAABB(const Vector3& _point, const Vector3& 
 	};
 }
 
+/**
+ * @brief 線分とAABBの最近接点をそれぞれ求めます。
+ */
 void CollisionMath::ClosestPointsSegmentAABB(const Vector3& _lineStart, const Vector3& _lineEnd, const Vector3& _aabbMin, const Vector3& _aabbMax, Vector3& _outSegmentPoint, Vector3& _outAABBPoint) {
 	Vector3 segmentDirection = _lineEnd - _lineStart;
 	float segmentLength = Vector3::Length(segmentDirection);

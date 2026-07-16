@@ -15,10 +15,16 @@
 
 using namespace ONEngine;
 
+/**
+ * @brief エディタ停止中（非実行時）のアニメーション更新処理を行います。
+ */
 void AnimationSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
     Update(_ecs, Time::UnscaledDeltaTime());
 }
 
+/**
+ * @brief ランタイム実行時のアニメーション更新処理を行います。
+ */
 void AnimationSystem::RuntimeUpdate(ECSGroup* _ecs) {
     Update(_ecs, Time::DeltaTime());
 }
@@ -45,6 +51,9 @@ namespace {
     }
 }
 
+/**
+ * @brief 指定デルタ時間に基づき、アニメーションの再生処理を進める共通の内部更新関数です。
+ */
 void AnimationSystem::Update(ECSGroup* _ecs, float _deltaTime) {
     ComponentArray<AnimationPlayer>* playerArray = _ecs->GetComponentArray<AnimationPlayer>();
     if (!playerArray) return;

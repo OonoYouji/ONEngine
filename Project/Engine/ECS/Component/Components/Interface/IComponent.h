@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /// std
 #include <cstdint>
@@ -10,19 +10,30 @@
 /// ///////////////////////////////////////////////////
 namespace ONEngine {
 
+/**
+ * @class IComponent
+ * @brief すべてのコンポーネントの基底クラス。コンポーネントをアタッチするEntity（GameEntity）の参照や有効・無効状態を保持します。
+ */
 class IComponent {
 	friend class ComponentCollection;
 public:
 	virtual ~IComponent() = default;
 
-	/// componentの状態を初期化する
+	/**
+	 * @brief コンポーネントの内部状態をリセットし、デフォルト状態に戻します。
+	 */
 	virtual void Reset();
 
-	/// @brief Componentの保持対象の設定
-	/// @param _owner 対象
+	/**
+	 * @brief このコンポーネントを保持するオーナーエンティティ（GameEntity）を設定します。
+	 * @param _owner オーナーとなるエンティティポインタ
+	 */
 	void SetOwner(class GameEntity* _owner);
 
-	/// @brief Componentの保持Entityを返す
+	/**
+	 * @brief このコンポーネントを保持しているオーナーエンティティを取得します。
+	 * @return GameEntityポインタ
+	 */
 	GameEntity* GetOwner() const;
 
 
@@ -42,9 +53,10 @@ protected:
 	class GameEntity* owner_ = nullptr;
 };
 
-/// ///////////////////////////////////////////////////
-/// 描画コンポーネントの基底クラス
-/// ///////////////////////////////////////////////////
+/**
+ * @class IRenderComponent
+ * @brief 描画処理を伴うコンポーネント（MeshRenderer等）の基底クラス
+ */
 class IRenderComponent : public IComponent {
 public:
 

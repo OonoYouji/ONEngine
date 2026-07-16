@@ -1,4 +1,4 @@
-﻿#include "Quaternion.h"
+#include "Quaternion.h"
 
 using namespace ONEngine;
 
@@ -15,6 +15,9 @@ using namespace DirectX;
 const Quaternion Quaternion::kIdentity = Quaternion(0.0f, 0.0f, 0.0f, 1.0f); ///< 単位クォータニオン
 
 
+/**
+ * @brief デフォルトコンストラクタ。単位クォータニオン (0, 0, 0, 1) で初期化します。
+ */
 Quaternion::Quaternion() {
 	*this = kIdentity;
 }
@@ -26,6 +29,11 @@ Quaternion::Quaternion(float _x, float _y, float _z, float _w) {
 	w = _w;
 }
 
+/**
+ * @brief クォータニオンの長さ（ノルム）を取得します。
+ * @param _q 対象のクォータニオン
+ * @return クォータニオンの長さ
+ */
 float Quaternion::Length(const Quaternion& _q) {
 	return std::sqrt(
 		_q.x * _q.x +
@@ -35,6 +43,11 @@ float Quaternion::Length(const Quaternion& _q) {
 	);
 }
 
+/**
+ * @brief クォータニオンの正規化を行います。
+ * @param _q 正規化するクォータニオン
+ * @return 正規化されたQuaternion
+ */
 Quaternion Quaternion::Normalize(const Quaternion& _q) {
 	float len = Length(_q);
 	if (len != 0.0f) {
@@ -43,6 +56,12 @@ Quaternion Quaternion::Normalize(const Quaternion& _q) {
 	return _q;
 }
 
+/**
+ * @brief Vector3座標ベクトルをクォータニオン回転により変換します。
+ * @param _v 回転するベクトル
+ * @param _q 回転を表現するクォータニオン
+ * @return 回転後のVector3
+ */
 Vector3 Quaternion::Transform(const Vector3& _v, const Quaternion& _q) {
 	// ベクトルをクォータニオンに変換 (w = 0)
 	Quaternion qVec = { _v.x, _v.y, _v.z, 0.0f };
@@ -55,6 +74,13 @@ Vector3 Quaternion::Transform(const Vector3& _v, const Quaternion& _q) {
 	return { result.x, result.y, result.z };
 }
 
+/**
+ * @brief 2つのクォータニオンの線形補間（Lerp）を行います。
+ * @param _start 開始クォータニオン
+ * @param _end 終了クォータニオン
+ * @param _t 補間係数 (0.0 ~ 1.0)
+ * @return 補間されたクォータニオン
+ */
 Quaternion Quaternion::Lerp(const Quaternion& _start, const Quaternion& _end, float _t) {
 	return Quaternion(
 		std::lerp(_start.x, _end.x, _t),
@@ -64,6 +90,12 @@ Quaternion Quaternion::Lerp(const Quaternion& _start, const Quaternion& _end, fl
 	);
 }
 
+/**
+ * @brief 回転軸と回転角度からクォータニオンを作成します。
+ * @param _axis 回転の軸ベクトル（正規化されている必要があります）
+ * @param _theta 回転角度（ラジアン）
+ * @return 軸・角から構築されたQuaternion
+ */
 Quaternion Quaternion::MakeFromAxis(const Vector3& _axis, float _theta) {
 	float halfAngle = _theta * 0.5f;
 	float sinHalfAngle = std::sin(halfAngle);
@@ -78,10 +110,23 @@ Quaternion Quaternion::MakeFromAxis(const Vector3& _axis, float _theta) {
 	return Quaternion(x, y, z, w);
 }
 
+/**
+ * @brief 回転軸と回転角度から回転行列を作成します。
+ * @param _axis 回転軸
+ * @param _theta 回転角度（ラジアン）
+ * @return 回転行列Matrix4x4
+ */
 Matrix4x4 Quaternion::MakeRotateAxisAngle(const Vector3& _axis, float _theta) {
 	return Matrix4x4::MakeRotate(MakeFromAxis(_axis, _theta));
 }
 
+/**
+ * @brief 視点・注視点・上方向ベクトルから、注視方向を向くクォータニオンを作成します。
+ * @param _position 現在の位置
+ * @param _target 目標位置
+ * @param _up 上方向を示すベクトル
+ * @return 作成された回転を示すQuaternion
+ */
 Quaternion Quaternion::LookAt(const Vector3& _position, const Vector3& _target, const Vector3& _up) {
 	/// ----- 視線の方向への回転を計算する ----- ///
 
@@ -131,6 +176,12 @@ Quaternion Quaternion::LookAt(const Vector3& _position, const Vector3& _target, 
 
 
 
+/**
+ * @brief 視点・注視点から、注視方向を向くクォータニオンを作成します（上方向は世界座標の上方向と仮定）。
+ * @param _position 現在の位置
+ * @param _target 目標位置
+ * @return 作成された回転を示すQuaternion
+ */
 Quaternion Quaternion::LookAt(const Vector3& _position, const Vector3& _target) {
 	XMFLOAT3 xmPosition, xmTarget;
 	xmPosition = { _position.x, _position.y, _position.z };
@@ -160,6 +211,13 @@ Quaternion Quaternion::LookAt(const Vector3& _position, const Vector3& _target) 
 	return { result.x, result.y, result.z, result.w };
 }
 
+/**
+ * @brief 2つのクォータニオンの球面線形補間（Slerp）を行います。
+ * @param _start 開始クォータニオン
+ * @param _end 終了クォータニオン
+ * @param _t 補間係数 (0.0 ~ 1.0)
+ * @return 球面線形補間されたクォータニオン
+ */
 Quaternion Quaternion::Slerp(const Quaternion& _start, const Quaternion& _end, float _t) {
 	// _startと_endの内積を計算
 	float dot = _start.w * _end.w + _start.x * _end.x + _start.y * _end.y + _start.z * _end.z;
@@ -207,6 +265,11 @@ Quaternion Quaternion::Slerp(const Quaternion& _start, const Quaternion& _end, f
 	return result;
 }
 
+/**
+ * @brief 3軸のオイラー角からクォータニオンを作成します。
+ * @param _euler 各軸の回転角ベクトル（ラジアン）
+ * @return 作成されたQuaternion
+ */
 Quaternion Quaternion::FromEuler(const Vector3& _euler) {
 	float pitch = _euler.x * 0.5f; // X回転
 	float yaw = _euler.y * 0.5f; // Y回転
@@ -228,6 +291,11 @@ Quaternion Quaternion::FromEuler(const Vector3& _euler) {
 	return q;
 }
 
+/**
+ * @brief クォータニオンからオイラー角を逆算して作成します。
+ * @param _q 回転を示すクォータニオン
+ * @return 3軸の回転オイラー角（ラジアン）ベクトル
+ */
 Vector3 Quaternion::ToEuler(const Quaternion& _q) {
 	Vector3 euler;
 
@@ -252,6 +320,11 @@ Vector3 Quaternion::ToEuler(const Quaternion& _q) {
 	return euler;
 }
 
+/**
+ * @brief 回転行列から回転成分を抽出したクォータニオンを作成します。
+ * @param _m 回転行列
+ * @return 作成されたQuaternion
+ */
 Quaternion Quaternion::FromRotationMatrix(const Matrix4x4& _m) {
 	Quaternion q;
 
@@ -290,14 +363,26 @@ Quaternion Quaternion::FromRotationMatrix(const Matrix4x4& _m) {
 }
 
 
+/**
+ * @brief 共役クォータニオンを取得します。
+ * @return 共役されたQuaternion
+ */
 Quaternion Quaternion::Conjugate() const {
 	return { -x, -y, -z, w };
 }
 
+/**
+ * @brief 自身のクォータニオンの長さ（ノルム）を取得します。
+ * @return クォータニオンの長さ
+ */
 float Quaternion::Length() const {
 	return std::sqrt(w * w + x * x + y * y + z * z);
 }
 
+/**
+ * @brief 自身の逆クォータニオンを取得します。
+ * @return 逆Quaternion
+ */
 Quaternion Quaternion::Inverse() const {
 	Quaternion conjugate = this->Conjugate(); // 共役を計算
 	float norm = this->Length();                // ノルムを計算
@@ -309,6 +394,11 @@ Quaternion Quaternion::Inverse() const {
 	return conjugate / normSquared;
 }
 
+/**
+ * @brief 別のクォータニオンとの内積を計算します。
+ * @param _other 対象のクォータニオン
+ * @return 内積値
+ */
 float Quaternion::Dot(const Quaternion& _other) const {
 	return x * _other.x + y * _other.y + z * _other.z + w * _other.w;
 }

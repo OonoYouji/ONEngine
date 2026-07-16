@@ -1,4 +1,4 @@
-﻿#include "DxUploadCommand.h"
+#include "DxUploadCommand.h"
 
 /// engine
 #include "../Device/DxDevice.h"
@@ -16,6 +16,9 @@ DxUploadCommand::~DxUploadCommand() {
 	}
 }
 
+/**
+ * @brief アロケータ、コマンドリスト、およびスレッド待機用の専用フェンス・イベントを初期化します。
+ */
 void DxUploadCommand::Initialize(DxDevice* device) {
 	ID3D12Device* d3dDevice = device->GetDevice();
 
@@ -42,15 +45,24 @@ void DxUploadCommand::Initialize(DxDevice* device) {
 	fenceEvent_ = CreateEvent(nullptr, FALSE, FALSE, nullptr);
 }
 
+/**
+ * @brief コマンド記録のためにアロケータおよびコマンドリストをリセットして開始します。
+ */
 void DxUploadCommand::Begin() {
 	allocator_->Reset();
 	commandList_->Reset(allocator_.Get(), nullptr);
 }
 
+/**
+ * @brief コマンド記録を終了（Close）します。
+ */
 void DxUploadCommand::End() {
 	commandList_->Close();
 }
 
+/**
+ * @brief 記録したコマンドリストを指定されたコマンドキューに送信し、このスレッド用のフェンスで完了するまでCPU側を待機させます。
+ */
 void DxUploadCommand::ExecuteAndWait(ID3D12CommandQueue* commandQueue) {
 	// コマンドの実行 (ID3D12CommandQueue自体はスレッドセーフなのでロック不要)
 	ID3D12CommandList* lists[] = { commandList_.Get() };
@@ -66,6 +78,9 @@ void DxUploadCommand::ExecuteAndWait(ID3D12CommandQueue* commandQueue) {
 	}
 }
 
+/**
+ * @brief 内部のコマンドリストを取得します。
+ */
 ID3D12GraphicsCommandList6* DxUploadCommand::GetCommandList() const {
 	return commandList_.Get();
 }

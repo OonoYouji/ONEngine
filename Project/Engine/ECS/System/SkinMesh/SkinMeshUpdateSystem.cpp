@@ -1,4 +1,4 @@
-﻿#include "SkinMeshUpdateSystem.h"
+#include "SkinMeshUpdateSystem.h"
 
 using namespace ONEngine;
 
@@ -7,10 +7,16 @@ using namespace ONEngine;
 #include "Engine/ECS/Component/Array/ComponentArray.h"
 #include "Engine/Asset/Collection/AssetCollection.h"
 
+/**
+ * @brief コンストラクタ
+ */
 SkinMeshUpdateSystem::SkinMeshUpdateSystem(DxManager* _dxm, Asset::AssetCollection* _assetCollection)
 	: pDxManager_(_dxm), pAssetCollection_(_assetCollection) {
 }
 
+/**
+ * @brief 毎フレームのスキンメッシュ更新処理を実行します。
+ */
 void SkinMeshUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
 
 	/// Compの配列を取得＆使用中のCompがなければ終了
@@ -96,6 +102,9 @@ void SkinMeshUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
 
 }
 
+/**
+ * @brief スキンメッシュ内の全ジョイント（関節）の姿勢から、各ボーンのワールド空間行列（スケルトン行列）を計算し更新します。
+ */
 void SkinMeshUpdateSystem::UpdateSkeleton(SkinMeshRenderer* _smr) {
 	/// ------------------------------------
 	/// スケルトンの更新
@@ -103,6 +112,9 @@ void SkinMeshUpdateSystem::UpdateSkeleton(SkinMeshRenderer* _smr) {
 	UpdateSkeletonRecursive(_smr, _smr->skeleton_.root, std::nullopt);
 }
 
+/**
+ * @brief ボーン階層構造の親子関係に従い、再帰的にワールド空間のジョイント行列を更新します。
+ */
 void SkinMeshUpdateSystem::UpdateSkeletonRecursive(SkinMeshRenderer* _smr, int32_t _jointIndex, const std::optional<int32_t>& _parentIndex) {
 	Skeleton& skeleton = _smr->skeleton_;
 	Joint& joint = skeleton.joints[_jointIndex];
@@ -133,6 +145,9 @@ void SkinMeshUpdateSystem::UpdateSkeletonRecursive(SkinMeshRenderer* _smr, int32
 	}
 }
 
+/**
+ * @brief 各ジョイントの計算結果から、GPUスキンクラスター用のパレットマトリクスバッファを同期・更新します。
+ */
 void SkinMeshUpdateSystem::UpdateSkinCluster(SkinMeshRenderer* _smr) {
 	Skeleton& skeleton = _smr->skeleton_;
 	SkinCluster& skinCluster = _smr->skinCluster_.value();

@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /// directX
 #include <d3d12.h>
@@ -21,6 +21,11 @@ class DxDevice;
 /// ///////////////////////////////////////////////////
 /// graphics resource の mesh data
 /// ///////////////////////////////////////////////////
+/**
+ * @class Mesh
+ * @brief 3Dグラフィックス描画のための頂点バッファとインデックスバッファを管理するクラステンプレート
+ * @tparam Vertex 頂点レイアウト用の構造体型
+ */
 template<typename Vertex>
 class Mesh final {
 public:
@@ -29,19 +34,35 @@ public:
 	/// public : methods
 	/// ===================================================
 
+	/**
+	 * @brief デフォルトコンストラクタ
+	 */
 	Mesh() = default;
+
+	/**
+	 * @brief デストラクタ
+	 */
 	~Mesh() = default;
 
-	/// @brief vertex buffer, index bufferの作成
-	/// @param _dxDevice DxDeviceクラスへのポインタ
+	/**
+	 * @brief 頂点バッファおよびインデックスバッファをGPU上に作成し、データをマッピングします。
+	 * @param _dxDevice DxDeviceオブジェクトへのポインタ
+	 */
 	void CreateBuffer(DxDevice* _dxDevice);
 
-	/// @brief vertex bufferをマッピング
+	/**
+	 * @brief 頂点データをGPUバッファにマッピング・コピーします。
+	 */
 	void VertexBufferMapping();
 
-	/// @brief index bufferをマッピング
+	/**
+	 * @brief インデックスデータをGPUバッファにマッピング・コピーします。
+	 */
 	void IndexBufferMapping();
 
+	/**
+	 * @brief CPU側の最新頂点データをGPUバッファへ再度コピー（転送）します。
+	 */
 	void MemcpyVertexData();
 
 private:
@@ -50,14 +71,14 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	std::vector<Vertex>      vertices_;
-	DxResource               vertexBuffer_;
-	D3D12_VERTEX_BUFFER_VIEW vbv_;
-	Vertex*                  mappingVertexData_;
+	std::vector<Vertex>      vertices_;          ///< 頂点データのリスト
+	DxResource               vertexBuffer_;      ///< 頂点バッファリソース
+	D3D12_VERTEX_BUFFER_VIEW vbv_;               ///< 頂点バッファビュー
+	Vertex*                  mappingVertexData_; ///< マッピングされた頂点データのCPU側アドレス
 
-	std::vector<uint32_t>    indices_;
-	DxResource               indexBuffer_;
-	D3D12_INDEX_BUFFER_VIEW  ibv_;
+	std::vector<uint32_t>    indices_;           ///< 頂点インデックスのリスト
+	DxResource               indexBuffer_;       ///< インデックスバッファリソース
+	D3D12_INDEX_BUFFER_VIEW  ibv_;               ///< インデックスバッファビュー
 
 
 public:
@@ -66,29 +87,41 @@ public:
 	/// public : accessor
 	/// ===================================================
 
-	/// @brief vertices_をセット
-	/// @param _vertices 頂点データ配列
+	/**
+	 * @brief 頂点データ配列を設定します。
+	 * @param _vertices 設定する頂点データリスト
+	 */
 	void SetVertices(const std::vector<Vertex>& _vertices);
 
-	/// @brief 頂点のインデックスをセット
-	/// @param _indices 頂点インデックス配列
+	/**
+	 * @brief 頂点インデックス配列を設定します。
+	 * @param _indices 設定するインデックスリスト
+	 */
 	void SetIndices(const std::vector<uint32_t>& _indices);
 
 
-	/// @brief 頂点データを取得
-	/// @return 頂点データの配列
+	/**
+	 * @brief 頂点データ配列を取得します。
+	 * @return 頂点データのリスト
+	 */
 	const std::vector<Vertex>& GetVertices() const;
 
-	/// @brief 頂点インデックスを取得
-	/// @return 頂点インデックスの配列
+	/**
+	 * @brief 頂点インデックス配列を取得します。
+	 * @return インデックスのリスト
+	 */
 	const std::vector<uint32_t>& GetIndices() const;
 
-	/// @brief vertex buffer viewを取得
-	/// @return vbv date
+	/**
+	 * @brief 頂点バッファビューを取得します。
+	 * @return D3D12_VERTEX_BUFFER_VIEW の参照
+	 */
 	const D3D12_VERTEX_BUFFER_VIEW& GetVBV() const;
 
-	/// @brief index buffer viewを取得
-	/// @return ibv date
+	/**
+	 * @brief インデックスバッファビューを取得します。
+	 * @return D3D12_INDEX_BUFFER_VIEW の参照
+	 */
 	const D3D12_INDEX_BUFFER_VIEW& GetIBV() const;
 
 };

@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /// engine
 #include "IDxDescriptorHeap.h"
@@ -8,6 +8,10 @@
 /// /////////////////////////////////////////////////
 namespace ONEngine {
 
+/**
+ * @class DxSRVHeap
+ * @brief シェーダ参照可能なヒープ（CBV/SRV/UAV）の割当て・区分（Texture用、UAVテクスチャ用、Buffer用）を細分化して管理するクラス
+ */
 class DxSRVHeap final : public IDxDescriptorHeap {
 
 	struct HeapData {
@@ -22,52 +26,82 @@ public:
 	/// public : methods
 	/// ===================================================
 
+	/**
+	 * @brief コンストラクタ。Buffer用とTexture用の合計割当て数を考慮して生成します。
+	 * @param _dxDevice デバイスポインタ
+	 * @param _bufferHeapSize バッファ用ディスクリプタ最大数
+	 * @param _textureHeapSize テクスチャ用ディスクリプタ最大数
+	 */
 	DxSRVHeap(DxDevice* _dxDevice, uint32_t _bufferHeapSize, uint32_t _textureHeapSize);
+
+	/**
+	 * @brief デストラクタ
+	 */
 	~DxSRVHeap();
 
-	/// @brief 初期化
+	/**
+	 * @brief デバイスを通じて、シェーダ可視フラグを持った CBV/SRV/UAV 用ディスクリプタヒープを生成・初期化します。
+	 */
 	void Initialize() override;
 	
-	/// @brief Texture用のDescriptorHeapのIndexを取得する
-	/// @return DescriptorHeapのIndex
+	/**
+	 * @brief 静的テクスチャSRV用の空きディスクリプタ領域を割り当て、その全体ヒープ内インデックスを返します。
+	 * @return インデックス
+	 */
 	uint32_t AllocateTexture();
 
-	/// @brief UAVTexture用のDescriptorHeapのIndexを取得する
-	/// @return DescriptorHeapのIndex
+	/**
+	 * @brief UAVテクスチャ（コンピュート書込み用など）用の空きディスクリプタ領域を割り当て、その全体ヒープ内インデックスを返します。
+	 * @return インデックス
+	 */
 	uint32_t AllocateUAVTexture();
 
-	/// @brief Buffer用のDescriptorHeapのIndexを取得する
-	/// @return DescriptorHeapのIndex
+	/**
+	 * @brief 定数バッファや構造化バッファなどのBuffer SRV/CBV用のディスクリプタ領域を割り当て、そのインデックスを返します。
+	 * @return インデックス
+	 */
 	uint32_t AllocateBuffer();
 
 
-	/// @brief SRV用のDescriptorHeapの開始GPUハンドルを取得する
-	/// @return SRV用のDescriptorHeapの開始GPUハンドル
+	/**
+	 * @brief テクスチャSRV領域の先頭GPUディスクリプタハンドルを取得します。
+	 * @return D3D12_GPU_DESCRIPTOR_HANDLE
+	 */
 	D3D12_GPU_DESCRIPTOR_HANDLE GetSRVStartGPUHandle() const;
 
-	/// @brief SRV用のDescriptorHeapの開始CPUハンドルを取得する
-	/// @return SRV用のDescriptorHeapの開始CPUハンドル
+	/**
+	 * @brief テクスチャSRV領域の先頭CPUディスクリプタハンドルを取得します。
+	 * @return D3D12_CPU_DESCRIPTOR_HANDLE
+	 */
 	D3D12_CPU_DESCRIPTOR_HANDLE GetSRVStartCPUHandle() const;
 
 
-	/// @brief UAV用のDescriptorHeapの開始GPUハンドルを取得する
-	/// @return UAV用のDescriptorHeapの開始GPUハンドル
+	/**
+	 * @brief UAVテクスチャ領域の先頭GPUディスクリプタハンドルを取得します。
+	 * @return D3D12_GPU_DESCRIPTOR_HANDLE
+	 */
 	D3D12_GPU_DESCRIPTOR_HANDLE GetUAVStartGPUHandle() const;
 
-	/// @brief UAV用のDescriptorHeapの開始CPUハンドルを取得する
-	/// @return UAV用のDescriptorHeapの開始CPUハンドル
+	/**
+	 * @brief UAVテクスチャ領域の先頭CPUディスクリプタハンドルを取得します。
+	 * @return D3D12_CPU_DESCRIPTOR_HANDLE
+	 */
 	D3D12_CPU_DESCRIPTOR_HANDLE GetUAVStartCPUHandle() const;
 
 
-	/// @brief Buffer用のDescriptorHeapの開始GPUハンドルを取得する
-	/// @return Buffer用のDescriptorHeapの開始GPUハンドル
+	/**
+	 * @brief バッファビュー（CBV/SRV/UAV）領域の先頭GPUディスクリプタハンドルを取得します。
+	 * @return D3D12_GPU_DESCRIPTOR_HANDLE
+	 */
 	D3D12_GPU_DESCRIPTOR_HANDLE GetBufferStartGPUHandle() const;
 
-	/// @brief Buffer用のDescriptorHeapの開始CPUハンドルを取得する
-	/// @return Buffer用のDescriptorHeapの開始CPUハンドル
+	/**
+	 * @brief バッファビュー領域の先頭CPUディスクリプタハンドルを取得します。
+	 * @return D3D12_CPU_DESCRIPTOR_HANDLE
+	 */
 	D3D12_CPU_DESCRIPTOR_HANDLE GetBufferStartCPUHandle() const;
 
-	/// @brief 基底クラスのAllocateは使用禁止
+	/// 基底クラスのAllocateは使用禁止
 	uint32_t Allocate() = delete;
 
 private:

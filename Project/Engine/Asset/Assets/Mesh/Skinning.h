@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /// directX
 #include <d3d12.h>
@@ -148,50 +148,64 @@ struct BoneMask {
 
 namespace ANIME_MATH {
 
-	/// @brief Vector3のキーフームを基に補間計算を行う
-	/// @param _keyFrames Vector3のキーフレーム配列
-	/// @param _time 補間時間
-	/// @return 補間後のVector3値
+	/**
+	 * @brief キーフレーム情報（Vector3）に基づき、指定時間の線形補間値を計算します。
+	 * @param _keyFrames キーフレームリスト
+	 * @param _time 取得したい時点の時間
+	 * @return 補間されたVector3オブジェクト
+	 */
 	Vector3 CalculateValue(const std::vector<KeyFrameVector3>& _keyFrames, float _time);
 
-	/// @brief Quaternionのキーフームを基に補間計算を行う
-	/// @param _keyFrames Quaternionのキーフーム配列
-	/// @param _time 補間時間
-	/// @return 補間後のQuaternion値
+	/**
+	 * @brief キーフレーム情報（Quaternion）に基づき、指定時間の球面線形補間値を計算します。
+	 * @param _keyFrames キーフレームリスト
+	 * @param _time 取得したい時点の時間
+	 * @return 補間されたQuaternionオブジェクト
+	 */
 	Quaternion CalculateValue(const std::vector<KeyFrameQuaternion>& _keyFrames, float _time);
 
 
-	/// @brief ノードからジョイントを作成
-	/// @param _node ソースのノード
-	/// @param _parent 親子関係を示す親のインデックス
-	/// @param _joints Joint配列への参照
-	/// @return 生成されたJointのインデックス
+	/**
+	 * @brief アセットのノード木構造から、再帰的にジョイントを構築し、リストに追加します。
+	 * @param _node 起点となるノード
+	 * @param _parent 親ジョイントのインデックス（存在しない場合はnullopt）
+	 * @param _joints 追加先のジョイント配列
+	 * @return 生成されたジョイントのインデックス
+	 */
 	int32_t CreateJoint(const Node& _node, const std::optional<int32_t>& _parent, std::vector<Joint>& _joints);
 
-	/// @brief モデルのスケルトン構築
-	/// @param _rootNode ソースのルートノード
-	/// @return 構築されたスケルトン
+	/**
+	 * @brief ルートノードからスケルトン構造（ジョイントの集合・親子関係マップ）を構築します。
+	 * @param _rootNode ルートノード
+	 * @return 構築されたSkeletonオブジェクト
+	 */
 	Skeleton CreateSkeleton(const Node& _rootNode);
 
-	/// @brief スキンクラスターの作成
-	/// @param _skeleton CreateSkeletonで作成されたスケルトン
-	/// @param _model ソースモデル
-	/// @param _dxm DxManagerのインスタンスへのポインタ
-	/// @return 構築されたスキンクラスター
+	/**
+	 * @brief GPUでスキンメッシュアニメーションを行うためのスキンクラスター（バッファ、パレット等）を作成します。
+	 * @param _skeleton ジョイント構造を持つスケルトン
+	 * @param _model 対象のModelアセット
+	 * @param _dxm DirectX12マネージャのポインタ
+	 * @return 作成されたSkinClusterオブジェクト
+	 */
 	SkinCluster CreateSkinCluster(const Skeleton& _skeleton, Asset::Model* _model, DxManager* _dxm);
 
-	/// @brief アニメーションのサンプリング結果
+	/**
+	 * @brief アニメーションサンプリング結果構造体
+	 */
 	struct SampledTransform {
-		Vector3 translate = { 0,0,0 };
-		Quaternion rotate = { 0,0,0,1 };
-		Vector3 scale = { 1,1,1 };
+		Vector3 translate = { 0,0,0 };    ///< 平行移動値
+		Quaternion rotate = { 0,0,0,1 }; ///< 回転クォータニオン
+		Vector3 scale = { 1,1,1 };       ///< スケール値
 	};
 
-	/// @brief 複数のアニメーションをブレンドしてサンプリング
-	/// @param _clips モデルに含まれる全クリップ
-	/// @param _state 再生状態
-	/// @param _jointNameHash ジョイント名のハッシュ
-	/// @param _outTransform 結果格納先
+	/**
+	 * @brief 現在のアニメーション再生状態およびブレンド割合に基づいて、特定ジョイントの補間SRTデータをサンプリングします。
+	 * @param _clips モデルに含まれる全アニメーションクリップマップ
+	 * @param _state 現在のアニメーション再生状態（ブレンド元情報など）
+	 * @param _jointNameHash 対象ジョイント名のハッシュ
+	 * @param _outTransform サンプリング結果を格納する構造体の参照
+	 */
 	void SampleAnimation(const std::unordered_map<uint32_t, AnimationClip>& _clips, const AnimationState& _state, uint32_t _jointNameHash, SampledTransform& _outTransform);
 }
 

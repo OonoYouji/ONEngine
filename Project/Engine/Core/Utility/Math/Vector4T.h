@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #ifdef max
 #undef max
@@ -53,7 +53,18 @@ struct Vector4T final {
 	/// public : constructors
 	/// ===================================================
 
+	/**
+	 * @brief デフォルトコンストラクタ。零ベクトルで初期化します。
+	 */
 	Vector4T() : x(static_cast<T>(0)), y(static_cast<T>(0)), z(static_cast<T>(0)), w(static_cast<T>(0)) {}
+
+	/**
+	 * @brief 各要素の座標値を指定して初期化するコンストラクタ。
+	 * @param _x X座標（または赤）
+	 * @param _y Y座標（または緑）
+	 * @param _z Z座標（または青）
+	 * @param _w W座標（またはアルファ）
+	 */
 	Vector4T(T _x, T _y, T _z, T _w) : x(_x), y(_y), z(_z), w(_w) {}
 	Vector4T(const Vector4T&) = default;
 	Vector4T(Vector4T&&) = default;
@@ -66,23 +77,29 @@ struct Vector4T final {
 	/// public : static methods
 	/// ===================================================
 
-	/// @brief ベクトルの長さを取得
-	/// @param _v ベクトル
-	/// @return ベクトルの長さ
+	/**
+	 * @brief ベクトルの長さ（ノルム）を取得します。
+	 * @param _v 対象のベクトル
+	 * @return ベクトルの長さ
+	 */
 	static T Length(const Vector4T<T>& _v) {
 		return static_cast<T>(std::sqrt(_v.x * _v.x + _v.y * _v.y + _v.z * _v.z + _v.w * _v.w));
 	}
 
-	/// @brief ベクトルの長さの二乗を取得
-	/// @param _v ベクトル
-	/// @return ベクトルの長さの二乗
+	/**
+	 * @brief ベクトルの長さの二乗を取得します。sqrt計算を回避したい場合に使用します。
+	 * @param _v 対象のベクトル
+	 * @return ベクトルの長さの二乗
+	 */
 	static T LengthSquared(const Vector4T<T>& _v) {
 		return _v.x * _v.x + _v.y * _v.y + _v.z * _v.z + _v.w * _v.w;
 	}
 
-	/// @brief ベクトルの正規化
-	/// @param _v ベクトル
-	/// @return 正規化されたベクトル
+	/**
+	 * @brief ベクトルの正規化（長さを1に変換）を行います。
+	 * @param _v 対象のベクトル
+	 * @return 正規化されたベクトル。長さが0の場合は零ベクトルを返します。
+	 */
 	static Vector4T<T> Normalize(const Vector4T<T>& _v) {
 		T length = Length(_v);
 		if (length == static_cast<T>(0)) {
@@ -91,19 +108,23 @@ struct Vector4T final {
 		return Vector4T<T>(_v.x / length, _v.y / length, _v.z / length, _v.w / length);
 	}
 
-	/// @brief ベクトルの内積を取得
-	/// @param _a ベクトルA
-	/// @param _b ベクトルB
-	/// @return ベクトルの内積
+	/**
+	 * @brief 2つのベクトルの内積を計算します。
+	 * @param _a ベクトルA
+	 * @param _b ベクトルB
+	 * @return 内積（スカラー）
+	 */
 	static T Dot(const Vector4T<T>& _a, const Vector4T<T>& _b) {
 		return _a.x * _b.x + _a.y * _b.y + _a.z * _b.z + _a.w * _b.w;
 	}
 
-	/// @brief ベクトルの線形補完
-	/// @param _a ベクトルA
-	/// @param _b ベクトルB
-	/// @param _t 補間係数
-	/// @return 補間されたベクトル
+	/**
+	 * @brief 2つのベクトルの線形補間（Lerp）を行います。
+	 * @param _a 補間開始ベクトル（t=0）
+	 * @param _b 補間終了ベクトル（t=1）
+	 * @param _t 補間係数
+	 * @return 補間されたベクトル
+	 */
 	static Vector4T<T> Lerp(const Vector4T<T>& _a, const Vector4T<T>& _b, T _t) {
 		return Vector4T<T>(
 			_a.x + (_b.x - _a.x) * _t,
@@ -113,11 +134,13 @@ struct Vector4T final {
 		);
 	}
 
-	/// @brief ベクトルの球面線形補完
-	/// @param _a ベクトルA
-	/// @param _b ベクトルB
-	/// @param _t 補間係数
-	/// @return 補間されたベクトル
+	/**
+	 * @brief 2つのベクトルの球面線形補間（Slerp）を行います。4次元クォータニオン回転などの補間に適しています。
+	 * @param _a 補間開始ベクトル
+	 * @param _b 補間終了ベクトル
+	 * @param _t 補間係数
+	 * @return 補間されたベクトル
+	 */
 	static Vector4T<T> Slerp(const Vector4T<T>& _a, const Vector4T<T>& _b, T _t) {
 		T dot = Dot(Normalize(_a), Normalize(_b));
 		dot = std::clamp(dot, static_cast<T>(-1), static_cast<T>(1));
@@ -132,27 +155,35 @@ struct Vector4T final {
 	/// public : methods
 	/// ===================================================
 
-	/// @brief ベクトルの長さを取得
-	/// @return ベクトルの長さ
+	/**
+	 * @brief 自身のベクトルの長さ（ノルム）を取得します。
+	 * @return ベクトルの長さ
+	 */
 	T Length() const {
 		return Length(*this);
 	}
 
-	/// @brief ベクトルの長さの二乗を取得
-	/// @return ベクトルの長さの二乗
+	/**
+	 * @brief 自身のベクトルの長さの二乗を取得します。
+	 * @return ベクトルの長さの二乗
+	 */
 	T LengthSquared() const {
 		return LengthSquared(*this);
 	}
 
-	/// @brief ベクトルの正規化
-	/// @return 正規化されたベクトル
+	/**
+	 * @brief 自身を正規化したベクトルを取得します（自身の内容は変更されません）。
+	 * @return 正規化されたベクトル
+	 */
 	Vector4T<T> Normalize() const {
 		return Normalize(*this);
 	}
 
-	/// @brief ベクトルの内積を取得
-	/// @param _other もう一つのベクトル
-	/// @return ベクトルの内積
+	/**
+	 * @brief 別のベクトルとの内積を計算します。
+	 * @param _other 対象のベクトル
+	 * @return 内積値
+	 */
 	T Dot(const Vector4T<T>& _other) const {
 		return Dot(*this, _other);
 	}
@@ -297,6 +328,11 @@ inline Vector4T<T> operator+(const Vector4T<T>& _v) {
 
 
 
+/**
+ * @brief jsonオブジェクトからVector4T構造体へのデシリアライズを行います。
+ * @param _j jsonオブジェクト
+ * @param _v 変換先のVector4T構造体の参照
+ */
 template <typename T>
 void from_json(const nlohmann::json& _j, Vector4T<T>& _v) {
 	_v.x = _j.at("x").get<T>();
@@ -305,6 +341,11 @@ void from_json(const nlohmann::json& _j, Vector4T<T>& _v) {
 	_v.w = _j.at("w").get<T>();
 }
 
+/**
+ * @brief Vector4T構造体からjsonオブジェクトへのシリアライズを行います。
+ * @param _j jsonオブジェクト
+ * @param _v 変換元のVector4T構造体
+ */
 template <typename T>
 void to_json(nlohmann::json& _j, const Vector4T<T>& _v) {
 	_j = nlohmann::json{

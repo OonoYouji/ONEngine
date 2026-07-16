@@ -3,6 +3,11 @@
 
 namespace ONEngine {
 
+    /**
+     * @brief 時間経過（0.0f ~ 1.0f）に応じたカラーグラデーション値を評価・補間算出します。
+     * @param time 評価時間割合 (0.0f - 1.0f)
+     * @return 補間されたカラー値 (RGBA)
+     */
     Color ParticleSystemGradient::Evaluate(float time) const {
         if (colorKeys.empty() && alphaKeys.empty()) return Color::kWhite;
 
@@ -55,6 +60,11 @@ namespace ONEngine {
         return result;
     }
 
+    /**
+     * @brief アニメーションカーブ上の時間に対応する浮動小数点値を線形補間により算出します。
+     * @param time 評価時間
+     * @return カーブの値
+     */
     float AnimationCurve::Evaluate(float time) const {
         if (keys.empty()) return 1.0f;
 
@@ -71,10 +81,16 @@ namespace ONEngine {
         return 1.0f;
     }
 
+    /**
+     * @brief コンストラクタ
+     */
     ParticleSystem::ParticleSystem() {
         // Initialize default state
     }
 
+    /**
+     * @brief パーティクルのシミュレーション・放出を開始します。
+     */
     void ParticleSystem::Play() {
         isPlaying_ = true;
         isPaused_ = false;
@@ -84,16 +100,25 @@ namespace ONEngine {
         std::fill(burstCycleCounts.begin(), burstCycleCounts.end(), 0);
     }
 
+    /**
+     * @brief パーティクルのシミュレーションを停止し、新規放出を止めます。
+     */
     void ParticleSystem::Stop() {
         isPlaying_ = false;
         isPaused_ = false;
     }
 
+    /**
+     * @brief 現在生存しているすべてのパーティクルを強制消去し、初期化します。
+     */
     void ParticleSystem::Clear() {
         playbackTime_ = 0.0f;
         // Also clear GPU buffers in the future
     }
 
+    /**
+     * @brief シミュレーションを一時停止します。
+     */
     void ParticleSystem::Pause() {
         isPaused_ = true;
     }

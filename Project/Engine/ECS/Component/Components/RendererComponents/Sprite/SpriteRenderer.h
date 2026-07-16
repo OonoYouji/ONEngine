@@ -38,6 +38,10 @@ void from_json(const nlohmann::json& _j, SpriteRenderer& _sr);
 /// ///////////////////////////////////////////////////
 /// sprite描画クラス
 /// ///////////////////////////////////////////////////
+/**
+ * @class SpriteRenderer
+ * @brief ゲームオブジェクトに2Dスプライト（テクスチャ）をアタッチし、指定されたマテリアル設定（カラー、UV変形など）を用いて2D/3D空間上へ描画するスプライトレンダラーコンポーネントクラス
+ */
 class SpriteRenderer final : public IComponent {
 	friend class SpriteUpdateSystem;
 	friend class AnimationPlayer;
@@ -50,10 +54,20 @@ public:
 	/// public : methods
 	/// ===================================================
 
+	/**
+	 * @brief コンストラクタ
+	 */
 	SpriteRenderer();
+
+	/**
+	 * @brief デストラクタ
+	 */
 	~SpriteRenderer();
 
-	/// @brief 描画用データのセットアップ
+	/**
+	 * @brief アセットコレクションからテクスチャのバインディング情報を取得し、GPU描画に必要な定数バッファのセットアップを行います。
+	 * @param _assetCollection 検索元のコレクション
+	 */
 	void RenderingSetup(Asset::AssetCollection* _assetCollection);
 
 private:
@@ -70,19 +84,42 @@ public:
 	/// ===================================================
 
 	/// ----- setter ----- ///
+
+	/**
+	 * @brief スプライトのカラー（RGBA）を設定します。
+	 */
 	void SetColor(const Vector4& _color);
+
+	/**
+	 * @brief スプライトのUV変形（オフセット、スケール等）を設定します。
+	 */
 	void SetUVTransform(const UVTransform& _uvTransform);
 
 	/// ----- getter ----- ///
+
+	/**
+	 * @brief 現在のスプライトカラーを取得します。
+	 */
 	const Vector4& GetColor() const;
 
+	/**
+	 * @brief GPUへ転送するためのマテリアルデータを取得します。
+	 */
 	const GPUMaterial& GetGpuMaterial() const;
 
+	/**
+	 * @brief 現在のスプライトUV変形設定を取得します。
+	 */
 	const UVTransform& GetUVTransform() const;
 
+	/**
+	 * @brief スプライトが使用しているテクスチャの解像度（ピクセル幅・高さ）を取得します。
+	 */
 	Vector2 GetTextureSize(Asset::AssetCollection* _assetCollection) const;
 
-	/// @brief アニメーション制御用マテリアルへの参照取得
+	/**
+	 * @brief アニメーション制御用：マテリアル参照の取得。
+	 */
 	Asset::Material& GetMaterialForAnimation() { return material_; }
 
 };

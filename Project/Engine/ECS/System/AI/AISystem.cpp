@@ -7,8 +7,14 @@
 
 namespace ONEngine {
 
+/**
+ * @brief コンストラクタ
+ */
 AISystem::AISystem() {}
 
+/**
+ * @brief AIの意思決定および思考処理の更新処理を毎フレーム実行します。
+ */
 void AISystem::RuntimeUpdate(ECSGroup* _ecs) {
     if (!_ecs) {
         return;

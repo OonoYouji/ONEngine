@@ -1,4 +1,4 @@
-﻿#include "AssetType.h"
+#include "AssetType.h"
 
 /// std
 #include <unordered_map>
@@ -24,6 +24,12 @@ std::unordered_map<std::string, ONEngine::Asset::AssetType> gAssetTypeCheckMap =
 
 namespace ONEngine::Asset {
 
+/**
+ * @brief ファイル拡張子が指定されたアセットタイプに適合するかどうかを判定します。
+ * @param _extension 判定対象の拡張子
+ * @param _type 比較対象のアセットタイプ
+ * @return 拡張子がアセットタイプに対応している場合はtrue
+ */
 bool CheckAssetType(const std::string& _extension, AssetType _type) {
 	/// ----- 引数の拡張子がアセットの物か確認する ----- ///
 
@@ -36,6 +42,11 @@ bool CheckAssetType(const std::string& _extension, AssetType _type) {
 }
 
 
+/**
+ * @brief ファイル拡張子から対応するアセットタイプ（AssetType）を取得します。
+ * @param _extension アセットファイルの拡張子
+ * @return 対応するAssetType（該当なしの場合はAssetType::None）
+ */
 AssetType GetAssetTypeFromExtension(const std::string& _extension) {
 	/// ----- 引数がどのアセットか返す(無効な拡張子であればNoneを) ----- ///
 

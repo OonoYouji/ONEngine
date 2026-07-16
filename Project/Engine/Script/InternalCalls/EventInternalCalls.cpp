@@ -5,11 +5,11 @@
 
 namespace ONEngine {
 
-    /// <summary>
-    /// C#からイベントをC++のキューに追加するための内部呼び出し
-    /// </summary>
-    /// <param name="eventType">イベントの種類</param>
-    /// <param name="entityId">関連するエンティティのID</param>
+    /**
+     * @brief C#からイベントをC++のキューに追加するための内部呼び出し
+     * @param eventType イベントの種類
+     * @param entityId 関連するエンティティのID
+     */
     static void Internal_EnqueueEntityEvent(EventType eventType, int32_t entityId)
     {
         Event e;
@@ -18,11 +18,11 @@ namespace ONEngine {
         FrameEventQueue::GetInstance().Enqueue(e);
     }
 
-    /// <summary>
-    /// C#から名前付きイベントをC++のキューに追加するための内部呼び出し
-    /// </summary>
-    /// <param name="eventName">イベント名</param>
-    /// <param name="entityId">関連するエンティティのID</param>
+    /**
+     * @brief C#から名前付きイベントをC++のキューに追加するための内部呼び出し
+     * @param eventName イベント名
+     * @param entityId 関連するエンティティのID
+     */
     static void Internal_EnqueueNamedEvent(MonoString* eventName, int32_t entityId)
     {
         char* name = mono_string_to_utf8(eventName);
@@ -35,9 +35,16 @@ namespace ONEngine {
         mono_free(name);
     }
 
-    /// <summary>
-    /// C#から攻撃イベントを発行するための内部呼び出し
-    /// </summary>
+    /**
+     * @brief C#から攻撃イベントを発行するための内部呼び出し
+     * @param attackName 攻撃の名前
+     * @param ownerId 発行元エンティティのID
+     * @param damage 与えるダメージ
+     * @param radius 攻撃の半径
+     * @param duration 攻撃の持続時間
+     * @param offsetForward 前方へのオフセット
+     * @param offsetUp 上方へのオフセット
+     */
     static void Internal_EnqueueAttackEvent(MonoString* attackName, int32_t ownerId, float damage, float radius, float duration, float offsetForward, float offsetUp)
     {
         char* name = mono_string_to_utf8(attackName);
@@ -50,9 +57,13 @@ namespace ONEngine {
         mono_free(name);
     }
 
-    /// <summary>
-    /// C#からエフェクトイベントを発行するための内部呼び出し
-    /// </summary>
+    /**
+     * @brief C#からエフェクトイベントを発行するための内部呼び出し
+     * @param effectName エフェクト名
+     * @param entityId 対象のエンティティID
+     * @param scale エフェクトのスケール
+     * @param duration エフェクトの持続時間
+     */
     static void Internal_EnqueueEffectEvent(MonoString* effectName, int32_t entityId, float scale, float duration)
     {
         char* name = mono_string_to_utf8(effectName);
@@ -65,6 +76,9 @@ namespace ONEngine {
         mono_free(name);
     }
 
+    /**
+     * @brief イベントキューイング用のC++内部関数をC#（Mono）にバインドします。
+     */
     void AddEventInternalCalls()
     {
         mono_add_internal_call("FrameEvent::Internal_EnqueueEntityEvent", (void*)Internal_EnqueueEntityEvent);

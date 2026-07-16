@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 
 /// std
@@ -14,6 +14,10 @@
 /// ///////////////////////////////////////////////////
 namespace ONEngine {
 
+/**
+ * @class CustomMeshRenderer
+ * @brief 動的にプログラムから生成する頂点データ（Vertex）およびインデックスデータをもとに、実行時にカスタムメッシュを構築して描画するレンダラーコンポーネントクラス
+ */
 class CustomMeshRenderer final : public IRenderComponent {
 public:
 
@@ -30,14 +34,25 @@ public:
 	/// public : methods
 	/// ===================================================
 
+	/**
+	 * @brief コンストラクタ
+	 */
 	CustomMeshRenderer();
+
+	/**
+	 * @brief デストラクタ
+	 */
 	~CustomMeshRenderer();
 
-	/// @brief meshの再作成
-	/// @param _pDxDevice DxDeviceへのポインタ
+	/**
+	 * @brief 頂点・インデックス情報から、GPU側に必要なメッシュ用バッファ（Vertex/IndexBuffer）を再構築（生成）します。
+	 * @param _pDxDevice 構築に使用するDxDevice
+	 */
 	void MeshRecreate(class DxDevice* _pDxDevice);
 
-	/// @brief 頂点をGPUに転送する
+	/**
+	 * @brief CPU側のメモリ上にある最新の頂点配列データを、GPUのアップロードバッファへコピー転送します。
+	 */
 	void VertexMemcpy();
 
 private:
@@ -57,52 +72,69 @@ public:
 	/// public : accessor
 	/// ====================================================
 
-	/// @brief verticesのセッタ
-	/// @param _vertices meshの頂点データ
+	/**
+	 * @brief 頂点データ配列をセットします。
+	 * @param _vertices 頂点データの配列
+	 */
 	void SetVertices(const std::vector<Vertex>& _vertices);
 
-	/// @brief indicesのセッタ
-	/// @param _indices 頂点インデックスデータ
+	/**
+	 * @brief 頂点インデックスデータ配列をセットします。
+	 * @param _indices インデックス配列
+	 */
 	void SetIndices(const std::vector<uint32_t>& _indices);
 
-	/// @brief textureのpathのセッタ
-	/// @param _path Textureのpath
+	/**
+	 * @brief 描画テクスチャのアセットファイルパスを設定します。
+	 * @param _path アセットパス
+	 */
 	void SetTexturePath(const std::string& _path);
 
-	/// @brief 色の設定
-	/// @param _color RGBAの色を設定する
+	/**
+	 * @brief マテリアルの基本カラー（RGBA）を設定します。
+	 */
 	void SetColor(const Vector4& _color);
 
-	/// @brief 描画するかどうかのセッタ
-	/// @param _isVisible 描画フラグ
+	/**
+	 * @brief このカスタムメッシュを描画するかどうかの表示フラグを設定します。
+	 */
 	void SetIsVisible(bool _isVisible);
 
-	/// @brief bufferを再作成するかどうかのセッタ
-	/// @param _isBufferRecreate bufferを再作成するフラグ
+	/**
+	 * @brief 次回更新時にGPUバッファを強制再作成するかどうかの要求フラグを設定します。
+	 */
 	void SetIsBufferRecreate(bool _isBufferRecreate);
 
 
 
-	/// @brief textureのpathのゲッタ
-	/// @return textureのpath
+	/**
+	 * @brief 設定されているテクスチャアセットのファイルパスを取得します。
+	 */
 	const std::string& GetTexturePath() const;
 
-	/// @brief 色のゲッタ
-	/// @return RGBAの色
+	/**
+	 * @brief 設定されているマテリアルカラーを取得します。
+	 */
 	const Vector4& GetColor() const;
 
-	/// @brief meshのゲッタ
-	/// @return Meshのポインタ
+	/**
+	 * @brief 内部メッシュオブジェクト（CustomMesh）を取得します。
+	 */
 	const CustomMesh* GetMesh() const;
 
-	/// @brief 描画するかどうかのゲッタ
-	/// @return 描画フラグ
+	/**
+	 * @brief 描画表示フラグを取得します。
+	 */
 	bool GetIsVisible() const;
 
-	/// @brief bufferを再作成するかどうかのゲッタ
-	/// @return bufferを再作成するフラグ
+	/**
+	 * @brief GPUバッファ再作成要求フラグを取得します。
+	 */
 	bool GetIsBufferRecreate() const;
 
+	/**
+	 * @brief GPUバインド用にパックされたマテリアルデータを取得します。
+	 */
 	const GPUMaterial& GetGpuMaterial();
 
 };

@@ -1,4 +1,4 @@
-﻿#include "Mouse.h"
+#include "Mouse.h"
 
 using namespace ONEngine;
 
@@ -22,6 +22,9 @@ Mouse::Mouse()
 Mouse::~Mouse() = default;
 
 
+/**
+ * @brief マウス入力デバイスの初期化およびデータフォーマット、協調レベルの設定を行います。
+ */
 void Mouse::Initialize(IDirectInput8* _directInput, WindowManager* _windowManager, Editor::ImGuiManager* _imGuiManager) {
 	pImGuiManager_ = _imGuiManager;
 	Assert(pImGuiManager_ != nullptr, "pImGuiManager_ == nullptr");
@@ -49,6 +52,9 @@ void Mouse::Initialize(IDirectInput8* _directInput, WindowManager* _windowManage
 	Assert(SUCCEEDED(hr), "マウスデバイスの生成に失敗しました");
 }
 
+/**
+ * @brief 毎フレームマウスの最新の入力状態を取得し、前フレームの情報を保存して各種移動量等を更新します。
+ */
 void Mouse::Update(Window* _window) {
 	mouse_->SetCooperativeLevel(
 		_window->GetHwnd(),
@@ -77,6 +83,9 @@ void Mouse::Update(Window* _window) {
 	wheel_ = static_cast<float>(state_.lZ);
 }
 
+/**
+ * @brief 特定の ImGui ウインドウ内でのマウス相対位置を、ゲーム画面標準の 1280x720 サイズに正規化した座標で取得します。
+ */
 const Vector2& Mouse::GetImGuiImageMousePosNormalized(const std::string& _name) {
 	const Editor::ImGuiSceneImageInfo* imageInfo = pImGuiManager_->GetSceneImageInfo(_name);
 	/// imageInfoが見つからない場合は、デフォルトの位置を返す
@@ -108,6 +117,9 @@ const Vector2& Mouse::GetImGuiImageMousePosNormalized(const std::string& _name) 
 	return imageMousePosition;
 }
 
+/**
+ * @brief 指定された ImGui 画像ウインドウのスクリーン座標を取得します。
+ */
 const Vector2& Mouse::GetImGuiImagePos(const std::string& _name) {
 	const Editor::ImGuiSceneImageInfo* imageInfo = pImGuiManager_->GetSceneImageInfo(_name);
 	/// imageInfoが見つからない場合は、デフォルトの位置を返す
@@ -122,6 +134,9 @@ const Vector2& Mouse::GetImGuiImagePos(const std::string& _name) {
 	return imageMousePosition;
 }
 
+/**
+ * @brief 指定された ImGui 画像ウインドウのサイズを取得します。
+ */
 const Vector2& Mouse::GetImGuiImageSize(const std::string& _name) {
 	const Editor::ImGuiSceneImageInfo* imageInfo = pImGuiManager_->GetSceneImageInfo(_name);
 	/// imageInfoが見つからない場合は、デフォルトのサイズを返す

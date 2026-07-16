@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /// external
 #include <DirectXMath.h>
@@ -15,14 +15,33 @@ using namespace DirectX;
 /// //////////////////////////////////////////////////
 namespace ONEngine {
 
+/**
+ * @struct Matrix4x4
+ * @brief 3Dグラフィックス用の4x4行列構造体。アフィン変換やビュー投影行列の作成、DirectXMathとの連携を提供します。
+ */
 struct Matrix4x4 final {
 	/// ===================================================
 	/// public : constructer
 	/// ===================================================
 
+	/**
+	 * @brief デフォルトコンストラクタ。単位行列で初期化します。
+	 */
 	Matrix4x4();
+
+	/**
+	 * @brief コピーコンストラクタ。
+	 */
 	Matrix4x4(const Matrix4x4& _matrix);
+
+	/**
+	 * @brief 2次元浮動小数点配列から行列を構築します。
+	 */
 	Matrix4x4(const float _matrix[4][4]);
+
+	/**
+	 * @brief 各要素を個別に指定して行列を構築します。
+	 */
 	Matrix4x4(
 		float _m00, float _m01, float _m02, float _m03,
 		float _m10, float _m11, float _m12, float _m13,
@@ -36,95 +55,137 @@ struct Matrix4x4 final {
 	/// public : static methods
 	/// ===================================================
 
-	/// @brief 拡縮行列の作成
-	/// @param _v 拡縮度
-	/// @return 拡縮行列
+	/**
+	 * @brief 拡大縮小行列を作成します。
+	 * @param _v X, Y, Z各軸の拡縮率
+	 * @return 拡縮変換用のMatrix4x4オブジェクト
+	 */
 	static Matrix4x4 MakeScale(const Vector3& _v);
 
-	/// @brief 回転行列の作成 X軸
-	/// @param _angle 回転角
-	/// @return 回転行列
+	/**
+	 * @brief X軸回りの回転行列を作成します。
+	 * @param _angle 回転角度（ラジアン）
+	 * @return 回転変換用のMatrix4x4オブジェクト
+	 */
 	static Matrix4x4 MakeRotateX(float _angle);
 
-	/// @brief 回転行列の作成 Y軸
-	/// @param _angle 回転角
-	/// @return 回転行列
+	/**
+	 * @brief Y軸回りの回転行列を作成します。
+	 * @param _angle 回転角度（ラジアン）
+	 * @return 回転変換用のMatrix4x4オブジェクト
+	 */
 	static Matrix4x4 MakeRotateY(float _angle);
 
-	/// @brief 回転行列の作成 Z軸
-	/// @param _angle 回転角
-	/// @return 回転行列
+	/**
+	 * @brief Z軸回りの回転行列を作成します。
+	 * @param _angle 回転角度（ラジアン）
+	 * @return 回転変換用のMatrix4x4オブジェクト
+	 */
 	static Matrix4x4 MakeRotateZ(float _angle);
 
-	/// @brief 回転行列の作成
-	/// @param _v 回転率
-	/// @return 回転行列
+	/**
+	 * @brief 3軸（ロール・ピッチ・ヨー）オイラー角指定から回転行列を作成します。
+	 * @param _v X, Y, Z各軸の回転角（ラジアン）
+	 * @return 回転変換用のMatrix4x4オブジェクト
+	 */
 	static Matrix4x4 MakeRotate(const Vector3& _v);
 	static Matrix4x4 MakeRotate(const struct Quaternion& _q);
 
-	/// @brief 平行移動行列の作成
-	/// @param _v 平行移動成分
-	/// @return 平行移動行列
+	/**
+	 * @brief 平行移動行列を作成します。
+	 * @param _v X, Y, Z各方向への移動量
+	 * @return 平行移動用のMatrix4x4オブジェクト
+	 */
 	static Matrix4x4 MakeTranslate(const Vector3& _v);
 
-	/// @brief アフィン行列の作成
-	/// @param _scale 拡縮度
-	/// @param _rotation 回転率
-	/// @param _translation 平行移動成分
-	/// @return アフィン行列
+	/**
+	 * @brief 拡大縮小、回転、平行移動からアフィン変換行列を一度に作成します。
+	 * @param _scale 拡縮スケール
+	 * @param _rotation 回転角
+	 * @param _translation 平行移動
+	 * @return 合成アフィン変換用のMatrix4x4オブジェクト
+	 */
 	static Matrix4x4 MakeAffine(const Vector3& _scale, const Vector3& _rotation, const Vector3& _translation);
 
-	/// @brief 転置行列の作成
-	/// @param _matrix 他の行列
-	/// @return 転置行列
+	/**
+	 * @brief 行列の転置行列（行と列を入れ替えた行列）を作成します。
+	 * @param _matrix ソース行列
+	 * @return 転置されたMatrix4x4オブジェクト
+	 */
 	static Matrix4x4 MakeTranspose(const Matrix4x4& _matrix);
 
-	/// @brief 逆行列の作成
-	/// @param _matrix 他の行列
-	/// @return 逆行列
+	/**
+	 * @brief 逆行列を計算して作成します。
+	 * @param _matrix ソース行列
+	 * @return 計算された逆行列（逆行列が存在しない場合は単位行列）
+	 */
 	static Matrix4x4 MakeInverse(const Matrix4x4& _matrix);
 
-	/// @brief 左手座標系のビュー行列を作成する
-	/// @param _eye 視線の位置
-	/// @param _target 視線の注視点
-	/// @param _up 視線の上方向
-	/// @return 計算したビュー行列
+	/**
+	 * @brief 左手座標系（Left-Handed）のビュー変換行列を作成します。
+	 * @param _eye カメラの位置
+	 * @param _target カメラが向く注視点
+	 * @param _up カメラの上方向ベクトル
+	 * @return ビュー変換行列
+	 */
 	static Matrix4x4 MakeLookAtLH(const Vector3& _eye, const Vector3& _target, const Vector3& _up);
 
-	/// @brief ベクトルに行列をかける
-	/// @param _v ベクトル
-	/// @param _m 行列
-	/// @return 変換後のベクトル
+	/**
+	 * @brief Vector3座標ベクトルに対して行列によるアフィン変換（平行移動を含む）を実行します。
+	 * @param _v 変換対象のベクトル
+	 * @param _m 変換行列
+	 * @return 変換後のVector3オブジェクト
+	 */
 	static Vector3 Transform(const Vector3& _v, const Matrix4x4& _m);
 
-	/// @brief ベクトルの向きだけを行列で変換する（平行移動を無視）
+	/**
+	 * @brief Vector3方向ベクトルに対して行列による回転のみ（平行移動は無視）の変換を実行します。
+	 * @param _v 変換対象の方向ベクトル
+	 * @param _m 変換行列
+	 * @return 変換後のVector3オブジェクト
+	 */
 	static Vector3 TransformNormal(const Vector3& _v, const Matrix4x4& _m);
 
-	/// @brief ベクトルに行列をかける
-	/// @param _v ベクトル
-	/// @param _m 行列
-	/// @return 変換後のベクトル
+	/**
+	 * @brief Vector4ベクトルに対して行列によるアフィン変換を実行します。
+	 * @param _v 変換対象のVector4ベクトル
+	 * @param _m 変換行列
+	 * @return 変換後のVector4オブジェクト
+	 */
 	static Vector4 Transform(const Vector4& _v, const Matrix4x4& _m);
 
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
 
-	/// @brief 転置行列の取得
-	/// @return 転置行列
+	/**
+	 * @brief 自身の転置行列を取得します。
+	 * @return 転置されたMatrix4x4オブジェクト
+	 */
 	Matrix4x4 Transpose() const;
 
-	/// @brief 逆行列の取得
-	/// @return 逆行列
+	/**
+	 * @brief 自身の逆行列を取得します。
+	 * @return 逆行列Matrix4x4オブジェクト
+	 */
 	Matrix4x4 Inverse() const;
 
-	/// @brief 行列から拡縮成分を抽出する
+	/**
+	 * @brief アフィン行列からスケール（拡大縮小）成分を抽出します。
+	 * @return スケール情報を含むVector3
+	 */
 	Vector3 ExtractScale() const;
 
-	/// @brief 行列から回転成分を抽出する
+	/**
+	 * @brief アフィン行列から回転成分（クォータニオン）を抽出します。
+	 * @return 回転を表すQuaternion
+	 */
 	Quaternion ExtractRotation() const;
 
-	/// @brief 行列から平行移動成分を抽出する
+	/**
+	 * @brief アフィン行列から平行移動成分を抽出します。
+	 * @return 移動量を示すVector3
+	 */
 	Vector3 ExtractTranslation() const;
 
 
@@ -132,7 +193,7 @@ struct Matrix4x4 final {
 	/// public : static objects
 	/// ===================================================
 
-	static const Matrix4x4 kIdentity; ///< 単位行列
+	static const Matrix4x4 kIdentity; ///< 単位行列の静的インスタンス
 
 
 
@@ -140,7 +201,7 @@ struct Matrix4x4 final {
 	/// public : objects
 	/// ===================================================
 
-	float m[4][4];
+	float m[4][4]; ///< 4x4二次元配列の実数格納領域
 
 
 
@@ -148,14 +209,14 @@ struct Matrix4x4 final {
 	/// public : operators
 	/// ===================================================
 
-	/// @brief 代入演算子 operator
-	/// @param _other 他行列
-	/// @return 代入結果
+	/**
+	 * @brief 代入演算子
+	 */
 	inline Matrix4x4& operator=(const Matrix4x4& _other);
 
-	/// @brief 乗算代入演算子 operator
-	/// @param _other 他行列
-	/// @return 乗算代入結果
+	/**
+	 * @brief 乗算代入演算子
+	 */
 	inline Matrix4x4& operator*=(const Matrix4x4& _other);
 
 };
@@ -164,9 +225,11 @@ struct Matrix4x4 final {
 namespace {
 
 
-	/// @brief DirectXの行列型から自作の行列型へ変換
-	/// @param _matrix DirectXの行列型
-	/// @return 自作の行列型
+	/**
+	 * @brief DirectXMathのXMMATRIX型からONEngineのMatrix4x4型へ変換します。
+	 * @param _matrix DirectXMathの行列
+	 * @return 変換後のMatrix4x4
+	 */
 	inline Matrix4x4 Convert(const XMMATRIX& _matrix) {
 		Matrix4x4  result;
 		XMFLOAT4X4 tempMatrix;
@@ -180,9 +243,11 @@ namespace {
 		return result;
 	}
 
-	/// @brief 自作の行列型からDirectXの行列型へ変換
-	/// @param _matrix 自作の行列型
-	/// @return DirectXの行列型
+	/**
+	 * @brief ONEngineのMatrix4x4型からDirectXMathのXMMATRIX型へ変換します。
+	 * @param _matrix ソースMatrix4x4
+	 * @return DirectXMathのXMMATRIX
+	 */
 	inline XMMATRIX Convert(const Matrix4x4& _matrix) {
 		return XMMATRIX(
 			_matrix.m[0][0], _matrix.m[0][1], _matrix.m[0][2], _matrix.m[0][3],

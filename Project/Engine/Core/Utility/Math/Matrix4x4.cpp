@@ -1,4 +1,4 @@
-﻿#include "Matrix4x4.h"
+#include "Matrix4x4.h"
 
 using namespace ONEngine;
 
@@ -25,6 +25,9 @@ const Matrix4x4 Matrix4x4::kIdentity = Matrix4x4(
 /// public : constructer
 /// ===================================================
 
+/**
+ * @brief デフォルトコンストラクタ。単位行列で初期化します。
+ */
 Matrix4x4::Matrix4x4() {
 	*this = kIdentity;
 }
@@ -73,6 +76,11 @@ Matrix4x4::Matrix4x4(float _m00, float _m01, float _m02, float _m03, float _m10,
 /// public : static methods
 /// ===================================================
 
+/**
+ * @brief 拡大縮小行列を作成します。
+ * @param _v 各軸の拡大縮小倍率
+ * @return 拡縮行列
+ */
 Matrix4x4 Matrix4x4::MakeScale(const Vector3& _v) {
 	return Matrix4x4(
 		_v.x, 0.0f, 0.0f, 0.0f,
@@ -82,6 +90,11 @@ Matrix4x4 Matrix4x4::MakeScale(const Vector3& _v) {
 	);
 }
 
+/**
+ * @brief X軸回りの回転行列を作成します。
+ * @param _angle 回転角（ラジアン）
+ * @return 回転行列
+ */
 Matrix4x4 Matrix4x4::MakeRotateX(float _angle) {
 	return Matrix4x4(
 		1.0f, 0.0f, 0.0f, 0.0f,
@@ -91,6 +104,11 @@ Matrix4x4 Matrix4x4::MakeRotateX(float _angle) {
 	);
 }
 
+/**
+ * @brief Y軸回りの回転行列を作成します。
+ * @param _angle 回転角（ラジアン）
+ * @return 回転行列
+ */
 Matrix4x4 Matrix4x4::MakeRotateY(float _angle) {
 	return Matrix4x4(
 		std::cos(_angle), 0.0f, -std::sin(_angle), 0.0f,
@@ -100,6 +118,11 @@ Matrix4x4 Matrix4x4::MakeRotateY(float _angle) {
 	);
 }
 
+/**
+ * @brief Z軸回りの回転行列を作成します。
+ * @param _angle 回転角（ラジアン）
+ * @return 回転行列
+ */
 Matrix4x4 Matrix4x4::MakeRotateZ(float _angle) {
 	return Matrix4x4(
 		std::cos(_angle), std::sin(_angle), 0.0f, 0.0f,
@@ -109,6 +132,11 @@ Matrix4x4 Matrix4x4::MakeRotateZ(float _angle) {
 	);
 }
 
+/**
+ * @brief 3軸のオイラー角から回転行列を作成します（X -> Y -> Z の順で適用）。
+ * @param _v ロール・ピッチ・ヨー角（ラジアン）
+ * @return 回転行列
+ */
 Matrix4x4 Matrix4x4::MakeRotate(const Vector3& _v) {
 	Matrix4x4&& x = MakeRotateX(_v.x);
 	Matrix4x4&& y = MakeRotateY(_v.y);
@@ -119,6 +147,11 @@ Matrix4x4 Matrix4x4::MakeRotate(const Vector3& _v) {
 	return result;
 }
 
+/**
+ * @brief クォータニオンから回転行列を作成します。
+ * @param _q 回転を表現するクォータニオン
+ * @return 回転行列
+ */
 Matrix4x4 Matrix4x4::MakeRotate(const Quaternion& _q) {
 	/// ----- Quaternionでの回転行列の作成 ----- ///
 
@@ -155,6 +188,11 @@ Matrix4x4 Matrix4x4::MakeRotate(const Quaternion& _q) {
 	return result;
 }
 
+/**
+ * @brief 平行移動行列を作成します。
+ * @param _v 移動量ベクトル
+ * @return 平行移動行列
+ */
 Matrix4x4 Matrix4x4::MakeTranslate(const Vector3& _v) {
 	return Matrix4x4(
 		1.0f, 0.0f, 0.0f, 0.0f,
@@ -164,6 +202,13 @@ Matrix4x4 Matrix4x4::MakeTranslate(const Vector3& _v) {
 	);
 }
 
+/**
+ * @brief スケール、回転、平行移動から合成アフィン行列を作成します。
+ * @param _scale スケール
+ * @param _rotation オイラー角による回転
+ * @param _translation 平行移動
+ * @return 合成されたアフィン行列
+ */
 Matrix4x4 Matrix4x4::MakeAffine(const Vector3& _scale, const Vector3& _rotation, const Vector3& _translation) {
 	Matrix4x4&& scale = MakeScale(_scale);
 	Matrix4x4&& rotate = MakeRotate(_rotation);
@@ -174,6 +219,11 @@ Matrix4x4 Matrix4x4::MakeAffine(const Vector3& _scale, const Vector3& _rotation,
 	return result;
 }
 
+/**
+ * @brief 行列の転置行列を作成します。
+ * @param _matrix 転置する行列
+ * @return 転置行列
+ */
 Matrix4x4 Matrix4x4::MakeTranspose(const Matrix4x4& _matrix) {
 	Matrix4x4 result{};
 	for (size_t r = 0; r < 4; r++) {
@@ -184,6 +234,11 @@ Matrix4x4 Matrix4x4::MakeTranspose(const Matrix4x4& _matrix) {
 	return result;
 }
 
+/**
+ * @brief 逆行列を作成します。
+ * @param _matrix 逆行列を求める行列
+ * @return 計算された逆行列
+ */
 Matrix4x4 Matrix4x4::MakeInverse(const Matrix4x4& _matrix) {
 	/// ----- DirectXMathを使って逆行列を計算 ----- ///
 
@@ -193,6 +248,13 @@ Matrix4x4 Matrix4x4::MakeInverse(const Matrix4x4& _matrix) {
 	return Convert(inverseMatrix);
 }
 
+/**
+ * @brief 左手座標系のビュー変換行列を作成します。
+ * @param _eye カメラ（視点）の位置
+ * @param _target 注視点（対象）の位置
+ * @param _up 上方向を示すベクトル
+ * @return ビュー変換行列
+ */
 Matrix4x4 Matrix4x4::MakeLookAtLH(const Vector3& _eye, const Vector3& _target, const Vector3& _up) {
 	/// ----- 左手座標系のビュー行列作成 ----- ///
 
@@ -213,6 +275,12 @@ Matrix4x4 Matrix4x4::MakeLookAtLH(const Vector3& _eye, const Vector3& _target, c
 	return result;
 }
 
+/**
+ * @brief Vector3座標ベクトルに対して行列によるアフィン変換（平行移動を含む）を実行します。
+ * @param _v 変換元のベクトル
+ * @param _m 変換行列
+ * @return 変換後のVector3
+ */
 Vector3 Matrix4x4::Transform(const Vector3& _v, const Matrix4x4& _m) {
 	/// ----- Vector3に行列をかける ----- ///
 
@@ -224,6 +292,12 @@ Vector3 Matrix4x4::Transform(const Vector3& _v, const Matrix4x4& _m) {
 	return { v[0], v[1], v[2] };
 }
 
+/**
+ * @brief Vector3方向ベクトルに対して行列による回転のみ（平行移動は無視）の変換を実行します。
+ * @param _v 変換元の方向ベクトル
+ * @param _m 変換行列
+ * @return 変換後のVector3
+ */
 Vector3 Matrix4x4::TransformNormal(const Vector3& _v, const Matrix4x4& _m) {
 	/// ----- Vector3に行列をかける (平行移動無視) ----- ///
 
@@ -235,6 +309,12 @@ Vector3 Matrix4x4::TransformNormal(const Vector3& _v, const Matrix4x4& _m) {
 	return { v[0], v[1], v[2] };
 }
 
+/**
+ * @brief Vector4ベクトルに対して行列によるアフィン変換を実行します。
+ * @param _v 変換元のVector4ベクトル
+ * @param _m 変換行列
+ * @return 変換後のVector4
+ */
 Vector4 Matrix4x4::Transform(const Vector4& _v, const Matrix4x4& _m) {
 	/// ----- Vector4に行列をかける ----- ///
 
@@ -246,14 +326,26 @@ Vector4 Matrix4x4::Transform(const Vector4& _v, const Matrix4x4& _m) {
 	return { v[0], v[1], v[2], v[3] };
 }
 
+/**
+ * @brief 自身の転置行列を取得します。
+ * @return 転置されたMatrix4x4
+ */
 Matrix4x4 Matrix4x4::Transpose() const {
 	return MakeTranspose(*this);
 }
 
+/**
+ * @brief 自身の逆行列を取得します。
+ * @return 逆行列Matrix4x4
+ */
 Matrix4x4 Matrix4x4::Inverse() const {
 	return MakeInverse(*this);
 }
 
+/**
+ * @brief 行列からスケール（拡大縮小）成分を抽出します。
+ * @return スケール成分のVector3
+ */
 Vector3 Matrix4x4::ExtractScale() const {
 	/// 3x3に変換
 	float m3x3[3][3] = {
@@ -271,6 +363,10 @@ Vector3 Matrix4x4::ExtractScale() const {
 	return Vector3(scale[0], scale[1], scale[2]);
 }
 
+/**
+ * @brief 行列から回転成分（クォータニオン）を抽出します。
+ * @return 回転を表すQuaternion
+ */
 Quaternion Matrix4x4::ExtractRotation() const {
 	Matrix4x4 matrix = *this;
 	Vector3 scale = matrix.ExtractScale();
@@ -289,6 +385,10 @@ Quaternion Matrix4x4::ExtractRotation() const {
 	return Quaternion::FromRotationMatrix(matrix);
 }
 
+/**
+ * @brief 行列から平行移動成分を抽出します。
+ * @return 移動量を示すVector3
+ */
 Vector3 Matrix4x4::ExtractTranslation() const {
 	return Vector3(
 		m[3][0],
