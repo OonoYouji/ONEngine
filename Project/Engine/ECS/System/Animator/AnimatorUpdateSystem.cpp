@@ -125,44 +125,17 @@ void AnimatorUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
         // 1. タイムラインの進行とウェイトの更新 (クロスフェード)
         for (uint32_t i = 0; i < MAX_ANIMATION_LAYERS; ++i) {
             AnimationLayer& layer = animator->layers[i];
-            
-            // トランジション（クロスフェード）の更新
-            if (layer.transitionDuration > 0.0f) {
-                layer.transitionTimer += Time::DeltaTime();
-                float t = (std::min)(1.0f, layer.transitionTimer / layer.transitionDuration);
-                
-                layer.states[0].weight = t;       // フェードイン
-                layer.states[1].weight = 1.0f - t; // フェードアウト
-
-                if (t >= 1.0f) {
-                    layer.transitionDuration = 0.0f;
-                    layer.states[1].clipId = 0;
-                    layer.states[1].weight = 0.0f;
-                }
-            }
-
             if (layer.weight <= 0.0f) continue;
+
+            if (layer.currentState) {
+                layer.currentState->Update(layer, Time::DeltaTime(), clips);
+            }
 
             for (uint32_t j = 0; j < MAX_ANIMATION_STATES_PER_LAYER; ++j) {
                 AnimationState& state = layer.states[j];
-                if (state.weight <= 0.0f || state.clipId == 0) continue;
-
-                // durationの取得
-                float duration = 0.0f;
-                auto itClip = clips.find(state.clipId);
-                if (itClip != clips.end()) {
-                    duration = itClip->second.duration;
+                if (state.weight > 0.0f && state.clipId != 0) {
+                    isAnyStateActive = true;
                 }
-
-                state.prevTime = state.time;
-                state.time += Time::DeltaTime() * state.playbackSpeed;
-                
-                if (state.isLoop && duration > 0.0f) {
-                    state.time = (std::fmod)(state.time, duration);
-                } else if (state.time > duration) {
-                    state.time = duration;
-                }
-                isAnyStateActive = true;
             }
         }
 

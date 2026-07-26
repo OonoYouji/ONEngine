@@ -25,6 +25,27 @@ struct CollisionInfo {
 /// ///////////////////////////////////////////////////
 /// 衝突判定の計算を行い、コールバック関数を呼び出すシステム
 /// ///////////////////////////////////////////////////
+class ICollisionState {
+public:
+	virtual ~ICollisionState() = default;
+	virtual std::unique_ptr<ICollisionState> Update(bool isCollided, const std::pair<class GameEntity*, class GameEntity*>& pair, class CollisionSystem* system) = 0;
+};
+
+class CollisionEnterState : public ICollisionState {
+public:
+	std::unique_ptr<ICollisionState> Update(bool isCollided, const std::pair<class GameEntity*, class GameEntity*>& pair, class CollisionSystem* system) override;
+};
+
+class CollisionStayState : public ICollisionState {
+public:
+	std::unique_ptr<ICollisionState> Update(bool isCollided, const std::pair<class GameEntity*, class GameEntity*>& pair, class CollisionSystem* system) override;
+};
+
+class CollisionExitState : public ICollisionState {
+public:
+	std::unique_ptr<ICollisionState> Update(bool isCollided, const std::pair<class GameEntity*, class GameEntity*>& pair, class CollisionSystem* system) override;
+};
+
 /**
  * @class CollisionSystem
  * @brief エンティティ間のコライダー衝突判定、押し戻し（プッシュバック）処理、および衝突判定に基づくコールバック（OnCollisionEnter/Stay/Exit）を毎フレーム制御するシステムクラス
@@ -79,6 +100,11 @@ public:
 		class GameEntity* _b, CollisionState _bState,
 		const CollisionInfo& _info
 	);
+
+	void AddEnterPair(const std::pair<class GameEntity*, class GameEntity*>& pair) { enterPairs_.push_back(pair); }
+	void AddStayPair(const std::pair<class GameEntity*, class GameEntity*>& pair) { stayPairs_.push_back(pair); }
+	void AddExitPair(const std::pair<class GameEntity*, class GameEntity*>& pair) { exitPairs_.push_back(pair); }
+
 private:
 	/// =======================================
 	/// private : objects
@@ -86,7 +112,13 @@ private:
 
 	using CollisionPair = std::pair<class GameEntity*, class GameEntity*>;
 
-	std::deque<CollisionPair> collidedPairs_;
+	struct PairHash {
+		std::size_t operator()(const CollisionPair& p) const {
+			return std::hash<class GameEntity*>()(p.first) ^ (std::hash<class GameEntity*>()(p.second) << 1);
+		}
+	};
+
+	std::unordered_map<CollisionPair, std::unique_ptr<ICollisionState>, PairHash> activeStates_;
 
 	/// ----- call back ----- ///
 	std::deque<CollisionPair> enterPairs_; /// 衝突が開始したペア

@@ -7,6 +7,7 @@
 #include <string>
 #include <source_location>
 #include <filesystem>
+#include <csignal>
 
 /// engine
 #include "Log.h"
@@ -43,7 +44,13 @@ inline void Assert(bool _condition, const char* _errorMessage, const std::source
 		Console::Log("[ASSERTION ERROR] " + errorMsg); // Log the last part if any
 
 		Console::Shutdown();
+#if defined(_MSC_VER)
 		__debugbreak();
+#elif defined(__GNUC__) || defined(__clang__)
+		__builtin_trap();
+#else
+		std::raise(SIGTRAP);
+#endif
 	}
 }
 

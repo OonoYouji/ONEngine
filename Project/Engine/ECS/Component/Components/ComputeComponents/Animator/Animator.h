@@ -10,6 +10,30 @@ namespace ONEngine {
 static constexpr uint32_t MAX_ANIMATION_LAYERS = 4;
 static constexpr uint32_t MAX_ANIMATION_STATES_PER_LAYER = 2;
 
+class IAnimationLayerState {
+public:
+    virtual ~IAnimationLayerState() = default;
+    virtual void Update(struct AnimationLayer& layer, float deltaTime, const std::unordered_map<uint32_t, struct AnimationClip>& clips) = 0;
+    virtual void Play(struct AnimationLayer& layer, uint32_t clipId) = 0;
+    virtual void CrossFade(struct AnimationLayer& layer, uint32_t clipId, float duration) = 0;
+};
+
+class AnimationLayerPlayingState : public IAnimationLayerState {
+public:
+    static AnimationLayerPlayingState* GetInstance();
+    void Update(struct AnimationLayer& layer, float deltaTime, const std::unordered_map<uint32_t, struct AnimationClip>& clips) override;
+    void Play(struct AnimationLayer& layer, uint32_t clipId) override;
+    void CrossFade(struct AnimationLayer& layer, uint32_t clipId, float duration) override;
+};
+
+class AnimationLayerTransitionState : public IAnimationLayerState {
+public:
+    static AnimationLayerTransitionState* GetInstance();
+    void Update(struct AnimationLayer& layer, float deltaTime, const std::unordered_map<uint32_t, struct AnimationClip>& clips) override;
+    void Play(struct AnimationLayer& layer, uint32_t clipId) override;
+    void CrossFade(struct AnimationLayer& layer, uint32_t clipId, float duration) override;
+};
+
 /**
  * @struct AnimationState
  * @brief 再生中のアニメーションクリップに関する状態（再生時間、ブレンドウェイト、ループフラグ、再生速度など）を表す構造体
@@ -30,6 +54,7 @@ struct AnimationState {
  * @brief アニメーションの複数レイヤー合成用の情報を表す構造体。各レイヤーで再生するステートやレイヤー全体のウェイト、ボーンマスク情報を保持します。
  */
 struct AnimationLayer {
+    AnimationLayer();
     AnimationState states[MAX_ANIMATION_STATES_PER_LAYER];
     float weight = 1.0f;
     uint32_t boneMaskHash = 0; // 0 はマスクなし
@@ -37,6 +62,8 @@ struct AnimationLayer {
     // トランジション（クロスフェード）用
     float transitionDuration = 0.0f;
     float transitionTimer = 0.0f;
+
+    IAnimationLayerState* currentState = nullptr;
 };
 
 /**

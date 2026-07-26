@@ -4,6 +4,7 @@ using namespace ONEngine;
 
 /// std
 #include <unordered_map>
+#include <unordered_set>
 #include <utility>
 
 /// engine
@@ -25,6 +26,42 @@ struct hash<std::pair<int, int>> {
 };
 }
 
+
+static std::pair<GameEntity*, GameEntity*> MakeOrderedPair(GameEntity* a, GameEntity* b) {
+	if (a->GetId() < b->GetId()) {
+		return { a, b };
+	}
+	return { b, a };
+}
+
+std::unique_ptr<ICollisionState> CollisionEnterState::Update(bool isCollided, const std::pair<GameEntity*, GameEntity*>& pair, CollisionSystem* system) {
+	if (isCollided) {
+		system->AddStayPair(pair);
+		return std::make_unique<CollisionStayState>();
+	} else {
+		system->AddExitPair(pair);
+		return std::make_unique<CollisionExitState>();
+	}
+}
+
+std::unique_ptr<ICollisionState> CollisionStayState::Update(bool isCollided, const std::pair<GameEntity*, GameEntity*>& pair, CollisionSystem* system) {
+	if (isCollided) {
+		system->AddStayPair(pair);
+		return std::make_unique<CollisionStayState>();
+	} else {
+		system->AddExitPair(pair);
+		return std::make_unique<CollisionExitState>();
+	}
+}
+
+std::unique_ptr<ICollisionState> CollisionExitState::Update(bool isCollided, const std::pair<GameEntity*, GameEntity*>& pair, CollisionSystem* system) {
+	if (isCollided) {
+		system->AddEnterPair(pair);
+		return std::make_unique<CollisionEnterState>();
+	} else {
+		return nullptr;
+	}
+}
 
 /**
  * @brief コンストラクタ
@@ -115,6 +152,9 @@ void CollisionSystem::RuntimeUpdate(ECSGroup* _ecs) {
 	using EntityIdPair = std::pair<int, int>;
 	std::unordered_map<EntityIdPair, int> collisionFrameMap;
 
+	/// このフレームで衝突が検出されたペアのセット（順序保証キー）
+	std::unordered_set<CollisionPair, PairHash> updatedPairs;
+
 	/// 衝突判定
 	std::string collisionType = "";
 	for(auto& a : colliders) {
@@ -132,19 +172,9 @@ void CollisionSystem::RuntimeUpdate(ECSGroup* _ecs) {
 				continue;
 			}
 
-			/// このフレームないで衝突計算をしているかチェック
+			/// このフレーム内で衝突計算をしているかチェック
 			collisionType = typeid(*a).name() + std::string("Vs") + typeid(*b).name();
 			EntityIdPair pairKey = std::make_pair(a->GetOwner()->GetId(), b->GetOwner()->GetId());
-
-			/*
-			* --- 衝突判定の流れ ---
-			* 1, このフレームですでに衝突判定をとっているかチェック
-			* 2, まだなら衝突判定を計算
-			* 3, 衝突しているなら collisionPairs_ にペアを追加
-			* 4, 衝突していないなら前 collisionPairs_ にペアがあれば削除し、releasePairs_にペアを追加
-			* 5, call back関数の実行
-			*/
-
 
 			/// mapがペアを持っていないかどうか
 			bool collisionFrameMapContains = false;
@@ -164,7 +194,6 @@ void CollisionSystem::RuntimeUpdate(ECSGroup* _ecs) {
 			/// 衝突計算をしたフレームを記録
 			++collisionFrameMap[pairKey];
 
-
 			/// 衝突計算の関数を取得
 			CollisionPair pair(a->GetOwner(), b->GetOwner());
 			auto collisionCheckItr = collisionCheckMap_.find(collisionType);
@@ -176,7 +205,6 @@ void CollisionSystem::RuntimeUpdate(ECSGroup* _ecs) {
 			CollisionInfo info;
 			bool isCollided = collisionCheckItr->second(pair, &info);
 			if(isCollided) {
-
 				/// 押し戻しを行う (どちらかがTriggerならスキップ)
 				if (!a->IsTrigger() && !b->IsTrigger()) {
 					PushBack(
@@ -186,38 +214,35 @@ void CollisionSystem::RuntimeUpdate(ECSGroup* _ecs) {
 					);
 				}
 
+				CollisionPair orderedPair = MakeOrderedPair(a->GetOwner(), b->GetOwner());
+				updatedPairs.insert(orderedPair);
 
-				/// collidedPairs_にペアがすでに存在しているかチェック
-				auto collisionPairItr = std::find_if(collidedPairs_.begin(), collidedPairs_.end(), [&pair](const CollisionPair& _p) {
-					return (_p.first == pair.first && _p.second == pair.second)
-						|| (_p.first == pair.second && _p.second == pair.first);
-				});
-
-				if(collisionPairItr != collidedPairs_.end()) {
-					/// すでにペアが存在している場合は stayPairs_ に追加
-					stayPairs_.emplace_back(pair);
+				auto stateItr = activeStates_.find(orderedPair);
+				if (stateItr != activeStates_.end()) {
+					// 既存のステートを更新
+					stateItr->second = stateItr->second->Update(true, pair, this);
 				} else {
-					/// 新たにペアが追加された場合は enterPairs_ に追加
-					enterPairs_.emplace_back(pair);
-					/// 新たに衝突した場合はペアを記録
-					collidedPairs_.emplace_back(pair);
-				}
-
-			} else {
-
-				/// collisionPairs_からペアを削除
-				auto collisionPairItr = std::find_if(collidedPairs_.begin(), collidedPairs_.end(), [&pair](const CollisionPair& _p) {
-					return (_p.first == pair.first && _p.second == pair.second)
-						|| (_p.first == pair.second && _p.second == pair.first);
-				});
-
-				/// 削除するペアがあった場合は exitPairs_ に追加
-				if(collisionPairItr != collidedPairs_.end()) {
-					exitPairs_.emplace_back(pair);
-					collidedPairs_.erase(collisionPairItr);
+					// 新たな衝突の発生
+					AddEnterPair(pair);
+					activeStates_[orderedPair] = std::make_unique<CollisionEnterState>();
 				}
 			}
+		}
+	}
 
+	/// このフレームで衝突しなかった（＝updatedPairsに含まれていない）アクティブなペアのステート遷移
+	for (auto it = activeStates_.begin(); it != activeStates_.end();) {
+		if (updatedPairs.find(it->first) == updatedPairs.end()) {
+			auto nextState = it->second->Update(false, it->first, this);
+			if (!nextState) {
+				// Noneへ遷移したため削除
+				it = activeStates_.erase(it);
+			} else {
+				it->second = std::move(nextState);
+				++it;
+			}
+		} else {
+			++it;
 		}
 	}
 

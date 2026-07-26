@@ -1,4 +1,4 @@
-﻿#include "VoxelTerrainEditorComputePipeline.h"
+#include "VoxelTerrainEditorComputePipeline.h"
 
 /// engine
 #include "Engine/Asset/Collection/AssetCollection.h"
@@ -202,7 +202,7 @@ void VoxelTerrainEditorComputePipeline::Execute(ONEngine::EntityComponentSystem*
 	);
 
 	/// mousePosを中心に3x3のチャンクを編集する
-	for(uint32_t chunkId = 0; chunkId < voxelTerrain->MaxChunkCount(); ++chunkId) {
+	for(UINT chunkId = 0; chunkId < voxelTerrain->MaxChunkCount(); ++chunkId) {
 		ONEngine::Cube chunkAABB;
 		chunkAABB.center.x = (static_cast<float>(chunkId % voxelTerrain->GetChunkCountXZ().x)) * static_cast<float>(voxelTerrain->GetChunkSize().x);
 		chunkAABB.center.y = static_cast<float>(voxelTerrain->GetChunkSize().y) * 0.5f;

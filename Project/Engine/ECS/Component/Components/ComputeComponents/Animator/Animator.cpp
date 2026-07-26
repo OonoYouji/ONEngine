@@ -14,6 +14,135 @@
 
 namespace ONEngine {
 
+AnimationLayer::AnimationLayer() {
+    currentState = AnimationLayerPlayingState::GetInstance();
+}
+
+AnimationLayerPlayingState* AnimationLayerPlayingState::GetInstance() {
+    static AnimationLayerPlayingState instance;
+    return &instance;
+}
+
+void AnimationLayerPlayingState::Play(AnimationLayer& layer, uint32_t clipId) {
+    layer.states[0].clipId = clipId;
+    layer.states[0].time = 0.0f;
+    layer.states[0].prevTime = 0.0f;
+    layer.states[0].weight = 1.0f;
+    
+    layer.states[1].clipId = 0;
+    layer.states[1].weight = 0.0f;
+
+    layer.transitionDuration = 0.0f;
+    layer.transitionTimer = 0.0f;
+}
+
+void AnimationLayerPlayingState::CrossFade(AnimationLayer& layer, uint32_t clipId, float duration) {
+    if (layer.states[0].clipId == clipId && layer.transitionDuration <= 0.0f) {
+        return;
+    }
+
+    layer.states[1] = layer.states[0];
+    
+    layer.states[0].clipId = clipId;
+    layer.states[0].time = 0.0f;
+    layer.states[0].prevTime = 0.0f;
+    layer.states[0].weight = 0.0f;
+
+    layer.transitionDuration = duration;
+    layer.transitionTimer = 0.0f;
+    layer.currentState = AnimationLayerTransitionState::GetInstance();
+}
+
+void AnimationLayerPlayingState::Update(AnimationLayer& layer, float deltaTime, const std::unordered_map<uint32_t, AnimationClip>& clips) {
+    AnimationState& state = layer.states[0];
+    if (state.weight <= 0.0f || state.clipId == 0) return;
+
+    float duration = 0.0f;
+    auto itClip = clips.find(state.clipId);
+    if (itClip != clips.end()) {
+        duration = itClip->second.duration;
+    }
+
+    state.prevTime = state.time;
+    state.time += deltaTime * state.playbackSpeed;
+    
+    if (state.isLoop && duration > 0.0f) {
+        state.time = (std::fmod)(state.time, duration);
+    } else if (state.time > duration) {
+        state.time = duration;
+    }
+}
+
+AnimationLayerTransitionState* AnimationLayerTransitionState::GetInstance() {
+    static AnimationLayerTransitionState instance;
+    return &instance;
+}
+
+void AnimationLayerTransitionState::Play(AnimationLayer& layer, uint32_t clipId) {
+    layer.states[0].clipId = clipId;
+    layer.states[0].time = 0.0f;
+    layer.states[0].prevTime = 0.0f;
+    layer.states[0].weight = 1.0f;
+    
+    layer.states[1].clipId = 0;
+    layer.states[1].weight = 0.0f;
+
+    layer.transitionDuration = 0.0f;
+    layer.transitionTimer = 0.0f;
+    layer.currentState = AnimationLayerPlayingState::GetInstance();
+}
+
+void AnimationLayerTransitionState::CrossFade(AnimationLayer& layer, uint32_t clipId, float duration) {
+    if (layer.states[0].clipId == clipId) {
+        return;
+    }
+
+    layer.states[1] = layer.states[0];
+    
+    layer.states[0].clipId = clipId;
+    layer.states[0].time = 0.0f;
+    layer.states[0].prevTime = 0.0f;
+    layer.states[0].weight = 0.0f;
+
+    layer.transitionDuration = duration;
+    layer.transitionTimer = 0.0f;
+}
+
+void AnimationLayerTransitionState::Update(AnimationLayer& layer, float deltaTime, const std::unordered_map<uint32_t, AnimationClip>& clips) {
+    layer.transitionTimer += deltaTime;
+    float t = (std::min)(1.0f, layer.transitionTimer / layer.transitionDuration);
+    
+    layer.states[0].weight = t;       // フェードイン
+    layer.states[1].weight = 1.0f - t; // フェードアウト
+
+    for (uint32_t j = 0; j < MAX_ANIMATION_STATES_PER_LAYER; ++j) {
+        AnimationState& state = layer.states[j];
+        if (state.weight <= 0.0f || state.clipId == 0) continue;
+
+        float duration = 0.0f;
+        auto itClip = clips.find(state.clipId);
+        if (itClip != clips.end()) {
+            duration = itClip->second.duration;
+        }
+
+        state.prevTime = state.time;
+        state.time += deltaTime * state.playbackSpeed;
+        
+        if (state.isLoop && duration > 0.0f) {
+            state.time = (std::fmod)(state.time, duration);
+        } else if (state.time > duration) {
+            state.time = duration;
+        }
+    }
+
+    if (t >= 1.0f) {
+        layer.transitionDuration = 0.0f;
+        layer.states[1].clipId = 0;
+        layer.states[1].weight = 0.0f;
+        layer.currentState = AnimationLayerPlayingState::GetInstance();
+    }
+}
+
 /**
  * @brief コンストラクタ
  */
@@ -27,19 +156,7 @@ Animator::Animator() {
 void Animator::Play(uint32_t _clipId, uint32_t _layerIndex) {
     if (_layerIndex >= MAX_ANIMATION_LAYERS) return;
 
-    AnimationLayer& layer = layers[_layerIndex];
-
-    // 即時切り替え
-    layer.states[0].clipId = _clipId;
-    layer.states[0].time = 0.0f;
-    layer.states[0].prevTime = 0.0f;
-    layer.states[0].weight = 1.0f;
-    
-    layer.states[1].clipId = 0;
-    layer.states[1].weight = 0.0f;
-
-    layer.transitionDuration = 0.0f;
-    layer.transitionTimer = 0.0f;
+    layers[_layerIndex].currentState->Play(layers[_layerIndex], _clipId);
 }
 
 /**
@@ -50,24 +167,7 @@ void Animator::CrossFade(uint32_t _clipId, float _duration, uint32_t _layerIndex
 
     Console::LogInfo(std::format("Animator::CrossFade - ClipId: {}, Duration: {}, Layer: {}", _clipId, _duration, _layerIndex));
 
-    AnimationLayer& layer = layers[_layerIndex];
-
-    // すでに同じクリップを再生しようとしている場合は無視（またはリセット）
-    if (layer.states[0].clipId == _clipId && layer.transitionDuration <= 0.0f) {
-        return;
-    }
-
-    // 現在再生中のものを states[1] に移動し、新しいものを states[0] に設定
-    // states[1] がフェードアウト、states[0] がフェードイン
-    layer.states[1] = layer.states[0];
-    
-    layer.states[0].clipId = _clipId;
-    layer.states[0].time = 0.0f;
-    layer.states[0].prevTime = 0.0f;
-    layer.states[0].weight = 0.0f;
-
-    layer.transitionDuration = _duration;
-    layer.transitionTimer = 0.0f;
+    layers[_layerIndex].currentState->CrossFade(layers[_layerIndex], _clipId, _duration);
 }
 
 /**
@@ -181,6 +281,12 @@ void ONEngine::from_json(const nlohmann::json& _j, Animator& _animator) {
                     if (stateJson.contains("isLoop")) state.isLoop = stateJson.at("isLoop").get<bool>();
                     if (stateJson.contains("playbackSpeed")) state.playbackSpeed = stateJson.at("playbackSpeed").get<float>();
                 }
+            }
+
+            if (layer.transitionDuration > 0.0f) {
+                layer.currentState = AnimationLayerTransitionState::GetInstance();
+            } else {
+                layer.currentState = AnimationLayerPlayingState::GetInstance();
             }
         }
     }

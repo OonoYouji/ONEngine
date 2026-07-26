@@ -3,6 +3,7 @@
 /// std
 #include <fstream>
 #include <filesystem>
+#include <limits>
 
 /// externals
 #include <magic_enum/magic_enum.hpp>
@@ -42,7 +43,11 @@ namespace ONEngine::Asset {
 //			const size_t versionStrSize = strlen("version: ");
 //			std::string versionStr = line.substr(versionStrSize);
 //
-//			uint32_t version = static_cast<uint32_t>(std::stoul(versionStr));
+//			unsigned long parsedVal = std::stoul(versionStr);
+//			if (parsedVal > std::numeric_limits<uint32_t>::max()) {
+//				Console::LogWarning("MetaFile version out of range in: " + _metaFilePath);
+//			}
+//			uint32_t version = static_cast<uint32_t>(parsedVal);
 //			if(version != kCurrentMetaFileVersion) {
 //				/// バージョンが異なる場合は警告
 //				Console::LogWarning("MetaFile version mismatch in: " + _metaFilePath);
